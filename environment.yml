@@ -1,0 +1,9 @@
+# conda 环境，内容与 requirements.txt 一致：conda env create -f environment.yml
+name: pcwm
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pip
+  - pip:
+      - -r requirements.txt
