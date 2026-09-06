@@ -1,0 +1,70 @@
+{
+  "test_suite": {
+    "passed": 63,
+    "device": "cpu",
+    "new_simulator_or_gpu_jobs": false
+  },
+  "ppo_compatibility": {
+    "validation_kind": "upstream PPO CPU optimizer/checkpoint compatibility only",
+    "limitations": [
+      "all point clouds/actions/states/rewards/flags are SYNTHETIC",
+      "stored actions are not collected by the current identity policy",
+      "no new environment/renderer, no policy quality or convergence validation"
+    ],
+    "synthetic_fields": [
+      "obs.xyz",
+      "obs.rgb",
+      "next_obs.xyz",
+      "next_obs.rgb",
+      "actions",
+      "obs.state",
+      "next_obs.state",
+      "rewards",
+      "dones",
+      "episode_dones"
+    ],
+    "device": "cpu",
+    "cuda_initialized": false,
+    "parameter_l1_change": {
+      "encoder": 28.220939368009567,
+      "actor_head": 37.98159052245319,
+      "critic_head": 48.47689841105603
+    },
+    "finite_gradients": true,
+    "strict_checkpoint_reload": true,
+    "optimizer_states_reloaded": true,
+    "restored_outputs_identical": true
+  },
+  "worldmodel_compatibility": {
+    "synthetic_unit_test_only": true,
+    "passed": true,
+    "action_dim": 7,
+    "history_stride": 1,
+    "optimizer_steps": [
+      2.0,
+      4.0
+    ],
+    "cpu_only": true,
+    "reloaded_prediction_shape": [
+      2,
+      512
+    ]
+  },
+  "expert_preflight": {
+    "episodes": 30,
+    "successes": 0,
+    "episodes_reached_position": 27,
+    "placed_steps": 438,
+    "static_steps": 204,
+    "simultaneous_placed_static": 0,
+    "min_max_arm_speed_while_placed": 0.34014037251472473,
+    "native_max_arm_speed_threshold": 0.2,
+    "ik_failures": 199,
+    "minimum_goal_distance_m": 0.001098057779985696,
+    "renderer_calls": 0,
+    "own_gpu_bytes_max": 0
+  },
+  "real_expert_pointcloud_dataset_created": false,
+  "real_worldmodel_training_complete": false,
+  "real_frozen_encoder_ppo_training_complete": false
+}

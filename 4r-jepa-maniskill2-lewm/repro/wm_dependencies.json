@@ -1,0 +1,1024 @@
+{
+  "install": [
+    {
+      "metadata": {
+        "name": "stable-pretraining",
+        "version": "0.1.8"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/69/7d/ad147a1bb7bc471f1abf2c277c4caa05c979a5c99922b546923a9dde778f/stable_pretraining-0.1.8-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=3c01ca24504a4940feea6c8bbc5e5b8a96e9dee6568ba1277d2af444bdcba3ea",
+          "hashes": {
+            "sha256": "3c01ca24504a4940feea6c8bbc5e5b8a96e9dee6568ba1277d2af444bdcba3ea"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "lightning",
+        "version": "2.5.6"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/23/dc/d7804f13928b6a81a0e948cfecbf0071e8cc74e3f341c704e23e75e504ad/lightning-2.5.6-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=25bb2053078c2efc57c082fda89dfbd975dfa76beb08def191947c2b571a8c8a",
+          "hashes": {
+            "sha256": "25bb2053078c2efc57c082fda89dfbd975dfa76beb08def191947c2b571a8c8a"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "transformers",
+        "version": "4.50.3"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/aa/22/733a6fc4a6445d835242f64c490fdd30f4a08d58f2b788613de3f9170692/transformers-4.50.3-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=6111610a43dec24ef32c3df0632c6b25b07d9711c01d9e1077bdd2ff6b14a38c",
+          "hashes": {
+            "sha256": "6111610a43dec24ef32c3df0632c6b25b07d9711c01d9e1077bdd2ff6b14a38c"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "datasets",
+        "version": "3.6.0"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/20/34/a08b0ee99715eaba118cbe19a71f7b5e2425c2718ef96007c325944a1152/datasets-3.6.0-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=25000c4a2c0873a710df127d08a202a06eab7bf42441a6bc278b499c2f72cd1b",
+          "hashes": {
+            "sha256": "25000c4a2c0873a710df127d08a202a06eab7bf42441a6bc278b499c2f72cd1b"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "minari",
+        "version": "0.5.3"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/66/a7/59f64ca35a089bad904c60a138bbf4f392de0b29d79e7751a8f1fbe0b4f2/minari-0.5.3-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=fc9587ddc3e7b1877185ace33f530b355cd1ec7e072f8df833654cb48d2435c4",
+          "hashes": {
+            "sha256": "fc9587ddc3e7b1877185ace33f530b355cd1ec7e072f8df833654cb48d2435c4"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "lancedb",
+        "version": "0.30.0"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/ea/69/504ee25c57c3f23c80276b5b7b5e4c0f98a5197a7e9e51d3c50500d2b53a/lancedb-0.30.0-cp39-abi3-manylinux_2_28_x86_64.whl",
+        "archive_info": {
+          "hash": "sha256=bdcd27d98554ed11b6f345b14d1307b0e2332d5654767e9ee2e23d9b2d6513d1",
+          "hashes": {
+            "sha256": "bdcd27d98554ed11b6f345b14d1307b0e2332d5654767e9ee2e23d9b2d6513d1"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "pylance",
+        "version": "4.0.0"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/66/e6/53e0713440685b1c76e20d72755eca2e531cc182ea9a612b4cb6a15abe50/pylance-4.0.0-cp39-abi3-manylinux_2_28_x86_64.whl",
+        "archive_info": {
+          "hash": "sha256=9ca03f97f22e0b75f06378c4006d587aba26408122fd066f0e43e2b7a019c67e",
+          "hashes": {
+            "sha256": "9ca03f97f22e0b75f06378c4006d587aba26408122fd066f0e43e2b7a019c67e"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "pyarrow",
+        "version": "20.0.0"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/f1/ca/ae10fba419a6e94329707487835ec721f5a95f3ac9168500bcf7aa3813c7/pyarrow-20.0.0-cp310-cp310-manylinux_2_28_x86_64.whl",
+        "archive_info": {
+          "hash": "sha256=a5704f29a74b81673d266e5ec1fe376f060627c2e42c5c7651288ed4b0db29e9",
+          "hashes": {
+            "sha256": "a5704f29a74b81673d266e5ec1fe376f060627c2e42c5c7651288ed4b0db29e9"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "hdf5plugin",
+        "version": "5.1.0"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/ba/db/8d85bd3f5b9ee894518f9d9ed1019fd8b7014340beca512dfb76d5632ec9/hdf5plugin-5.1.0-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "archive_info": {
+          "hash": "sha256=6da81b0b168f271b0cf995a12c28cf01b381587fed21f25fd91b2c90d5108425",
+          "hashes": {
+            "sha256": "6da81b0b168f271b0cf995a12c28cf01b381587fed21f25fd91b2c90d5108425"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "ogbench",
+        "version": "1.2.0"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/26/79/756edb983d22d07a7c1873c6fe6cbe4ca2c90087d80f208ba9841835bce5/ogbench-1.2.0-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=96db66b2dd987182d4e811289281ce7208ee52de845c78d784f32e0c43f7ed5e",
+          "hashes": {
+            "sha256": "96db66b2dd987182d4e811289281ce7208ee52de845c78d784f32e0c43f7ed5e"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "dill",
+        "version": "0.3.8"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/c9/7a/cef76fd8438a42f96db64ddaa85280485a9c395e7df3db8158cfec1eee34/dill-0.3.8-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=c36ca9ffb54365bdd2f8eb3eff7d2a21237f8452b57ace88b1ac615b7e815bd7",
+          "hashes": {
+            "sha256": "c36ca9ffb54365bdd2f8eb3eff7d2a21237f8452b57ace88b1ac615b7e815bd7"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "fsspec",
+        "version": "2025.3.0"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/56/53/eb690efa8513166adef3e0669afd31e95ffde69fb3c52ec2ac7223ed6018/fsspec-2025.3.0-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=efb87af3efa9103f94ca91a7f8cb7a4df91af9f74fc106c9c7ea0efd7277c1b3",
+          "hashes": {
+            "sha256": "efb87af3efa9103f94ca91a7f8cb7a4df91af9f74fc106c9c7ea0efd7277c1b3"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "huggingface_hub",
+        "version": "0.36.2"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/a8/af/48ac8483240de756d2438c380746e7130d1c6f75802ef22f3c6d49982787/huggingface_hub-0.36.2-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=48f0c8eac16145dfce371e9d2d7772854a4f591bcb56c9cf548accf531d54270",
+          "hashes": {
+            "sha256": "48f0c8eac16145dfce371e9d2d7772854a4f591bcb56c9cf548accf531d54270"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "hf-xet",
+        "version": "1.6.0"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/67/4e/a28359bf1c1ecf11eba22123168c138698f7cb576ac678f5a2e16cd5da08/hf_xet-1.6.0-cp38-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+        "archive_info": {
+          "hash": "sha256=d62671bb130879cef0ee4c9ebe47a14af6c66ec53e6d84dc15936e5ffdfac82f",
+          "hashes": {
+            "sha256": "d62671bb130879cef0ee4c9ebe47a14af6c66ec53e6d84dc15936e5ffdfac82f"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "lightning-utilities",
+        "version": "0.15.3"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/25/f4/ead6e0e37209b07c9baa3e984ccdb0348ca370b77cea3aaea8ddbb097e00/lightning_utilities-0.15.3-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=6c55f1bee70084a1cbeaa41ada96e4b3a0fea5909e844dd335bd80f5a73c5f91",
+          "hashes": {
+            "sha256": "6c55f1bee70084a1cbeaa41ada96e4b3a0fea5909e844dd335bd80f5a73c5f91"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "multiprocess",
+        "version": "0.70.16"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/bc/f7/7ec7fddc92e50714ea3745631f79bd9c96424cb2702632521028e57d3a36/multiprocess-0.70.16-py310-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=c4a9944c67bd49f823687463660a2d6daae94c289adff97e0f9d696ba6371d02",
+          "hashes": {
+            "sha256": "c4a9944c67bd49f823687463660a2d6daae94c289adff97e0f9d696ba6371d02"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "tokenizers",
+        "version": "0.21.4"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/f2/90/273b6c7ec78af547694eddeea9e05de771278bd20476525ab930cecaf7d8/tokenizers-0.21.4-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "archive_info": {
+          "hash": "sha256=51b7eabb104f46c1c50b486520555715457ae833d5aee9ff6ae853d1130506ff",
+          "hashes": {
+            "sha256": "51b7eabb104f46c1c50b486520555715457ae833d5aee9ff6ae853d1130506ff"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "torchmetrics",
+        "version": "1.9.0"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/c3/a2/c7f6ebf546f8f644edf0f999aa98ece106986a77a7b922316bf6414ff825/torchmetrics-1.9.0-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=bfdcbff3dd1d96b3374bb2496eb39f23c4b28b8a845b6a18c313688e0d2d9ca1",
+          "hashes": {
+            "sha256": "bfdcbff3dd1d96b3374bb2496eb39f23c4b28b8a845b6a18c313688e0d2d9ca1"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "aiohttp",
+        "version": "3.14.3"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/bd/ff/cb36724e8c8d17f90ada567a9ff3efe1d6e9b549fba697a242aece180f21/aiohttp-3.14.3-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+        "archive_info": {
+          "hash": "sha256=48d67b87db6279c044760787eb01f6413032c2e6f3ba1cafaa492b1c8e578479",
+          "hashes": {
+            "sha256": "48d67b87db6279c044760787eb01f6413032c2e6f3ba1cafaa492b1c8e578479"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "async-timeout",
+        "version": "5.0.1"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/fe/ba/e2081de779ca30d473f21f5b30e0e737c438205440784c7dfc81efc2b029/async_timeout-5.0.1-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=39e3809566ff85354557ec2398b55e096c8364bacac9405a7a1fa429e77fe76c",
+          "hashes": {
+            "sha256": "39e3809566ff85354557ec2398b55e096c8364bacac9405a7a1fa429e77fe76c"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "multidict",
+        "version": "6.7.1"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/4b/ac/b605473de2bb404e742f2cc3583d12aedb2352a70e49ae8fce455b50c5aa/multidict-6.7.1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+        "archive_info": {
+          "hash": "sha256=9b0d9b91d1aa44db9c1f1ecd0d9d2ae610b2f4f856448664e01a3b35899f3f92",
+          "hashes": {
+            "sha256": "9b0d9b91d1aa44db9c1f1ecd0d9d2ae610b2f4f856448664e01a3b35899f3f92"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "yarl",
+        "version": "1.24.5"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/9e/bc/a6653249f6ee59ec85dcfec008d9cbc16586dad613963bb17a91b2b993a5/yarl-1.24.5-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+        "archive_info": {
+          "hash": "sha256=7fa5e51397466ea7e98de493fa2ff1b8193cfef8a7b0f9b4842f92d342df0dba",
+          "hashes": {
+            "sha256": "7fa5e51397466ea7e98de493fa2ff1b8193cfef8a7b0f9b4842f92d342df0dba"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "aiohappyeyeballs",
+        "version": "2.7.1"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/71/43/1947f06babed6b3f1d7f38b0c767f52df66bfb2bc10b468c4a7de9eceff2/aiohappyeyeballs-2.7.1-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=9243213661e29250eb41368e5daa826fc017156c3b8a11440826b2e3ed376472",
+          "hashes": {
+            "sha256": "9243213661e29250eb41368e5daa826fc017156c3b8a11440826b2e3ed376472"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "aiosignal",
+        "version": "1.4.0"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/fb/76/641ae371508676492379f16e2fa48f4e2c11741bd63c48be4b12a6b09cba/aiosignal-1.4.0-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=053243f8b92b990551949e63930a839ff0cf0b0ebbe0597b0f3fb19e1a0fe82e",
+          "hashes": {
+            "sha256": "053243f8b92b990551949e63930a839ff0cf0b0ebbe0597b0f3fb19e1a0fe82e"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "dm_control",
+        "version": "1.0.45"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/32/f7/428ba7542fd41963f9d674de5524f171033577fb799ff211173cf3137c67/dm_control-1.0.45-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=b63c13b6b760e2d0b0ddc4ed4ff575b54549ba4a56e0b2c866b029d2c873f86f",
+          "hashes": {
+            "sha256": "b63c13b6b760e2d0b0ddc4ed4ff575b54549ba4a56e0b2c866b029d2c873f86f"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "dm-tree",
+        "version": "0.1.10"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/6d/d6/2b88e4eb5e3e5ecf9d61afe55e463ce7c9e4d1dc6630b9f7038a62e548d1/dm_tree-0.1.10-cp310-cp310-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl",
+        "archive_info": {
+          "hash": "sha256=7644b24bb5c7810b601f4b28cf6e4b516da96713ebfd9e45585240318c6b9384",
+          "hashes": {
+            "sha256": "7644b24bb5c7810b601f4b28cf6e4b516da96713ebfd9e45585240318c6b9384"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "frozenlist",
+        "version": "1.8.0"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/5d/ed/c7895fd2fde7f3ee70d248175f9b6cdf792fb741ab92dc59cd9ef3bd241b/frozenlist-1.8.0-cp310-cp310-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl",
+        "archive_info": {
+          "hash": "sha256=f57fb59d9f385710aa7060e89410aeb5058b99e62f4d16b08b91986b9a2140c2",
+          "hashes": {
+            "sha256": "f57fb59d9f385710aa7060e89410aeb5058b99e62f4d16b08b91986b9a2140c2"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "lance-namespace",
+        "version": "0.12.0"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/7a/60/44c4a1704f9220ceeed83616a6ca65f473a3325991c23bfbda8f2fcc240c/lance_namespace-0.12.0-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=38b3f4724539c6791a49643ef7420657759b7e10613413eef4915fff750bdfdd",
+          "hashes": {
+            "sha256": "38b3f4724539c6791a49643ef7420657759b7e10613413eef4915fff750bdfdd"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "lance-namespace-urllib3-client",
+        "version": "0.12.0"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/58/24/deda6a54bd3f350dedefe07da9021142da44597e4733519ee0156abf0b14/lance_namespace_urllib3_client-0.12.0-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=502016bda999b102e35ddf45a6fb2c2b957a07f4b86d67fce23a190c52e7b0db",
+          "hashes": {
+            "sha256": "502016bda999b102e35ddf45a6fb2c2b957a07f4b86d67fce23a190c52e7b0db"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "mujoco",
+        "version": "3.12.0"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/28/85/1766726b94e3288be486d13bb5a3cfb8bf523b8c9663ce2d06a5d8eabc31/mujoco-3.12.0-cp310-cp310-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+        "archive_info": {
+          "hash": "sha256=0791712f4c599d692cb7377f11d52ca66b88630ee936ee9183ad9391ee121ee3",
+          "hashes": {
+            "sha256": "0791712f4c599d692cb7377f11d52ca66b88630ee936ee9183ad9391ee121ee3"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "numpy",
+        "version": "1.24.4"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/10/be/ae5bf4737cb79ba437879915791f6f26d92583c738d7d960ad94e5c36adf/numpy-1.24.4-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "archive_info": {
+          "hash": "sha256=7ffe43c74893dbf38c2b0a1f5428760a1a9c98285553c89e12d70a96a7f3a4d6",
+          "hashes": {
+            "sha256": "7ffe43c74893dbf38c2b0a1f5428760a1a9c98285553c89e12d70a96a7f3a4d6"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "overrides",
+        "version": "7.7.0"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/2c/ab/fc8290c6a4c722e5514d80f62b2dc4c4df1a68a41d1364e625c35990fcf3/overrides-7.7.0-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=c7ed9d062f78b8e4c1a7b70bd8796b35ead4d9f510227ef9c5dc7626c60d7e49",
+          "hashes": {
+            "sha256": "c7ed9d062f78b8e4c1a7b70bd8796b35ead4d9f510227ef9c5dc7626c60d7e49"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "propcache",
+        "version": "0.5.2"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/39/6e/899fed76dc1942b8a64193a4f059d7f1a2c7ef65085e8a9366ed8ec0d199/propcache-0.5.2-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+        "archive_info": {
+          "hash": "sha256=b96db7141a592cbc968daf1feea83a118e6ab378af4abbc72b248c895414c22d",
+          "hashes": {
+            "sha256": "b96db7141a592cbc968daf1feea83a118e6ab378af4abbc72b248c895414c22d"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "PyOpenGL",
+        "version": "3.1.10"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/de/e4/1ba6f44e491c4eece978685230dde56b14d51a0365bc1b774ddaa94d14cd/pyopengl-3.1.10-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=794a943daced39300879e4e47bd94525280685f42dbb5a998d336cfff151d74f",
+          "hashes": {
+            "sha256": "794a943daced39300879e4e47bd94525280685f42dbb5a998d336cfff151d74f"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "regex",
+        "version": "2026.9.3"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/99/d8/b4a74d131e33f800bd774b85ec2d269c9fb9bbc3f82a06c698bb7da6a5c9/regex-2026.9.3-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+        "archive_info": {
+          "hash": "sha256=7ab7ad8b557d1f21e8b4a97a2c1a2ac82cf10c92d6a875c90f038ca9ed85dc5b",
+          "hashes": {
+            "sha256": "7ab7ad8b557d1f21e8b4a97a2c1a2ac82cf10c92d6a875c90f038ca9ed85dc5b"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "safetensors",
+        "version": "0.8.0"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/28/50/f203ff3a3ddfe19308efc83c5a3a29ed02bf786732ec35e68bf9162f3365/safetensors-0.8.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "archive_info": {
+          "hash": "sha256=fd6f3f93c9a0a7cc2788ee63fb763353d4bd2e89b0751bc78fcf7dda00bea774",
+          "hashes": {
+            "sha256": "fd6f3f93c9a0a7cc2788ee63fb763353d4bd2e89b0751bc78fcf7dda00bea774"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "scikit-learn",
+        "version": "1.7.2"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/58/0e/8c2a03d518fb6bd0b6b0d4b114c63d5f1db01ff0f9925d8eb10960d01c01/scikit_learn-1.7.2-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+        "archive_info": {
+          "hash": "sha256=7a58814265dfc52b3295b1900cfb5701589d30a8bb026c7540f1e9d3499d5ec8",
+          "hashes": {
+            "sha256": "7a58814265dfc52b3295b1900cfb5701589d30a8bb026c7540f1e9d3499d5ec8"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "typer",
+        "version": "0.27.2"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/dc/bf/205d0004930ede8f542fb58f601526fccf4ae7626075ca1e6c4de5d3d652/typer-0.27.2-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=b3a5fc4342d5fc8fda8fc3010b1cf117e9249aab7fae800c2eff62fd3842d97d",
+          "hashes": {
+            "sha256": "b3a5fc4342d5fc8fda8fc3010b1cf117e9249aab7fae800c2eff62fd3842d97d"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "annotated-doc",
+        "version": "0.0.5"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/3e/30/e900b21425a860e195f32e37657aa1f7c7f2b1bfb26f03ca209b90933c06/annotated_doc-0.0.5-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=117bac03a25ede5df5440e855b32d556049ca169ead221505badf432fed4b101",
+          "hashes": {
+            "sha256": "117bac03a25ede5df5440e855b32d556049ca169ead221505badf432fed4b101"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "rich",
+        "version": "15.0.0"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/82/3b/64d4899d73f91ba49a8c18a8ff3f0ea8f1c1d75481760df8c68ef5235bf5/rich-15.0.0-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=33bd4ef74232fb73fe9279a257718407f169c09b78a87ad3d296f548e27de0bb",
+          "hashes": {
+            "sha256": "33bd4ef74232fb73fe9279a257718407f169c09b78a87ad3d296f548e27de0bb"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "markdown-it-py",
+        "version": "4.2.0"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/b3/81/4da04ced5a082363ecfa159c010d200ecbd959ae410c10c0264a38cac0f5/markdown_it_py-4.2.0-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=9f7ebbcd14fe59494226453aed97c1070d83f8d24b6fc3a3bcf9a38092641c4a",
+          "hashes": {
+            "sha256": "9f7ebbcd14fe59494226453aed97c1070d83f8d24b6fc3a3bcf9a38092641c4a"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "mdurl",
+        "version": "0.1.2"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8",
+          "hashes": {
+            "sha256": "84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "shellingham",
+        "version": "1.5.4"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/e0/f9/0595336914c5619e5f28a1fb793285925a8cd4b432c9da0a987836c7f822/shellingham-1.5.4-py2.py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=7ecfff8f2fd72616f7481040475a65b2bf8af90a56c89140852d1120324e8686",
+          "hashes": {
+            "sha256": "7ecfff8f2fd72616f7481040475a65b2bf8af90a56c89140852d1120324e8686"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "dm-env",
+        "version": "1.6"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/08/7e/36d548040e61337bf9182637a589c44da407a47a923ee88aec7f0e89867c/dm_env-1.6-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=0eabb6759dd453b625e041032f7ae0c1e87d4eb61b6a96b9ca586483837abf29",
+          "hashes": {
+            "sha256": "0eabb6759dd453b625e041032f7ae0c1e87d4eb61b6a96b9ca586483837abf29"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "etils",
+        "version": "1.13.0"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/e7/98/87b5946356095738cb90a6df7b35ff69ac5750f6e783d5fbcc5cb3b6cbd7/etils-1.13.0-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=d9cd4f40fbe77ad6613b7348a18132cc511237b6c076dbb89105c0b520a4c6bb",
+          "hashes": {
+            "sha256": "d9cd4f40fbe77ad6613b7348a18132cc511237b6c076dbb89105c0b520a4c6bb"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "glfw",
+        "version": "2.10.2"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/69/84/1b98671314ea5f40397586b6cd14db913de3196333be558fdc177e61708f/glfw-2.10.2-py2.py3-none-manylinux_2_28_x86_64.whl",
+        "archive_info": {
+          "hash": "sha256=b860de3ca0686182483f98f3ddd12e660acf25b3e0d521450ec9a3f999f72a65",
+          "hashes": {
+            "sha256": "b860de3ca0686182483f98f3ddd12e660acf25b3e0d521450ec9a3f999f72a65"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "hydra-submitit-launcher",
+        "version": "1.2.0"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/d1/9b/0ea17f1780004c52f83566b5ca78a0844c93f5abdbbf625e40962af1ffcc/hydra_submitit_launcher-1.2.0-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=51ce468fbc91211c3a46677eefde94bbb9f721c9545af0be6dd0a95658515613",
+          "hashes": {
+            "sha256": "51ce468fbc91211c3a46677eefde94bbb9f721c9545af0be6dd0a95658515613"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "submitit",
+        "version": "1.5.4"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/ea/bb/711e1c2ebd18a21202c972dd5d5c8e09a921f2d3560e3a53d6350c808ab7/submitit-1.5.4-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=c26f3a7c8d4150eaf70b1da71e2023e9e9936c93e8342ed7db910f29158561c5",
+          "hashes": {
+            "sha256": "c26f3a7c8d4150eaf70b1da71e2023e9e9936c93e8342ed7db910f29158561c5"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "importlib_resources",
+        "version": "7.1.0"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/8a/db/55a262f3606bebcae07cc14095338471ad7c0bbcaa37707e6f0ee49725b7/importlib_resources-7.1.0-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=1bd7b48b4088eddb2cd16382150bb515af0bd2c70128194392725f82ad2c96a1",
+          "hashes": {
+            "sha256": "1bd7b48b4088eddb2cd16382150bb515af0bd2c70128194392725f82ad2c96a1"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "kornia",
+        "version": "0.8.2"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/79/d4/e9bd12b7b4cbd23b4dfb47e744ee1fa54d6d9c3c9bc406ec86c1be8c8307/kornia-0.8.2-py2.py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=32dfe77c9c74a87a2de49395aa3c2c376a1b63c27611a298b394d02d13905819",
+          "hashes": {
+            "sha256": "32dfe77c9c74a87a2de49395aa3c2c376a1b63c27611a298b394d02d13905819"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "kornia_rs",
+        "version": "0.1.14"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/26/43/a89d09ffbd1ff2d389731013dd9390e2ffdecccda31c931d0640972c5101/kornia_rs-0.1.14-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "archive_info": {
+          "hash": "sha256=b7faddb0f7077a208917ba7c245bf7f87e663b62bd1236bde83beba72dc99dc5",
+          "hashes": {
+            "sha256": "b7faddb0f7077a208917ba7c245bf7f87e663b62bd1236bde83beba72dc99dc5"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "labmaze",
+        "version": "1.0.6"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/4d/93/abac7877e1d7de984a2f0f5be561ff0dc795ae7e22595cf2f7c7032cd27e/labmaze-1.0.6-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "archive_info": {
+          "hash": "sha256=4e6433bd49bc541791de8191040526fddfebb77151620eb04203453f43ee486a",
+          "hashes": {
+            "sha256": "4e6433bd49bc541791de8191040526fddfebb77151620eb04203453f43ee486a"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "loguru",
+        "version": "0.7.3"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/0c/29/0348de65b8cc732daa3e33e67806420b2ae89bdce2b04af740289c5c6c8c/loguru-0.7.3-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=31a33c10c8e1e10422bfd431aeb5d351c7cf7fa671e3c4df004162264b28220c",
+          "hashes": {
+            "sha256": "31a33c10c8e1e10422bfd431aeb5d351c7cf7fa671e3c4df004162264b28220c"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "lxml",
+        "version": "6.1.3"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/a1/ce/dbea34cd115ae9b8ef53816daa912563615adf4daed42531878a2fb29c77/lxml-6.1.3-cp310-cp310-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl",
+        "archive_info": {
+          "hash": "sha256=f6449672f9c93316deb5e2839e18931f468670e44d5bd9b1301a5a9655d45c07",
+          "hashes": {
+            "sha256": "f6449672f9c93316deb5e2839e18931f468670e44d5bd9b1301a5a9655d45c07"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "opencv-python-headless",
+        "version": "4.7.0.72"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/3f/45/21fc904365f9cea3559e0192349bfe3ea2dce52672c1d9127c3b59711804/opencv_python_headless-4.7.0.72-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "archive_info": {
+          "hash": "sha256=18dac3147863d2f4beef6b06b784ee115799a7842e2883adc4ae750c432613f9",
+          "hashes": {
+            "sha256": "18dac3147863d2f4beef6b06b784ee115799a7842e2883adc4ae750c432613f9"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "opt_einsum",
+        "version": "3.4.0"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/23/cd/066e86230ae37ed0be70aae89aabf03ca8d9f39c8aea0dec8029455b5540/opt_einsum-3.4.0-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=69bb92469f86a1565195ece4ac0323943e83477171b91d24c35afe028a90d7cd",
+          "hashes": {
+            "sha256": "69bb92469f86a1565195ece4ac0323943e83477171b91d24c35afe028a90d7cd"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "prettytable",
+        "version": "3.18.0"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/fe/be/2e6798ace5cc036f5d05d36b7b2fd85346f1a708c87060890b070d0ec607/prettytable-3.18.0-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=b3346e0e6f79180833aebaac088ae926340586cf6d7d991b9eb125b65f72313a",
+          "hashes": {
+            "sha256": "b3346e0e6f79180833aebaac088ae926340586cf6d7d991b9eb125b65f72313a"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "pytorch-lightning",
+        "version": "2.5.6"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/17/e4/32ed2f33c1b634f7c2895369222f4f8cb345044f4642bbff718e7dd1e0b7/pytorch_lightning-2.5.6-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=037bad1e2fd94d5eb6c5144f045fd4c1070c3d38fc9c14d9f3774a3a9be54dff",
+          "hashes": {
+            "sha256": "037bad1e2fd94d5eb6c5144f045fd4c1070c3d38fc9c14d9f3774a3a9be54dff"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "requests-cache",
+        "version": "1.3.3"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/a5/bf/c1775e49b350225bd851576ba75263bc728d8f05c0e31439a45f3429cc7b/requests_cache-1.3.3-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=c8df20ff874ebfc026959e3874e6c12bd6724934cdb10925915908453d4b17e4",
+          "hashes": {
+            "sha256": "c8df20ff874ebfc026959e3874e6c12bd6724934cdb10925915908453d4b17e4"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "cattrs",
+        "version": "26.1.0"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/80/56/60547f7801b97c67e97491dc3d9ade9fbccbd0325058fd3dfcb2f5d98d90/cattrs-26.1.0-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=d1e0804c42639494d469d08d4f26d6b9de9b8ab26b446db7b5f8c2e97f7c3096",
+          "hashes": {
+            "sha256": "d1e0804c42639494d469d08d4f26d6b9de9b8ab26b446db7b5f8c2e97f7c3096"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "url-normalize",
+        "version": "3.0.0"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/13/8a/f72344eab18674fd7b174f35abbce41ed88fea72927f111726732d0ca779/url_normalize-3.0.0-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=95234bd359f86831c1fd87c248877f2a6887db2f3b5087120083f2fffcba4889",
+          "hashes": {
+            "sha256": "95234bd359f86831c1fd87c248877f2a6887db2f3b5087120083f2fffcba4889"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "richuru",
+        "version": "0.1.1"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/97/75/2c59747e6a68e7e1f3df65b1133c03b27fd889c6e975a8539570bf5a9b68/richuru-0.1.1-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=e73d43913a372d741ff61106001b5e6adfa24c6d0665dd390328a33e34cd210d",
+          "hashes": {
+            "sha256": "e73d43913a372d741ff61106001b5e6adfa24c6d0665dd390328a33e34cd210d"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "timm",
+        "version": "1.0.29"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/5e/b7/19267ec60740ef1899d265272bff3623f19fe7f7bf1022fb098766db2134/timm-1.0.29-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=4266486e355c9beb9432e689de580d09e2efe7fa92a9a79e76c03e7763eac724",
+          "hashes": {
+            "sha256": "4266486e355c9beb9432e689de580d09e2efe7fa92a9a79e76c03e7763eac724"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "wandb",
+        "version": "0.29.0"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/32/fc/d9a9978acffb34ae2a2e5065f421a6e62f3ad6e27ad41229e86025b56fe3/wandb-0.29.0-py3-none-manylinux_2_28_x86_64.whl",
+        "archive_info": {
+          "hash": "sha256=fdfd8845539302d2e3a880bc3d2586c2fd2da9515939cbc69e173d88f9e8c024",
+          "hashes": {
+            "sha256": "fdfd8845539302d2e3a880bc3d2586c2fd2da9515939cbc69e173d88f9e8c024"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "opentelemetry-api",
+        "version": "1.44.0"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/ca/6f/a04e900f465ff3221ccc395522503e2d10e79fa21f2723c8e177aae1e0d1/opentelemetry_api-1.44.0-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=94b98c893a91b88657eaac1e3ba89618cdb85be6918196705354f34728b2cdef",
+          "hashes": {
+            "sha256": "94b98c893a91b88657eaac1e3ba89618cdb85be6918196705354f34728b2cdef"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "sentry-sdk",
+        "version": "2.68.1"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/2b/28/465ad9382be98f2172e691f5836cf87f936773913ad7ab85ba1ba1d6706e/sentry_sdk-2.68.1-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=775b78871783a0ffd758276ad01b3bb2b1ebcdad8f9d2f0a7723f76b73c99b65",
+          "hashes": {
+            "sha256": "775b78871783a0ffd758276ad01b3bb2b1ebcdad8f9d2f0a7723f76b73c99b65"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "xxhash",
+        "version": "4.0.1"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/5f/3b/e5d20b4f602d15fc5fc066f601052a7d6f5a401a50d67fac92098a5829a5/xxhash-4.0.1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+        "archive_info": {
+          "hash": "sha256=7e27dbed5c4ba033919e4b4ed8dc14e029e91d14a93cd9f920d25277c7df6781",
+          "hashes": {
+            "sha256": "7e27dbed5c4ba033919e4b4ed8dc14e029e91d14a93cd9f920d25277c7df6781"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "zstandard",
+        "version": "0.25.0"
+      },
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/fd/e5/6d36f92a197c3c17729a2125e29c169f460538a7d939a27eaaa6dcfcba8e/zstandard-0.25.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+        "archive_info": {
+          "hash": "sha256=4b6d83057e713ff235a12e73916b6d356e3084fd3d14ced499d84240f3eecee0",
+          "hashes": {
+            "sha256": "4b6d83057e713ff235a12e73916b6d356e3084fd3d14ced499d84240f3eecee0"
+          }
+        }
+      }
+    }
+  ]
+}

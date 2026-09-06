@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "sources": [
+    {
+      "name": "ManiSkill2-Learn",
+      "group": "rl",
+      "url": "https://github.com/haosulab/ManiSkill2-Learn.git",
+      "commit": "e9860aff595da3ad34829d62c923be0b50001427"
+    },
+    {
+      "name": "pytorch3d",
+      "group": "rl",
+      "url": "https://github.com/facebookresearch/pytorch3d.git",
+      "commit": "89653419d0973396f3eff1a381ba09a07fffc2ed"
+    },
+    {
+      "name": "le-wm",
+      "group": "wm",
+      "url": "https://github.com/lucas-maes/le-wm.git",
+      "commit": "8edfeb336732b5f3ce7b8b210d0ba370a09e2cac",
+      "files_sha256": {
+        "jepa.py": "41bad7fd21e0f14aea4c9c3d39a9c87037e787746d953ab62cdc0677e938ce96",
+        "module.py": "0b258a9e8dc24c29fcb1e8c50a09ec78b8ea85aeb79e21dd8adf712396646620",
+        "train.py": "5d5666a785148635f8bcb50b49f98dd4527c5aba8a02d90206eb5d46406079d2",
+        "eval.py": "6584f009b40550fa0df2f8dee22b9329fbfacdfaf74464aa4fd105f464795245",
+        "utils.py": "b3e5cfce6d0eecd9510f06a7adc178edde86074e1474b899ff739ed8a5355b08",
+        "config/train/lewm.yaml": "a90ec80bc30a6b33228047222d6b897d4df14b57b4879727b9d8284a00a9d7a3",
+        "config/train/model/lewm.yaml": "7be97eaa2c83f809b9ea7a6da5a7d3f3c70502c27537383f54db32335e21e42b",
+        "config/train/data/ogb.yaml": "66f94981e5501bcf6d69589be7a78db4535fa3500924ee0f3765c91060e69fdc",
+        "config/train/data/pusht.yaml": "dcdd082ebdc628cdc8a88f15cb647fce6eec87343f9fe190271946ff5d52f757",
+        "config/eval/cube.yaml": "9d75b9740a13d4e80538010cbd20cb3bf3fa6185bef48814412e1cb3189308e0",
+        "config/eval/solver/cem.yaml": "797629f829c0d3ad3b9c4e42d46a87f08da0b3845bc433e353fd6274cb0574df"
+      }
+    },
+    {
+      "name": "stable-worldmodel-lewm-compatible",
+      "group": "wm",
+      "url": "https://github.com/galilai-group/stable-worldmodel.git",
+      "commit": "abdced49809d5eae38e24b27dc7b635c502c4812",
+      "files_sha256": {
+        "stable_worldmodel/world/world.py": "f0d2834a04c7ce8915522773f6f4f53396cdf79bf3a1c92c3560d8d2c378fe56",
+        "stable_worldmodel/wm/lewm/lewm.py": "ccc2ac2880880f85ea71a5baa2152ba97e3f6dc5cb546d27570795aa6020d3d2",
+        "stable_worldmodel/policy.py": "4967e7e3d5b20eb7a1d0b00e5d60fd701cce1c750ae7ec4a9b02529b9366db22",
+        "stable_worldmodel/solver/cem.py": "a6662e7f1f2c6ecaf0a8527255d531aa05ed583339aabdf2798d0206382ef51b",
+        "stable_worldmodel/data/dataset.py": "f0b0027cfc9c3341a93b15b957596c2c0bc62fc2b48a609a4814eeaf89a47982",
+        "stable_worldmodel/data/formats/hdf5.py": "afe836ec706acc6c55450f3c936a5898b57ed65a999695af25b4b59cd14d10f3",
+        "scripts/data/collect_cube.py": "8dfccc2e10b2afc47f87168181d683ad8fab8cf9f41cb0c3a0c621a81af96ebf",
+        "scripts/data/config/ogb.yaml": "35c5754f7a7d7ab4bf1cdf2ddeec75fbdfea4ec927fc5f033d5bcea392cedac0",
+        "pyproject.toml": "bcec7c0f1d2edfa0b456bae91d05fdc9d2a2472513a32b11af454d4c956e46da",
+        "stable_worldmodel/envs/ogbench/expert_policy.py": "437b131da4065ba0adec6b08947a53d41bcc6dfc87324ad9c088778460cdb51f",
+        "stable_worldmodel/data/formats/lance.py": "5643a80df28fc8b658b7323bbfcc7684c4ce4280f1ecd24a160ef823c280d331",
+        "stable_worldmodel/data/utils.py": "a132734367c219c0fdf59cd9d3631ed83bfe58bc427aa41e85146e26ac79ab4c"
+      }
+    }
+  ]
+}

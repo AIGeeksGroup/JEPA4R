@@ -1,0 +1,27 @@
+# Recreated by scripts/bootstrap_sources.py and project-local setup scripts.
+/vendor/
+/.venv*/
+/.cache/
+/artifacts/
+/data/
+/checkpoints/
+/runs/
+/wandb/
+/outputs/
+/multirun/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+.DS_Store
+.env
+.env.*
+*.log
+*.pt
+*.pth
+*.ckpt
+*.h5
+*.hdf5
+*.lance/

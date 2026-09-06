@@ -1,0 +1,22 @@
+{
+  "ManiSkill2-Learn": {
+    "commit": "e9860aff595da3ad34829d62c923be0b50001427",
+    "status": ""
+  },
+  "pytorch3d": {
+    "commit": "89653419d0973396f3eff1a381ba09a07fffc2ed",
+    "status": ""
+  },
+  "le-wm": {
+    "commit": "8edfeb336732b5f3ce7b8b210d0ba370a09e2cac",
+    "status": ""
+  },
+  "stable-worldmodel": {
+    "commit": "6f1e499e9cc0c898d326112f485c1062c3d20f24",
+    "status": ""
+  },
+  "stable-worldmodel-lewm-compatible": {
+    "commit": "abdced49809d5eae38e24b27dc7b635c502c4812",
+    "status": ""
+  }
+}
