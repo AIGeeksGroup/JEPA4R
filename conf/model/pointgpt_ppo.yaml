@@ -1,0 +1,15 @@
+# PPO 用的 PointGPT encoder：与 pointgpt_rl 架构完全相同，只关闭两处采样期随机性
+# （tokenizer 的随机 FPS 起点、encoder 的 dropout），否则同一观测在采样与更新时输出不同，PPO 的重要性比失效。
+defaults:
+  - pointgpt_rl
+  - _self_
+
+name: PointGPT
+tokenizer:
+  random_start: False
+transformer_encoder:
+  block_factory:
+    attention:
+      dropout: 0.0
+    mlp:
+      dropout: 0.0

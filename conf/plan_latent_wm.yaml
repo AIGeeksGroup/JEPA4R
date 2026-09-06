@@ -1,0 +1,29 @@
+# 下游规划评测，照 LeWM 官方 eval.py / config/eval/cube.yaml / solver/cem.yaml。
+# 用法：python scripts/plan_latent_wm.py env=push_chair <与采集相同的 env 覆盖项> ckpt=<latent_wm.pt> data.dir=<采集目录>
+defaults:
+  - env: ???
+  - _self_
+
+ckpt: ???
+data:
+  dir: ???
+  n_val_episodes: 1000          # 从编号最大的这些回合里抽评测起点（与训练脚本的划分无关，只用于取起点与目标）
+
+policy: model                   # model 或 random（官方 eval 的随机策略基线）
+seed: 42                        # 官方 seed
+plan_config:                    # 官方 plan_config
+  horizon: 5
+  receding_horizon: 5
+  action_block: 5               # = frameskip
+solver:                         # 官方 solver/cem.yaml
+  num_samples: 300
+  n_steps: 30
+  topk: 30
+  var_scale: 1.0
+eval:                           # 官方 eval
+  num_eval: 50
+  goal_offset_steps: 25
+  eval_budget: 50
+  success_thresh: 0.05          # 成功判定：末态方块位置与目标帧方块位置的距离阈值（取 PickCube-v1 的 goal_thresh）
+out_dir: log_data/latent_wm_plan/${now:%Y-%m-%d_%H-%M-%S}
+device: null

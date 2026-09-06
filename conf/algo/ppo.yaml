@@ -1,0 +1,16 @@
+# PPO（parllel 实现 + 提前停止返回值修正）。超参数取 ManiSkill2-Learn 官方点云 PPO 配置（configs/mfrl/ppo/maniskill2_pn.py）：
+# gamma 0.95, lambda 0.95, eps_clip 0.2, critic_coeff 0.5, entropy 0, num_epoch 2, max_grad_norm 0.5, max_kl 0.2, rew_norm/adv_norm 开。
+# 学习率官方为 3e-4（PointNet），本实现端到端训练 PointGPT 时 3e-4 会使策略单次更新变化过大，取 5e-5。
+name: PPO
+_target_: pprl.algos.ppo_fixed.PPOFixed   # parllel PPO + 提前停止返回值修正
+discount: 0.95
+gae_lambda: 0.95
+normalize_advantage: True
+ratio_clip: 0.2
+value_loss_coeff: 0.5
+entropy_loss_coeff: 0.0
+epochs: 2
+minibatches: 8
+learning_rate: 5e-5             # 端到端训练 PointGPT encoder，3e-4 会让策略单次更新变化过大（似然比下溢）；取 PPRL encoder 的学习率
+clip_grad_norm: 0.5
+kl_divergence_limit: 0.2    # 近似 KL 超过即停止本轮更新（ManiSkill2-Learn 的 max_kl）

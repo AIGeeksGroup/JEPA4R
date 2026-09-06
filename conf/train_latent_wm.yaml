@@ -1,0 +1,48 @@
+# 潜空间世界模型训练，超参数照 LeWM 官方 config/train/lewm.yaml；数据来自 scripts/collect_wm_data.py。
+# 用法：python scripts/train_latent_wm.py model=ppt data.dir=/root/autodl-tmp/wm_data/pickcube
+defaults:
+  - model: ???
+  - _self_
+
+data:
+  dir: ???
+  max_expected_num_points: 2500   # 与采集时 env.pcd_kwargs.max_expected_num_points 一致
+  frameskip: 1                    # 历史帧取连续帧（T, T-1, ..., T-H+1），预测下一帧。LeWM 官方 dataset.frameskip=5 是给它的预测器取帧用的，
+                                  # 我们的时间聚合 Transformer 在表征侧，不该隔帧。
+                                  # 注意：2026-09-06 训好的 LiftCube 世界模型（log_data/latent_wm/2026-09-06_20-55-30）是按 frameskip=5 训的，
+                                  # 它的时间 Transformer 学的是 t-10, t-5, t 三帧，配套的 PPO（train_ppo_frozen_wm）必须也按 5 步间隔取帧
+                                  # （脚本从检查点自动读取 frameskip，不需要手改）。
+  train_split: 0.9                # 官方 train_split（这里按回合划分）
+  n_episodes: null                # 只用前 N 条（null = 全部）
+
+wm:
+  history_size: 3                 # 官方 history_size
+  num_preds: 1                    # 官方 num_preds
+  temporal:                       # 时间聚合 Transformer（新加）
+    depth: 2
+    num_heads: 8
+    mlp_ratio: 4.0
+    dropout: 0.0
+  predictor:                      # 结构同 PPRL Q 头（conf/train_sac.yaml 的 q_mlp_head）
+    hidden_sizes: [1024, 1024, 1024]
+    hidden_nonlinearity: ELU
+  sigreg:                         # 官方 loss.sigreg
+    weight: 0.09
+    knots: 17
+    num_proj: 1024
+
+train:
+  epochs: 10                      # 论文附录 E：每个世界模型训 10 个 epoch（官方 yaml 写 100）
+  batch_size: 128                 # 官方 loader.batch_size
+  lr: 5e-5                        # 官方 optimizer
+  weight_decay: 1e-3
+  warmup_epochs: 1                # LinearWarmupCosineAnnealing：线性 warmup 后余弦退火（按 epoch）
+  grad_clip: 1.0                  # 官方 trainer.gradient_clip_val
+  bf16: true                      # 官方 trainer.precision bf16
+  num_workers: 6                  # 官方 num_workers
+  seed: 3072                      # 官方 seed
+  log_interval: 50
+
+encoder_ckpt: null                # 可选：PPRL 的 model.pt，用其中 encoder.* 初始化
+out_dir: log_data/latent_wm/${now:%Y-%m-%d_%H-%M-%S}
+device: null

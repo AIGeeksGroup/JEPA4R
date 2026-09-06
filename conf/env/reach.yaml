@@ -1,0 +1,28 @@
+# sofa_env 的 Reach 场景：器械末端够到蓝色目标小球。仓库原本没有这个配置，格式照 deflect_spheres.yaml / thread_in_hole.yaml。
+# 注意 Reach 场景的单位是米（deflect_spheres 是毫米），下面与长度有关的数值都按米给。
+defaults:
+  - sofaenv
+  - _self_
+
+name: Reach
+_target_: pprl.envs.sofaenv.reach.build
+
+# pointcloud wrapper args
+color: True                     # 目标是蓝色小球，靠颜色才能在点云里认出目标（观测里不给目标坐标）
+max_expected_num_points: 1000
+voxel_grid_size: 0.005          # 5 mm（deflect_spheres 用 5.0 mm）
+random_downsample: 1000
+normalize: True                 # 同 thread_in_hole（作者注释：不归一化学不动）
+
+# env args（ReachEnv 默认值）
+discrete_action_magnitude: 10.0
+distance_to_target_threshold: 0.003   # ReachEnv 默认：末端距目标 3 mm 内算成功，成功即终止回合
+
+reward_amount_dict:             # ReachEnv 默认全为 0，这里按 deflect_spheres 的模式取值并换算成米制
+  distance_to_target: -100.0          # 每步按距离扣分：-1 分/厘米
+  delta_distance_to_target: -1000.0   # 距离变化：靠近 1 mm 得 +1 分（deflect_spheres 的 delta 项为 -10/mm）
+  time_step_cost: -0.0
+  workspace_violation: -0.0
+  successful_task: 10.0               # 与 deflect_spheres 的 done_with_active_sphere 同量级
+
+create_scene_kwargs: {}

@@ -1,0 +1,8 @@
+defaults:
+  - ppo
+  - _self_
+
+name: PPO+Aux
+_target_: pprl.algos.aux_ppo.AuxPcPPO
+chamfer_loss_coeff: 1.0    # 同 PPRL 各 aux_sac 配置
+color_loss_coeff: 1.0

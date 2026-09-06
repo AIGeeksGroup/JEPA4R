@@ -1,0 +1,34 @@
+# PPO 训练入口，结构照 train_sac.yaml；env / model 配置组与 SAC 完全共用。
+defaults:
+  - algo: aux_ppo
+  - model: ???
+  - env: ???
+  - _self_
+
+parallel: True
+batch_T: 256              # 每次迭代每个环境采样的步数
+batch_B: 24               # 并行环境数
+max_steps_decorrelate: 50
+reward_normalization: True    # ManiSkill2-Learn 官方 PPO 配置 rew_norm=True
+bootstrap_truncated: True     # 时限截断步用 γ·V(下一状态) 做 bootstrap（continuous_task 下每局都靠截断结束）
+reward_clip_min: null
+reward_clip_max: null
+pi_mlp_head:
+  hidden_sizes: [1024, 1024, 1024]   # 同 train_sac.yaml 的 pi_mlp_head
+  hidden_nonlinearity: ELU
+value_mlp_head:
+  hidden_sizes: [1024, 1024, 1024]   # 同 train_sac.yaml 的 q_mlp_head，去掉动作输入
+device: null
+runner:
+  n_steps: 3e6
+  log_interval_steps: 12288      # = 2 次迭代（batch_T * batch_B = 6144）
+  eval_interval_steps: 61440     # = 10 次迭代
+eval:
+  n_eval_envs: 4
+  max_trajectories: 100
+
+wandb:
+  tags: null
+  notes: null
+
+video_path: videos

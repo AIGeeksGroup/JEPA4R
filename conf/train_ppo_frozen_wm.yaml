@@ -1,0 +1,39 @@
+# 冻结世界模型 encoder 的 PPO 训练入口：除 wm_ckpt、algo=ppo 外与 train_ppo.yaml 完全相同。
+defaults:
+  - algo: ppo   # 冻结 encoder 不能训练重建损失，用纯 PPO
+  - model: ???
+  - env: ???
+  - _self_
+
+parallel: True
+batch_T: 256              # 每次迭代每个环境采样的步数
+batch_B: 24               # 并行环境数
+max_steps_decorrelate: 50
+reward_normalization: True    # ManiSkill2-Learn 官方 PPO 配置 rew_norm=True
+bootstrap_truncated: True     # 时限截断步用 γ·V(下一状态) 做 bootstrap（continuous_task 下每局都靠截断结束）
+reward_clip_min: null
+reward_clip_max: null
+pi_mlp_head:
+  hidden_sizes: [1024, 1024, 1024]   # 同 train_sac.yaml 的 pi_mlp_head
+  hidden_nonlinearity: ELU
+value_mlp_head:
+  hidden_sizes: [1024, 1024, 1024]   # 同 train_sac.yaml 的 q_mlp_head，去掉动作输入
+device: null
+runner:
+  n_steps: 3e6
+  log_interval_steps: 12288      # = 2 次迭代（batch_T * batch_B = 6144）
+  eval_interval_steps: 61440     # = 10 次迭代
+eval:
+  n_eval_envs: 4
+  max_trajectories: 100
+
+wandb:
+  tags: null
+  notes: null
+
+video_path: videos
+
+wm_ckpt: ???               # scripts/train_latent_wm.py 输出的 latent_wm.pt（取其中 encoder.* 权重并冻结）
+wm_latent: latent2          # latent2：T 帧历史 -> encoder -> 时间 Transformer（冻结）；latent1：单帧 encoder 输出
+# 历史帧数与帧间隔不在这里设，脚本从 wm_ckpt 的 config 读取（history_size / data.frameskip），保证与世界模型训练时一致。
+# 已知问题：2026-09-06 的 LiftCube 世界模型按 frameskip=5 训练（应为 1），所以用它训 PPO 时历史帧必须是 t-10, t-5, t。

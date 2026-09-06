@@ -1,0 +1,17 @@
+# 离线数据采集，照 LeWM 论文附录 E 的 OGBench-Cube 协议：10 000 条回合、每条 200 步定长、带噪的脚本化抓放启发式、不因 success 提前结束。
+# env 覆盖项与 PPRL 训练保持一致，保证观测与 encoder 输入相同。用法：
+#   python scripts/collect_wm_data.py env=push_chair env.name=PickCube env.env_id=PickCube-v1 \
+#       env.env_kwargs.control_mode=pd_ee_delta_pose env.env_kwargs.camera_cfgs.width=128 env.env_kwargs.camera_cfgs.height=128 \
+#       env.pcd_kwargs.n_target_points=0 env.pcd_kwargs.voxel_grid_size=0.01 env.pcd_kwargs.max_expected_num_points=2500
+defaults:
+  - env: ???
+  - _self_
+
+collect:
+  n_episodes: 10000
+  steps: 200
+  n_workers: 12
+  noise_levels: [0.1, 0.2, 0.35]   # 每条回合随机抽一档动作噪声 σ（位移各轴；旋转为 σ/5）
+  goal_frac: 0.5                   # 搬运目标取环境目标点的比例，其余在工作区内随机
+  seed: 1000
+  out_dir: /root/autodl-tmp/wm_data/pickcube
