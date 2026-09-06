@@ -1,0 +1,72 @@
+model:
+  K: 512
+  D: 64
+  T: 3
+  skip_frame: 10
+  C: 3
+  aggregator:
+    ordering:
+      order: hilbert
+      grid_size: 0.02
+      origin: [-0.75, -0.60, -0.05]
+      depth: 16
+    order: [z, hilbert-trans]
+    stride: [2]
+    enc_depths: [1, 1]
+    enc_channels: [32, 64]
+    enc_num_head: [2, 4]
+    dec_depths: [1]
+    dec_channels: [64]
+    dec_num_head: [4]
+    patch_size: 512
+    drop_path: 0.0
+    shuffle_orders: false
+  temporal:
+    num_layers: 2
+    num_heads: 4
+    causal: false
+    readout: last_frame
+  action:
+    output_scale: 1.0
+    token_encoder_layers: 1
+    token_encoder_heads: 4
+    token_mlp_ratio: 2.0
+    token_position_encoding: sinusoidal
+    token_position_scale: 1.0
+    envs:
+      maniskill2:
+        dim: 7
+        mean: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        std: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+  predictor:
+    num_layers: 2
+    num_heads: 4
+    fusion: cross_attention
+  loss:
+    reg_weight: 0.09
+    flow_weight: 0.0
+    ranking_weight: 1.0
+    ranking_margin: 0.1
+    ranking_motion_weighted: false
+    knots: 17
+    num_proj: 256
+    chunk: 32
+
+train:
+  task: LiftCube-v0
+  env: maniskill2
+  data_root: data/maniskill2/v0.5.3/compact
+  run_root: runs
+  run_name: liftcube_skip10_action_tokens_2500
+  steps: 2500
+  batch_size: 8
+  num_workers: 0
+  lr: 3.0e-4
+  weight_decay: 0.05
+  grad_clip: 1.0
+  seed: 0
+  log_every: 50
+  val_every: 500
+  checkpoint_every: 500
+  val_batches: 64
+  device: cuda
