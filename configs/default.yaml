@@ -1,0 +1,74 @@
+# 冒烟测试规模的默认配置；字段名/类型由 models/*.py 与 train.py 里的 dataclass 校验。
+model:
+  K: 512          # 每帧点数
+  D: 64           # 全程统一的向量维度（= aggregator.dec_channels[0]）
+  T: 4            # 上下文帧数（样本含 T+1 帧、T 个动作）
+  C: 6            # 点通道数：xyz + 3 个可选通道
+
+  aggregator:     # 仓库 A：PTv3 v3m2 编码-解码 U-Net
+    ordering:     # 4.1 的排序子模块
+      order: hilbert          # z | z-trans | hilbert | hilbert-trans
+      grid_size: 0.02         # 体素边长
+      origin: [-1.0, -1.0, -1.0]   # 世界系包围盒最小角（固定，不随样本自适应）
+      depth: 16               # 曲线立方体深度（固定）：格点截断到 [0, 2**16 - 1]
+    order: [z, z-trans, hilbert, hilbert-trans]   # 骨干内部各 Block 轮换的曲线
+    stride: [2, 2]
+    enc_depths: [2, 2, 2]
+    enc_channels: [32, 64, 128]
+    enc_num_head: [2, 4, 8]
+    dec_depths: [2, 2]
+    dec_channels: [64, 64]    # 末级 = D
+    dec_num_head: [4, 4]
+    patch_size: 1024          # 分块大小上限；实际 = min(批内最少体素数, patch_size)
+    mlp_ratio: 4.0
+    qkv_bias: true
+    attn_drop: 0.0
+    proj_drop: 0.0
+    drop_path: 0.3
+    shuffle_orders: false     # 关掉序列化顺序的随机打乱（顶层 + 各级下采样）
+
+  temporal:       # 4.2 时间 Transformer
+    num_layers: 2
+    num_heads: 4
+    mlp_ratio: 4.0
+    dropout: 0.0
+    causal: false
+    pos_encoding: learned     # learned | sinusoidal（按排序索引 k）
+    time_encoding: learned    # learned | sinusoidal（按帧索引 t）
+    readout: last_frame       # last_frame | query
+
+  action:         # 仓库 B：每个环境一个「归一化 → 两层 MLP」词干；新环境只加一项
+    envs:
+      synthetic:
+        dim: 7
+        mean: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        std: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+
+  predictor:      # 仓库 B：STTransformerDecoder + 线性回归头
+    num_layers: 2
+    num_heads: 4
+    fusion: add               # add（HMA 默认）| modulate
+    qkv_bias: false
+    proj_bias: true
+    qk_norm: true
+    attn_drop: 0.0
+    mlp_ratio: 4.0
+    mlp_bias: true
+    mlp_drop: 0.0
+
+  loss:           # 仓库 C：预测 MSE + λ·SIGReg
+    reg_weight: 0.09
+    knots: 17
+    num_proj: 1024
+    chunk: 64                 # SIGReg 沿位置维（帧×K）的分块大小
+
+train:
+  env: synthetic
+  steps: 200
+  batch_size: 4
+  num_samples: 64
+  lr: 3.0e-4
+  weight_decay: 0.05
+  grad_clip: 1.0
+  seed: 0
+  log_every: 10
