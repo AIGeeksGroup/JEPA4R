@@ -16,7 +16,7 @@ import numpy as np
 
 from maniskill2_learn.env.wrappers import WRAPPERS
 
-from .official import lewm_config
+from .temporal import resolve_temporal_config
 
 
 def _positive_integer(value, name):
@@ -36,13 +36,15 @@ class PointCloudHistoryBuffer:
     frames repeat the initial frame. History sampling is consecutive in both
     current world-model training and PPO; the original LeWM dataset frameskip
     is a separate setting that is no longer copied into these runs.
-    Only xyz/rgb enter the representation; robot state is not concatenated.
+    Only xyz/rgb are stacked for the temporal representation. The original
+    current state (proprioception and goal) passes through unchanged for the
+    actor/critic to concatenate after the frozen encoder's latent2.
     """
 
     def __init__(self, history_size=None, history_stride=1):
-        cfg = lewm_config() if history_size is None else None
+        cfg = resolve_temporal_config() if history_size is None else None
         self.history_size = _positive_integer(
-            cfg.history_size if history_size is None else history_size, "history_size"
+            cfg["history_size"] if history_size is None else history_size, "history_size"
         )
         self.history_stride = _positive_integer(history_stride, "history_stride")
         if self.history_stride != 1:
@@ -56,12 +58,20 @@ class PointCloudHistoryBuffer:
             raise TypeError("Expected an observation with xyz and rgb point-cloud arrays.")
         if "xyz" not in observation or "rgb" not in observation:
             raise ValueError("Point-cloud history requires both xyz and rgb.")
-        frame = {key: np.array(observation[key], copy=True) for key in ("xyz", "rgb")}
-        for key, value in frame.items():
+        frame = {key: np.array(value, copy=True) for key, value in observation.items()}
+        for key in ("xyz", "rgb"):
+            value = frame[key]
             if value.ndim != 2 or value.shape[1] != 3 or value.shape[0] == 0:
                 raise ValueError(f"Expected {key} point-cloud shape [N,3], with N > 0.")
         if frame["xyz"].shape != frame["rgb"].shape:
             raise ValueError("xyz and rgb must have the same point count.")
+        if "state" not in frame:
+            raise ValueError(
+                "Frozen PPO requires the original current state (proprioception and goal) "
+                "from ManiSkill2_ObsWrapper."
+            )
+        if frame["state"].ndim != 1 or frame["state"].size == 0:
+            raise ValueError("Expected the original current state shape [S], with S > 0.")
         return frame
 
     def reset(self, observation):
@@ -75,7 +85,7 @@ class PointCloudHistoryBuffer:
         if not self._frames:
             raise RuntimeError("Reset the point-cloud history before appending a frame.")
         frame = self._copy_frame(observation)
-        for key in frame:
+        for key in ("xyz", "rgb", "state"):
             previous = self._frames[-1][key]
             if frame[key].shape != previous.shape or frame[key].dtype != previous.dtype:
                 raise ValueError(f"{key} shape and dtype must stay constant within an episode.")
@@ -86,7 +96,15 @@ class PointCloudHistoryBuffer:
         if not self._frames:
             raise RuntimeError("Reset the point-cloud history before reading an observation.")
         frames = list(self._frames)
-        return {key: np.stack([frame[key] for frame in frames]) for key in ("xyz", "rgb")}
+        # Non-point fields keep only the current control-step value. In
+        # particular state is neither stacked nor reconstructed/normalized.
+        observation = {
+            key: np.array(value, copy=True)
+            for key, value in frames[-1].items()
+            if key not in ("xyz", "rgb")
+        }
+        observation.update({key: np.stack([frame[key] for frame in frames]) for key in ("xyz", "rgb")})
+        return observation
 
 
 @WRAPPERS.register_module()
@@ -121,7 +139,7 @@ class PointCloudHistory(gym.Wrapper):
                     dtype=original.dtype,
                 )
             if len(point_spaces) == 2:
-                self.observation_space = gym.spaces.Dict(point_spaces)
+                self.observation_space = gym.spaces.Dict({**space.spaces, **point_spaces})
 
     def reset(self, **kwargs):
         observation, info = self.env.reset(**kwargs)

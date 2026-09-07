@@ -136,7 +136,8 @@ def build_source_state():
     FIXTURE.parent.mkdir(parents=True, exist_ok=False)
     torch.save(model.state_dict(), FIXTURE)
     config = dict(_target_="ms2_lewm.model.WorldModel", action_dim=7, history_stride=1,
-                  rl_config_path="configs/ppo_pointnet_identity.py")
+                  rl_config_path="configs/ppo_pointnet_identity.py",
+                  temporal_config=model.temporal_config)
     (FIXTURE.parent / "config.json").write_text(json.dumps(config, indent=2) + "\n")
     (FIXTURE.parent / "SYNTHETIC_FIXTURE.json").write_text(json.dumps(dict(
         notice=NOTICE, frameskip=1, history_size=3, optimizer_updates=1, production_recipe=False,
@@ -193,6 +194,41 @@ def test_old_frameskip5_checkpoint_cannot_be_silently_used_for_consecutive_ppo(t
         FrozenWorldModelEncoder(checkpoint=str(legacy))
 
 
+@pytest.mark.parametrize("recorded_temporal", [None, {"architecture": "lewm_predictor_transformer"}])
+def test_checkpoint_rejects_missing_or_old_predictor_based_temporal_configuration(
+    tmp_path, source_state, recorded_temporal
+):
+    # Shape-compatible tensors cannot identify the intended architecture. The
+    # saved temporal config is mandatory before treating an encoder as new.
+    legacy = tmp_path / "SYNTHETIC_legacy_temporal.pt"
+    torch.save(source_state, legacy)
+    config = json.loads((FIXTURE.parent / "config.json").read_text())
+    if recorded_temporal is None:
+        config.pop("temporal_config")
+    else:
+        config["temporal_config"] = recorded_temporal
+    (tmp_path / "config.json").write_text(json.dumps(config))
+    with pytest.raises(ValueError, match="(?i)(temporal|architecture)"):
+        FrozenWorldModelEncoder(checkpoint=str(legacy))
+
+
+def test_frozen_checkpoint_reconstructs_its_recorded_temporal_configuration(tmp_path):
+    model = WorldModel(action_dim=7, history_stride=1,
+                       temporal_config={"num_layers": 1, "num_heads": 4}).cpu().eval()
+    checkpoint = tmp_path / "SYNTHETIC_custom_temporal.pt"
+    torch.save(model.state_dict(), checkpoint)
+    config = dict(_target_="ms2_lewm.model.WorldModel", action_dim=7, history_stride=1,
+                  rl_config_path="configs/ppo_pointnet_identity.py", temporal_config=model.temporal_config)
+    (tmp_path / "config.json").write_text(json.dumps(config))
+    frozen = FrozenWorldModelEncoder(checkpoint=str(checkpoint))
+    assert frozen.encoder.temporal_encoder.config == model.temporal_config
+    assert len(frozen.encoder.temporal_encoder.layers) == 1
+    assert frozen.encoder.temporal_encoder.layers[0].self_attn.num_heads == 4
+    obs = tensor_observations(synthetic_samples())
+    with torch.no_grad():
+        torch.testing.assert_close(frozen(obs), model.encode(obs)["latent2"], rtol=0, atol=0)
+
+
 def test_encoder_bundle_is_reusable_without_original_wm_file(tmp_path):
     bundle = export_encoder_bundle(FIXTURE, tmp_path / "frozen_encoder.pt")
     original = FrozenWorldModelEncoder(checkpoint=str(FIXTURE))
@@ -214,6 +250,11 @@ def test_encoder_bundle_is_reusable_without_original_wm_file(tmp_path):
 def test_encoder_bundle_rejects_changed_config_or_implementation(tmp_path):
     bundle = export_encoder_bundle(FIXTURE, tmp_path / "frozen_encoder.pt")
     payload = torch.load(bundle, map_location="cpu", weights_only=False)
+    assert payload["encoder_config"]["temporal_config"] == json.loads(
+        (FIXTURE.parent / "config.json").read_text()
+    )["temporal_config"]
+    assert "src/ms2_lewm/temporal.py" in payload["encoder_definition_sha256"]
+    assert "vendor/le-wm/module.py" not in payload["encoder_definition_sha256"]
     snapshot = bundle.parent / payload["encoder_config"]["rl_config_path"]
     assert snapshot.parent == tmp_path
     original_config = snapshot.read_bytes()
@@ -264,7 +305,7 @@ def test_project_relative_encoder_config_is_independent_of_working_directory(tmp
     assert frozen.history_stride == 1 and frozen.output_dim == 512
 
 
-def test_only_latent2_feeds_original_actor_critic_and_gaussian():
+def test_latent2_and_current_state_feed_original_actor_critic_and_gaussian():
     agent = make_agent()
     baseline = load_ppo_config()
     cfg = load_ppo_config(CONFIG)
@@ -277,6 +318,8 @@ def test_only_latent2_feeds_original_actor_critic_and_gaussian():
     for key in ("train_cfg", "replay_cfg", "rollout_cfg", "eval_cfg"):
         assert cfg[key] == baseline[key]
     assert cfg.agent_cfg.actor_cfg.head_cfg == baseline.agent_cfg.actor_cfg.head_cfg
+    for branch in ("actor_cfg", "critic_cfg"):
+        assert cfg.agent_cfg[branch].nn_cfg.mlp_cfg == baseline.agent_cfg[branch].nn_cfg.mlp_cfg
     assert type(agent.actor.head) is GaussianHead
     assert agent.actor.head.log_std.shape == (1, 7)
     for head, output_dim in ((agent.actor.backbone.final_mlp, 7),
@@ -284,14 +327,20 @@ def test_only_latent2_feeds_original_actor_critic_and_gaussian():
         modules = list(head.mlp.children())
         assert [type(part) for part in modules] == [nn.Linear, nn.ReLU, nn.Linear, nn.ReLU, nn.Linear]
         assert [(part.in_features, part.out_features) for part in modules if isinstance(part, nn.Linear)] == [
-            (512, 256), (256, 256), (256, output_dim)]
+            (512 + 30, 256), (256, 256), (256, output_dim)]
+    # Stock PPO initializes the last head weights to zero, so first make one
+    # real PPO update before checking that its outputs can respond to state.
+    agent.train()
+    agent.update_parameters(replay(synthetic_samples()), updates=0)
     obs = tensor_observations(synthetic_samples())
     agent.eval()
     with torch.no_grad():
+        latent = agent.actor.backbone.visual_nn(obs).clone()
         original = {method: getattr(agent, method)(obs, mode="eval") for method in ("actor", "critic")}
-        obs["state"].fill_(1e6)
+        obs["state"].add_(10.0)
+        torch.testing.assert_close(latent, agent.actor.backbone.visual_nn(obs), rtol=0, atol=0)
         for method in ("actor", "critic"):
-            torch.testing.assert_close(original[method], getattr(agent, method)(obs, mode="eval"), rtol=0, atol=0)
+            assert not torch.equal(original[method], getattr(agent, method)(obs, mode="eval"))
 
 
 def test_freeze_survives_train_mode_and_shuffled_minibatches():

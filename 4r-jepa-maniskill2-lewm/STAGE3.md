@@ -10,13 +10,17 @@
 latent1 [B,3,512]
     ↓ 冻结的 TemporalEncoder
 latent2 [B,512]
-    ├─ 新 actor：512→256→256→7 + 原GaussianHead
-    └─ 新 critic：512→256→256→1
+    ↓ 拼当前原始state [B,30]（含本体和目标等信息）
+策略/价值头输入 [B,542]
+    ├─ actor：542→256→256→7 + 原GaussianHead
+    └─ critic：542→256→256→1
 ```
 
-只加载 WM 的 encoder 部分，不加载预测器或损失模块。冻结参数不进入 actor/critic 优化器；encoder 始终 eval，关闭 dropout，forward 使用 no_grad。actor、critic 共用同一个冻结 encoder，训练使用原 PPO 的损失、GAE、裁剪、优化器与更新代码。不存在 WM 辅助损失、联合微调或本体状态旁路。
+只加载 WM 的 encoder 部分，不加载预测器或损失模块。冻结参数不进入 actor/critic 优化器；encoder 始终 eval，forward 使用 no_grad。actor、critic 共用同一个冻结 encoder，随后通过原 Visuomotor.forward 拼接当前 state；头部层数、输入宽度、激活、原 PPO 的损失、GAE、裁剪、优化器与更新代码都保留。不存在 WM 辅助损失或联合微调。
 
-历史由每个环境自己的 `PointCloudHistory` 管理，reset 时清空，开头缺帧重复初始帧；每次 step 执行一个真实动作，得到当前 episode 的 next_obs，不提前切到下个 episode。三帧直接存入 PPO 缓冲区，所以 minibatch 打乱后仍可正确重算 latent2。
+历史由每个环境自己的 `PointCloudHistory` 管理，reset 时清空，开头缺帧重复初始帧；每次 step 执行一个真实动作，得到当前 episode 的 next_obs。仅 xyz/rgb 堆叠成三帧；state[30] 与其他数值字段从当前观测原样复制，保留坐标系、顺序和 dtype。三帧与当前 state 一起存入 PPO 缓冲区，所以 minibatch 打乱后仍可正确重算特征。
+
+TemporalEncoder 是独立的 D=512 时间模块，配置来自 `configs/temporal_encoder.yaml`，不是 LeWM 预测器。训练导出会记录完整配置，冻结阶段按记录重建；缺失配置或旧架构会拒绝加载。
 
 ## 训练完成后的入口
 
@@ -31,7 +35,8 @@ source scripts/wm_env.sh
   --wm-checkpoint /absolute/path/to/trained_wm/weights_epoch_100.pt \
   --prepare-only
 
-# 正式PPO；默认网络CPU、单环境，保留500万步预算
+# 正式PPO；默认CUDA、单环境，保留500万步预算
+# 先完成 bash scripts/setup_worldmodel.sh gpu
 .venv-worldmodel/bin/python scripts/run_frozen_ppo.py \
   --wm-checkpoint /absolute/path/to/trained_wm/weights_epoch_100.pt \
   --work-dir artifacts/ppo_frozen_wm/run_01
@@ -48,7 +53,7 @@ source scripts/wm_env.sh
   --work-dir artifacts/ppo_frozen_wm/eval_01 --evaluation
 ```
 
-网络用GPU时需用已安装好的CUDA环境执行并加 `--device cuda`；不会自动修改现有环境。实际启动前检查显存，资源不足直接拒绝，不终止其他任务。已有非空输出目录不被覆盖。
+正式训练默认选择 `.venv-worldmodel-gpu` 和 CUDA；`--smoke` 默认 CPU，显式 `--device cpu` 仍可用于调试。GPU 环境通过 `bash scripts/setup_worldmodel.sh gpu` 单独安装，不会覆盖 CPU 环境，也不会悄悄退回 CPU。实际启动前检查显存，资源不足直接拒绝，不终止其他任务。已有非空输出目录不被覆盖。
 
 准备文件保存在 `artifacts/frozen_ppo_prepared/`：encoder-only 权重、完整PPO配置快照和来源/hash记录。PPO checkpoint 包含冻结 encoder 与两个头；原始 WM 文件删除后，准备好的 encoder 包仍可重建。配置或 encoder 实现发生变化时拒绝悄悄加载；恢复 PPO 时检查源 WM 指纹匹配。
 
@@ -58,4 +63,4 @@ source scripts/wm_env.sh
 
 当前真实专家采样门槛仍为0/30，真实 WM 数据训练尚未启动，因此没有自动开始第三阶段长程训练。
 
-观测限制按“只用latent2”保留：原 PickCube 的目标标记不在默认点云中，当前也未拼接原30维状态/目标信息；这会限制随机目标任务的可观测性。此处未擅自加入状态或修改任务目标/成功判定。
+原 PickCube 的目标标记不在默认点云中，因此保留原 PPO 的 state 通道很重要。当前实现已恢复 latent2 后的 state 拼接；encoder 本身仍只依赖点云。没有修改任务目标分布或原生 success 判定。

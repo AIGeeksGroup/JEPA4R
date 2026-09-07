@@ -75,7 +75,8 @@ def test_real_model_predicts_next_frame_with_the_last_context_single_action(time
     # Windows s=2 and s=3 are loaded by the actual production dataset class.
     rows = [dataset[2], dataset[3]]
     batch = {key: torch.stack([row[key] for row in rows]) for key in ("pointcloud", "action")}
-    model = WorldModel(action_dim=config.model.action_dim, history_stride=config.model.history_stride).eval()
+    model = WorldModel(action_dim=config.model.action_dim, history_stride=config.model.history_stride,
+                       temporal_config=OmegaConf.to_container(config.model.temporal_config, resolve=True)).eval()
     captured = {}
 
     def capture_predictor(_module, arguments):
@@ -123,11 +124,21 @@ def test_eval_single_action_units_preserve_official_physical_horizons_and_cem_pa
 
 
 def test_evaluation_rejects_old_or_unrecorded_temporal_contract_before_loading():
-    good = {"_target_": "ms2_lewm.model.WorldModel", "history_stride": 1, "action_dim": 7}
+    good = {"_target_": "ms2_lewm.model.WorldModel", "history_stride": 1, "action_dim": 7,
+            "temporal_config": OmegaConf.to_container(
+                OmegaConf.load(ROOT / "configs/temporal_encoder.yaml"), resolve=True)}
     eval_driver.validate_evaluation_model_config(good)
     for config in ({**good, "history_stride": 5}, {**good, "action_dim": 35},
                    {key: value for key, value in good.items() if key != "history_stride"}):
         with pytest.raises(ValueError, match="history_stride=1 and action_dim=7"):
+            eval_driver.validate_evaluation_model_config(config)
+    for temporal in (None, {"architecture": "lewm_predictor_transformer"}):
+        config = dict(good)
+        if temporal is None:
+            config.pop("temporal_config")
+        else:
+            config["temporal_config"] = temporal
+        with pytest.raises(ValueError, match="(?i)(temporal|architecture)"):
             eval_driver.validate_evaluation_model_config(config)
 
 

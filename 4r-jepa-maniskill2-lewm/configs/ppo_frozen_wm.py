@@ -1,4 +1,4 @@
-"""Stage 3 PPO: frozen checkpoint encoder through latent2, fresh policy/value heads."""
+"""Stage 3 PPO: replace only the visual encoder and retain original current state."""
 
 _base_ = "ppo_pointnet_identity.py"
 
@@ -11,11 +11,9 @@ agent_cfg = dict(
     actor_cfg=dict(nn_cfg=dict(
         type="FrozenWMVisuomotor",
         visual_nn_cfg=dict(_delete_=True, type="FrozenWorldModelEncoder", checkpoint=None),
-        mlp_cfg=dict(mlp_spec=[512, 256, 256, "action_shape"]),
     )),
     critic_cfg=dict(nn_cfg=dict(
         type="FrozenWMVisuomotor",
-        mlp_cfg=dict(mlp_spec=[512, 256, 256, 1]),
     )),
 )
 

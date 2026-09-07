@@ -12,39 +12,23 @@ from torch.nn import functional as F
 
 from ms2_lewm.model import LeWMLoss, TemporalEncoder, WorldModel
 from ms2_lewm.official import lewm_config, lewm_jepa, lewm_module
+from ms2_lewm.temporal import TemporalEncoder as IndependentTemporalEncoder, resolve_temporal_config
 
 
-def test_temporal_keeps_official_hidden_config_and_all_active_parameter_gradients():
+def test_world_model_module_exposes_our_independent_full_width_temporal_encoder():
     torch.manual_seed(71)
-    config = lewm_config()
+    assert TemporalEncoder is IndependentTemporalEncoder
     temporal = TemporalEncoder(512)
-    official = config.model.predictor
     assert temporal.K == 1
-    assert temporal.num_frames == config.history_size
-    assert type(temporal.transformer) is lewm_module.Transformer
-    assert len(temporal.transformer.layers) == official.depth
-    assert all(type(block) is lewm_module.Block for block in temporal.transformer.layers)
-    assert temporal.transformer.input_proj.in_features == 512
-    assert temporal.transformer.input_proj.out_features == official.hidden_dim
-    assert temporal.transformer.output_proj.out_features == 512
-    assert temporal.dropout.p == official.emb_dropout
-    for block in temporal.transformer.layers:
-        assert block.attn.heads == official.heads
-        assert block.attn.to_qkv.out_features == official.heads * official.dim_head * 3
-        assert block.attn.dropout == official.dropout
-        assert block.mlp.net[1].out_features == official.mlp_dim
-        assert isinstance(block.mlp.net[2], nn.GELU)
-
-    latent1 = torch.randn(2, temporal.num_frames, 512, requires_grad=True)
-    latent2 = temporal(latent1)
-    assert latent2.shape == (2, 512)
-    latent2.square().mean().backward()
-    assert all(latent1.grad[:, t].abs().sum() > 0 for t in range(temporal.num_frames))
-    unused_trainable = [
-        name for name, param in temporal.named_parameters()
-        if param.requires_grad and param.grad is None
-    ]
-    assert unused_trainable == [], f"Would break ordinary DDP: {unused_trainable}"
+    assert temporal.num_frames == 3
+    assert temporal.config == resolve_temporal_config()
+    assert len(temporal.layers) == 2
+    for layer in temporal.layers:
+        assert type(layer) is nn.TransformerEncoderLayer
+        assert layer.self_attn.embed_dim == 512
+        assert layer.self_attn.num_heads == 8
+        assert layer.linear1.in_features == layer.linear2.out_features == 512
+    assert not any(isinstance(module, lewm_module.Transformer) for module in temporal.modules())
 
 
 def test_temporal_k1_view_and_short_initial_history():

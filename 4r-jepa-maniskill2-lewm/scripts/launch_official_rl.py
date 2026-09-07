@@ -76,5 +76,6 @@ if "--evaluation" not in sys.argv and "--eval" not in sys.argv:
 
 entrypoint = root / "vendor/ManiSkill2-Learn/maniskill2_learn/apis/run_rl.py"
 sys.argv[0] = str(entrypoint)
-print(f"Isolated official RL launcher PID={os.getpid()} device=cpu", flush=True)
+requested_device = "cpu" if "--num-gpus" in sys.argv and sys.argv[sys.argv.index("--num-gpus") + 1] == "0" else "cuda"
+print(f"Isolated official RL launcher PID={os.getpid()} requested_device={requested_device}", flush=True)
 runpy.run_path(str(entrypoint), run_name="__main__")

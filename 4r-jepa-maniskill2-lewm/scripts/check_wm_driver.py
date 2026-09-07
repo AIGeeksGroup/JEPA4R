@@ -142,6 +142,7 @@ def check(args):
     export_config = json.loads((model_file.parent / "config.json").read_text())
     assert export_config["history_stride"] == model.history_stride == 1
     assert export_config["action_dim"] == model.action_dim == 7
+    assert export_config["temporal_config"] == model.temporal_config
     points = torch.randn(2, 4, 24, 6)
     action = torch.randn(2, 4, 7)
     with torch.no_grad():

@@ -23,6 +23,10 @@ for p in (ROOT / "src", ROOT / "vendor/ManiSkill2-Learn", ROOT / "vendor/pytorch
     sys.path.insert(0, str(p))
 
 
+def select_device(requested=None, smoke=False):
+    return requested if requested is not None else ("cpu" if smoke else "cuda")
+
+
 def prepare(args):
     from maniskill2_learn.utils.meta import Config
     from ms2_lewm.frozen_ppo import FrozenWorldModelEncoder, export_encoder_bundle
@@ -74,11 +78,13 @@ def prepare(args):
                       representation="latent2", latent_dim=frozen.output_dim,
                       history_size=frozen.history_size, history_stride=1,
                       action_dim=7, test_source=test_source, work_dir=str(work_dir),
-                      actor_mlp=[512, 256, 256, 7], critic_mlp=[512, 256, 256, 1])
+                      current_state_dim=30, head_input="latent2 + original current state",
+                      actor_mlp=[542, 256, 256, 7], critic_mlp=[542, 256, 256, 1])
     cfg.frozen_encoder_provenance = provenance
     config_file = prepared / "ppo.py"
     cfg.dump(str(config_file))
-    command = [sys.executable, str(ROOT / "scripts/launch_official_rl.py"), str(config_file),
+    executable = str(ROOT / ".venv-worldmodel-gpu/bin/python") if args.device == "cuda" else sys.executable
+    command = [executable, str(ROOT / "scripts/launch_official_rl.py"), str(config_file),
                "--work-dir", str(work_dir), "--seed", str(args.seed)]
     command += ["--num-gpus", "0"] if args.device == "cpu" else ["--gpu-ids", "0"]
     if args.resume_from:
@@ -100,9 +106,11 @@ def main():
     parser.add_argument("--evaluation", action="store_true")
     parser.add_argument("--resume-from")
     parser.add_argument("--num-envs", type=int, default=1)
-    parser.add_argument("--device", choices=["cpu", "cuda"], default="cpu")
+    parser.add_argument("--device", choices=["cpu", "cuda"], default=None,
+                        help="Default: cuda for production, cpu for --smoke")
     parser.add_argument("--seed", type=int, default=20260906)
     args = parser.parse_args()
+    args.device = select_device(args.device, args.smoke)
     if args.num_envs < 1:
         parser.error("--num-envs must be positive")
     _, provenance, command = prepare(args)
@@ -110,12 +118,12 @@ def main():
     print("Prepared command: " + shlex.join(command), flush=True)
     if args.prepare_only:
         return
+    if not Path(command[0]).is_file():
+        raise RuntimeError("Missing selected environment. For GPU run setup_worldmodel.sh gpu; no automatic CPU fallback.")
     from ms2_lewm.environment import ensure_renderer_headroom
     ensure_renderer_headroom(args.num_envs, extra_model_mib=8192 if args.device == "cuda" else 0)
     if args.device == "cuda":
-        import torch
-        if not torch.cuda.is_available():
-            raise RuntimeError("Select a CUDA-enabled environment for --device cuda.")
+        subprocess.run([command[0], "-c", "import torch; assert torch.version.cuda and torch.cuda.is_available(), 'CUDA runtime unavailable'"], check=True)
     work_dir = Path(provenance["work_dir"])
     work_dir.mkdir(parents=True, exist_ok=True)
     (work_dir / "frozen_encoder_provenance.json").write_text(json.dumps(provenance, indent=2))

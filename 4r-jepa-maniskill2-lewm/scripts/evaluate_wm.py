@@ -44,8 +44,8 @@ def make_eval_configs(device="cuda", smoke=False):
     cfg.plan_config.horizon *= old_action_block
     cfg.plan_config.receding_horizon *= old_action_block
     cfg.plan_config.action_block = 1
-    from ms2_lewm.official import lewm_config
-    cfg.plan_config.history_len = int(lewm_config().history_size)
+    from ms2_lewm.temporal import resolve_temporal_config
+    cfg.plan_config.history_len = resolve_temporal_config()["history_size"]
     alignment = {
         "reason": "Consecutive-frame model predicts one native action step; preserve the original physical horizon.",
         "history_stride": 1,
@@ -182,6 +182,11 @@ def validate_evaluation_model_config(config):
         raise ValueError("Evaluation requires this project's trained point-cloud WorldModel.")
     if config.get("history_stride") != 1 or config.get("action_dim") != 7:
         raise ValueError("Checkpoint must explicitly record history_stride=1 and action_dim=7; retrain older stride-5 models.")
+    from ms2_lewm.temporal import resolve_temporal_config
+    temporal = config.get("temporal_config")
+    if not isinstance(temporal, dict) or set(resolve_temporal_config()) - set(temporal):
+        raise ValueError("Checkpoint must record the complete independent temporal_config; legacy temporal encoders are rejected.")
+    resolve_temporal_config(temporal)
 
 
 def main():
@@ -238,6 +243,9 @@ def main():
         model = swm.wm.utils.load_pretrained(str(checkpoint_path))
         if model.history_stride != 1 or model.action_dim != 7:
             raise ValueError("Loaded model does not implement consecutive seven-dimensional action steps.")
+        cfg.plan_config.history_len = model.history_size
+        temporal_alignment["history_size"] = model.history_size
+        temporal_alignment["adapted_plan"]["history_len"] = model.history_size
         if args.device.startswith("cuda"):
             ensure_renderer_headroom(cfg.eval.num_eval, extra_model_mib=1024)
         model.to(args.device).eval().requires_grad_(False)

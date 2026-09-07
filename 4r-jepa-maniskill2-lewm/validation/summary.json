@@ -1,6 +1,6 @@
 {
   "test_suite": {
-    "passed": 63,
+    "passed": 116,
     "device": "cpu",
     "new_simulator_or_gpu_jobs": false
   },
@@ -40,6 +40,16 @@
     "passed": true,
     "action_dim": 7,
     "history_stride": 1,
+    "temporal_config": {
+      "architecture": "temporal_encoder_v1",
+      "history_size": 3,
+      "num_layers": 2,
+      "num_heads": 8,
+      "mlp_ratio": 4,
+      "dropout": 0.0,
+      "activation": "gelu",
+      "norm_first": true
+    },
     "optimizer_steps": [
       2.0,
       4.0
@@ -66,5 +76,36 @@
   },
   "real_expert_pointcloud_dataset_created": false,
   "real_worldmodel_training_complete": false,
-  "real_frozen_encoder_ppo_training_complete": false
+  "real_frozen_encoder_ppo_training_complete": false,
+  "current_model_contract": {
+    "temporal_encoder": "independent temporal_encoder_v1",
+    "temporal_width": 512,
+    "temporal_layers": 2,
+    "temporal_heads": 8,
+    "temporal_mlp_ratio": 4,
+    "temporal_dropout": 0.0,
+    "lewm_predictor_transformer_used": false,
+    "encoder_input": "XYZ+RGB point clouds only",
+    "wm_action_dim": 7,
+    "history_stride": 1,
+    "frozen_ppo_head_input": "latent2 + current original state",
+    "frozen_ppo_input_dim": 542,
+    "state_dim": 30,
+    "state_contains_original_goal_information": true
+  },
+  "device_defaults": {
+    "production_ppo": "cuda",
+    "production_frozen_ppo": "cuda",
+    "smoke": "cpu",
+    "silent_cpu_fallback": false,
+    "gpu_installer_executed_in_this_change": false
+  },
+  "frozen_ppo_compatibility": {
+    "source": "CPU synthetic fixtures in test_frozen_ppo.py/test_frozen_checkpoint.py",
+    "encoder_weights_and_buffers_unchanged": true,
+    "original_head_state_concatenation_restored": true,
+    "both_heads_respond_to_state": true,
+    "optimizers_restored": true,
+    "recorded_temporal_config_restored": true
+  }
 }

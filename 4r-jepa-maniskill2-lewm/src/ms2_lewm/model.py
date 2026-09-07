@@ -13,58 +13,8 @@ from torch import Tensor, nn
 from torch.nn import functional as F
 
 from .official import lewm_config, lewm_jepa, lewm_module
+from .temporal import TemporalEncoder, resolve_temporal_config
 
-
-class TemporalEncoder(nn.Module):
-    """Aggregate T frame vectors with K=1, using LeWM's actual transformer.
-
-All transformer hyperparameters are read from the pinned official config.
-Only the input/output boundary dimensions follow the RL encoder's D. The
-internal hidden dimension stays at the official 192. Short histories (1..T)
-are supported for the official evaluator's initial history_len=1.
-"""
-
-    def __init__(self, latent_dim: int, K: int = 1):
-        super().__init__()
-        if K != 1:
-            raise ValueError("This model requires K=1: one vector per point-cloud frame.")
-        cfg = lewm_config()
-        p = cfg.model.predictor
-        self.K = K
-        self.num_frames = int(cfg.history_size)
-        self.latent_dim = int(latent_dim)
-        self.hyperparameters = {
-            "input_dim": self.latent_dim,
-            "hidden_dim": int(p.hidden_dim),
-            "output_dim": self.latent_dim,
-            "depth": int(p.depth),
-            "heads": int(p.heads),
-            "dim_head": int(p.dim_head),
-            "mlp_dim": int(p.mlp_dim),
-            "dropout": float(p.dropout),
-        }
-        self.pos_embedding = nn.Parameter(torch.randn(1, self.num_frames, latent_dim))
-        self.dropout = nn.Dropout(float(p.emb_dropout))
-        # This aggregation is action-free: actions enter only the critic head.
-        self.transformer = lewm_module.Transformer(
-            **self.hyperparameters, block_class=lewm_module.Block
-        )
-        # Upstream allocates this projection even when no conditioning is used.
-        # It is outside the action-free computation, so exclude its parameters
-        # from optimization/DDP without changing the trainer configuration.
-        self.transformer.cond_proj.requires_grad_(False)
-
-    def forward(self, latent1: Tensor) -> Tensor:
-        if latent1.ndim == 4:
-            if latent1.shape[2] != 1:
-                raise ValueError("Expected K=1 in [B,T,K,D].")
-            latent1 = latent1.squeeze(2)
-        if latent1.ndim != 3 or latent1.shape[-1] != self.latent_dim:
-            raise ValueError(f"Expected [B,T,{self.latent_dim}].")
-        if not 1 <= latent1.shape[1] <= self.num_frames:
-            raise ValueError(f"Temporal context length must be in 1..{self.num_frames}.")
-        x = latent1 + self.pos_embedding[:, :latent1.shape[1]]
-        return self.transformer(self.dropout(x))[:, -1]
 
 
 class LeWMLoss(nn.Module):
@@ -75,10 +25,10 @@ The final-step prediction target is the explicit user-specified model change;
 public LeWM's training script instead predicts all context-aligned steps.
 """
 
-    def __init__(self):
+    def __init__(self, history_size=None):
         super().__init__()
         cfg = lewm_config()
-        self.history_size = int(cfg.history_size)
+        self.history_size = int(resolve_temporal_config()["history_size"] if history_size is None else history_size)
         self.weight = float(cfg.loss.sigreg.weight)
         self.sigreg = lewm_module.SIGReg(**dict(cfg.loss.sigreg.kwargs))
 
@@ -100,14 +50,15 @@ public LeWM's training script instead predicts all context-aligned steps.
 class PointCloudEncoder(nn.Module):
     """The complete 4D encoder: independent 3D frames, then time aggregation."""
 
-    def __init__(self, action_dim, obs_shape=None, rl_config_path=None):
+    def __init__(self, action_dim, obs_shape=None, rl_config_path=None, temporal_config=None):
         super().__init__()
         from .rl_components import OfficialPointNetFrameEncoder
         self.frame_encoder = OfficialPointNetFrameEncoder(
             obs_shape=obs_shape, action_dim=action_dim, config_path=rl_config_path
         )
         self.output_dim = self.frame_encoder.output_dim
-        self.temporal_encoder = TemporalEncoder(self.output_dim, K=1)
+        self.temporal_encoder = TemporalEncoder(self.output_dim, K=1, config=temporal_config)
+        self.temporal_config = dict(self.temporal_encoder.config)
 
     def forward(self, pointcloud):
         latent1 = self.frame_encoder(pointcloud)
@@ -131,11 +82,11 @@ is pinned alongside this project. ``pixels`` is accepted as the unchanged
 official I/O key, containing point clouds rather than RGB images.
 """
 
-    def __init__(self, action_dim: int = 7, obs_shape=None, rl_config_path=None, history_stride: int = 1):
+    def __init__(self, action_dim: int = 7, obs_shape=None, rl_config_path=None, history_stride: int = 1, temporal_config=None):
         if history_stride != 1:
             raise ValueError("Current temporal encoder uses consecutive control-step frames (history_stride=1).")
         from .rl_components import OfficialCriticPredictor
-        encoder = PointCloudEncoder(action_dim, obs_shape, rl_config_path)
+        encoder = PointCloudEncoder(action_dim, obs_shape, rl_config_path, temporal_config)
         super().__init__(
             encoder=encoder,
             predictor=OfficialCriticPredictor(action_dim, encoder.output_dim, rl_config_path),
@@ -145,7 +96,8 @@ official I/O key, containing point clouds rather than RGB images.
         self.history_stride = 1
         self.latent_dim = encoder.output_dim
         self.history_size = encoder.temporal_encoder.num_frames
-        self.loss_fn = LeWMLoss()
+        self.temporal_config = dict(encoder.temporal_config)
+        self.loss_fn = LeWMLoss(history_size=self.history_size)
 
     @property
     def frame_encoder(self):

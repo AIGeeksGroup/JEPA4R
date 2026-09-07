@@ -1,0 +1,11 @@
+# Our action-free temporal encoder, independently designed for 4R-JEPA.
+# These are local architecture choices, not LeWM predictor hyperparameters.
+# The token width is always the RL frame encoder's output dimension D.
+architecture: temporal_encoder_v1
+history_size: 3
+num_layers: 2
+num_heads: 8
+mlp_ratio: 4
+dropout: 0.0
+activation: gelu
+norm_first: true

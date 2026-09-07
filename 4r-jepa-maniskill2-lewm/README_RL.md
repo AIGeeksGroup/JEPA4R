@@ -24,13 +24,24 @@ head is `[542,256,256,1]` with two ReLU hidden layers.
 
 All commands run inside this new task directory. Nothing is installed into the
 global Python environment. The setup uses Python 3.10 and requires an NVIDIA
-Vulkan driver for the SAPIEN renderer. Model computation uses CPU PyTorch.
+Vulkan driver for the SAPIEN renderer. Production training defaults to CUDA;
+CPU is used only for smoke checks or the explicitly selected train-cpu mode.
 
 ```bash
 bash scripts/setup_rl.sh
+bash scripts/setup_rl_gpu.sh
+bash scripts/run_rl.sh train
+
+# Explicit CPU compatibility checks (rendering still requires free VRAM):
 bash scripts/run_rl.sh smoke
 bash scripts/run_rl.sh eval-smoke
 ```
+
+`run_rl.sh` without a mode also selects production GPU training. It uses the
+isolated `.venv-rl-gpu` (PyTorch2.8/CUDA12.8), while `.venv-rl` remains the
+validated CPU environment. A missing CUDA environment or insufficient VRAM
+causes a clear failure; no silent CPU fallback occurs. Preview the selected
+command without starting anything using `bash scripts/run_rl.sh --print-command`.
 
 For process/memory records as well, use `.venv-rl/bin/python
 scripts/run_rl_checked.py smoke` and `eval-smoke` after sourcing
@@ -74,8 +85,9 @@ for model integration checks; it is not the LeWM training dataset.
 
 For sustained training, `bash scripts/run_rl.sh train` retains upstream's
 5,000,000-step budget and PPO optimization defaults, with a single renderer and
-CPU model. It is intentionally not started automatically. On the current busy
-host this will be slow. The underlying upstream CLI accepts configuration
+CUDA model. It is intentionally not started automatically. CPU production is
+available only through `bash scripts/run_rl.sh train-cpu`, with separate output.
+The underlying upstream CLI accepts configuration
 overrides; use the saved resolved config and a matching checkpoint when
 resuming/evaluating. The default smoke and training output directories differ.
 
@@ -100,3 +112,15 @@ explicit config path, and strictly reloads the checkpoint on CPU. This retains
 the saved ReLU/tanh/Identity semantics: activation functions have no weight entries.
 A 32-step smoke checkpoint is not an expert policy and must
 not be described as one when collecting world-model data.
+
+## Encoder input boundary
+
+The visual encoder computes features from colored point clouds only: XYZ+RGB,
+1200 points and 6 channels. Proprioception, action and goal fields do not enter
+PointNet. The original PPO architecture concatenates its 30-dimensional state
+to the 512 visual vector AFTER encoding, before actor/critic heads. In contrast,
+the frozen-WM PPO stage replaces latent1 with latent2 and RETAINS the original
+current-state concatenation, so both heads still receive 542 dimensions.
+The independently configured temporal encoder consumes only three latent1
+vectors; state and WM actions do not enter either encoder. The WM action is
+used only by its separate prediction head.

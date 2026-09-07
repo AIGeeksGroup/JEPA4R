@@ -62,7 +62,7 @@ def main():
         checked_contracts=[
             "Exact WM encoder and temporal weights loaded through latent2; predictor and LeWMLoss omitted",
             "Frozen encoder stays eval and deterministic under agent.train and shuffled observations",
-            "Both optimizers exclude encoder; original actor/critic take only 512-dimensional latent2",
+            "Both optimizers exclude encoder; original actor/critic take latent2 plus current state (512+30=542)",
             "Actual upstream PPO update changes actor, critic and Gaussian log_std with finite gradients",
             "Encoder parameters and buffers remain byte-identical after PPO updates",
             "Strict upstream PPO checkpoint and optimizer restore; identical subsequent optimization step",

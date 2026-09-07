@@ -10,19 +10,21 @@
 | --- | --- |
 | 逐帧 encoder | PPO/WM 共用 `configs/ppo_pointnet_identity.py`，继承官方配置；PointNet 仅最后激活改为 Identity，xyz+RGB → 512 维全局向量 |
 | latent1 | `[B,T+1,512]`；同一个逐帧 encoder，包括目标帧，不冻结、不截断目标梯度 |
-| TemporalEncoder | 本地新增，`K=1,T=3`；调用官方 LeWM `Transformer/Block`，时间位置编码，最后一个时刻输出 latent2 `[B,512]` |
-| 时序参数 | 官方配置：内部宽度 192、depth 6、heads 16、dim_head 64、MLP 2048、dropout 0.1、emb_dropout 0；输入/输出维度随 RL encoder 取 512 |
+| TemporalEncoder | 独立实现，`K=1,T=3`；原生 PyTorch 时间自注意力＋位置编码，输出 latent2 `[B,512]`，不使用 LeWM 预测器 |
+| 时序参数 | 独立 `configs/temporal_encoder.yaml`：默认2层、8头、token宽度D=512、FFN=4D、dropout0、GELU、pre-norm；无512→192→512压缩 |
 | predictor | 官方 PPO critic `LinearMLP`：`[512+A,256,256,512]`，ReLU，norm=None，无输出激活；保留官方输出初始化 |
 | 时间与动作 | 按最新纠正统一 stride=1；连续三帧与当前7维动作预测紧接的下一帧，使用 `action[:,T-1]` |
 | loss | 下一帧 latent1 的 MSE + 0.09×官方 SIGReg；输入 `[T+1,B,D]`，各帧沿 batch 计算再平均 |
 
-原 PPO critic 是 V 头，其输入为 512 维视觉向量加 30 维本体状态，即 `[542,256,256,1]`。WM 预测头改为 latent2 拼单步7维动作，因此为 `[519,256,256,512]`；隐藏层、激活和初始化均未改。
+原 PPO critic 是 V 头，其输入为 512 维视觉向量加原包装器的30维 state（本体、目标等信息），即 `[542,256,256,1]`。WM 预测头改为 latent2 拼单步7维动作，因此为 `[519,256,256,512]`；隐藏层、激活和初始化均未改。
 
 按最新要求，PPO 和世界模型共用的逐帧 PointNet 现在是 `Conv+LN+ReLU → Conv+LN+ReLU → Conv+LN+Identity → max pool`。Identity 就是不加末层激活，不再施加 ReLU 非负截断或 tanh 限幅。修改由外部注册类 `PointNetLastIdentity` 完成，继承官方 forward；官方文件未编辑。前两层激活、归一化、池化和参数形状保持一致，SIGReg 和其余模型结构未改。
 
 PPO 的更新、损失、actor/critic 头保持原实现；后续 `run_rl.sh` 默认使用 Identity 配置，输出到 `artifacts/rl_identity_smoke` / `artifacts/rl_identity_train`。历史 ReLU/tanh 配置和记录均保留，旧 tanh 配置文件仍实例化 tanh。激活函数不在权重张量中，重载需使用保存时的配置；新 WM 导出明确记录 Identity 配置路径。兼容性检查不代表强化学习性能不变，效果仍需实际训练评测。
 
-公开 le-wm 没有名为 `TemporalEncoder/LeWMLoss/WorldModel` 的类；这些名称是按任务规格新增的本地接口。实际复用其 `Transformer/Block/SIGReg/JEPA`，没有把自写实现冒充为官方现成类。完整 encoder 是 `PointCloudEncoder`，包含逐帧和时间两部分。
+Encoder 的有效输入仅为 XYZ+RGB 点云。时间编码器仅输入连续三帧 latent1。原 PPO 在 encoder 后将 latent1 与30维 state 拼接给 actor/critic；第三阶段保留这条信息通道，用 latent2 替换 latent1，同样拼当前 state 后输入542维。WM 的动作只进入预测头。测试验证固定点云、改变状态/动作/目标等辅助字段不会改变 encoder 输出，但 PPO 头可以响应当前 state。
+
+公开 le-wm 没有名为 `TemporalEncoder/LeWMLoss/WorldModel` 的类；这些名称是本地接口。LeWM 用于训练流程、SIGReg 和 JEPA 对外接口；新增时间聚合完全由 `src/ms2_lewm/temporal.py` 与独立配置定义，不导入 LeWM 的预测器 Transformer 或读取它的超参。完整 encoder 是 PointNet 加这个独立时间模块。2层/8头等是本实现明确列出的初始选择，不是官方 LeWM 参数。
 
 ```python
 from ms2_lewm.model import WorldModel
@@ -52,9 +54,9 @@ WM 的 MPC 评测使用官方 CEM/World 实现和300 samples/30 iterations/topk3
 
 ## 第三阶段：冻结世界模型表征训练 PPO
 
-`scripts/run_frozen_ppo.py` 从训练好的 stride=1 世界模型读取并冻结 PointNet+TemporalEncoder（截至 latent2），只接新建的 `actor:512→256→256→7` 与 `critic:512→256→256→1`。原 Gaussian 策略头和 PPO 算法保留；没有 WM 预测器或 LeWM 损失参与 PPO，也不再拼本体状态。完整说明和启动命令见 `STAGE3.md`。
+`scripts/run_frozen_ppo.py` 从训练好的 stride=1 世界模型读取并冻结 PointNet+TemporalEncoder（截至 latent2），随后原样拼接当前 state[30]。actor 为 `542→256→256→7`，critic 为 `542→256→256→1`，与原 PPO 的头部配置相同。原 Gaussian 策略头和 PPO 算法保留；没有 WM 预测器或 LeWM 损失参与 PPO。完整说明和启动命令见 `STAGE3.md`。
 
-encoder 强制 eval、requires_grad=False，forward 不建梯度图；actor/critic 共享同一冻结实例，官方优化器排除冻结参数。每条 PPO 观测自带连续三帧，初始不足时重复初始帧，reset 清空；随机 minibatch 不依赖网络内的可变历史。
+encoder 强制 eval、requires_grad=False，forward 不建梯度图；actor/critic 共享同一冻结实例，官方优化器排除冻结参数。每条 PPO 观测自带连续三帧点云和当前 state；只堆叠点云，state 不堆叠、不重新计算，reset 清空历史。模型导出完整记录独立时序配置；旧的 LeWM 预测器派生时间模块 checkpoint 不会静默加载。
 
 必要的环境接口差异公开记录：官方 cube 指 OGBench，未提供 ManiSkill2 数据。这里把官方专家接到 ManiSkill2 状态和控制接口，保留 RGB/状态列并额外采集原版 RL 点云；模型消费点云时不应用 RGB ImageNet 归一化。环境状态回放和目标设置使用 ManiSkill2 对应方法。除这些任务/模态接口和明确要求的模型/损失改动，采集、存储、训练、评测算法及生产超参不另行改写。
 
@@ -66,6 +68,10 @@ encoder 强制 eval、requires_grad=False，forward 不建梯度图；actor/crit
 cd JEPA4R/4r-jepa-maniskill2-lewm
 python3 scripts/bootstrap_sources.py
 bash scripts/setup_rl.sh
+bash scripts/setup_rl_gpu.sh
+bash scripts/run_rl.sh train
+
+# CPU小规模验证，需显式选择：
 bash scripts/run_rl.sh smoke
 bash scripts/run_rl.sh eval-smoke
 
@@ -90,6 +96,8 @@ CUDA_VISIBLE_DEVICES='' .venv-worldmodel/bin/python -m pytest -q tests
 
 全量入口去掉 `--smoke`；采集成功率闸门始终有效。完整训练保留官方 GPU/bf16 配方，先运行 `bash scripts/setup_worldmodel.sh gpu` 安装独立的 `.venv-worldmodel-gpu`，再用该环境启动正式训练。当前 `.venv-worldmodel` 是 CPU 集成验证环境。GPU 安装/完整训练未自动执行；显存不足时入口会拒绝启动，而不会终止其他进程。`train_wm.py --config-only` 可先打印生产配置；`--resume` 接受包含优化器/调度器状态的 Lightning checkpoint。官方模型导出为 `artifacts/worldmodel/checkpoints/<run>/weights_epoch_*.pt` 加 `config.json`，由官方 `load_pretrained` 重建。
 
+原 PPO 的正式入口现在默认 CUDA：`run_rl.sh` 或 `run_rl.sh train` 选择 `.venv-rl-gpu`；`smoke/eval-smoke` 使用 CPU，`train-cpu` 是显式的 CPU 训练选择。冻结表征 PPO 同样默认 CUDA，`--smoke` 才默认 CPU。缺少所选环境不会自动降级，所有实际仿真入口启动前检查显存。`run_rl.sh --print-command` 只打印计划命令。
+
 CPU 专家预检使用 `physics_preflight.py` 中的无渲染子类：保留官方碰撞、物理、初始化、控制器和成功判定，省略摄像机和视觉资源。此路径没有图像或点云，不能采集训练数据；其作用仅是在 GPU 忙碌时扩大专家成功率测试。真实点云采集仍必须通过正式渲染环境及资源检查。
 
 依赖边界：RL 环境使用 NumPy 1.23.5，依赖检查通过。官方 Lance 依赖要求 NumPy≥1.24，WM 隔离环境使用 1.24.4；与旧 ManiSkill2 的包声明 `numpy<1.24` 存在一项元数据冲突，已单独记录在 `artifacts/wm_pip_check.txt`，并实际验证 PointNet 与真实模拟可执行。没有为此修改官方包声明或 RL 环境。
@@ -98,7 +106,7 @@ CPU 专家预检使用 `physics_preflight.py` 中的无渲染子类：保留官�
 
 此前已实际验证原版 ReLU PPO：32 个真实环境 transition、PPO 更新、checkpoint、独立加载评测；encoder/actor/critic 都有有限的参数更新，真实 encoder 输出 `[1,512]`。两次 16 步 smoke 评测成功率 0/2，未声称 PPO 收敛。当前 Identity 版本通过 CPU 兼容检查：使用已有真实点云/动作以及明确标记的合成状态、奖励和终止标志，执行官方 PPO 更新并恢复模型/优化器；此检查不等于新的真实环境回合或性能评估。历史 tanh 检查单独保留。
 
-模型测试覆盖目标帧梯度、严格动作索引、未来帧不泄漏、逐帧 SIGReg、时序配置、官方 PointNet/critic 身份、多步 rollout、规划代价、形状恢复、冻结权重、checkpoint 迁移和来源校验。发布目录验证为 **63 项 CPU 测试通过**；记录见 [validation/summary.json](validation/summary.json) 和 [JUnit](validation/cpu-tests.xml)。重新运行的完整报告保存在忽略提交的 `artifacts/tests/`。
+模型测试覆盖目标帧梯度、严格动作索引、未来帧不泄漏、逐帧 SIGReg、时序配置、官方 PointNet/critic 身份、多步 rollout、规划代价、形状恢复、冻结权重、checkpoint 迁移和来源校验。发布目录验证为 **116 项 CPU 测试通过**；记录见 [validation/summary.json](validation/summary.json) 和 [JUnit](validation/cpu-tests.xml)。重新运行的完整报告保存在忽略提交的 `artifacts/tests/`。
 
 最新专家预检：30 个 episode、6000 个控制步，正式成功数 **0/30**。27 个 episode 曾满足位置条件，但没有同时满足机械臂静止条件，因此不能记为成功。预检采用无渲染 CPU 物理环境，自身 GPU 显存采样均为 0。详见 `artifacts/expert_cpu_preflight30.json` 与 `artifacts/expert_preflight_diagnosis.json`。未增加“到位后保持”阶段，未修改原 oracle、官方噪声或成功判定；**真实点云数据集尚未开采，真实数据 WM 训练和规划评测尚未运行**。
 

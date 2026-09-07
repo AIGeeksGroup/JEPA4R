@@ -20,7 +20,7 @@ from maniskill2_learn.utils.torch import ExtendedModule
 from maniskill2_learn.utils.meta import Config
 
 from .model import PointCloudEncoder
-from .official import lewm_config
+from .temporal import resolve_temporal_config
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -50,7 +50,6 @@ contain optimizer/config objects and use the trusted-checkpoint loader.
     payload = torch.load(path, map_location="cpu", weights_only=False)
     if not isinstance(payload, Mapping):
         raise ValueError("Expected a world-model state dictionary/checkpoint.")
-    recipe = lewm_config()
     if payload.get("format") in ("ms2_lewm_frozen_encoder_v1", "ms2_lewm_frozen_encoder_v2",
                                 "ms2_lewm_frozen_encoder_v3"):
         config = dict(payload["encoder_config"])
@@ -97,13 +96,18 @@ contain optimizer/config objects and use the trusted-checkpoint loader.
         state = {k[len(prefix):]: v for k, v in weights.items() if k.startswith(prefix)}
         if not state:
             raise ValueError("Checkpoint contains no encoder-through-latent2 weights.")
-        history_size = int(recipe.history_size)
+        history_size = int(config.get("temporal_config", {}).get("history_size", 0))
         frameskip = int(recorded_stride)
         source = {"checkpoint": str(path), "sha256": sha256, "config": str(config_path)}
-    allowed = {"action_dim", "obs_shape", "rl_config_path"}
+    allowed = {"action_dim", "obs_shape", "rl_config_path", "temporal_config"}
     if set(config) - allowed:
         raise ValueError(f"Unsupported saved encoder configuration keys: {sorted(set(config) - allowed)}")
-    if history_size != int(recipe.history_size) or frameskip != 1:
+    if "temporal_config" not in config:
+        raise ValueError("Checkpoint must record the independent temporal_config; legacy LeWM-predictor-derived encoders are rejected.")
+    if not isinstance(config["temporal_config"], Mapping) or set(resolve_temporal_config()) - set(config["temporal_config"]):
+        raise ValueError("Saved temporal_config must record all independent architecture parameters explicitly.")
+    config["temporal_config"] = resolve_temporal_config(config["temporal_config"])
+    if history_size != config["temporal_config"]["history_size"] or frameskip != 1:
         raise ValueError("Frozen PPO requires a world model pretrained on consecutive frames (history_stride=1); legacy stride 5 is rejected.")
     config["rl_config_path"] = str(_saved_config_path(config["rl_config_path"], path.parent).resolve())
     source["loaded_checkpoint"] = str(path)
@@ -129,7 +133,7 @@ def export_encoder_bundle(checkpoint, output):
     config = dict(config, rl_config_path=snapshot.name)
     root = ROOT
     definitions = [root / "src/ms2_lewm/model.py", root / "src/ms2_lewm/pointnet_identity.py",
-                   root / "src/ms2_lewm/rl_components.py", root / "vendor/le-wm/module.py",
+                   root / "src/ms2_lewm/rl_components.py", root / "src/ms2_lewm/temporal.py",
                    root / "vendor/ManiSkill2-Learn/maniskill2_learn/networks/backbones/pointnet.py",
                    root / "vendor/ManiSkill2-Learn/maniskill2_learn/networks/backbones/mlp.py"]
     payload = {"format": "ms2_lewm_frozen_encoder_v3", "encoder_config": config,
@@ -196,14 +200,13 @@ class FrozenWorldModelEncoder(ExtendedModule):
 
 @BACKBONES.register_module()
 class FrozenWMVisuomotor(Visuomotor):
-    """Keep upstream feature caching/sharing, with heads attached to latent2 only."""
+    """Original Visuomotor forward: frozen latent2 plus the current state.
+
+    The inherited forward removes state before calling the encoder and then
+    concatenates it with latent2 for the unchanged actor/critic heads.
+    """
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if not isinstance(self.visual_nn, FrozenWorldModelEncoder):
             raise TypeError("FrozenWMVisuomotor requires a frozen world-model encoder.")
-
-    def forward(self, obs, **kwargs):
-        kwargs.pop("with_robot_state", None)
-        # A caller-provided cached feature follows the same latent2-only path.
-        return super().forward(obs, with_robot_state=False, **kwargs)

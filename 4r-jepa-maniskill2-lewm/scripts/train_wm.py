@@ -24,6 +24,7 @@ os.environ.setdefault("WANDB_MODE", "disabled")
 
 from omegaconf import OmegaConf
 from ms2_lewm.official import LEWM, lewm_config, load_source
+from ms2_lewm.temporal import resolve_temporal_config
 
 
 def model_forward(self, batch, stage, cfg):
@@ -36,6 +37,8 @@ def model_forward(self, batch, stage, cfg):
 
 def make_config(dataset, run_name, smoke=False):
     cfg = lewm_config("ogb")
+    temporal_config = resolve_temporal_config()
+    cfg.history_size = temporal_config["history_size"]
     cfg.output_model_name = run_name
     cfg.subdir = run_name
     cfg.data.dataset.name = str(Path(dataset).resolve())
@@ -50,7 +53,7 @@ def make_config(dataset, run_name, smoke=False):
     # Persist the chosen encoder config with every export; activation functions
     # have no state-dict parameters, so weights alone cannot identify the activation.
     cfg.model = {"_target_": "ms2_lewm.model.WorldModel", "action_dim": 7, "history_stride": 1,
-                 "rl_config_path": "configs/ppo_pointnet_identity.py"}
+                 "rl_config_path": "configs/ppo_pointnet_identity.py", "temporal_config": temporal_config}
     if smoke:
         cfg.trainer.accelerator = "cpu"
         cfg.trainer.devices = 1
@@ -118,7 +121,7 @@ def run(args):
         raise ValueError("Dataset is too small for the official split/batch size; collect more trajectories.")
 
     world_model = WorldModel(action_dim=cfg.model.action_dim, rl_config_path=cfg.model.rl_config_path,
-                            history_stride=cfg.model.history_stride)
+                            history_stride=cfg.model.history_stride, temporal_config=cfg.model.temporal_config)
     initial_parameters = ({name: p.detach().cpu().clone() for name, p in world_model.named_parameters()}
                           if args.smoke else None)
     # The matching official stable_worldmodel/scripts/train/lewm.py supplies
