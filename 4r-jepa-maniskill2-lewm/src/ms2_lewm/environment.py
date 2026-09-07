@@ -36,6 +36,9 @@ def official_rl_env_config(horizon: int = 200) -> dict:
         n_points=1200,
         n_goal_points=-1,
         horizon=horizon,
+        # render_rgb_array uses only Color. Do not copy the unused 512x512
+        # float4 Position buffer to the CPU; point-cloud cameras keep both.
+        render_camera_cfgs={"render_camera": {"texture_names": ("Color",)}},
     )
     return env_cfg
 

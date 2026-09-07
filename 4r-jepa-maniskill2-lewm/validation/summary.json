@@ -150,13 +150,18 @@
     "backend": "spawn",
     "official_policy_execution": "parent process in environment index order",
     "proof": "validation/parallel-sampling.json",
-    "full_collection_started": false
+    "full_collection_started": false,
+    "measured_exclusive_steps_per_second": 139.10245929927373,
+    "projected_full_hours": 3.9938586158300664,
+    "workers_running_at_recording": 0
   },
   "ppo_production_run": {
-    "status_at_recording": "running",
+    "status_at_recording": "stopped by user; benchmark-only intent clarified",
     "directory": "artifacts/rl_identity_train_p12_20260907",
     "parallel_environments": 12,
     "step_budget": 5000000,
-    "completed_steps_at_recording": 220000
-  }
+    "completed_steps_at_recording": 220000,
+    "automatic_restart_authorized": false
+  },
+  "resource_profiles": "validation/resource-profiles.json"
 }

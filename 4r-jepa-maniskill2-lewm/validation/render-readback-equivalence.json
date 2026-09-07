@@ -1,0 +1,28 @@
+{
+  "frames": 6000,
+  "other_frames": 6000,
+  "columns_exactly_equal": {
+    "episode_idx": true,
+    "step_idx": true,
+    "pointcloud": true,
+    "pixels": true,
+    "action": true,
+    "observation": true,
+    "sim_state": true,
+    "cube_pos": true,
+    "seed": true,
+    "reward": true,
+    "terminated": true,
+    "truncated": true
+  },
+  "all_compared_columns_exact": true,
+  "excluded_nondeterministic_columns": [
+    "render_time"
+  ],
+  "baseline_seconds": 45.5537743200548,
+  "optimized_seconds": 43.13367305096472,
+  "baseline_steps_per_second": 131.71246706902468,
+  "optimized_steps_per_second": 139.10245929927373,
+  "optimized_full_collection_hours": 3.9938586158300664,
+  "throughput_improvement_percent": 5.6107006380620605
+}

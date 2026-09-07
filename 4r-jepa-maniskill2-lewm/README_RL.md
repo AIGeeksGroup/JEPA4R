@@ -110,17 +110,24 @@ window can change scaling. It estimates completion of the step budget, not
 time to a guaranteed success rate. No additional environment-count sweep is
 required or performed. See `validation/runtime-estimates.json`.
 
-The selected **12-environment production run was started on 2026-09-07 at
-02:19:18 UTC**, in `artifacts/rl_identity_train_p12_20260907`, with the full
-5,000,000-step budget and 20,000-step rollout window. At the recorded update
-it had completed its first 20,000 transitions and PPO optimization in 78.575s
-(57.204s collecting); this first iteration includes the one-time four-epoch
-critic warmup and is not a steady-state speed measurement. The GPU utilization
-log snapshot was 70%, not a whole-run average. The run continues as production
-training; no environment-count benchmarking sequence was launched. At the
-220,000-step record, the post-warmup median was 64.9195s per 20,000 steps,
-projecting to about 4.51 hours for the full budget. See the live run log for
-subsequent progress.
+A **12-environment production run was started on 2026-09-07 at
+02:19:18 UTC**, in `artifacts/rl_identity_train_p12_20260907`, with a
+5,000,000-step budget and 20,000-step rollout window. It was subsequently
+**stopped at the user's request**; the requested scope was timing measurements,
+and full-budget training has not completed. The stop record is
+`artifacts/rl_identity_train_p12_20260907/stopped_by_user.json`. This round
+performs measurements only; subsequent production training will not be
+automatically started.
+
+The first 20,000 transitions and PPO optimization took 78.575s (57.204s
+collecting), including the one-time four-epoch critic warmup. At the recorded
+220,000-step update, the post-warmup median was 64.9195s per 20,000 steps,
+projecting to about **4.51 hours** for the full budget. These retained timing
+observations are not evidence of a completed reproduction or convergence.
+The GPU utilization log snapshot was 70%, not a whole-run average; no
+environment-count benchmarking sequence was launched.
+
+A separate bounded 40,000-step profile recorded resources every 100 ms and then exited. With 12 environments, rollout averaged 17.0% GPU utilization (observed peak 19%), while PPO updates averaged 72.3% (observed peak 92%). CPU usage against the 16-core quota averaged 61.9% in rollout and 81.5% in updates. These phases must not be confused with one whole-run utilization figure; setup and checkpoint/trace finalization are excluded. See `validation/resource-profiles.json` and `validation/resource-profiles.png`. No long training run remains active.
 
 ## CPU compatibility
 

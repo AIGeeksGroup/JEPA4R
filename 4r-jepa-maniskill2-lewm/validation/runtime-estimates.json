@@ -51,7 +51,7 @@
       "limitation": "An extrapolation from two short measured runs; GPU batching, IPC and the production rollout window can change scaling. The estimate covers the 5,000,000-step budget and does not guarantee convergence."
     },
     "production_run": {
-      "status_at_recording": "running",
+      "status_at_recording": "stopped after user clarified benchmark-only intent",
       "started_utc": "2026-09-07T02:19:18.116521Z",
       "output_directory": "artifacts/rl_identity_train_p12_20260907",
       "launcher_pid": 139913,
@@ -75,7 +75,16 @@
         "completed_steps": 220000,
         "iteration_seconds": 64.966,
         "collection_seconds": 57.301
-      }
+      },
+      "stop_reason": "Assistant misinterpreted execute as launch production training; all owned PPO processes have been stopped and will not be restarted automatically.",
+      "stop_evidence": "artifacts/rl_identity_train_p12_20260907/stopped_by_user.json"
+    },
+    "resource_phase_summary": {
+      "rollout_gpu_mean_percent": 17.002666666666666,
+      "rollout_gpu_observed_peak_percent": 19,
+      "update_gpu_mean_percent": 72.30208333333333,
+      "update_gpu_observed_peak_percent": 92,
+      "not_a_whole_training_run_average": true
     }
   },
   "sampling": {
@@ -103,19 +112,58 @@
       "execution": "Spawned environment/renderer processes; official policy/oracle calls retain parent-process environment-index ordering, with IPC and a single parent-process dataset writer.",
       "ideal_linear_hours": 1.6105006785558846,
       "planning_hours": [
-        2,
-        4
+        4,
+        5
       ],
-      "new_configuration_benchmarked": false,
+      "new_configuration_benchmarked": true,
       "guaranteed_speedup": false,
-      "estimate_basis": "Divide the historical 16.1-hour serial estimate by ten only as an ideal bound; allow extra time for shared GPU rendering, IPC, process setup and writer contention.",
+      "estimate_basis": "Fixed ten-worker/6000-step profile after removing unused render-camera Position readback: 43.1337 seconds including pointcloud, RGB, writer and fsync. See continuous resource profile; neither CPU nor GPU is saturated during collection.",
       "start_requires": "Nonzero native-success preflight and sufficient disk capacity; neither requirement is bypassed by parallelism.",
       "backend_default": "process",
       "serial_backend_flag": "--env-backend serial",
       "preflight": "30 episodes in one serial environment; unchanged native-success gate.",
       "fixed_configuration_connection_check": "validation/parallel-sampling.json",
       "native_environment_connection_check_passed": true,
-      "performance_measured": false
+      "performance_measured": true,
+      "previous_analytical_planning_hours": [
+        2,
+        4
+      ],
+      "measured_exclusive_hours": 3.9938586158300664
+    },
+    "selected_ten_process_measurements": {
+      "exclusive": {
+        "episodes": 30,
+        "control_steps": 6000,
+        "seconds_including_pointcloud_rgb_writer_and_fsync": 46.8074045459507,
+        "steps_per_second": 128.1848472095866,
+        "projected_full_10000x200_hours": 4.33401893943988,
+        "startup_seconds": 7.442512959998567,
+        "native_successes": 0,
+        "report": "artifacts/benchmark_sampling_parallel_20260907/20260907T024635Z/report.json"
+      },
+      "concurrent_with_ppo": {
+        "episodes": 30,
+        "control_steps": 6000,
+        "seconds_including_pointcloud_rgb_writer_and_fsync": 81.67854734201683,
+        "steps_per_second": 73.45870115534606,
+        "projected_full_10000x200_hours": 7.562828457594151,
+        "report": "artifacts/benchmark_sampling_parallel_20260907/20260907T024140Z/report.json"
+      },
+      "same_worker_count_in_both_measurements": 10,
+      "worker_count_sweep": false,
+      "all_sampling_workers_closed": true,
+      "ppo_still_running": false,
+      "full_collection_started": false
+    },
+    "render_readback_optimization": {
+      "scope": "Only render_camera.texture_names=(Color,); pointcloud sensors unchanged",
+      "all_6000_compared_frames_equal": true,
+      "baseline_steps_per_second": 131.71246706902468,
+      "optimized_steps_per_second": 139.10245929927373,
+      "throughput_improvement_percent": 5.6107006380620605,
+      "projected_full_hours": 3.9938586158300664,
+      "proof": "validation/render-readback-equivalence.json"
     }
   },
   "artifacts": [
@@ -135,5 +183,7 @@
     "sampling_environment_steps_are_serial_in_official_EnvPool": true,
     "estimates_are_for_current_implementation_not_maximum_hardware_throughput": true,
     "serial_sampling_observation_applies_to": "Historical benchmark only; the new collection implementation uses a multiprocessing pool."
-  }
+  },
+  "updated_utc": "2026-09-07T02:50:01.350192+00:00",
+  "resource_profile_report": "validation/resource-profiles.json"
 }

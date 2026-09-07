@@ -86,7 +86,7 @@ OGBench cube 与 ManiSkill PickCube 是不同的物理任务和目标分布；�
 
 首个episode提交后根据实际文件增长估算剩余全量空间，增加20%余量并默认保留10GiB（`--reserve-gib`可显式改）；以后每10个episode重新计算。检查使用当前空闲磁盘和剩余步数，已落盘数据不重复计数。采集前的检查只预留少量探测数据，不把未压缩fp16字节数错误当成压缩后容量下界。空间不足即停止，不缩短轨迹、不减少点数、不改噪声或JPEG质量。
 
-2026-09-07真实10环境×10回合×200步的性能短测使用旧版**单进程串行EnvPool**，并非10个并行worker。该次0/10成功，明确标为禁止用于正式训练的benchmark；约57.94秒完成2000控制步（34.5步/秒），按旧实现吞吐外推全量约16.1小时。新10进程版本以此估算：完全线性扩展的理想值为1.61小时，考虑共享GPU渲染、IPC、进程启动和writer开销，安排 **2–4小时**。这是新配置的粗估，未新增仿真测速，不是10倍加速承诺，也不包含成功率或容量不足时的等待时间。
+历史单进程串行EnvPool短测为10回合×200步，57.94秒（34.5步/秒），全量外推16.1小时。现已对选定的10个spawn进程做30回合×200步独占实测并每100ms记录资源：原读回方式45.55秒，去掉RGB渲染相机无用的Position读回后43.13秒（139.1步/秒），吞吐约提高5.6%，全量外推约4.0小时、排程4–5小时；没有遍历并行数。两次6000帧的点云、RGB/JPEG、动作、状态、奖励和终止标记完全一致，见 [validation/render-readback-equivalence.json](validation/render-readback-equivalence.json)。点云相机仍保留Color+Position，相机位姿、分辨率、FOV和RGB输出不变。GPU平均12.3%、观察峰17%，CPU按16核计平均38.7%、峰68.1%，剩余低利用率尚未解决；不再宣称CPU满载。30回合原生成功仍0，测速数据明确禁止用于正式训练。资源曲线见 [validation/resource-profiles.png](validation/resource-profiles.png)。
 
 最终分批writer在CPU上复放相同Arrow/JPEG字节后为49,682,995字节，外推10000回合约46.27GiB；按20%余量、每回合额外1帧保守预算和10GiB保留空间需约65.81GiB可用。该估算来自少量场景，后续仍持续复核；当前磁盘不足，不因已用fp16就放行。证据：`artifacts/benchmark_sampling_20260907/report.json`、`final_storage_report.json`。
 
