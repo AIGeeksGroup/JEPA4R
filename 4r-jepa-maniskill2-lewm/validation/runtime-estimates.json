@@ -33,22 +33,10 @@
       5
     ],
     "production_parallel_plan": {
-      "environments": 12,
-      "available_cpu_cores": 16,
-      "cpu_cores_reserved_for_main_process_and_ipc": 4,
-      "selection_basis": "Analytical resource allocation; no sweep of environment counts. Twelve workers leave four of the 16 available CPU cores for the PPO driver, IPC, and support work.",
-      "projection_method": "Fit time_per_step(n)=serial_seconds_per_step+parallel_seconds_per_step/n to the existing one- and five-environment GPU measurements.",
-      "serial_seconds_per_step": 0.0025575,
-      "parallel_seconds_per_step": 0.005079166666666667,
-      "projected_steps_per_second": 335.48447219439464,
-      "projected_linear_hours": 4.139949845679012,
-      "planning_hours": [
-        4,
-        6
-      ],
-      "new_configuration_benchmarked": false,
+      "environments": 16,
+      "selection_basis": "Explicit user request to set 16 and start training",
       "optimal_environment_count_claimed": false,
-      "limitation": "An extrapolation from two short measured runs; GPU batching, IPC and the production rollout window can change scaling. The estimate covers the 5,000,000-step budget and does not guarantee convergence."
+      "historical_12_environment_linear_hours": 4.508298611111111
     },
     "production_run": {
       "status_at_recording": "stopped after user clarified benchmark-only intent",
@@ -85,6 +73,37 @@
       "update_gpu_mean_percent": 72.30208333333333,
       "update_gpu_observed_peak_percent": 92,
       "not_a_whole_training_run_average": true
+    },
+    "historical_12_environment_parallel_plan": {
+      "environments": 12,
+      "available_cpu_cores": 16,
+      "cpu_cores_reserved_for_main_process_and_ipc": 4,
+      "selection_basis": "Analytical resource allocation; no sweep of environment counts. Twelve workers leave four of the 16 available CPU cores for the PPO driver, IPC, and support work.",
+      "projection_method": "Fit time_per_step(n)=serial_seconds_per_step+parallel_seconds_per_step/n to the existing one- and five-environment GPU measurements.",
+      "serial_seconds_per_step": 0.0025575,
+      "parallel_seconds_per_step": 0.005079166666666667,
+      "projected_steps_per_second": 335.48447219439464,
+      "projected_linear_hours": 4.139949845679012,
+      "planning_hours": [
+        4,
+        6
+      ],
+      "new_configuration_benchmarked": false,
+      "optimal_environment_count_claimed": false,
+      "limitation": "An extrapolation from two short measured runs; GPU batching, IPC and the production rollout window can change scaling. The estimate covers the 5,000,000-step budget and does not guarantee convergence."
+    },
+    "current_production_run": {
+      "status_at_recording": "running",
+      "explicit_user_request": "改16,开始训练",
+      "launcher_pid": 152283,
+      "directory": "artifacts/rl_identity_train_p16_20260907",
+      "parallel_environments": 16,
+      "total_step_budget": 5000000,
+      "rollout_steps": 20000,
+      "minibatch": 330,
+      "ppo_epochs": 2,
+      "completed_steps_at_recording": 80000,
+      "authorization": "Explicit current user authorization; prior 12-environment run remains stopped."
     }
   },
   "sampling": {

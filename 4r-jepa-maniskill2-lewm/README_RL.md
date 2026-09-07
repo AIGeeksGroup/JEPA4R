@@ -84,11 +84,12 @@ Saved evidence: `artifacts/rl_smoke/verification.json`,
 for model integration checks; it is not the LeWM training dataset.
 
 For sustained training, `bash scripts/run_rl.sh train` retains upstream's
-5,000,000-step budget and PPO optimization defaults, with **12 parallel
-environments** and a CUDA model on this host. This is an explicit local runtime
-override of upstream's five environments. With 16 available CPU cores, twelve
-environment workers leave four cores for the PPO driver, IPC and support work;
-this is an analytical allocation, not a measured optimum or a sweep of counts.
+5,000,000-step budget and PPO optimization defaults, with **16 parallel
+environments** and a CUDA model on this host, as explicitly requested. This is
+a local runtime override of upstream's five environments. The host provides a
+16-core CPU quota; the environment workers share those cores with the PPO
+driver and IPC. Sixteen environments is the selected configuration, not a
+claim of a measured optimum.
 CPU production is available only through `bash scripts/run_rl.sh train-cpu`,
 with separate output.
 The underlying upstream CLI accepts configuration
@@ -103,10 +104,11 @@ only the rollout window was shortened from 20,000 to 3,300 for timing.
 The historical five-environment result projects to 4.96 hours for 5,000,000
 steps (5–7 hours including operational overhead). Fitting
 `time_per_step(n) = serial + parallel / n` to these two measurements gives
-about **335 steps/s and 4.14 hours at 12 environments**. Allow **4–6 hours**
-for the selected production configuration. This is a projection, not a new
-12-environment benchmark: GPU batching, IPC and the full 20,000-step rollout
-window can change scaling. It estimates completion of the step budget, not
+about **335 steps/s and 4.14 hours at 12 environments**, with a historical
+4–6-hour scheduling estimate. That projection and the subsequent 12-environment
+measurements below do not establish the throughput of the newly selected
+16-environment configuration. GPU batching, IPC and the full 20,000-step
+rollout window can change scaling. It estimates completion of the step budget, not
 time to a guaranteed success rate. No additional environment-count sweep is
 required or performed. See `validation/runtime-estimates.json`.
 
@@ -115,9 +117,14 @@ A **12-environment production run was started on 2026-09-07 at
 5,000,000-step budget and 20,000-step rollout window. It was subsequently
 **stopped at the user's request**; the requested scope was timing measurements,
 and full-budget training has not completed. The stop record is
-`artifacts/rl_identity_train_p12_20260907/stopped_by_user.json`. This round
-performs measurements only; subsequent production training will not be
-automatically started.
+`artifacts/rl_identity_train_p12_20260907/stopped_by_user.json`. That
+12-environment run remains stopped. The user has since explicitly requested
+a new 16-environment production run, **started on 2026-09-07 at
+03:43:27.732030 UTC** (launcher PID 152283), in the separate directory
+`artifacts/rl_identity_train_p16_20260907`. Its [launch record](artifacts/rl_identity_train_p16_20260907/launch.json)
+records CUDA, 5,000,000 total steps, 20,000 rollout steps, minibatch 330 and
+two PPO epochs. It is running with the pointcloud recording hook; this
+startup does not establish 16-environment throughput or final success.
 
 The first 20,000 transitions and PPO optimization took 78.575s (57.204s
 collecting), including the one-time four-epoch critic warmup. At the recorded
@@ -127,7 +134,29 @@ observations are not evidence of a completed reproduction or convergence.
 The GPU utilization log snapshot was 70%, not a whole-run average; no
 environment-count benchmarking sequence was launched.
 
-A separate bounded 40,000-step profile recorded resources every 100 ms and then exited. With 12 environments, rollout averaged 17.0% GPU utilization (observed peak 19%), while PPO updates averaged 72.3% (observed peak 92%). CPU usage against the 16-core quota averaged 61.9% in rollout and 81.5% in updates. These phases must not be confused with one whole-run utilization figure; setup and checkpoint/trace finalization are excluded. See `validation/resource-profiles.json` and `validation/resource-profiles.png`. No long training run remains active.
+A separate bounded 40,000-step profile recorded resources every 100 ms and then exited. With 12 environments, rollout averaged 17.0% GPU utilization (observed peak 19%), while PPO updates averaged 72.3% (observed peak 92%). CPU usage against the 16-core quota averaged 61.9% in rollout and 81.5% in updates. These phases must not be confused with one whole-run utilization figure; setup and checkpoint/trace finalization are excluded. See `validation/resource-profiles.json` and `validation/resource-profiles.png`. This bounded profiling run has exited.
+
+## Pointcloud input videos
+
+Set `MS2_PPO_RECORD_VIDEO` to an output MP4 path when starting PPO to record
+one real rollout episode from one environment. For example:
+
+```bash
+MS2_PPO_RECORD_VIDEO=artifacts/pointcloud_videos/ppo_rollout_pointcloud.mp4 \
+  bash scripts/run_rl.sh train
+```
+
+The recorder copies the actual 1,200 XYZ+RGB points passed to the encoder,
+then encodes a fixed-view pointcloud visualization in a background CPU
+process. It does not render an RGB camera or change the sampled actions.
+The running 16-environment job records its first real PPO input episode to
+`artifacts/user_videos/ppo_training_pointcloud_episode0.mp4`. The companion
+[heuristic pointcloud video](artifacts/user_videos/expert_pointcloud_episode0.mp4)
+has been exported from one real Lance episode: 200 frames at 20 fps, using
+the stored fp16 points converted to float32 as at the model input. The fixed
+3D view adds no goal sphere or scene mesh. These videos show observations
+used during sampling; they are not new evaluation episodes or evidence that
+the policy has converged. The first PPO episode is from the start of training.
 
 ## CPU compatibility
 

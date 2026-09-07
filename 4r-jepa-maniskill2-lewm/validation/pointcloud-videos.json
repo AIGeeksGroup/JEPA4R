@@ -1,0 +1,50 @@
+{
+  "recorded_utc": "2026-09-07T03:48:58.907250+00:00",
+  "training": {
+    "status_at_recording": "running",
+    "explicit_user_request": "改16,开始训练",
+    "launcher_pid": 152283,
+    "directory": "artifacts/rl_identity_train_p16_20260907",
+    "parallel_environments": 16,
+    "total_step_budget": 5000000,
+    "rollout_steps": 20000,
+    "minibatch": 330,
+    "ppo_epochs": 2,
+    "completed_steps_at_recording": 80000
+  },
+  "ppo_video": {
+    "path": "artifacts/user_videos/ppo_training_pointcloud_episode0.mp4",
+    "source": "actual PPO training rollout.vec_env.step (inside upstream step_dict)",
+    "separate_evaluation": false,
+    "training_pid": 152292,
+    "steps": 200,
+    "frames": 201,
+    "point_count": 1200,
+    "input_dtype": "float32",
+    "input_file": "artifacts/user_videos/ppo_training_pointcloud_episode0.npz",
+    "verification": {
+      "decoded_frames": 201,
+      "duration_seconds": 10.05,
+      "decoded_shape_hwc": [
+        640,
+        640,
+        3
+      ],
+      "codec": "h264",
+      "pixel_format": "yuv420p(progressive)",
+      "fps": 20.0
+    }
+  },
+  "expert_video": {
+    "path": "artifacts/user_videos/expert_pointcloud_episode0.mp4",
+    "source": "actual recorded heuristic collection, episode 0",
+    "storage_dtype": "float16",
+    "visualized_model_input_dtype": "float32",
+    "steps": 200,
+    "point_count": 1200,
+    "fps": 20,
+    "manifest": "artifacts/user_videos/expert_pointcloud_episode0.json"
+  },
+  "visualization": "fixed orthographic view of exact XYZ+RGB input points; no RGB camera image, mesh, added goal marker, or point densification",
+  "recording_contract_tests": "26 passed: test_training_video.py and test_device_entrypoints.py"
+}

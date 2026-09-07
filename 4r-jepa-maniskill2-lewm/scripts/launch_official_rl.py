@@ -33,7 +33,7 @@ if "--evaluation" not in sys.argv and "--eval" not in sys.argv:
     original_train = train_module.train_rl
 
     def traced_train(*args, **kwargs):
-        agent, _, _, replay = args[:4]
+        agent, rollout, _, replay = args[:4]
         started = time.time()
         visual = agent.actor.backbone.visual_nn
         parts = {"encoder": visual, "actor_head": agent.actor.backbone.final_mlp,
@@ -47,10 +47,20 @@ if "--evaluation" not in sys.argv and "--eval" not in sys.argv:
                                        output=list(output.shape))
 
         hook = visual.register_forward_hook(inspect_encoder)
+        video_recorder = None
+        if os.environ.get("MS2_PPO_RECORD_VIDEO"):
+            from ms2_lewm.training_video import maybe_record_training_episode
+
+            video_recorder = maybe_record_training_episode(
+                rollout, os.environ["MS2_PPO_RECORD_VIDEO"],
+                metadata={"training_pid": os.getpid(), "work_dir": str(kwargs["work_dir"])},
+            )
         try:
             result = original_train(*args, **kwargs)
         finally:
             hook.remove()
+            if video_recorder is not None:
+                video_recorder.close()
         changed = {key: sum(float((p.detach() - old).abs().sum())
                             for p, old in zip(module.parameters(), before[key]))
                    for key, module in parts.items()}

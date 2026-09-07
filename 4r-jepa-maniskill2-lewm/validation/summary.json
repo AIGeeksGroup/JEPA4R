@@ -100,7 +100,7 @@
     "smoke": "cpu",
     "silent_cpu_fallback": false,
     "gpu_installer_executed_in_this_change": true,
-    "production_ppo_parallel_environments": 12
+    "production_ppo_parallel_environments": 16
   },
   "frozen_ppo_compatibility": {
     "source": "CPU synthetic fixtures in test_frozen_ppo.py/test_frozen_checkpoint.py",
@@ -156,6 +156,19 @@
     "workers_running_at_recording": 0
   },
   "ppo_production_run": {
+    "status_at_recording": "running",
+    "explicit_user_request": "改16,开始训练",
+    "launcher_pid": 152283,
+    "directory": "artifacts/rl_identity_train_p16_20260907",
+    "parallel_environments": 16,
+    "total_step_budget": 5000000,
+    "rollout_steps": 20000,
+    "minibatch": 330,
+    "ppo_epochs": 2,
+    "completed_steps_at_recording": 80000
+  },
+  "resource_profiles": "validation/resource-profiles.json",
+  "ppo_production_run_historical_12": {
     "status_at_recording": "stopped by user; benchmark-only intent clarified",
     "directory": "artifacts/rl_identity_train_p12_20260907",
     "parallel_environments": 12,
@@ -163,5 +176,5 @@
     "completed_steps_at_recording": 220000,
     "automatic_restart_authorized": false
   },
-  "resource_profiles": "validation/resource-profiles.json"
+  "pointcloud_video_validation": "validation/pointcloud-videos.json"
 }
