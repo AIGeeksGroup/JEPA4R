@@ -1,0 +1,194 @@
+{
+  "dataset": "artifacts/wm_collection_full_20260907T044524Z/pickcube_expert_mixed.lance",
+  "snapshot_version": 317,
+  "snapshot_rows": 632200,
+  "sample_episode_indices": [
+    0,
+    166,
+    332,
+    498,
+    665,
+    831,
+    997,
+    1164,
+    1330,
+    1496,
+    1663,
+    1829,
+    1995,
+    2162,
+    2328,
+    2494,
+    2661,
+    2827,
+    2993,
+    3160
+  ],
+  "sample_rows": 4000,
+  "action_rows_used": 3980,
+  "gpu_or_simulator_started": false,
+  "sim_state_layout_zero_based_half_open": {
+    "ground_actor": [
+      0,
+      13
+    ],
+    "cube_actor": [
+      13,
+      26
+    ],
+    "goal_site_actor": [
+      26,
+      39
+    ],
+    "panda_root_pose_and_velocities": [
+      39,
+      52
+    ],
+    "panda_qpos": [
+      52,
+      61
+    ],
+    "panda_qvel": [
+      61,
+      70
+    ],
+    "panda_arm_qvel": [
+      61,
+      68
+    ],
+    "goal_pos": [
+      70,
+      73
+    ]
+  },
+  "observation_layout_zero_based_half_open": {
+    "qpos": [
+      0,
+      9
+    ],
+    "qvel": [
+      9,
+      18
+    ],
+    "base_pos": [
+      18,
+      21
+    ],
+    "tcp_pos": [
+      21,
+      24
+    ],
+    "goal_pos": [
+      24,
+      27
+    ],
+    "tcp_to_goal_pos": [
+      27,
+      30
+    ]
+  },
+  "cross_checks_max_abs_error": {
+    "qpos_sim_vs_observation": 0.0,
+    "qvel_sim_vs_observation": 0.0,
+    "cube_pos_sim_vs_saved": 0.0,
+    "goal_pos_sim_plus_base_shift_vs_observation": 3.2782554626464844e-07,
+    "object_goal_distance_sim_vs_saved": 4.228711314446798e-08,
+    "tcp_pose_translation_vs_observation": 4.60170917371272e-07
+  },
+  "native_success_recomputation": {
+    "formula": "norm(sim_state[13:16]-sim_state[70:73]) <= 0.025 AND max(abs(sim_state[61:68])) <= 0.2",
+    "success_frame_count": 387,
+    "success_reward_1_frame_count": 387,
+    "success_reward_mismatch_count": 0,
+    "check_grasp": "Unknown: no serialized contact forces; do not infer exact grasp from pose/qpos."
+  },
+  "coordinate_frame_note": "Official ManiSkill2-Learn wrapper treats obs_frame world and base identically: to_origin=base_pose.inv(). Pointcloud and observation positions are therefore base-frame, despite world config string. rl_to_frames[0]=base-to-base; rl_to_frames[1]=base-to-TCP. Panda root orientation is identity in sampled states, so inverse TCP rotation maps local action axes to world axes here.",
+  "action_alignment": {
+    "collection_order": "World._run_iter saves only post-step states s1..s200. World.collect then moves first action a0 to end, yielding aligned (s1,a1)..(s199,a199) and invalid last pair (s200,a0).",
+    "lance_step_index": "Lance writer regenerates indices0..199; does not preserve environment step_idx1..200.",
+    "exclude": "Every episode last row (stored step_idx199) for action/next-state statistics; use all rows for state occupancy.",
+    "source_lines": [
+      "vendor/stable-worldmodel-lewm-compatible/stable_worldmodel/world/world.py:323",
+      "vendor/stable-worldmodel-lewm-compatible/stable_worldmodel/world/world.py:394",
+      "vendor/stable-worldmodel-lewm-compatible/stable_worldmodel/data/formats/lance.py:842"
+    ]
+  },
+  "rotation_action_note": "Canonical5D policy samples XYZ+world yaw+grip. Adapter maps yaw by R.T@[0,0,3*yaw], then component-clips[-1,1]. Panda subsequently norm-clips rotation and scales0.1rad. Nonzero world roll/pitch after adapter clipping are axis distortion, not independently sampled orientation dimensions.",
+  "rotation_local_any_component_clipped_fraction": 0.1977386934673367,
+  "world_normalized_rotation": {
+    "xyz_squared_energy_fraction": [
+      0.0014749408087523905,
+      0.0011689875604420225,
+      0.9973560716308035
+    ],
+    "xyz_abs_quantiles": {
+      "p50": [
+        1.1757405873544235e-09,
+        4.4005938476532336e-10,
+        0.34918808374811827
+      ],
+      "p90": [
+        0.012976743454390932,
+        0.01391051500707843,
+        1.002284075159695
+      ],
+      "p95": [
+        0.041173683718191405,
+        0.03576091227864987,
+        1.0061771500887176
+      ],
+      "p99": [
+        0.11629990580949362,
+        0.10689589705479799,
+        1.01863563375947
+      ],
+      "max": [
+        0.20148595042919648,
+        0.19706832756756398,
+        1.0377188342819843
+      ]
+    }
+  },
+  "world_controller_physical_rotation_rad": {
+    "xyz_squared_energy_fraction": [
+      0.0014075019734266858,
+      0.0011175482771966128,
+      0.9974749497493752
+    ],
+    "xyz_abs_quantiles": {
+      "p50": [
+        1.1757405873544234e-10,
+        4.400593847653234e-11,
+        0.03491880837481183
+      ],
+      "p90": [
+        0.0012923741978079582,
+        0.0013897519622956575,
+        0.0999660091674548
+      ],
+      "p95": [
+        0.004080599713075198,
+        0.0035264737152665457,
+        0.0999958605044813
+      ],
+      "p99": [
+        0.011341490234678678,
+        0.010492493303181836,
+        0.09999987663347744
+      ],
+      "max": [
+        0.019056758836841995,
+        0.018740813531070082,
+        0.10000003262464763
+      ]
+    }
+  },
+  "unclipped_world_xy_abs_max": 3.658785882598714e-08,
+  "source_references": {
+    "state": "mani_skill2/envs/sapien_env.py:655 + utils/sapien_utils.py:158 + envs/pick_and_place/pick_cube.py:122",
+    "native_success": "mani_skill2/envs/pick_and_place/pick_cube.py:68-83",
+    "observation_frames": "vendor/ManiSkill2-Learn/maniskill2_learn/env/wrappers.py:416,582,604",
+    "adapter": "src/ms2_lewm/expert.py:113-124",
+    "controller_rotation": "mani_skill2/agents/controllers/pd_ee_pose.py:161-170"
+  }
+}

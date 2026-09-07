@@ -1,0 +1,42 @@
+{
+  "snapshot": {
+    "dataset": "/root/autodl-tmp/JEPA4R-4r-jepa-L3kEpP/4r-jepa-maniskill2-lewm/artifacts/wm_collection_full_20260907T044524Z/pickcube_expert_mixed.lance",
+    "lance_version": 334,
+    "snapshot_utc": "2026-09-07T07:12:52.623954+00:00",
+    "committed_rows": 666200,
+    "complete_episodes_analyzed": 3331,
+    "states_analyzed": 666200,
+    "paired_state_actions_analyzed": 662869,
+    "excluded_incomplete_episodes": 0,
+    "episode_frames": 200,
+    "dt_seconds": 0.05,
+    "original_columns": [
+      "episode_idx",
+      "step_idx",
+      "sim_state",
+      "cube_pos",
+      "seed",
+      "object_height_above_table",
+      "tcp_object_distance",
+      "object_goal_distance",
+      "object_displacement",
+      "render_time",
+      "pixels",
+      "pointcloud",
+      "observation",
+      "rl_frame_related_states",
+      "rl_to_frames",
+      "reward",
+      "terminated",
+      "truncated",
+      "action",
+      "id"
+    ]
+  },
+  "source_report": "reports/sampling-distribution-20260907/report.html",
+  "notebook": "reports/sampling-distribution-20260907/distribution_audit.ipynb",
+  "production_policy_changed": false,
+  "raw_collection_read_only": true,
+  "successful_native_state_reconstruction_matches_reward": true,
+  "model_generalization_tested": false
+}

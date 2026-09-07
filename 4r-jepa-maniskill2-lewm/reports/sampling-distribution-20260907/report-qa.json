@@ -1,0 +1,23 @@
+{
+  "generated_by": "Data Analytics canonical buildPortableArtifact (same builder as report:deliver)",
+  "validation_and_structure": {
+    "counts": {
+      "blocks": 26,
+      "charts": 6,
+      "html": 0,
+      "metrics": 4,
+      "tables": 3
+    },
+    "html": "/root/autodl-tmp/JEPA4R-4r-jepa-L3kEpP/4r-jepa-maniskill2-lewm/artifacts/distribution_audit_20260907/report.html",
+    "ok": true,
+    "title": "采样分布审计：首次抬起很熟练，状态与动作覆盖仍需补齐"
+  },
+  "browser_qa": "failed: installed enhanced reader remained in fallback during official report:deliver",
+  "attempted_ready_timeouts_ms": [
+    5000,
+    15000
+  ],
+  "semantic_fallback": "included: narrative, cards, source inventory and chart/table data",
+  "static_chart_svg_extraction": "not_available",
+  "custom_parallel_html_renderer": false
+}

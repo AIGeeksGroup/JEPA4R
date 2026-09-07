@@ -1,0 +1,578 @@
+{
+  "snapshot": {
+    "source_dataset": "/root/autodl-tmp/JEPA4R-4r-jepa-L3kEpP/4r-jepa-maniskill2-lewm/artifacts/wm_collection_full_20260907T044524Z/pickcube_expert_mixed.lance",
+    "lance_version": 334,
+    "numeric_snapshot_utc": "2026-09-07T07:12:52.623954+00:00",
+    "audit_utc": "2026-09-07T07:19:36.817279+00:00",
+    "sample_seed": 20260907,
+    "sampling": "uniform random without replacement over complete snapshot episode IDs",
+    "population_episodes": 3331,
+    "episode_ids": [
+      432,
+      456,
+      672,
+      780,
+      783,
+      993,
+      1042,
+      1218,
+      1278,
+      1287,
+      1396,
+      1433,
+      1471,
+      1501,
+      1561,
+      1630,
+      1679,
+      1695,
+      1927,
+      1969,
+      2097,
+      2098,
+      2299,
+      2342,
+      2486,
+      2544,
+      2691,
+      2871,
+      2876,
+      2948,
+      3129,
+      3135
+    ],
+    "episodes_analyzed": 32,
+    "frames_analyzed": 6400,
+    "columns_read": [
+      "episode_idx",
+      "step_idx",
+      "pointcloud",
+      "cube_pos",
+      "object_height_above_table",
+      "tcp_object_distance"
+    ]
+  },
+  "integrity": {
+    "points_per_frame": 1200,
+    "channels": [
+      "x",
+      "y",
+      "z",
+      "r",
+      "g",
+      "b"
+    ],
+    "stored_dtype": "float16",
+    "inspection_dtype": "float32 (same boundary cast as encoder)",
+    "nonfinite_values": 0,
+    "rgb_min": [
+      0.035308837890625,
+      0.0,
+      0.0
+    ],
+    "rgb_max": [
+      1.0,
+      1.0,
+      1.0
+    ]
+  },
+  "method": {
+    "color_thresholds": {
+      "loose": {
+        "red_min": 0.2,
+        "red_over_other_ratio": 1.5,
+        "red_minus_other_min": 0.08
+      },
+      "strict": {
+        "red_min": 0.35,
+        "red_over_other_ratio": 2.0,
+        "red_minus_other_min": 0.15
+      }
+    },
+    "geometric_confirmation_radius_m": 0.045,
+    "cube_world_to_pointcloud_base_translation_xyz": [
+      0.6150000095367432,
+      0.0,
+      0.0
+    ],
+    "meaning": "cube candidates satisfy a red-color threshold AND lie within 4.5cm of recorded cube center in the pointcloud coordinate system",
+    "limitations": [
+      "No red cube candidate is a sampled visual detection proxy; not proof that the physical cube is invisible or that the task failed.",
+      "Both thresholds can miss very dark cube surfaces; geometric matching reduces false positives, not false negatives.",
+      "32 episodes are a limited uniform sample; temporal frames are correlated, so frame counts are not independent trials.",
+      "Grasp contact was not recorded; elevation and TCP distance do not establish contact-based native grasp."
+    ]
+  },
+  "pointcloud_geometry": {
+    "centroid_xyz_min": [
+      0.3541164994239807,
+      -0.09252090007066727,
+      0.09036283195018768
+    ],
+    "centroid_xyz_max": [
+      0.7492961287498474,
+      0.14360347390174866,
+      0.517377495765686
+    ],
+    "global_xyz_min": [
+      -0.08758544921875,
+      -0.212158203125,
+      0.00010371208190917969
+    ],
+    "global_xyz_max": [
+      0.85546875,
+      0.2578125,
+      0.58251953125
+    ],
+    "frame_centroid_step_displacement_m": {
+      "min": 0.00047206110320985317,
+      "p05": 0.0031259497394785286,
+      "p25": 0.010131652932614088,
+      "median": 0.01629835832864046,
+      "p75": 0.021478331182152033,
+      "p95": 0.02948735672980547,
+      "max": 0.05869114026427269
+    },
+    "frame_bounds_extent_m": {
+      "x": {
+        "min": 0.095703125,
+        "p05": 0.5533957958221436,
+        "p25": 0.6401100158691406,
+        "median": 0.6841897964477539,
+        "p75": 0.7356777191162109,
+        "p95": 0.79925537109375,
+        "max": 0.91400146484375
+      },
+      "y": {
+        "min": 0.167236328125,
+        "p05": 0.214111328125,
+        "p25": 0.2420501708984375,
+        "median": 0.27069091796875,
+        "p75": 0.297119140625,
+        "p95": 0.322021484375,
+        "max": 0.38189697265625
+      },
+      "z": {
+        "min": 0.163330078125,
+        "p05": 0.317230224609375,
+        "p25": 0.5244140625,
+        "median": 0.5379524230957031,
+        "p75": 0.542015790939331,
+        "p95": 0.5636987686157227,
+        "max": 0.5790872573852539
+      }
+    }
+  },
+  "thresholds": {
+    "loose": {
+      "frames": 6400,
+      "point_count_quantiles": {
+        "min": 14.0,
+        "p05": 52.0,
+        "p25": 224.0,
+        "median": 503.0,
+        "p75": 600.0,
+        "p95": 667.0,
+        "max": 796.0
+      },
+      "zero_point_frames": 0,
+      "zero_point_fraction": 0.0,
+      "under_five_point_frames": 0,
+      "under_five_point_fraction": 0.0,
+      "color_only": {
+        "frames": 6400,
+        "point_count_quantiles": {
+          "min": 14.0,
+          "p05": 52.0,
+          "p25": 224.0,
+          "median": 503.0,
+          "p75": 600.0,
+          "p95": 667.0,
+          "max": 796.0
+        },
+        "zero_point_frames": 0,
+        "zero_point_fraction": 0.0,
+        "under_five_point_frames": 0,
+        "under_five_point_fraction": 0.0
+      },
+      "red_points_outside_geometric_radius": 246,
+      "fraction_red_points_outside_radius": 9.056040323676134e-05,
+      "red_point_to_cube_center_distance_m": {
+        "min": 0.01976054534316063,
+        "p05": 0.020760644786059858,
+        "p25": 0.023214311338961124,
+        "median": 0.025813188403844833,
+        "p75": 0.028101984411478043,
+        "p95": 0.031315282732248303,
+        "max": 0.5499917268753052
+      },
+      "episodes_with_any_zero_detection": 0,
+      "episodes_with_any_under_five": 0,
+      "longest_zero_detection_run": {
+        "episode_idx": 432,
+        "frames": 0,
+        "seconds": 0.0,
+        "start_step": null,
+        "end_step_inclusive": null
+      },
+      "episode_longest_zero_run_frames": {
+        "min": 0.0,
+        "p05": 0.0,
+        "p25": 0.0,
+        "median": 0.0,
+        "p75": 0.0,
+        "p95": 0.0,
+        "max": 0.0
+      },
+      "time_thirds": [
+        {
+          "steps": [
+            0,
+            66
+          ],
+          "frames": 2144,
+          "point_count_quantiles": {
+            "min": 24.0,
+            "p05": 67.0,
+            "p25": 300.0,
+            "median": 542.0,
+            "p75": 614.0,
+            "p95": 667.0,
+            "max": 796.0
+          },
+          "zero_point_frames": 0,
+          "zero_point_fraction": 0.0,
+          "under_five_point_frames": 0,
+          "under_five_point_fraction": 0.0
+        },
+        {
+          "steps": [
+            67,
+            133
+          ],
+          "frames": 2144,
+          "point_count_quantiles": {
+            "min": 18.0,
+            "p05": 46.0,
+            "p25": 203.0,
+            "median": 489.0,
+            "p75": 584.0,
+            "p95": 657.0,
+            "max": 722.0
+          },
+          "zero_point_frames": 0,
+          "zero_point_fraction": 0.0,
+          "under_five_point_frames": 0,
+          "under_five_point_fraction": 0.0
+        },
+        {
+          "steps": [
+            134,
+            199
+          ],
+          "frames": 2112,
+          "point_count_quantiles": {
+            "min": 14.0,
+            "p05": 46.55000000000001,
+            "p25": 198.0,
+            "median": 470.0,
+            "p75": 595.0,
+            "p95": 673.0,
+            "max": 794.0
+          },
+          "zero_point_frames": 0,
+          "zero_point_fraction": 0.0,
+          "under_five_point_frames": 0,
+          "under_five_point_fraction": 0.0
+        }
+      ],
+      "height_and_tcp_bands": {
+        "height_under_5cm": {
+          "frames": 3154,
+          "point_count_quantiles": {
+            "min": 14.0,
+            "p05": 39.0,
+            "p25": 101.0,
+            "median": 305.0,
+            "p75": 562.0,
+            "p95": 659.0,
+            "max": 796.0
+          },
+          "zero_point_frames": 0,
+          "zero_point_fraction": 0.0,
+          "under_five_point_frames": 0,
+          "under_five_point_fraction": 0.0
+        },
+        "height_5_to_15cm": {
+          "frames": 1241,
+          "point_count_quantiles": {
+            "min": 22.0,
+            "p05": 98.0,
+            "p25": 479.0,
+            "median": 576.0,
+            "p75": 623.0,
+            "p95": 670.0,
+            "max": 766.0
+          },
+          "zero_point_frames": 0,
+          "zero_point_fraction": 0.0,
+          "under_five_point_frames": 0,
+          "under_five_point_fraction": 0.0
+        },
+        "height_at_least_15cm": {
+          "frames": 2005,
+          "point_count_quantiles": {
+            "min": 27.0,
+            "p05": 219.2,
+            "p25": 445.0,
+            "median": 540.0,
+            "p75": 606.0,
+            "p95": 671.0,
+            "max": 737.0
+          },
+          "zero_point_frames": 0,
+          "zero_point_fraction": 0.0,
+          "under_five_point_frames": 0,
+          "under_five_point_fraction": 0.0
+        },
+        "tcp_within_6cm": {
+          "frames": 4764,
+          "point_count_quantiles": {
+            "min": 134.0,
+            "p05": 298.15,
+            "p25": 466.0,
+            "median": 560.0,
+            "p75": 618.0,
+            "p95": 674.0,
+            "max": 796.0
+          },
+          "zero_point_frames": 0,
+          "zero_point_fraction": 0.0,
+          "under_five_point_frames": 0,
+          "under_five_point_fraction": 0.0
+        },
+        "tcp_beyond_6cm": {
+          "frames": 1636,
+          "point_count_quantiles": {
+            "min": 14.0,
+            "p05": 30.0,
+            "p25": 60.0,
+            "median": 95.0,
+            "p75": 147.0,
+            "p95": 214.0,
+            "max": 290.0
+          },
+          "zero_point_frames": 0,
+          "zero_point_fraction": 0.0,
+          "under_five_point_frames": 0,
+          "under_five_point_fraction": 0.0
+        }
+      }
+    },
+    "strict": {
+      "frames": 6400,
+      "point_count_quantiles": {
+        "min": 14.0,
+        "p05": 52.0,
+        "p25": 224.0,
+        "median": 503.0,
+        "p75": 600.0,
+        "p95": 667.0,
+        "max": 796.0
+      },
+      "zero_point_frames": 0,
+      "zero_point_fraction": 0.0,
+      "under_five_point_frames": 0,
+      "under_five_point_fraction": 0.0,
+      "color_only": {
+        "frames": 6400,
+        "point_count_quantiles": {
+          "min": 14.0,
+          "p05": 52.0,
+          "p25": 224.0,
+          "median": 503.0,
+          "p75": 600.0,
+          "p95": 667.0,
+          "max": 796.0
+        },
+        "zero_point_frames": 0,
+        "zero_point_fraction": 0.0,
+        "under_five_point_frames": 0,
+        "under_five_point_fraction": 0.0
+      },
+      "red_points_outside_geometric_radius": 234,
+      "fraction_red_points_outside_radius": 8.61432031356126e-05,
+      "red_point_to_cube_center_distance_m": {
+        "min": 0.01976054534316063,
+        "p05": 0.02076063696295023,
+        "p25": 0.023214290849864483,
+        "median": 0.025813141837716103,
+        "p75": 0.028101958334445953,
+        "p95": 0.03131514564156532,
+        "max": 0.5499917268753052
+      },
+      "episodes_with_any_zero_detection": 0,
+      "episodes_with_any_under_five": 0,
+      "longest_zero_detection_run": {
+        "episode_idx": 432,
+        "frames": 0,
+        "seconds": 0.0,
+        "start_step": null,
+        "end_step_inclusive": null
+      },
+      "episode_longest_zero_run_frames": {
+        "min": 0.0,
+        "p05": 0.0,
+        "p25": 0.0,
+        "median": 0.0,
+        "p75": 0.0,
+        "p95": 0.0,
+        "max": 0.0
+      },
+      "time_thirds": [
+        {
+          "steps": [
+            0,
+            66
+          ],
+          "frames": 2144,
+          "point_count_quantiles": {
+            "min": 24.0,
+            "p05": 67.0,
+            "p25": 300.0,
+            "median": 542.0,
+            "p75": 614.0,
+            "p95": 667.0,
+            "max": 796.0
+          },
+          "zero_point_frames": 0,
+          "zero_point_fraction": 0.0,
+          "under_five_point_frames": 0,
+          "under_five_point_fraction": 0.0
+        },
+        {
+          "steps": [
+            67,
+            133
+          ],
+          "frames": 2144,
+          "point_count_quantiles": {
+            "min": 18.0,
+            "p05": 46.0,
+            "p25": 203.0,
+            "median": 489.0,
+            "p75": 584.0,
+            "p95": 657.0,
+            "max": 722.0
+          },
+          "zero_point_frames": 0,
+          "zero_point_fraction": 0.0,
+          "under_five_point_frames": 0,
+          "under_five_point_fraction": 0.0
+        },
+        {
+          "steps": [
+            134,
+            199
+          ],
+          "frames": 2112,
+          "point_count_quantiles": {
+            "min": 14.0,
+            "p05": 46.55000000000001,
+            "p25": 198.0,
+            "median": 470.0,
+            "p75": 595.0,
+            "p95": 673.0,
+            "max": 794.0
+          },
+          "zero_point_frames": 0,
+          "zero_point_fraction": 0.0,
+          "under_five_point_frames": 0,
+          "under_five_point_fraction": 0.0
+        }
+      ],
+      "height_and_tcp_bands": {
+        "height_under_5cm": {
+          "frames": 3154,
+          "point_count_quantiles": {
+            "min": 14.0,
+            "p05": 39.0,
+            "p25": 101.0,
+            "median": 305.0,
+            "p75": 562.0,
+            "p95": 659.0,
+            "max": 796.0
+          },
+          "zero_point_frames": 0,
+          "zero_point_fraction": 0.0,
+          "under_five_point_frames": 0,
+          "under_five_point_fraction": 0.0
+        },
+        "height_5_to_15cm": {
+          "frames": 1241,
+          "point_count_quantiles": {
+            "min": 22.0,
+            "p05": 98.0,
+            "p25": 479.0,
+            "median": 576.0,
+            "p75": 623.0,
+            "p95": 670.0,
+            "max": 766.0
+          },
+          "zero_point_frames": 0,
+          "zero_point_fraction": 0.0,
+          "under_five_point_frames": 0,
+          "under_five_point_fraction": 0.0
+        },
+        "height_at_least_15cm": {
+          "frames": 2005,
+          "point_count_quantiles": {
+            "min": 27.0,
+            "p05": 219.2,
+            "p25": 445.0,
+            "median": 540.0,
+            "p75": 606.0,
+            "p95": 671.0,
+            "max": 737.0
+          },
+          "zero_point_frames": 0,
+          "zero_point_fraction": 0.0,
+          "under_five_point_frames": 0,
+          "under_five_point_fraction": 0.0
+        },
+        "tcp_within_6cm": {
+          "frames": 4764,
+          "point_count_quantiles": {
+            "min": 134.0,
+            "p05": 298.15,
+            "p25": 466.0,
+            "median": 560.0,
+            "p75": 618.0,
+            "p95": 674.0,
+            "max": 796.0
+          },
+          "zero_point_frames": 0,
+          "zero_point_fraction": 0.0,
+          "under_five_point_frames": 0,
+          "under_five_point_fraction": 0.0
+        },
+        "tcp_beyond_6cm": {
+          "frames": 1636,
+          "point_count_quantiles": {
+            "min": 14.0,
+            "p05": 30.0,
+            "p25": 60.0,
+            "median": 95.0,
+            "p75": 147.0,
+            "p95": 214.0,
+            "max": 290.0
+          },
+          "zero_point_frames": 0,
+          "zero_point_fraction": 0.0,
+          "under_five_point_frames": 0,
+          "under_five_point_fraction": 0.0
+        }
+      }
+    }
+  }
+}
