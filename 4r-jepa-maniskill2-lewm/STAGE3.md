@@ -24,7 +24,7 @@ TemporalEncoder 是独立的 D=512 时间模块，配置来自 `configs/temporal
 
 ## 训练完成后的入口
 
-先用新 stride1 配置完成真实 WM 训练，取得 `weights_epoch_*.pt` 及同目录的 `config.json`。支持读取完整 Lightning checkpoint，只要伴随配置明确记录当前时间尺度。
+先用新 stride1 配置完成真实 WM 训练。正式训练在本地入口覆盖 `max_epochs=10`，按 [LeWM 论文附录 E](https://arxiv.org/pdf/2603.19312#page=18)，vendor 官方配置仍保留 100。官方导出按已完成轮数从 1 开始编号，训练完成后取得 `weights_epoch_10.pt` 及同目录的 `config.json`。支持读取完整 Lightning checkpoint，只要伴随配置明确记录当前时间尺度。
 
 ```bash
 cd /path/to/JEPA4R/4r-jepa-maniskill2-lewm
@@ -32,18 +32,18 @@ source scripts/wm_env.sh
 
 # 只提取/检查冻结 encoder、配置及命令；不启动仿真或GPU
 .venv-worldmodel/bin/python scripts/run_frozen_ppo.py \
-  --wm-checkpoint /absolute/path/to/trained_wm/weights_epoch_100.pt \
+  --wm-checkpoint /absolute/path/to/trained_wm/weights_epoch_10.pt \
   --prepare-only
 
 # 正式PPO；默认CUDA、单环境，保留500万步预算
 # 先完成 bash scripts/setup_worldmodel.sh gpu
 .venv-worldmodel/bin/python scripts/run_frozen_ppo.py \
-  --wm-checkpoint /absolute/path/to/trained_wm/weights_epoch_100.pt \
+  --wm-checkpoint /absolute/path/to/trained_wm/weights_epoch_10.pt \
   --work-dir artifacts/ppo_frozen_wm/run_01
 
 # 小规模真实环境检查（只有资源足够时才会启动）
 .venv-worldmodel/bin/python scripts/run_frozen_ppo.py \
-  --wm-checkpoint /absolute/path/to/trained_wm/weights_epoch_100.pt \
+  --wm-checkpoint /absolute/path/to/trained_wm/weights_epoch_10.pt \
   --work-dir artifacts/ppo_frozen_wm/smoke_01 --smoke
 
 # 重载PPO并评测；使用同一个源WM或准备好的encoder.pt

@@ -48,7 +48,7 @@ rolled = wm.rollout(info, action_sequence)
 
 采集入口先跑预检，并写 `*.preflight.json`。按最新要求扩大至 30 个 episode，串行执行；成功数为零会抛错，**在创建全量数据集之前停止**。生产默认数量与官方 cube 配置一致：10000 episodes、10 environments、200 步。小规模验证仅显式缩减 episode 数和并行数。
 
-训练从 `vendor/le-wm/config/train/` 读取参数：seed 3072、train split 0.9、batch 128、workers 6、100 epochs、bf16、梯度裁剪 1.0、AdamW lr=5e-5、weight_decay=1e-3。按用户最新纠正，本地覆盖数据 frameskip=1，不能再把官方数据 frameskip=5 当作新增 encoder 的时间参数。现在采集、WM 输入、下一帧预测、PPO 决策均为1个控制步（20Hz，0.05秒），输入 `[t-2,t-1,t]`，动作 `a_t`，目标 `t+1`；旧 stride=5 checkpoint 不进入新冻结 PPO。split、shuffle/drop_last、列归一化、Lightning/spt 管理和模型导出沿用官方。调度器参数推导及配置沿用匹配的 stable_worldmodel；固定 SPT 版本实际按优化更新推进，未额外改写。
+训练从 `vendor/le-wm/config/train/` 读取参数：seed 3072、train split 0.9、batch 128、workers 6、bf16、梯度裁剪 1.0、AdamW lr=5e-5、weight_decay=1e-3。正式训练在本地入口覆盖 `max_epochs=10`，对应 [LeWM 论文附录 E](https://arxiv.org/pdf/2603.19312#page=18) 的训练轮数；vendor 官方配置仍保留原值 100，不修改上游文件。按用户最新纠正，本地覆盖数据 frameskip=1，不能再把官方数据 frameskip=5 当作新增 encoder 的时间参数。现在采集、WM 输入、下一帧预测、PPO 决策均为1个控制步（20Hz，0.05秒），输入 `[t-2,t-1,t]`，动作 `a_t`，目标 `t+1`；旧 stride=5 checkpoint 不进入新冻结 PPO。split、shuffle/drop_last、列归一化、Lightning/spt 管理和模型导出沿用官方。调度器参数推导及配置沿用匹配的 stable_worldmodel；固定 SPT 版本实际按优化更新推进，未额外改写。
 
 WM 的 MPC 评测使用官方 CEM/World 实现和300 samples/30 iterations/topk30/seed42，50次评测、goal offset25、budget50。改用单步模型后 action_block=1、horizon/receding_horizon=25，保留原本5×5=25个控制步的规划和执行跨度；外部适配器提供实际连续历史和已执行动作前缀。这是模型时间单位转换，不应与 PPO 每步决策混淆。`--smoke` 是资源受限集成检查。
 
@@ -110,7 +110,7 @@ CPU 专家预检使用 `physics_preflight.py` 中的无渲染子类：保留官�
 
 最新专家预检：30 个 episode、6000 个控制步，正式成功数 **0/30**。27 个 episode 曾满足位置条件，但没有同时满足机械臂静止条件，因此不能记为成功。预检采用无渲染 CPU 物理环境，自身 GPU 显存采样均为 0。详见 `artifacts/expert_cpu_preflight30.json` 与 `artifacts/expert_preflight_diagnosis.json`。未增加“到位后保持”阶段，未修改原 oracle、官方噪声或成功判定；**真实点云数据集尚未开采，真实数据 WM 训练和规划评测尚未运行**。
 
-训练入口另用 `artifacts/tests/` 内明确标记的合成测试夹具验证：执行真实 Lightning/spt 优化、保存官方模型、恢复优化器/调度器 checkpoint 并继续训练、重载模型。此测试仅验证代码链路，不是专家数据，不提供任务表征质量或成功率证据；生产训练拒绝该测试标记的 HDF5。完整 100-epoch 收敛实验不等同于集成检查。
+训练入口另用 `artifacts/tests/` 内明确标记的合成测试夹具验证：执行真实 Lightning/spt 优化、保存官方模型、恢复优化器/调度器 checkpoint 并继续训练、重载模型。此测试仅验证代码链路，不是专家数据，不提供任务表征质量或成功率证据；生产训练拒绝该测试标记的 HDF5。完整 10-epoch 训练实验不等同于集成检查。
 
 固定源码提交与哈希见 [repro/sources.lock.json](repro/sources.lock.json)，WM wheel 版本、下载地址和校验见 [repro/wm_dependencies.json](repro/wm_dependencies.json)，依赖版本另见 `requirements-rl.lock` 和 `requirements-worldmodel-overlay.lock`。`python3 scripts/bootstrap_sources.py --check` 验证上游源码，`python3 scripts/download_wm_dependencies.py --check-lock` 验证依赖锁格式。
 

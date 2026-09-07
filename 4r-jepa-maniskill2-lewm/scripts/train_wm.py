@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 """LeWM's training driver with a model replacement and point-cloud column.
 
-Production defaults are read directly from le-wm/config, not tuned here.
+Production defaults are read from le-wm/config, with the epoch budget set
+to 10 as reported in the LeWM paper's Appendix E.
 --smoke is an explicitly separate CPU integration test, not a reproduction
 of the full published training run.
 """
@@ -37,6 +38,9 @@ def model_forward(self, batch, stage, cfg):
 
 def make_config(dataset, run_name, smoke=False):
     cfg = lewm_config("ogb")
+    # Match the paper's training budget; the pristine upstream default is 100.
+    # https://arxiv.org/pdf/2603.19312#page=18 (Appendix E)
+    cfg.trainer.max_epochs = 10
     temporal_config = resolve_temporal_config()
     cfg.history_size = temporal_config["history_size"]
     cfg.output_model_name = run_name

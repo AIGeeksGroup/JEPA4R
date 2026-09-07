@@ -20,7 +20,7 @@
 
 ## 训练配方与接口
 
-生产配置保留官方LeWM的batch128、100epochs、AdamW lr5e-5/wd1e-3、bf16、梯度裁剪1、workers6、train split0.9、seed3072、T3；按最新要求覆盖frameskip为1。官方 normalizer、窗口划分、Lightning/spt管理、模型导出均复用。调度器参数推导复用匹配的stable_worldmodel脚本；配置保留interval=epoch，而固定SPT版本实测按优化更新推进调度器，未额外改写其行为。
+生产配置保留官方LeWM的batch128、AdamW lr5e-5/wd1e-3、bf16、梯度裁剪1、workers6、train split0.9、seed3072、T3。正式训练轮数在本地入口覆盖为 `max_epochs=10`，按 [LeWM 论文附录 E](https://arxiv.org/pdf/2603.19312#page=18)；vendor 官方配置的原值 100 保持不变。按最新要求覆盖frameskip为1。官方 normalizer、窗口划分、Lightning/spt管理、模型导出均复用。调度器参数推导复用匹配的stable_worldmodel脚本；配置保留interval=epoch，而固定SPT版本实测按优化更新推进调度器，未额外改写其行为。
 
 forward返回训练输出与损失；encode返回逐帧emb/latent1及时间聚合latent2；rollout继承固定公开LeWM JEPA语义，动作包含上下文动作，而非新版本stable_worldmodel的strictly-future语义。所有官方源码保持未修改。
 
