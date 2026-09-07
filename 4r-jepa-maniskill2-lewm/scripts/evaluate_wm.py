@@ -116,7 +116,17 @@ def make_consecutive_policy(*, solver, config, process=None, transform=None, dat
 
         def get_action(self, info_dict, **kwargs):
             info = dict(info_dict)
-            current = np.asarray(info["pointcloud"])
+            current = np.asarray(info["pointcloud"], dtype=np.float32)
+            # Lance stores a flat pointcloud; live observations and direct
+            # HDF5 retain [N,6]. Canonicalize before mixing stored initial
+            # frames with subsequent live frames in the temporal history.
+            if current.ndim == 3 and current.shape[-1] % 6 == 0:
+                current = current.reshape(*current.shape[:-1], -1, 6)
+            if "goal_pointcloud" in info:
+                goal = np.asarray(info["goal_pointcloud"], dtype=np.float32)
+                if goal.ndim == 3 and goal.shape[-1] % 6 == 0:
+                    goal = goal.reshape(*goal.shape[:-1], -1, 6)
+                info["goal_pointcloud"] = goal
             if current.shape[0] != self.env.num_envs or current.shape[1] != 1:
                 raise ValueError("Official World must provide one current point-cloud frame per environment.")
             if "step_idx" not in info:
@@ -189,6 +199,21 @@ def validate_evaluation_model_config(config):
     resolve_temporal_config(temporal)
 
 
+def load_evaluation_dataset(path):
+    """Use official readers and expose their existing indices for replay."""
+    import stable_worldmodel as swm
+
+    dataset = swm.data.load_dataset(str(Path(path).resolve()), keys_to_cache=["action"])
+    # Lance excludes its writer-managed index columns from default samples.
+    # Its public merge API can expose those existing columns in memory; no
+    # extra disk column or custom reader is required. World.evaluate then
+    # receives the same start-step marker as the HDF5 evaluation path.
+    if isinstance(dataset, swm.data.LanceDataset):
+        for name in ("episode_idx", "step_idx"):
+            dataset.merge_col([name], name)
+    return dataset
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dataset", type=Path, required=True)
@@ -213,7 +238,9 @@ def main():
         "pixels": official_eval.img_transform(cfg),
         "goal": official_eval.img_transform(cfg),
     }
-    dataset = swm.data.HDF5Dataset(path=args.dataset, keys_to_cache=["action"])
+    # The official loader reads the compact Lance directly as well as HDF5;
+    # evaluation must not require a second full-size converted dataset.
+    dataset = load_evaluation_dataset(args.dataset)
     if dataset.get_dim("action") != 7:
         raise ValueError("Evaluation requires seven-dimensional native ManiSkill2 actions.")
     col_name = "episode_idx" if "episode_idx" in dataset.column_names else "ep_idx"

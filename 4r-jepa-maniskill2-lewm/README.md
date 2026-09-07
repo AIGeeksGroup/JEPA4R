@@ -40,13 +40,17 @@ encoded = wm.encode({"pointcloud": context})  # context [B,H,1200,6]
 rolled = wm.rollout(info, action_sequence)
 ```
 
-`rollout` 直接调用固定版本官方 `JEPA.rollout`：输入 context `[B,S,H,N,C]`，动作 `[B,S,L,A]` **包含上下文动作**，输出 `[B,S,L+1,D]`。这与较新的 stable_worldmodel 的 strictly-future 接口不同，因此依赖专门固定在与 le-wm 匹配的旧版。官方初始规划历史 H=1 也支持。官方 LanceWriter 会展平非图像列；模型内部将 7200 维无损恢复成 1200×6，未更改数据写入算法。
+`rollout` 直接调用固定版本官方 `JEPA.rollout`：输入 context `[B,S,H,N,C]`，动作 `[B,S,L,A]` **包含上下文动作**，输出 `[B,S,L+1,D]`。这与较新的 stable_worldmodel 的 strictly-future 接口不同，因此依赖专门固定在与 le-wm 匹配的旧版。官方初始规划历史 H=1 也支持。Lance 将点云展平为7200维；模型内部恢复1200×6并转回float32。存储精度调整见下文。
 
 ## 采样、训练与评测
 
 使用固定版本 `stable_worldmodel/scripts/data/collect_cube.py` 的带噪声启发式专家流程。噪声默认值与官方一致：`action_noise=0.1,p_random_action=0,noise_smoothing=0.5,min_norm=0.4,seed=None`。每个 episode 的噪声强度与逐步噪声采样复用官方实现，不使用 PPO smoke checkpoint 充当专家。
 
 采集入口先跑预检，并写 `*.preflight.json`。按最新要求扩大至 30 个 episode，串行执行；成功数为零会抛错，**在创建全量数据集之前停止**。生产默认数量与官方 cube 配置一致：10000 episodes、10 environments、200 步。小规模验证仅显式缩减 episode 数和并行数。
+
+磁盘修复仅位于本项目writer适配器：优先直接写 `.lance`，删除与点云完全重复的 `rl_xyz/rl_rgb`、与 `observation` 完全重复的 `rl_state/proprio`；只把点云落盘为float16，在线观测和模型计算仍float32。JPEG保持官方质量95，动作、状态、仿真快照保留。训练、评测直接使用官方Lance reader，不再额外转换全量HDF5；选择 `.h5/.hdf5` 时直接流式写压缩HDF5，不创建中间Lance。
+
+容量检查先允许少量探测数据；首个episode提交后按实际文件增长外推剩余量，并增加20%余量与默认10GiB保留空间，后续每10个episode重算，已经写入的部分不重复计入剩余空间。`--reserve-gib` 可显式设置保留空间，不会自动缩减采样配方。2026-09-07真实10回合存储短测，最终分批writer约47.38MiB，外推10000回合仍约46.27GiB；不能据“fp16”宣称当前磁盘够用。该短测0/10原生成功，仅是性能测量，不是可用于正式训练的专家数据。
 
 训练从 `vendor/le-wm/config/train/` 读取参数：seed 3072、train split 0.9、batch 128、workers 6、bf16、梯度裁剪 1.0、AdamW lr=5e-5、weight_decay=1e-3。正式训练在本地入口覆盖 `max_epochs=10`，对应 [LeWM 论文附录 E](https://arxiv.org/pdf/2603.19312#page=18) 的训练轮数；vendor 官方配置仍保留原值 100，不修改上游文件。按用户最新纠正，本地覆盖数据 frameskip=1，不能再把官方数据 frameskip=5 当作新增 encoder 的时间参数。现在采集、WM 输入、下一帧预测、PPO 决策均为1个控制步（20Hz，0.05秒），输入 `[t-2,t-1,t]`，动作 `a_t`，目标 `t+1`；旧 stride=5 checkpoint 不进入新冻结 PPO。split、shuffle/drop_last、列归一化、Lightning/spt 管理和模型导出沿用官方。调度器参数推导及配置沿用匹配的 stable_worldmodel；固定 SPT 版本实际按优化更新推进，未额外改写。
 
@@ -58,7 +62,7 @@ WM 的 MPC 评测使用官方 CEM/World 实现和300 samples/30 iterations/topk3
 
 encoder 强制 eval、requires_grad=False，forward 不建梯度图；actor/critic 共享同一冻结实例，官方优化器排除冻结参数。每条 PPO 观测自带连续三帧点云和当前 state；只堆叠点云，state 不堆叠、不重新计算，reset 清空历史。模型导出完整记录独立时序配置；旧的 LeWM 预测器派生时间模块 checkpoint 不会静默加载。
 
-必要的环境接口差异公开记录：官方 cube 指 OGBench，未提供 ManiSkill2 数据。这里把官方专家接到 ManiSkill2 状态和控制接口，保留 RGB/状态列并额外采集原版 RL 点云；模型消费点云时不应用 RGB ImageNet 归一化。环境状态回放和目标设置使用 ManiSkill2 对应方法。除这些任务/模态接口和明确要求的模型/损失改动，采集、存储、训练、评测算法及生产超参不另行改写。
+必要的环境接口差异公开记录：官方 cube 指 OGBench，未提供 ManiSkill2 数据。这里把官方专家接到 ManiSkill2 状态和控制接口，保留 RGB/状态列并额外采集原版 RL 点云；模型消费点云时不应用 RGB ImageNet 归一化。环境状态回放和目标设置使用 ManiSkill2 对应方法。存储适配仅做去重、点云精度与文件布局调整，不改变专家、噪声、采样步数、训练窗口或损失。
 
 ## 复现入口
 
@@ -77,8 +81,8 @@ bash scripts/run_rl.sh eval-smoke
 
 bash scripts/setup_worldmodel.sh
 source scripts/wm_env.sh
-.venv-worldmodel/bin/python scripts/collect_wm.py --output artifacts/expert_smoke.h5 --smoke
-.venv-worldmodel/bin/python scripts/train_wm.py --dataset artifacts/expert_smoke.h5 --run-name wm_smoke --smoke
+.venv-worldmodel/bin/python scripts/collect_wm.py --output artifacts/expert_smoke.lance --smoke
+.venv-worldmodel/bin/python scripts/train_wm.py --dataset artifacts/expert_smoke.lance --run-name wm_smoke --smoke
 .venv-worldmodel/bin/python scripts/evaluate_wm.py --help
 ```
 
@@ -108,9 +112,9 @@ CPU 专家预检使用 `physics_preflight.py` 中的无渲染子类：保留官�
 
 模型测试覆盖目标帧梯度、严格动作索引、未来帧不泄漏、逐帧 SIGReg、时序配置、官方 PointNet/critic 身份、多步 rollout、规划代价、形状恢复、冻结权重、checkpoint 迁移和来源校验。发布目录验证为 **116 项 CPU 测试通过**；记录见 [validation/summary.json](validation/summary.json) 和 [JUnit](validation/cpu-tests.xml)。重新运行的完整报告保存在忽略提交的 `artifacts/tests/`。
 
-最新专家预检：30 个 episode、6000 个控制步，正式成功数 **0/30**。27 个 episode 曾满足位置条件，但没有同时满足机械臂静止条件，因此不能记为成功。预检采用无渲染 CPU 物理环境，自身 GPU 显存采样均为 0。详见 `artifacts/expert_cpu_preflight30.json` 与 `artifacts/expert_preflight_diagnosis.json`。未增加“到位后保持”阶段，未修改原 oracle、官方噪声或成功判定；**真实点云数据集尚未开采，真实数据 WM 训练和规划评测尚未运行**。
+最新专家预检：修复 `set_new_target` 错误调用任务reset hook后，目标Z基准固定为桌面方块中心 `cube_half_size[2]=.02`，范围 `.02–.52m`；XY范围、RNG和最小间距拒绝采样保留。同一份记录噪声重测30回合，原生成功仍 **0/30**，仅位置到达 **28/30**，IK失败由199降至186，因此高度错误不能解释全部IK失败。旧版本的27/30是历史位置指标。证据见 [validation/retarget-fix.json](validation/retarget-fix.json)。未增加保持阶段，未修改oracle、官方噪声或成功判定。真实10回合点云短测仅用于测时/测空间；**正式专家数据采集、真实数据WM训练和规划评测仍未启动**。
 
-训练入口另用 `artifacts/tests/` 内明确标记的合成测试夹具验证：执行真实 Lightning/spt 优化、保存官方模型、恢复优化器/调度器 checkpoint 并继续训练、重载模型。此测试仅验证代码链路，不是专家数据，不提供任务表征质量或成功率证据；生产训练拒绝该测试标记的 HDF5。完整 10-epoch 训练实验不等同于集成检查。
+训练入口另用 `artifacts/tests/` 内明确标记的合成测试夹具验证：执行真实 Lightning/spt 优化、保存官方模型、恢复优化器/调度器 checkpoint 并继续训练、重载模型。此测试仅验证代码链路，不是专家数据，不提供任务表征质量或成功率证据。生产训练在GPU分配前拒绝HDF5属性或邻接 `<dataset>.json` 中明确的 `SYNTHETIC_UNIT_TEST_ONLY` / `BENCHMARK_ONLY_NOT_TRAINING_DATA` 标记；普通外部数据不要求额外manifest。完整10-epoch训练实验不等同于集成检查。
 
 固定源码提交与哈希见 [repro/sources.lock.json](repro/sources.lock.json)，WM wheel 版本、下载地址和校验见 [repro/wm_dependencies.json](repro/wm_dependencies.json)，依赖版本另见 `requirements-rl.lock` 和 `requirements-worldmodel-overlay.lock`。`python3 scripts/bootstrap_sources.py --check` 验证上游源码，`python3 scripts/download_wm_dependencies.py --check-lock` 验证依赖锁格式。
 

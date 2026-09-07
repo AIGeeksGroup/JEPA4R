@@ -95,7 +95,7 @@ def test_zero_success_preflight_never_starts_collection(monkeypatch, tmp_path):
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     output = tmp_path / "forbidden.h5"
-    monkeypatch.setattr(sys, "argv", ["collect_wm.py", "--output", str(output), "--smoke"])
+    monkeypatch.setattr(sys, "argv", ["collect_wm.py", "--output", str(output), "--smoke", "--reserve-gib", "0"])
     with pytest.raises(RuntimeError, match="ZERO preflight successes"):
         module.main()
     assert len(constructed) == 1  # Only the small preflight world exists.

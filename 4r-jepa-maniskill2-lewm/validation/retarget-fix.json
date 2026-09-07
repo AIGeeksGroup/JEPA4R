@@ -1,0 +1,23 @@
+{
+  "validation_kind": "CPU physics-only preflight after retarget workspace fix",
+  "same_initial_noise_rng_as_original_30_episode_preflight": true,
+  "episodes": 30,
+  "successes": 0,
+  "episodes_reached_position": 28,
+  "ik_failures": 186,
+  "previous_ik_failures": 199,
+  "maximum_goal_height_m": 0.5198860899162228,
+  "noise_config": {
+    "policy_type": "markov_oracle",
+    "action_noise": 0.1,
+    "p_random_action": 0.0,
+    "noise_smoothing": 0.5,
+    "min_norm": 0.4
+  },
+  "official_oracle_unchanged": true,
+  "native_success_condition_unchanged": true,
+  "renderer_calls": 0,
+  "training_dataset_created": false,
+  "full_collection_allowed": false,
+  "tests": "15 passed: test_target_resampling.py and test_collection_contract.py"
+}

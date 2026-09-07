@@ -1,0 +1,69 @@
+{
+  "date_utc": "2026-09-07",
+  "hardware": "NVIDIA GeForce RTX 5090, dedicated to this project",
+  "training_runtime": "Python 3.10; torch 2.8.0+cu128; torchvision 0.23.0+cu128",
+  "ppo": {
+    "real_gpu_steps_per_run": 6600,
+    "short_benchmark_rollout_steps": 3300,
+    "production_rollout_steps": 20000,
+    "production_total_steps": 5000000,
+    "point_count": 1200,
+    "minibatch": 330,
+    "ppo_epochs": 2,
+    "initial_critic_warmup_epochs": 4,
+    "five_environments": {
+      "steady_steps_per_second": 279.85074626865674,
+      "linear_hours": 4.962962962962962,
+      "planning_hours": [
+        5,
+        7
+      ]
+    },
+    "one_environment": {
+      "steady_steps_per_second": 130.94718463553033,
+      "linear_hours": 10.606481481481483,
+      "planning_hours": [
+        11,
+        14
+      ]
+    },
+    "limitation": "Step-budget runtime estimate; short real GPU optimizer runs do not establish convergence or final success rate."
+  },
+  "sampling": {
+    "real_benchmark_episodes": 10,
+    "environments": 10,
+    "steps_per_episode": 200,
+    "real_control_steps": 2000,
+    "seconds_including_writer": 57.9398156380048,
+    "steps_per_second_including_fsync": 34.4958287166768,
+    "production_episodes": 10000,
+    "linear_hours": 16.105006785558846,
+    "planning_hours": [
+      16,
+      20
+    ],
+    "benchmark_native_successes": 0,
+    "full_collection_gate_passed": false,
+    "benchmark_data_is_not_training_data": true,
+    "compact_lance_logical_gib_per_10000_episodes_before_transaction_recheck": 46.265361830592155,
+    "final_compact_lance_gib_per_10000_episodes": 46.270894818007946,
+    "final_writer_replay_preserved_arrow_and_jpeg_bytes": true
+  },
+  "artifacts": [
+    "artifacts/benchmarks/ppo_gpu_p1_20260907T013710Z/timing_summary.json",
+    "artifacts/benchmarks/ppo_gpu_p5_20260907T013839Z/timing_summary.json",
+    "artifacts/benchmark_sampling_20260907/report.json"
+  ],
+  "utilization_limits": {
+    "full_machine_saturation_benchmark": false,
+    "ppo_five_environment_gpu_utilization_log_snapshots_percent": [
+      50,
+      63
+    ],
+    "gpu_snapshots_are_not_full_run_averages": true,
+    "sampling_cpu_process_seconds": 53.796251767,
+    "sampling_wall_seconds": 60.267822752997745,
+    "sampling_environment_steps_are_serial_in_official_EnvPool": true,
+    "estimates_are_for_current_implementation_not_maximum_hardware_throughput": true
+  }
+}

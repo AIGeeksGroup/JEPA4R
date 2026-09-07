@@ -1,8 +1,8 @@
 # 当前采样策略
 
-当前采用**原始 OGBench `CubeMarkovOracle` + stable_worldmodel 原始 `ExpertPolicy.get_action` 噪声 + ManiSkill2 状态/动作接口适配**。没有新增停稳阶段，没有改 oracle、噪声、任务目标采样或原生 success 条件。
+当前采用**原始 OGBench `CubeMarkovOracle` + stable_worldmodel 原始 `ExpertPolicy.get_action` 噪声 + ManiSkill2 状态/动作接口适配**。没有新增停稳阶段，没有改 oracle、噪声或原生 success 条件；中途目标重采样的高度基准错误已修复，见下文。
 
-实际扩大预检的结果为 **0/30 success**。其中 **27/30 仅曾到达位置条件**；原生 success 还要求手臂同时静止。正式点云采集门槛仍关闭。
+修复后同噪声30回合预检结果仍为 **0/30 success**，其中 **28/30 仅曾到达位置条件**；原生 success 还要求手臂同时静止。旧版本的位置结果是27/30。正式点云采集门槛仍关闭。
 
 ## 来源与原始启发式策略
 
@@ -46,7 +46,7 @@ noisy_action = clip(oracle_action + epsilon, -1, 1)
 - 旋转：原始 world-yaw 最大 `.3rad` 转换为 Panda `.1rad` 旋转向量单位，再转到末端坐标系。最终遵守原始 Panda 控制器界限；两个机器人可实现的单步转角不同。
 - 夹爪：读取 Panda 原始控制器的物理上下界 `l,u`（当前 `[-.01,.04]m`），以 `c=(u-q)/(u-l)` 表示闭合量；把官方夹爪增量加到 c，限幅到 `[0,1]`，再用同一上下界反变换为目标关节位置及归一化动作。这样零增量保持当前位置，完全闭合保留原 RL 的受力端点。
 
-ManiSkill 目标仍由原生任务采样，原生成功定义完整保留：
+中途 `set_new_target` 不再调用仅供reset使用的 `_initialize_task`：该函数将当前方块高度作为目标高度基准，方块被举高后反复重采会让目标超出初始范围。当前适配保留原生XY范围、RNG和最小间距拒绝采样，把Z基准固定为桌面方块中心 `.02m`，目标Z范围 `.02–.52m`。原生成功定义完整保留：
 
 ```text
 is_obj_placed = ||cube_position - goal_position|| <= .025m
@@ -58,7 +58,7 @@ OGBench cube 与 ManiSkill PickCube 是不同的物理任务和目标分布；�
 
 ## 正式配置与实际执行
 
-| 项目 | 正式采集配置 | 本次实际执行 |
+| 项目 | 正式采集配置 | CPU预检实际执行（另有下文10回合渲染性能短测） |
 |---|---|---|
 | 环境数 | 官方 `10` 个环境 | `1` 个，串行 |
 | 轨迹数 | 官方 `10,000` | 扩大预检 `30` 条 |
@@ -70,18 +70,24 @@ OGBench cube 与 ManiSkill PickCube 是不同的物理任务和目标分布；�
 
 CPU 预检复用官方 `World.evaluate`、`EnvPool` 及真实 ManiSkill 物理/控制器/成功条件，仅省去图形构建。该路径明确禁止 collect，不能产生训练数据。记录确认 `SapienRenderer` 和 `RenderClient` 调用数均为0，进程 GPU 显存样本全部为0。
 
-30条中有27条曾达到位置条件，共438个位置满足的状态；没有任何一个同时满足静止条件。位置满足时，最大手臂关节速度的最小值仍为 `.34014rad/s`，高于原生 `.2rad/s` 阈值。最近目标距离为 `1.098mm`。原始 oracle 到达目标后释放并退避，PickCube 还要求静止；没有为获得 success 加入停稳阶段或改写成功条件。
+旧版本30条中有27条曾达到位置条件，共438个位置满足的状态；没有任何一个同时满足静止条件。历史位置满足时，最大手臂关节速度的最小值为 `.34014rad/s`，高于原生 `.2rad/s` 阈值。修复高度基准后同噪声重测，位置到达28/30、原生成功仍0/30，IK失败从199次降到186次。高度bug不能解释全部IK失败。原始oracle到达目标后释放并退避，PickCube还要求静止；没有为获得success加入停稳阶段或改写成功条件。
 
-证据：`artifacts/expert_cpu_preflight30.json`、`artifacts/expert_cpu_preflight30.trace.json`、`artifacts/expert_preflight_diagnosis.json`。所有 success 字段都表示原生成功，27条单独标记为 `episodes_reached_position`。
+最新修复证据：[validation/retarget-fix.json](validation/retarget-fix.json)。历史证据：`artifacts/expert_cpu_preflight30.json`、`artifacts/expert_cpu_preflight30.trace.json`、`artifacts/expert_preflight_diagnosis.json`。所有success字段都表示原生成功，位置到达单独统计。
 
 ## 采集门槛、存储与训练片段
 
 `scripts/collect_wm.py` 默认先验证 **30条**。成功数为0时在数据集创建前报错；已有 CPU 诊断不会伪装成点云数据，也不会自动放行正式采集。图形入口还在资源分配前读取 GPU 的实际 `memory.free`，要求至少 `max(2048,1024+256*num_envs)` MiB 空闲；评测把模型移到 CUDA 前再预留1024MiB。不会结束、覆盖或修改已有任务。
 
-门槛满足后，预定的数据路径直接调用官方 `World.collect` 和默认 `LanceWriter`；需要 HDF5 时再调用官方 `swm.data.convert`。未自行实现采集循环或 writer。正式采集的 `terminate_at_goal=False` 与官方一致，成功后可继续至该轨迹上限。
+门槛满足后，数据路径直接调用官方 `World.collect`；本项目 `CompactLanceWriter` 在官方writer上只改变点云存储类型和删除精确重复列，官方JPEG质量95保留。直接使用 `.lance` 训练及评测，不生成全量HDF5副本。兼容 `.h5/.hdf5` 入口直接流式写gzip压缩HDF5，图像沿用原Lance→HDF5路径的JPEG95编解码，既不复制全量数据也不增加JPEG压缩轮次。两种格式都由原版 `stable_worldmodel.data.load_dataset` 读取。正式采集的 `terminate_at_goal=False` 与官方一致，成功后可继续至轨迹上限。
 
-每帧点云来自原始 RL wrapper：`1200` 点、`world` 坐标、`xyz+rgb` 共6通道。Lance 原生存储会把它展平为7200维，模型入口恢复 `[1200,6]`，原始值不改变。
+每帧点云来自原始RL wrapper：`1200`点、`world`坐标、`xyz+rgb`共6通道。删除完全重复的 `rl_xyz/rl_rgb`，状态保留 `observation` 并删除完全重复的 `rl_state/proprio`；仿真状态、动作和RGB保留。点云仅在落盘时量化为float16，Lance仍展平为7200维，模型入口恢复 `[1200,6]` 并转float32。量化不改变形状或时间索引，但不再与原float32逐位相同：测试中绝对值≤1的分量最大舍入误差≤`2^-12 ≈ 0.00024414`，对应XYZ约0.244mm。在线观测与PPO输入保持float32。
+
+首个episode提交后根据实际文件增长估算剩余全量空间，增加20%余量并默认保留10GiB（`--reserve-gib`可显式改）；以后每10个episode重新计算。检查使用当前空闲磁盘和剩余步数，已落盘数据不重复计数。采集前的检查只预留少量探测数据，不把未压缩fp16字节数错误当成压缩后容量下界。空间不足即停止，不缩短轨迹、不减少点数、不改噪声或JPEG质量。
+
+2026-09-07真实10环境×10回合×200步的性能短测为0/10成功，明确标为禁止用于正式训练的benchmark。约57.94秒完成2000控制步，按同吞吐外推全量约16.1小时。最终分批writer在CPU上复放相同Arrow/JPEG字节后为49,682,995字节，外推10000回合约46.27GiB；按20%余量、每回合额外1帧保守预算和10GiB保留空间需约65.81GiB可用。该估算来自少量场景，后续仍持续复核；当前磁盘不足，不因已用fp16就放行。证据：`artifacts/benchmark_sampling_20260907/report.json`、`final_storage_report.json`。
 
 按用户最新纠正，训练片段使用 `T=3`、`num_preds=1`、本地 `frameskip=1`，每片段取4个连续控制步的帧。相对起点 s，观测对应 `s,s+1,s+2,s+3`；动作每步7维，不再拼成35维。预测使用第三帧出发的 `a_(s+2)`，目标为 `s+3` 的 latent1。SIGReg 使用全部4帧，并逐帧沿 batch 维计算。原官方数据配置 frameskip=5 仍保存在 vendor，作为原始参考；它不是新增时间编码器的参数，当前实现不再沿用该抽帧间隔。第三阶段冻结 encoder 的 PPO 同样使用连续三帧。
 
-新增记录同时保存官方噪声 PCG64 状态和 NumPy 全局 RNG 状态；后者影响 oracle 的退避位置抽样。已有30条旧报告仅记录了前者，不补造缺失状态。源码锁与哈希见 `artifacts/official_sources.lock.json`；8个采集契约测试已通过，覆盖原始 canonical 噪声/RNG一致性、零成功门槛、GPU资源门槛和夹爪单位转换。
+性能短测在邻接 `<dataset>.json` 中明确记录 `BENCHMARK_ONLY_NOT_TRAINING_DATA=true`。生产训练入口在GPU分配前拒绝此标记与 `SYNTHETIC_UNIT_TEST_ONLY`，同时兼容旧HDF5属性标记；不会要求正常外部数据必须附带manifest。
+
+新增记录同时保存官方噪声 PCG64 状态和 NumPy 全局 RNG 状态；后者影响 oracle 的退避位置抽样。已有30条旧报告仅记录了前者，不补造缺失状态。源码锁与哈希见 `artifacts/official_sources.lock.json`；8个采集契约测试已通过，覆盖原始 canonical 噪声/RNG一致性、零成功门槛、GPU资源门槛和夹爪单位转换。存储修复和实际空间证据见 [validation/compact-storage.json](validation/compact-storage.json)。

@@ -27,6 +27,8 @@ def main():
     parser.add_argument("--episodes", type=int)
     parser.add_argument("--num-envs", type=int)
     parser.add_argument("--horizon", type=int)
+    parser.add_argument("--reserve-gib", type=float, default=10.0,
+                        help="Keep this disk reserve; default includes room for CUDA environments/checkpoints")
     args = parser.parse_args()
 
     import numpy as np
@@ -34,6 +36,7 @@ def main():
     import stable_worldmodel as swm
     from ms2_lewm.environment import make_world
     from ms2_lewm.expert import ManiSkillNoisyExpert, capture_numpy_rng, official_noise_config, restore_numpy_rng
+    from ms2_lewm.storage import GIB, StorageBudget, collection_writer
 
     cfg = OmegaConf.load(
         ROOT / "vendor/stable-worldmodel-lewm-compatible/scripts/data/config/ogb.yaml"
@@ -47,14 +50,20 @@ def main():
         parser.error("Recipe overrides require --smoke; full collection keeps official counts/horizon")
     if args.output.exists():
         raise FileExistsError(f"Dataset already exists: {args.output}; choose a new output")
-    lance_path = args.output if args.output.suffix == ".lance" else args.output.with_suffix(".lance")
-    if lance_path.exists():
-        raise FileExistsError(f"Collection intermediate already exists: {lance_path}")
     if args.output.suffix not in (".lance", ".h5", ".hdf5"):
         parser.error("Output must have .lance, .h5, or .hdf5 suffix")
+    if args.reserve_gib < 0:
+        parser.error("--reserve-gib must be nonnegative")
     rng = np.random.default_rng(cfg.seed)
     seed = rng.integers(0, 1_000_000).item()
     args.output.parent.mkdir(parents=True, exist_ok=True)
+    storage_report_path = args.output.with_suffix(args.output.suffix + ".storage.json")
+    storage_options = dict(expected_episodes=episodes, horizon=horizon,
+                           reserve_bytes=int(args.reserve_gib * GIB), report_path=storage_report_path)
+    if not args.preflight_only:
+        # Cheap nominal check before renderer creation; actual JPEG/state
+        # bytes are included by the writer's per-episode measured check.
+        StorageBudget(args.output, **storage_options).check(nominal=True)
 
     def jsonable(value):
         if isinstance(value, np.ndarray):
@@ -123,15 +132,12 @@ def main():
         policy.rng.bit_generator.state = noise_state
         world.set_policy(policy)
         restore_numpy_rng(numpy_state)
-        # Exactly the official default Lance collector/writer.  Numeric point
-        # arrays are losslessly flattened by its native format implementation.
-        world.collect(path=lance_path, episodes=episodes, seed=seed, options=None)
+        # Keep the official episode iterator, policy and transition alignment.
+        # Only the writer removes aliases and stores pointcloud as float16.
+        writer = collection_writer(args.output, **storage_options)
+        world.collect(writer=writer, episodes=episodes, seed=seed, options=None)
     finally:
         world.close()
-
-    if lance_path != args.output:
-        # Official conversion retains its writer-created episode/step indices.
-        swm.data.convert(lance_path, args.output, dest_format="hdf5", mode="error")
 
     provenance = {
         "collector": "stable_worldmodel.World.collect",
@@ -151,9 +157,13 @@ def main():
         "horizon": horizon,
         "config_seed": int(cfg.seed),
         "world_seed": seed,
-        "pointcloud": {"points": 1200, "frame": "world", "channels": "xyz_rgb"},
-        "format": "official LanceWriter; optional official swm.data.convert to HDF5",
-        "lance_dataset": str(lance_path.resolve()),
+        "pointcloud": {"points": 1200, "frame": "world", "channels": "xyz_rgb",
+                       "storage_dtype": "float16", "model_input_dtype": "float32"},
+        "format": "compact streaming Lance/JPEG95" if args.output.suffix == ".lance" else "direct streaming gzip HDF5/JPEG95 round-trip",
+        "reader": "unmodified stable_worldmodel.data.load_dataset",
+        "removed_exact_aliases": ["rl_xyz", "rl_rgb", "rl_state", "proprio"],
+        "intermediate_dataset": None,
+        "storage_report": str(storage_report_path.resolve()),
         "dataset": str(args.output.resolve()),
     }
     sidecar = args.output.with_suffix(args.output.suffix + ".json")

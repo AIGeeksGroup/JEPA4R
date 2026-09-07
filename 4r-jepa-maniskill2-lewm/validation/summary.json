@@ -1,6 +1,6 @@
 {
   "test_suite": {
-    "passed": 116,
+    "passed": 136,
     "device": "cpu",
     "new_simulator_or_gpu_jobs": false
   },
@@ -72,7 +72,8 @@
     "ik_failures": 199,
     "minimum_goal_distance_m": 0.001098057779985696,
     "renderer_calls": 0,
-    "own_gpu_bytes_max": 0
+    "own_gpu_bytes_max": 0,
+    "historical_before_retarget_fix": true
   },
   "real_expert_pointcloud_dataset_created": false,
   "real_worldmodel_training_complete": false,
@@ -98,7 +99,8 @@
     "production_frozen_ppo": "cuda",
     "smoke": "cpu",
     "silent_cpu_fallback": false,
-    "gpu_installer_executed_in_this_change": false
+    "gpu_installer_executed_in_this_change": true,
+    "production_ppo_parallel_environments": 5
   },
   "frozen_ppo_compatibility": {
     "source": "CPU synthetic fixtures in test_frozen_ppo.py/test_frozen_checkpoint.py",
@@ -107,5 +109,40 @@
     "both_heads_respond_to_state": true,
     "optimizers_restored": true,
     "recorded_temporal_config_restored": true
+  },
+  "expert_preflight_after_retarget_fix": {
+    "validation_kind": "CPU physics-only preflight after retarget workspace fix",
+    "same_initial_noise_rng_as_original_30_episode_preflight": true,
+    "episodes": 30,
+    "successes": 0,
+    "episodes_reached_position": 28,
+    "ik_failures": 186,
+    "previous_ik_failures": 199,
+    "maximum_goal_height_m": 0.5198860899162228,
+    "noise_config": {
+      "policy_type": "markov_oracle",
+      "action_noise": 0.1,
+      "p_random_action": 0.0,
+      "noise_smoothing": 0.5,
+      "min_norm": 0.4
+    },
+    "official_oracle_unchanged": true,
+    "native_success_condition_unchanged": true,
+    "renderer_calls": 0,
+    "training_dataset_created": false,
+    "full_collection_allowed": false,
+    "tests": "15 passed: test_target_resampling.py and test_collection_contract.py"
+  },
+  "runtime_estimates_report": "validation/runtime-estimates.json",
+  "compact_storage_report": "validation/compact-storage.json",
+  "real_ppo_gpu_timing": {
+    "bounded_runs": 2,
+    "steps_each": 6600,
+    "parallel_environments": [
+      1,
+      5
+    ],
+    "device": "cuda:0",
+    "full_5000000_step_training_complete": false
   }
 }

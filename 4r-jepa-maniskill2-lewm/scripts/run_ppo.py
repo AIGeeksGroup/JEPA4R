@@ -31,7 +31,9 @@ def build_command(mode="train", extra_args=()):
     elif mode == "eval-smoke":
         cmd += ["env_cfg.horizon=16", "eval_cfg.num=2", "eval_cfg.num_procs=1", "eval_cfg.save_video=False"]
     else:
-        cmd += ["rollout_cfg.num_procs=1", "eval_cfg=None"]
+        # Production has exclusive resources and retains upstream's five workers.
+        workers = 5 if gpu else 1
+        cmd += [f"rollout_cfg.num_procs={workers}", "eval_cfg=None"]
     return cmd + list(extra_args)
 
 

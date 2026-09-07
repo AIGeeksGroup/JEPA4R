@@ -186,8 +186,24 @@ class ManiSkillPointCloudEnv(gym.Env):
             env.goal_site.set_pose(Pose(env.goal_pos))
 
     def set_new_target(self, p_stack=0.0):
-        """Official noisy oracle retarget hook, using native PickCube sampling."""
-        self.simulator._initialize_task()
+        """Resample within PickCube's reset workspace, even while holding a cube.
+
+        Native _initialize_task is a reset hook: its vertical origin is the
+        cube's current position, which is on the table during reset. Calling
+        it mid-episode would add another 0--0.5 m above an already lifted cube.
+        Preserve its XY range, height range, RNG and separation rejection,
+        but anchor height to the cube center on the table (z=half-size).
+        """
+        env = self.simulator
+        obj_pos = np.asarray(env.obj.pose.p)
+        table_cube_z = float(env.cube_half_size[2])
+        for _ in range(100):
+            goal_xy = env._episode_rng.uniform(-0.1, 0.1, [2])
+            goal_z = env._episode_rng.uniform(0, 0.5) + table_cube_z
+            goal_pos = np.hstack([goal_xy, goal_z])
+            if np.linalg.norm(goal_pos - obj_pos) > env.min_goal_dist:
+                break
+        self.set_goal_cube_position(goal_pos)
         return self._last_obs, self.oracle_info()
 
     def render(self):

@@ -74,14 +74,30 @@ def make_config(dataset, run_name, smoke=False):
     return cfg
 
 
+def validate_production_dataset(path):
+    """Reject explicitly marked fixtures/benchmarks before GPU allocation.
+
+    Ordinary external datasets do not need a manifest. Our collectors use an
+    adjacent <dataset>.json sidecar; HDF5's historical attribute marker is
+    still accepted as a prohibition as well.
+    """
+    dataset_path = Path(path)
+    forbidden = ("SYNTHETIC_UNIT_TEST_ONLY", "BENCHMARK_ONLY_NOT_TRAINING_DATA")
+    sidecar = dataset_path.with_suffix(dataset_path.suffix + ".json")
+    if sidecar.is_file():
+        metadata = json.loads(sidecar.read_text())
+        if isinstance(metadata, dict) and any(bool(metadata.get(key, False)) for key in forbidden):
+            raise ValueError("Explicitly marked synthetic/benchmark datasets cannot be used for production training.")
+    if dataset_path.is_file() and dataset_path.suffix.lower() in (".h5", ".hdf5"):
+        import h5py
+        with h5py.File(dataset_path, "r") as handle:
+            if any(bool(handle.attrs.get(key, False)) for key in forbidden):
+                raise ValueError("Synthetic/benchmark unit-test fixtures cannot be used for production training.")
+
+
 def run(args):
     if not args.smoke:
-        dataset_path = Path(args.dataset)
-        if dataset_path.is_file() and dataset_path.suffix.lower() in (".h5", ".hdf5"):
-            import h5py
-            with h5py.File(dataset_path, "r") as handle:
-                if bool(handle.attrs.get("SYNTHETIC_UNIT_TEST_ONLY", False)):
-                    raise ValueError("Synthetic unit-test fixtures cannot be used for production training.")
+        validate_production_dataset(args.dataset)
         # Resource admission only: no trainer/model/optimizer setting is changed.
         raw = subprocess.check_output([
             "nvidia-smi", "--query-gpu=index,memory.free", "--format=csv,noheader,nounits"

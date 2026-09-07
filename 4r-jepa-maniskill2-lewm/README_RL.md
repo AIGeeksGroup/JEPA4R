@@ -69,12 +69,12 @@ two 16-step episodes (returns 0.94 and 1.09, success 0/2). The renderer used a
 sampled peak of 154,066,944 GPU bytes (~147 MiB); the network stayed on CPU.
 This verifies execution and reload, not convergence or an expert policy.
 
-The current Identity version has a CPU-only optimizer compatibility check in
-`scripts/check_identity_ppo_replay.py`: real saved clouds/actions plus explicitly
-synthetic robot-state/reward/done inputs, official PPO update, finite changes
-to encoder/actor/critic, and exact model/optimizer reload. It is not a fresh
-simulator rollout and does not establish unchanged PPO performance. Current
-GPU headroom was insufficient, so no new renderer was launched for this edit.
+The Identity version also has a CPU-only optimizer compatibility check in
+`scripts/check_identity_ppo_replay.py`, using explicitly labeled test inputs,
+the official PPO update, finite changes to encoder/actor/critic, and exact
+model/optimizer reload. The latest GPU timing runs described below additionally
+collected real simulator transitions and trained the Identity policy on CUDA;
+they verify execution and throughput without establishing convergence.
 
 Saved evidence: `artifacts/rl_smoke/verification.json`,
 `artifacts/rl_smoke/models/model_final.ckpt`,
@@ -84,12 +84,22 @@ Saved evidence: `artifacts/rl_smoke/verification.json`,
 for model integration checks; it is not the LeWM training dataset.
 
 For sustained training, `bash scripts/run_rl.sh train` retains upstream's
-5,000,000-step budget and PPO optimization defaults, with a single renderer and
-CUDA model. It is intentionally not started automatically. CPU production is
+5,000,000-step budget and PPO optimization defaults, with upstream's five
+parallel environments and a CUDA model. It is intentionally not started
+automatically. CPU production is
 available only through `bash scripts/run_rl.sh train-cpu`, with separate output.
 The underlying upstream CLI accepts configuration
 overrides; use the saved resolved config and a matching checkpoint when
 resuming/evaluating. The default smoke and training output directories differ.
+
+On this host's dedicated RTX 5090, two bounded 6,600-step GPU runs on
+2026-09-07 measured about 280 control steps/s with five environments and
+131 steps/s with one environment, including PPO updates after initial critic
+warmup. Both retained 1,200 points, minibatches of 330 and two PPO epochs;
+only the rollout window was shortened from 20,000 to 3,300 for timing.
+The five-environment result projects to 4.96 hours for 5,000,000 steps;
+allow 5–7 hours for a full run. This estimates completion of the step budget,
+not the time to a guaranteed success rate. See `validation/runtime-estimates.json`.
 
 ## CPU compatibility
 

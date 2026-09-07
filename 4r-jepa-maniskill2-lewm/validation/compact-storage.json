@@ -1,0 +1,76 @@
+{
+  "implementation": "src/ms2_lewm/storage.py",
+  "storage_only_changes": [
+    "drop exact rl_xyz/rl_rgb/rl_state/proprio aliases",
+    "pointcloud float16 only on disk",
+    "official JPEG quality 95 retained",
+    "direct Lance reader for training/evaluation",
+    "optional direct gzip HDF5 with no full intermediate"
+  ],
+  "cpu_tests": {
+    "passed": 21,
+    "failed": 0,
+    "suite": "tests/test_compact_storage.py tests/test_collection_contract.py tests/test_temporal_alignment.py",
+    "report": "artifacts/tests/compact_storage.xml"
+  },
+  "validated": [
+    "official readers preserve float16 on disk",
+    "model input restored to float32; finite loss and encoder gradients",
+    "exact action/state retention",
+    "JPEG output equal to official Lance writer",
+    "stored initial frame plus live frames share shape/dtype",
+    "official evaluation extractor preserves replay state and exposed writer indices",
+    "capacity checks account only for remaining steps"
+  ],
+  "float16_error": {
+    "tested_component_range": [
+      -1,
+      1
+    ],
+    "maximum_absolute_error_bound": 0.000244140625,
+    "xyz_metres_bound": 0.000244140625,
+    "warning": "Quantization is lossy; bound depends on component magnitude."
+  },
+  "benchmark": {
+    "BENCHMARK_ONLY_NOT_TRAINING_DATA": true,
+    "all_arrow_columns_and_jpeg_bytes_exactly_equal": true,
+    "new_simulation_or_gpu_work": false,
+    "episodes": 10,
+    "frames": 2000,
+    "commit_group_episodes": [
+      1,
+      9
+    ],
+    "writer_replay_seconds_excluding_existing_jpeg_encode": 0.19439848803449422,
+    "dataset_bytes": 49682995,
+    "full_10000_episodes_extrapolated_gib": 46.270894818007946,
+    "note": "Actual data bytes from 10 episodes; full estimate scales linearly, transaction metadata and future scenes can differ."
+  },
+  "space_budget": {
+    "stage": "measured_episode",
+    "expected_steps_including_reset_allowance": 2010000,
+    "completed_steps": 0,
+    "remaining_steps": 2010000,
+    "maximum_observed_bytes_per_step": 24841.4975,
+    "estimated_remaining_bytes": 59917691970,
+    "reserve_bytes": 10737418240,
+    "required_free_bytes": 70655110210,
+    "available_free_bytes": 37630599168,
+    "passed": false,
+    "note": "Nominal check budgets a probe episode only. Measured remaining-file growth adds 20% margin; completed data is already deducted from disk free space."
+  },
+  "scope": "No new simulation or GPU job in storage validation. Benchmark source is 10 measured rendered episodes; 0 successes, not training data.",
+  "explicit_non_training_data_guard": {
+    "tests_passed": 7,
+    "report": "artifacts/tests/training_data_provenance.xml",
+    "markers": [
+      "SYNTHETIC_UNIT_TEST_ONLY",
+      "BENCHMARK_ONLY_NOT_TRAINING_DATA"
+    ],
+    "locations": [
+      "adjacent <dataset>.json",
+      "legacy HDF5 attrs"
+    ],
+    "ordinary_external_manifest_required": false
+  }
+}
