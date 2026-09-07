@@ -19,6 +19,17 @@ ENV_ID = "ms2_lewm/PickCubePointCloud-v0"
 TASK_ROOT = Path(__file__).resolve().parents[2]
 
 
+def _pack_info_scalars(info):
+    """Preserve boolean values in the pinned upstream pool's numeric columns.
+
+    NumPy bool_ is not an np.number. The official EnvPool otherwise stacks
+    these values as Python lists, which World.collect intentionally skips.
+    Convert only this scalar type; arrays and all underlying values are kept.
+    """
+    return {key: bool(value) if isinstance(value, np.bool_) else value
+            for key, value in info.items()}
+
+
 def official_rl_env_config(horizon: int = 200) -> dict:
     """Read the same PointNet PPO config; resolve explicit baseline options."""
     from maniskill2_learn.utils.meta import Config
@@ -106,10 +117,20 @@ class ManiSkillPointCloudEnv(gym.Env):
 
     def _state_info(self):
         env = self.simulator
+        cube = np.asarray(env.obj.pose.p)
+        tcp = np.asarray(env.tcp.pose.p)
+        origin = getattr(self, "_initial_cube_position", cube)
         return {
             "sim_state": np.asarray(env.get_state()).copy(),
-            "cube_pos": np.asarray(env.obj.pose.p).copy(),
+            "cube_pos": cube.copy(),
             "seed": np.int64(self._episode_seed),
+            # Observable operation coverage; none of these extra columns
+            # enters the visual encoder or changes the native success rule.
+            "object_grasped": bool(env.agent.check_grasp(env.obj)),
+            "object_height_above_table": np.float32(cube[2] - env.cube_half_size[2]),
+            "tcp_object_distance": np.float32(np.linalg.norm(tcp - cube)),
+            "object_goal_distance": np.float32(np.linalg.norm(cube - env.goal_pos)),
+            "object_displacement": np.float32(np.linalg.norm(cube - origin)),
         }
 
     def oracle_info(self):
@@ -164,9 +185,10 @@ class ManiSkillPointCloudEnv(gym.Env):
         # ExtendedEnv.reset returns observations only; preserve upstream
         # conversion rather than bypassing the original wrapper.
         obs = self.rl_env.reset(seed=seed, options=options)
+        self._initial_cube_position = np.asarray(self.simulator.obj.pose.p).copy()
         info = dict(self.simulator.evaluate())
         info.update(self._state_info())
-        return self._observations(obs), info
+        return self._observations(obs), _pack_info_scalars(info)
 
     def step(self, action):
         obs, reward, term, trunc, info = self.rl_env.step(action)
@@ -184,7 +206,7 @@ class ManiSkillPointCloudEnv(gym.Env):
                 "success": self._episode_success,
                 "steps": self._steps,
             })
-        return self._observations(obs), float(reward), bool(term), bool(trunc), info
+        return self._observations(obs), float(reward), bool(term), bool(trunc), _pack_info_scalars(info)
 
     def set_sim_state(self, state):
         """Dataset-evaluation callable; state is the full ManiSkill snapshot."""

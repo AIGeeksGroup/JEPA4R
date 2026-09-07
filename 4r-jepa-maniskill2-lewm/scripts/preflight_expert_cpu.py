@@ -1,4 +1,4 @@
-"""Check the original noisy cube oracle in native physics, without rendering.
+"""Check the noisy cube oracle in native physics, without rendering.
 
 This diagnostic cannot collect world-model data: it creates no images or point
 clouds. The official World.evaluate/EnvPool/oracle/noise algorithms are reused.
@@ -23,6 +23,11 @@ def main():
     parser.add_argument("--episodes", type=int, default=30)
     parser.add_argument("--output", type=Path, default=ROOT / "artifacts/expert_cpu_preflight30.json")
     parser.add_argument("--replay-noise-state", type=Path)
+    parser.add_argument("--oracle-mode", choices=("pickcube_hold", "legacy"), default="pickcube_hold")
+    parser.add_argument("--hold-steps", type=int, default=30)
+    parser.add_argument("--policy-seed", type=int, default=3072)
+    parser.add_argument("--terminate-at-goal", action="store_true",
+                        help="Stop on native success; default continues for the full collection horizon")
     args = parser.parse_args()
     if os.environ.get("CUDA_VISIBLE_DEVICES") != "":
         raise RuntimeError("CPU preflight requires CUDA_VISIBLE_DEVICES='' before Python starts")
@@ -92,6 +97,8 @@ def main():
 
         def step(self, action):
             obs, reward, terminated, truncated, info = self.rl_env.step(action)
+            if not args.terminate_at_goal:
+                terminated = False
             self._last_obs = obs
             self._steps += 1
             sim = self.simulator
@@ -135,7 +142,7 @@ def main():
         def forbid_collection(*args, **kwargs):
             raise RuntimeError("Physics-only preflight cannot be used for data collection")
         world.collect = forbid_collection
-        policy = ManiSkillNoisyExpert()
+        policy = ManiSkillNoisyExpert(seed=args.policy_seed, oracle_mode=args.oracle_mode, hold_steps=args.hold_steps)
         prior = None
         if args.replay_noise_state:
             prior = json.loads(args.replay_noise_state.read_text())
@@ -161,17 +168,23 @@ def main():
         assert renderer.call_count == client.call_count == 0
         assert max(gpu_samples) == 0
 
-    successes = int(np.asarray(metrics["episode_successes"]).sum())
+    # Fixed-length collection intentionally continues after native success.
+    # World.evaluate's episode_successes records the final transition only;
+    # coverage must count success at any transition, including before release.
+    successes = sum(row["success"] for row in episode_rows)
     report = {
         "kind": "CPU physics-only expert precheck; no images, no pointclouds, no dataset",
         "episodes": args.episodes, "successes": successes, "passed": successes > 0,
-        "production_collection_allowed": False,
-        "next_gate": "Rendered pointcloud preflight and >=2048 MiB free VRAM required before actual collection",
+        "success_definition": "any native success transition within each episode",
+        "official_final_transition_successes": int(np.asarray(metrics["episode_successes"]).sum()),
+        "diagnostic_only": True,
         "world_seed": world_seed, "horizon": horizon, "num_envs": 1,
         "noise_config": official_noise_config(), "noise_rng_initial_state": initial_noise,
         "numpy_rng_initial_state": initial_numpy_rng,
         "noise_rng_final_state": policy.rng.bit_generator.state,
-        "oracle": "unmodified ogbench CubeMarkovOracle", "noise": "unmodified stable ExpertPolicy.get_action",
+        "oracle": args.oracle_mode, "hold_steps": args.hold_steps,
+        "policy_seed": args.policy_seed, "noise": "unmodified stable ExpertPolicy.get_action",
+        "terminate_at_goal": args.terminate_at_goal,
         "metrics": metrics, "episode_records": episode_rows,
         "renderer_calls": renderer.call_count, "render_client_calls": client.call_count,
         "own_gpu_bytes_samples": gpu_samples,

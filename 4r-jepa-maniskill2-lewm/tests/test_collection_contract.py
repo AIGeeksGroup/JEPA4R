@@ -1,4 +1,4 @@
-"""Meaningful checks for official noise equality and the zero-success gate."""
+"""Checks for official noise equality and advisory, non-filtering collection diagnostics."""
 
 import importlib.util
 from pathlib import Path
@@ -69,45 +69,79 @@ def test_noisy_expert_matches_upstream_actions_and_rng_exactly():
     }
 
 
-def test_zero_success_preflight_never_starts_collection(monkeypatch, tmp_path):
+@pytest.mark.parametrize("preflight_episodes", [0, 2])
+def test_zero_success_diagnostic_does_not_block_or_filter_collection(monkeypatch, tmp_path, preflight_episodes):
+    import json
     import ms2_lewm.environment as environment
     import ms2_lewm.expert as expert
+    import ms2_lewm.storage as storage
 
-    constructed = []
+    constructed, collected = [], []
+    output = tmp_path / "collection.h5"
 
     class FakeWorld:
+        def __init__(self, callback=None):
+            self.callback = callback
+
         def set_policy(self, policy):
             pass
 
         def evaluate(self, **kwargs):
+            for episode in range(kwargs["episodes"]):
+                if self.callback:
+                    self.callback({"seed": episode, "steps": 200, "success": False})
             return {"episode_successes": np.zeros(kwargs["episodes"]), "success_rate": 0.0}
 
-        def collect(self, **kwargs):
-            pytest.fail("Collector was reached despite zero successes")
+        def collect(self, writer, episodes, **kwargs):
+            with writer as destination:
+                destination.write_episodes({
+                    "pointcloud": np.zeros((2, 1200, 6), dtype=np.float32),
+                    "seed": np.full(2, episode),
+                    "success": np.zeros(2, dtype=bool),
+                    "object_grasped": np.zeros(2, dtype=bool),
+                } for episode in range(episodes))
 
         def close(self):
             pass
 
+    class FakeWriter:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args):
+            output.touch()
+
+        def write_episodes(self, episodes):
+            collected.extend(episodes)
+
     def make_world(**kwargs):
         constructed.append(kwargs)
-        return FakeWorld()
+        return FakeWorld(kwargs.get("episode_callback"))
 
     monkeypatch.setattr(environment, "make_world", make_world)
-    monkeypatch.setattr(expert, "ManiSkillNoisyExpert", lambda: SimpleNamespace(
-        rng=np.random.default_rng(3072), episode_noise_scales=[0.01, 0.02, 0.03]
+    monkeypatch.setattr(expert, "ManiSkillNoisyExpert", lambda **kwargs: SimpleNamespace(
+        rng=np.random.default_rng(3072), episode_noise_scales=[0.01, 0.02]
     ))
+    monkeypatch.setattr(storage, "collection_writer", lambda *args, **kwargs: FakeWriter())
     root = Path(__file__).resolve().parents[1]
     spec = importlib.util.spec_from_file_location("collect_wm_under_test", root / "scripts/collect_wm.py")
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-    output = tmp_path / "forbidden.h5"
-    monkeypatch.setattr(sys, "argv", ["collect_wm.py", "--output", str(output), "--smoke", "--reserve-gib", "0"])
-    with pytest.raises(RuntimeError, match="ZERO preflight successes"):
-        module.main()
-    assert len(constructed) == 1  # Only the small preflight world exists.
-    assert not output.exists()
-    assert not output.with_suffix(".lance").exists()
-    assert output.with_suffix(".h5.preflight.json").exists()
+    monkeypatch.setattr(sys, "argv", ["collect_wm.py", "--output", str(output), "--smoke",
+        "--reserve-gib", "0", "--preflight-episodes", str(preflight_episodes)])
+    module.main()
+    assert len(constructed) == (2 if preflight_episodes else 1)
+    assert len(collected) == 2
+    assert output.exists()
+    manifest = json.loads(output.with_suffix(".h5.json").read_text())
+    assert manifest["native_success_gate"] is False
+    assert manifest["status"] == "complete"
+    diagnostic = output.with_suffix(".h5.preflight.json")
+    if preflight_episodes:
+        report = json.loads(diagnostic.read_text())
+        assert report["successes"] == 0 and report["advisory_only"] is True
+    else:
+        assert not diagnostic.exists()
 
 
 def test_busy_gpu_is_rejected_before_any_renderer(monkeypatch, tmp_path):

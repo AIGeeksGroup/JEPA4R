@@ -46,6 +46,11 @@ def main() -> None:
     seed = seeds.pop()
     report_path = source.parent / "report.json"
     report = json.loads(report_path.read_text()) if report_path.exists() else {}
+    dataset_manifest_path = source.with_suffix(source.suffix + ".json")
+    dataset_manifest = json.loads(dataset_manifest_path.read_text()) if dataset_manifest_path.exists() else {}
+    provenance = {**report, **dataset_manifest}
+    benchmark_only = bool(provenance.get("BENCHMARK_ONLY_NOT_TRAINING_DATA", False)
+                          or provenance.get("benchmark_only", False))
     records = [row for row in report.get("episode_records", []) if row["seed"] == seed]
     if len(records) > 1:
         raise ValueError("Cannot uniquely match episode to its native success report")
@@ -54,14 +59,19 @@ def main() -> None:
     if args.output.exists():
         raise FileExistsError(args.output)
     common_manifest = {
-        "source_dataset": str(source), "source_report": str(report_path),
+        "source_dataset": str(source),
+        "source_report": str(report_path) if report_path.exists() else None,
+        "source_manifest": str(dataset_manifest_path) if dataset_manifest_path.exists() else None,
         "episode_idx": args.episode, "seed": seed, "steps": len(rows),
-        "native_success": record.get("success"), "native_success_source": "episode_records entry matched by seed",
-        "policy": "original CubeMarkovOracle + original ExpertPolicy noise through ManiSkill state/action adapter",
-        "noise_config": report.get("noise_config"),
-        "benchmark_only": report.get("benchmark_only"),
-        "official_expert_dataset": report.get("official_expert_dataset"),
-        "note": "Real recorded sampling benchmark trajectory; not synthetic, not an approved training dataset, not claimed successful.",
+        "native_success": record.get("success"),
+        "native_success_source": "episode_records entry matched by seed" if record else "not inferred from appearance",
+        "policy": provenance.get("policy", "CubeMarkovOracle + original ExpertPolicy noise through ManiSkill state/action adapter"),
+        "oracle_mode": provenance.get("oracle_mode"),
+        "noise_config": provenance.get("noise_config"),
+        "benchmark_only": benchmark_only,
+        "official_expert_dataset": provenance.get("official_expert_dataset"),
+        "note": ("Real recorded benchmark trajectory; not a training dataset."
+                 if benchmark_only else "Real trajectory from the collection dataset; not selected by success or failure."),
         "sampling_stride_control_steps": 1,
         "source_mode": args.mode,
     }

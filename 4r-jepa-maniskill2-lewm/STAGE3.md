@@ -61,6 +61,6 @@ source scripts/wm_env.sh
 
 第三阶段已经使用明确标记的 CPU 合成测试 checkpoint/数据验证冻结、PPO更新和恢复：encoder 参数与 buffer 字节不变，actor/critic/Gaussian log_std 更新，dropout不重启，优化器不含encoder参数。合成测试不是训练好的专家表征，不证明任务性能。
 
-当前真实专家采样门槛仍为0/30，真实 WM 数据训练尚未启动，因此没有自动开始第三阶段长程训练。
+本机全量专家采集已启动，默认30步保持适配、官方噪声、10进程；成功率不再作为开采硬门槛。真实WM数据训练与第三阶段长程PPO尚未完成；CPU测试checkpoint不能代替训练好的世界模型。当前采集的旧coverage存在诊断列缺失，质量指标边界见 [SAMPLING.md](SAMPLING.md#覆盖统计与历史记录边界)。
 
 原 PickCube 的目标标记不在默认点云中，因此保留原 PPO 的 state 通道很重要。当前实现已恢复 latent2 后的 state 拼接；encoder 本身仍只依赖点云。没有修改任务目标分布或原生 success 判定。

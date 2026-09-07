@@ -1,4 +1,4 @@
-"""Original OGB cube oracle and noise through ManiSkill interface adapters.
+"""Original OGB noise and a selectable native PickCube settling adapter.
 
 The official wrapper controls xyz/yaw/grip (5 DOF). ManiSkill exposes local
 xyz/rotation-vector/grip (7 DOF); a coordinate/action adapter is required.
@@ -17,6 +17,8 @@ import gymnasium as gym
 import numpy as np
 
 from ogbench.manipspace.oracles.markov.cube_markov import CubeMarkovOracle
+
+from ms2_lewm.pickcube_oracle import PickCubeHoldOracle
 
 
 # Loading this exact untouched module directly avoids executing OGB's package
@@ -63,9 +65,13 @@ def restore_numpy_rng(state):
 
 
 class ManiSkillNoisyExpert(ExpertPolicy):
-    """Reuse original CubeMarkovOracle AND its original noisy policy method."""
+    """Reuse the original noisy policy, with optional native goal settling."""
 
-    def __init__(self, seed=None):
+    def __init__(self, seed=None, oracle_mode="pickcube_hold", hold_steps=30):
+        if oracle_mode not in {"pickcube_hold", "legacy"}:
+            raise ValueError("oracle_mode must be 'pickcube_hold' or 'legacy'")
+        self.oracle_mode = oracle_mode
+        self.hold_steps = hold_steps
         # No noise argument overrides: resolve every default from pinned source.
         super().__init__(seed=seed)
 
@@ -79,9 +85,12 @@ class ManiSkillNoisyExpert(ExpertPolicy):
         self._p_stack = np.zeros(env.num_envs)
         self._xi = np.zeros(env.num_envs)
         self._agents = [None] * env.num_envs
-        self._oracle_agents = {
-            "cube": [CubeMarkovOracle(env=e.unwrapped, min_norm=self.min_norm) for e in env.envs]
-        }
+        oracle_type = PickCubeHoldOracle if self.oracle_mode == "pickcube_hold" else CubeMarkovOracle
+        oracle_kwargs = {"hold_steps": self.hold_steps} if self.oracle_mode == "pickcube_hold" else {}
+        self._oracle_agents = {"cube": [
+            oracle_type(env=e.unwrapped, min_norm=self.min_norm, **oracle_kwargs)
+            for e in env.envs
+        ]}
         self.episode_noise_scales = []
 
     def get_action(self, info_dict, **kwargs):

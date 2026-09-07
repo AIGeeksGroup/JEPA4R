@@ -3,6 +3,8 @@
 Only the point-cloud storage precision is reduced. Images use the pinned
 official JPEG encoder and its default quality. No trajectory filtering or
 subsampling happens here, and no full intermediate dataset is created.
+Lance additionally compresses its physical buffers losslessly with Zstandard;
+the official reader returns exactly the same arrays and JPEG bytes.
 """
 
 from __future__ import annotations
@@ -28,6 +30,24 @@ from stable_worldmodel.data.formats.utils import is_image_column
 GIB = 1024 ** 3
 DEFAULT_RESERVE_BYTES = 10 * GIB
 POINTCLOUD_BYTES_PER_FRAME = 1200 * 6 * np.dtype(np.float16).itemsize
+LANCE_COMPRESSION_METADATA = {
+    b"lance-encoding:compression": b"zstd",
+    b"lance-encoding:compression-level": b"12",
+}
+
+
+def lossless_lance_schema(schema):
+    """Request native Lance compression without changing any logical values.
+
+    These field options are documented by Lance's encoding specification:
+    https://lance.org/format/file/encoding/#compression-configuration
+    Compression is decoded by the installed Lance reader, including for the
+    existing JPEG blobs; no image decoding or recompression is introduced.
+    """
+    return pa.schema([
+        field.with_metadata({**(field.metadata or {}), **LANCE_COMPRESSION_METADATA})
+        for field in schema
+    ], metadata=schema.metadata)
 
 
 def compact_episode(episode):
@@ -62,13 +82,16 @@ class StorageBudget:
     """
 
     def __init__(self, path, *, expected_episodes=None, horizon=200,
-                 reserve_bytes=DEFAULT_RESERVE_BYTES, report_path=None):
+                 reserve_bytes=DEFAULT_RESERVE_BYTES, report_path=None, safety_margin=1.2):
         self.path = Path(path)
         if reserve_bytes < 0 or horizon < 1 or (expected_episodes is not None and expected_episodes < 1):
             raise ValueError("Invalid disk budget arguments.")
+        if not math.isfinite(safety_margin) or safety_margin < 1:
+            raise ValueError("Storage safety_margin must be finite and at least 1.")
         self.expected_steps = None if expected_episodes is None else int(expected_episodes) * (int(horizon) + 1)
         self.horizon = int(horizon)
         self.reserve_bytes = int(reserve_bytes)
+        self.safety_margin = float(safety_margin)
         self.report_path = Path(report_path) if report_path else None
         self.max_bytes_per_step = 0.0
         self.report = None
@@ -81,7 +104,7 @@ class StorageBudget:
         # Before data exists, admit only a small probe episode plus reserve.
         # Raw fp16 bytes are NOT a lower bound for a compressed full dataset.
         projected = math.ceil(rate * (min(remaining, self.horizon + 1) if nominal else remaining)
-                              * (1.0 if nominal else 1.2))
+                              * (1.0 if nominal else self.safety_margin))
         ancestor = self.path.parent
         while not ancestor.exists():
             ancestor = ancestor.parent
@@ -93,8 +116,9 @@ class StorageBudget:
             "completed_steps": int(completed_steps), "remaining_steps": int(remaining),
             "maximum_observed_bytes_per_step": self.max_bytes_per_step,
             "estimated_remaining_bytes": projected, "reserve_bytes": self.reserve_bytes,
+            "safety_margin": self.safety_margin,
             "required_free_bytes": required, "available_free_bytes": free, "passed": free >= required,
-            "note": "Nominal check budgets a probe episode only. Measured remaining-file growth adds 20% margin; completed data is already deducted from disk free space.",
+            "note": "Nominal check budgets a probe episode only. Measured remaining-file growth uses the explicit safety_margin factor; completed data is already deducted from disk free space.",
         }
         if self.report_path:
             self.report_path.parent.mkdir(parents=True, exist_ok=True)
@@ -112,11 +136,12 @@ class CompactLanceWriter(LanceWriter):
     """Official streaming Lance writer with fp16 pointcloud and exact alias removal."""
 
     def __init__(self, path, *, mode="error", expected_episodes=None, horizon=200,
-                 reserve_bytes=DEFAULT_RESERVE_BYTES, report_path=None):
+                 reserve_bytes=DEFAULT_RESERVE_BYTES, report_path=None, safety_margin=1.2):
         if mode != "error":
             raise ValueError("Compact collection requires a new dataset (mode='error').")
         self.budget = StorageBudget(path, expected_episodes=expected_episodes, horizon=horizon,
-                                    reserve_bytes=reserve_bytes, report_path=report_path)
+                                    reserve_bytes=reserve_bytes, report_path=report_path,
+                                    safety_margin=safety_margin)
         self.budget.check(nominal=True)
         self._previous_file_bytes = 0
         super().__init__(path, mode=mode)
@@ -125,6 +150,7 @@ class CompactLanceWriter(LanceWriter):
         super()._init_schema(sample_ep)
         index = self._schema.get_field_index("pointcloud")
         self._schema = self._schema.set(index, pa.field("pointcloud", pa.list_(pa.float16(), self._dims["pointcloud"])))
+        self._schema = lossless_lance_schema(self._schema)
 
     def write_episodes(self, episodes):
         # Commit one probe episode, then bounded groups of ten. This gives
@@ -164,11 +190,12 @@ class CompactHDF5Writer(HDF5Writer):
     """
 
     def __init__(self, path, *, mode="error", expected_episodes=None, horizon=200,
-                 reserve_bytes=DEFAULT_RESERVE_BYTES, report_path=None):
+                 reserve_bytes=DEFAULT_RESERVE_BYTES, report_path=None, safety_margin=1.2):
         if mode != "error":
             raise ValueError("Compact collection requires a new dataset (mode='error').")
         self.budget = StorageBudget(path, expected_episodes=expected_episodes, horizon=horizon,
-                                    reserve_bytes=reserve_bytes, report_path=report_path)
+                                    reserve_bytes=reserve_bytes, report_path=report_path,
+                                    safety_margin=safety_margin)
         self.budget.check(nominal=True)
         self._previous_file_bytes = 0
         super().__init__(path, mode=mode)

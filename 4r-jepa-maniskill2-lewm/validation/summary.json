@@ -1,6 +1,6 @@
 {
   "test_suite": {
-    "passed": 144,
+    "passed": 168,
     "device": "cpu",
     "new_simulator_or_gpu_jobs": false
   },
@@ -75,7 +75,7 @@
     "own_gpu_bytes_max": 0,
     "historical_before_retarget_fix": true
   },
-  "real_expert_pointcloud_dataset_created": false,
+  "real_expert_pointcloud_dataset_created": true,
   "real_worldmodel_training_complete": false,
   "real_frozen_encoder_ppo_training_complete": false,
   "current_model_contract": {
@@ -157,7 +157,7 @@
   },
   "ppo_production_run": {
     "status_at_recording": "running",
-    "explicit_user_request": "改16,开始训练",
+    "explicit_user_request": "\u653916,\u5f00\u59cb\u8bad\u7ec3",
     "launcher_pid": 152283,
     "directory": "artifacts/rl_identity_train_p16_20260907",
     "parallel_environments": 16,
@@ -176,5 +176,15 @@
     "completed_steps_at_recording": 220000,
     "automatic_restart_authorized": false
   },
-  "pointcloud_video_validation": "validation/pointcloud-videos.json"
+  "pointcloud_video_validation": "validation/pointcloud-videos.json",
+  "repository_reproducibility": "validation/repo-reproducibility.json",
+  "current_collection": {
+    "dataset": "artifacts/wm_collection_full_20260907T044524Z/pickcube_expert_mixed.lance",
+    "status_at_recording": "collecting",
+    "native_success_gate": false,
+    "oracle_mode": "pickcube_hold",
+    "hold_steps": 30,
+    "noise": "unchanged official ExpertPolicy parameters and noise application",
+    "native_bool_coverage_caveat": "The live job imported the older NumPy-bool bridge; omitted bool columns make its old zero counters unreliable. Point clouds, actions and numerical simulator state are unaffected. Future runs use Python-bool packing and unknown markers."
+  }
 }

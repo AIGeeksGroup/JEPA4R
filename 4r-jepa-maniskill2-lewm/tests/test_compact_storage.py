@@ -4,6 +4,7 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import h5py
+import lancedb
 import numpy as np
 import pytest
 import torch
@@ -93,6 +94,15 @@ def test_lance_images_match_official_jpeg_and_storage_half_dtype(tmp_path):
     left = load_dataset(str(normal), keys_to_load=["pixels"])
     right = load_dataset(str(compact), keys_to_load=["pixels"])
     torch.testing.assert_close(left[0]["pixels"], right[0]["pixels"], rtol=0, atol=0)
+    tables = lancedb.connect(str(tmp_path))
+    original_table = tables.open_table("official").to_arrow()
+    compact_table = tables.open_table("compact").to_arrow()
+    assert original_table["pixels"].equals(compact_table["pixels"])
+    for field in compact_table.schema:
+        assert field.metadata[b"lance-encoding:compression"] == b"zstd"
+        assert field.metadata[b"lance-encoding:compression-level"] == b"12"
+        if field.name != "pointcloud":
+            assert original_table[field.name].equals(compact_table[field.name])
 
 
 def test_dedup_does_not_discard_distinct_data_or_mutate_live_points():
@@ -125,6 +135,23 @@ def test_storage_admission_uses_probe_then_measured_remaining_bytes(monkeypatch,
     with pytest.raises(RuntimeError, match="Insufficient dataset disk space"):
         CompactLanceWriter(tmp_path / "forbidden.lance", reserve_bytes=1000)
     assert not (tmp_path / "forbidden.lance").exists()
+
+
+def test_explicit_storage_margin_keeps_reserve_and_checks_measured_data(monkeypatch, tmp_path):
+    import ms2_lewm.storage as storage
+    monkeypatch.setattr(storage.shutil, "disk_usage", lambda _: SimpleNamespace(free=2100))
+    budget = StorageBudget(tmp_path / "explicit.lance", expected_episodes=2,
+                           horizon=9, reserve_bytes=1000, safety_margin=1.1)
+    report = budget.check(completed_steps=10, episode_bytes=1000, episode_steps=10)
+    assert report["estimated_remaining_bytes"] == 1100
+    assert report["required_free_bytes"] == 2100
+    assert report["reserve_bytes"] == 1000
+    assert report["safety_margin"] == 1.1
+    with pytest.raises(RuntimeError, match="Insufficient dataset disk space"):
+        budget.check(completed_steps=10, episode_bytes=1100, episode_steps=10)
+    for invalid in (0, 0.99, float("nan"), float("inf")):
+        with pytest.raises(ValueError, match="safety_margin"):
+            StorageBudget(tmp_path / "invalid.lance", safety_margin=invalid)
 
 
 def test_eval_accepts_flat_half_initial_frame_then_shaped_live_frames():
