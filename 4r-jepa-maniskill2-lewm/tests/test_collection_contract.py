@@ -30,6 +30,12 @@ def test_noisy_expert_matches_upstream_actions_and_rng_exactly():
     raw = SimpleNamespace(_env_type="single", simulator=SimpleNamespace(
         tcp=SimpleNamespace(pose=pose), agent=SimpleNamespace(robot=robot, controller=controller)
     ))
+    raw.action_adapter_state = lambda: {
+        "rotation": pose.to_transformation_matrix()[:3, :3],
+        "qpos": float(np.mean(robot.get_qpos()[-2:])),
+        "lower": float(bounds.low[0]),
+        "upper": float(bounds.high[0]),
+    }
     pool = SimpleNamespace(
         num_envs=1,
         envs=[SimpleNamespace(unwrapped=raw)],

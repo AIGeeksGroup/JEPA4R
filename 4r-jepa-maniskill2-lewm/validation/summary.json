@@ -1,6 +1,6 @@
 {
   "test_suite": {
-    "passed": 136,
+    "passed": 144,
     "device": "cpu",
     "new_simulator_or_gpu_jobs": false
   },
@@ -100,7 +100,7 @@
     "smoke": "cpu",
     "silent_cpu_fallback": false,
     "gpu_installer_executed_in_this_change": true,
-    "production_ppo_parallel_environments": 5
+    "production_ppo_parallel_environments": 12
   },
   "frozen_ppo_compatibility": {
     "source": "CPU synthetic fixtures in test_frozen_ppo.py/test_frozen_checkpoint.py",
@@ -144,5 +144,19 @@
     ],
     "device": "cuda:0",
     "full_5000000_step_training_complete": false
+  },
+  "sampling_parallelism": {
+    "workers": 10,
+    "backend": "spawn",
+    "official_policy_execution": "parent process in environment index order",
+    "proof": "validation/parallel-sampling.json",
+    "full_collection_started": false
+  },
+  "ppo_production_run": {
+    "status_at_recording": "running",
+    "directory": "artifacts/rl_identity_train_p12_20260907",
+    "parallel_environments": 12,
+    "step_budget": 5000000,
+    "completed_steps_at_recording": 220000
   }
 }

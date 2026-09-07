@@ -26,6 +26,8 @@ def main():
     parser.add_argument("--replay-noise-state", type=Path, help="Replay recorded official PCG64 noise state from a prior report/manifest")
     parser.add_argument("--episodes", type=int)
     parser.add_argument("--num-envs", type=int)
+    parser.add_argument("--env-backend", choices=("process", "serial"), default="process",
+                        help="Spawn one simulator worker per environment (default); serial is explicit debugging only")
     parser.add_argument("--horizon", type=int)
     parser.add_argument("--reserve-gib", type=float, default=10.0,
                         help="Keep this disk reserve; default includes room for CUDA environments/checkpoints")
@@ -115,6 +117,10 @@ def main():
         "noise_implementation": "upstream ExpertPolicy.get_action (unmodified)",
         "oracle_implementation": "ogbench.manipspace.oracles.markov.cube_markov.CubeMarkovOracle (unmodified)",
         "action_adapter": "OGB .05m/.3rad/delta-closedness canonical5 to ManiSkill .1m/.1rad/target-gripper ee7",
+        "env_backend": "serial",
+        "num_envs": 1,
+        "collection_env_backend": args.env_backend,
+        "collection_num_workers": int(num_envs) if args.env_backend == "process" and num_envs > 1 else 0,
     }
     report_path = args.output.with_suffix(args.output.suffix + ".preflight.json")
     report_path.write_text(json.dumps(report, indent=2, default=jsonable) + "\n")
@@ -124,7 +130,8 @@ def main():
     if args.preflight_only:
         return
 
-    world = make_world(num_envs=num_envs, max_episode_steps=horizon, terminate_at_goal=False)
+    world = make_world(num_envs=num_envs, max_episode_steps=horizon, terminate_at_goal=False,
+                       env_backend=args.env_backend)
     try:
         policy = ManiSkillNoisyExpert()
         # Replaying the recorded RNG state preserves the upstream seed=None
@@ -154,6 +161,11 @@ def main():
         "smoke": args.smoke,
         "episodes": episodes,
         "num_envs": num_envs,
+        "env_backend": args.env_backend if num_envs > 1 else "serial",
+        "num_workers": int(num_envs) if args.env_backend == "process" and num_envs > 1 else 0,
+        "worker_start_method": "spawn" if args.env_backend == "process" and num_envs > 1 else None,
+        "worker_numpy_rng": "independent stream, seeded from each environment reset seed",
+        "policy_execution": "parent process, unchanged upstream environment-index RNG order",
         "horizon": horizon,
         "config_seed": int(cfg.seed),
         "world_seed": seed,

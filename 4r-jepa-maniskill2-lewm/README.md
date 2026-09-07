@@ -46,7 +46,9 @@ rolled = wm.rollout(info, action_sequence)
 
 使用固定版本 `stable_worldmodel/scripts/data/collect_cube.py` 的带噪声启发式专家流程。噪声默认值与官方一致：`action_noise=0.1,p_random_action=0,noise_smoothing=0.5,min_norm=0.4,seed=None`。每个 episode 的噪声强度与逐步噪声采样复用官方实现，不使用 PPO smoke checkpoint 充当专家。
 
-采集入口先跑预检，并写 `*.preflight.json`。按最新要求扩大至 30 个 episode，串行执行；成功数为零会抛错，**在创建全量数据集之前停止**。生产默认数量与官方 cube 配置一致：10000 episodes、10 environments、200 步。小规模验证仅显式缩减 episode 数和并行数。
+采集入口先跑预检，并写 `*.preflight.json`。30 个 episode 的成功率预检仍用1个环境串行执行；成功数为零会抛错，**在创建全量数据集之前停止**。正式采集默认 `--env-backend process`：官方配置的10个环境分别在10个 `spawn` 工作进程中执行仿真和渲染，主进程保留官方专家策略调用顺序并统一写盘。总量仍为10000 episodes、每条200步。`--env-backend serial` 可显式选择旧串行后端；小规模 `--smoke` 验证才允许缩减 episode 数和环境数。
+
+已有串行采样测量为34.5步/秒，全量约16.1小时。10进程完全线性扩展的理想值为1.61小时；考虑共享GPU渲染、IPC和writer，当前排程估计 **2–4小时**，尚未实测新并行实现，不能保证10倍提速。此估计从成功率和容量门槛通过后开始计时。
 
 磁盘修复仅位于本项目writer适配器：优先直接写 `.lance`，删除与点云完全重复的 `rl_xyz/rl_rgb`、与 `observation` 完全重复的 `rl_state/proprio`；只把点云落盘为float16，在线观测和模型计算仍float32。JPEG保持官方质量95，动作、状态、仿真快照保留。训练、评测直接使用官方Lance reader，不再额外转换全量HDF5；选择 `.h5/.hdf5` 时直接流式写压缩HDF5，不创建中间Lance。
 
@@ -100,7 +102,7 @@ CUDA_VISIBLE_DEVICES='' .venv-worldmodel/bin/python -m pytest -q tests
 
 全量入口去掉 `--smoke`；采集成功率闸门始终有效。完整训练保留官方 GPU/bf16 配方，先运行 `bash scripts/setup_worldmodel.sh gpu` 安装独立的 `.venv-worldmodel-gpu`，再用该环境启动正式训练。当前 `.venv-worldmodel` 是 CPU 集成验证环境。GPU 安装/完整训练未自动执行；显存不足时入口会拒绝启动，而不会终止其他进程。`train_wm.py --config-only` 可先打印生产配置；`--resume` 接受包含优化器/调度器状态的 Lightning checkpoint。官方模型导出为 `artifacts/worldmodel/checkpoints/<run>/weights_epoch_*.pt` 加 `config.json`，由官方 `load_pretrained` 重建。
 
-原 PPO 的正式入口现在默认 CUDA：`run_rl.sh` 或 `run_rl.sh train` 选择 `.venv-rl-gpu`；`smoke/eval-smoke` 使用 CPU，`train-cpu` 是显式的 CPU 训练选择。冻结表征 PPO 同样默认 CUDA，`--smoke` 才默认 CPU。缺少所选环境不会自动降级，所有实际仿真入口启动前检查显存。`run_rl.sh --print-command` 只打印计划命令。
+原 PPO 的正式入口现在默认 CUDA：`run_rl.sh` 或 `run_rl.sh train` 选择 `.venv-rl-gpu`；`smoke/eval-smoke` 使用 CPU，`train-cpu` 是显式的 CPU 训练选择。原 PPO 正式训练的本机配置使用 **12个并行环境**：16个可用CPU核留4个给主进程与IPC，模型/优化参数及500万步预算保留。从已有1环境和5环境GPU测量拟合并行时间，12环境粗估4.14小时，排程 **4–6小时**；未逐个尝试并行数，也不宣称12是实测最优值。冻结表征 PPO 同样默认 CUDA，`--smoke` 才默认 CPU。缺少所选环境不会自动降级，所有实际仿真入口启动前检查显存。`run_rl.sh --print-command` 只打印计划命令。历史测量和新配置外推分别记录在 `validation/runtime-estimates.json`。 原 PPO 已于2026-09-07 02:19:18 UTC正式启动，输出目录 `artifacts/rl_identity_train_p12_20260907`；记录时已完成220,000步，首轮之后每20,000步耗时中位数约64.92秒，对应全程约4.51小时；继续执行500万步预算。首轮包含一次性critic warmup，不作为稳定吞吐。世界模型、冻结表征PPO和全量专家采集仍未启动。
 
 CPU 专家预检使用 `physics_preflight.py` 中的无渲染子类：保留官方碰撞、物理、初始化、控制器和成功判定，省略摄像机和视觉资源。此路径没有图像或点云，不能采集训练数据；其作用仅是在 GPU 忙碌时扩大专家成功率测试。真实点云采集仍必须通过正式渲染环境及资源检查。
 

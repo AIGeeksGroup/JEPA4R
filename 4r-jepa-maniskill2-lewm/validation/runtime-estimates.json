@@ -27,7 +27,56 @@
         14
       ]
     },
-    "limitation": "Step-budget runtime estimate; short real GPU optimizer runs do not establish convergence or final success rate."
+    "limitation": "Step-budget runtime estimate; short real GPU optimizer runs do not establish convergence or final success rate.",
+    "historical_measurement_environment_counts": [
+      1,
+      5
+    ],
+    "production_parallel_plan": {
+      "environments": 12,
+      "available_cpu_cores": 16,
+      "cpu_cores_reserved_for_main_process_and_ipc": 4,
+      "selection_basis": "Analytical resource allocation; no sweep of environment counts. Twelve workers leave four of the 16 available CPU cores for the PPO driver, IPC, and support work.",
+      "projection_method": "Fit time_per_step(n)=serial_seconds_per_step+parallel_seconds_per_step/n to the existing one- and five-environment GPU measurements.",
+      "serial_seconds_per_step": 0.0025575,
+      "parallel_seconds_per_step": 0.005079166666666667,
+      "projected_steps_per_second": 335.48447219439464,
+      "projected_linear_hours": 4.139949845679012,
+      "planning_hours": [
+        4,
+        6
+      ],
+      "new_configuration_benchmarked": false,
+      "optimal_environment_count_claimed": false,
+      "limitation": "An extrapolation from two short measured runs; GPU batching, IPC and the production rollout window can change scaling. The estimate covers the 5,000,000-step budget and does not guarantee convergence."
+    },
+    "production_run": {
+      "status_at_recording": "running",
+      "started_utc": "2026-09-07T02:19:18.116521Z",
+      "output_directory": "artifacts/rl_identity_train_p12_20260907",
+      "launcher_pid": 139913,
+      "environments": 12,
+      "total_step_budget": 5000000,
+      "rollout_steps": 20000,
+      "minibatch": 330,
+      "completed_steps_at_recording": 220000,
+      "first_iteration_seconds": 78.575,
+      "first_iteration_collection_seconds": 57.204,
+      "first_iteration_includes_initial_critic_warmup": true,
+      "gpu_utilization_log_snapshot_percent": 70,
+      "is_environment_count_benchmark": false,
+      "timing_limitation": "Observed during the one production run, not a sweep of environment counts; early critic warmup excluded from the median.",
+      "recorded_utc": "2026-09-07T02:32:11.586795+00:00",
+      "steady_iteration_median_seconds": 64.9195,
+      "steady_steps_per_second": 308.0738453007186,
+      "linear_full_budget_hours": 4.508298611111111,
+      "steady_iterations_observed": 10,
+      "last_iteration": {
+        "completed_steps": 220000,
+        "iteration_seconds": 64.966,
+        "collection_seconds": 57.301
+      }
+    }
   },
   "sampling": {
     "real_benchmark_episodes": 10,
@@ -47,7 +96,27 @@
     "benchmark_data_is_not_training_data": true,
     "compact_lance_logical_gib_per_10000_episodes_before_transaction_recheck": 46.265361830592155,
     "final_compact_lance_gib_per_10000_episodes": 46.270894818007946,
-    "final_writer_replay_preserved_arrow_and_jpeg_bytes": true
+    "final_writer_replay_preserved_arrow_and_jpeg_bytes": true,
+    "benchmark_execution": "Historical: 10 environments stepped serially inside one official EnvPool process.",
+    "parallel_plan": {
+      "workers": 10,
+      "execution": "Spawned environment/renderer processes; official policy/oracle calls retain parent-process environment-index ordering, with IPC and a single parent-process dataset writer.",
+      "ideal_linear_hours": 1.6105006785558846,
+      "planning_hours": [
+        2,
+        4
+      ],
+      "new_configuration_benchmarked": false,
+      "guaranteed_speedup": false,
+      "estimate_basis": "Divide the historical 16.1-hour serial estimate by ten only as an ideal bound; allow extra time for shared GPU rendering, IPC, process setup and writer contention.",
+      "start_requires": "Nonzero native-success preflight and sufficient disk capacity; neither requirement is bypassed by parallelism.",
+      "backend_default": "process",
+      "serial_backend_flag": "--env-backend serial",
+      "preflight": "30 episodes in one serial environment; unchanged native-success gate.",
+      "fixed_configuration_connection_check": "validation/parallel-sampling.json",
+      "native_environment_connection_check_passed": true,
+      "performance_measured": false
+    }
   },
   "artifacts": [
     "artifacts/benchmarks/ppo_gpu_p1_20260907T013710Z/timing_summary.json",
@@ -64,6 +133,7 @@
     "sampling_cpu_process_seconds": 53.796251767,
     "sampling_wall_seconds": 60.267822752997745,
     "sampling_environment_steps_are_serial_in_official_EnvPool": true,
-    "estimates_are_for_current_implementation_not_maximum_hardware_throughput": true
+    "estimates_are_for_current_implementation_not_maximum_hardware_throughput": true,
+    "serial_sampling_observation_applies_to": "Historical benchmark only; the new collection implementation uses a multiprocessing pool."
   }
 }

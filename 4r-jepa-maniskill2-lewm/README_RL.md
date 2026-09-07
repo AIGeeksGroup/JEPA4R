@@ -84,10 +84,13 @@ Saved evidence: `artifacts/rl_smoke/verification.json`,
 for model integration checks; it is not the LeWM training dataset.
 
 For sustained training, `bash scripts/run_rl.sh train` retains upstream's
-5,000,000-step budget and PPO optimization defaults, with upstream's five
-parallel environments and a CUDA model. It is intentionally not started
-automatically. CPU production is
-available only through `bash scripts/run_rl.sh train-cpu`, with separate output.
+5,000,000-step budget and PPO optimization defaults, with **12 parallel
+environments** and a CUDA model on this host. This is an explicit local runtime
+override of upstream's five environments. With 16 available CPU cores, twelve
+environment workers leave four cores for the PPO driver, IPC and support work;
+this is an analytical allocation, not a measured optimum or a sweep of counts.
+CPU production is available only through `bash scripts/run_rl.sh train-cpu`,
+with separate output.
 The underlying upstream CLI accepts configuration
 overrides; use the saved resolved config and a matching checkpoint when
 resuming/evaluating. The default smoke and training output directories differ.
@@ -97,9 +100,27 @@ On this host's dedicated RTX 5090, two bounded 6,600-step GPU runs on
 131 steps/s with one environment, including PPO updates after initial critic
 warmup. Both retained 1,200 points, minibatches of 330 and two PPO epochs;
 only the rollout window was shortened from 20,000 to 3,300 for timing.
-The five-environment result projects to 4.96 hours for 5,000,000 steps;
-allow 5–7 hours for a full run. This estimates completion of the step budget,
-not the time to a guaranteed success rate. See `validation/runtime-estimates.json`.
+The historical five-environment result projects to 4.96 hours for 5,000,000
+steps (5–7 hours including operational overhead). Fitting
+`time_per_step(n) = serial + parallel / n` to these two measurements gives
+about **335 steps/s and 4.14 hours at 12 environments**. Allow **4–6 hours**
+for the selected production configuration. This is a projection, not a new
+12-environment benchmark: GPU batching, IPC and the full 20,000-step rollout
+window can change scaling. It estimates completion of the step budget, not
+time to a guaranteed success rate. No additional environment-count sweep is
+required or performed. See `validation/runtime-estimates.json`.
+
+The selected **12-environment production run was started on 2026-09-07 at
+02:19:18 UTC**, in `artifacts/rl_identity_train_p12_20260907`, with the full
+5,000,000-step budget and 20,000-step rollout window. At the recorded update
+it had completed its first 20,000 transitions and PPO optimization in 78.575s
+(57.204s collecting); this first iteration includes the one-time four-epoch
+critic warmup and is not a steady-state speed measurement. The GPU utilization
+log snapshot was 70%, not a whole-run average. The run continues as production
+training; no environment-count benchmarking sequence was launched. At the
+220,000-step record, the post-warmup median was 64.9195s per 20,000 steps,
+projecting to about 4.51 hours for the full budget. See the live run log for
+subsequent progress.
 
 ## CPU compatibility
 

@@ -60,7 +60,7 @@ OGBench cube 与 ManiSkill PickCube 是不同的物理任务和目标分布；�
 
 | 项目 | 正式采集配置 | CPU预检实际执行（另有下文10回合渲染性能短测） |
 |---|---|---|
-| 环境数 | 官方 `10` 个环境 | `1` 个，串行 |
+| 环境数 | 官方 `10` 个环境，默认各自独立进程 | `1` 个，串行 |
 | 轨迹数 | 官方 `10,000` | 扩大预检 `30` 条 |
 | 每条步数上限 | 官方 `200` | `200`，合计 `6,000` 步 |
 | 配置 seed | `3072` | `3072`；派生 world seed 为 `724895` |
@@ -68,7 +68,9 @@ OGBench cube 与 ManiSkill PickCube 是不同的物理任务和目标分布；�
 | 原始 oracle/噪声 | 保持原实现 | 保持原实现 |
 | 状态 | **未启动** | 已完成，原生 success `0/30` |
 
-CPU 预检复用官方 `World.evaluate`、`EnvPool` 及真实 ManiSkill 物理/控制器/成功条件，仅省去图形构建。该路径明确禁止 collect，不能产生训练数据。记录确认 `SapienRenderer` 和 `RenderClient` 调用数均为0，进程 GPU 显存样本全部为0。
+正式入口默认 `--env-backend process`：`num_envs > 1` 时用 `spawn` 启动独立环境进程，正式配置因此是10个并行worker，每个worker拥有自己的仿真环境和renderer。原始oracle及 `ExpertPolicy` 仍在主进程按原环境索引顺序调用，状态与动作通过进程间接口传递，重采目标使用RPC；轨迹由主进程统一提交writer，避免多个worker同时写同一数据集。单环境路径仍串行，`--env-backend serial` 保留旧后端供显式调试。正式环境数、轨迹数、噪声和时间间隔保持原配置；`--num-envs` 仅用于原有 `--smoke` 小规模验证。
+
+默认30回合成功率预检仍是1环境串行，不会因新增并行后端跳过或弱化门槛。CPU 预检复用官方 `World.evaluate`、`EnvPool` 及真实 ManiSkill 物理/控制器/成功条件，仅省去图形构建。该路径明确禁止 collect，不能产生训练数据。记录确认 `SapienRenderer` 和 `RenderClient` 调用数均为0，进程 GPU 显存样本全部为0。
 
 旧版本30条中有27条曾达到位置条件，共438个位置满足的状态；没有任何一个同时满足静止条件。历史位置满足时，最大手臂关节速度的最小值为 `.34014rad/s`，高于原生 `.2rad/s` 阈值。修复高度基准后同噪声重测，位置到达28/30、原生成功仍0/30，IK失败从199次降到186次。高度bug不能解释全部IK失败。原始oracle到达目标后释放并退避，PickCube还要求静止；没有为获得success加入停稳阶段或改写成功条件。
 
@@ -78,13 +80,15 @@ CPU 预检复用官方 `World.evaluate`、`EnvPool` 及真实 ManiSkill 物理/�
 
 `scripts/collect_wm.py` 默认先验证 **30条**。成功数为0时在数据集创建前报错；已有 CPU 诊断不会伪装成点云数据，也不会自动放行正式采集。图形入口还在资源分配前读取 GPU 的实际 `memory.free`，要求至少 `max(2048,1024+256*num_envs)` MiB 空闲；评测把模型移到 CUDA 前再预留1024MiB。不会结束、覆盖或修改已有任务。
 
-门槛满足后，数据路径直接调用官方 `World.collect`；本项目 `CompactLanceWriter` 在官方writer上只改变点云存储类型和删除精确重复列，官方JPEG质量95保留。直接使用 `.lance` 训练及评测，不生成全量HDF5副本。兼容 `.h5/.hdf5` 入口直接流式写gzip压缩HDF5，图像沿用原Lance→HDF5路径的JPEG95编解码，既不复制全量数据也不增加JPEG压缩轮次。两种格式都由原版 `stable_worldmodel.data.load_dataset` 读取。正式采集的 `terminate_at_goal=False` 与官方一致，成功后可继续至轨迹上限。
+门槛满足后，数据路径仍调用官方 `World.collect`，由本地多进程环境池并行执行各环境的仿真/渲染；本项目 `CompactLanceWriter` 在官方writer上只改变点云存储类型和删除精确重复列，官方JPEG质量95保留。直接使用 `.lance` 训练及评测，不生成全量HDF5副本。兼容 `.h5/.hdf5` 入口直接流式写gzip压缩HDF5，图像沿用原Lance→HDF5路径的JPEG95编解码，既不复制全量数据也不增加JPEG压缩轮次。两种格式都由原版 `stable_worldmodel.data.load_dataset` 读取。正式采集的 `terminate_at_goal=False` 与官方一致，成功后可继续至轨迹上限。
 
 每帧点云来自原始RL wrapper：`1200`点、`world`坐标、`xyz+rgb`共6通道。删除完全重复的 `rl_xyz/rl_rgb`，状态保留 `observation` 并删除完全重复的 `rl_state/proprio`；仿真状态、动作和RGB保留。点云仅在落盘时量化为float16，Lance仍展平为7200维，模型入口恢复 `[1200,6]` 并转float32。量化不改变形状或时间索引，但不再与原float32逐位相同：测试中绝对值≤1的分量最大舍入误差≤`2^-12 ≈ 0.00024414`，对应XYZ约0.244mm。在线观测与PPO输入保持float32。
 
 首个episode提交后根据实际文件增长估算剩余全量空间，增加20%余量并默认保留10GiB（`--reserve-gib`可显式改）；以后每10个episode重新计算。检查使用当前空闲磁盘和剩余步数，已落盘数据不重复计数。采集前的检查只预留少量探测数据，不把未压缩fp16字节数错误当成压缩后容量下界。空间不足即停止，不缩短轨迹、不减少点数、不改噪声或JPEG质量。
 
-2026-09-07真实10环境×10回合×200步的性能短测为0/10成功，明确标为禁止用于正式训练的benchmark。约57.94秒完成2000控制步，按同吞吐外推全量约16.1小时。最终分批writer在CPU上复放相同Arrow/JPEG字节后为49,682,995字节，外推10000回合约46.27GiB；按20%余量、每回合额外1帧保守预算和10GiB保留空间需约65.81GiB可用。该估算来自少量场景，后续仍持续复核；当前磁盘不足，不因已用fp16就放行。证据：`artifacts/benchmark_sampling_20260907/report.json`、`final_storage_report.json`。
+2026-09-07真实10环境×10回合×200步的性能短测使用旧版**单进程串行EnvPool**，并非10个并行worker。该次0/10成功，明确标为禁止用于正式训练的benchmark；约57.94秒完成2000控制步（34.5步/秒），按旧实现吞吐外推全量约16.1小时。新10进程版本以此估算：完全线性扩展的理想值为1.61小时，考虑共享GPU渲染、IPC、进程启动和writer开销，安排 **2–4小时**。这是新配置的粗估，未新增仿真测速，不是10倍加速承诺，也不包含成功率或容量不足时的等待时间。
+
+最终分批writer在CPU上复放相同Arrow/JPEG字节后为49,682,995字节，外推10000回合约46.27GiB；按20%余量、每回合额外1帧保守预算和10GiB保留空间需约65.81GiB可用。该估算来自少量场景，后续仍持续复核；当前磁盘不足，不因已用fp16就放行。证据：`artifacts/benchmark_sampling_20260907/report.json`、`final_storage_report.json`。
 
 按用户最新纠正，训练片段使用 `T=3`、`num_preds=1`、本地 `frameskip=1`，每片段取4个连续控制步的帧。相对起点 s，观测对应 `s,s+1,s+2,s+3`；动作每步7维，不再拼成35维。预测使用第三帧出发的 `a_(s+2)`，目标为 `s+3` 的 latent1。SIGReg 使用全部4帧，并逐帧沿 batch 维计算。原官方数据配置 frameskip=5 仍保存在 vendor，作为原始参考；它不是新增时间编码器的参数，当前实现不再沿用该抽帧间隔。第三阶段冻结 encoder 的 PPO 同样使用连续三帧。
 

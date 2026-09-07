@@ -101,17 +101,15 @@ class ManiSkillNoisyExpert(ExpertPolicy):
                 self.episode_noise_scales.append(float(self._xi[i]))
         actions = np.zeros((self.actual_env.num_envs, 7), dtype=np.float32)
         for i, env in enumerate(self.actual_env.envs):
-            simulator = env.unwrapped.simulator
-            rotation = simulator.tcp.pose.to_transformation_matrix()[:3, :3]
+            state = env.unwrapped.action_adapter_state()
+            rotation = state["rotation"]
             # OGBench's physical action range is [.05m,.05m,.05m,.3rad,1].
             # Panda pd_ee_delta_pose uses [.1m,.1m,.1m,.1rad,.1rad,.1rad].
             actions[i, :3] = rotation.T @ (canonical[i, :3] * 0.05 / 0.1)
             actions[i, 3:6] = rotation.T @ np.array([0.0, 0.0, canonical[i, 3] * 0.3 / 0.1])
             # OGBench uses a delta in closedness; ManiSkill a target finger
             # opening. Translate units/sign, preserving the same noisy delta.
-            bounds = simulator.agent.controller.controllers["gripper"]._action_space
             actions[i, 6] = gripper_target_action(
-                np.mean(simulator.agent.robot.get_qpos()[-2:]), canonical[i, 4],
-                float(bounds.low[0]), float(bounds.high[0]),
+                state["qpos"], canonical[i, 4], state["lower"], state["upper"],
             )
         return np.clip(actions, -1.0, 1.0)

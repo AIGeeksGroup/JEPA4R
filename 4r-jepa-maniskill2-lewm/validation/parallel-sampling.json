@@ -1,0 +1,25 @@
+{
+  "validation_kind": "fixed 10-worker connection check, no dataset or throughput measurement",
+  "worker_count": 10,
+  "distinct_worker_pids": true,
+  "steps_per_worker": 2,
+  "pointcloud_shape": [
+    10,
+    1,
+    1200,
+    6
+  ],
+  "action_shape": [
+    10,
+    7
+  ],
+  "retarget_rpc_verified": true,
+  "workers_closed": true,
+  "passed": true,
+  "dataset_created": false,
+  "throughput_benchmark": false,
+  "official_collection_loop_modified": false,
+  "official_noise_modified": false,
+  "worker_numpy_rng": "seeded independently from per-environment reset seed",
+  "full_collection_started": false
+}

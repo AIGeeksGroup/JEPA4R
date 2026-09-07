@@ -141,6 +141,17 @@ class ManiSkillPointCloudEnv(gym.Env):
         qpos = float(np.mean(simulator.agent.robot.get_qpos()[-2:]))
         return float(np.clip((upper - qpos) / (upper - lower), 0.0, 1.0))
 
+    def action_adapter_state(self):
+        """Read-only controller snapshot, also usable across process workers."""
+        simulator = self.simulator
+        bounds = simulator.agent.controller.controllers["gripper"]._action_space
+        return {
+            "rotation": simulator.tcp.pose.to_transformation_matrix()[:3, :3].copy(),
+            "qpos": float(np.mean(simulator.agent.robot.get_qpos()[-2:])),
+            "lower": float(bounds.low[0]),
+            "upper": float(bounds.high[0]),
+        }
+
     def reset(self, *, seed=None, options=None):
         super().reset(seed=seed)
         if seed is not None:
@@ -247,11 +258,37 @@ def ensure_renderer_headroom(num_envs=1, extra_model_mib=0):
     return report
 
 
-def make_world(*, num_envs, max_episode_steps, terminate_at_goal=False, episode_callback=None):
+def _make_worker_env(max_episode_steps, terminate_at_goal):
+    """Spawn-safe factory using the exact official wrapper construction."""
+    from functools import partial
+    from stable_worldmodel.world.world import _make_env
+    from stable_worldmodel.wrapper import MegaWrapper
+
+    register_environment()
+    wrappers = [partial(MegaWrapper, image_shape=(224, 224), pixels_transform=None,
+                        goal_transform=None, separate_goal=True, image_resample=None)]
+    return _make_env(ENV_ID, max_episode_steps, wrappers, horizon=max_episode_steps,
+                     terminate_at_goal=terminate_at_goal)
+
+
+def make_world(*, num_envs, max_episode_steps, terminate_at_goal=False,
+               episode_callback=None, env_backend="serial"):
+    # The collector explicitly selects its default process backend. Keep
+    # existing evaluation/preflight callers on their original serial pool.
     import stable_worldmodel as swm
 
+    if env_backend not in {"process", "serial"}:
+        raise ValueError("env_backend must be process or serial")
     ensure_renderer_headroom(num_envs)
     register_environment()
+    if env_backend == "process" and num_envs > 1:
+        if episode_callback is not None:
+            raise ValueError("Episode callback preflight uses one serial environment")
+        from functools import partial
+        from ms2_lewm.process_env_pool import ProcessWorld
+
+        factory = partial(_make_worker_env, max_episode_steps, terminate_at_goal)
+        return ProcessWorld([factory] * num_envs)
     return swm.World(
         env_name=ENV_ID,
         num_envs=num_envs,
