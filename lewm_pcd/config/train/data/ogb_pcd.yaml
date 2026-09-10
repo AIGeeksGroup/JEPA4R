@@ -1,0 +1,21 @@
+dataset:
+  name: ogbench/cube_single_expert_pcd.h5
+  num_steps: ${eval:'${num_preds} + ${history_size}'}
+  frameskip: 5
+  keys_to_load:
+    - pcd_xyz
+    - pcd_rgb
+    - action
+    - observation
+  keys_to_cache:
+    - action
+    - observation
+
+preprocessor:
+  _target_: utils.get_pcd_preprocessor
+  source_xyz: pcd_xyz
+  source_rgb: pcd_rgb
+  target: pcd            # == model.obs_key
+  center: [0.425, 0.0, 0.2]   # workspace centre (m); ManipSpaceEnv workspace is x 0.25..0.6, y +-0.35, z 0.02..0.35
+  scale: 4.0
+  use_rgb: true          # C = 6; set false for xyz-only (C = 3) and pcd_in_dim: 3

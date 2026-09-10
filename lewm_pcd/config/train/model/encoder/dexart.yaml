@@ -1,0 +1,6 @@
+# encoder 2: DexArt PointNet (smallpn structure [64,256]); [1080,4320] keeps the 1:4 ratio and
+# matches ViT-tiny's 5.50M parameters (5.51M). medium/large: [672,672,1344,2688] / [408,408,816,816,1632,1632]
+_target_: encoders.DexArtPointNet
+in_dim: ${pcd_in_dim}
+mlp_spec: [1080, 4320]
+out_dim: ${embed_dim}
