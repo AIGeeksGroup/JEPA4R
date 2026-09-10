@@ -3,7 +3,7 @@ reference loop -- window of the last 3 latent1 -> aggregator -> latent2, + the c
 frame -> next latent1 -- for H=3 (with the 2 executed history blocks) and H=1 (first plan), 5 predictions each.
 Also: get_cost == MSE(latent2 of the last 3 rollout frames, latent2 of the 3-frame goal window) per candidate."""
 import os, sys, torch
-ROOT = '/root/autodl-tmp/lewm234d/lewm_pcd/TMP'
+ROOT = sys.argv[1] if len(sys.argv) > 1 else '/root/autodl-tmp/lewm234d/lewm_pcd/TMP'
 os.environ['STABLEWM_HOME'] = ROOT
 sys.path.insert(0, '/root/autodl-tmp/lewm234d/lewm_pcd')
 import stable_worldmodel as swm

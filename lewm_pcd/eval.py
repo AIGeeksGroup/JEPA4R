@@ -170,27 +170,34 @@ def run(cfg: DictConfig):
             for c in ("pcd_xyz", "pcd_rgb")
         }  # (E, K, N, 3) each
 
-    history_len = int(cfg.plan_config.history_len)
+    history_len = int(cfg.plan_config.get("history_len", 1))  # absent in the 3D configs
     if history_len > 1 and cfg.policy != "random" and obs_is_pcd:
         # frame-window world models: seed the policy's history buffer with the (history_len - 1) * block dataset
         # steps preceding each start -- the episode's true past, so the first plan sees the frames
-        # start-10, start-5, start exactly like a training clip. A start closer than that to its episode's
-        # first step gets the framework's own warm-up padding for the missing steps (copies of the oldest
-        # real frame, zero actions). Entry conventions follow stable_worldmodel.buffer.HistoryBuffer: the
-        # action stored with a frame is the one that led into it.
+        # start-10, start-5, start like a training clip. A start closer than that to its episode's first
+        # step keeps only whole blocks of real steps and gets the framework's own warm-up padding for the
+        # rest (copies of the oldest real strided frame, zero actions; stable_worldmodel.buffer.HistoryBuffer).
+        # Entry conventions follow HistoryBuffer: the action stored with a frame is the one that led into it;
+        # the start frame's own entry (appended live by the policy) gets that action via 'last_action'.
         L = (history_len - 1) * block
         dataset._open()
-        seed = {c: [] for c in ("pcd_xyz", "pcd_rgb", "action")}
+        h5 = dataset.h5_file
+        seed = {c: [] for c in ("pcd_xyz", "pcd_rgb", "action", "last_action")}
         for r, s0 in zip(random_episode_indices, eval_start_idx):
-            r, n = int(r), min(int(s0), L)                       # n real prior steps available
-            rows = [r - n] * (L - n) + list(range(r - n, r))     # oldest first, left-padded with the oldest real row
+            r, s0 = int(r), int(s0)
+            n = min(s0, L) // block * block                      # real prior steps, whole blocks only
+            real = list(range(r - n, r))                         # rows of the real prior steps, oldest first
+            rows = [real[0] if real else r] * (L - n) + real     # left-padded with the oldest real strided frame
             for c in ("pcd_xyz", "pcd_rgb"):
-                seed[c].append(np.stack([dataset.h5_file[c][k] for k in rows]))
-            zero = np.zeros_like(dataset.h5_file["action"][r])
-            seed["action"].append(np.stack([dataset.h5_file["action"][k - 1] if k - 1 >= r - int(s0) else zero for k in rows]))
-        policy.history_seed = {c: np.stack(v) for c, v in seed.items()}  # (E, L, N, 3), (E, L, N, 3), (E, L, A)
+                seed[c].append(np.stack([h5[c][k] for k in rows]))
+            zero = np.zeros_like(h5["action"][r])
+            seed["action"].append(np.stack([h5["action"][k - 1] if i >= L - n and k - 1 >= r - s0 else zero for i, k in enumerate(rows)]))
+            seed["last_action"].append(h5["action"][r - 1] if s0 >= 1 else np.full_like(zero, np.nan))  # NaN = reset entry, as the World does
+        policy.history_seed = {c: np.stack(v) for c, v in seed.items()}  # (E, L, N, 3), (E, L, N, 3), (E, L, A), (E, A)
         n_short = int((eval_start_idx < L).sum())
         print(f"history seed: {L} steps before each of the {len(eval_start_idx)} starts ({n_short} starts padded)")
+        if hasattr(model, "window"):  # the aggregator's window must be what the eval feeds it: history frames and goal frames
+            assert history_len == goal_window == int(model.window), f"history_len {history_len} / goal_window {goal_window} / model.window {model.window} differ"
 
     world.set_policy(policy)
 
