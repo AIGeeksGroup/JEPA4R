@@ -186,8 +186,7 @@ reference loop for H = 1/2/3 (5 predictions each, cost = MSE of latent2 vs the g
 CPU eval the goal arrives as 3 frames whose last frame equals the World's goal frame, the first plan sees H = 1,
 later plans H = 3 with 2 history blocks, predicted frames = H + 5, newest history frame = current observation.
 The auto-eval loop was restarted with the 4D runs first and the `cube_pcd_agg_*` rows removed from
-`success_rates.csv`. Open point: the first plan of every episode runs with a 1-frame window (framework warm-up
-behaviour), which the aggregator never produced outputs for in training.
+`success_rates.csv`. (The 1-frame first plan noted here at the time was resolved by the history seed below.)
 
 ### 2026-09-10 19:25 — 4D evaluation: history seeded from the dataset (user decision)
 
@@ -198,7 +197,7 @@ episode's true past, frames + the actions that led into them, following `History
 `PCDWorldModelPolicy.get_action` fills the buffer with them before the first plan, so both plans see
 start-10 / start-5 / start (then live frames). Starts closer than 10 steps to their episode's first step (2 of
 the 50: step 1 and step 6) get the framework's own warm-up padding for the missing steps (copies of the oldest
-real frame, zero actions). The 50 starts and the 3D evaluations are unchanged (`history_len 1`, no seed).
+real frame, zero actions). The 50 starts are unchanged; the 3D evaluations do not use the seed (`history_len 1`).
 Verified with `scripts/checks/check_history_order.py`: first plan H = 3 with 2 history blocks, oldest frame ==
 scaled dataset frame start-10, newest == current observation, 8 = 3 + 5 predicted frames.
 
@@ -209,3 +208,31 @@ history): **72 %** success (50 starts, seed 42, budget 50), versus 54 % before t
 3D `cube_pcd_ppt` at epoch 1 and 74 % for the paper's pixel LeWM. Training metrics of the 4D run are healthy
 (train pred_loss 0.028 → 0.008 and SIGReg 2.31 → 0.97 over epochs 1–7; val pred_loss 0.0087 → 0.0027, val SIGReg
 1.89 → 1.48, all monotone). Later epochs are evaluated automatically (`logs/eval/success_rates.csv`).
+
+### 2026-09-10 21:30 — two Opus code reviews of the 4D implementation (model/training, evaluation path)
+
+Training path: no bug; `agg_forward` matches a hand-written reference bit for bit for the temporal/mean/mlp
+aggregators, only the newest frame's action block reaches the predictor (perturbation test), hyper-parameters are
+inherited from the 3D config, gradients reach every module. Evaluation path: rollout/get_cost/goal window/seeded
+history verified; issues found and fixed:
+
+1. `eval.py` read `plan_config.history_len` unconditionally, which crashed the 3D eval configs (they have no such
+   key) — every pending 3D checkpoint evaluation would have failed. Now `.get("history_len", 1)`.
+2. History padding for starts closer than 10 steps to their episode's first step repeated the oldest *raw step*, so
+   the strided frames were not 5 steps apart (e.g. start-6/start-5/start). Now whole blocks only, i.e. the
+   framework convention (start-5/start-5/start for step 6, start/start/start for step 1). Affects 2 of 50 starts.
+3. The start frame's own buffer entry carried the World's reset NaN action (zeroed), so the newest history block
+   lost its last sub-action. The seed now also carries `last_action` (the dataset action that led into the start).
+4. Asserts: `history_len == goal_window == model.window` (eval), `horizon >= window` (latent2 cost),
+   `cfg.history_size == model.window` (training forward). Unused imports removed.
+5. `scripts/checks/check_history_order.py` now also verifies the middle frame (start-5) and the content of
+   `action_history` against the dataset blocks; `test_agg_rollout.py` takes the root as an argument.
+
+Stated plainly (both reviewers): the 4D planner's state is the 3 observed frames only. `action_history` is
+consumed by the framework rollout for alignment/count but, by design (the aggregator takes no actions), it does not
+influence any prediction — each step uses the candidate block leaving the newest frame. Observations left as they
+are: the aggregator is trained only on encoder latents but rolled out on predicted ones (same class of issue as the
+upstream predictor); the SIGReg term on latent2 acts on a LayerNorm output; with `num_frames 1` the predictor's
+attention dropout degenerates to dropping the attention branch (p 0.1), as at position 0 upstream; `pred_loss` of
+the 4D run (one target per clip) is not comparable with the 3D run's (three targets per clip). The 4D checkpoints
+were re-evaluated with the fixed evaluation.
