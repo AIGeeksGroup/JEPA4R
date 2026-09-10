@@ -1,0 +1,11 @@
+# Training config for the aggregated world model. Same as lewm.yaml (same data: 4-frame clips, frameskip 5,
+# batch 128, 10 epochs, AdamW 5e-5, lambda 0.09) except model -> lewm_pcd_agg and forward -> jepa_agg.agg_forward.
+# One sample = aggregate frames 1-3 into latent2, predict frame 4's latent1 with action block 3.
+#   python train.py --config-name=lewm_agg data=ogb_pcd model/encoder=ppt subdir=<run> output_model_name=<run>
+defaults:
+  - lewm
+  - override model: lewm_pcd_agg
+  - _self_
+
+forward: jepa_agg.agg_forward
+output_model_name: lewm_agg

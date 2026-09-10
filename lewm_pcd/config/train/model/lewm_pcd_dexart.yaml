@@ -1,0 +1,5 @@
+# alias: lewm_pcd with encoder dexart  (same as `model=lewm_pcd model/encoder=dexart`)
+defaults:
+  - lewm_pcd
+  - override encoder: dexart
+  - _self_

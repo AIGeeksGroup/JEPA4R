@@ -1,0 +1,5 @@
+# alias: lewm_pcd with encoder ppt  (same as `model=lewm_pcd model/encoder=ppt`)
+defaults:
+  - lewm_pcd
+  - override encoder: ppt
+  - _self_
