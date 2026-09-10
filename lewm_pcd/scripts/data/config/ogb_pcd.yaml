@@ -1,0 +1,36 @@
+# Mirrors stable-worldmodel scripts/data/config/ogb.yaml (10 envs x 200 steps,
+# 10000 episodes, seed 3072) plus the point-cloud block.
+defaults:
+  - _self_
+  - launcher/local
+
+hydra:
+  output_subdir: null
+  mode: RUN
+  run:
+    dir: ${oc.env:STABLEWM_HOME,/root/autodl-tmp/lewm234d/lewm_pcd_data}/logs/collect/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+cache_dir: null
+dataset_name: ogbench/cube_single_expert_pcd.h5
+
+world:
+  num_envs: 10
+  max_episode_steps: 200
+  image_shape: [224, 224]
+
+pcd:
+  num_points: 1200
+  # fused views; front_pixels is the official camera, pcd_* are added by swm/OGBCubePCD-v0
+  cameras: [front_pixels, pcd_front_left, pcd_back_left, pcd_back_right, pcd_front_right, pcd_top]
+  foreground_only: true
+  crop_box: [[0.10, -0.50, -0.02], [0.75, 0.50, 0.60]]   # world frame, drops the base column / shoulder
+  voxel_size: 0.005      # m; de-duplicate fused views before sampling (0 = off)
+  cube_fraction: 0.25    # guaranteed share of points on the cube (fewer only if fewer are visible)
+  keep_rgb: false   # true only for pilots / visualisation: also stores 224x224 'pixels'
+
+num_workers: 4
+seed: 3072
+world_seed: null   # direct World seed; the sharded launcher sets one per shard
+num_traj: 10000
+
+options: null
