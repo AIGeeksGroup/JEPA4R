@@ -58,12 +58,18 @@ class PCDWorldModelPolicy(WorldModelPolicy):
         """WorldModelPolicy.get_action; at the start of the evaluation episode (every env's history buffer still
         empty) the buffer is first filled with the dataset steps preceding each start (``history_seed``), so the
         first plan already sees ``history_len`` real frames action_block steps apart, like a training clip."""
+        # Seeding happens once, when every env's buffer is empty (dataset evaluation runs in 'wait' mode: no
+        # auto-resets, so the parent's _needs_flush handling never empties the buffers again afterwards).
         hb = getattr(self, '_history_buffer', None)
         if self.history_seed is not None and hb is not None and not any(hb.num_strided()):
-            for j in range(self.history_seed['action'].shape[1]):  # oldest first, laid out like the live info entries
-                step = {c: np.asarray(v[:, j]).reshape(np.shape(info_dict[c])) for c, v in self.history_seed.items()}
+            seed = {c: v for c, v in self.history_seed.items() if c != 'last_action'}
+            for j in range(seed['action'].shape[1]):  # oldest first, laid out like the live info entries
+                step = {c: np.asarray(v[:, j]).reshape(np.shape(info_dict[c])) for c, v in seed.items()}
                 step = self._prepare_info(step)
                 hb.append({k: step[k] for k in (*self.history_keys, 'action')})
+            if 'last_action' in self.history_seed:  # the action that led into the start frame (the World's reset entry carries NaN)
+                info_dict = dict(info_dict)
+                info_dict['action'] = np.asarray(self.history_seed['last_action']).reshape(np.shape(info_dict['action']))
         return super().get_action(info_dict, **kwargs)
 
     def _prepare_info(self, info_dict):

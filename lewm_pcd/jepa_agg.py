@@ -16,10 +16,9 @@ the stacked positions exactly like upstream averages over its 4 frame positions,
 """
 
 import torch
-import torch.nn.functional as F
 from einops import rearrange
 
-from jepa import JEPA, detach_clone
+from jepa import JEPA
 
 
 class AggJEPA(JEPA):
@@ -64,7 +63,9 @@ class AggJEPA(JEPA):
         pixels: (B, S, H, ...) -- H context frames (block timesteps)
         action_sequence: (B, S, T, action_dim) -- strictly-future candidates
         info['action_history']: (B, S, H - 1, action_dim) -- executed action
-            blocks between the context frames (required when H > 1)
+            blocks between the context frames (required when H > 1). NOTE (4D): the aggregator takes
+            frames only, and each step's prediction uses the block leaving the newest frame (a candidate),
+            so these history blocks never influence the predictions; only their count is checked.
          - S is the number of action plan samples
          - T is the planning horizon
         Returns ``info`` with ``predicted_emb`` of shape (B, S, H + T, D);
@@ -141,6 +142,7 @@ class AggJEPA(JEPA):
         info_dict = self.rollout(info_dict, action_candidates)
         if self.cost_space == "latent2":  # state after the last prediction = latent2 of the last `window` frames
             pe = info_dict["predicted_emb"]  # (B, S, H + T, D)
+            assert action_candidates.size(2) >= self.window, "planning horizon shorter than the aggregator window"  # else context frames leak into the final state
             B, S = pe.shape[:2]
             last = self.aggregate(rearrange(pe[:, :, -self.window :], "b s k d -> (b s) k d"))
             info_dict["predicted_emb"] = rearrange(last, "(b s) d -> b s 1 d", b=B, s=S)
@@ -150,6 +152,7 @@ class AggJEPA(JEPA):
 def agg_forward(self, batch, stage, cfg):
     """Training forward for AggJEPA (stable_pretraining Module forward). Mirrors train.lejepa_forward."""
     W = cfg.history_size
+    assert W == self.model.window, f"cfg.history_size {W} != model.window {self.model.window}"  # both index the window; keep them one value
     lambd = cfg.loss.sigreg.weight
 
     batch["action"] = torch.nan_to_num(batch["action"], 0.0)

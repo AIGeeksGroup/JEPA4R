@@ -2,7 +2,7 @@
 at every planning call records H (frames given), T (candidate blocks), the goal's frame count, the number of
 predicted frames returned by the rollout (expect H + T), and whether the newest history frame is the env's
 current point cloud. Also checks that the last frame of eval.py's goal window equals the World's goal frame.
-Usage: python TMP/check_history_order.py <ROOT with checkpoints/lewm_agg_smoke and datasets/ogbench/pilot_prod.h5>"""
+Usage: python scripts/checks/check_history_order.py <ROOT with checkpoints/lewm_agg_smoke and datasets/ogbench/pilot_prod.h5>"""
 import os, sys, numpy as np, torch
 ROOT = sys.argv[1]
 os.environ.setdefault('MUJOCO_GL', 'osmesa'); os.environ.setdefault('PYOPENGL_PLATFORM', 'osmesa')
@@ -19,11 +19,19 @@ def rollout(self, info, action_sequence, history_size=None):
            'frames_distinct': [float((pcd[:, i] - pcd[:, i + 1]).abs().mean()) for i in range(H - 1)],
            'newest_eq_current': any(torch.equal(pcd[0, -1], ep._LAST_CURRENT[i]) for i in range(ep._LAST_CURRENT.size(0))) if ep._LAST_CURRENT is not None else None}
     P = ep._POLICY
-    if P is not None and P.history_seed is not None and H > 1:  # oldest history frame == scaled dataset frame start-10 of some env?
-        seeds = [torch.as_tensor(P.process['pcd'].transform(P._join(P.history_seed['pcd_xyz'][i, 0], P.history_seed['pcd_rgb'][i, 0]))) for i in range(P.history_seed['action'].shape[0])]
-        rec['oldest_eq_seed'] = any(torch.equal(pcd[0, 0], sd) for sd in seeds)
-    else:
-        rec['oldest_eq_seed'] = None
+    rec['oldest_eq_seed'] = rec['middle_eq_seed'] = rec['act_hist_eq_dataset'] = None
+    if P is not None and P.history_seed is not None and H > 1:
+        HS = P.history_seed; E = HS['action'].shape[0]; blk = P.cfg.action_block
+        sc = lambda i, j: torch.as_tensor(P.process['pcd'].transform(P._join(HS['pcd_xyz'][i, j], HS['pcd_rgb'][i, j])))
+        # first plan: oldest == dataset start-10, middle == start-5 (scaled), of the same env
+        rec['oldest_eq_seed'] = any(torch.equal(pcd[0, 0], sc(i, 0)) for i in range(E))
+        rec['middle_eq_seed'] = any(torch.equal(pcd[0, 1], sc(i, blk)) for i in range(E))
+        if ah is not None and ah.size(2) == H - 1:  # action_history == scaled dataset action blocks leaving start-10 and start-5
+            def blocks(i):
+                a = np.concatenate([HS['action'][i, 1:], HS['last_action'][i][None]], 0)   # a[start-10 .. start-1]
+                a = P.process['action'].transform(np.nan_to_num(a, nan=0.0)) if 'action' in P.process else a
+                return torch.as_tensor(a.reshape(H - 1, -1), dtype=ah.dtype)
+            rec['act_hist_eq_dataset'] = any(torch.allclose(ah[0, 0].cpu(), blocks(i), atol=1e-5) for i in range(E))
     out = orig_rollout(self, info, action_sequence, history_size)
     rec['pred_frames'] = out['predicted_emb'].size(2); log.append(rec)
     return out
@@ -50,7 +58,7 @@ except SystemExit:
     pass
 from collections import Counter
 print(f'{len(log)} planning calls (CEM iterations)')
-print(Counter((r['H'], r['T'], r['action_history'], r['goal_frames'], r['pred_frames'], r['newest_eq_current'], r['oldest_eq_seed']) for r in log))
-print('legend: (H frames, T candidate blocks, action_history blocks, goal frames, predicted frames, newest history frame == current obs, oldest frame == dataset start-10) -> count')
+print(Counter((r['H'], r['T'], r['action_history'], r['goal_frames'], r['pred_frames'], r['newest_eq_current'], r['oldest_eq_seed'], r['middle_eq_seed'], r['act_hist_eq_dataset']) for r in log))
+print('legend: (H frames, T candidate blocks, action_history blocks, goal frames, predicted frames, newest frame == current obs, oldest == dataset start-10, middle == start-5, action_history == dataset blocks) -> count')
 for r in log[:1] + log[-1:]:
     print('example:', r)
