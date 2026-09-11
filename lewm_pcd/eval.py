@@ -113,6 +113,12 @@ def run(cfg: DictConfig):
             policy = PCDWorldModelPolicy(
                 solver=solver, config=config, process=process, transform=transform, use_rgb=cfg.pcd_process.use_rgb
             )
+        elif int(cfg.plan_config.get("history_len", 1)) > 1 or int(cfg.eval.get("goal_window", 1)) > 1:
+            # frame-window model on pixels (jepa_agg): the official policy plus goal window / history seed
+            from envs import WindowedWorldModelPolicy
+            policy = WindowedWorldModelPolicy(
+                solver=solver, config=config, process=process, transform=transform, obs_key="pixels"
+            )
         else:
             policy = swm.policy.WorldModelPolicy(
                 solver=solver, config=config, process=process, transform=transform
@@ -159,19 +165,23 @@ def run(cfg: DictConfig):
         raise ValueError("Not enough episodes with sufficient length for evaluation.")
 
     block = int(cfg.plan_config.action_block)
+    # frame-window world models (jepa_agg), any observation type: the World's goal key(s) and per-step obs key(s)
+    # and the dataset columns that feed them
+    win_goal = {"goal_pcd_xyz": "pcd_xyz", "goal_pcd_rgb": "pcd_rgb"} if obs_is_pcd else {"goal": "pixels"}
+    win_obs = ("pcd_xyz", "pcd_rgb") if obs_is_pcd else ("pixels",)
     goal_window = int(cfg.eval.get("goal_window", 1))
-    if goal_window > 1 and cfg.policy != "random" and obs_is_pcd:
-        # frame-window world models (jepa_agg): the goal is the K frames ending at the goal frame,
-        # action_block env steps apart, taken from the same episodes/starts sampled above
+    if goal_window > 1 and cfg.policy != "random":
+        # the goal is the K frames ending at the goal frame, action_block env steps apart, taken from the same
+        # episodes/starts sampled above
         dataset._open()
         goal_rows = random_episode_indices + cfg.eval.goal_offset_steps
         policy.goal_window = {
-            c: np.stack([np.stack([dataset.h5_file[c][int(r) - (goal_window - 1 - k) * block] for k in range(goal_window)]) for r in goal_rows])
-            for c in ("pcd_xyz", "pcd_rgb")
-        }  # (E, K, N, 3) each
+            key: np.stack([np.stack([dataset.h5_file[col][int(r) - (goal_window - 1 - k) * block] for k in range(goal_window)]) for r in goal_rows])
+            for key, col in win_goal.items()
+        }  # (E, K, ...) each
 
     history_len = int(cfg.plan_config.get("history_len", 1))  # absent in the 3D configs
-    if history_len > 1 and cfg.policy != "random" and obs_is_pcd:
+    if history_len > 1 and cfg.policy != "random":
         # frame-window world models: seed the policy's history buffer with the (history_len - 1) * block dataset
         # steps preceding each start -- the episode's true past, so the first plan sees the frames
         # start-10, start-5, start like a training clip. A start closer than that to its episode's first
@@ -182,18 +192,18 @@ def run(cfg: DictConfig):
         L = (history_len - 1) * block
         dataset._open()
         h5 = dataset.h5_file
-        seed = {c: [] for c in ("pcd_xyz", "pcd_rgb", "action", "last_action")}
+        seed = {c: [] for c in (*win_obs, "action", "last_action")}
         for r, s0 in zip(random_episode_indices, eval_start_idx):
             r, s0 = int(r), int(s0)
             n = min(s0, L) // block * block                      # real prior steps, whole blocks only
             real = list(range(r - n, r))                         # rows of the real prior steps, oldest first
             rows = [real[0] if real else r] * (L - n) + real     # left-padded with the oldest real strided frame
-            for c in ("pcd_xyz", "pcd_rgb"):
+            for c in win_obs:
                 seed[c].append(np.stack([h5[c][k] for k in rows]))
             zero = np.zeros_like(h5["action"][r])
             seed["action"].append(np.stack([h5["action"][k - 1] if i >= L - n and k - 1 >= r - s0 else zero for i, k in enumerate(rows)]))
             seed["last_action"].append(h5["action"][r - 1] if s0 >= 1 else np.full_like(zero, np.nan))  # NaN = reset entry, as the World does
-        policy.history_seed = {c: np.stack(v) for c, v in seed.items()}  # (E, L, N, 3), (E, L, N, 3), (E, L, A), (E, A)
+        policy.history_seed = {c: np.stack(v) for c, v in seed.items()}  # obs: (E, L, ...), action: (E, L, A), last_action: (E, A)
         n_short = int((eval_start_idx < L).sum())
         print(f"history seed: {L} steps before each of the {len(eval_start_idx)} starts ({n_short} starts padded)")
         if hasattr(model, "window"):  # the aggregator's window must be what the eval feeds it: history frames and goal frames

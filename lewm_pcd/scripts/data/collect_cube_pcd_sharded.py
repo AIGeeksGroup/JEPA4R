@@ -1,4 +1,4 @@
-"""Run collect_cube_pcd.py as K parallel shards, then merge them into one h5.
+"""Run collect_cube_pcd.py (or --script collect_cube_pix.py) as K parallel shards, then merge them into one h5.
 
     python scripts/data/collect_cube_pcd_sharded.py --shards 40 [--num-traj 10000] [--seed 3072]
            [--out ogbench/cube_single_expert_pcd.h5] [--no-merge] [extra hydra overrides...]
@@ -34,6 +34,7 @@ def main():
     ap.add_argument('--no-merge', action='store_true')
     ap.add_argument('--threads', type=int, default=2, help='OMP/MKL threads per shard')
     ap.add_argument('--max-parallel', type=int, default=None, help='shards running at once (default: all)')
+    ap.add_argument('--script', default='collect_cube_pcd.py', help='per-shard collection script in scripts/data (collect_cube_pix.py for the pixel dataset)')
     ap.add_argument('overrides', nargs='*', help='extra hydra overrides for every shard')
     args = ap.parse_args()
 
@@ -67,7 +68,7 @@ def main():
             time.sleep(5)
         shard = shard_dir / f'{final.stem}.shard{i:03d}.h5'
         shards.append(shard)
-        cmd = [sys.executable, str(HERE / 'collect_cube_pcd.py'),
+        cmd = [sys.executable, str(HERE / args.script),
                f'num_traj={n}', f'world_seed={sd}', f'seed={args.seed}',
                f'cache_dir={cache_dir}', f'dataset_name={shard.relative_to(cache_dir / "datasets")}',
                f'hydra.run.dir={log_dir / f"shard_{i:03d}"}', *args.overrides]
