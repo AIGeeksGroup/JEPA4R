@@ -236,3 +236,37 @@ upstream predictor); the SIGReg term on latent2 acts on a LayerNorm output; with
 attention dropout degenerates to dropping the attention branch (p 0.1), as at position 0 upstream; `pred_loss` of
 the 4D run (one target per clip) is not comparable with the 3D run's (three targets per clip). The 4D checkpoints
 were re-evaluated with the fixed evaluation.
+
+### 2026-09-11 02:30 — crash recovery for the trainings
+
+Lightning writes a full-state checkpoint (weights, optimizer, LR schedule, epoch/step) at the end of every epoch to
+`$SPT_CACHE_DIR/runs/<date>/<time>/<hash>/checkpoints/last.ckpt`, and `train.py` resumes from
+`checkpoints/<run>/<run>_weights.ckpt` when that file exists. `scripts/train/resume_train_detached.sh <model> <run>
+[overrides]` (same arguments as the original launch) copies the newest matching `last.ckpt` there and relaunches.
+Verified on CPU with a 3-epoch smoke run: killed after epoch 2, resumed, trained epoch 3 only, global step and
+epoch counters continued (metrics of a resumed run land in a new `_spt_cache` run directory / event file).
+Any CPU-side test while trainings hold the GPU must hide it (`CUDA_VISIBLE_DEVICES=""`, `loader.pin_memory=false`):
+the first smoke attempt opened a CUDA context on the 99 %-full GPU and died of CUDA OOM (the trainings survived).
+
+### 2026-09-11 22:15 — pipeline landed: all six runs trained (10 epochs) and evaluated per epoch
+
+Success rate (%) on the official protocol (50 starts, seed 42, goal 25 steps ahead, budget 50, CEM 300x30);
+random policy 48, paper pixel LeWM 74. Statistical error of one number is about ±6 points (50 episodes).
+
+| run | e1 | e2 | e3 | e4 | e5 | e6 | e7 | e8 | e9 | e10 | mean | max |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 3D ppt (`cube_pcd_ppt`) | 72 | 68 | 66 | 66 | 64 | 62 | 62 | 66 | 64 | 60 | 65.0 | 72 |
+| 3D dexart (`cube_pcd_dexart`) | 66 | 68 | 68 | 68 | 66 | 62 | 64 | 70 | 66 | 66 | 66.4 | 70 |
+| 3D ms2 (`cube_pcd_ms2`) | 68 | 68 | 66 | 66 | 70 | 66 | 68 | 66 | 68 | 66 | 67.2 | 70 |
+| 4D ppt (`cube_pcd_agg_ppt`) | 72 | 70 | 68 | 64 | 66 | 64 | 60 | 68 | 62 | 68 | 66.2 | 72 |
+| 4D dexart (`cube_pcd_agg_dexart`) | 64 | 76 | 70 | 72 | 78 | 70 | 66 | 72 | 70 | 78 | 71.6 | 78 |
+| 4D ms2 (`cube_pcd_agg_ms2`) | 66 | 60 | 58 | 70 | 68 | 68 | 66 | 60 | 66 | 70 | 65.2 | 70 |
+
+Reading: the 4D DexArt model is the best configuration (mean 71.6, final 78, six of ten epochs ≥ 70) and the only
+one above the paper's pixel LeWM; 4D ppt / 4D ms2 are on par with their 3D counterparts within noise. The 3D ppt
+success declines over epochs while its validation loss keeps falling (not investigated). All 4D numbers use the
+final evaluation code (framework rollout, 3-frame goal, dataset-seeded history). Evaluations ran on CPU
+(osmesa, ~40 min each) while the GPU was busy and on the GPU (EGL, ~3 min each) afterwards; the backend does not
+change the protocol. Trainings: 3D runs 10 epochs each (ms2 ≈ 35 h with three concurrent runs), 4D ppt ≈ 10 h,
+4D dexart ≈ 17 h, 4D ms2 ≈ 21 h. Open items: 2D pixel reproduction (deferred, disk margin), cube_fraction
+fairness decision, the ppt decline.
