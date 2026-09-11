@@ -167,93 +167,76 @@ lewm_pcd/                      代码（git）
 - [x] 2. 模型：可插拔 encoder 接口（`encoders/`），像素基线逐位等价，PointNet 参考实现在 pilot 数据上冒烟训练通过
 - [x] 3. 训练：三个候选的全量训练已于 2026-09-09 22:28 启动（`scripts/train/run_train_detached.sh`）；评测管线已完成并验证
 
-### 2026-09-10 19:20 — 4D evaluation fix (the 54% epoch-1 number was invalid)
+### 2026-09-10 19:20 — 4D 评测修复（之前 epoch 1 的 54% 无效）
 
-Two defects in the 4D *evaluation* path (training was never affected; the checkpoints are reused as is):
+4D 的**评测**路径有两个缺陷（训练从未受影响，checkpoint 原样可用）：
 
-1. `AggJEPA.rollout` had copied the le-wm `jepa.py` action split `[H, T-H]`, which assumes the executed history
-   actions are prepended to the candidates. The stable-worldmodel policy at HEAD passes strictly-future candidates
-   (T = horizon) and the H-1 executed blocks separately in `info['action_history']`. With `history_len 3` the
-   candidates were misaligned and only 3 blocks (15 steps) were imagined instead of 5 (25 steps, the goal).
-   Fix: `rollout` is now a verbatim copy of the framework's own `stable_worldmodel.wm.lewm.LeWM.rollout` with
-   two marked edits (`obs_key`; per-step prediction = window -> aggregator -> latent2 -> predictor -> next latent1);
-   `get_cost` aggregates the last `window` rollout frames into latent2 before the inherited criterion.
-2. The 3-frame goal window built by `eval.py` never reached the model: the branch in
-   `PCDWorldModelPolicy._prepare_info` had not been written to the file. Added (4 lines).
+1. `AggJEPA.rollout` 抄了 le-wm `jepa.py` 里按 `[H, T-H]` 切动作的写法，它假设历史动作拼在候选动作前面。
+   而 stable-worldmodel 现在的 policy 传给模型的候选动作全是未来的（T = horizon），历史动作单独放在
+   `info['action_history']`。`history_len 3` 时动作错位，而且只想象了 3 块（15 步）而不是 5 块（25 步，目标所在）。
+   修法：`rollout` 改为框架自带的 `stable_worldmodel.wm.lewm.LeWM.rollout` 的逐行拷贝，只有两处标注的改动
+   （观测键名；每步预测 = 窗口 → 聚合器 → latent2 → predictor → 下一帧 latent1）；`get_cost` 把 rollout 最后
+   `window` 帧聚成 latent2 再走继承的 criterion。
+2. `eval.py` 建好的 3 帧 goal window 根本没送到模型：`PCDWorldModelPolicy._prepare_info` 里那段分支没写进文件。补上（4 行）。
 
-Verification (`scripts/checks/test_agg_rollout.py`, `scripts/checks/check_history_order.py`): rollout equals a plain
-reference loop for H = 1/2/3 (5 predictions each, cost = MSE of latent2 vs the goal window's latent2); in the 2-env
-CPU eval the goal arrives as 3 frames whose last frame equals the World's goal frame, the first plan sees H = 1,
-later plans H = 3 with 2 history blocks, predicted frames = H + 5, newest history frame = current observation.
-The auto-eval loop was restarted with the 4D runs first and the `cube_pcd_agg_*` rows removed from
-`success_rates.csv`. (The 1-frame first plan noted here at the time was resolved by the history seed below.)
+验证（`scripts/checks/test_agg_rollout.py`、`scripts/checks/check_history_order.py`）：H = 1/2/3 时 rollout 与手写参考循环
+逐位一致（各 5 步预测，cost = 终点 latent2 与目标窗口 latent2 的 MSE）；2 环境 CPU 实跑中 goal 为 3 帧、最后一帧等于框架取的
+目标帧，首次规划 H = 1、之后 H = 3 带 2 块历史动作，预测帧数 = H + 5，最新历史帧等于当前观测。auto-eval 以 4D 优先重启，
+`success_rates.csv` 里 `cube_pcd_agg_*` 的旧行删除。（当时记的"首次规划只有 1 帧"问题，由下面的历史填充解决。）
 
-### 2026-09-10 19:25 — 4D evaluation: history seeded from the dataset (user decision)
+### 2026-09-10 19:25 — 4D 评测：历史从数据集填充（用户决定）
 
-The framework starts every evaluation episode with an empty history buffer, so the first of the two plans per
-episode saw a single frame (the aggregator only ever produced outputs for 3-frame windows in training). Now
-`eval.py` also reads the `(history_len - 1) * action_block = 10` dataset steps preceding each start (the same
-episode's true past, frames + the actions that led into them, following `HistoryBuffer`'s conventions) and
-`PCDWorldModelPolicy.get_action` fills the buffer with them before the first plan, so both plans see
-start-10 / start-5 / start (then live frames). Starts closer than 10 steps to their episode's first step (2 of
-the 50: step 1 and step 6) get the framework's own warm-up padding for the missing steps (copies of the oldest
-real frame, zero actions). The 50 starts are unchanged; the 3D evaluations do not use the seed (`history_len 1`).
-Verified with `scripts/checks/check_history_order.py`: first plan H = 3 with 2 history blocks, oldest frame ==
-scaled dataset frame start-10, newest == current observation, 8 = 3 + 5 predicted frames.
+框架每集从空的历史缓冲开始，两次规划里的第一次只能看到 1 帧（聚合器训练时只在 3 帧窗口上输出过）。现在 `eval.py` 同时
+读取每个起点前 `(history_len - 1) * action_block = 10` 步的数据集行（同一条轨迹的真实过去：帧 + 导致该帧的动作，遵循
+`HistoryBuffer` 的约定），`PCDWorldModelPolicy.get_action` 在第一次规划前把它们填进缓冲，于是两次规划都看到
+起点−10 / 起点−5 / 起点（之后是真实的在线帧）。距轨迹开头不足 10 步的起点（50 个里 2 个：第 1 步和第 6 步）缺的部分按框架
+自己的 warm-up 约定补齐（复制最老的真实帧、动作填零）。50 个起点不变；3D 评测不用填充（`history_len 1`）。
+`scripts/checks/check_history_order.py` 验证：首次规划 H = 3 带 2 块历史动作，最老帧等于缩放后的数据集帧起点−10，
+最新帧等于当前观测，预测帧 8 = 3 + 5。
 
-### 2026-09-10 20:30 — first valid 4D number
+### 2026-09-10 20:30 — 第一个有效的 4D 数字
 
-`cube_pcd_agg_ppt` epoch 1 with the corrected evaluation (framework rollout + 3-frame goal + dataset-seeded
-history): **72 %** success (50 starts, seed 42, budget 50), versus 54 % before the fixes, 48 % random, 72 % for the
-3D `cube_pcd_ppt` at epoch 1 and 74 % for the paper's pixel LeWM. Training metrics of the 4D run are healthy
-(train pred_loss 0.028 → 0.008 and SIGReg 2.31 → 0.97 over epochs 1–7; val pred_loss 0.0087 → 0.0027, val SIGReg
-1.89 → 1.48, all monotone). Later epochs are evaluated automatically (`logs/eval/success_rates.csv`).
+`cube_pcd_agg_ppt` epoch 1 用修正后的评测（框架 rollout + 3 帧 goal + 数据集填充的历史）：**72 %**（50 个起点，seed 42，预算 50），
+修复前 54 %，随机 48 %，3D `cube_pcd_ppt` epoch 1 为 72 %，论文像素版 LeWM 74 %。4D 训练指标健康（epoch 1–7 训练 pred_loss
+0.028 → 0.008、SIGReg 2.31 → 0.97；验证 pred_loss 0.0087 → 0.0027、验证 SIGReg 1.89 → 1.48，全部单调）。后续 epoch 由
+auto-eval 自动评（`logs/eval/success_rates.csv`）。
 
-### 2026-09-10 21:30 — two Opus code reviews of the 4D implementation (model/training, evaluation path)
+### 2026-09-10 21:30 — 两个 Opus 代码审查（模型/训练、评测路径）
 
-Training path: no bug; `agg_forward` matches a hand-written reference bit for bit for the temporal/mean/mlp
-aggregators, only the newest frame's action block reaches the predictor (perturbation test), hyper-parameters are
-inherited from the 3D config, gradients reach every module. Evaluation path: rollout/get_cost/goal window/seeded
-history verified; issues found and fixed:
+训练路径无 bug：`agg_forward` 与手写参考在 temporal/mean/mlp 三种聚合器上逐位一致，只有最新帧的动作块进入 predictor
+（扰动实验），超参全部继承自 3D 配置，每个模块都有梯度。评测路径：rollout/get_cost/goal window/历史填充核对无误；查出并修复：
 
-1. `eval.py` read `plan_config.history_len` unconditionally, which crashed the 3D eval configs (they have no such
-   key) — every pending 3D checkpoint evaluation would have failed. Now `.get("history_len", 1)`.
-2. History padding for starts closer than 10 steps to their episode's first step repeated the oldest *raw step*, so
-   the strided frames were not 5 steps apart (e.g. start-6/start-5/start). Now whole blocks only, i.e. the
-   framework convention (start-5/start-5/start for step 6, start/start/start for step 1). Affects 2 of 50 starts.
-3. The start frame's own buffer entry carried the World's reset NaN action (zeroed), so the newest history block
-   lost its last sub-action. The seed now also carries `last_action` (the dataset action that led into the start).
-4. Asserts: `history_len == goal_window == model.window` (eval), `horizon >= window` (latent2 cost),
-   `cfg.history_size == model.window` (training forward). Unused imports removed.
-5. `scripts/checks/check_history_order.py` now also verifies the middle frame (start-5) and the content of
-   `action_history` against the dataset blocks; `test_agg_rollout.py` takes the root as an argument.
+1. `eval.py` 无条件读 `plan_config.history_len`，3D 评测配置没有这个键会直接崩，所有未评的 3D checkpoint 都会失败。改为 `.get("history_len", 1)`。
+2. 起点距轨迹开头不足 10 步时的填充按*原始步*复制最老一行，导致跨步取出的帧不是 5 步等间隔（如起点−6/起点−5/起点）。
+   改为只取整块，即框架约定（第 6 步：起点−5/起点−5/起点；第 1 步：起点/起点/起点）。影响 50 个起点里的 2 个。
+3. 起点帧自己的缓冲条目带的是框架复位时的 NaN 动作（置零），最新的历史动作块少了最后一个子动作。种子里加 `last_action`
+   （数据集中进入起点帧的那个动作）。
+4. 断言：`history_len == goal_window == model.window`（评测）、`horizon >= window`（latent2 代价）、
+   `cfg.history_size == model.window`（训练 forward）。删除未用的 import。
+5. `scripts/checks/check_history_order.py` 增加中间帧（起点−5）和 `action_history` 内容与数据集块的核对；
+   `test_agg_rollout.py` 的根目录改为参数。
 
-Stated plainly (both reviewers): the 4D planner's state is the 3 observed frames only. `action_history` is
-consumed by the framework rollout for alignment/count but, by design (the aggregator takes no actions), it does not
-influence any prediction — each step uses the candidate block leaving the newest frame. Observations left as they
-are: the aggregator is trained only on encoder latents but rolled out on predicted ones (same class of issue as the
-upstream predictor); the SIGReg term on latent2 acts on a LayerNorm output; with `num_frames 1` the predictor's
-attention dropout degenerates to dropping the attention branch (p 0.1), as at position 0 upstream; `pred_loss` of
-the 4D run (one target per clip) is not comparable with the 3D run's (three targets per clip). The 4D checkpoints
-were re-evaluated with the fixed evaluation.
+两位审查者都明确指出：4D 规划器的状态只有 3 帧观测。`action_history` 被框架 rollout 用于对齐和计数，但按设计（聚合器不吃动作）
+它不影响任何预测，每步用的是离开最新帧的候选动作块。保留不动的观察项：聚合器只在 encoder 的 latent 上训练、规划时却吃预测出的
+latent（与上游 predictor 同类）；latent2 上的 SIGReg 作用在 LayerNorm 输出上；`num_frames 1` 时 predictor 的注意力 dropout
+退化成整支随机丢弃（p 0.1，与上游位置 0 相同）；4D 的 `pred_loss`（每个片段 1 个目标）与 3D 的（3 个目标）不可直接比较。
+4D checkpoint 已用修正后的评测重评。
 
-### 2026-09-11 02:30 — crash recovery for the trainings
+### 2026-09-11 02:30 — 训练的崩溃恢复
 
-Lightning writes a full-state checkpoint (weights, optimizer, LR schedule, epoch/step) at the end of every epoch to
-`$SPT_CACHE_DIR/runs/<date>/<time>/<hash>/checkpoints/last.ckpt`, and `train.py` resumes from
-`checkpoints/<run>/<run>_weights.ckpt` when that file exists. `scripts/train/resume_train_detached.sh <model> <run>
-[overrides]` (same arguments as the original launch) copies the newest matching `last.ckpt` there and relaunches.
-Verified on CPU with a 3-epoch smoke run: killed after epoch 2, resumed, trained epoch 3 only, global step and
-epoch counters continued (metrics of a resumed run land in a new `_spt_cache` run directory / event file).
-Any CPU-side test while trainings hold the GPU must hide it (`CUDA_VISIBLE_DEVICES=""`, `loader.pin_memory=false`):
-the first smoke attempt opened a CUDA context on the 99 %-full GPU and died of CUDA OOM (the trainings survived).
+Lightning 每个 epoch 结束时把完整状态（权重、优化器、学习率调度、epoch/step）写到
+`$SPT_CACHE_DIR/runs/<date>/<time>/<hash>/checkpoints/last.ckpt`，`train.py` 在 `checkpoints/<run>/<run>_weights.ckpt`
+存在时从它续训。`scripts/train/resume_train_detached.sh <model> <run> [overrides]`（参数与原始启动相同）把最新的匹配
+`last.ckpt` 复制过去并重新启动。CPU 上用 3 个 epoch 的小跑验证：第 2 个 epoch 后杀掉，续训只跑了第 3 个 epoch，global step 和
+epoch 计数接续（续训的指标落在新的 `_spt_cache` 运行目录 / 事件文件里）。训练占着 GPU 时任何 CPU 侧测试都必须隐藏 GPU
+（`CUDA_VISIBLE_DEVICES=""`、`loader.pin_memory=false`）：第一次小跑在 99 % 满的 GPU 上开了 CUDA 上下文，自己 CUDA OOM 退出（训练没事）。
 
-### 2026-09-11 22:15 — pipeline landed: all six runs trained (10 epochs) and evaluated per epoch
+### 2026-09-11 22:15 — 流程落地：六个 run 全部训完（10 epoch）并逐 epoch 评测
 
-Success rate (%) on the official protocol (50 starts, seed 42, goal 25 steps ahead, budget 50, CEM 300x30);
-random policy 48, paper pixel LeWM 74. Statistical error of one number is about ±6 points (50 episodes).
+官方协议下的成功率（%）（50 个起点，seed 42，目标在 25 步后，预算 50，CEM 300x30）；随机策略 48，论文像素 LeWM 74。
+单个数字的统计误差约 ±6 分（50 个 episode）。
 
-| run | e1 | e2 | e3 | e4 | e5 | e6 | e7 | e8 | e9 | e10 | mean | max |
+| run | e1 | e2 | e3 | e4 | e5 | e6 | e7 | e8 | e9 | e10 | 均值 | 最大 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
 | 3D ppt (`cube_pcd_ppt`) | 72 | 68 | 66 | 66 | 64 | 62 | 62 | 66 | 64 | 60 | 65.0 | 72 |
 | 3D dexart (`cube_pcd_dexart`) | 66 | 68 | 68 | 68 | 66 | 62 | 64 | 70 | 66 | 66 | 66.4 | 70 |
@@ -262,11 +245,42 @@ random policy 48, paper pixel LeWM 74. Statistical error of one number is about 
 | 4D dexart (`cube_pcd_agg_dexart`) | 64 | 76 | 70 | 72 | 78 | 70 | 66 | 72 | 70 | 78 | 71.6 | 78 |
 | 4D ms2 (`cube_pcd_agg_ms2`) | 66 | 60 | 58 | 70 | 68 | 68 | 66 | 60 | 66 | 70 | 65.2 | 70 |
 
-Reading: the 4D DexArt model is the best configuration (mean 71.6, final 78, six of ten epochs ≥ 70) and the only
-one above the paper's pixel LeWM; 4D ppt / 4D ms2 are on par with their 3D counterparts within noise. The 3D ppt
-success declines over epochs while its validation loss keeps falling (not investigated). All 4D numbers use the
-final evaluation code (framework rollout, 3-frame goal, dataset-seeded history). Evaluations ran on CPU
-(osmesa, ~40 min each) while the GPU was busy and on the GPU (EGL, ~3 min each) afterwards; the backend does not
-change the protocol. Trainings: 3D runs 10 epochs each (ms2 ≈ 35 h with three concurrent runs), 4D ppt ≈ 10 h,
-4D dexart ≈ 17 h, 4D ms2 ≈ 21 h. Open items: 2D pixel reproduction (deferred, disk margin), cube_fraction
-fairness decision, the ppt decline.
+解读：4D DexArt 是最好的配置（均值 71.6，最终 78，十个 epoch 里六个 ≥ 70），也是唯一超过论文像素 LeWM 的；4D ppt / 4D ms2 与各自的
+3D 版本在噪声内持平。3D ppt 的成功率随 epoch 下降而验证 loss 持续下降（未查）。所有 4D 数字都用最终的评测代码（框架 rollout、
+3 帧 goal、数据集填充的历史）。GPU 忙时评测在 CPU 上跑（osmesa，每个约 40 分钟），之后在 GPU 上（EGL，每个约 3 分钟），
+后端不改变协议。训练：3D 各 10 个 epoch（三个并行时 ms2 约 35 小时），4D ppt 约 10 小时，4D dexart 约 17 小时，4D ms2 约 21 小时。
+待办：2D 像素复现（因磁盘余量推迟）、cube_fraction 的公平性决定、ppt 的下降。
+
+### 2026-09-11 22:30 — 启动 2D（像素）复现（`scripts/run_pix_pipeline.sh`）
+
+数据盘扩到 250 GB（空 97 GB），推迟的像素基线开跑，官方配置原样不动：采集 = 官方 `collect_cube.py` 的设置
+（`swm/OGBCube-v0`、single、前视相机 224x224、`ob_type='states'`、plan-oracle 专家、10 环境 x 200 步、10000 集、seed 3072；
+轨迹与点云数据集相同），通过 `scripts/data/collect_cube_pix.py`，唯一区别是落盘编码（`GzipHDF5Writer`：`pixels` 用 gzip 4 级、
+5 帧一块，其他列 20 行一块；小跑实测 6.6 倍，预计约 42 GB），用现有的分片启动器（`--script collect_cube_pix.py`）分 20 片、
+合并、加评测列；输出名 `ogbench/cube_single_expert.h5` 就是论文的数据集名，所以 `data=ogb model=lewm`（训练）和 `cube.yaml`（评测）
+不需要任何覆盖。评测用 `config/eval/cube_pix.yaml` = `cube.yaml` + auto-eval 传入的 `device`/`video` 两个开关。run 名 `cube_pix`。
+4 集小跑端到端验证过（采集、合并、加列、GPU 上 3 个 batch 训练、2 环境评测）。20 片同时跑时每片内存约 4 GB 且随集数增长，
+5 分钟内到 87/90 GiB，改为 8 片并行（`MAXPAR`）。
+
+### 2026-09-11 23:10 — 官方模型改 4D（像素版 4D），全部复用
+
+新增的只有配置别名：`config/train/model/encoder/vit.yaml`（官方 ViT-tiny 的 encoder 块原样搬来，作为可插拔 encoder）、
+`config/train/model/lewm_pix_agg.yaml`（= `lewm_pcd_agg` + `override encoder: vit` + `obs_key: pixels`，3 行）、
+`config/eval/cube_pix_agg.yaml`（= `cube_pix` + `history_len 3` + `goal_window 3`，和 `cube_pcd_agg` 对 `cube_pcd` 一样）。
+模型、训练 forward、rollout、聚合器、检查脚本全部原样复用。评测侧把原来写死点云的两处改成按观测类型选列
+（goal 窗口：像素用 `goal` ← `pixels` 列，点云用 `goal_pcd_xyz/rgb` ← `pcd_xyz/rgb` 列；历史填充同理），
+`envs/eval_policy.py` 拆成通用的 `WindowedWorldModelPolicy`（goal 窗口 + 历史填充，像素直接用）和只做点云拼接的
+`PCDWorldModelPolicy` 子类，逻辑行数不变。训练命令：`DATA=ogb run_train_detached.sh lewm_pix_agg cube_pix_agg --config-name=lewm_agg`。
+验证：`scripts/checks/check_history_order.py TMP --pix`（像素模式）在 4 集小数据上训 3 个 batch 后 2 环境实跑：goal 为 3 帧、
+最后一帧等于框架目标帧，首次规划 3 帧历史 + 2 块历史动作，最老/中间帧等于数据集帧起点−10/−5，历史动作块等于数据集，
+预测帧 8 = 3 + 5；点云模式回归结果不变。`scripts/run_pix_agg_followup.sh` 在 2D 训练启动后自动起 4D 像素训练并让评测循环评两个 run。
+
+目录规划（两条线同构）：
+
+```
+config/train/model/   lewm.yaml（官方 2D）| lewm_pcd.yaml（3D 点云）| lewm_pcd_agg.yaml（4D 点云）| lewm_pix_agg.yaml（4D 像素）
+                      encoder/{ms2,dexart,ppt,vit}.yaml   可插拔 encoder
+config/train/         lewm.yaml（3D 入口）| lewm_agg.yaml（4D 入口）；data=ogb 像素 / data=ogb_pcd 点云
+config/eval/          cube.yaml（官方）→ cube_pix.yaml → cube_pix_agg.yaml ； cube_pcd.yaml → cube_pcd_agg.yaml
+run 名                cube_pcd_{ppt,dexart,ms2} | cube_pcd_agg_{ppt,dexart,ms2} | cube_pix | cube_pix_agg
+```

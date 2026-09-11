@@ -1,0 +1,11 @@
+# Pixel baseline evaluation = the official cube.yaml unchanged, plus the two knobs the auto-eval loop passes
+# (device, video) which the released config does not define.
+defaults:
+  - cube
+  - _self_
+
+device: cuda
+video: false
+
+output:
+  filename: ogb_cube_pix_results.txt

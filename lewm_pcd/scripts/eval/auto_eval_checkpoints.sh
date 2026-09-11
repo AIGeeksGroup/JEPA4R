@@ -28,13 +28,17 @@ gpu_free_mb() { local t=$(nvidia-smi --query-gpu=memory.total --format=csv,nohea
 log() { echo "$(date +%F_%T) $*"; }
 
 eval_one() {  # run epoch
-  local r=$1 e=$2 tag=${1}_epoch${2} log=$OUT/auto/${1}_epoch${2}.log backend dev cfgname=cube_pcd.yaml
-  case "$r" in *agg*) cfgname=cube_pcd_agg.yaml;; esac   # 4D runs: history_len 3 + goal window 3
+  local r=$1 e=$2 tag=${1}_epoch${2} log=$OUT/auto/${1}_epoch${2}.log backend dev cfgname=cube_pcd.yaml extra=""
+  case "$r" in
+    *pix_agg*) cfgname=cube_pix_agg.yaml;;   # 4D pixel: history_len 3 + goal window 3 on the official pixel protocol
+    *pix*)     cfgname=cube_pix.yaml;;       # pixel baseline: the official cube.yaml + device/video knobs
+    *agg*)     cfgname=cube_pcd_agg.yaml;;   # 4D point cloud
+  esac
   if [ "$(gpu_free_mb)" -ge "$GPU_MIN_FREE_MB" ]; then backend=egl; dev=cuda; else backend=osmesa; dev=cpu; fi
   local t0=$(date +%s)
   MUJOCO_GL=$backend PYOPENGL_PLATFORM=$backend LP_NUM_THREADS=8 OMP_NUM_THREADS=8 \
     nice -n 10 "$PY" eval.py --config-name=$cfgname policy="$r/weights_epoch_${e}.pt" device=$dev solver.device=$dev \
-    hydra.run.dir="$OUT/auto/hydra_${tag}" $EXTRA > "$log" 2>&1 &
+    hydra.run.dir="$OUT/auto/hydra_${tag}" $extra $EXTRA > "$log" 2>&1 &
   local pid=$! killed=""
   while kill -0 $pid 2>/dev/null; do
     sleep 20
