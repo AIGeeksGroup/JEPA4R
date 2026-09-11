@@ -1,0 +1,8 @@
+# 4D 像素版 = 4D 点云模型（lewm_pcd_agg）换成官方 ViT-tiny encoder、观测键 pixels；其余（聚合器、predictor、损失）完全相同
+#   python train.py --config-name=lewm_agg data=ogb model=lewm_pix_agg subdir=cube_pix_agg output_model_name=cube_pix_agg
+defaults:
+  - lewm_pcd_agg
+  - override encoder: vit
+  - _self_
+
+obs_key: pixels
