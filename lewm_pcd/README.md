@@ -284,3 +284,34 @@ config/train/         lewm.yaml（3D 入口）| lewm_agg.yaml（4D 入口）；d
 config/eval/          cube.yaml（官方）→ cube_pix.yaml → cube_pix_agg.yaml ； cube_pcd.yaml → cube_pcd_agg.yaml
 run 名                cube_pcd_{ppt,dexart,ms2} | cube_pcd_agg_{ppt,dexart,ms2} | cube_pix | cube_pix_agg
 ```
+
+### 2026-09-12 11:25 — 官方复现的差距核查：作者发布的 checkpoint 在我们的评测上也是 66
+
+官方 2D 复现（`cube_pix`，官方配置一字未改：ViT-tiny、10 epoch、`data=ogb`、`cube.yaml` 协议 = 论文附录 F 的 50 个起点 /
+预算 50 / 目标 25 步）10 个 epoch 为 68 64 64 66 70 64 68 60 70 64，均值 65.8，而论文报 74。为分清是我们的训练/数据不行还是
+评测集不同，下载了作者发布的 cube checkpoint（HuggingFace `quentinll/lewm-cube`，303 个张量与我们逐一同名同形，只差 ViT
+包装的 `encoder.vit.` 前缀），装进同一个 `jepa.JEPA` 类，用完全相同的评测管线在我们的 50 个起点上跑：**66 %**。
+结论：我们训出来的模型和作者的模型在同一评测集上一样好；和论文 74 的差距来自评测集本身：上游采集有未固定种子的随机性
+（reset 丢弃种子、变化空间用熵种子、oracle 用全局随机数），我们的 1 万条轨迹和作者的是同分布的不同样本，seed 42 抽出的
+50 个起点/目标也就是另一组 50 道题；再加上框架版本差异（我们在 stable-worldmodel 6f1e499 上评）和 ±6 的统计误差。
+因此本机上各配置的对比以 66（作者 checkpoint）为参照才公平：点云 3D 65–67、官方 2D 65.8、4D 点云 dexart 均值 71.6、
+4D 像素前 7 个 epoch 均值 73.1。checkpoint 存放：`checkpoints/hf_lewm_cube/`（原始）与 `checkpoints/hf_lewm_cube_jepa/`（改前缀后可直接评）。
+
+### 2026-09-12 13:30 — 只读审查："差距是否只由 CEM 迭代次数造成"：不是
+
+审查代理（Opus）核对了采集、训练、评测与官方的差别，结论是不止一个参数。按影响排序：
+1. **评测后端混用（我们自己引入，已消除）**：官方 `eval.py` 强制 EGL + CUDA；我们为了不抢训练的 GPU 把后端做成可切换，
+   30 次迭代那张表里 `cube_pix` 的 e1–7 是 osmesa/CPU、e8–10 是 EGL/GPU，点云表也大半在 CPU。CPU 与 GPU 的渲染像素不完全相同，
+   且 CEM 的随机数生成器按设备建（`planning/solver/cem.py:52`），同一个 seed 在两种设备上抽出的候选动作不同。
+   论文协议（CEM 10 次）的重评表 `success_rates_cem10.csv` 全部在 EGL/GPU 上跑，以它为准。
+2. **框架版本差异**：论文时代的 CEM 用样本标准差更新（除以 K−1），我们所用的 6f1e499 用总体标准差（除以 K），每轮采样尺度差
+   √(30/29)，30 轮复利后探索方差只剩约 0.61 倍，和"迭代次数多"是同向效应。需要换回论文时代的框架才能消除，暂不动。
+3. **数据不是作者的**：同分布的自采样本，评测的 50 道题和动作归一化统计量都来自自采数据。审查者还指出 2 月 16 日的参考提交
+   在 `reset_variation_space` 不传 `default_variations` 时根本不会重采方块起点/目标（会退回固定的 (0.3, 0)），而我们采集用的
+   HEAD 通过 `DEFAULT_VARIATIONS` 随机化；发布数据集究竟出自哪个提交无法确认，作者 checkpoint 在我们随机化的起点上拿 72
+   说明两者分布相容。
+4. **CEM 迭代次数 30 对 10**：而且论文自相矛盾，附录 B 写 30 步，附录 D 写 PushT 30 / 其他 10；发布配置是 30。
+5. 训练轮数 10（论文附录 E）对发布配置的 100；`ob_type='states'`（发布的训练配置只和 states 自洽）、`goal→target` 改名、分片采集、
+   落盘方式等经代码路径核对对结果无影响。
+逐项确认无差别的：`config/eval/cube.yaml` 与官方逐字节相同、`module.py` 相同、`jepa.py` 像素路径行为不变、ViTCLS 与官方 ViT 等价、
+点云/4D 分支在像素路径不进入、policy 的 `_prepare_info` 两版相同。

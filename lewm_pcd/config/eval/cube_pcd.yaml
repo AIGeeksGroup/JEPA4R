@@ -74,3 +74,6 @@ eval:
 output:
   filename: ogb_cube_pcd_results.txt
 
+# 论文附录 D：cube 的 CEM 迭代 10 次（发布的 solver/cem.yaml 写的是 30，是 PushT 的值）。这里覆盖，官方文件不动。
+solver:
+  n_steps: 10
