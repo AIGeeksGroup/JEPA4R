@@ -34,6 +34,7 @@ eval_one() {  # run epoch
     *pix*)     cfgname=cube_pix.yaml;;       # pixel baseline: the official cube.yaml + device/video knobs
     *agg*)     cfgname=cube_pcd_agg.yaml;;   # 4D point cloud
   esac
+  if [ "${GPU_ONLY:-0}" = 1 ]; then while [ "$(gpu_free_mb)" -lt "$GPU_MIN_FREE_MB" ]; do sleep 15; done; fi   # GPU_ONLY=1: never fall back to CPU, wait for VRAM (several loops can share the GPU)
   if [ "$(gpu_free_mb)" -ge "$GPU_MIN_FREE_MB" ]; then backend=egl; dev=cuda; else backend=osmesa; dev=cpu; fi
   local t0=$(date +%s)
   MUJOCO_GL=$backend PYOPENGL_PLATFORM=$backend LP_NUM_THREADS=8 OMP_NUM_THREADS=8 \
