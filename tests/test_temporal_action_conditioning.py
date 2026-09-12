@@ -196,3 +196,58 @@ def test_default_action_token_encoder_keeps_legacy_state_dict_shape():
     keys = set(encoder.state_dict())
     assert "chunk_position" in keys
     assert not any(key.startswith("token_encoder.") for key in keys)
+
+
+def test_cross_attention_predictor_uses_robot_token_in_every_layer():
+    torch.manual_seed(8)
+    predictor = Predictor(
+        PredictorConfig(num_layers=2, num_heads=2, fusion="cross_attention"),
+        D=16,
+        envs=["synthetic"],
+    ).eval()
+    latent = torch.randn(1, 2, 8, 16)
+    action_tokens = torch.randn(1, 2, 3, 16)
+    robot_tokens = torch.randn(1, 2, 16)
+
+    with torch.no_grad():
+        baseline, features = predictor(
+            latent,
+            action_tokens,
+            "synthetic",
+            robot_tokens=robot_tokens,
+            return_features=True,
+        )
+        changed_robot = robot_tokens.clone()
+        changed_robot[:, 1, 0] += 5.0
+        changed = predictor(
+            latent,
+            action_tokens,
+            "synthetic",
+            robot_tokens=changed_robot,
+        )
+
+    assert baseline.shape == features.shape == latent.shape
+    assert torch.allclose(baseline[:, 0], changed[:, 0], atol=1e-6)
+    assert not torch.allclose(baseline[:, 1], changed[:, 1])
+
+
+def test_cross_attention_action_and_robot_tokens_receive_gradients():
+    torch.manual_seed(9)
+    predictor = Predictor(
+        PredictorConfig(num_layers=2, num_heads=2, fusion="cross_attention"),
+        D=16,
+        envs=["synthetic"],
+    )
+    latent = torch.randn(1, 2, 8, 16)
+    action_tokens = torch.randn(1, 2, 3, 16, requires_grad=True)
+    robot_tokens = torch.randn(1, 2, 16, requires_grad=True)
+
+    predictor(
+        latent,
+        action_tokens,
+        "synthetic",
+        robot_tokens=robot_tokens,
+    ).square().mean().backward()
+
+    assert action_tokens.grad is not None and action_tokens.grad.abs().sum() > 0
+    assert robot_tokens.grad is not None and robot_tokens.grad.abs().sum() > 0

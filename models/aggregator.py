@@ -29,6 +29,7 @@ from torch import nn
 from torch.nn.init import trunc_normal_
 
 from models.ordering import Ordering, OrderingConfig, encode
+from models.sonata_aggregator import SonataAggregatorConfig
 
 
 # --------------------------------------------------------------------------- Point 结构
@@ -383,6 +384,8 @@ class PointTransformerV3(PointModule):
 # --------------------------------------------------------------------------- 聚合模块
 @dataclass
 class AggregatorConfig:
+    backend: str = "scratch_ptv3"
+    sonata: SonataAggregatorConfig = field(default_factory=SonataAggregatorConfig)
     ordering: OrderingConfig = field(default_factory=OrderingConfig)
     order: List[str] = field(default_factory=lambda: ["z", "z-trans", "hilbert", "hilbert-trans"])  # 骨干各 Block 轮换的曲线
     stride: List[int] = field(default_factory=lambda: [2, 2, 2, 2])
@@ -452,3 +455,21 @@ class SpatialAggregator(nn.Module):
         positions = coord.gather(1, idx.expand(-1, -1, 3))
         assert tokens.shape == (B, K, self.out_channels) and positions.shape == (B, K, 3)
         return tokens, positions
+
+
+def build_spatial_aggregator(
+    cfg: AggregatorConfig, in_channels: int, out_channels: int
+) -> nn.Module:
+    """Build the selected spatial backend while preserving the scratch default."""
+    if cfg.backend == "scratch_ptv3":
+        return SpatialAggregator(cfg, in_channels, out_channels)
+    if cfg.backend == "sonata_ptv3":
+        from models.sonata_aggregator import SonataSpatialAggregator
+
+        return SonataSpatialAggregator(
+            cfg.sonata,
+            in_channels,
+            out_channels,
+            ordering_cfg=cfg.ordering,
+        )
+    raise ValueError(f"unknown aggregator backend: {cfg.backend!r}")

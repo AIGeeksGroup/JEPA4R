@@ -21,12 +21,14 @@ from torch.utils.data import DataLoader, Dataset
 if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from data.maniskill import _sample_points, _validate_episode
+from data.maniskill import _sample_features, _validate_episode
 from models import WorldModel, WorldModelConfig
-from scripts.train_liftcube import validate_liftcube_manifest
+from planning.latent_cem import rollout_with_aux
+from scripts.train_maniskill_group1 import validate_group1_manifest
 
 
 ACTION_DIM = 7
+PROPRIO_DIM = 25
 DEFAULT_HORIZONS = (1, 2, 4, 8)
 
 
@@ -48,6 +50,7 @@ class LiftCubeRolloutDataset(Dataset):
         horizon: int,
         skip_frame: int = 1,
         cache_size: int = 2,
+        include_rgb: bool = False,
     ):
         if T < 1 or point_count < 1 or horizon < 1 or skip_frame < 1:
             raise ValueError("T, point_count, horizon, and skip_frame must be positive")
@@ -56,8 +59,9 @@ class LiftCubeRolloutDataset(Dataset):
         self.point_count = int(point_count)
         self.horizon = int(horizon)
         self.skip_frame = int(skip_frame)
+        self.include_rgb = bool(include_rgb)
         self.cache_size = max(1, int(cache_size))
-        manifest = validate_liftcube_manifest(self.root)
+        manifest = validate_group1_manifest(self.root)
         self.episode_ids = [int(x) for x in manifest["val_episode_ids"]]
         self.index: list[WindowRef] = []
         self._cache: OrderedDict[int, dict[str, np.ndarray]] = OrderedDict()
@@ -82,13 +86,12 @@ class LiftCubeRolloutDataset(Dataset):
                 f"under {self.root}"
             )
 
-    @staticmethod
-    def _read_episode(path: Path) -> dict[str, np.ndarray]:
+    def _read_episode(self, path: Path) -> dict[str, np.ndarray]:
         if not path.is_file():
             raise FileNotFoundError(f"missing validation episode: {path}")
         with np.load(path, allow_pickle=False) as archive:
             episode = {key: np.asarray(archive[key]) for key in archive.files}
-        _validate_episode(episode, path)
+        _validate_episode(episode, path, require_rgb=self.include_rgb)
         return episode
 
     def _load_episode(self, episode_id: int) -> dict[str, np.ndarray]:
@@ -133,6 +136,32 @@ class LiftCubeRolloutDataset(Dataset):
             )
         return torch.from_numpy(actions)
 
+    def proprio_for_index(self, index: int) -> torch.Tensor:
+        """Return context proprio aligned to the sampled context frames."""
+        ref = self.index[index]
+        episode = self._load_episode(ref.episode_id)
+        frame_ids = ref.start + np.arange(self.T) * self.skip_frame
+        parts: list[np.ndarray] = []
+        for name, width in (("qpos", 9), ("qvel", 9), ("tcp_pose", 7)):
+            if name not in episode:
+                raise ValueError(
+                    f"episode {ref.episode_id} is missing proprio field {name!r}"
+                )
+            values = np.asarray(episode[name])
+            if values.ndim != 2 or values.shape[1] != width:
+                raise ValueError(
+                    f"episode {ref.episode_id} {name} must be [F,{width}], "
+                    f"got {values.shape}"
+                )
+            parts.append(values[frame_ids])
+        proprio = np.ascontiguousarray(np.concatenate(parts, axis=-1), dtype=np.float32)
+        if proprio.shape != (self.T, PROPRIO_DIM) or not np.isfinite(proprio).all():
+            raise ValueError(
+                f"episode {ref.episode_id} context proprio must be finite "
+                f"[{self.T},{PROPRIO_DIM}], got {proprio.shape}"
+            )
+        return torch.from_numpy(proprio)
+
 
     def __getitem__(
         self, index: int
@@ -145,11 +174,12 @@ class LiftCubeRolloutDataset(Dataset):
         ]
         sampled = np.stack(
             [
-                _sample_points(
-                    episode["xyz"][frame_id],
+                _sample_features(
+                    episode,
+                    frame_id,
                     self.point_count,
                     ref.episode_id,
-                    frame_id,
+                    self.include_rgb,
                 )
                 for frame_id in frame_ids
             ]
@@ -187,6 +217,46 @@ def repeat_last_action_chunks(actions: torch.Tensor, chunk_size: int) -> torch.T
     """Replace each transition chunk with repetitions of its final action."""
     chunks = _action_chunks(actions, chunk_size)
     return chunks[:, :, -1:].expand_as(chunks).reshape_as(actions)
+
+
+def rollout_predictions(
+    model: torch.nn.Module,
+    dataset: LiftCubeRolloutDataset,
+    indices: torch.Tensor,
+    context: torch.Tensor,
+    actions: torch.Tensor,
+    context_actions: torch.Tensor,
+    *,
+    latent_history: torch.Tensor | None = None,
+) -> torch.Tensor:
+    """Roll scene latents through the checkpoint's actual conditioning path."""
+    proprio_enabled = bool(
+        getattr(getattr(model.cfg, "proprio", None), "enabled", False)
+    )
+    if not proprio_enabled:
+        return model.rollout(
+            context,
+            actions,
+            env="maniskill2",
+            context_actions=context_actions,
+        )
+    if getattr(model, "proprio_encoder", None) is None:
+        raise RuntimeError("proprio-enabled model is missing its proprio encoder")
+    if latent_history is None:
+        latent_history = model._aggregate(context)
+    raw_proprio = torch.stack(
+        [dataset.proprio_for_index(int(index)) for index in indices]
+    ).to(device=context.device, dtype=context.dtype)
+    normalized_proprio = model.proprio_encoder.normalize(raw_proprio)
+    action_candidates = _action_chunks(actions, dataset.skip_frame)
+    return rollout_with_aux(
+        model,
+        latent_history,
+        normalized_proprio,
+        context_actions,
+        action_candidates,
+        "maniskill2",
+    ).scene_latent
 
 
 @dataclass
@@ -313,21 +383,24 @@ def evaluate_rollouts(
             truth = model._aggregate(torch.cat([context, future], dim=1))
             target = truth[:, model.cfg.T :]
             persistence = truth[:, model.cfg.T - 1 : model.cfg.T].expand_as(target)
-            correct = model.rollout(
-                context, correct_actions, env="maniskill2", context_actions=context_actions
-            )
-            zero = model.rollout(
-                context, zero_actions, env="maniskill2", context_actions=context_actions
-            )
-            shuffled = model.rollout(
-                context, shuffled_actions, env="maniskill2", context_actions=context_actions
-            )
-            reversed_prediction = model.rollout(
-                context, reversed_actions, env="maniskill2", context_actions=context_actions
-            )
-            repeat_last = model.rollout(
-                context, repeat_last_actions, env="maniskill2", context_actions=context_actions
-            )
+            latent_history = truth[:, : model.cfg.T]
+
+            def predict(candidate_actions: torch.Tensor) -> torch.Tensor:
+                return rollout_predictions(
+                    model,
+                    dataset,
+                    indices,
+                    context,
+                    candidate_actions,
+                    context_actions,
+                    latent_history=latent_history,
+                )
+
+            correct = predict(correct_actions)
+            zero = predict(zero_actions)
+            shuffled = predict(shuffled_actions)
+            reversed_prediction = predict(reversed_actions)
+            repeat_last = predict(repeat_last_actions)
 
             expected = (
                 context.shape[0],
@@ -455,8 +528,8 @@ def load_checkpoint_model(
             OmegaConf.create(state["model_config"]),
         )
     )
-    if cfg.C != 3:
-        raise ValueError(f"LiftCube evaluator requires C=3, got {cfg.C}")
+    if cfg.C not in (3, 6):
+        raise ValueError(f"LiftCube evaluator requires C=3 or C=6, got {cfg.C}")
     if cfg.action.envs["maniskill2"].dim != ACTION_DIM:
         raise ValueError(
             f"LiftCube evaluator requires action dim {ACTION_DIM}, got "
@@ -508,6 +581,7 @@ def build_report(
             "root": str(data_root.resolve()),
             "manifest_sha256": sha256_file(manifest),
             "episode_count": len(dataset.episode_ids),
+            "include_rgb": bool(dataset.include_rgb),
         },
         "model_config": state["model_config"],
         "evaluation": {
@@ -567,12 +641,16 @@ def main(argv: list[str] | None = None) -> dict[str, object]:
         raise ValueError("horizons must contain positive integers")
     device = torch.device(args.device)
     model, state = load_checkpoint_model(args.checkpoint, device)
+    model_channels = int(
+        getattr(model.cfg, "C", state.get("model_config", {}).get("C", 3))
+    )
     dataset = LiftCubeRolloutDataset(
         args.data_root,
         T=model.cfg.T,
         point_count=model.cfg.K,
         horizon=max(horizons),
         skip_frame=getattr(model.cfg, "skip_frame", 1),
+        include_rgb=model_channels == 6,
     )
     started = time.perf_counter()
     metrics = evaluate_rollouts(

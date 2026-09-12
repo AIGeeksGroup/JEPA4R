@@ -1,0 +1,70 @@
+model:
+  K: 512
+  D: 64
+  T: 3
+  skip_frame: 10
+  C: 6
+  aggregator:
+    backend: sonata_ptv3
+    sonata:
+      checkpoint_path: /workspace/users/lewm/checkpoints/sonata/sonata_small.pth
+      expected_sha256: ee5dae277dde1d164499579a6b17d0bd38df4e4286b0f1ba21a82f8cc14270d1
+      freeze_backbone: true
+      enable_flash: false
+      grid_size: 0.02
+      lift_concat_levels: 2
+    ordering:
+      order: hilbert
+      grid_size: 0.02
+      origin: [-0.75, -0.60, -0.05]
+      depth: 16
+  temporal:
+    num_layers: 2
+    num_heads: 4
+    causal: false
+    readout: last_frame
+  action:
+    output_scale: 1.0
+    token_encoder_layers: 1
+    token_encoder_heads: 4
+    token_mlp_ratio: 2.0
+    token_position_encoding: sinusoidal
+    token_position_scale: 1.0
+    envs:
+      maniskill2:
+        dim: 7
+        mean: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        std: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+  predictor:
+    num_layers: 2
+    num_heads: 4
+    fusion: cross_attention
+  loss:
+    reg_weight: 0.09
+    flow_weight: 0.0
+    ranking_weight: 1.0
+    ranking_margin: 0.1
+    ranking_motion_weighted: false
+    knots: 17
+    num_proj: 256
+    chunk: 32
+
+train:
+  task: LiftCube-v0
+  env: maniskill2
+  data_root: /workspace/datasets/maniskill2/v0.5.3/compact_rgb
+  run_root: /workspace/users/lewm/runs/4d-jepa-architecture
+  run_name: group1_skip10_sonata_frozen_batch8_2500
+  include_rgb: true
+  steps: 2500
+  batch_size: 8
+  num_workers: 0
+  lr: 3.0e-4
+  weight_decay: 0.05
+  grad_clip: 1.0
+  seed: 0
+  log_every: 50
+  val_every: 500
+  checkpoint_every: 500
+  val_batches: 64
+  device: cuda

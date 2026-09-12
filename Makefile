@@ -4,7 +4,7 @@ REQ    ?= requirements.txt      # RTX 50 系（sm_120）：make install REQ=requ
 
 .PHONY: install env test train spconv-src
 
-install:   ## 安装 requirements 中锁定的预编译 CUDA 轮子，不需要本地编译
+install:   ## 一条命令装完：预编译 CUDA 轮子（torch / spconv-cu126），不需要本地编译
 	$(PIP) install -r $(REQ)
 	$(PIP) install -e . --no-deps
 

@@ -7,15 +7,22 @@ import numpy as np
 import pytest
 import torch
 
-import scripts.eval_liftcube_rollout as rollout_eval
-from scripts.eval_liftcube_rollout import (
+import scripts.eval_maniskill_group1_rollout as rollout_eval
+from scripts.eval_maniskill_group1_rollout import (
     ErrorTotals,
     LiftCubeRolloutDataset,
     build_action_shuffle_indices,
     evaluate_rollouts,
 )
 
-def _write_eval_root(root: Path, *, frames: int = 8, raw_points: int = 4) -> Path:
+def _write_eval_root(
+    root: Path,
+    *,
+    frames: int = 8,
+    raw_points: int = 4,
+    include_rgb: bool = False,
+    include_proprio: bool = False,
+) -> Path:
     root.mkdir(parents=True)
     train_ids = list(range(90))
     val_ids = list(range(90, 100))
@@ -44,7 +51,19 @@ def _write_eval_root(root: Path, *, frames: int = 8, raw_points: int = 4) -> Pat
             ],
             axis=1,
         )
-        np.savez(root / f"episode_{episode_id:04d}.npz", xyz=xyz, action=action)
+        arrays = {"xyz": xyz, "action": action}
+        if include_rgb:
+            arrays["rgb"] = np.asarray(xyz % 251, dtype=np.uint8)
+        if include_proprio:
+            frame_column = frame_values[:, None]
+            arrays.update(
+                {
+                    "qpos": np.broadcast_to(frame_column, (frames, 9)).copy(),
+                    "qvel": np.broadcast_to(frame_column + 100, (frames, 9)).copy(),
+                    "tcp_pose": np.broadcast_to(frame_column + 200, (frames, 7)).copy(),
+                }
+            )
+        np.savez(root / f"episode_{episode_id:04d}.npz", **arrays)
     return root
 
 
@@ -73,6 +92,22 @@ def test_rollout_dataset_exposes_context_action_history(tmp_path):
     assert dataset.context_actions_for_index(0)[0, 0].item() == pytest.approx(90.0)
 
 
+def test_rollout_dataset_exposes_aligned_context_proprio(tmp_path):
+    root = _write_eval_root(
+        tmp_path / "LiftCube-v0", frames=9, include_proprio=True
+    )
+    dataset = LiftCubeRolloutDataset(
+        root, T=2, point_count=4, horizon=2, skip_frame=2
+    )
+
+    proprio = dataset.proprio_for_index(0)
+
+    assert proprio.shape == (2, 25)
+    assert proprio[:, 0].tolist() == pytest.approx([9000.0, 9002.0])
+    assert proprio[:, 9].tolist() == pytest.approx([9100.0, 9102.0])
+    assert proprio[:, 18].tolist() == pytest.approx([9200.0, 9202.0])
+
+
 def test_rollout_dataset_skip_frame_keeps_atomic_action_chunks(tmp_path):
     root = _write_eval_root(tmp_path / "LiftCube-v0", frames=9)
     dataset = LiftCubeRolloutDataset(root, T=2, point_count=4, horizon=2, skip_frame=2)
@@ -84,6 +119,26 @@ def test_rollout_dataset_skip_frame_keeps_atomic_action_chunks(tmp_path):
     assert actions.shape == (4, 7)
     assert actions[:, 0].tolist() == pytest.approx([92.0, 93.0, 94.0, 95.0])
     assert dataset.context_actions_for_index(0)[:, 0].tolist() == pytest.approx([90.0, 91.0])
+
+
+def test_rollout_dataset_can_emit_six_channel_points(tmp_path):
+    root = _write_eval_root(
+        tmp_path / "LiftCube-v0", raw_points=8, include_rgb=True
+    )
+    dataset = LiftCubeRolloutDataset(
+        root, T=2, point_count=4, horizon=3, include_rgb=True
+    )
+
+    _, context, future, _ = dataset[0]
+
+    assert context.shape == (2, 4, 6)
+    assert future.shape == (3, 4, 6)
+    np.testing.assert_allclose(
+        context[..., 3:].numpy(),
+        np.asarray(context[..., :3].numpy() % 251, dtype=np.uint8) / 255.0,
+        rtol=0,
+        atol=1e-7,
+    )
 
 
 def test_action_shuffle_is_seeded_permutation_without_fixed_points():
@@ -184,6 +239,50 @@ class _ActionDrivenModel(torch.nn.Module):
         return start + increments.cumsum(1)[:, :, None, None]
 
 
+class _IdentityProprioEncoder:
+    def normalize(self, value):
+        return value
+
+
+class _ProprioConditionedModel(_ActionDrivenModel):
+    def __init__(self):
+        super().__init__()
+        self.cfg.proprio = SimpleNamespace(enabled=True, dim=25)
+        self.proprio_encoder = _IdentityProprioEncoder()
+
+    def rollout(self, *args, **kwargs):
+        raise AssertionError("legacy rollout bypasses proprio conditioning")
+
+    def predict_transition(
+        self, latent_history, proprio_history_normalized, actions, env=None
+    ):
+        increment = actions[:, 0, 0] + 2.0 * actions[:, 1, 0]
+        increment = increment + proprio_history_normalized[:, -1, 0]
+        next_scene = latent_history[:, -1] + increment[:, None, None]
+        next_proprio = proprio_history_normalized[:, -1]
+        return SimpleNamespace(
+            scene_latent=next_scene,
+            next_proprio_normalized=next_proprio,
+            next_proprio=next_proprio,
+            object_pos=next_scene.new_zeros((next_scene.shape[0], 3)),
+        )
+
+
+class _ProprioRolloutDataset(_TinyRolloutDataset):
+    def proprio_for_index(self, index):
+        value = torch.zeros(1, 25)
+        value[:, 0] = index + 1
+        return value
+
+    def __getitem__(self, index):
+        actions = self._actions[index]
+        context = torch.zeros(1, 1, 3)
+        chunks = actions.view(self.horizon, self.skip_frame, 7)
+        increments = chunks[:, 0, 0] + 2.0 * chunks[:, 1, 0] + index + 1
+        future = increments.cumsum(0)[:, None, None].expand(2, 1, 3).clone()
+        return index, context, future, actions
+
+
 def test_evaluate_rollouts_reports_horizons_and_action_controls():
     result = evaluate_rollouts(
         _ActionDrivenModel(),
@@ -214,6 +313,20 @@ def test_evaluate_rollouts_reports_horizons_and_action_controls():
     assert h2["prediction_delta_repeat_last_mse"] > 0
 
 
+def test_evaluate_rollouts_uses_recurrent_proprio_path():
+    result = evaluate_rollouts(
+        _ProprioConditionedModel(),
+        _ProprioRolloutDataset(),
+        batch_size=2,
+        device=torch.device("cpu"),
+        horizons=(1, 2),
+        seed=3072,
+    )
+
+    assert result["per_horizon"]["1"]["model_correct_action"]["mse"] == 0
+    assert result["per_horizon"]["2"]["model_correct_action"]["mse"] == 0
+
+
 def test_atomic_write_json_replaces_complete_document(tmp_path):
     output = tmp_path / "rollout_metrics.json"
     rollout_eval.atomic_write_json(output, {"value": 1})
@@ -238,12 +351,22 @@ def test_main_writes_provenance_without_loading_simulator(tmp_path, monkeypatch)
     class _FakeDataset:
         episode_ids = list(range(90, 100))
 
-        def __init__(self, root, *, T, point_count, horizon, skip_frame=1):
+        def __init__(
+            self,
+            root,
+            *,
+            T,
+            point_count,
+            horizon,
+            skip_frame=1,
+            include_rgb=False,
+        ):
             self.root = Path(root)
             self.T = T
             self.point_count = point_count
             self.horizon = horizon
             self.skip_frame = skip_frame
+            self.include_rgb = include_rgb
 
         def __len__(self):
             return 7
@@ -307,3 +430,4 @@ def test_main_writes_provenance_without_loading_simulator(tmp_path, monkeypatch)
     assert saved["data"]["episode_count"] == 10
     assert saved["evaluation"]["horizons"] == [1, 2, 4, 8]
     assert saved["evaluation"]["window_count"] == 7
+    assert saved["data"]["include_rgb"] is False

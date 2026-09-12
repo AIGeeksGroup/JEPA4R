@@ -9,9 +9,14 @@ from losses import LeWMLoss, LossConfig, SIGReg
 from losses.lewm import match_motion_weights
 from models import WorldModel, WorldModelConfig
 from models.action import ActionConfig, ActionEncoder, EnvSpec
-from models.aggregator import AggregatorConfig, SpatialAggregator
+from models.aggregator import (
+    AggregatorConfig,
+    SpatialAggregator,
+    build_spatial_aggregator,
+)
 from models.ordering import Ordering, OrderingConfig, encode, hilbert_encode, z_order_encode
 from models.predictor import Predictor, PredictorConfig
+from models.proprio import ProprioConfig
 from models.temporal import TemporalConfig, TemporalEncoder
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")  # 没有 CUDA 时全部在 CPU 上跑（spconv Native 算法）
@@ -114,6 +119,36 @@ def test_aggregator_rejects_wrong_channels():
         agg(torch.rand(B, K, C + 1))
     with pytest.raises(AssertionError):
         SpatialAggregator(cfg.aggregator, in_channels=C, out_channels=D + 1)  # dec_channels[0] != D
+
+
+def test_default_aggregator_backend_remains_scratch():
+    cfg = small_cfg()
+
+    aggregator = build_spatial_aggregator(
+        cfg.aggregator, in_channels=C, out_channels=D
+    )
+
+    assert cfg.aggregator.backend == "scratch_ptv3"
+    assert isinstance(aggregator, SpatialAggregator)
+
+
+def test_factory_selects_sonata_backend(monkeypatch):
+    marker = object()
+
+    def fake_sonata(config, in_channels, out_channels, ordering_cfg):
+        assert in_channels == 6
+        assert out_channels == D
+        assert ordering_cfg.order == "hilbert"
+        return marker
+
+    monkeypatch.setattr(
+        "models.sonata_aggregator.SonataSpatialAggregator", fake_sonata
+    )
+    cfg = AggregatorConfig(backend="sonata_ptv3")
+
+    result = build_spatial_aggregator(cfg, in_channels=6, out_channels=D)
+
+    assert result is marker
 
 
 # ----------------------------------------------------------------------------- TemporalEncoder
@@ -378,3 +413,252 @@ def test_world_model_action_at_each_time_step_changes_matching_prediction():
         baseline = model(points, actions, env=ENV)
         altered = model(points, changed, env=ENV)
     assert not torch.allclose(baseline["pred_all"][:, 0], altered["pred_all"][:, 0])
+
+
+def test_enabled_world_model_predicts_aligned_auxiliary_state_and_gradients():
+    cfg = small_cfg(skip_frame=2)
+    cfg.predictor.fusion = "cross_attention"
+    cfg.proprio = ProprioConfig(
+        enabled=True,
+        dim=25,
+        hidden_dim=32,
+        mean=[0.0] * 25,
+        std=[2.0] * 25,
+    )
+    cfg.loss.proprio_weight = 0.5
+    cfg.loss.object_weight = 2.0
+    model = WorldModel(cfg).to(DEVICE).train()
+    points = unique_voxel_points(B * (T + 1), K, C).view(
+        B, T + 1, K, C
+    ).to(DEVICE)
+    actions = torch.randn(B, T * 2, A, device=DEVICE, requires_grad=True)
+    proprio = torch.randn(B, T + 1, 25, device=DEVICE, requires_grad=True)
+    object_pos = torch.randn(B, T + 1, 3, device=DEVICE)
+
+    output = model(
+        points,
+        actions,
+        env=ENV,
+        proprio=proprio,
+        object_pos=object_pos,
+    )
+
+    assert output["next_proprio_normalized"].shape == (B, T, 25)
+    assert output["next_proprio"].shape == (B, T, 25)
+    assert output["object_pos"].shape == (B, T, 3)
+    for name in (
+        "proprio_loss",
+        "object_loss",
+        "qpos_mse",
+        "qvel_mse",
+        "tcp_mse",
+        "object_xyz_mse",
+        "object_z_mse",
+    ):
+        assert output[name].shape == () and torch.isfinite(output[name])
+    output["loss"].backward()
+    assert actions.grad is not None and actions.grad.abs().sum() > 0
+    assert proprio.grad is not None and proprio.grad.abs().sum() > 0
+
+
+def test_contact_head_uses_all_aligned_transitions_and_balanced_bce():
+    cfg = small_cfg(skip_frame=2)
+    cfg.predictor.fusion = "cross_attention"
+    cfg.proprio = ProprioConfig(
+        enabled=True,
+        dim=25,
+        hidden_dim=32,
+        mean=[0.0] * 25,
+        std=[1.0] * 25,
+    )
+    cfg.loss.contact_weight = 2.0
+    cfg.loss.contact_positive_weight = 0.5
+    cfg.loss.contact_negative_weight = 3.0
+    model = WorldModel(cfg).to(DEVICE).train()
+    points = unique_voxel_points(B * (T + 1), K, C).view(
+        B, T + 1, K, C
+    ).to(DEVICE)
+    actions = torch.randn(B, T * 2, A, device=DEVICE)
+    proprio = torch.randn(B, T + 1, 25, device=DEVICE)
+    object_pos = torch.randn(B, T + 1, 3, device=DEVICE)
+    contact = torch.tensor(
+        [[0, 0, 1, 1], [1, 0, 0, 1]], dtype=torch.float32, device=DEVICE
+    )
+
+    output = model(
+        points,
+        actions,
+        env=ENV,
+        proprio=proprio,
+        object_pos=object_pos,
+        cube_robot_contact=contact,
+    )
+
+    assert output["contact_logits"].shape == (B, T)
+    assert output["contact_probability"].shape == (B, T)
+    assert output["contact_loss"].shape == ()
+    assert torch.isfinite(output["contact_loss"])
+    expected = torch.nn.functional.binary_cross_entropy_with_logits(
+        output["contact_logits"], contact[:, 1:], reduction="none"
+    )
+    target_weights = torch.where(contact[:, 1:] > 0.5, 0.5, 3.0)
+    expected = (expected * target_weights).sum() / target_weights.sum()
+    torch.testing.assert_close(output["contact_loss"], expected)
+    base = (
+        output["pred_loss"]
+        + cfg.loss.reg_weight * output["reg_loss"]
+        + cfg.loss.proprio_weight * output["proprio_loss"]
+        + cfg.loss.object_weight * output["object_loss"]
+    )
+    torch.testing.assert_close(
+        output["loss"], base + cfg.loss.contact_weight * output["contact_loss"]
+    )
+    output["loss"].backward()
+    assert model.contact_head.weight.grad is not None
+    assert model.contact_head.weight.grad.abs().sum() > 0
+
+
+@pytest.mark.parametrize(
+    "labels,match",
+    [
+        (torch.zeros(B, T), "cube_robot_contact"),
+        (torch.full((B, T + 1), 0.5), "binary"),
+        (torch.full((B, T + 1), float("nan")), "finite"),
+    ],
+)
+def test_contact_head_rejects_invalid_labels(labels, match):
+    cfg = small_cfg(skip_frame=2)
+    cfg.predictor.fusion = "cross_attention"
+    cfg.proprio = ProprioConfig(
+        enabled=True,
+        dim=25,
+        hidden_dim=32,
+        mean=[0.0] * 25,
+        std=[1.0] * 25,
+    )
+    cfg.loss.contact_weight = 1.0
+    model = WorldModel(cfg).to(DEVICE)
+    points = unique_voxel_points(B * (T + 1), K, C).view(
+        B, T + 1, K, C
+    ).to(DEVICE)
+    actions = torch.randn(B, T * 2, A, device=DEVICE)
+    proprio = torch.randn(B, T + 1, 25, device=DEVICE)
+    object_pos = torch.randn(B, T + 1, 3, device=DEVICE)
+
+    with pytest.raises(ValueError, match=match):
+        model(
+            points,
+            actions,
+            env=ENV,
+            proprio=proprio,
+            object_pos=object_pos,
+            cube_robot_contact=labels.to(DEVICE),
+        )
+
+
+def test_same_scene_action_different_proprio_changes_prediction():
+    cfg = small_cfg(skip_frame=2)
+    cfg.predictor.fusion = "cross_attention"
+    cfg.proprio = ProprioConfig(
+        enabled=True,
+        dim=25,
+        hidden_dim=32,
+        mean=[0.0] * 25,
+        std=[1.0] * 25,
+    )
+    model = WorldModel(cfg).to(DEVICE).eval()
+    points = unique_voxel_points(B * (T + 1), K, C).view(
+        B, T + 1, K, C
+    ).to(DEVICE)
+    actions = torch.randn(B, T * 2, A, device=DEVICE)
+    proprio = torch.randn(B, T + 1, 25, device=DEVICE)
+    object_pos = torch.zeros(B, T + 1, 3, device=DEVICE)
+
+    with torch.no_grad():
+        first = model(
+            points,
+            actions,
+            env=ENV,
+            proprio=proprio,
+            object_pos=object_pos,
+        )["pred"]
+        changed = proprio.clone()
+        changed[:, :, 0] += 2.0
+        second = model(
+            points,
+            actions,
+            env=ENV,
+            proprio=changed,
+            object_pos=object_pos,
+        )["pred"]
+
+    assert not torch.allclose(first, second)
+
+
+def test_transition_prediction_denormalizes_proprio_for_metrics():
+    cfg = small_cfg(skip_frame=2)
+    cfg.predictor.fusion = "cross_attention"
+    cfg.proprio = ProprioConfig(
+        enabled=True,
+        dim=25,
+        hidden_dim=32,
+        mean=[3.0] * 25,
+        std=[2.0] * 25,
+    )
+    cfg.loss.contact_weight = 1.0
+    model = WorldModel(cfg).to(DEVICE).eval()
+    latent_history = torch.randn(B, T, K, D, device=DEVICE)
+    action_history = torch.randn(B, T * 2, A, device=DEVICE)
+    proprio_history_normalized = torch.randn(B, T, 25, device=DEVICE)
+
+    with torch.no_grad():
+        prediction = model.predict_transition(
+            latent_history,
+            proprio_history_normalized,
+            action_history,
+            env=ENV,
+        )
+
+    assert prediction.scene_latent.shape == (B, K, D)
+    assert prediction.temporal_features.shape == (B, K, D)
+    assert prediction.decoder_features.shape == (B, K, D)
+    assert prediction.next_proprio_normalized.shape == (B, 25)
+    assert prediction.next_proprio.shape == (B, 25)
+    assert prediction.object_pos.shape == (B, 3)
+    assert prediction.contact_probability.shape == (B,)
+    assert torch.all((prediction.contact_probability >= 0) & (prediction.contact_probability <= 1))
+    torch.testing.assert_close(
+        prediction.next_proprio,
+        prediction.next_proprio_normalized * 2.0 + 3.0,
+    )
+
+
+def test_disabled_proprio_model_has_no_proprio_parameters_and_loads_strictly():
+    legacy = WorldModel(small_cfg())
+    clone = WorldModel(small_cfg())
+
+    clone.load_state_dict(legacy.state_dict(), strict=True)
+
+    assert not any(
+        name.startswith(("proprio", "next_proprio", "object_position", "contact"))
+        for name, _ in clone.named_parameters()
+    )
+
+
+def test_contact_head_requires_proprio_and_positive_class_weights():
+    cfg = small_cfg()
+    cfg.loss.contact_weight = 1.0
+    with pytest.raises(ValueError, match="proprioception"):
+        WorldModel(cfg)
+
+    cfg.predictor.fusion = "cross_attention"
+    cfg.proprio = ProprioConfig(
+        enabled=True,
+        dim=25,
+        hidden_dim=32,
+        mean=[0.0] * 25,
+        std=[1.0] * 25,
+    )
+    cfg.loss.contact_positive_weight = 0.0
+    with pytest.raises(ValueError, match="contact.*weight"):
+        WorldModel(cfg)

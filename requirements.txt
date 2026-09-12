@@ -9,4 +9,10 @@ addict==2.4.0
 einops==0.8.2
 omegaconf==2.3.1
 numpy==1.26.4
+scipy==1.17.1
+h5py==3.11.0
+huggingface-hub==1.29.0
+packaging==25.0
+torch-scatter @ https://data.pyg.org/whl/torch-2.5.0+cu121/torch_scatter-2.1.2+pt25cu121-cp311-cp311-linux_x86_64.whl
+sonata @ git+https://github.com/facebookresearch/sonata.git@18c09ff8d713494f78a8213792262b910977a65d
 pytest==8.3.5

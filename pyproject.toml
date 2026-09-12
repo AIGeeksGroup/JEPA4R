@@ -3,9 +3,9 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "jepa4r"
+name = "pointcloud-world-model"
 version = "0.1.0"
-description = "Action-conditioned JEPA world model for point-cloud dynamics"
+description = "点云世界模型：PTv3 空间聚合 + 时间 Transformer + HMA 动作条件预测器 + LeWM 损失"
 requires-python = ">=3.11,<3.12"
 # 版本锁定与 CUDA 索引见 requirements.txt / requirements-cu128.txt（CUDA 版 torch 轮子不在 PyPI 上，
 # 请用 `make install` 或先 `pip install -r requirements.txt` 再 `pip install -e . --no-deps`）。
@@ -18,11 +18,17 @@ dependencies = [
     "einops==0.8.2",
     "omegaconf==2.3.1",
     "numpy==1.26.4",
+    "scipy==1.17.1",
+    "h5py==3.11.0",
+    "huggingface-hub==1.29.0",
+    "packaging==25.0",
+    "torch-scatter @ https://data.pyg.org/whl/torch-2.5.0+cu121/torch_scatter-2.1.2+pt25cu121-cp311-cp311-linux_x86_64.whl",
+    "sonata @ git+https://github.com/facebookresearch/sonata.git@18c09ff8d713494f78a8213792262b910977a65d",
     "pytest==8.3.5",
 ]
 
 [tool.setuptools]
-packages = ["models", "losses", "data"]
+packages = ["models", "losses", "data", "planning"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

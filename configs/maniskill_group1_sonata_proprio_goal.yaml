@@ -3,24 +3,21 @@ model:
   D: 64
   T: 3
   skip_frame: 10
-  C: 3
+  C: 6
   aggregator:
+    backend: sonata_ptv3
+    sonata:
+      checkpoint_path: /workspace/users/lewm/checkpoints/sonata/sonata_small.pth
+      expected_sha256: ee5dae277dde1d164499579a6b17d0bd38df4e4286b0f1ba21a82f8cc14270d1
+      freeze_backbone: true
+      enable_flash: false
+      grid_size: 0.02
+      lift_concat_levels: 2
     ordering:
       order: hilbert
       grid_size: 0.02
       origin: [-0.75, -0.60, -0.05]
       depth: 16
-    order: [z, hilbert-trans]
-    stride: [2]
-    enc_depths: [1, 1]
-    enc_channels: [32, 64]
-    enc_num_head: [2, 4]
-    dec_depths: [1]
-    dec_channels: [64]
-    dec_num_head: [4]
-    patch_size: 512
-    drop_path: 0.0
-    shuffle_orders: false
   temporal:
     num_layers: 2
     num_heads: 4
@@ -42,12 +39,20 @@ model:
     num_layers: 2
     num_heads: 4
     fusion: cross_attention
+  proprio:
+    enabled: true
+    dim: 25
+    hidden_dim: 128
+    mean: []
+    std: []
   loss:
     reg_weight: 0.09
     flow_weight: 0.0
     ranking_weight: 1.0
     ranking_margin: 0.1
     ranking_motion_weighted: false
+    proprio_weight: 1.0
+    object_weight: 1.0
     knots: 17
     num_proj: 256
     chunk: 32
@@ -55,9 +60,11 @@ model:
 train:
   task: LiftCube-v0
   env: maniskill2
-  data_root: data/maniskill2/v0.5.3/compact
-  run_root: runs
-  run_name: liftcube_skip10_action_tokens_2500
+  data_root: /workspace/datasets/maniskill2/v0.5.3/compact_rgb_proprio
+  run_root: /workspace/users/lewm/runs/4d-jepa-architecture
+  run_name: group1_skip10_sonata_proprio_goal_batch8_2500
+  include_rgb: true
+  include_proprio: true
   steps: 2500
   batch_size: 8
   num_workers: 0

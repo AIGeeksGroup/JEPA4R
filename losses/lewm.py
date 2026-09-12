@@ -29,6 +29,11 @@ class LossConfig:
     ranking_weight: float = 0.0
     ranking_margin: float = 0.1
     ranking_motion_weighted: bool = True
+    proprio_weight: float = 0.0
+    object_weight: float = 0.0
+    contact_weight: float = 0.0
+    contact_positive_weight: float = 1.0
+    contact_negative_weight: float = 1.0
     knots: int = 17
     num_proj: int = 1024
     chunk: int = 64  # 沿位置维的分块大小
@@ -107,8 +112,16 @@ class LeWMLoss(nn.Module):
         self.ranking_weight = cfg.ranking_weight
         self.ranking_margin = cfg.ranking_margin
         self.ranking_motion_weighted = cfg.ranking_motion_weighted
+        self.proprio_weight = cfg.proprio_weight
+        self.object_weight = cfg.object_weight
         if self.ranking_weight < 0 or self.ranking_margin < 0:
             raise ValueError("ranking_weight and ranking_margin must be non-negative")
+        if self.proprio_weight < 0 or self.object_weight < 0:
+            raise ValueError("proprio_weight and object_weight must be non-negative")
+        if cfg.contact_weight < 0:
+            raise ValueError("contact_weight must be non-negative")
+        if cfg.contact_positive_weight <= 0 or cfg.contact_negative_weight <= 0:
+            raise ValueError("contact class weights must be positive")
         self.sigreg = SIGReg(cfg.knots, cfg.num_proj, cfg.chunk)
 
     def forward(

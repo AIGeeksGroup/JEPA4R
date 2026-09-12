@@ -1,0 +1,3 @@
+libgl1=1.4.0-1
+libglib2.0-0=2.72.4-0ubuntu2.9
+libvulkan1=1.3.204.1-2
