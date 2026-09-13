@@ -37,26 +37,6 @@
 - 4D 对同 encoder 的 3D：dexart +5.2、像素 +1.2、ppt +1.2、ms2 −4.0，只有 dexart 这一对超出噪声。
 - 与论文 74 的差距来自评测集（自采数据的另一组 50 道题）和框架版本，见"进度"里 2026-09-12 的记录。
 
-### Sonata encoder 替换实验（50 个 episode，2026-09-13）
-
-这是在当前 `codex/sonata-cls` worktree 上进行的 3D 点云 encoder 对照。协议沿用本 README 的 `config/eval/cube_pcd.yaml`：50 个起点、seed 42、目标在 25 步后、预算 50 步，CEM 为 300 个候选、30 次迭代、top-30。Sonata backbone（骨干）冻结，只训练适配层和 JEPA 其余部分。
-
-| run | e1 | e2 |
-|---|---:|---:|
-| 3D 点云 MS2 baseline（本次匹配训练） (`pcd_ms2_baseline_pcd_ms2_vs_sonata_20260912_2116`) | 76 | 72 |
-| 3D 点云 Sonata-CLS（冻结 backbone） (`pcd_sonata_sonata_only_frozen_20260913_0028`) | 72 | 74 |
-
-### Sonata encoder 替换实验（100 个 episode，2026-09-13）
-
-评测协议与上一节相同，仅将 `eval.num_eval` 改为 100；MS2 与 Sonata 使用相同的 seed 和评测流程。
-
-| run | e1 | e2 |
-|---|---:|---:|
-| 3D 点云 MS2 baseline（本次匹配训练） (`pcd_ms2_baseline_pcd_ms2_vs_sonata_20260912_2116`) | 73 | 74 |
-| 3D 点云 Sonata-CLS（冻结 backbone） (`pcd_sonata_sonata_only_frozen_20260913_0028`) | 73 | 74 |
-
-两组评测的起点数量不同，因此 50 episode 与 100 episode 的成功率不能逐项配对解读；这两组结果用于检查 Sonata 替换后是否保持与 MS2 同一性能量级，不能单独作为显著性结论。
-
 ## 目录
 
 ```
