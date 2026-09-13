@@ -15,6 +15,11 @@
 `visualize_info=False`、`terminate_at_goal=False`、`mode='data_collection'`、plan_oracle、
 10 个并行 env、每回合 200 步、10000 回合、seed 3072。点云采集沿用同一套，只是多存一列点云。
 
+## 实验安排（ManiSkill Franka）
+
+三个任务分阶段进行：`PushCube → PickCube → StackCube`，一次只推进一个任务。
+第一阶段先做 `PickCube + Franka Panda`，依次验证：下载 demonstrations → env-state replay → 生成 RGB/点云数据 → 2D/3D 训练 → ManiSkill 评测。
+
 ## 结果（最终，2026-09-12）
 
 协议：官方 `config/eval/cube.yaml`（50 个起点、seed 42、目标 25 步后、预算 50 步、CEM 300 候选 / top 30），CEM 迭代次数按论文附录 D 取 10
