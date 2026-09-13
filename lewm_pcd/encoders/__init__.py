@@ -16,6 +16,7 @@ from .pointnet import PointNet
 from .pointnet_dexart import DexArtPointNet
 from .pointnet_ms2 import ManiSkillPointNet
 from .ppt import PointPatchTransformer
+from .sonata_cls import SonataCLSEncoder
 from .vit import ViTCLS
 
-__all__ = ['DexArtPointNet', 'ManiSkillPointNet', 'PointNet', 'PointPatchTransformer', 'ViTCLS']
+__all__ = ['DexArtPointNet', 'ManiSkillPointNet', 'PointNet', 'PointPatchTransformer', 'SonataCLSEncoder', 'ViTCLS']
