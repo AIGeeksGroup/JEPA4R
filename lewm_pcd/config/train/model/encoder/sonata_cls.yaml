@@ -1,7 +1,7 @@
 _target_: encoders.SonataCLSEncoder
 in_dim: ${pcd_in_dim}
 out_dim: ${embed_dim}
-checkpoint_path: /workspace/users/lewm/checkpoints/sonata/sonata_small.pth
+checkpoint_path: ${oc.env:STABLEWM_HOME}/checkpoints/sonata/sonata_small.pth   # 数据盘；权重不进 git，见 README「Sonata encoder」
 expected_sha256: ee5dae277dde1d164499579a6b17d0bd38df4e4286b0f1ba21a82f8cc14270d1
 grid_size: 0.02
 lift_concat_levels: 2

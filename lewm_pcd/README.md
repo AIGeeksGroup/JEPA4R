@@ -118,6 +118,32 @@ lewm_pcd/                      代码（git）
 - `train.py` 改动 2 行：预处理器由 `data.preprocessor` 实例化；归一化跳过 `pcd*` 列。各像素数据配置各自声明原来的 `get_img_preprocessor`，行为不变。
 - 训练命令：`python train.py data=ogb_pcd model=lewm_pcd subdir=<run_name>`。
 
+### Sonata encoder（合并自分支 `lewm-pcd-sonata`，2026-09-13；预训练冻结骨干，不属于参数量对齐的那一组）
+
+- **是什么**：`encoders/sonata_cls.py` 的 `SonataCLSEncoder`。冻结的 Sonata 骨干（PTv3，预训练权重 `sonata_small`，`eval` + `no_grad`）
+  提取每个 2 cm 体素的特征（拼最后 3 级），后接可训练的读出头：LayerNorm–Linear–LayerNorm 投影到 192 维、三维正弦位置编码、
+  带 CLS token 的 2 层 8 头 Transformer，输出 CLS 向量 `(B, 192)`，接现有的 projector / predictor，3D 和 4D 都能用。只训读出头（约 1M 参数）。
+  输入是 `(B, N, 6)`：米单位的世界坐标 xyz + `[0, 1]` 的 rgb（编码器自己做 CenterShift 和体素化）。
+- **和其他三个 encoder 的区别**：ms2 / dexart / ppt 是从头训练、参数量对齐 ViT-tiny 5.50M 的一组；Sonata 是外部预训练骨干，
+  比较时单独标注，不放进"同参数量"的比较里。
+- **配置**：`config/train/model/encoder/sonata_cls.yaml`（骨干权重路径、sha256、读出头尺寸）。因为要米单位坐标，
+  `config/train/data/ogb_pcd_sonata.yaml` 和评测配置 `config/eval/cube_pcd_sonata.yaml` / `cube_pcd_agg_sonata.yaml`
+  把点云仿射改为恒等（center 0、scale 1，rgb 仍 /255）；其他 encoder 的配置不受影响。
+- **依赖（本机未装、未跑过）**：`pip install git+https://github.com/facebookresearch/sonata@18c09ff8d713494f78a8213792262b910977a65d`
+  （及其 README 里的 spconv / torch-scatter 等依赖）；权重 `sonata_small.pth` 放 `$STABLEWM_HOME/checkpoints/sonata/`
+  （sha256 `ee5dae277dde1d164499579a6b17d0bd38df4e4286b0f1ba21a82f8cc14270d1`，加载时校验），配置里的 `checkpoint_path` 指向这里，权重不进 git。
+  没装 `sonata` 包时只是这个 encoder 不能实例化，`import encoders` 和其他模型不受影响（包是在构造时才导入的）。
+- **怎么跑**：
+  3D `DATA=ogb_pcd_sonata bash scripts/train/run_train_detached.sh lewm_pcd cube_pcd_sonata model/encoder=sonata_cls`；
+  4D `DATA=ogb_pcd_sonata bash scripts/train/run_train_detached.sh lewm_pcd_agg cube_pcd_agg_sonata --config-name=lewm_agg model/encoder=sonata_cls`；
+  逐 epoch 评测循环按 run 名里的 `sonata` 自动选 `cube_pcd_sonata.yaml` / `cube_pcd_agg_sonata.yaml`
+  （`RUNS="cube_pcd_sonata cube_pcd_agg_sonata" bash scripts/eval/auto_eval_checkpoints.sh`，其余参数同上）。
+  单元测试：`scripts/checks/test_sonata_cls_encoder.py`（假骨干，CPU，7 个用例）。
+- **合并时的取舍**：cherry-pick 了该分支唯一的实质提交（8 个文件），保留 encoder、4 个配置、`encoders/__init__.py` 的导出和测试；
+  `checkpoint_path` 从写死的 `/workspace/...` 改为数据盘路径；去掉了 `scripts/run_pcd_encoder_comparison.sh`
+  （它另写了一套训练 + 评测流程，而且给 Sonata 传的是 `data=ogb_pcd` 和 `cube_pcd.yaml`，仿射不是恒等，和这个 encoder 的输入约定冲突）。
+  该分支上 2 个 epoch、50 / 100 起点的对照数字不进最终表。
+
 ## 评测（工作 3 的评测部分，已完成）
 
 官方 `eval.py` + `config/eval/cube.yaml` 的流程原样保留（50 个起点、`set_state(qpos,qvel)` 复位、25 步后的 cube 位姿为目标、CEM 300 样本 30 轮 top-30、预算 50 步、seed 42、`terminate_at_goal` 判成功）。
