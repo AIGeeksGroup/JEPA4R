@@ -29,16 +29,20 @@ log() { echo "$(date +%F_%T) $*"; }
 
 eval_one() {  # run epoch
   local r=$1 e=$2 tag=${1}_epoch${2}${SUFFIX} log=$OUT/auto/${1}_epoch${2}${SUFFIX}.log backend dev cfgname=cube_pcd.yaml extra=""
+  local script="$P/eval.py" devargs="DEV"   # DEV is replaced after the backend is chosen below
   case "$r" in
     *pix_agg*) cfgname=cube_pix_agg.yaml;;   # 4D pixel: history_len 3 + goal window 3 on the official pixel protocol
     *pix*)     cfgname=cube_pix.yaml;;       # pixel baseline: the official cube.yaml + device/video knobs
     *agg*)     cfgname=cube_pcd_agg.yaml;;   # 4D point cloud
+    pldm_*)    script="$P/third_party/stable-worldmodel/scripts/plan/eval_wm.py"; cfgname=cube; devargs=""; extra="solver.n_steps=10";;   # framework baselines, framework eval scripts untouched
+    gcbc_*|gciql_*|gcivl_*) script="$P/third_party/stable-worldmodel/scripts/plan/eval_ff.py"; cfgname=cube; devargs="";;
   esac
   if [ "${GPU_ONLY:-0}" = 1 ]; then while [ "$(gpu_free_mb)" -lt "$GPU_MIN_FREE_MB" ]; do sleep 15; done; fi   # GPU_ONLY=1: never fall back to CPU, wait for VRAM (several loops can share the GPU)
   if [ "$(gpu_free_mb)" -ge "$GPU_MIN_FREE_MB" ]; then backend=egl; dev=cuda; else backend=osmesa; dev=cpu; fi
+  [ "$devargs" = DEV ] && devargs="device=$dev solver.device=$dev"   # our eval.py takes the device knobs; the framework scripts do not
   local t0=$(date +%s)
   MUJOCO_GL=$backend PYOPENGL_PLATFORM=$backend LP_NUM_THREADS=8 OMP_NUM_THREADS=8 \
-    nice -n 10 "$PY" eval.py --config-name=$cfgname policy="$r/weights_epoch_${e}.pt" device=$dev solver.device=$dev \
+    nice -n 10 "$PY" "$script" --config-name=$cfgname policy="$r/weights_epoch_${e}.pt" $devargs \
     hydra.run.dir="$OUT/auto/hydra_${tag}" $extra $EXTRA > "$log" 2>&1 &
   local pid=$! killed=""
   while kill -0 $pid 2>/dev/null; do
@@ -53,8 +57,11 @@ eval_one() {  # run epoch
   if [ -n "$killed" ]; then
     echo x >> "$OUT/auto/${tag}.attempts"; mv "$log" "$log.killed$(wc -l < "$OUT/auto/${tag}.attempts")"; return
   fi
-  echo "$r,$e,${sr:-ERROR(exit $ec)},$(( $(date +%s) - t0 )),$backend/$dev,$(date +%F_%T)" >> "$CSV"
-  log "done $tag -> ${sr:-ERROR} (${backend}/${dev}, $(( $(date +%s) - t0 )) s)"
+  if [ -z "$sr" ]; then   # failed (e.g. CUDA OOM while sharing the GPU): no CSV row, retry later (max 3 attempts)
+    echo x >> "$OUT/auto/${tag}.attempts"; mv "$log" "$log.failed$(wc -l < "$OUT/auto/${tag}.attempts")"; log "FAILED $tag (exit $ec), will retry"; return
+  fi
+  echo "$r,$e,$sr,$(( $(date +%s) - t0 )),$backend/$dev,$(date +%F_%T)" >> "$CSV"
+  log "done $tag -> $sr (${backend}/${dev}, $(( $(date +%s) - t0 )) s)"
 }
 
 log "auto-eval loop started (runs: $RUNS)"
