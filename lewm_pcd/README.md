@@ -15,7 +15,7 @@
 `visualize_info=False`、`terminate_at_goal=False`、`mode='data_collection'`、plan_oracle、
 10 个并行 env、每回合 200 步、10000 回合、seed 3072。点云采集沿用同一套，只是多存一列点云。
 
-## 结果（最终，2026-09-12）
+## 结果（最终，2026-09-12；框架自带基线两行 2026-09-14 补）
 
 协议：官方 `config/eval/cube.yaml`（50 个起点、seed 42、目标 25 步后、预算 50 步、CEM 300 候选 / top 30），CEM 迭代次数按论文附录 D 取 10
 （在我们的 `cube_pix.yaml` / `cube_pcd.yaml` 里覆盖，官方文件不动）；每个 run 10 个 epoch 的 checkpoint 全部在 GPU/EGL 上评，
@@ -32,10 +32,16 @@
 | 4D 点云 ppt (`cube_pcd_agg_ppt`) | 66 | 66 | 68 | 68 | 68 | 72 | 66 | 70 | 66 | 68 | 67.8 | 72 | 68 |
 | 4D 点云 dexart (`cube_pcd_agg_dexart`) | 66 | 72 | 68 | 76 | 68 | 72 | 70 | 70 | 68 | 74 | 70.4 | 76 | 74 |
 | 4D 点云 ms2 (`cube_pcd_agg_ms2`) | 66 | 66 | 68 | 62 | 64 | 62 | 64 | 66 | 66 | 64 | 64.8 | 68 | 64 |
+| GCBC，框架基线：冻结 DINOv2-small + 行为克隆，逐步出动作、无规划 (`gcbc_cube`) | 92 | 90 | 96 | 94 | 92 | 88 | 96 | 96 | 96 | 98 | 93.8 | 98 | 98 |
+| PLDM，框架基线：世界模型 + CEM 10 次，发布配置原样 (`pldm_cube`) | 54 | 50 | 50 | 52 | 52 | 48 | 54 | 52 | 52 | 56 | 52.0 | 56 | 56 |
 
 - 官方 2D 复现均值 69.4，与作者 checkpoint 的 72 同一水平。
 - 4D 对同 encoder 的 3D：dexart +5.2、像素 +1.2、ppt +1.2、ms2 −4.0，只有 dexart 这一对超出噪声。
-- 与论文 74 的差距来自评测集（自采数据的另一组 50 道题）和框架版本，见"进度"里 2026-09-12 的记录。
+- 框架自带的两个基线（`scripts/run_baselines.sh`，框架脚本原样跑，见"框架基线"一节）和世界模型那几行不是一类，只作参照。
+  GCBC 均值 93.8（论文 84）：评测的起点和目标都取自专家数据集（与训练同分布），目标条件行为克隆复现专家动作即可成功，用的又是预训练 DINOv2-small 特征、每个环境步都闭环出动作，不靠规划。
+  PLDM 均值 52.0（论文 65）接近随机：用的就是论文附录 C.2 表 2 的损失系数（发布的 `pldm.yaml` 与之一致），10 个 epoch 也相同；评测路径核查过没有问题（作者的 checkpoint 走同一路径得 74），
+  是训出来的模型代价面太尖，离开专家动作序列代价立刻跳到随机序列的水平，CEM 没有坡可下。GCIQL / GCIVL 未评（原因见"框架基线"一节）。
+- 与论文 74 的差距来自评测集（自采数据的另一组 50 道题，其中 17 个起点时方块已在目标 4 cm 内）和框架版本。
 
 ## 目录
 
@@ -44,7 +50,7 @@ lewm_pcd/                      代码（git）
 ├── jepa.py module.py utils.py train.py eval.py   ← le-wm@8edfeb3 原样拷贝，作为基线
 ├── config/{train,eval}/       ← 同上；launcher/local.yaml 里加了 hydra 输出目录
 ├── envs/                      点云环境包装（工作 1）
-├── scripts/data|train|eval/   采集 / 训练 / 评估的启动脚本
+├── scripts/data|train|eval|checks/   采集 / 训练 / 评估 / 检查脚本；scripts/baselines/ 是框架基线补丁的记录，scripts/run_baselines.sh 跑基线
 ├── third_party/stable-worldmodel/   固定在 6f1e499 的本地 clone（不进 git）
 ├── env.sh                     环境变量，跑任何脚本前先 source
 ├── TMP/                       杂物，不进 git
@@ -138,31 +144,31 @@ lewm_pcd/                      代码（git）
 - 训练：同上游数据（4 帧片段，frameskip 5）。一个样本 = 前 3 帧聚合、用第 3 个动作块预测第 4 帧 latent1；loss = MSE(pred, e4) + 0.09 × SIGReg([latent2, e4])，SIGReg 一次调用对两个位置取平均（与上游对 4 个位置取平均同形式），λ 不动，MSE 不加系数。
 - 代码：`jepa_agg.py`（`AggJEPA(JEPA)`，复用 encode / projector / action_encoder / criterion，重写 predict / rollout / get_cost；`agg_forward` 为训练前向）；`aggregators/`（`temporal` 默认：抄 ARPredictor 的位置编码 + 因果 block，不带动作，取最后 token，1～3 帧都可；`mlp`、`mean` 对照）；predictor 复用 ARPredictor 但 `num_frames=1`。
 - 配置：encoder 拆成配置组 `config/train/model/encoder/{ms2,dexart,ppt}.yaml`，3D 与 4D 共用（`model/encoder=xxx`）；`model/lewm_pcd_agg.yaml`、`train/lewm_agg.yaml`、`eval/cube_pcd_agg.yaml`（= cube_pcd + `plan_config.history_len 3` + `eval.goal_window 3`）。上游文件改动：`train.py` 1 行（前向按配置选）、`eval.py` 约 10 行（取目标窗口）。
-- 命令：训练 `python train.py --config-name=lewm_agg data=ogb_pcd model/encoder=ppt subdir=<run> output_model_name=<run>`；评测 `python eval.py --config-name=cube_pcd_agg.yaml policy=<run>/weights_epoch_N.pt`。`scripts/train/queue_agg_runs.sh` 在显存空出 12 GB 时依次拉起 `cube_pcd_agg_{ppt,dexart,ms2}`。
+- 命令：训练 `python train.py --config-name=lewm_agg data=ogb_pcd model/encoder=ppt subdir=<run> output_model_name=<run>`；评测 `python eval.py --config-name=cube_pcd_agg.yaml policy=<run>/weights_epoch_N.pt`。
 - 参数量：聚合器 3.15M（2 层，block 形状与 predictor 相同：16 头 × 64、MLP 2048），整体 ≈ encoder 5.5M + 聚合器 3.2M + predictor 10.8M + 投影头 0.9M ≈ 20.4M（3D 模型 17.2M）。
 - 注意：CEM 求解器按 `solver.batch_size=1` 逐个 env 调用 `get_cost`，上游 `criterion` 的广播只对 B=1 成立，4D 模型沿用同一 criterion，行为一致。
 - 验证：配置组重构后三个 3D 配置与运行中任务的配置逐项相同；4D 模型在试采数据上 CPU 冒烟训练、`cube_pcd_agg` 评测（history_len 3、目标窗口 3、CEM）均跑通。
 
 ## 逐 epoch 自动评测
 
-`scripts/eval/auto_eval_checkpoints.sh`（脱离会话运行）盯着三个 run 的 checkpoint 目录，每出现一个 `weights_epoch_N.pt` 就用官方评测管线跑一次（`cube_pcd.yaml`：50 个起点、seed 42、CEM、预算 50；起点由 `np.random.default_rng(42)` 抽样，三个模型比的是同一批起点和目标）。
-**训练优先**：同一时刻只跑一个评测且 `nice -n 10`；GPU 空闲显存不足 12 GB 时整套评测在 CPU 上跑（`MUJOCO_GL=osmesa` 渲染 + `device=cpu solver.device=cpu`，为此 `eval.py` 的 `MUJOCO_GL` 和模型设备改为可配置），完全不碰训练的 CUDA 内存，一次约 40 分钟；显存够时用 GPU，约 3 分钟。启动前要求 cgroup 内存 < 60 GB 且 anon < 40 GB，运行中若 cgroup 超过 78 GB 或评测进程 RSS 超过 20 GB 立即杀掉评测、稍后重试（最多 3 次）。
-结果：`lewm_pcd_data/logs/eval/success_rates.csv`（run, epoch, success_rate, 秒数, 渲染后端, 时间），完整日志在 `logs/eval/auto/`。
+`scripts/eval/auto_eval_checkpoints.sh`（脱离会话运行）盯着 `RUNS` 里各 run 的 checkpoint 目录，每出现一个 `weights_epoch_N.pt` 就用官方评测管线跑一次（`cube_pcd.yaml`：50 个起点、seed 42、CEM、预算 50；起点由 `np.random.default_rng(42)` 抽样，三个模型比的是同一批起点和目标）。
+**训练优先**：同一时刻只跑一个评测且 `nice -n 10`；GPU 空闲显存不足 12 GB 时整套评测在 CPU 上跑（`MUJOCO_GL=osmesa` 渲染 + `device=cpu solver.device=cpu`，为此 `eval.py` 的 `MUJOCO_GL` 和模型设备改为可配置），完全不碰训练的 CUDA 内存，一次约 40 分钟；显存够时用 GPU，约 3 分钟。启动前要求 cgroup 的 anon 内存 < 40 GB（`memory.current` 里还有可回收的数据集页缓存，不看它），运行中若 anon 超过 60 GB 或评测进程 RSS 超过 30 GB 立即杀掉评测、稍后重试（最多 3 次；评测失败同样重试，不写 ERROR 行）。`GPU_ONLY=1` 时不落 CPU，等显存 ≥ `GPU_MIN_FREE_MB` 再评（多个循环可共用 GPU）；run 名 `pldm_*` / `gcbc_*` / `gciql_*` / `gcivl_*` 改用框架自己的 `eval_wm.py`（`solver.n_steps=10`）/ `eval_ff.py`。
+结果：`lewm_pcd_data/logs/eval/success_rates_cem10.csv`（`CSV=… SUFFIX=_cem10` 启动；run, epoch, success_rate, 秒数, 渲染后端, 时间），完整日志在 `logs/eval/auto/`；旧的 `success_rates.csv` 是 CEM 30 次的作废表。
 官方对照（论文图 6，cube，同一评测协议）：DINO-WM 86、GCBC 84、LeWM 74、PLDM 65、GCIQL 64、GCIVL 56、随机 48。
 
-## 代码审查（2026-09-10，两个 Opus 审查代理，只读）
+## 框架基线（PLDM、GCBC）
 
-结论：没有会让当前训练或已采数据出错的 bug；数据集经端到端核验干净（1 万条回合互不重复、点云与 cube 位姿时序对齐、无越界点）。已修复的防护缺失：
-- 采集改为 `HDF5Writer(mode='error')`，分片启动器拒绝已存在的输出、检查分片 seed 区间不重叠、加 `--max-parallel`、关闭日志句柄；合并脚本递归枚举硬链接别名、拒绝已带 `ep_idx` 的分片；`add_eval_columns` 删组前校验同名对象；`rechunk_h5` 保留 `maxshape`、按对象地址重建别名。
-- wrapper 用模型引用而非 `id()` 判断是否重建相机/geom 缓存（环境每次 reset 都重编译模型）；`PCDExpertPolicy` 对上游 `set_env` 源码做 md5 钉死，上游一变就报错。
-- 评测：`use_rgb: false`（xyz-only）路径原来会在 `_prepare_info` 的 reshape 处崩，已改为按 `use_rgb` 拼接；`eval.py` 顶部显式 `import envs`；评测前把 `pcd_process` 与 checkpoint 里训练配置的 center/scale/use_rgb 做一致性断言；训练启动脚本拒绝重名 run（`FORCE=1` 覆盖），`DATA=` 可选数据配置。
-
-结论解读时的注意事项（上游行为或设计选择，未改）：
-- 训练/验证按片段随机切分，同一回合的片段两边都有，`validate/*` 是拟合指标不是泛化指标；比较 encoder 以规划成功率为准。
-- PPT 训练时 FPS 起点随机（PPRL 默认），预测目标 `emb` 因而带噪声，其 pred_loss 有另外两个 encoder 没有的下界；评测时是确定的。
-- **`cube_fraction: 0.25` 用渲染器的分割信息给 cube 保底 25% 的点**，这是像素基线没有的特权信息；均匀采样时 cube 自然占比约 5.7%（约 70 点）。是否为公平对比改为 0 并重采，待定。
-- 深度与分割两次渲染在轮廓像素上不一致，约 0.16% 的点是"飞点"，落在物体与地面之间；重采时可加 1 像素腐蚀。
-- DexArt 分支用 trunc_normal(0.02) 初始化加宽后的层，初始输出尺度比另外两个小一到两个数量级，projector 的 BatchNorm 会归一化掉，但有效学习速度可能偏低。
+用我们采的 `cube_single_expert.h5`，框架 `scripts/train/{pldm,gcbc}.py` 原样运行（只传数据名、`action_dim=5`、10 epoch、`+wandb.enable=false`），
+评测用框架自己的 `scripts/plan/eval_wm.py`（PLDM，CEM 10 次）和 `eval_ff.py`（GCBC）；训练命令在 `scripts/run_baselines.sh`，
+逐 epoch 评测循环按 run 名（`pldm_*`、`gcbc_*`）自动改走这两个脚本。DINO-WM 不在框架里，未做。
+框架在 6f1e499 上有四处脚本级小错，各改了一处，另加一处按需改动；都是原地改、带 `# patched` 注释，diff 存在 `scripts/baselines/*.patch`，
+不涉及 LeWM、点云、4D 的任何代码路径：
+1. `scripts/train/pldm.py`：`logger` 在函数里被重新赋值，打日志那行必报 UnboundLocalError，改用 `logging.getLogger(__name__)`。
+2. `scripts/train/gcbc.py`：`ckpt_path` 无条件指向不存在的续训文件，首次运行必崩，加 `exists()` 判断（`gciql.py` / `gcivl.py` 本来就有）。
+3. `stable_worldmodel/wm/gcrl/gcrl.py`：向 transformers 4.50 的 `Dinov2Model` 传了不存在的 `interpolate_pos_encoding` 参数，默认值改为 `False`（数值不变）。
+4. `scripts/plan/eval_ff.py`：调用的 `World.evaluate_from_dataset(..., goal_offset_steps=, video_path=)` 在库里已改名为 `World.evaluate(..., goal_offset=, video=)`，改调用处。
+5. `pldm.py` / `gcbc.py` 存 checkpoint 的间隔从每 5 / 每 3 个 epoch 改为每个 epoch（逐 epoch 评测）。
+GCIQL / GCIVL 能训不能评：训练脚本把整份 hydra 配置存成 `config.json`，框架的 `load_pretrained` 重建不了模型，`eval_ff.py` 读不了，要评得自写加载代码。
 
 ## 环境
 
@@ -180,149 +186,3 @@ lewm_pcd/                      代码（git）
 | stable-worldmodel | github.com/galilai-group/stable-worldmodel @ 6f1e499（`third_party/`） |
 | ogbench | 1.2.0 |
 | mujoco | 3.12.0 |
-
-## 进度
-
-- [x] 目录与存储规划
-- [ ] 专用 venv
-- [x] 1. 点云采集：`envs/cube_pcd_env.py`、`envs/pcd_wrapper.py`、`scripts/data/collect_cube_pcd.py`（2 回合 pilot 已验证，全量未跑）
-- [x] 2. 模型：可插拔 encoder 接口（`encoders/`），像素基线逐位等价，PointNet 参考实现在 pilot 数据上冒烟训练通过
-- [x] 3. 训练：三个候选的全量训练已于 2026-09-09 22:28 启动（`scripts/train/run_train_detached.sh`）；评测管线已完成并验证
-
-### 2026-09-10 19:20 — 4D 评测修复（之前 epoch 1 的 54% 无效）
-
-4D 的**评测**路径有两个缺陷（训练从未受影响，checkpoint 原样可用）：
-
-1. `AggJEPA.rollout` 抄了 le-wm `jepa.py` 里按 `[H, T-H]` 切动作的写法，它假设历史动作拼在候选动作前面。
-   而 stable-worldmodel 现在的 policy 传给模型的候选动作全是未来的（T = horizon），历史动作单独放在
-   `info['action_history']`。`history_len 3` 时动作错位，而且只想象了 3 块（15 步）而不是 5 块（25 步，目标所在）。
-   修法：`rollout` 改为框架自带的 `stable_worldmodel.wm.lewm.LeWM.rollout` 的逐行拷贝，只有两处标注的改动
-   （观测键名；每步预测 = 窗口 → 聚合器 → latent2 → predictor → 下一帧 latent1）；`get_cost` 把 rollout 最后
-   `window` 帧聚成 latent2 再走继承的 criterion。
-2. `eval.py` 建好的 3 帧 goal window 根本没送到模型：`PCDWorldModelPolicy._prepare_info` 里那段分支没写进文件。补上（4 行）。
-
-验证（`scripts/checks/test_agg_rollout.py`、`scripts/checks/check_history_order.py`）：H = 1/2/3 时 rollout 与手写参考循环
-逐位一致（各 5 步预测，cost = 终点 latent2 与目标窗口 latent2 的 MSE）；2 环境 CPU 实跑中 goal 为 3 帧、最后一帧等于框架取的
-目标帧，首次规划 H = 1、之后 H = 3 带 2 块历史动作，预测帧数 = H + 5，最新历史帧等于当前观测。auto-eval 以 4D 优先重启，
-`success_rates.csv` 里 `cube_pcd_agg_*` 的旧行删除。（当时记的"首次规划只有 1 帧"问题，由下面的历史填充解决。）
-
-### 2026-09-10 19:25 — 4D 评测：历史从数据集填充（用户决定）
-
-框架每集从空的历史缓冲开始，两次规划里的第一次只能看到 1 帧（聚合器训练时只在 3 帧窗口上输出过）。现在 `eval.py` 同时
-读取每个起点前 `(history_len - 1) * action_block = 10` 步的数据集行（同一条轨迹的真实过去：帧 + 导致该帧的动作，遵循
-`HistoryBuffer` 的约定），`PCDWorldModelPolicy.get_action` 在第一次规划前把它们填进缓冲，于是两次规划都看到
-起点−10 / 起点−5 / 起点（之后是真实的在线帧）。距轨迹开头不足 10 步的起点（50 个里 2 个：第 1 步和第 6 步）缺的部分按框架
-自己的 warm-up 约定补齐（复制最老的真实帧、动作填零）。50 个起点不变；3D 评测不用填充（`history_len 1`）。
-`scripts/checks/check_history_order.py` 验证：首次规划 H = 3 带 2 块历史动作，最老帧等于缩放后的数据集帧起点−10，
-最新帧等于当前观测，预测帧 8 = 3 + 5。
-
-### 2026-09-10 20:30 — 第一个有效的 4D 数字（旧协议 CEM 30 次，数字已被最终表取代）
-
-`cube_pcd_agg_ppt` epoch 1 用修正后的评测（框架 rollout + 3 帧 goal + 数据集填充的历史）：**72 %**（50 个起点，seed 42，预算 50），
-修复前 54 %，随机 48 %，3D `cube_pcd_ppt` epoch 1 为 72 %，论文像素版 LeWM 74 %。4D 训练指标健康（epoch 1–7 训练 pred_loss
-0.028 → 0.008、SIGReg 2.31 → 0.97；验证 pred_loss 0.0087 → 0.0027、验证 SIGReg 1.89 → 1.48，全部单调）。后续 epoch 由
-auto-eval 自动评（`logs/eval/success_rates.csv`）。
-
-### 2026-09-10 21:30 — 两个 Opus 代码审查（模型/训练、评测路径）
-
-训练路径无 bug：`agg_forward` 与手写参考在 temporal/mean/mlp 三种聚合器上逐位一致，只有最新帧的动作块进入 predictor
-（扰动实验），超参全部继承自 3D 配置，每个模块都有梯度。评测路径：rollout/get_cost/goal window/历史填充核对无误；查出并修复：
-
-1. `eval.py` 无条件读 `plan_config.history_len`，3D 评测配置没有这个键会直接崩，所有未评的 3D checkpoint 都会失败。改为 `.get("history_len", 1)`。
-2. 起点距轨迹开头不足 10 步时的填充按*原始步*复制最老一行，导致跨步取出的帧不是 5 步等间隔（如起点−6/起点−5/起点）。
-   改为只取整块，即框架约定（第 6 步：起点−5/起点−5/起点；第 1 步：起点/起点/起点）。影响 50 个起点里的 2 个。
-3. 起点帧自己的缓冲条目带的是框架复位时的 NaN 动作（置零），最新的历史动作块少了最后一个子动作。种子里加 `last_action`
-   （数据集中进入起点帧的那个动作）。
-4. 断言：`history_len == goal_window == model.window`（评测）、`horizon >= window`（latent2 代价）、
-   `cfg.history_size == model.window`（训练 forward）。删除未用的 import。
-5. `scripts/checks/check_history_order.py` 增加中间帧（起点−5）和 `action_history` 内容与数据集块的核对；
-   `test_agg_rollout.py` 的根目录改为参数。
-
-两位审查者都明确指出：4D 规划器的状态只有 3 帧观测。`action_history` 被框架 rollout 用于对齐和计数，但按设计（聚合器不吃动作）
-它不影响任何预测，每步用的是离开最新帧的候选动作块。保留不动的观察项：聚合器只在 encoder 的 latent 上训练、规划时却吃预测出的
-latent（与上游 predictor 同类）；latent2 上的 SIGReg 作用在 LayerNorm 输出上；`num_frames 1` 时 predictor 的注意力 dropout
-退化成整支随机丢弃（p 0.1，与上游位置 0 相同）；4D 的 `pred_loss`（每个片段 1 个目标）与 3D 的（3 个目标）不可直接比较。
-4D checkpoint 已用修正后的评测重评。
-
-### 2026-09-11 02:30 — 训练的崩溃恢复
-
-Lightning 每个 epoch 结束时把完整状态（权重、优化器、学习率调度、epoch/step）写到
-`$SPT_CACHE_DIR/runs/<date>/<time>/<hash>/checkpoints/last.ckpt`，`train.py` 在 `checkpoints/<run>/<run>_weights.ckpt`
-存在时从它续训。`scripts/train/resume_train_detached.sh <model> <run> [overrides]`（参数与原始启动相同）把最新的匹配
-`last.ckpt` 复制过去并重新启动。CPU 上用 3 个 epoch 的小跑验证：第 2 个 epoch 后杀掉，续训只跑了第 3 个 epoch，global step 和
-epoch 计数接续（续训的指标落在新的 `_spt_cache` 运行目录 / 事件文件里）。训练占着 GPU 时任何 CPU 侧测试都必须隐藏 GPU
-（`CUDA_VISIBLE_DEVICES=""`、`loader.pin_memory=false`）：第一次小跑在 99 % 满的 GPU 上开了 CUDA 上下文，自己 CUDA OOM 退出（训练没事）。
-
-### 2026-09-11 22:15 — 流程落地：六个点云 run 全部训完（10 epoch）并逐 epoch 评测
-
-当时的成功率表已删除：它用的是发布配置的 CEM 30 次迭代，且一半在 CPU/osmesa、一半在 GPU/EGL 上评，不在同一条件下，
-不能作为结果。原始记录仍在 `logs/eval/success_rates.csv`。最终结果见开头的"结果（最终）"一节。
-
-### 2026-09-11 22:30 — 启动 2D（像素）复现（`scripts/run_pix_pipeline.sh`）
-
-数据盘扩到 250 GB（空 97 GB），推迟的像素基线开跑，官方配置原样不动：采集 = 官方 `collect_cube.py` 的设置
-（`swm/OGBCube-v0`、single、前视相机 224x224、`ob_type='states'`、plan-oracle 专家、10 环境 x 200 步、10000 集、seed 3072；
-轨迹与点云数据集相同），通过 `scripts/data/collect_cube_pix.py`，唯一区别是落盘编码（`GzipHDF5Writer`：`pixels` 用 gzip 4 级、
-5 帧一块，其他列 20 行一块；小跑实测 6.6 倍，预计约 42 GB），用现有的分片启动器（`--script collect_cube_pix.py`）分 20 片、
-合并、加评测列；输出名 `ogbench/cube_single_expert.h5` 就是论文的数据集名，所以 `data=ogb model=lewm`（训练）和 `cube.yaml`（评测）
-不需要任何覆盖。评测用 `config/eval/cube_pix.yaml` = `cube.yaml` + auto-eval 传入的 `device`/`video` 两个开关。run 名 `cube_pix`。
-4 集小跑端到端验证过（采集、合并、加列、GPU 上 3 个 batch 训练、2 环境评测）。20 片同时跑时每片内存约 4 GB 且随集数增长，
-5 分钟内到 87/90 GiB，改为 8 片并行（`MAXPAR`）。
-
-### 2026-09-11 23:10 — 官方模型改 4D（像素版 4D），全部复用
-
-新增的只有配置别名：`config/train/model/encoder/vit.yaml`（官方 ViT-tiny 的 encoder 块原样搬来，作为可插拔 encoder）、
-`config/train/model/lewm_pix_agg.yaml`（= `lewm_pcd_agg` + `override encoder: vit` + `obs_key: pixels`，3 行）、
-`config/eval/cube_pix_agg.yaml`（= `cube_pix` + `history_len 3` + `goal_window 3`，和 `cube_pcd_agg` 对 `cube_pcd` 一样）。
-模型、训练 forward、rollout、聚合器、检查脚本全部原样复用。评测侧把原来写死点云的两处改成按观测类型选列
-（goal 窗口：像素用 `goal` ← `pixels` 列，点云用 `goal_pcd_xyz/rgb` ← `pcd_xyz/rgb` 列；历史填充同理），
-`envs/eval_policy.py` 拆成通用的 `WindowedWorldModelPolicy`（goal 窗口 + 历史填充，像素直接用）和只做点云拼接的
-`PCDWorldModelPolicy` 子类，逻辑行数不变。训练命令：`DATA=ogb run_train_detached.sh lewm_pix_agg cube_pix_agg --config-name=lewm_agg`。
-验证：`scripts/checks/check_history_order.py TMP --pix`（像素模式）在 4 集小数据上训 3 个 batch 后 2 环境实跑：goal 为 3 帧、
-最后一帧等于框架目标帧，首次规划 3 帧历史 + 2 块历史动作，最老/中间帧等于数据集帧起点−10/−5，历史动作块等于数据集，
-预测帧 8 = 3 + 5；点云模式回归结果不变。`scripts/run_pix_agg_followup.sh` 在 2D 训练启动后自动起 4D 像素训练并让评测循环评两个 run。
-
-目录规划（两条线同构）：
-
-```
-config/train/model/   lewm.yaml（官方 2D）| lewm_pcd.yaml（3D 点云）| lewm_pcd_agg.yaml（4D 点云）| lewm_pix_agg.yaml（4D 像素）
-                      encoder/{ms2,dexart,ppt,vit}.yaml   可插拔 encoder
-config/train/         lewm.yaml（3D 入口）| lewm_agg.yaml（4D 入口）；data=ogb 像素 / data=ogb_pcd 点云
-config/eval/          cube.yaml（官方）→ cube_pix.yaml → cube_pix_agg.yaml ； cube_pcd.yaml → cube_pcd_agg.yaml
-run 名                cube_pcd_{ppt,dexart,ms2} | cube_pcd_agg_{ppt,dexart,ms2} | cube_pix | cube_pix_agg
-```
-
-### 2026-09-12 11:25 — 官方复现的差距核查：作者发布的 checkpoint 在我们的评测上也是 66
-
-官方 2D 复现（`cube_pix`，官方配置一字未改：ViT-tiny、10 epoch、`data=ogb`、`cube.yaml` 协议 = 论文附录 F 的 50 个起点 /
-预算 50 / 目标 25 步）10 个 epoch 为 68 64 64 66 70 64 68 60 70 64，均值 65.8，而论文报 74。为分清是我们的训练/数据不行还是
-评测集不同，下载了作者发布的 cube checkpoint（HuggingFace `quentinll/lewm-cube`，303 个张量与我们逐一同名同形，只差 ViT
-包装的 `encoder.vit.` 前缀），装进同一个 `jepa.JEPA` 类，用完全相同的评测管线在我们的 50 个起点上跑：**66 %**。
-结论：我们训出来的模型和作者的模型在同一评测集上一样好；和论文 74 的差距来自评测集本身：上游采集有未固定种子的随机性
-（reset 丢弃种子、变化空间用熵种子、oracle 用全局随机数），我们的 1 万条轨迹和作者的是同分布的不同样本，seed 42 抽出的
-50 个起点/目标也就是另一组 50 道题；再加上框架版本差异（我们在 stable-worldmodel 6f1e499 上评）和 ±6 的统计误差。
-因此本机上各配置的对比以 66（作者 checkpoint）为参照才公平：点云 3D 65–67、官方 2D 65.8、4D 点云 dexart 均值 71.6、
-4D 像素前 7 个 epoch 均值 73.1。checkpoint 存放：`checkpoints/hf_lewm_cube/`（原始）与 `checkpoints/hf_lewm_cube_jepa/`（改前缀后可直接评）。
-
-### 2026-09-12 13:30 — 只读审查："差距是否只由 CEM 迭代次数造成"：不是
-
-审查代理（Opus）核对了采集、训练、评测与官方的差别，结论是不止一个参数。按影响排序：
-1. **评测后端混用（我们自己引入，已消除）**：官方 `eval.py` 强制 EGL + CUDA；我们为了不抢训练的 GPU 把后端做成可切换，
-   30 次迭代那张表里 `cube_pix` 的 e1–7 是 osmesa/CPU、e8–10 是 EGL/GPU，点云表也大半在 CPU。CPU 与 GPU 的渲染像素不完全相同，
-   且 CEM 的随机数生成器按设备建（`planning/solver/cem.py:52`），同一个 seed 在两种设备上抽出的候选动作不同。
-   论文协议（CEM 10 次）的重评表 `success_rates_cem10.csv` 全部在 EGL/GPU 上跑，以它为准。
-2. **框架版本差异**：论文时代的 CEM 用样本标准差更新（除以 K−1），我们所用的 6f1e499 用总体标准差（除以 K），每轮采样尺度差
-   √(30/29)，30 轮复利后探索方差只剩约 0.61 倍，和"迭代次数多"是同向效应。需要换回论文时代的框架才能消除，暂不动。
-3. **数据不是作者的**：同分布的自采样本，评测的 50 道题和动作归一化统计量都来自自采数据。审查者还指出 2 月 16 日的参考提交
-   在 `reset_variation_space` 不传 `default_variations` 时根本不会重采方块起点/目标（会退回固定的 (0.3, 0)），而我们采集用的
-   HEAD 通过 `DEFAULT_VARIATIONS` 随机化；发布数据集究竟出自哪个提交无法确认，作者 checkpoint 在我们随机化的起点上拿 72
-   说明两者分布相容。
-4. **CEM 迭代次数 30 对 10**：而且论文自相矛盾，附录 B 写 30 步，附录 D 写 PushT 30 / 其他 10；发布配置是 30。
-5. 训练轮数 10（论文附录 E）对发布配置的 100；`ob_type='states'`（发布的训练配置只和 states 自洽）、`goal→target` 改名、分片采集、
-   落盘方式等经代码路径核对对结果无影响。
-逐项确认无差别的：`config/eval/cube.yaml` 与官方逐字节相同、`module.py` 相同、`jepa.py` 像素路径行为不变、ViTCLS 与官方 ViT 等价、
-点云/4D 分支在像素路径不进入、policy 的 `_prepare_info` 两版相同。
-
-### 2026-09-12 14:45 — 最终表出齐
-
-论文协议（CEM 10 次）、全部 GPU/EGL 的 80 个 checkpoint 评测完成，表放在开头的"结果（最终）"一节；旧表已删。
