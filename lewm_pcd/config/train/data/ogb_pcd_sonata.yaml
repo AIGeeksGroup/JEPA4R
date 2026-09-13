@@ -1,0 +1,12 @@
+defaults:
+  - ogb_pcd
+  - _self_
+
+preprocessor:
+  _target_: utils.get_pcd_preprocessor
+  source_xyz: pcd_xyz
+  source_rgb: pcd_rgb
+  target: pcd
+  center: [0.0, 0.0, 0.0]
+  scale: 1.0
+  use_rgb: true
