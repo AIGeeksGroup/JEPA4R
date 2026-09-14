@@ -1,0 +1,11 @@
+# ogb_pcd.yaml on the RM75-B + EG2-4C2 (envs/cube_rm75_env.py): same collection settings, RM-75 env and dataset name,
+# crop box x_min 0.10 -> 0.21 (the RM-75 base stands at x 0.09..0.21, inside the UR5e crop box).
+defaults:
+  - ogb_pcd
+  - _self_
+
+env_id: swm/OGBCubeRM75PCD-v0
+dataset_name: ogbench/cube_rm75_single_expert_pcd.h5
+
+pcd:
+  crop_box: [[0.21, -0.50, -0.02], [0.75, 0.50, 0.60]]

@@ -25,6 +25,7 @@ from omegaconf import DictConfig, OmegaConf
 import stable_worldmodel as swm
 from stable_worldmodel.data.formats.hdf5 import HDF5Writer, _is_string_col
 from stable_worldmodel.envs.ogbench import ExpertPolicy
+from envs import PCDExpertPolicy  # ExpertPolicy minus its env-id whitelist; used for the RM-75 env only
 
 logger = logging.getLogger(__name__)
 
@@ -55,8 +56,9 @@ class GzipHDF5Writer(HDF5Writer):
 @hydra.main(version_base=None, config_path='./config', config_name='ogb_pix')
 def run(cfg: DictConfig):
     """Run the official pixel data collection (HDF5 output)."""
+    env_id = cfg.get('env_id', 'swm/OGBCube-v0')  # RM-75 configs set env_id (config/ogb_rm75_pix.yaml); default = the official env
     world = swm.World(
-        'swm/OGBCube-v0',
+        env_id,
         **cfg.world,
         env_type='single',
         ob_type='states',
@@ -74,7 +76,7 @@ def run(cfg: DictConfig):
     world_seed = rng.integers(0, 1_000_000).item()
     if cfg.get('world_seed') is not None:  # set by the sharded launcher
         world_seed = int(cfg.world_seed)
-    world.set_policy(ExpertPolicy(policy_type='plan_oracle'))
+    world.set_policy((ExpertPolicy if env_id == 'swm/OGBCube-v0' else PCDExpertPolicy)(policy_type='plan_oracle'))
 
     out = Path(cfg.cache_dir or swm.data.utils.get_cache_dir()) / 'datasets' / cfg.dataset_name
     world.collect(
