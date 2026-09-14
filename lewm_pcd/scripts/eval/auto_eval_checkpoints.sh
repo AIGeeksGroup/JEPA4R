@@ -31,6 +31,10 @@ eval_one() {  # run epoch
   local r=$1 e=$2 tag=${1}_epoch${2}${SUFFIX} log=$OUT/auto/${1}_epoch${2}${SUFFIX}.log backend dev cfgname=cube_pcd.yaml extra=""
   local script="$P/eval.py" devargs="DEV"   # DEV is replaced after the backend is chosen below
   case "$r" in
+    *rm75*pix_agg*) cfgname=cube_rm75_pix_agg.yaml;;   # RM-75 arm (envs/cube_rm75_env.py): same protocols on the RM-75 env + dataset; before the UR5e cases
+    *rm75*pix*)     cfgname=cube_rm75_pix.yaml;;
+    *rm75*agg*)     cfgname=cube_rm75_pcd_agg.yaml;;
+    *rm75*)         cfgname=cube_rm75_pcd.yaml;;
     *pix_agg*) cfgname=cube_pix_agg.yaml;;   # 4D pixel: history_len 3 + goal window 3 on the official pixel protocol
     *pix*)     cfgname=cube_pix.yaml;;       # pixel baseline: the official cube.yaml + device/video knobs
     *agg*sonata*) cfgname=cube_pcd_agg_sonata.yaml;;   # 4D point cloud, Sonata encoder (identity affine); before *agg*
