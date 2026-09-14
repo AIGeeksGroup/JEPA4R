@@ -178,6 +178,27 @@ checkpoint 的 config 记录了 `chunk_points`，评测用同一值；ManiSkill 
 内存守护只看 cgroup 的 anon 内存（`memory.current` 里有可回收的页缓存），超限杀掉评测稍后重试，失败同样重试，最多 3 次。门槛都是环境变量，默认值是本机参数。
 结果：`logs/eval/success_rates_cem10.csv`（run, epoch, success_rate, 秒数, 渲染后端, 时间），完整日志在 `logs/eval/auto/`。
 
+## 换臂：RealMan RM75-B + 因时 EG2-4C2（`envs/cube_rm75_env.py`）
+
+把 OGBench 的机器人层从 UR5e + Robotiq 2F-85 换成睿尔曼 RM75-B 七轴臂加因时 EG2-4C2 二指夹爪（睿尔曼官方模型库 `rm_models` 里的配套夹爪）；任务层、专家策略、点云管线、模型、训练、评测全部复用。
+
+- **改了什么**：只有 `ManipSpaceEnv` 的机器人层，在子类 `RM75ManipSpaceEnv` 里覆盖三个方法：`__init__`（7 关节 home 姿态、用新臂建 IK、工作区四个盒子等比缩放）、
+  `build_mjcf_model`（照抄上游，只换两个模型文件路径）、`post_compilation`（照抄上游，PD 增益 6 个改 7 个）。`RM75CubeEnv(CubeEnv, RM75ManipSpaceEnv)` 和
+  `RM75CubePCDEnv(CubePCDEnv, RM75ManipSpaceEnv)` 用多重继承拼出像素版和点云版，注册为 `swm/OGBCubeRM75-v0`、`swm/OGBCubeRM75PCD-v0`。
+  新模型 XML 沿用上游的槽位名 `ur5e` / `robotiq` 和实体名（`attachment_site`、`pinch`、`right_driver_joint`、`right_pad`、材质名），上游按名字找机器人的代码一处不动。
+- **模型文件** `envs/descriptions/realman_rm75b/`、`inspire_eg2_4c2/`：在 ogbench 自带的 `ur5e.xml` / `2f85.xml` 模板上把机器人数据换成厂商 URDF 的连杆位姿、惯量、限位、力矩上限（STL 用厂商的）；
+  夹爪的四连杆用关节等式约束实现 mimic，驱动关节量程 0 到 0.8，所以上游 `qpos / 0.8` 的开合度和 0 到 255 的指令原样成立。厂商原始 URDF / STEP / 尺寸图放数据盘 `vendor/realman/`。
+- **三个几何决定**：RM75 臂展 610 mm（UR5e 850），夹爪竖直向下时底座放哪都够不全 UR5e 的工作区。底座放桌面 (0.15, 0, 0)，四个盒子绕原中心 (0.425, 0) 等比缩到 0.5 倍
+  （0.55 以上上游 IK 在远角不收敛）；中心不动，所以相机、点云仿射、评测起点抽样都不用改。`CubeEnv` 写死的两处 UR5e 坐标（variation 默认起止点、task 模式的方块坐标）按同比例缩放（`scale_cube_task`）。
+  点云裁剪框 x 下限 0.10 改 0.21，因为底座前移进了原框。这三个值改了就要重新验收（`scripts/checks/verify_rm75.py` 的 D 节）。
+- **已知差异**：夹爪夹持力按数据表 20 N，`proprio/gripper_contact` 夹住时约 0.42，swm 的 markov oracle（判夹住的阈值 0.5）在这台机器人上会卡住；采集用的 plan oracle 不受影响。
+  夹爪型号若实为睿尔曼自研 RMG24（130 N），只需重做夹爪 XML，接口名不变。工作区缩到 0.5 倍后任务比 UR5e 的小，随机策略成功率约 60（UR5e 数据 43），两张表不能直接比。
+- **验收** `scripts/checks/verify_rm75.py`：臂和夹爪逐项对厂商 URDF（关节限位、质量、惯量、2000 组随机关节角的正运动学、联动、开口、夹持力）、接口对原环境（动作空间、控制周期、info 键、相机、variation）、
+  plan oracle 50 回合的成功率 / 限位 / 自碰撞 / 关节速度，以及数据集的点云统计；`CUDA_VISIBLE_DEVICES= python scripts/checks/verify_rm75.py`，报告写到 `logs/verify_rm75.txt`。
+- **怎么跑** `scripts/run_rm75_pipeline.sh`：点云采集（`scripts/data/config/ogb_rm75_pcd.yaml`）→ 像素采集（`ogb_rm75_pix.yaml`）→ 两个数据集上评随机策略 → 三个训练：
+  官方 2D（`data=ogb_rm75 model=lewm`）、3D 和 4D 各一个 encoder（默认 dexart）→ 逐 epoch 评测（`cube_rm75_{pix,pcd,pcd_agg}.yaml`）。数据集 `cube_rm75_single_expert{,_pcd}.h5`，run 名 `cube_rm75_*`。
+- **动到的旧文件**：`envs/__init__.py` 两条 register；`scripts/data/collect_cube_pcd.py`、`collect_cube_pix.py` 的 env id 改从配置读（默认值不变，官方路径原样；像素版在 RM-75 时用仓库里的 `PCDExpertPolicy`，同一个 oracle 去掉 env id 白名单）；`scripts/eval/auto_eval_checkpoints.sh` 四行 case。
+
 ## 框架基线（PLDM、GCBC）
 
 用我们采的 `cube_single_expert.h5`，框架 `scripts/train/{pldm,gcbc}.py` 原样运行（只传数据名、`action_dim=5`、10 epoch、`+wandb.enable=false`），
