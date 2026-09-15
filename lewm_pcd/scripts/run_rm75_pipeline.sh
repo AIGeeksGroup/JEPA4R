@@ -13,7 +13,7 @@ P=/root/autodl-tmp/lewm234d/lewm_pcd
 source "$P/env.sh"
 PY=/root/autodl-tmp/conda/envs/lewm_pcd/bin/python
 SHARDS=${SHARDS:-20}; MAXPAR_PIX=${MAXPAR_PIX:-8}; ENC=${ENC:-dexart}; NUM_TRAJ=${NUM_TRAJ:-10000}
-case "$ENC" in ms2) M3=lewm_pcd;; *) M3=lewm_pcd_$ENC;; esac     # 3D model config per encoder (config/train/model/)
+case "$ENC" in ms2) M3=lewm_pcd;; dexart|ppt) M3=lewm_pcd_$ENC;; *) echo "ENC must be ms2, dexart or ppt (got '$ENC'): 3D/4D model configs exist only for these"; exit 1;; esac   # 3D model config per encoder (config/train/model/)
 DS=$STABLEWM_HOME/datasets/ogbench
 PCD=$DS/cube_rm75_single_expert_pcd.h5; PIX=$DS/cube_rm75_single_expert.h5
 RUNS="cube_rm75_pix cube_rm75_pcd_${ENC} cube_rm75_pcd_agg_${ENC}"
@@ -37,18 +37,24 @@ if [ ! -f "$PIX" ]; then
       --script collect_cube_pix.py --out ogbench/cube_rm75_single_expert.h5 -- --config-name=ogb_rm75_pix || { log "pixel collection FAILED"; exit 1; }
   $PY scripts/data/add_eval_columns.py "$PIX" || { log "add_eval_columns FAILED"; exit 1; }
 else log "2/5 pixel dataset exists: $PIX"; fi
-$PY - "$PCD" "$PIX" <<'PY'
+$PY - "$PCD" "$PIX" <<'PY' || { log "dataset check FAILED (missing file or eval columns)"; exit 1; }
 import sys, h5py, os
 for p in sys.argv[1:]:
-    with h5py.File(p) as f:
+    with h5py.File(p) as f:   # raises if the file is missing
         print(f"{os.path.basename(p)}: {f['action'].shape[0]} rows, {f['ep_len'].shape[0]} episodes, {os.path.getsize(p)/1e9:.1f} GB, ep_idx {'ep_idx' in f}, columns {len(f)}")
+        assert 'ep_idx' in f, f'{p}: no ep_idx column -> add_eval_columns.py did not run'
 PY
 
 log "3/5 random-policy evaluation (50 starts, seed 42) on both datasets"
+gpu_free_mb() { local t=$(nvidia-smi --query-gpu=memory.total --format=csv,noheader,nounits 2>/dev/null | head -1); local u=$(nvidia-smi --query-gpu=memory.used --format=csv,noheader,nounits 2>/dev/null | head -1); echo $(( ${t:-0} - ${u:-0} )); }
 for kind in pcd pix; do
   L=$STABLEWM_HOME/logs/eval/rm75_random_${kind}.log
-  [ -n "$(rate "$L" 2>/dev/null)" ] || MUJOCO_GL=egl PYOPENGL_PLATFORM=egl $PY eval.py --config-name=cube_rm75_${kind}.yaml policy=random \
+  if [ -z "$(rate "$L" 2>/dev/null)" ]; then
+    while [ "$(gpu_free_mb)" -lt 8000 ]; do sleep 30; done   # the GPU may be busy with trainings (as auto_eval_checkpoints.sh GPU_ONLY)
+    MUJOCO_GL=egl PYOPENGL_PLATFORM=egl $PY eval.py --config-name=cube_rm75_${kind}.yaml policy=random \
       device=cuda solver.device=cuda hydra.run.dir="$STABLEWM_HOME/logs/eval/hydra_rm75_random_${kind}" > "$L" 2>&1
+    [ -n "$(rate "$L")" ] || { log "random-policy evaluation ($kind) FAILED, see $L"; exit 1; }   # a crash is not an out-of-band rate
+  fi
   log "random policy, $kind: $(rate "$L") %"
 done
 R_PCD=$(rate "$STABLEWM_HOME/logs/eval/rm75_random_pcd.log"); R_PIX=$(rate "$STABLEWM_HOME/logs/eval/rm75_random_pix.log")
