@@ -36,6 +36,12 @@ def import_urdf(urdf, pkg, meshdir):
 
 ARM_URDF = VENDOR / 'RM75-B/urdf/RM75-B/urdf/RM75-B.urdf'
 GRIPPER_URDF = VENDOR / 'EG2-4C2/urdf/EG2-4C2.urdf'
+for _p in (ARM_URDF, GRIPPER_URDF):
+    if not _p.exists():
+        sys.exit(f'missing vendor file {_p}: put the RM75-B and EG2-4C2 folders of RealMan rm_models (urdf + meshes) under {VENDOR}')
+REPORT = HOME / 'logs' / 'verify_rm75.txt'
+REPORT.parent.mkdir(parents=True, exist_ok=True)
+REPORT.write_text('')
 
 RESULTS = []
 
@@ -43,7 +49,10 @@ RESULTS = []
 def check(section, name, ok, measured, expected):
     tag = 'INFO' if ok is None else ('PASS' if ok else 'FAIL')
     RESULTS.append((tag, section, name, measured, expected))
-    print(f'[{tag}] {section} | {name}: {measured}   (expected: {expected})', flush=True)
+    line = f'[{tag}] {section} | {name}: {measured}   (expected: {expected})'
+    print(line, flush=True)
+    with REPORT.open('a') as f:  # line by line, so a crash keeps what passed
+        f.write(line + '\n')
 
 
 # ---------------------------------------------------------------- A: arm model vs vendor URDF / drawing / datasheet
@@ -250,5 +259,5 @@ else:
 n_pass = sum(r[0] == 'PASS' for r in RESULTS)
 n_fail = sum(r[0] == 'FAIL' for r in RESULTS)
 print(f'\n{n_pass} PASS, {n_fail} FAIL')
-out = HOME / 'logs' / 'verify_rm75.txt'; out.parent.mkdir(parents=True, exist_ok=True)
-out.write_text('\n'.join(f'[{t}] {s} | {n}: {m}   (expected: {e})' for t, s, n, m, e in RESULTS) + f'\n\n{n_pass} PASS, {n_fail} FAIL\n')
+with REPORT.open('a') as f:
+    f.write(f'\n{n_pass} PASS, {n_fail} FAIL\n')
