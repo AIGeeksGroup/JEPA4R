@@ -284,3 +284,104 @@ config/train/         lewm.yaml（3D 入口）| lewm_agg.yaml（4D 入口）；d
 config/eval/          cube.yaml（官方）→ cube_pix.yaml → cube_pix_agg.yaml ； cube_pcd.yaml → cube_pcd_agg.yaml
 run 名                cube_pcd_{ppt,dexart,ms2} | cube_pcd_agg_{ppt,dexart,ms2} | cube_pix | cube_pix_agg
 ```
+
+## ManiSkill PickCube 平行实验线
+
+这条分支把原 LeWM-PCD 的 OGBench Cube 数据接口替换为 ManiSkill
+`PickCube-v1`，机器人为 Franka Panda 单臂二指夹爪。世界模型主体保持不变：
+
+```text
+1200 x 6 point cloud
+  -> ManiSkillPointNet encoder
+  -> projector
+  -> action-conditioned ARPredictor
+  -> JEPA loss / CEM
+```
+
+改变的只有 simulator replay（仿真器回放）、点云构造、数据校验、训练数据配置和
+ManiSkill CEM 评测接口。`jepa.py`、`module.py`、PointNet encoder、projector、
+ARPredictor、JEPA loss 和 CEM 优化逻辑均沿用原 PCD baseline（基线）。
+
+### 仓库内目录
+
+```text
+lewm_pcd/
+├── config/train/data/
+│   └── maniskill_pickcube_pcd.yaml       # 1200 x 6 输入与归一化配置
+├── scripts/data/
+│   ├── maniskill_pickcube.py             # 共享数据契约与 uniform_v1 采样
+│   ├── collect_pickcube_maniskill.py     # 单视角 uniform_v1 replay
+│   ├── maniskill_object_aware_render.py  # object_aware_v2 六视角渲染
+│   ├── object_aware_sampler.py           # Cube/TCP/robot/table 分层采样
+│   ├── collect_pickcube_object_aware.py  # object_aware_v2 replay
+│   ├── merge_pickcube_maniskill.py       # episode shards 合并为 HDF5
+│   └── run_pickcube_replay_detached.sh   # 可恢复的 1000 episode 长任务
+├── scripts/checks/
+│   ├── check_pickcube_maniskill.py       # uniform_v1 数据校验
+│   ├── check_pickcube_object_aware.py    # 配额、唯一点和 manifest 校验
+│   └── test_maniskill_*.py / test_object_aware_*.py
+├── scripts/run_maniskill_pickcube_baseline.sh
+├── scripts/run_object_aware_pcd_baseline_cem.sh
+├── eval_maniskill.py                     # PickCube 在线 CEM evaluator
+└── docs/superpowers/specs/
+    └── 2026-09-14-maniskill-object-aware-pcd-design.md
+```
+
+数据、checkpoint（检查点）和日志不进入 Git，默认保存在代码仓库之外：
+
+```text
+/root/autodl-tmp/workspace/users/lewm/
+├── datasets/maniskill/pickcube/
+│   ├── raw/PickCube-v1/motionplanning/   # 官方 trajectory.json / .h5
+│   └── derived/
+│       ├── episodes/                     # uniform_v1 episode shards
+│       └── object_aware_v2/              # 六视角分层采样 shards + manifest
+└── maniskill-pcd/
+    ├── datasets/maniskill/               # 训练/评测 HDF5
+    ├── checkpoints/                      # weights_epoch_*.pt
+    └── logs/                             # replay/train/CEM 状态和结果
+```
+
+### 两种点云协议
+
+| 协议 | 构造方式 | 每帧模型输入 |
+|---|---|---|
+| `uniform_v1` | 单个 128 x 128 相机，在工作区统一采样 | `pcd_xyz/rgb [1200,3]` |
+| `object_aware_v2` | 六视角、2.5 mm 体素去重、语义分层且无放回采样 | Cube 300 + 近 TCP 机器人 300 + 机器人主体 480 + 局部桌面 120 |
+
+两种协议最终都转换成同一个 `pcd [T,1200,6]`，因此不修改 PCD baseline
+网络。训练与在线 CEM 必须使用同一种采样协议，不能把 `uniform_v1` checkpoint
+当成 `object_aware_v2` 的正式结果。
+
+### 运行入口
+
+脚本默认使用 912-5090 当前目录，也可通过以下环境变量迁移：
+`LEWM_PCD_ROOT`、`MANISKILL_PICKCUBE_DATA_ROOT`、`MANISKILL_RUN_ROOT`、
+`LEWM_TRAIN_PY`、`LEWM_MPC_PY`、`STABLE_WORLDMODEL_ROOT`。
+
+```bash
+# object_aware_v2: replay -> 校验 -> 合并
+bash scripts/data/run_pickcube_replay_detached.sh
+
+# uniform_v1: 数据门禁 -> 10 epoch 训练 -> smoke -> 100 episode CEM
+bash scripts/run_maniskill_pickcube_baseline.sh
+
+# object_aware_v2: 合并 -> 数据门禁 -> 10 epoch 训练 -> smoke -> 100 episode CEM
+bash scripts/run_object_aware_pcd_baseline_cem.sh
+```
+
+### 已验证结果（2026-09-14）
+
+- `object_aware_v2` 共 1000 episodes、78976 帧；全部帧为 1200 个唯一点，
+  实际配额均为 `[300, 300, 480, 120]`。
+- 训练集为前 900 episodes（71126 帧，约 4.04 GB），评测集为后 100
+  episodes（7850 帧，约 446 MB）。
+- PCD baseline 从头训练 10 epochs，无 NaN/OOM；验证 prediction loss
+  从 `0.08646` 降到 `0.01166`。
+- epoch 10 的正式 CEM 完成 100 episodes，但成功率为 `0/100`；终点 Cube
+  到目标平均距离 `0.2193 m`。同协议旧 `uniform_v1` baseline 也是 `0/100`，
+  平均距离 `0.2129 m`。
+
+因此，本次实验已经验证 object-aware sampling（目标感知采样）解决了 Cube
+点数不足，但没有验证它能提高闭环 PickCube 成功率。低 JEPA loss 不能替代
+simulator success（仿真器成功率）。

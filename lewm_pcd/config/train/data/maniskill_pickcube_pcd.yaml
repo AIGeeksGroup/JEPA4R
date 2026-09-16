@@ -1,0 +1,19 @@
+dataset:
+  name: maniskill/pickcube_pcd_train.h5
+  num_steps: ${eval:'${num_preds} + ${history_size}'}
+  frameskip: 5
+  keys_to_load:
+    - pcd_xyz
+    - pcd_rgb
+    - action
+  keys_to_cache:
+    - action
+
+preprocessor:
+  _target_: utils.get_pcd_preprocessor
+  source_xyz: pcd_xyz
+  source_rgb: pcd_rgb
+  target: pcd
+  center: [-0.15, 0.0, 0.375]
+  scale: 1.5
+  use_rgb: true

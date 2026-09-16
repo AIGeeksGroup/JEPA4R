@@ -46,6 +46,8 @@ def lejepa_forward(self, batch, stage, cfg):
 
 @hydra.main(version_base=None, config_path="./config/train", config_name="lewm")
 def run(cfg):
+    pl.seed_everything(cfg.seed, workers=True)
+
     #########################
     ##       dataset       ##
     #########################
