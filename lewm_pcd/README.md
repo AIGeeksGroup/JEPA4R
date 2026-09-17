@@ -1,7 +1,8 @@
-# LeWM-PCD：点云版 LeWorldModel（OGBench Cube）
+# LeWM-PCD：点云版 LeWorldModel（OGBench Cube + Franka Panda）
 
 在 stable-worldmodel 的 `swm/OGBCube-v0` 环境上，把 LeWM 的像素输入换成点云输入，并加一个时间聚合的 4D 变体；采集、模型、训练、评测都沿用 LeWM 的做法，只改必要的部分。
 同一套流程还跑了官方 2D 复现、像素 4D，以及框架自带的 PLDM / GCBC 基线。基于 le-wm `8edfeb3` 与 stable-worldmodel `6f1e499`。
+本分支再增加一条平行的 Franka Panda 路线：只替换 OGBench 的机器人层并重采数据，PCD encoder、JEPA predictor、loss 和 CEM（交叉熵规划）保持不变。
 
 ## 结果
 
@@ -32,18 +33,18 @@
 - 与论文 74 的差距来自评测集（自采数据的另一组 50 道题，其中 17 个起点时方块已在目标 4 cm 内）和框架版本。
 - 论文图 6 的 cube 对照数：DINO-WM 86、GCBC 84、LeWM 74、PLDM 65、GCIQL 64、GCIVL 56、随机 48。
 
-### RM75-B + EG2-4C2 上的三个 run（换臂，见「换臂」一节）
+### Franka Panda 上的 3D PCD 结果（见「换臂」一节）
 
-同一协议（50 个起点、seed 42、CEM 10 次、GPU/EGL），数据是 RM-75 环境上新采的 10000 集（`cube_rm75_single_expert{,_pcd}.h5`），起点从这份数据里抽。
-参照：随机策略在这 50 个起点上点云 50、像素 44。工作区缩到 0.5 倍、专家搬运高度受限，这张表和上面 UR5e 的表不能直接比，三行之间可比。
+使用 Franka 环境重新采集的 10000 个 episode，训练 `franka_pcd_ms2_10ep_seed3072` 10 个 epoch。以下均为 100 个 episode、seed 42、目标偏移 25 步、预算 50 步、CEM 300 候选 / top 30 / 10 次迭代；前三行使用相同的原始 valid-row（有效行）抽样协议。
 
-| run | e1 | e2 | e3 | e4 | e5 | e6 | e7 | e8 | e9 | e10 | 均值 | 最大 | 最终 |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 官方 2D（ViT-tiny） (`cube_rm75_pix`) | 76 | 68 | 72 | 74 | 74 | 76 | 74 | 74 | 74 | 76 | 73.8 | 76 | 76 |
-| 3D 点云 dexart (`cube_rm75_pcd_dexart`) | 82 | 84 | 80 | 90 | 80 | 74 | 76 | 80 | 78 | 74 | 79.8 | 90 | 74 |
-| 4D 点云 dexart (`cube_rm75_pcd_agg_dexart`) | 82 | 82 | 90 | 86 | 82 | 82 | 80 | 78 | 78 | 78 | 81.8 | 90 | 78 |
+| 对照 | 成功数 | 成功率 | 含义 |
+|---|---:|---:|---|
+| epoch 10 MS2 + CEM | 64 / 100 | 64% | 训练后的点云世界模型 |
+| 随机初始化 MS2 + CEM | 52 / 100 | 52% | 相同模型结构和 CEM，但模型训练步数为 0 |
+| 纯随机动作 | 48 / 100 | 48% | 不加载模型、不运行 CEM |
+| epoch 10 MS2 + CEM，训练源 100 个不同 episode | 66 / 100 | 66% | `unique_episodes=true` 的诊断协议，与前三行抽样不同 |
 
-- 点云比像素高 6 到 8 个点，4D 比 3D 高 2 个点，都在单次 ±6 的噪声边缘；三条曲线都在第 3、4 个 epoch 附近最高、之后略降。
+训练模型相对随机初始化模型为 +12 个百分点，相对纯随机动作为 +16 个百分点；但这里只跑了一个训练 seed。最后一行从训练数据来源中每个 episode 最多抽一个起点，不是独立留出测试集，不能当作 episode 级泛化成绩，也不能与前三行做严格同协议差值。
 
 ## 与 LeWM 的对应
 
@@ -63,12 +64,13 @@
 lewm_pcd/
 ├── jepa.py module.py utils.py train.py eval.py   ← 来自 le-wm@8edfeb3，改动见各节
 ├── jepa_agg.py aggregators/   4D 模型（时间聚合）
-├── encoders/                  可插拔 encoder：vit（像素基线）、ms2、dexart、ppt、sonata_cls、pointnet（参考）
-├── envs/                      点云环境、包装器、专家策略、评测策略
+├── encoders/                  可插拔 encoder：vit（像素基线）、ms2、dexart、ppt、pointnet（参考）
+├── envs/                      点云环境、Franka 平行环境、包装器、专家策略、评测策略
 ├── config/{train,eval}/       训练 / 评测配置（launcher/local.yaml 里加了 hydra 输出目录）
 ├── scripts/data|train|eval|checks/   采集 / 训练 / 评测 / 检查脚本；scripts/baselines/ 是框架基线补丁的记录；scripts/run_baselines.sh 跑基线
 ├── third_party/stable-worldmodel/   固定在 6f1e499 的本地 clone（不进 git）
 ├── env.sh                     环境变量，跑任何脚本前先 source
+├── env_franka.sh              Franka 路线的可移植运行环境入口
 ├── TMP/                       杂物，不进 git
 └── LICENSE-le-wm              le-wm 的 MIT 许可
 ```
@@ -127,23 +129,6 @@ lewm_pcd/
 显存对策（不改架构、不改 batch）：两个 PointNet 在训练时沿点维分块并用 activation checkpointing 重算（`chunk_points=300`），逐点 LayerNorm 与 max-pool 保证结果与整体前向数值等价；
 checkpoint 的 config 记录了 `chunk_points`，评测用同一值；ManiSkill PointNet 的 Conv1d 1×1 改为等价的逐点 Linear 布局以去掉转置。
 
-### Sonata encoder（来自分支 `lewm-pcd-sonata`；预训练冻结骨干，不属于参数量对齐的那一组）
-
-- **是什么**：`encoders/sonata_cls.py` 的 `SonataCLSEncoder`。冻结的 Sonata 骨干（PTv3，预训练权重 `sonata_small`，`eval` + `no_grad`）
-  提取每个 2 cm 体素的特征（拼最后 3 级），后接可训练的读出头：LayerNorm–Linear–LayerNorm 投影到 192 维、三维正弦位置编码、
-  带 CLS token 的 2 层 8 头 Transformer，输出 CLS 向量 `(B, 192)`，接现有的 projector / predictor，3D 和 4D 都能用。只训读出头（约 1M 参数）。
-  输入是 `(B, N, 6)`：米单位的世界坐标 xyz + `[0, 1]` 的 rgb（编码器自己做 CenterShift 和体素化）。
-- **和上面三个的区别**：ms2 / dexart / ppt 是从头训练、参数量对齐 ViT-tiny 5.50M 的一组；Sonata 是外部预训练骨干，比较时单独标注。
-- **配置**：`config/train/model/encoder/sonata_cls.yaml`（骨干权重路径、sha256、读出头尺寸）。因为要米单位坐标，
-  `config/train/data/ogb_pcd_sonata.yaml` 和评测配置 `config/eval/cube_pcd_sonata.yaml` / `cube_pcd_agg_sonata.yaml` 把点云仿射改为恒等（center 0、scale 1，rgb 仍 /255）；其他 encoder 的配置不受影响。
-- **依赖（本机未装、未跑过）**：`pip install git+https://github.com/facebookresearch/sonata@18c09ff8d713494f78a8213792262b910977a65d`（及其 README 里的 spconv / torch-scatter 等依赖）；
-  权重 `sonata_small.pth` 放 `$STABLEWM_HOME/checkpoints/sonata/`（sha256 `ee5dae277dde1d164499579a6b17d0bd38df4e4286b0f1ba21a82f8cc14270d1`，加载时校验），权重不进 git。
-  没装 `sonata` 包时只是这个 encoder 不能实例化，`import encoders` 和其他模型不受影响（包在构造时才导入）。
-- **怎么跑**：3D `DATA=ogb_pcd_sonata bash scripts/train/run_train_detached.sh lewm_pcd cube_pcd_sonata model/encoder=sonata_cls`；
-  4D `DATA=ogb_pcd_sonata bash scripts/train/run_train_detached.sh lewm_pcd_agg cube_pcd_agg_sonata --config-name=lewm_agg model/encoder=sonata_cls`；
-  逐 epoch 评测循环按 run 名里的 `sonata` 自动选对应评测配置。单元测试：`scripts/checks/test_sonata_cls_encoder.py`（假骨干，CPU）。
-  分支自带的对照脚本没有收进来（它给 Sonata 传的是非恒等仿射的配置，与这个 encoder 的输入约定冲突）。
-
 ## 4D 世界模型（时间聚合）
 
 - 结构：encoder → projector → latent1（每帧，与 3D 模型完全相同）→ 聚合器（前 3 帧 latent1 → latent2，同形状向量）→ predictor(latent2, 动作块) → 下一帧 latent1。
@@ -186,32 +171,43 @@ checkpoint 的 config 记录了 `chunk_points`，评测用同一值；ManiSkill 
 ### 逐 epoch 自动评测
 
 `scripts/eval/auto_eval_checkpoints.sh`（脱离会话运行）盯着 `RUNS` 里各 run 的 checkpoint 目录，每出现一个 `weights_epoch_N.pt` 就按 run 名选配置评一次
-（`*pix_agg*` → `cube_pix_agg`，`*pix*` → `cube_pix`，`*sonata*` → Sonata 配置，`*agg*` → `cube_pcd_agg`，其余 `cube_pcd`；`pldm_*` / `gcbc_*` 等走框架自己的 `eval_wm.py` / `eval_ff.py`）。
+（`*pix_agg*` → `cube_pix_agg`，`*pix*` → `cube_pix`，`*agg*` → `cube_pcd_agg`，其余 `cube_pcd`；`pldm_*` / `gcbc_*` 等走框架自己的 `eval_wm.py` / `eval_ff.py`）。
 训练优先：同一时刻只跑一个评测且 `nice -n 10`；显存不足时整套评测在 CPU 上跑（约 40 分钟，GPU 约 3 分钟）；`GPU_ONLY=1` 时不落 CPU，等显存够再评；
 内存守护只看 cgroup 的 anon 内存（`memory.current` 里有可回收的页缓存），超限杀掉评测稍后重试，失败同样重试，最多 3 次。门槛都是环境变量，默认值是本机参数。
 结果：`logs/eval/success_rates_cem10.csv`（run, epoch, success_rate, 秒数, 渲染后端, 时间），完整日志在 `logs/eval/auto/`。
 
-## 换臂：RealMan RM75-B + 因时 EG2-4C2（`envs/cube_rm75_env.py`）
+## 换臂：Franka Emika Panda（`envs/cube_franka_env.py`）
 
-把 OGBench 的机器人层从 UR5e + Robotiq 2F-85 换成睿尔曼 RM75-B 七轴臂加因时 EG2-4C2 二指夹爪（睿尔曼官方模型库 `rm_models` 里的配套夹爪）；任务层、专家策略、点云管线、模型、训练、评测全部复用。
+把 OGBench 的机器人层从 UR5e + Robotiq 2F-85 换成 Franka Panda 七轴臂和原生二指夹爪；Cube 任务、工作区、相机、点云管线、MS2 PointNet、JEPA predictor、loss 和 CEM 全部复用。它是原 PCD 路线的平行适配，不是新的 encoder。
 
-- **改了什么**：只有 `ManipSpaceEnv` 的机器人层，在子类 `RM75ManipSpaceEnv` 里覆盖三个方法：`__init__`（7 关节 home 姿态、用新臂建 IK、工作区四个盒子等比缩放）、
-  `build_mjcf_model`（照抄上游，只换两个模型文件路径）、`post_compilation`（照抄上游，PD 增益 6 个改 7 个）。`RM75CubeEnv(CubeEnv, RM75ManipSpaceEnv)` 和
-  `RM75CubePCDEnv(CubePCDEnv, RM75ManipSpaceEnv)` 用多重继承拼出像素版和点云版，注册为 `swm/OGBCubeRM75-v0`、`swm/OGBCubeRM75PCD-v0`。
-  新模型 XML 沿用上游的槽位名 `ur5e` / `robotiq` 和实体名（`attachment_site`、`pinch`、`right_driver_joint`、`right_pad`、材质名），上游按名字找机器人的代码一处不动。
-- **模型文件** `envs/descriptions/realman_rm75b/`、`inspire_eg2_4c2/`：在 ogbench 自带的 `ur5e.xml` / `2f85.xml` 模板上把机器人数据换成厂商 URDF 的连杆位姿、惯量、限位、力矩上限（STL 用厂商的）；
-  夹爪的四连杆用关节等式约束实现 mimic，驱动关节量程 0 到 0.8，所以上游 `qpos / 0.8` 的开合度和 0 到 255 的指令原样成立。厂商原始 URDF / STEP / 尺寸图放数据盘 `vendor/realman/`。
-- **三个几何决定**：RM75 臂展 610 mm（UR5e 850），夹爪竖直向下时底座放哪都够不全 UR5e 的工作区。底座放桌面 (0.15, 0, 0)，四个盒子绕原中心 (0.425, 0) 等比缩到 0.5 倍
-  （0.55 以上上游 IK 在远角不收敛）；中心不动，相机、点云仿射、评测起点抽样沿用 UR5e 的，代价是任务区域只占画幅和归一化范围的约一半（方块的像素大小不变，能出现的范围小了）。`CubeEnv` 写死的两处 UR5e 坐标（variation 默认起止点、task 模式的方块坐标）按同比例缩放（`scale_cube_task`）。
-  点云裁剪框 x 下限 0.10 改 0.21，因为底座前移进了原框。这三个值改了就要重新验收（`scripts/checks/verify_rm75.py` 的 D 节）。
-- **工作区高度**：等比缩放后 z 上限 0.185 m，可达性扫图证实这就是物理上限：夹爪竖直向下时腕心比夹点高 29 cm，在整个 x、y 盒子里全覆盖的最高高度是 0.19 m，0.24 m 起碰关节限位，0.34 m 以上到不了（底座垫高 10 cm 可到约 0.29 m）。专家脚本写死的抬举高度（方块上方 0.1 到 0.2 m 加余量）因此被环境压到天花板，约 18% 的步竖直分量被裁，抓放和平移照常，专家成功率 99%；数据里的搬运高度比 UR5e 低，是两边不可直接比的原因之一。
-- **已知差异**：夹爪夹持力按数据表 20 N，`proprio/gripper_contact` 夹住时约 0.42，swm 的 markov oracle（判夹住的阈值 0.5）在这台机器人上会卡住；采集用的 plan oracle 不受影响。
-  夹爪型号若实为睿尔曼自研 RMG24（130 N），只需重做夹爪 XML，接口名不变。工作区缩到 0.5 倍后任务比 UR5e 的小，随机策略成功率约 60（UR5e 数据 43），两张表不能直接比。
-- **验收** `scripts/checks/verify_rm75.py`：臂和夹爪逐项对厂商 URDF（关节限位、质量、惯量、2000 组随机关节角的正运动学、联动、开口、夹持力）、接口对原环境（动作空间、控制周期、info 键、相机、variation）、
-  plan oracle 50 回合的成功率 / 限位 / 自碰撞 / 关节速度，以及数据集的点云统计；`CUDA_VISIBLE_DEVICES= python scripts/checks/verify_rm75.py`，报告写到 `logs/verify_rm75.txt`。
-- **怎么跑** `scripts/run_rm75_pipeline.sh`：点云采集（`scripts/data/config/ogb_rm75_pcd.yaml`）→ 像素采集（`ogb_rm75_pix.yaml`）→ 两个数据集上评随机策略 → 三个训练：
-  官方 2D（`data=ogb_rm75 model=lewm`）、3D 和 4D 各一个 encoder（默认 dexart）→ 逐 epoch 评测（`cube_rm75_{pix,pcd,pcd_agg}.yaml`）。数据集 `cube_rm75_single_expert{,_pcd}.h5`，run 名 `cube_rm75_*`。
-- **动到的旧文件**：`envs/__init__.py` 两条 register；`scripts/data/collect_cube_pcd.py`、`collect_cube_pix.py` 的 env id 改从配置读（默认值不变，官方路径原样；像素版在 RM-75 时用仓库里的 `PCDExpertPolicy`，同一个 oracle 去掉 env id 白名单）；`scripts/eval/auto_eval_checkpoints.sh` 四行 case。
+- **改了什么**：`FrankaManipSpaceEnv` 只覆盖机器人装配、7 关节 home 姿态、DiffIK（微分逆运动学）、编译后的关节/执行器索引和夹爪控制映射；`FrankaCubeEnv` 与 `FrankaCubePCDEnv` 注册为 `swm/OGBCubeFranka-v0` 和 `swm/OGBCubeFrankaPCD-v0`。外部动作仍是 `(5,) = [dx, dy, dz, dyaw, dgripper]`，Panda 的 7 个臂关节由 DiffIK 内部求解；`+1` 表示闭合夹爪，`-1` 表示张开。
+- **模型文件与许可**：`envs/descriptions/franka_emika_panda/` 原样来自 Google DeepMind MuJoCo Menagerie，固定在 commit `8161bba264d7fa7c99ca301e91e7fb44737676ad`。`UPSTREAM_COMMIT`、`SHA256SUMS`、Apache-2.0 `LICENSE` 和仓库根下 `THIRD_PARTY_NOTICES.md` 一并保存。第三方 Panda 模型本身不是本项目贡献。
+- **几何与控制**：底座 `(0,0,0)`，原 OGBench 工作区、相机、点云裁剪框 `[[0.10,-0.50,-0.02],[0.75,0.50,0.60]]` 和归一化中心 `(0.425,0,0.2)` 不变。仿真步长 2 ms，控制周期 50 ms；臂为 7 个 proprio（本体感知）关节，夹爪为两个联动手指、一个控制执行器。
+- **点云契约**：每帧融合 6 个视角，去桌面/目标 marker，5 mm 体素去重后输出 `pcd_xyz (1200,3) float32` 与 `pcd_rgb (1200,3) uint8`。Cube 采样配额为 25%；如果当前视角中可见且去重后的 Cube 点不足，实际占比会低于 25%，不会复制点凑数。
+- **数据契约**：Franka 数据必须重采，不能复用 UR5e 数据。完整集为 10000 episode、2010000 行；关键列是 `action=(N,5)`、`observation=(N,30)`、`qpos=(N,16)`、`qvel=(N,15)`、`control=(N,8)`、`pcd_xyz/pcd_rgb=(N,1200,3)`。采集保持 plan oracle 的自然分布：`action_noise=0.1`、`noise_smoothing=0.5`；失败 episode 只做统计，不人为拼成 5% 标签。
+- **可靠性改动**：`collect_cube_pcd_sharded.py` 增加原子 manifest、分片锁、`.partial.h5`、可恢复采集与发布前校验；`eval.py` 增加可选的“每个 episode 一个起点”诊断和带 seed 的纯随机策略。默认配置仍走原始 valid-row 协议。
+- **验收**：`scripts/checks/verify_franka.py` 检查资源 hash、Panda 身份、5D 动作、夹爪符号、plan-oracle 成功、关节限位和自碰撞；`verify_franka_replay.py` 检查 HDF5 schema、点云数值与逐步动力学重放。已测 50 个源 episode / 100 个子任务为 `95/100` 成功、`100/100` lift、0 次关节限位违规、0 次机器人自碰撞；10-episode smoke 数据逐步 replay 的最大绝对误差为 `0.0`。
+
+运行前显式指定持久化目录和 Python 环境；仓库不包含数据、checkpoint 或完整 Python 环境：
+
+```bash
+cd lewm_pcd
+export STABLEWM_HOME=/path/to/ogbench-franka
+export PYTHON=/path/to/world-model-env/bin/python
+source env_franka.sh
+
+# 最小环境验收；不会启动全量采集、训练或 CEM
+bash scripts/run_franka_smoke.sh
+
+# 500-episode pilot；通过后再采 10000 episode，支持 resume-full
+bash scripts/run_franka_collection.sh pilot
+bash scripts/run_franka_collection.sh full
+
+# FULL_ACCEPTED -> 数据复验 -> MS2 训练 10 epoch -> checkpoint 复验 -> CEM 100 episode
+bash scripts/run_franka_autotrain_cem.sh run
+```
+
+完整链路是 fail-stop（失败即停止）的：采集、训练和 CEM 分阶段落状态文件，不会只根据 PID 判定完成。已存在输出时脚本拒绝覆盖；续跑用 `resume-full` 或 `run_franka_autotrain_cem.sh resume`。Franka 配置分别位于 `scripts/data/config/ogb_franka_{pcd,pix}.yaml`、`config/train/data/ogb_franka{,_pcd}.yaml` 和 `config/eval/cube_franka_{pcd,pix}[_agg].yaml`。
 
 ## 框架基线（PLDM、GCBC）
 
