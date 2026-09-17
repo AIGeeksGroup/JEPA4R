@@ -32,7 +32,7 @@ def run(cfg: DictConfig):
     """Run data collection with point-cloud observations."""
 
     world = swm.World(
-        cfg.get('env_id', 'swm/OGBCubePCD-v0'),  # RM-75 configs set env_id (config/ogb_rm75_pcd.yaml); default = the UR5e env
+        cfg.get('env_id', 'swm/OGBCubePCD-v0'),  # Franka config overrides the default UR5e environment.
         **cfg.world,
         env_type='single',
         ob_type='states',

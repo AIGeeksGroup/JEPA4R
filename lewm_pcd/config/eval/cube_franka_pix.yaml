@@ -1,0 +1,13 @@
+# Original 2D Cube CEM protocol on the Franka Panda environment and dataset.
+defaults:
+  - cube_pix
+  - _self_
+
+world:
+  env_name: swm/OGBCubeFranka-v0
+
+eval:
+  dataset_name: ogbench/cube_franka_single_expert
+
+output:
+  filename: ogb_cube_franka_pix_results.txt

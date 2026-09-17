@@ -1,0 +1,21 @@
+# Original 4D point-cloud Cube CEM protocol on the Franka Panda environment and dataset.
+defaults:
+  - cube_pcd_agg
+  - _self_
+
+world:
+  env_name: swm/OGBCubeFrankaPCD-v0
+  pre_wrappers:
+    - _target_: envs.PointCloudWrapper
+      num_points: 1200
+      cameras: [front_pixels, pcd_front_left, pcd_back_left, pcd_back_right, pcd_front_right, pcd_top]
+      foreground_only: true
+      crop_box: [[0.10, -0.50, -0.02], [0.75, 0.50, 0.60]]
+      voxel_size: 0.005
+      cube_fraction: 0.25
+
+eval:
+  dataset_name: ogbench/cube_franka_single_expert_pcd
+
+output:
+  filename: ogb_cube_franka_pcd_agg_results.txt

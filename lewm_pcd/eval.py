@@ -47,6 +47,38 @@ def get_dataset(cfg, dataset_name):
     )
     return dataset
 
+
+def sample_unique_episode_starts(
+    episode_idx, step_idx, *, num_eval, goal_offset_steps, seed
+):
+    """Select one valid start row from each of ``num_eval`` distinct episodes."""
+    episode_idx = np.asarray(episode_idx).reshape(-1)
+    step_idx = np.asarray(step_idx).reshape(-1)
+    if episode_idx.shape != step_idx.shape:
+        raise ValueError("episode_idx and step_idx must have the same shape")
+
+    candidates = {}
+    for ep_id in np.unique(episode_idx):
+        rows = np.flatnonzero(episode_idx == ep_id)
+        max_start_step = int(step_idx[rows].max()) - int(goal_offset_steps)
+        valid_rows = rows[step_idx[rows] <= max_start_step]
+        if valid_rows.size:
+            candidates[ep_id.item() if hasattr(ep_id, "item") else ep_id] = valid_rows
+
+    if num_eval > len(candidates):
+        raise ValueError(
+            f"Requested {num_eval} evaluations but only {len(candidates)} eligible episodes exist."
+        )
+
+    rng = np.random.default_rng(seed)
+    eligible_episodes = np.asarray(list(candidates))
+    chosen_episodes = rng.choice(eligible_episodes, size=num_eval, replace=False)
+    chosen_rows = np.asarray(
+        [rng.choice(candidates[ep_id.item() if hasattr(ep_id, "item") else ep_id]) for ep_id in chosen_episodes],
+        dtype=np.int64,
+    )
+    return np.sort(chosen_rows)
+
 @hydra.main(version_base=None, config_path="./config/eval", config_name="pusht")
 def run(cfg: DictConfig):
     """Run evaluation of dinowm vs random policy."""
@@ -125,7 +157,7 @@ def run(cfg: DictConfig):
             )
 
     else:
-        policy = swm.policy.RandomPolicy()
+        policy = swm.policy.RandomPolicy(seed=cfg.seed)
 
     results_path = (
         Path(swm.data.utils.get_cache_dir(), cfg.policy).parent
@@ -148,18 +180,32 @@ def run(cfg: DictConfig):
     valid_indices = np.nonzero(valid_mask)[0]
     print(valid_mask.sum(), "valid starting points found for evaluation.")
 
-    g = np.random.default_rng(cfg.seed)
-    random_episode_indices = g.choice(
-        len(valid_indices) - 1, size=cfg.eval.num_eval, replace=False
-    )
-
-    # sort increasingly to avoid issues with HDF5Dataset indexing
-    random_episode_indices = np.sort(valid_indices[random_episode_indices])
-
-    print(random_episode_indices)
+    unique_episodes = bool(cfg.eval.get("unique_episodes", False))
+    if unique_episodes:
+        random_episode_indices = sample_unique_episode_starts(
+            dataset.get_col_data(col_name),
+            dataset.get_col_data("step_idx"),
+            num_eval=cfg.eval.num_eval,
+            goal_offset_steps=cfg.eval.goal_offset_steps,
+            seed=cfg.seed,
+        )
+        sampling_mode = "unique_training_source_episodes"
+    else:
+        # Preserve the original evaluation protocol exactly for comparability.
+        g = np.random.default_rng(cfg.seed)
+        random_episode_indices = g.choice(
+            len(valid_indices) - 1, size=cfg.eval.num_eval, replace=False
+        )
+        random_episode_indices = np.sort(valid_indices[random_episode_indices])
+        sampling_mode = "original_valid_rows"
 
     eval_episodes = dataset.get_row_data(random_episode_indices)[col_name]
     eval_start_idx = dataset.get_row_data(random_episode_indices)["step_idx"]
+
+    print(f"evaluation sampling mode: {sampling_mode}")
+    print(f"selected row indices: {random_episode_indices.tolist()}")
+    print(f"selected episode ids: {eval_episodes.tolist()}")
+    print(f"selected start steps: {eval_start_idx.tolist()}")
 
     if len(eval_episodes) < cfg.eval.num_eval:
         raise ValueError("Not enough episodes with sufficient length for evaluation.")

@@ -1,0 +1,7 @@
+# Original OGBench PCD preprocessing on newly collected Franka demonstrations.
+defaults:
+  - ogb_pcd
+  - _self_
+
+dataset:
+  name: ogbench/cube_franka_single_expert_pcd.h5

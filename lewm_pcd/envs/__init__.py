@@ -9,14 +9,14 @@ register(
     entry_point='envs.cube_pcd_env:CubePCDEnv',
 )
 
-# RealMan RM75-B + EG2-4C2 instead of UR5e + 2F-85 (envs/cube_rm75_env.py): pixel and point-cloud variants
+# Franka Emika Panda with OGBench's original 5-D task-space action.
 register(
-    id='swm/OGBCubeRM75-v0',
-    entry_point='envs.cube_rm75_env:RM75CubeEnv',
+    id='swm/OGBCubeFranka-v0',
+    entry_point='envs.cube_franka_env:FrankaCubeEnv',
 )
 register(
-    id='swm/OGBCubeRM75PCD-v0',
-    entry_point='envs.cube_rm75_env:RM75CubePCDEnv',
+    id='swm/OGBCubeFrankaPCD-v0',
+    entry_point='envs.cube_franka_env:FrankaCubePCDEnv',
 )
 
 __all__ = ['PointCloudWrapper', 'PCDExpertPolicy', 'PCDWorldModelPolicy', 'PointCloudScaler', 'WindowedWorldModelPolicy']

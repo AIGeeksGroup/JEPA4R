@@ -33,15 +33,8 @@ eval_one() {  # run epoch
   case "$r" in
     pldm_*)    script="$P/third_party/stable-worldmodel/scripts/plan/eval_wm.py"; cfgname=cube; devargs=""; extra="solver.n_steps=10";;   # framework baselines, framework eval scripts untouched
     gcbc_*|gciql_*|gcivl_*) script="$P/third_party/stable-worldmodel/scripts/plan/eval_ff.py"; cfgname=cube; devargs="";;
-    *rm75*sonata*)  log "no RM-75 eval config for Sonata runs ($r): not evaluated"; printf 'x\nx\nx\n' >> "$OUT/auto/${tag}.attempts"; return;;   # would silently get the wrong affine
-    *rm75*pix_agg*) cfgname=cube_rm75_pix_agg.yaml;;   # RM-75 arm (envs/cube_rm75_env.py): same protocols on the RM-75 env + dataset; before the UR5e cases
-    *rm75*pix*)     cfgname=cube_rm75_pix.yaml;;
-    *rm75*agg*)     cfgname=cube_rm75_pcd_agg.yaml;;
-    *rm75*)         cfgname=cube_rm75_pcd.yaml;;
     *pix_agg*) cfgname=cube_pix_agg.yaml;;   # 4D pixel: history_len 3 + goal window 3 on the official pixel protocol
     *pix*)     cfgname=cube_pix.yaml;;       # pixel baseline: the official cube.yaml + device/video knobs
-    *agg*sonata*) cfgname=cube_pcd_agg_sonata.yaml;;   # 4D point cloud, Sonata encoder (identity affine); before *agg*
-    *sonata*)     cfgname=cube_pcd_sonata.yaml;;       # 3D point cloud, Sonata encoder (identity affine)
     *agg*)     cfgname=cube_pcd_agg.yaml;;   # 4D point cloud
   esac
   if [ "${GPU_ONLY:-0}" = 1 ]; then while [ "$(gpu_free_mb)" -lt "$GPU_MIN_FREE_MB" ]; do sleep 15; done; fi   # GPU_ONLY=1: never fall back to CPU, wait for VRAM (several loops can share the GPU)

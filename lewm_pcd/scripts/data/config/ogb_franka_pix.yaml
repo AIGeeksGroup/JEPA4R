@@ -1,0 +1,7 @@
+# Original OGBench pixel collection protocol on the Franka Panda adapter.
+defaults:
+  - ogb_pix
+  - _self_
+
+env_id: swm/OGBCubeFranka-v0
+dataset_name: ogbench/cube_franka_single_expert.h5

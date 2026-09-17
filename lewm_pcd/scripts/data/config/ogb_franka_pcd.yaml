@@ -1,0 +1,10 @@
+# Original OGBench PCD collection protocol on Franka; crop and sampling stay aligned with the UR5e baseline.
+defaults:
+  - ogb_pcd
+  - _self_
+
+env_id: swm/OGBCubeFrankaPCD-v0
+dataset_name: ogbench/cube_franka_single_expert_pcd.h5
+
+pcd:
+  crop_box: [[0.10, -0.50, -0.02], [0.75, 0.50, 0.60]]

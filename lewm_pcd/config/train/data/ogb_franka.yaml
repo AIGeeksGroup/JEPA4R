@@ -1,0 +1,7 @@
+# Original OGBench pixel training data contract on newly collected Franka demonstrations.
+defaults:
+  - ogb
+  - _self_
+
+dataset:
+  name: ogbench/cube_franka_single_expert.h5

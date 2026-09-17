@@ -55,9 +55,9 @@ class GzipHDF5Writer(HDF5Writer):
 @hydra.main(version_base=None, config_path='./config', config_name='ogb_pix')
 def run(cfg: DictConfig):
     """Run the official pixel data collection (HDF5 output)."""
-    env_id = cfg.get('env_id', 'swm/OGBCube-v0')  # RM-75 configs set env_id (config/ogb_rm75_pix.yaml); default = the official env
+    env_id = cfg.get('env_id', 'swm/OGBCube-v0')  # Franka config overrides the official environment.
     if env_id != 'swm/OGBCube-v0':
-        import envs  # noqa: F401  registers the repo's env ids (RM-75); the official env needs nothing from the repo
+        import envs  # noqa: F401  registers the repo's Franka environment; the official env needs nothing from the repo
     world = swm.World(
         env_id,
         **cfg.world,
@@ -79,7 +79,7 @@ def run(cfg: DictConfig):
         world_seed = int(cfg.world_seed)
     if env_id == 'swm/OGBCube-v0':
         world.set_policy(ExpertPolicy(policy_type='plan_oracle'))
-    else:  # swm's ExpertPolicy whitelists env ids; the RM-75 env uses the repo's copy without the whitelist (same oracle)
+    else:  # swm's ExpertPolicy whitelists env ids; Franka uses the repo's copy of the same oracle.
         from envs import PCDExpertPolicy
 
         world.set_policy(PCDExpertPolicy(policy_type='plan_oracle'))
