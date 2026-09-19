@@ -1,0 +1,42 @@
+# 3D reconstruction from a frozen world model: the per-frame latent1 -> point cloud / 3D Gaussians.
+#   python train_recon.py ckpt=<run>/weights_epoch_N.pt data=ogb_pcd|ogb_pix_pcd decoder=point|gaussian subdir=<name> output_model_name=<name>
+# Any 2D / 3D / 4D checkpoint works: only jepa.JEPA.encode is used, and only the decoder is trained.
+defaults:
+  - _self_
+  - launcher: local
+  - data: ogb_pcd
+  - decoder: point
+
+ckpt: ???                       # relative to $STABLEWM_HOME/checkpoints, e.g. cube_pcd_dexart/weights_epoch_10.pt
+output_model_name: recon        # saved under $STABLEWM_HOME/checkpoints/recon/<output_model_name>/
+subdir: ${hydra:job.id}
+
+# what the encoder reads. null = as the checkpoint was trained (observation columns and preprocessor of its run's config.yaml)
+input_keys: null
+input_preprocessor: null
+
+num_workers: 6
+train_split: 0.9
+seed: 3072
+embed_dim: 192
+num_points: 1200                # points per target cloud
+
+trainer:
+  max_epochs: 4
+  devices: auto
+  accelerator: gpu
+  precision: bf16
+  gradient_clip_val: 1.0
+
+loader:
+  batch_size: 192               # frames
+  num_workers: ${num_workers}
+  persistent_workers: True
+  prefetch_factor: 3
+  pin_memory: True
+
+optimizer:
+  type: AdamW
+  lr: 3e-4
+  weight_decay: 1e-4
+  betas: [0.9, 0.95]

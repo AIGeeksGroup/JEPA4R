@@ -1,0 +1,14 @@
+# Gaussian version: a mixture of num_gauss anisotropic 3D Gaussians fitted to the point cloud by maximum likelihood
+_target_: recon.decoders.GaussianDecoder
+latent_dim: ${embed_dim}
+num_gauss: 1024
+color: true               # false: targets without colour
+min_scale: 0.003          # bounds of each standard deviation, in metres; min_scale sets the thickness of surface sheets
+max_scale: 0.03
+target_scale: ${data.target_preprocessor.scale}
+color_weight: 0.1
+spread_weight: 1.0
+dim: 512
+hidden: 1024
+depth: 3
+query_dim: 128

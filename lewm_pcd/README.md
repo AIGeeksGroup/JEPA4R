@@ -63,10 +63,11 @@
 lewm_pcd/
 ├── jepa.py module.py utils.py train.py eval.py   ← 来自 le-wm@8edfeb3，改动见各节
 ├── jepa_agg.py aggregators/   4D 模型（时间聚合）
+├── train_recon.py recon/      3D 重建：冻结的世界模型 → 单帧 latent → 点云 / 3D 高斯（见「3D 重建」一节）
 ├── encoders/                  可插拔 encoder：vit（像素基线）、ms2、dexart、ppt、sonata_cls、pointnet（参考）
 ├── envs/                      点云环境、包装器、专家策略、评测策略
-├── config/{train,eval}/       训练 / 评测配置（launcher/local.yaml 里加了 hydra 输出目录）
-├── scripts/data|train|eval|checks/   采集 / 训练 / 评测 / 检查脚本；scripts/baselines/ 是框架基线补丁的记录；scripts/run_baselines.sh 跑基线
+├── config/{train,eval,recon}/ 训练 / 评测 / 重建配置（launcher/local.yaml 里加了 hydra 输出目录）
+├── scripts/data|train|eval|recon|checks/   采集 / 训练 / 评测 / 重建 / 检查脚本；scripts/baselines/ 是框架基线补丁的记录；scripts/run_baselines.sh 跑基线
 ├── third_party/stable-worldmodel/   固定在 6f1e499 的本地 clone（不进 git）
 ├── env.sh                     环境变量，跑任何脚本前先 source
 ├── TMP/                       杂物，不进 git
@@ -89,8 +90,9 @@ lewm_pcd/
 |---|---|---|
 | 数据集 | `datasets/ogbench/cube_single_expert_pcd.h5`（点云）、`cube_single_expert.h5`（像素） | 采集脚本（`swm.World.collect`） |
 | 模型 | `checkpoints/<run>/`：`config.yaml`、`weights_epoch_N.pt`、`<run>_weights.ckpt` | `train.py` 的 `SaveCkptCallback` |
+| 重建解码器 | `checkpoints/recon/<run>/`：`config.yaml`（含所用世界模型 checkpoint）、`config.json`（解码器）、`weights_epoch_N.pt`（只有解码器） | `train_recon.py` |
 | Lightning 运行目录（含 last.ckpt） | `checkpoints/_spt_cache/`（`SPT_CACHE_DIR`） | stable-pretraining |
-| 训练 / 评测 / 采集日志 | `logs/train/`、`logs/eval/`、`logs/collect/` | hydra、各脚本 |
+| 训练 / 评测 / 采集 / 重建日志 | `logs/train/`、`logs/eval/`、`logs/collect/`、`logs/recon/` | hydra、各脚本 |
 
 ## 数据采集
 
@@ -190,6 +192,41 @@ checkpoint 的 config 记录了 `chunk_points`，评测用同一值；ManiSkill 
 训练优先：同一时刻只跑一个评测且 `nice -n 10`；显存不足时整套评测在 CPU 上跑（约 40 分钟，GPU 约 3 分钟）；`GPU_ONLY=1` 时不落 CPU，等显存够再评；
 内存守护只看 cgroup 的 anon 内存（`memory.current` 里有可回收的页缓存），超限杀掉评测稍后重试，失败同样重试，最多 3 次。门槛都是环境变量，默认值是本机参数。
 结果：`logs/eval/success_rates_cem10.csv`（run, epoch, success_rate, 秒数, 渲染后端, 时间），完整日志在 `logs/eval/auto/`。
+
+## 3D 重建（`train_recon.py`、`recon/`）
+
+指定一个世界模型 checkpoint 和训练数据，冻结整个世界模型，只训练一个解码器：单帧 latent `(B, 192)` → 这一帧的 3D 几何。与 `train.py` 并列的独立模块，不改动任何已有文件。
+
+- **对所有 checkpoint 通用**：2D（`jepa.JEPA` + ViT）、3D（`jepa.JEPA` + 点云 encoder）、4D（`jepa_agg.AggJEPA`）共用同一个 `JEPA.encode`，它给出的 `emb` 就是逐帧的 latent1；
+  重建只用 latent1，4D 模型的 latent2 不参与。`recon/model.py` 的 `FrozenLatent` 只调用这一个接口，观测键从模型上读；它始终处于 eval 且不带梯度（Lightning 调 `train()` 也不变），
+  投影头的 BatchNorm 统计量不会被改动。
+- **encoder 的输入照 checkpoint 训练时的样子来**：观测列和预处理器从该 run 的 `config.yaml` 读（像素、点云仿射、Sonata 的恒等仿射都自动对上），`input_keys` / `input_preprocessor` 可覆盖。
+  重建目标的坐标系由 `data.target_preprocessor` 单独给定（工作区中心、缩放），与 encoder 的输入怎么缩放无关。
+- **数据**（`recon/data.py`，一个样本 = 一帧）：点云 checkpoint 的输入和目标是同一个数据集（`data=ogb_pcd`）。像素 checkpoint 需要两个数据集（`data=ogb_pix_pcd`）：像素数据集，加上一份
+  与它逐行对应的点云数据集（同样的回合、同样的步，例如把像素数据集的回合按记录的动作重放并用点云包装器渲染），用 `data.target=` 指定。构造时校验两边的 `ep_len` / `ep_offset` 以及 `align_on` 列（默认 `qpos`）完全相同，
+  不是同一批行就拒绝——现有的 `cube_single_expert.h5` 与 `cube_single_expert_pcd.h5` 是两次独立采集，会被拒绝。
+- **两个解码器**（`recon/decoders/`，共用主干 `SetDecoder`：M 个可学习 query 各自过同一个逐元素 MLP，latent 用 FiLM 调制每一层；契约见 `recon/decoders/__init__.py`，加一个新的 = 一个类 + `config/recon/decoder/` 里一个 yaml）：
+  - `decoder=point`：1200 个 query → xyz（+ rgb）。损失 = Chamfer（点在哪）+ 切片 Wasserstein（每个部位分到多少点）。只用最近邻配对时，多个真实点可以共用一个解码点，解码器没有压力把点数分对；
+    切片 Wasserstein 把两边的 xyz 投影到随机方向、各自排序、按名次一一配对，只用坐标，不用颜色、不用物体标签，点数不同也能算（Bonneel et al. 2015；用于点云重建见 Nguyen et al., ICCV 2021）。`decoder.sw_weight=0` 即只用 Chamfer。
+  - `decoder=gaussian`：1024 个各向异性 3D 高斯（均值、三轴标准差、四元数、混合权重、颜色），对目标点云做最大似然的高斯混合；训练不经过渲染器，权重表示「这个高斯解释了多少点」，不是不透明度。
+    标准差的上下界在配置里以米给出；表面采样点没有厚度，多数高斯最薄的一轴会贴在下界上，即薄片厚度由 `min_scale` 决定。
+  - 颜色在各处都是可选的：目标没有 rgb 时设 `data.target_preprocessor.use_rgb=false` 和 `decoder.out_dim=3`（高斯版 `decoder.color=false`）。两个解码器都提供 `to_points()`（高斯版从混合分布采样），验证时用同一个读数 `nn_cm`（双向最近邻距离，cm）。
+  - 末层投影与所有损失在 float32 下计算（bfloat16 下坐标只有约 1 mm 的分辨率）。
+- **命令**：`bash scripts/recon/run_recon_detached.sh <run>/weights_epoch_N.pt <重建 run 名>`（`DECODER=gaussian` 选高斯版，`DATA=ogb_pix_pcd ... data.target=<配对点云>.h5` 用于像素 checkpoint，
+  RM-75 加 `data.input=ogbench/cube_rm75_single_expert_pcd.h5`）；本地 `python train_recon.py ckpt=... data=... decoder=... subdir=<名> output_model_name=<名>`。
+  默认 batch 192 帧、4 个 epoch、AdamW 3e-4、weight decay 1e-4、bf16，学习率调度与 `train.py` 相同。解码器可用 `swm.wm.utils.load_pretrained('recon/<run>/weights_epoch_N.pt')` 直接加载。
+- **评测与可视化**（`scripts/recon/`，都以一个重建 run 为入口：`--recon <run>[/weights_epoch_N.pt]`，世界模型、输入预处理、目标坐标系从该 run 的 `config.yaml` 读；
+  默认用训练时的数据集，`--input` / `--target` 换成别的轨迹——像素 checkpoint 要同时给像素数据集和与它逐行对应的点云数据集，校验与训练时相同；结果默认写到 `checkpoints/recon/<run>/` 下）：
+  - `eval_frames.py`：单帧重建误差（默认取该 run 的验证帧）。整体双向最近邻距离及其两个方向（多出来的几何 / 漏掉的几何）、离群点比例、切片 Wasserstein（形状和各部位点数）、配对点的颜色误差；
+    按数据集里的位置列取局部区域（`--regions object=privileged_block_0_pos:3 effector=proprio_effector_pos:6`，名字=列:半径 cm）算该区域的漏失误差和点数比；物体位置误差（解码点云读出的物体质心对真实点云读出的质心、对仿真器位置）；
+    每项都附一个「换成别的帧的 latent」的对照。物体靠颜色读出，但颜色不是写死的：先用位置列在真实点云里量出这个物体的颜色，再用它去解码点云里找；没有颜色或颜色不独特时这一项给 NaN / 警告，其余各项只用坐标。
+  - `eval_rollout.py`：自回归（开环）评测。给定前 `--context` 个模型帧（默认等于世界模型的 history size 3，即 env 步 0 / 5 / 10，与训练片段和 4D 的聚合窗口一致），
+    之后每一帧的 latent1 都由模型用自己的预测加记录的动作块推出来（`recon/rollout.py`，单步语义与 `JEPA.rollout` / `AggJEPA.rollout` 相同，检查脚本里验证两者数值一致；动作用世界模型训练集的统计量做 z-score），
+    解码后逐帧与真实点云比较。对照：真实 latent 的解码（解码器自身的下限）、保持最后一个给定帧、换成另一回合的动作。输出逐帧曲线 `rollout.png`、物体俯视轨迹 `object_paths.png`、`rollout.json` / `rollout.csv`
+    （整体、物体 / 末端区域、物体位置的水平与竖直分量、latent 空间的相对距离与余弦）。
+  - `render_episodes.py`：指定回合的视频（真实点云 | 各个重建 run 的解码，斜视 + 俯视；点云版画点，高斯版做高斯泼溅；`--mode recon` 逐帧重建，`--mode openloop` 开环预测）和物体俯视轨迹对比图
+    （仿真器 / 真实点云读出 / 各 run 读出）。可同时给多个 run 并排比较（如点云版与高斯版、3D 与 4D）。渲染器 `recon/render.py` 是纯 torch 的，不依赖仿真器。
+- **检查**：`scripts/checks/test_recon.py`（CPU）：损失的数值性质、两个解码器有无颜色的形状与梯度、按 `train.py` 的方式保存的 2D / 3D / 4D 小模型的加载与冻结、`train_recon.py` 三种组合端到端、不对齐的数据集被拒绝、开环 rollout 与模型自带 rollout 一致、物体读出对任意颜色有效，以及三个评测脚本在 3D / 4D / 2D run 上跑通。
 
 ## 换臂：RealMan RM75-B + 因时 EG2-4C2（`envs/cube_rm75_env.py`）
 

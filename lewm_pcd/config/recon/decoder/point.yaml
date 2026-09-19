@@ -1,0 +1,12 @@
+# point-cloud version: num_points learned queries -> xyz (+ rgb); Chamfer + sliced Wasserstein on xyz
+_target_: recon.decoders.PointDecoder
+latent_dim: ${embed_dim}
+num_points: ${num_points}
+out_dim: 6                # 3: xyz only, for targets without colour
+color_weight: 0.1
+sw_weight: 1.0            # 0: Chamfer alone
+sw_projections: 100
+dim: 512
+hidden: 1024
+depth: 3
+query_dim: 128
