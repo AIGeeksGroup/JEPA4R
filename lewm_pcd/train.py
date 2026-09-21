@@ -44,6 +44,54 @@ def lejepa_forward(self, batch, stage, cfg):
     self.log_dict(losses_dict, on_step=True, sync_dist=True)
     return output
 
+
+def resolve_train_val_datasets(
+    dataset, cfg, *, dataset_kwargs, cache_dir, generator
+):
+    """Use an explicit episode-disjoint holdout when configured.
+
+    Existing configs omit ``data.validation_name`` and retain the original random
+    split behavior.
+    """
+
+    validation_name = cfg.data.get("validation_name")
+    if validation_name:
+        validation = swm.data.load_dataset(
+            validation_name,
+            transform=None,
+            cache_dir=cache_dir,
+            **dataset_kwargs,
+        )
+        return dataset, validation
+    return spt.data.random_split(
+        dataset,
+        lengths=[cfg.train_split, 1 - cfg.train_split],
+        generator=generator,
+    )
+
+
+def make_train_val_loaders(train_set, val_set, cfg):
+    """Build comparable shuffled full-batch train and validation loaders."""
+
+    train_generator = torch.Generator().manual_seed(cfg.seed)
+    val_generator = torch.Generator().manual_seed(cfg.seed)
+    train = torch.utils.data.DataLoader(
+        train_set,
+        **cfg.loader,
+        shuffle=True,
+        drop_last=True,
+        generator=train_generator,
+    )
+    val = torch.utils.data.DataLoader(
+        val_set,
+        **cfg.loader,
+        shuffle=True,
+        drop_last=True,
+        generator=val_generator,
+    )
+    return train, val
+
+
 @hydra.main(version_base=None, config_path="./config/train", config_name="lewm")
 def run(cfg):
     #########################
@@ -68,15 +116,19 @@ def run(cfg):
         cfg.model.action_encoder.input_dim = cfg.data.dataset.frameskip * dataset.get_dim("action")
 
     transform = spt.data.transforms.Compose(*transforms)
-    dataset.transform = transform
-
     rnd_gen = torch.Generator().manual_seed(cfg.seed)
-    train_set, val_set = spt.data.random_split(
-        dataset, lengths=[cfg.train_split, 1 - cfg.train_split], generator=rnd_gen
+    train_set, val_set = resolve_train_val_datasets(
+        dataset,
+        cfg,
+        dataset_kwargs=dataset_cfg,
+        cache_dir=cache_dir,
+        generator=rnd_gen,
     )
+    dataset.transform = transform
+    if cfg.data.get("validation_name"):
+        val_set.transform = transform
 
-    train = torch.utils.data.DataLoader(train_set, **cfg.loader,shuffle=True, drop_last=True, generator=rnd_gen)
-    val = torch.utils.data.DataLoader(val_set, **cfg.loader, shuffle=False, drop_last=False)
+    train, val = make_train_val_loaders(train_set, val_set, cfg)
     
     ##############################
     ##       model / optim      ##

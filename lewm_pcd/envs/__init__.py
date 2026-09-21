@@ -2,6 +2,7 @@ from gymnasium.envs.registration import register
 
 from .eval_policy import PCDWorldModelPolicy, PointCloudScaler, WindowedWorldModelPolicy
 from .expert_policy import PCDExpertPolicy
+from .fixed_task_expert_policy import FixedTaskCubePlanPolicy
 from .pcd_wrapper import PointCloudWrapper
 
 register(
@@ -19,4 +20,4 @@ register(
     entry_point='envs.cube_rm75_env:RM75CubePCDEnv',
 )
 
-__all__ = ['PointCloudWrapper', 'PCDExpertPolicy', 'PCDWorldModelPolicy', 'PointCloudScaler', 'WindowedWorldModelPolicy']
+__all__ = ['PointCloudWrapper', 'PCDExpertPolicy', 'FixedTaskCubePlanPolicy', 'PCDWorldModelPolicy', 'PointCloudScaler', 'WindowedWorldModelPolicy']
