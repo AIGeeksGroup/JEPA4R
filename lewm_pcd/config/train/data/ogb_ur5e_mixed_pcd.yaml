@@ -1,0 +1,23 @@
+dataset:
+  name: ${oc.env:UR5E_MIXED_TRAIN_DATA}
+  num_steps: ${eval:'${num_preds} + ${history_size}'}
+  frameskip: 5
+  # Only these fields are common across 1cube and 2cube.  The point-cloud JEPA
+  # does not consume observation/qpos/qvel, whose widths differ by cube count.
+  keys_to_load:
+    - pcd_xyz
+    - pcd_rgb
+    - action
+  keys_to_cache:
+    - action
+
+validation_name: ${oc.env:UR5E_MIXED_VALIDATION_DATA}
+
+preprocessor:
+  _target_: utils.get_pcd_preprocessor
+  source_xyz: pcd_xyz
+  source_rgb: pcd_rgb
+  target: pcd
+  center: [0.425, 0.0, 0.2]
+  scale: 4.0
+  use_rgb: true

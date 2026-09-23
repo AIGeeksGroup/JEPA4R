@@ -1,3 +1,5 @@
+import h5py
+import numpy as np
 import pytest
 import torch
 from torch import nn
@@ -5,11 +7,45 @@ from torch import nn
 from scripts.checks.check_ur5e_holdout_checkpoint import (
     LatentStatistics,
     batch_norm_statistics,
+    checkpoint_dataset_keys,
     checkpoint_filename,
     episode_diversity,
     fixed_full_batches,
     weighted_mean,
 )
+
+
+def _write_checkpoint_dataset(path, observation_dim=None):
+    with h5py.File(path, "w") as h5:
+        h5.create_dataset("pcd_xyz", data=np.zeros((2, 4, 3), dtype=np.float32))
+        h5.create_dataset("pcd_rgb", data=np.zeros((2, 4, 3), dtype=np.uint8))
+        h5.create_dataset("action", data=np.zeros((2, 5), dtype=np.float32))
+        if observation_dim is not None:
+            h5.create_dataset(
+                "observation", data=np.zeros((2, observation_dim), dtype=np.float32)
+            )
+
+
+def test_checkpoint_dataset_keys_allow_mixed_vds_without_observation(tmp_path):
+    train = tmp_path / "train.h5"
+    holdout = tmp_path / "holdout.h5"
+    _write_checkpoint_dataset(train)
+    _write_checkpoint_dataset(holdout)
+
+    assert checkpoint_dataset_keys(train, holdout) == [
+        "pcd_xyz",
+        "pcd_rgb",
+        "action",
+    ]
+
+
+def test_checkpoint_dataset_keys_keep_compatible_legacy_observation(tmp_path):
+    train = tmp_path / "train.h5"
+    holdout = tmp_path / "holdout.h5"
+    _write_checkpoint_dataset(train, observation_dim=37)
+    _write_checkpoint_dataset(holdout, observation_dim=37)
+
+    assert checkpoint_dataset_keys(train, holdout)[-1] == "observation"
 
 
 def test_checkpoint_filename():

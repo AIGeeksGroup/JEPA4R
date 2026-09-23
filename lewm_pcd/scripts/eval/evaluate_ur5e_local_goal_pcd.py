@@ -24,6 +24,7 @@ from scripts.eval.evaluate_ur5e_fixed_pcd import (
     DEFAULT_RUNTIME,
     file_sha256,
     fit_action_scaler,
+    load_external_checkpoint,
     load_task_model,
     make_cem_kwargs,
     make_state_callables,
@@ -202,6 +203,9 @@ def parse_args():
     parser.add_argument("--task", required=True, choices=TASK_SLUGS)
     parser.add_argument("--policy", choices=("cem", "random"), default="cem")
     parser.add_argument("--runtime", type=Path, default=DEFAULT_RUNTIME)
+    parser.add_argument("--checkpoint", type=Path)
+    parser.add_argument("--scaler-train", type=Path)
+    parser.add_argument("--dataset-path", type=Path)
     parser.add_argument("--source", choices=("train", "holdout"), default="train")
     parser.add_argument("--count", type=int, default=50)
     parser.add_argument("--goal-offset", type=int, default=25)
@@ -219,7 +223,11 @@ def main() -> None:
     args = parse_args()
     task = next(task for task in TASKS if task.slug == args.task)
     runtime = args.runtime.resolve()
-    dataset_path = runtime / "full" / task.slug / f"{args.source}.h5"
+    dataset_path = (
+        args.dataset_path.resolve()
+        if args.dataset_path is not None
+        else runtime / "full" / task.slug / f"{args.source}.h5"
+    )
     if not dataset_path.is_file():
         raise FileNotFoundError(dataset_path)
     specs = sample_local_goal_specs(
@@ -236,9 +244,17 @@ def main() -> None:
     if args.policy == "cem" and not torch.cuda.is_available():
         raise RuntimeError("CUDA is required for this CEM protocol")
 
+    external_source = args.checkpoint is not None or args.scaler_train is not None
+    if external_source and (args.checkpoint is None or args.scaler_train is None):
+        raise ValueError("--checkpoint and --scaler-train must be provided together")
     os.environ.setdefault("STABLEWM_HOME", str(runtime))
     if args.policy == "cem":
-        model, checkpoint, train_path = load_task_model(runtime, task)
+        if external_source:
+            model, checkpoint, train_path = load_external_checkpoint(
+                args.checkpoint, args.scaler_train
+            )
+        else:
+            model, checkpoint, train_path = load_task_model(runtime, task)
         scaler = fit_action_scaler(train_path)
         base_seed = args.cem_seed
     else:
@@ -258,7 +274,11 @@ def main() -> None:
         "task": task.slug,
         "dataset": str(dataset_path),
         "dataset_bytes": dataset_path.stat().st_size,
-        "protocol": CEM_PROTOCOL if args.policy == "cem" else RANDOM_PROTOCOL,
+        "protocol": (
+            "ur5e-mixed-fixed-pcd-local-goal-cem-v1"
+            if args.policy == "cem" and external_source
+            else CEM_PROTOCOL if args.policy == "cem" else RANDOM_PROTOCOL
+        ),
         "policy": args.policy,
         "source": args.source,
         "selection": selection,

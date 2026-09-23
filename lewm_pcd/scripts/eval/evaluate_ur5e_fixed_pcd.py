@@ -140,6 +140,33 @@ def load_task_model(runtime: Path, task):
     return model, checkpoint, train_path
 
 
+def validate_external_checkpoint_source(
+    checkpoint: Path, train_path: Path
+) -> tuple[Path, Path]:
+    checkpoint, train_path = Path(checkpoint).resolve(), Path(train_path).resolve()
+    for path in (checkpoint, train_path):
+        if not path.is_file():
+            raise FileNotFoundError(path)
+    config = OmegaConf.load(checkpoint.parent / "config.yaml")
+    if config.model.encoder._target_ != "encoders.DexArtPointNet":
+        raise ValueError("checkpoint is not the DexArt baseline")
+    pre = OmegaConf.to_container(config.data.preprocessor, resolve=True)
+    for key, value in {"center": [0.425, 0.0, 0.2], "scale": 4.0, "use_rgb": True}.items():
+        if pre[key] != value:
+            raise ValueError(f"checkpoint PCD preprocessor mismatch: {key}")
+    if Path(config.data.dataset.name).resolve() != train_path:
+        raise ValueError("checkpoint training dataset does not match action scaler source")
+    return checkpoint, train_path
+
+
+def load_external_checkpoint(checkpoint: Path, train_path: Path):
+    checkpoint, train_path = validate_external_checkpoint_source(checkpoint, train_path)
+    model = swm.wm.utils.load_pretrained(str(checkpoint)).to("cuda").eval()
+    model.requires_grad_(False)
+    model.interpolate_pos_encoding = True
+    return model, checkpoint, train_path
+
+
 def fit_action_scaler(train_path: Path) -> StandardScaler:
     with h5py.File(train_path, "r") as h5:
         actions = h5["action"][:]
@@ -218,6 +245,8 @@ def parse_args():
     parser.add_argument("--task", required=True, choices=TASK_SLUGS)
     parser.add_argument("--episodes", type=int, default=1)
     parser.add_argument("--runtime", type=Path, default=DEFAULT_RUNTIME)
+    parser.add_argument("--checkpoint", type=Path)
+    parser.add_argument("--scaler-train", type=Path)
     parser.add_argument("--output", type=Path)
     parser.add_argument("--seed", type=int, default=42000)
     return parser.parse_args()
@@ -234,7 +263,15 @@ def main() -> None:
     if not torch.cuda.is_available():
         raise RuntimeError("CUDA is required for this CEM protocol")
     os.environ.setdefault("STABLEWM_HOME", str(runtime))
-    model, checkpoint, train_path = load_task_model(runtime, task)
+    external_source = args.checkpoint is not None or args.scaler_train is not None
+    if external_source and (args.checkpoint is None or args.scaler_train is None):
+        raise ValueError("--checkpoint and --scaler-train must be provided together")
+    if external_source:
+        model, checkpoint, train_path = load_external_checkpoint(
+            args.checkpoint, args.scaler_train
+        )
+    else:
+        model, checkpoint, train_path = load_task_model(runtime, task)
     scaler = fit_action_scaler(train_path)
     dataset = swm.data.HDF5Dataset(path=holdout_path, keys_to_load=EVAL_KEYS)
     output = args.output or runtime / "cem_dexart_100" / task.slug
@@ -242,7 +279,10 @@ def main() -> None:
     identity = {"task": task.slug, "checkpoint": str(checkpoint),
                 "checkpoint_sha256": file_sha256(checkpoint),
                 "holdout": str(holdout_path), "holdout_bytes": holdout_path.stat().st_size,
-                "protocol": PROTOCOL, "base_seed": args.seed}
+                "protocol": (
+                    "ur5e-mixed-fixed-dexart-pcd-cem300-top30-iter10-h5-b5-v1"
+                    if external_source else PROTOCOL
+                ), "base_seed": args.seed}
     records = []
     for spec in specs[:args.episodes]:
         record_path = output / f"episode_{spec.episode_index:03d}.json"
@@ -260,10 +300,10 @@ def main() -> None:
         atomic_json(record_path, record)
         records.append(record)
         atomic_json(output / "summary.json", {"task": task.slug, "requested": args.episodes,
-                                             **summarize_records(records), "protocol": PROTOCOL})
+                                             **summarize_records(records), "protocol": identity["protocol"]})
         print(json.dumps(record, ensure_ascii=False), flush=True)
     atomic_json(output / "summary.json", {"task": task.slug, "requested": args.episodes,
-                                         **summarize_records(records), "protocol": PROTOCOL})
+                                         **summarize_records(records), "protocol": identity["protocol"]})
 
 
 if __name__ == "__main__":

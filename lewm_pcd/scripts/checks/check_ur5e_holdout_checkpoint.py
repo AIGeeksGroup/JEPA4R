@@ -15,6 +15,7 @@ if str(ROOT) not in sys.path:
 
 import stable_pretraining as spt
 import stable_worldmodel as swm
+import h5py
 import torch
 
 from module import SIGReg
@@ -25,6 +26,25 @@ def checkpoint_filename(epoch: int) -> str:
     if epoch < 1:
         raise ValueError("epoch must be positive")
     return f"weights_epoch_{epoch}.pt"
+
+
+def checkpoint_dataset_keys(train_path: Path, holdout_path: Path) -> list[str]:
+    """Return model inputs shared by train/holdout, retaining legacy observation when compatible."""
+
+    required = ["pcd_xyz", "pcd_rgb", "action"]
+    with h5py.File(train_path, "r") as train, h5py.File(holdout_path, "r") as holdout:
+        for key in required:
+            if key not in train or key not in holdout:
+                raise ValueError(f"missing required checkpoint input: {key}")
+            if train[key].shape[1:] != holdout[key].shape[1:]:
+                raise ValueError(f"incompatible checkpoint input shape: {key}")
+        if (
+            "observation" in train
+            and "observation" in holdout
+            and train["observation"].shape[1:] == holdout["observation"].shape[1:]
+        ):
+            required.append("observation")
+    return required
 
 
 def weighted_mean(values):
@@ -200,19 +220,26 @@ def main():
     if not checkpoint_path.is_file():
         raise FileNotFoundError(checkpoint_path)
 
+    dataset_keys = checkpoint_dataset_keys(args.train_dataset, args.holdout_dataset)
     dataset_kwargs = {
         "frameskip": 5,
         "num_steps": 4,
-        "keys_to_load": ["pcd_xyz", "pcd_rgb", "action", "observation"],
-        "keys_to_cache": ["action", "observation"],
+        "keys_to_load": dataset_keys,
+        "keys_to_cache": [
+            key for key in dataset_keys if key in {"action", "observation"}
+        ],
     }
     train_dataset = swm.data.HDF5Dataset(path=args.train_dataset, **dataset_kwargs)
     holdout = swm.data.HDF5Dataset(path=args.holdout_dataset, **dataset_kwargs)
-    transform = spt.data.transforms.Compose(
+    transforms = [
         PointCloudPreprocessor(),
         get_column_normalizer(train_dataset, "action", "action"),
-        get_column_normalizer(train_dataset, "observation", "observation"),
-    )
+    ]
+    if "observation" in dataset_keys:
+        transforms.append(
+            get_column_normalizer(train_dataset, "observation", "observation")
+        )
+    transform = spt.data.transforms.Compose(*transforms)
     holdout.transform = transform
     batches = fixed_full_batches(len(holdout), args.batch_size, args.seed)
     if args.max_batches:
@@ -278,6 +305,7 @@ def main():
         "checkpoint_sha256": sha256_file(checkpoint_path),
         "train_dataset": str(args.train_dataset.resolve()),
         "holdout_dataset": str(args.holdout_dataset.resolve()),
+        "dataset_keys": dataset_keys,
         "device": str(device),
         "batches": len(losses),
         "examples": examples,

@@ -1,6 +1,7 @@
 """Configuration and persistence tests for fixed-task UR5e CEM."""
 
 import json
+import sys
 
 import pytest
 
@@ -78,3 +79,22 @@ def test_queue_contains_exactly_nine_canonical_tasks():
 
     assert TASK_SLUGS == tuple(task.slug for task in TASKS)
     assert len(TASK_SLUGS) == 9
+
+
+def test_fixed_cem_cli_accepts_mixed_checkpoint_for_stack(tmp_path, monkeypatch):
+    from scripts.eval.evaluate_ur5e_fixed_pcd import parse_args
+
+    checkpoint = tmp_path / "weights_epoch_2.pt"
+    train = tmp_path / "train.h5"
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "evaluate", "--task", "cube_double_task5_stack",
+            "--checkpoint", str(checkpoint),
+            "--scaler-train", str(train),
+        ],
+    )
+    args = parse_args()
+    assert args.checkpoint == checkpoint
+    assert args.scaler_train == train

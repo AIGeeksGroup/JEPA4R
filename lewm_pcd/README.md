@@ -49,6 +49,23 @@
 
 **结论边界**：较可信的当前结果是非平凡局部目标上的 CEM `50%` 对随机动作 `16%`，说明模型和规划器具有超过随机动作的控制信号。它不是完整 episode 的终局成功率，也不是独立 holdout 泛化结果；窗口来自训练集专家轨迹，且普通 50-window 集合中有 26 个窗口在执行动作前已经成功。
 
+### UR5e 混合 1cube + 2cube：跨场景 `local25` 测试
+
+本次只训练**一个** DexArtPointNet 点云世界模型，机器人统一为 UR5e + Robotiq 2F-85。训练集以 VDS（虚拟 HDF5 数据集）组合 9900 条 1cube 专家 episode 与 10000 条 2cube Task-1 `single_pnp` episode（其中 9900 条专家成功、100 条随机失败），共 19900 条；验证集另含 1cube 与 2cube Task-1 各 100 条。实际用于下表的是 **epoch 2** 的 checkpoint；运行目录名中的 `10ep` 是原定上限，训练已按要求在 epoch 2 停止。checkpoint SHA-256：`e885973cd92abd202a7933372b8a27074234098eb83bb5481398493c46ff2b71`，重载检查为 `PASS`。没有把 stack 或 3cube 数据加入训练。
+
+四项测试都从独立专家数据恢复 UR5e 状态，随机抽取 50 个相隔 25 帧的窗口，以后一个状态为局部目标，最多执行 50 步。每行的随机策略与 CEM 使用**同一批窗口**；`非平凡`只抽取至少一个方块起终点位移大于 4 cm 的窗口，与`全部`是另一次抽样，不是其子集。CEM：300 候选、top 30、10 次迭代、规划长度 5、每 5 步重规划、action block 5。
+
+| 测试任务（均为 UR5e） | 全部窗口：CEM / 随机 | 起点已达标 | 非平凡窗口：CEM / 随机 |
+|---|---:|---:|---:|
+| 1cube，单方块任务 | 38/50 / 25/50 | 21/50 | **31/50 / 8/50** |
+| 2cube Task-1 `single_pnp`，两块中只搬一块 | 35/50 / 25/50 | 20/50 | **24/50 / 7/50** |
+| 2cube Task-5 `stack`，堆叠 | 32/50 / 25/50 | 22/50 | **16/50 / 9/50** |
+| 3cube Task-1 `single_pnp`，三块中只搬一块 | 32/50 / 24/50 | 20/50 | **23/50 / 6/50** |
+
+对应结果目录（均在 920-vGPU）：`/autodl-fs/data/lewm/ogbench-ur5e-mixed-1cube-2cube-pcd-v2/cem_epoch2_local25/`、`stack_task5_epoch2_local25_v1/`、`triple_task1_epoch2_local25_v1/`，各自有 `results.json`、逐窗口记录和日志。2cube stack 还单独做了 50 条**完整任务** episode 的评测：CEM `0/50`，随机 `0/50`（`stack_task5_epoch2_fulltask_v1/results.json`）。因此 local25 只支持“短程局部目标上优于随机”的判断，**不能称为完整 PnP、堆叠或三方块任务成功率**；3cube Task-1 只搬运其中一个方块，也不是三块都搬运。
+
+代码入口：`scripts/data/build_mixed_ur5e_cube_pcd_vds.py` 构建混合数据，`scripts/checks/check_mixed_ur5e_cube_pcd.py` 验证数据契约，`scripts/train/run_ur5e_mixed_cube_training.sh` 训练，`scripts/eval/run_ur5e_mixed_epoch2_cem.sh` 评测 1cube / 2cube Task-1，`scripts/eval/evaluate_ur5e_local_goal_pcd.py` 以 `--task cube_double_task5_stack` 或 `--task cube_triple_task1_single_pnp`、`--source holdout --goal-offset 25 --eval-budget 50 --count 50 --sample-seed 42 --cem-iterations 10` 评测 stack / 3cube；非平凡组再加 `--nontrivial-only`。CEM 还需 `--checkpoint` 和 `--scaler-train` 指向本次 epoch-2 权重与混合 `train.h5`，随机组用 `--policy random`。数据和权重不在 Git 分支内。
+
 ### RM75-B + EG2-4C2 上的三个 run（换臂，见「换臂」一节）
 
 同一协议（50 个起点、seed 42、CEM 10 次、GPU/EGL），数据是 RM-75 环境上新采的 10000 集（`cube_rm75_single_expert{,_pcd}.h5`），起点从这份数据里抽。
