@@ -9,7 +9,7 @@ world:
   pre_wrappers:
     - _target_: envs.PointCloudWrapper
       num_points: 1200
-      cameras: [front_pixels, pcd_front_left, pcd_back_left, pcd_back_right, pcd_front_right, pcd_top]
+      cameras: [front_pixels]   # the one depth camera of the collection
       foreground_only: true
       crop_box: [[0.10, -0.50, -0.02], [0.75, 0.50, 0.60]]
       voxel_size: 0.005
