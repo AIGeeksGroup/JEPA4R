@@ -1,0 +1,6 @@
+# @package _global_
+# stage A: all of PAGE-4D frozen, point head included -- only the token generator, the output frame and the rgb branch train
+decoder:
+  train: frozen
+optim_groups:
+  new:  {modules: 'model\.(generator|frame|rgb)', lr: 3.0e-4}

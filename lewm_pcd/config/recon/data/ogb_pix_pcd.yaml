@@ -1,0 +1,9 @@
+# pixel checkpoints (2D, pixel 4D): the encoder reads the pixel dataset, the target comes from a second dataset
+# holding the point clouds of the SAME rows (same ep_len / ep_offset, identical `align_on` columns): the 3D dataset of
+# the same paired collection. Separately collected datasets are different episodes and are refused.
+defaults:
+  - ogb_pcd
+  - _self_
+
+input: ogbench/cube_single_expert.h5         # RM-75: data.input=ogbench/cube_rm75_single_expert.h5
+target: ???                                  # data.target=<point clouds of the input's rows>.h5

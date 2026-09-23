@@ -1,0 +1,16 @@
+# point-cloud checkpoints (3D, 4D): the encoder's input and the reconstruction target are the same dataset
+input: ogbench/cube_single_expert_pcd.h5     # RM-75: data.input=ogbench/cube_rm75_single_expert_pcd.h5
+target: ${data.input}
+target_keys: [pcd_xyz, pcd_rgb]
+align_on: [qpos]                             # only checked when input and target are two datasets
+
+# frame the decoders work in; independent of how the encoder's own input is scaled
+target_preprocessor:
+  _target_: utils.get_pcd_preprocessor
+  source_xyz: pcd_xyz
+  source_rgb: pcd_rgb
+  target: target
+  center: [0.425, 0.0, 0.2]                  # workspace centre (m), as config/train/data/ogb_pcd.yaml
+  scale: 4.0
+  use_rgb: true                              # false: xyz-only target (decoder.out_dim 3 / decoder.color false)
+  drop_sources: false                        # the encoder's preprocessor reads the same columns afterwards

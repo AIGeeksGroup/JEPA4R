@@ -8,6 +8,8 @@ TMP/*
 !TMP/.gitignore
 # 固定到 6f1e499 的本地 clone，见 README
 third_party/stable-worldmodel/
+# 重建头的骨干代码，固定到 c4a39ac 的本地 clone，见 README「3D 重建」
+third_party/PAGE4D/
 *.h5
 *.lance
 *.ckpt

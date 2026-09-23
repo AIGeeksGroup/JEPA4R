@@ -64,11 +64,13 @@
 lewm_pcd/
 ├── jepa.py module.py utils.py train.py eval.py   ← 来自 le-wm@8edfeb3，改动见各节
 ├── jepa_agg.py aggregators/   4D 模型（时间聚合）
+├── train_recon.py recon/      3D 重建：冻结的世界模型 → 单帧 latent → PAGE-4D 初始化的前馈点云重建头（见「3D 重建」一节）
 ├── encoders/                  可插拔 encoder：vit（像素基线）、ms2、dexart、ppt、sonata_cls、pointnet（参考）
 ├── envs/                      点云环境、包装器、专家策略、评测策略
-├── config/{train,eval}/       训练 / 评测配置（launcher/local.yaml 里加了 hydra 输出目录）
-├── scripts/data|train|eval|checks/   采集 / 训练 / 评测 / 检查脚本；scripts/baselines/ 是框架基线补丁的记录；scripts/run_baselines.sh 跑基线
+├── config/{train,eval,recon}/ 训练 / 评测 / 重建配置（launcher/local.yaml 里加了 hydra 输出目录）
+├── scripts/data|train|eval|recon|checks/   采集 / 训练 / 评测 / 重建 / 检查脚本；scripts/baselines/ 是框架基线补丁的记录；scripts/run_baselines.sh 跑基线
 ├── third_party/stable-worldmodel/   固定在 6f1e499 的本地 clone（不进 git）
+├── third_party/PAGE4D/        固定在 c4a39ac 的本地 clone，重建头的骨干代码（不进 git）
 ├── env.sh                     环境变量，跑任何脚本前先 source
 ├── TMP/                       杂物，不进 git
 └── LICENSE-le-wm              le-wm 的 MIT 许可
@@ -83,6 +85,7 @@ lewm_pcd/
 | ogbench | 1.2.0 |
 | mujoco | 3.12.0（EGL 无头渲染） |
 | torch | 2.8.0+cu128，Python 3.10；`pip install -e third_party/stable-worldmodel[train,env]`，`ogbench` |
+| PAGE-4D（重建头） | github.com/kaichen-z/PAGE4D @ c4a39ac（`third_party/PAGE4D`）；权重 `checkpoint_nomask.pt`，Hugging Face 数据集 `zhouk777/PAGE4D` |
 
 `env.sh` 把 `STABLEWM_HOME` 指到数据盘的 `lewm_pcd_data/`，LeWM 和 stable-worldmodel 的路径约定全部落在那里：
 
@@ -90,8 +93,10 @@ lewm_pcd/
 |---|---|---|
 | 数据集 | `datasets/ogbench/cube_single_expert_pcd.h5`（点云）、`cube_single_expert.h5`（像素） | 采集脚本（`swm.World.collect`） |
 | 模型 | `checkpoints/<run>/`：`config.yaml`、`weights_epoch_N.pt`、`<run>_weights.ckpt` | `train.py` 的 `SaveCkptCallback` |
+| 重建解码器 | `checkpoints/recon/<run>/`：`config.yaml`（含所用世界模型 checkpoint）、`config.json`（解码器）、`weights_epoch_N.pt`（只有训练过的参数）；评测和视频在同目录的 `eval_frames/`、`eval_rollout/`、`render/` | `train_recon.py`、`scripts/recon/` |
+| PAGE-4D 权重 | `checkpoints/page4d/checkpoint_nomask.pt` | 手动下载 |
 | Lightning 运行目录（含 last.ckpt） | `checkpoints/_spt_cache/`（`SPT_CACHE_DIR`） | stable-pretraining |
-| 训练 / 评测 / 采集日志 | `logs/train/`、`logs/eval/`、`logs/collect/` | hydra、各脚本 |
+| 训练 / 评测 / 采集 / 重建日志 | `logs/train/`、`logs/eval/`、`logs/collect/`、`logs/recon/` | hydra、各脚本 |
 
 ## 数据采集
 
@@ -197,6 +202,44 @@ checkpoint 的 config 记录了 `chunk_points`，评测用同一值；ManiSkill 
 训练优先：同一时刻只跑一个评测且 `nice -n 10`；显存不足时整套评测在 CPU 上跑（约 40 分钟，GPU 约 3 分钟）；`GPU_ONLY=1` 时不落 CPU，等显存够再评；
 内存守护只看 cgroup 的 anon 内存（`memory.current` 里有可回收的页缓存），超限杀掉评测稍后重试，失败同样重试，最多 3 次。门槛都是环境变量，默认值是本机参数。
 结果：`logs/eval/success_rates_cem10.csv`（run, epoch, success_rate, 秒数, 渲染后端, 时间），完整日志在 `logs/eval/auto/`。
+
+## 3D 重建（`train_recon.py`、`recon/`）
+
+冻结一个世界模型，只训练一个解码器：单帧 latent1 `(B, 192)` → 这一帧的点云。解码器用 PAGE-4D（Zhou 等，arXiv 2510.17568：VGGT 的结构在动态场景上重训）的预训练权重初始化，
+是前馈模型：一帧一次前向，不做逐场景的优化。
+
+- **世界模型**：2D / 3D / 4D checkpoint 都可以。`recon/model.py` 的 `FrozenLatent` 只调用 `JEPA.encode`（`AggJEPA` 原样继承，latent2 不参与），始终处于 eval、不带梯度，
+  Lightning 调 `train()` 也不变；encoder 的输入列和预处理器从该 run 的 `config.yaml` 读（`input_keys` / `input_preprocessor` 可覆盖）。
+- **数据**（`recon/data.py`，一个样本 = 一帧）：点云 checkpoint 的输入和目标是同一个数据集的同一帧（`data=ogb_pcd`，RM-75 加 `data.input=ogbench/cube_rm75_single_expert_pcd.h5`）；
+  像素 checkpoint 用 2D 数据集作输入、同一次配对采集的 3D 数据集作目标（`data=ogb_pix_pcd data.target=<3D 数据集>`），构造时校验两边的 `ep_len` / `ep_offset` / `qpos` 逐行相同，不是同一批行就拒绝。
+  重建目标的坐标系由 `data.target_preprocessor` 单独给定（工作区中心、×4），与 encoder 的输入怎么缩放无关。
+- **解码器**（`recon/decoders/page4d.py` 的 `PAGE4DDecoder`）：latent → 16×16 的 token 网格（新加的 `SetDecoder`：256 个可学习 query，latent 经 FiLM 调制，3 层 MLP，每格 1024 维），
+  从 PAGE-4D「像素 → token」卷积之后的位置接入 → DINOv2 ViT-L（24 层）→ 聚合器（24 × 帧内 / 全局注意力，取第 5 / 12 / 18 / 24 层）→ DPT 点图头 → 224×224 点图 →
+  可学习仿射（PAGE-4D 相机系、尺度归一 → 目标坐标系，初始化为一台看着工作区的虚拟相机）+ 新加的 rgb 分支；点图里取 1200 个像素就是点云（训练时每步随机取，评测时取固定的一组）。
+  PAGE-4D 里只丢掉像素卷积；相机 / 深度 / 跟踪头不建；动态 mask 头在发布的 `checkpoint_nomask.pt` 及其默认日程下推理时不起作用（系数为 0），也去掉，token 通路与 VGGT 相同。
+  损失：Chamfer + 切片 Wasserstein（只用 xyz，决定每个部位分到多少点）+ 配对点的颜色 L1，全部在 float32 下算。
+- **两阶段**（先训新加部分再微调，LP-FT 顺序；`config/recon/exp/`）：
+  - A `exp=frozen`：PAGE-4D 全部冻结（9.4 亿参数，点图头在内），只训生成器、仿射和 rgb 分支（575 万，lr 3e-4）；
+  - B `exp=lora`：新加部分从 A 的权重起步（`decoder.init_from=recon/<A>/weights_epoch_1.pt`），另在 DINOv2 和聚合器全部 72 个注意力块的 q / v 上加 rank-4 LoRA（89 万，lr 1e-5），预训练权重仍冻结。
+  - 每阶段 batch 32 × 14140 步（约 1/4 轮）、AdamW、bf16。checkpoint 只存训练过的参数（约 25 MB），冻结的预训练权重在加载时从 `decoder.weights` 读回。
+- **依赖**：PAGE-4D 代码 clone 到 `third_party/PAGE4D` 并固定在 c4a39ac（不进 git；那个仓库没有 LICENSE，所以不拷进本仓库）；权重 `checkpoint_nomask.pt`（6.8 GB，Hugging Face 数据集 `zhouk777/PAGE4D`）
+  放 `$STABLEWM_HOME/checkpoints/page4d/`，不进 git。`decoder.weights` / `decoder.init_from` 可写绝对路径，或相对 `$STABLEWM_HOME/checkpoints`（与世界模型的 `ckpt` 相同）。
+- **命令**：`bash scripts/recon/run_page4d.sh <世界模型 ckpt> <数据集> <名字> [两阶段共用的 hydra 覆盖]` 依次跑 A（`<名字>_frozen`）、B（`<名字>_lora`）、`eval_frames`、`eval_rollout`、
+  回合 126 / 3 / 50 的逐帧重建和开环预测视频（附 gif），日志在 `logs/recon/`；某阶段的权重已存在就跳过，断了重跑即接着跑。脚本不 source `env.sh`：`STABLEWM_HOME` 默认取 `lewm_pcd/` 旁边的
+  `lewm_pcd_data/`（worktree 里就是 worktree 自己的，要用的数据集和世界模型软链进来），python 用 `$PY`。例：
+  `bash scripts/recon/run_page4d.sh cube_rm75_pcd_dexart/weights_epoch_10.pt ogbench/cube_rm75_single_expert_pcd.h5 rm75_1cam_page4d`。
+  单阶段：`python train_recon.py ckpt=... data.input=... exp=frozen|lora [decoder.init_from=...] subdir=<名> output_model_name=<名>`；解码器可用
+  `swm.wm.utils.load_pretrained('recon/<run>/weights_epoch_1.pt')` 直接加载。
+- **评测与可视化**（`scripts/recon/`，入口都是 `--recon <run>[/weights_epoch_N.pt]`，世界模型、输入预处理、目标坐标系从该 run 的 `config.yaml` 读；`--input` / `--target` 换成别的轨迹，
+  校验与训练时相同；结果默认写到 `checkpoints/recon/<run>/` 下）：
+  - `eval_frames.py`：单帧重建误差（默认该 run 的验证帧）。双向最近邻距离及其两个方向（多出来的几何 / 漏掉的几何）、离群点比例、切片 Wasserstein、配对点的颜色误差；
+    按位置列取物体 / 末端附近区域的漏失误差和点数比；按颜色读出的物体位置误差（颜色先用位置列在真实点云里量出来，不写死）；每项附一个「换成别帧 latent」的对照。
+  - `eval_rollout.py`：开环评测。给定前 3 个模型帧（env 步 0 / 5 / 10），之后每一帧的 latent1 由世界模型用自己的预测加记录的动作推出（`recon/rollout.py`，单步语义与 `JEPA.rollout` /
+    `AggJEPA.rollout` 相同），解码后逐帧与真实点云比较；对照：真实 latent 的解码、保持最后一个给定帧、换成另一回合的动作。输出 `rollout.png`、`object_paths.png`、`rollout.json` / `rollout.csv`。
+  - `render_episodes.py`：指定回合的视频（真实点云 | 解码，斜视 + 俯视；`--mode recon` 逐帧重建，`--mode openloop` 开环预测）和物体俯视轨迹图，可多个 run 并排；`to_gif.sh` 转 gif。
+- **检查**：`scripts/checks/test_recon.py`（CPU）：损失的数值性质、2D / 3D / 4D 世界模型的冻结与开环 rollout 等价、数据的配对与拒绝、物体读出。
+  `scripts/checks/check_page4d.py`（GPU，要权重）：拼接后的前向与 PAGE-4D 自身前向一致、LoRA 初始输出等于冻结解码器、只有该训的参数有梯度且只存它们、`init_from`、
+  合成数据上 A → B 端到端训练和三个评测脚本。
 
 ## 换臂：RealMan RM75-B + 因时 EG2-4C2（`envs/cube_rm75_env.py`）
 

@@ -1,0 +1,10 @@
+# @package _global_
+# stage B: PAGE-4D frozen + rank-4 LoRA on q / v of every attention block (DINOv2 + aggregator), lr 1e-5;
+# the new parts (lr 3e-4) start from the stage-A run (LP-FT order): decoder.init_from=recon/<stage A run>/weights_epoch_1.pt
+decoder:
+  train: lora
+  lora_rank: 4
+  init_from: ???
+optim_groups:
+  new:  {modules: 'model\.(generator|frame|rgb)', lr: 3.0e-4}
+  lora: {modules: 'model\.(dino|aggregator).*\.qkv$', lr: 1.0e-5}

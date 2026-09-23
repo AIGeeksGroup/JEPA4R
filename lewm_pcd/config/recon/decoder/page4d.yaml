@@ -1,0 +1,15 @@
+# PAGE-4D-initialised decoder (recon/decoders/page4d.py): latent -> 16 x 16 token grid -> PAGE-4D's DINOv2 + aggregator + DPT point head
+_target_: recon.decoders.PAGE4DDecoder
+latent_dim: ${embed_dim}
+grid: 16                  # G x G tokens -> a 14G x 14G point map
+num_points: ${num_points}
+weights: page4d/checkpoint_nomask.pt   # under $STABLEWM_HOME/checkpoints (or absolute); not in git, see README
+train: frozen             # set by exp/: frozen (stage A) | lora (stage B)
+lora_rank: 4
+init_from: null           # stage B: recon/<stage A run>/weights_epoch_1.pt
+color: true
+color_weight: 0.1
+sw_weight: 1.0
+sw_projections: 100
+target_center: ${data.target_preprocessor.center}    # PAGE-4D's camera-frame output is mapped into this target frame
+target_scale: ${data.target_preprocessor.scale}
