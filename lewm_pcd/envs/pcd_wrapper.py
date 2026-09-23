@@ -1,4 +1,4 @@
-"""Multi-view point-cloud wrapper for stable-worldmodel's OGBench manipulation envs.
+"""Single depth-camera point-cloud wrapper for stable-worldmodel's OGBench manipulation envs.
 
 Adds two keys to the info dict on every ``reset()`` / ``step()``:
 
@@ -6,18 +6,23 @@ Adds two keys to the info dict on every ``reset()`` / ``step()``:
               ``privileged/*``; the table top is z = 0)
     pcd_rgb : (num_points, 3) uint8
 
+The point cloud comes from exactly one fixed (eye-to-hand) camera, the way a ToF
+RGB-D camera delivers it: its depth image, back-projected. No stereo, no fusion
+of several cameras (a list of more than one camera is rejected). The default
+camera is ``front_pixels``, the camera of the 2D (pixel) dataset, so the 2D and
+3D observations of a step come from the same view.
+
 Pipeline per frame
-    1. For every camera in ``cameras`` the env's own ``mujoco.Renderer`` produces
-       one RGB, one depth and one segmentation image. Depth is back-projected
-       with the camera's fovy and its pose read from ``data.cam_xpos`` /
+    1. The env's own ``mujoco.Renderer`` produces one RGB, one depth and one
+       segmentation image of the camera. Depth is back-projected with the
+       camera's fovy and its pose read from ``data.cam_xpos`` /
        ``data.cam_xmat`` at render time.
     2. Background geoms (anything attached to the world body: floor, table) and
-       the invisible target markers (mocap bodies) are dropped; the foreground
-       points of all cameras are pooled.
+       the invisible target markers (mocap bodies) are dropped.
     3. Points outside ``crop_box`` (robot base / shoulder behind the workspace)
        are dropped.
-    4. Voxel de-duplication at ``voxel_size``: a surface seen by several cameras
-       or by a close camera no longer gets more points than any other surface.
+    4. Voxel de-duplication at ``voxel_size``: a surface close to the camera no
+       longer gets more points than a distant one.
     5. Stratified random draw: ``round(cube_fraction * num_points)`` points from
        cube geoms (fewer if fewer are visible), the rest from the robot; with
        replacement only if the pool is too small. Output order is shuffled.
@@ -35,14 +40,7 @@ import gymnasium as gym
 import mujoco
 import numpy as np
 
-DEFAULT_CAMERAS = (
-    'front_pixels',
-    'pcd_front_left',
-    'pcd_back_left',
-    'pcd_back_right',
-    'pcd_front_right',
-    'pcd_top',
-)
+DEFAULT_CAMERAS = ('front_pixels',)  # the one depth camera: the official pixel camera (eye-to-hand)
 # ManipSpaceEnv._workspace_bounds is x 0.25..0.6, y -0.35..0.35, z 0.02..0.35;
 # widened so the wrist / forearm over the workspace stay in, the base column does not
 DEFAULT_CROP_BOX = ((0.10, -0.50, -0.02), (0.75, 0.50, 0.60))
@@ -63,9 +61,10 @@ class PointCloudWrapper(gym.Wrapper):
         """
         Args:
             env: a ``swm/OGBCubePCD-v0`` env (any wrapper depth). ``swm/OGBCube-v0``
-                works too with ``cameras=('front_pixels', 'side_pixels')``.
+                works too (``front_pixels`` is one of its own cameras).
             num_points: points per frame.
-            cameras: MuJoCo camera names to render and fuse.
+            cameras: exactly one MuJoCo camera name, the depth camera (a
+                sequence, as in the configs).
             foreground_only: drop world-body geoms (floor/table) before sampling.
             crop_box: ``((xmin, ymin, zmin), (xmax, ymax, zmax))`` in world frame,
                 or ``None`` to keep everything.
@@ -78,6 +77,8 @@ class PointCloudWrapper(gym.Wrapper):
         super().__init__(env)
         self.num_points = int(num_points)
         self.cameras = tuple(cameras)
+        if len(self.cameras) != 1:  # one depth camera (ToF-style); multi-camera fusion is not allowed
+            raise ValueError(f'PointCloudWrapper takes exactly one depth camera, got {list(self.cameras)}')
         self.foreground_only = foreground_only
         self.crop_box = None if crop_box is None else np.asarray(
             [list(crop_box[0]), list(crop_box[1])], dtype=np.float64

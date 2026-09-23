@@ -1,4 +1,4 @@
-"""Side-by-side video: RGB render vs. fused point cloud, from each of the 5 cameras."""
+"""Side-by-side video: RGB render vs. point cloud, from each camera a keep_rgb pilot recorded."""
 import sys
 from pathlib import Path
 import h5py, numpy as np
@@ -16,6 +16,7 @@ WS = np.array([[0.25, -0.35], [0.6, 0.35]])  # workspace x/y bounds, drawn at z=
 with h5py.File(H5, 'r') as f:
     off, L = int(f['ep_offset'][EP]), int(f['ep_len'][EP]); sl = slice(off, off + L)
     xyz, rgb = f['pcd_xyz'][sl], f['pcd_rgb'][sl]
+    ORDER = [c for c in ORDER if f'pixels/{c}' in f]  # the cameras the pilot recorded: the one depth camera
     imgs = {c: f[f'pixels/{c}'][sl] for c in ORDER}
     cam = {c: (f[f'cam/{c}/pos'][sl], f[f'cam/{c}/xmat'][sl].reshape(L, 3, 3), float(f[f'cam/{c}/fovy'][off])) for c in ORDER}
     success = f['success'][sl]
