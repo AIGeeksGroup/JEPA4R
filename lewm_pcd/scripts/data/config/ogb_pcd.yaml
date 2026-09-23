@@ -1,5 +1,6 @@
 # Mirrors stable-worldmodel scripts/data/config/ogb.yaml (10 envs x 200 steps,
-# 10000 episodes, seed 3072) plus the point-cloud block.
+# 10000 episodes, seed 3072) plus the point-cloud block. One run writes the 3D
+# dataset (dataset_name) and the 2D dataset (pix_dataset_name) of the same rollouts.
 defaults:
   - _self_
   - launcher/local
@@ -11,7 +12,8 @@ hydra:
     dir: ${oc.env:STABLEWM_HOME,/root/autodl-tmp/lewm234d/lewm_pcd_data}/logs/collect/${now:%Y-%m-%d}/${now:%H-%M-%S}
 
 cache_dir: null
-dataset_name: ogbench/cube_single_expert_pcd.h5
+dataset_name: ogbench/cube_single_expert_pcd.h5       # 3D: point cloud + states / actions
+pix_dataset_name: ogbench/cube_single_expert.h5       # 2D: pixels + the same states / actions, row for row
 
 world:
   num_envs: 10
@@ -20,13 +22,13 @@ world:
 
 pcd:
   num_points: 1200
-  # fused views; front_pixels is the official camera, pcd_* are added by swm/OGBCubePCD-v0
-  cameras: [front_pixels, pcd_front_left, pcd_back_left, pcd_back_right, pcd_front_right, pcd_top]
+  # exactly one depth camera (eye-to-hand, ToF-style; no multi-camera fusion): front_pixels, the 2D dataset's camera
+  cameras: [front_pixels]
   foreground_only: true
   crop_box: [[0.10, -0.50, -0.02], [0.75, 0.50, 0.60]]   # world frame, drops the base column / shoulder
-  voxel_size: 0.005      # m; de-duplicate fused views before sampling (0 = off)
+  voxel_size: 0.005      # m; de-duplicate before sampling (0 = off)
   cube_fraction: 0.25    # guaranteed share of points on the cube (fewer only if fewer are visible)
-  keep_rgb: false   # true only for pilots / visualisation: also stores 224x224 'pixels'
+  keep_rgb: false   # true only for pilots / visualisation: also stores the camera's RGB and pose in the 3D dataset
 
 num_workers: 4
 seed: 3072

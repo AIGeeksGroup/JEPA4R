@@ -7,8 +7,11 @@
 
 Only difference to the official script: on-disk encoding. ``pixels`` is stored in gzip-compressed 5-frame chunks
 (303 GB raw -> ~42 GB, lossless, transparent to every h5py reader, measured 7.3x on real frames) and the other
-columns in 20-row chunks (HEAD's 1-row chunks blow up the reader's chunk index). Trajectories are identical to
-the point-cloud dataset's (same World seeds; bit-exact check in scripts/checks/check_equivalence.py).
+columns in 20-row chunks (HEAD's 1-row chunks blow up the reader's chunk index). 2D only: a separate run does
+not reproduce the trajectories of a point-cloud collection even with the same World seeds (``CubeEnv.reset``
+draws start / goal from OS entropy, the oracle's noise comes from the unseeded global ``np.random``). For a 2D
+dataset whose rows match a 3D one, use the paired collection ``collect_cube_pcd.py``, which writes both from the
+same rollouts with this encoding for the 2D one.
 """
 
 import logging

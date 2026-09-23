@@ -8,7 +8,7 @@ world:
   pre_wrappers:   # = cube_pcd.yaml with the RM-75 crop box (x_min 0.21, past the RM-75 base); must match scripts/data/config/ogb_rm75_pcd.yaml
     - _target_: envs.PointCloudWrapper
       num_points: 1200
-      cameras: [front_pixels, pcd_front_left, pcd_back_left, pcd_back_right, pcd_front_right, pcd_top]
+      cameras: [front_pixels]   # the one depth camera of the collection
       foreground_only: true
       crop_box: [[0.21, -0.50, -0.02], [0.75, 0.50, 0.60]]
       voxel_size: 0.005

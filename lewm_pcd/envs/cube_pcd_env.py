@@ -1,8 +1,9 @@
 """``swm/OGBCube-v0`` plus four extra fixed cameras around the workspace.
 
-The extra cameras exist only so that :class:`envs.PointCloudWrapper` can render
-depth from several viewpoints and fuse them into one point cloud that covers
-the robot and the cubes from all sides. Cameras are non-physical MuJoCo objects:
+The point cloud comes from one depth camera (:class:`envs.PointCloudWrapper`
+takes exactly one; the configs use ``front_pixels``, the camera of the 2D
+dataset). The extra cameras are only alternative viewpoints for that single
+camera; nothing renders them by default. Cameras are non-physical MuJoCo objects:
 ``qpos``/``qvel``, the dynamics, the env RNG and the expert policy are exactly
 those of ``swm/OGBCube-v0``, so trajectories are identical for identical seeds.
 

@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # The three reference runs on the RM75-B + EG2-4C2 (envs/cube_rm75_env.py), on freshly collected data:
-#   1/5 point-cloud collection (config ogb_rm75_pcd: 20 shards at once) -> merge -> rechunk -> eval columns
-#   2/5 pixel collection (config ogb_rm75_pix: 20 shards, 8 at a time -- a pixel shard grows to ~5 GB RAM) -> merge -> eval columns
+#   1/5 paired collection (config ogb_rm75_pcd: one run writes the 3D point-cloud and the 2D pixel dataset of the same
+#       rollouts, one depth camera; 20 shards, 8 at a time -- a shard that renders pixels grows to ~5 GB RAM) -> merge both
+#   2/5 rechunk the 3D dataset -> eval columns on both
 #   3/5 random-policy evaluation on both datasets: sanity check of env + eval path (the 2000-episode trial gave 58-64 %,
 #       the UR5e 10000-episode data 42.8 %); trainings start only if both rates are within 40..75 %
 #   4/5 trainings, all with the repo's own configs: official 2D (data=ogb_rm75 model=lewm), 3D and 4D with one encoder (ENC)
@@ -21,22 +22,17 @@ log() { echo "$(date +%F_%T) $*"; }
 rate() { grep -oE "'success_rate': [0-9.]+" "$1" | tail -1 | grep -oE "[0-9.]+$"; }
 cd "$P"; mkdir -p "$STABLEWM_HOME/logs/eval"
 
-if [ ! -f "$PCD" ]; then
-  log "1/5 point-cloud collection: $SHARDS shards x $((NUM_TRAJ / SHARDS)) episodes -> $PCD"
-  $PY scripts/data/collect_cube_pcd_sharded.py --shards "$SHARDS" --num-traj "$NUM_TRAJ" --seed 3072 \
-      --out ogbench/cube_rm75_single_expert_pcd.raw.h5 -- --config-name=ogb_rm75_pcd || { log "pcd collection FAILED"; exit 1; }
-  log "1/5 rechunk (20 rows per chunk, as the UR5e dataset) + eval columns"
+if [ ! -f "$PCD" ] && [ ! -f "$PIX" ]; then
+  log "1/5 paired collection: $SHARDS shards x $((NUM_TRAJ / SHARDS)) episodes, $MAXPAR_PIX at a time -> $PCD + $PIX"
+  $PY scripts/data/collect_cube_pcd_sharded.py --shards "$SHARDS" --num-traj "$NUM_TRAJ" --seed 3072 --max-parallel "$MAXPAR_PIX" \
+      --out ogbench/cube_rm75_single_expert_pcd.raw.h5 --out-pix ogbench/cube_rm75_single_expert.h5 -- --config-name=ogb_rm75_pcd || { log "collection FAILED"; exit 1; }
+  log "2/5 rechunk the 3D dataset (20 rows per chunk, as the UR5e dataset) + eval columns on both"
   $PY scripts/data/rechunk_h5.py "$DS/cube_rm75_single_expert_pcd.raw.h5" "$PCD" || { log "rechunk FAILED"; exit 1; }
   rm -f "$DS/cube_rm75_single_expert_pcd.raw.h5"
   $PY scripts/data/add_eval_columns.py "$PCD" || { log "add_eval_columns FAILED"; exit 1; }
-else log "1/5 point-cloud dataset exists: $PCD"; fi
-
-if [ ! -f "$PIX" ]; then
-  log "2/5 pixel collection: $SHARDS shards x $((NUM_TRAJ / SHARDS)) episodes, $MAXPAR_PIX at a time -> $PIX"
-  $PY scripts/data/collect_cube_pcd_sharded.py --shards "$SHARDS" --num-traj "$NUM_TRAJ" --seed 3072 --max-parallel "$MAXPAR_PIX" \
-      --script collect_cube_pix.py --out ogbench/cube_rm75_single_expert.h5 -- --config-name=ogb_rm75_pix || { log "pixel collection FAILED"; exit 1; }
   $PY scripts/data/add_eval_columns.py "$PIX" || { log "add_eval_columns FAILED"; exit 1; }
-else log "2/5 pixel dataset exists: $PIX"; fi
+elif [ -f "$PCD" ] && [ -f "$PIX" ]; then log "1-2/5 datasets exist: $PCD, $PIX"
+else log "only one of $PCD / $PIX exists: the 2D and 3D datasets must come from one paired collection; move it away and rerun"; exit 1; fi
 $PY - "$PCD" "$PIX" <<'PY' || { log "dataset check FAILED (missing file or eval columns)"; exit 1; }
 import sys, h5py, os
 for p in sys.argv[1:]:

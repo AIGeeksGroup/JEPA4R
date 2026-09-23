@@ -9,6 +9,7 @@
 （在 `cube_pix.yaml` / `cube_pcd.yaml` 里覆盖，官方文件不动）；每个 run 10 个 epoch 的 checkpoint 全部在 GPU/EGL 上评，
 原始表 `logs/eval/success_rates_cem10.csv`（仓库里的副本 `results_success_rates_cem10.csv`）。
 参照：随机策略在这 50 个起点上实测 5 次为 44 / 48 / 38 / 38 / 46，均值 42.8（论文报 48；随机策略的动作采样不固定种子）；作者发布的 checkpoint 在同一评测集、同一协议下 72 到 74；论文报 74。单个数字的统计误差约 ±6 分（50 个 episode），比较看均值。
+下面两张表的点云行（3D / 4D）用的是之前的采集设定：6 台相机融合的点云，2D、3D 数据集分两次采、轨迹不对应。现在的采集是单台深度相机、2D 与 3D 出自同一次 rollout（见「数据采集」），两者不能直接比。
 
 | run | e1 | e2 | e3 | e4 | e5 | e6 | e7 | e8 | e9 | e10 | 均值 | 最大 | 最终 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -49,13 +50,13 @@
 
 | 环节 | LeWM 原件 | 本仓库 |
 |---|---|---|
-| 采集 | stable-worldmodel `scripts/data/collect_cube.py` + `ExpertPolicy(policy_type='plan_oracle')` | `envs/cube_pcd_env.py`（继承 swm `CubeEnv`，在 info 里加点云）+ `scripts/data/collect_cube_pcd.py`；像素版 `scripts/data/collect_cube_pix.py` |
+| 采集 | stable-worldmodel `scripts/data/collect_cube.py` + `ExpertPolicy(policy_type='plan_oracle')` | `scripts/data/collect_cube_pcd.py`：一次 rollout 同时写 2D（像素）和 3D（点云）两个数据集，逐行对应；点云由 `envs/pcd_wrapper.py` 从同一台相机的深度反投影；纯像素版 `scripts/data/collect_cube_pix.py` |
 | 模型 | `jepa.py`（ViT encoder + ARPredictor）、`module.py` | 同名文件就地改（encoder 可插拔）；4D 在 `jepa_agg.py` |
 | 训练 | `train.py` + `config/train/lewm.yaml` + `config/train/data/ogb.yaml` | `train.py`（预处理器由配置实例化）+ `config/train/data/ogb_pcd.yaml` + `scripts/train/*.sh` |
 | 评测 | `eval.py` + `config/eval/cube.yaml` | `eval.py`（点云策略、4D 的历史与目标窗口）+ `config/eval/cube_{pix,pcd}[_agg].yaml` |
 
 论文那份 cube 数据的采集设定（stable-worldmodel commit 5223ba5 的 `collect_cube.py`）：single、pixels、非 multiview、224×224、`visualize_info=False`、
-`terminate_at_goal=False`、`mode='data_collection'`、plan_oracle、10 个并行 env、每回合 200 步、10000 回合、seed 3072。点云采集沿用同一套，只是多存一列点云；像素采集就是这一套。
+`terminate_at_goal=False`、`mode='data_collection'`、plan_oracle、10 个并行 env、每回合 200 步、10000 回合、seed 3072。配对采集沿用同一套，一次 rollout 把像素写进 2D 数据集、点云写进 3D 数据集；纯像素采集就是这一套。
 
 ## 目录
 
@@ -94,16 +95,22 @@ lewm_pcd/
 
 ## 数据采集
 
-- 环境 `swm/OGBCubePCD-v0` = `swm/OGBCube-v0` + 4 台非物理相机（`envs/cube_pcd_env.py`）。动力学、RNG、专家、seed、步数、回合数与论文采集一致；
+- 环境 `swm/OGBCubePCD-v0` = `swm/OGBCube-v0` + 几台非物理相机（`envs/cube_pcd_env.py`，默认不用，只是单台深度相机的备选视角）。动力学、RNG、专家、seed、步数、回合数与论文采集一致；
   `envs/expert_policy.py` 只放宽了上游 `ExpertPolicy` 对 env id 的白名单。
-- `envs/pcd_wrapper.py` 作为 `pre_wrapper` 每步往 info 加 `pcd_xyz (1200,3) f32` 和 `pcd_rgb (1200,3) u8`，其余列照旧，不渲染、不存 224×224 图像。
-- 每帧流程：6 台相机（官方 `front_pixels` + 4 台 45° 斜向环形 + 1 台俯视）各渲染 RGB / 深度 / 分割 → 反投影到世界系 →
-  去掉桌面、底面和目标 marker → 只保留 `crop_box` 内的点 → 5 mm 体素去重 → 分层随机采样（cube 保底 25%，其余机械臂）。
+- 2D、3D 同时采：`envs/pcd_wrapper.py` 作为 `pre_wrapper` 每步往 info 加 `pcd_xyz (1200,3) f32` 和 `pcd_rgb (1200,3) u8`，同一步里 swm 自己的 `AddPixelsWrapper` 渲染官方的 224×224 `pixels`；
+  `collect_cube_pcd.py` 的 `PairedWriter` 把每个回合写两份：点云以外的列写进 2D 数据集（`pix_dataset_name`，编码同 `collect_cube_pix.py`），`pixels` / `render_time` 以外的列写进 3D 数据集（`dataset_name`）。
+  两边的状态、动作等列出自同一批回合、逐行相同，2D 与 3D 一一对应（训练的切分、评测抽到的 50 个起点也就相同）；分两次采做不到这一点（见下面的等价性）。
+- 3D 只用一台 eye-to-hand 深度相机，就是 2D 用的官方 `front_pixels`：按 ToF 相机处理，直接用深度图，不用双目、不做多相机融合（wrapper 拒绝多于一台相机）。每帧流程：渲染 RGB / 深度 / 分割 → 反投影到世界系 →
+  去掉桌面、底面和目标 marker → 只保留 `crop_box` 内的点 → 5 mm 体素去重 → 分层随机采样（cube 最多 25%，其余机械臂）。单视角 224×224 下（试采几回合）cube 可见面中位约 145 个体素，
+  所以 cube 实占约 12%；机械臂中位 1500 到 3000 个体素，约 5–10% 的帧不够凑满 1200 点，按有放回抽。
 - 等价性：`scripts/checks/check_equivalence.py` 把三处随机源（env 的 `np_random`、变化空间 RNG、oracle 用的全局 `np.random`）钉成相同 seed 后，
   论文配置与点云配置在 4 条回合上 26 列 qpos / qvel / action / info 逐位一致，只有 `pixels` / `render_time` 换成 `pcd_xyz` / `pcd_rgb`。
-  上游 `CubeEnv.reset` 不把 seed 传给底层环境，起点 / 目标由变化空间用系统熵采样，oracle 噪声用未 seed 的全局 `np.random`，所以采集本身不可逐位复现，各分片自然互相独立。
-- 全量采集：`scripts/data/collect_cube_pcd_sharded.py --shards N`（每片 10 env × 200 步；像素版加 `--script collect_cube_pix.py`），
-  结束后用 `merge_h5_shards.py` 合并成一个 h5（上游 `HDF5Writer` 的 append 校验对嵌套列有 bug，合并脚本自己按列追加）。
+  上游 `CubeEnv.reset` 不把 seed 传给底层环境，起点 / 目标由变化空间用系统熵采样，oracle 噪声用未 seed 的全局 `np.random`，所以采集本身不可逐位复现，各分片自然互相独立，
+  分开跑的 2D、3D 两次采集轨迹也不同（所以要上面的配对采集）。
+- 全量采集：`scripts/data/collect_cube_pcd_sharded.py --shards N --out-pix ogbench/cube_single_expert.h5`（每片 10 env × 200 步，同时写 3D、2D 两个分片；
+  每片要渲染像素、内存约 5 GB，用 `--max-parallel` 限制同时跑的片数，`run_collection_detached.sh` 默认 8），结束后两套分片按同一顺序用 `merge_h5_shards.py` 各合并成一个 h5，
+  再抽查两边的 `ep_len` / `ep_offset` / `id` / `qpos` / `action` 逐行一致（上游 `HDF5Writer` 的 append 校验对嵌套列有 bug，合并脚本自己按列追加）。
+  纯像素（官方复现）用 `--script collect_cube_pix.py`，不带 `--out-pix`，它和任何 3D 数据都不对应。
 - 合并后跑一次 `scripts/data/add_eval_columns.py`：官方 `eval.py` 按论文时代的 h5 布局工作（每行 `ep_idx`、扁平列名），新写入器只给 `ep_len/ep_offset` 和嵌套分组，
   脚本加 `ep_idx`、用硬链接把嵌套列扁平化，不复制数据。`scripts/data/rechunk_h5.py` 把每步一个 chunk 的文件按 20 行一个 chunk 重写（否则每个训练进程仅读一次 `action` 列就占 12 GB 内存）。
 - 像素数据集用 `GzipHDF5Writer`（pixels gzip-4、5 帧一个 chunk），值与官方写入器相同。
@@ -209,7 +216,7 @@ checkpoint 的 config 记录了 `chunk_points`，评测用同一值；ManiSkill 
   夹爪型号若实为睿尔曼自研 RMG24（130 N），只需重做夹爪 XML，接口名不变。工作区缩到 0.5 倍后任务比 UR5e 的小，随机策略成功率约 60（UR5e 数据 43），两张表不能直接比。
 - **验收** `scripts/checks/verify_rm75.py`：臂和夹爪逐项对厂商 URDF（关节限位、质量、惯量、2000 组随机关节角的正运动学、联动、开口、夹持力）、接口对原环境（动作空间、控制周期、info 键、相机、variation）、
   plan oracle 50 回合的成功率 / 限位 / 自碰撞 / 关节速度，以及数据集的点云统计；`CUDA_VISIBLE_DEVICES= python scripts/checks/verify_rm75.py`，报告写到 `logs/verify_rm75.txt`。
-- **怎么跑** `scripts/run_rm75_pipeline.sh`：点云采集（`scripts/data/config/ogb_rm75_pcd.yaml`）→ 像素采集（`ogb_rm75_pix.yaml`）→ 两个数据集上评随机策略 → 三个训练：
+- **怎么跑** `scripts/run_rm75_pipeline.sh`：配对采集（`scripts/data/config/ogb_rm75_pcd.yaml`，一次写 3D、2D 两个数据集）→ 两个数据集上评随机策略 → 三个训练：
   官方 2D（`data=ogb_rm75 model=lewm`）、3D 和 4D 各一个 encoder（默认 dexart）→ 逐 epoch 评测（`cube_rm75_{pix,pcd,pcd_agg}.yaml`）。数据集 `cube_rm75_single_expert{,_pcd}.h5`，run 名 `cube_rm75_*`。
 - **动到的旧文件**：`envs/__init__.py` 两条 register；`scripts/data/collect_cube_pcd.py`、`collect_cube_pix.py` 的 env id 改从配置读（默认值不变，官方路径原样；像素版在 RM-75 时用仓库里的 `PCDExpertPolicy`，同一个 oracle 去掉 env id 白名单）；`scripts/eval/auto_eval_checkpoints.sh` 四行 case。
 
