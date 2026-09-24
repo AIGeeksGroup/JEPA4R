@@ -46,6 +46,28 @@
 
 - 点云比像素高 6 到 8 个点，4D 比 3D 高 2 个点，都在单次 ±6 的噪声边缘；三条曲线都在第 3、4 个 epoch 附近最高、之后略降。
 
+### 3D 重建：冻结的世界模型 + PAGE-4D 前馈点云头（见「3D 重建」一节）
+
+RM-75 环境、单台深度相机的数据：训练用 `cube_rm75_single_expert_pcd.h5`（10000 集），测试用单独采集的 `cube_rm75_single_expert_test_pcd.h5`（1000 集，世界模型和重建头都没见过）。
+冻结的世界模型是在训练数据上训的 3D 点云 dexart（第 10 轮）；重建 run `rm75_1cam_page4d_lora`（阶段 A 冻结 → 阶段 B rank-4 LoRA，各 batch 32 × 14140 步），
+训练时的验证双向最近邻 0.54 → 0.49。距离单位 cm，目标是单视角点云；验证帧按帧随机划分，与训练帧来自同一批回合。
+测试集上的读数和视频：`eval_frames.py` / `eval_rollout.py` / `render_episodes.py` 加 `--recon rm75_1cam_page4d_lora --input ogbench/cube_rm75_single_expert_test_pcd.h5`
+（视频取回合 126、3、50），在仓库根目录的 README 里展示，文件在 `assets/recon/rm75_1cam_page4d_lora_test/`。
+
+| 单帧（各取 4096 帧） | 验证帧（训练数据的回合） | 测试集 |
+|---|---|---|
+| 双向最近邻：平均 / 中位 / p90 | 0.49 / 0.48 / 0.56 | 0.50 / 0.48 / 0.57 |
+| 离群点（离所有真实点超过 3 cm） | 0.35 % | 0.39 % |
+| 方块位置（按颜色从重建和真实点云各读一次） | 0.61 | 0.61 |
+
+| 开环（测试集前 64 个回合，给前 3 帧），env 步 | 15 | 100 | 200 |
+|---|---|---|---|
+| 双向最近邻：开环预测 | 0.48 | 0.65 | 0.87 |
+| 双向最近邻：真实 latent 的解码 | 0.48 | 0.48 | 0.49 |
+| 双向最近邻：换成另一回合的动作 | 0.95 | 8.41 | 7.33 |
+| 双向最近邻：停在最后一个给定帧 | 1.21 | 7.96 | 8.32 |
+| 方块位置：开环预测 | 0.56 | 1.04 | 1.47 |
+
 ## 与 LeWM 的对应
 
 | 环节 | LeWM 原件 | 本仓库 |
@@ -65,6 +87,7 @@ lewm_pcd/
 ├── jepa.py module.py utils.py train.py eval.py   ← 来自 le-wm@8edfeb3，改动见各节
 ├── jepa_agg.py aggregators/   4D 模型（时间聚合）
 ├── train_recon.py recon/      3D 重建：冻结的世界模型 → 单帧 latent → PAGE-4D 初始化的前馈点云重建头（见「3D 重建」一节）
+├── assets/recon/              重建效果的 gif 和开环曲线（测试集；仓库根目录的 README 里展示）
 ├── encoders/                  可插拔 encoder：vit（像素基线）、ms2、dexart、ppt、sonata_cls、pointnet（参考）
 ├── envs/                      点云环境、包装器、专家策略、评测策略
 ├── config/{train,eval,recon}/ 训练 / 评测 / 重建配置（launcher/local.yaml 里加了 hydra 输出目录）
