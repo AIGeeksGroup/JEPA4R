@@ -119,7 +119,16 @@ class NativeCubeOraclePolicy:
 
     def act(self, obs, info):
         if self._needs_reset:
-            self.oracle.reset(None, info)
+            task_info = dict(info)
+            target_mocap_id = self.env.unwrapped._cube_target_mocap_ids[0]
+            task_info["privileged/target_block"] = 0
+            task_info["privileged/target_block_pos"] = (
+                self.env.unwrapped._data.mocap_pos[target_mocap_id].copy()
+            )
+            task_info["privileged/target_block_yaw"] = np.array(
+                [0.0], dtype=np.float64
+            )
+            self.oracle.reset(None, task_info)
             self._needs_reset = False
         return np.clip(np.asarray(self.oracle.select_action(None, info)), -1, 1)
 
