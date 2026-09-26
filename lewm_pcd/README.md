@@ -95,7 +95,7 @@ lewm_pcd/
 
 ## 数据采集
 
-- 环境 `swm/OGBCubePCD-v0` = `swm/OGBCube-v0` + 几台非物理相机（`envs/cube_pcd_env.py`，默认不用，只是单台深度相机的备选视角）。动力学、RNG、专家、seed、步数、回合数与论文采集一致；
+- 环境 `swm/OGBCubePCD-v0` = `swm/OGBCube-v0` + official-goal PCD 捕获 hook；不增加辅助相机，只使用 OGBench 原生固定 eye-to-hand `front_pixels`。动力学、RNG、专家、seed、步数、回合数与论文采集一致；
   `envs/expert_policy.py` 只放宽了上游 `ExpertPolicy` 对 env id 的白名单。
 - 2D、3D 同时采：`envs/pcd_wrapper.py` 作为 `pre_wrapper` 每步往 info 加 `pcd_xyz (1200,3) f32` 和 `pcd_rgb (1200,3) u8`，同一步里 swm 自己的 `AddPixelsWrapper` 渲染官方的 224×224 `pixels`；
   `collect_cube_pcd.py` 的 `PairedWriter` 把每个回合写两份：点云以外的列写进 2D 数据集（`pix_dataset_name`，编码同 `collect_cube_pix.py`），`pixels` / `render_time` 以外的列写进 3D 数据集（`dataset_name`）。

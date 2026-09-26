@@ -129,9 +129,25 @@ class PointCloudWrapper(gym.Wrapper):
 
     # ---------------------------------------------------------------- gym API
     def reset(self, *, seed=None, options=None):
-        obs, info = self.env.reset(seed=seed, options=options)
+        options = options or {}
+        unwrapped = self.env.unwrapped
+        unwrapped._pcd_goal_capture = None
+        unwrapped._pcd_goal_capture_callback = self._point_cloud
+        try:
+            obs, info = self.env.reset(seed=seed, options=options)
+        finally:
+            goal = getattr(unwrapped, '_pcd_goal_capture', None)
+            unwrapped._pcd_goal_capture_callback = None
         if seed is not None:
             self._rng = np.random.default_rng(seed)
+        if options.get('render_goal', False):
+            if goal is None:
+                raise RuntimeError(
+                    'render_goal=True requested, but the wrapped environment '
+                    'did not expose an official goal point-cloud capture hook'
+                )
+            info['goal_pcd_xyz'] = goal['pcd_xyz']
+            info['goal_pcd_rgb'] = goal['pcd_rgb']
         info.update(self._point_cloud())
         return obs, info
 

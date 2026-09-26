@@ -4,7 +4,7 @@ defaults:
   - _self_
 
 world:
-  env_name: swm/OGBCubePCD-v0     # OGBCube-v0 + the 4 extra cameras; identical dynamics
+  env_name: swm/OGBCubePCD-v0     # OGBCube-v0 + official-goal PCD capture hook; no extra cameras
   # must match scripts/data/config/ogb_pcd.yaml (the collection settings)
   pre_wrappers:
     - _target_: envs.PointCloudWrapper

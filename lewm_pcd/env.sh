@@ -1,7 +1,7 @@
-# source /root/autodl-tmp/lewm234d/lewm_pcd/env.sh   —— 跑本项目任何脚本前先 source
-export LEWM_PCD_ROOT=/root/autodl-tmp/lewm234d/lewm_pcd
+# source <checkout>/lewm_pcd/env.sh   —— 跑本项目任何脚本前先 source
+export LEWM_PCD_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # LeWM / stable-worldmodel 的缓存根：datasets/  checkpoints/  logs/ 都在这里（数据盘）
-export STABLEWM_HOME=/root/autodl-tmp/lewm234d/lewm_pcd_data
+export STABLEWM_HOME="${STABLEWM_HOME:-${LEWM_PCD_ROOT}/runtime_data}"
 # 可选：train.py 读数据的根，默认就用 STABLEWM_HOME；有本地 SSD 时再覆盖
 # export LOCAL_DATASET_DIR=/path/to/fast/disk
 export MUJOCO_GL=egl

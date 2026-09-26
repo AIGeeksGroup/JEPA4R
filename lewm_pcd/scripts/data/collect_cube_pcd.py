@@ -2,8 +2,8 @@
 
 Same env, same expert (plan oracle), same seeds / episode length / episode count
 as the paper's ``ogbench/cube_single_expert`` collection. The only changes:
-  * the env is ``swm/OGBCubePCD-v0``: OGBCube-v0 plus extra (non-physical) cameras
-    that are not used by default, i.e. the same dynamics;
+  * the env is ``swm/OGBCubePCD-v0``: OGBCube-v0 with an official-goal PCD
+    capture hook and no auxiliary cameras, i.e. the same dynamics;
   * one eye-to-hand camera, ``front_pixels`` (the official pixel camera), observes
     every step as an RGB-D camera: swm's own ``pixels`` (224x224 RGB) is the 2D
     observation, and ``PointCloudWrapper`` (a pre-wrapper) back-projects the same

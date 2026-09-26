@@ -1,4 +1,4 @@
-"""Side-by-side video: RGB render vs. point cloud, from each camera a keep_rgb pilot recorded."""
+"""Side-by-side RGB/PCD video from the fixed eye-to-hand camera."""
 import sys
 from pathlib import Path
 import h5py, numpy as np
@@ -9,8 +9,8 @@ HERE = Path(__file__).resolve().parent
 H5 = Path(sys.argv[1]) if len(sys.argv) > 1 else HERE.parents[1] / 'TMP' / 'datasets/ogbench/pilot_cube_single_expert_pcd.h5'
 EP = int(sys.argv[2]) if len(sys.argv) > 2 else 0
 FPS = 20
-ORDER = ['front_pixels', 'pcd_front_left', 'pcd_back_left', 'pcd_back_right', 'pcd_front_right', 'pcd_top']
-LABEL = {'front_pixels': 'front (official cam)', 'pcd_front_left': 'front-left', 'pcd_back_left': 'back-left', 'pcd_back_right': 'back-right', 'pcd_front_right': 'front-right', 'pcd_top': 'top'}
+ORDER = ['front_pixels']
+LABEL = {'front_pixels': 'fixed eye-to-hand camera'}
 WS = np.array([[0.25, -0.35], [0.6, 0.35]])  # workspace x/y bounds, drawn at z=0
 
 with h5py.File(H5, 'r') as f:

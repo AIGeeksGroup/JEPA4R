@@ -4,6 +4,8 @@ __pycache__/
 outputs/
 multirun/
 wandb/
+runtime_data/
+smoke/
 TMP/*
 !TMP/.gitignore
 # 固定到 6f1e499 的本地 clone，见 README
