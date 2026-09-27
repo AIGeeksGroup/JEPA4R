@@ -1,0 +1,3 @@
+# third-party clones and binaries (not tracked): eai-vc (CortexBench), MuJoCo 2.0 for its mujoco-py; see bench/cortexbench/README.md
+*
+!.gitignore

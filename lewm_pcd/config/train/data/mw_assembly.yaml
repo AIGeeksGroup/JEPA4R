@@ -1,0 +1,7 @@
+# mw_binpick.yaml (pixels) on the MetaWorld assembly three-part dataset (scripts/data/collect_mw.py, config mw_assembly)
+defaults:
+  - mw_binpick
+  - _self_
+
+dataset:
+  name: metaworld/mw_assembly.h5

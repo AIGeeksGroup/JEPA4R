@@ -1,0 +1,8 @@
+# mw_binpick_pcd.yaml (point cloud, the same MetaWorld affine) on the MetaWorld button-press-topdown three-part dataset
+# (same rollouts as mw_button.yaml, row for row)
+defaults:
+  - mw_binpick_pcd
+  - _self_
+
+dataset:
+  name: metaworld/mw_button_pcd.h5

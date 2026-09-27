@@ -1,0 +1,34 @@
+# mw_binpick_pix.yaml (LeWM paper protocol, 2D) on MetaWorld button-press-topdown: start = a row of the held-out test set,
+# goal = the row 25 steps later; success = hand within 4 cm AND the button's top within 3 cm of the goal row's.
+# set_state also restores the box (a fixture the reset moves) and the target that depends on it.
+defaults:
+  - mw_binpick_pix
+  - _self_
+
+world:
+  env_name: envs.metaworld:swm/MWButtonPress-v0
+
+eval:
+  dataset_name: metaworld/mw_button_test
+  callables:
+    - method: set_state
+      args:
+        qpos:
+          value: qpos
+        qvel:
+          value: qvel
+        mocap_pos:
+          value: mocap_pos
+        mocap_quat:
+          value: mocap_quat
+        box_pos:
+          value: box_pos
+    - method: set_goal_state
+      args:
+        hand_pos:
+          value: goal_hand_pos
+        obj_pos:
+          value: goal_obj_pos
+
+output:
+  filename: mw_button_pix_results.txt

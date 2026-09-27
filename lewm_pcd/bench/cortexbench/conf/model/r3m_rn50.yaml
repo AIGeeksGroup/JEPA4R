@@ -1,0 +1,4 @@
+# R3M ResNet-50 (official weights, pytorch.s3 copy), 2048-d avg-pooled features. See ../../baselines.py
+_target_: baselines.load_resnet_baseline
+name: r3m
+checkpoint: ${oc.env:STABLEWM_HOME}/checkpoints/cortexbench_baselines/r3m_50.pt

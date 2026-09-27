@@ -1,0 +1,35 @@
+# mw_binpick_pix.yaml (LeWM paper protocol, 2D) on MetaWorld assembly: start = a row of the held-out test set, goal = the
+# row 25 steps later; success = hand within 4 cm AND the nut's handle site within 3 cm of the goal row's. set_state
+# also restores the peg (a fixture the reset moves; without it a replay of the recorded actions misses the goal row
+# in 9 % of the starts, with it none).
+defaults:
+  - mw_binpick_pix
+  - _self_
+
+world:
+  env_name: envs.metaworld:swm/MWAssembly-v0
+
+eval:
+  dataset_name: metaworld/mw_assembly_test
+  callables:
+    - method: set_state
+      args:
+        qpos:
+          value: qpos
+        qvel:
+          value: qvel
+        mocap_pos:
+          value: mocap_pos
+        mocap_quat:
+          value: mocap_quat
+        peg_pos:
+          value: peg_pos
+    - method: set_goal_state
+      args:
+        hand_pos:
+          value: goal_hand_pos
+        obj_pos:
+          value: goal_obj_pos
+
+output:
+  filename: mw_assembly_pix_results.txt

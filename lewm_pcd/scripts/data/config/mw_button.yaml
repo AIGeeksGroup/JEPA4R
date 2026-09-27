@@ -1,0 +1,14 @@
+# MetaWorld button-press-topdown, three-part plan, paired 2D + 3D (scripts/data/collect_mw.py): mw_binpick.yaml with the
+# button-press env, the box (a fixture the reset re-places) in the point-cloud foreground and the button-press backbone.
+defaults:
+  - mw_binpick
+  - _self_
+
+env_id: swm/MWButtonPress-v0
+dataset_name: metaworld/mw_button_pcd.h5
+
+pcd:
+  fixtures: [box]
+
+policy:
+  _target_: envs.metaworld.ButtonThreePartPolicy
