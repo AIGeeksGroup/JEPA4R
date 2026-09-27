@@ -11,7 +11,7 @@ def test_depth_to_world_uses_mujoco_camera_axes():
 
 
 def test_sample_adroit_pcd_returns_fixed_shape_and_object_share():
-    xyz = np.array([[i / 1000.0, 0.0, 0.1] for i in range(2000)], dtype=np.float32)
+    xyz = np.array([[i / 4000.0, 0.0, 0.1] for i in range(2000)], dtype=np.float32)
     rgb = np.tile(np.array([[10, 20, 30]], dtype=np.uint8), (2000, 1))
     geom_ids = np.zeros(2000, dtype=np.int64)
     geom_ids[500:] = 1
