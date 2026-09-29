@@ -18,9 +18,9 @@ models:
   r3m_rn50:
     family: R3M
     architecture: ResNet-50
-    upstream_url: https://dl.fbaipublicfiles.com/r3m/r3m50.pt
+    upstream_url: https://pytorch.s3.amazonaws.com/models/rl/r3m/r3m_50.pt
     local_path: ${STABLEWM_HOME}/checkpoints/cortexbench_baselines/r3m_50.pt
-    loader: baselines.load_resnet_baseline
+    loader: baselines.load_resnet_baseline; URL used by the official R3M/TorchRL loader
     transform: ImageNet Resize(256)+CenterCrop(224)
   rand_vitb:
     family: control

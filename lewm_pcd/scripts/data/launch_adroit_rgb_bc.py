@@ -205,6 +205,15 @@ def run(args: argparse.Namespace) -> int:
     env = dict(os.environ)
     env.update({"MUJOCO_GL": "egl", "PYOPENGL_PLATFORM": "egl", "OMP_NUM_THREADS": "2", "MKL_NUM_THREADS": "2"})
     repo = Path(__file__).resolve().parents[2]
+    eai = repo / "third_party" / "eai-vc"
+    python_paths = [
+        repo.parent,
+        repo,
+        repo / "bench" / "cortexbench",
+        eai / "vc_models" / "src",
+        eai / "cortexbench" / "mujoco_vc" / "src",
+    ]
+    env["PYTHONPATH"] = os.pathsep.join(str(path) for path in python_paths) + os.pathsep + env.get("PYTHONPATH", "")
     runner = repo / "bench" / "cortexbench" / "run_bc.py"
     for seed in args.seeds:
         seed_dir = root / f"seed_{seed}"
