@@ -20,7 +20,6 @@ CUDA MPS daemon whose pipe directory is DIR (their batch-1 encoder calls then sh
 import argparse
 import json
 import os
-import shutil
 import subprocess
 import sys
 import time
@@ -28,10 +27,14 @@ from pathlib import Path
 
 import yaml
 
+try:
+    from .protocol import build_job_contract, expected_evaluator_epochs, num_demos_for_suite, validate_metric_records
+except ImportError:  # script execution from this directory
+    from protocol import build_job_contract, expected_evaluator_epochs, num_demos_for_suite, validate_metric_records
+
 HERE = Path(__file__).resolve().parent
 HOME = Path(os.environ['STABLEWM_HOME'])
 DATA = HOME / 'datasets' / 'cortexbench'
-RUNS = HOME / 'logs' / 'cortexbench' / 'runs'
 VC_MODELS_CONF = HERE.parents[1] / 'third_party' / 'eai-vc' / 'vc_models' / 'src' / 'vc_models' / 'conf' / 'model'
 SUITES = {  # suite -> (hydra config, demo dir, envs)
     'adroit': ('Adroit_BC_config', 'adroit-expert-v1.0', ['pen-v0', 'relocate-v0']),
@@ -49,7 +52,13 @@ ap.add_argument('--tasks', required=True, help='comma list of suites and/or task
 ap.add_argument('--seeds', default='100,200,300')
 ap.add_argument('--slots', type=int, default=8)
 ap.add_argument('--mps', default=None, help='CUDA_MPS_PIPE_DIRECTORY for new jobs')
+ap.add_argument('--data-root', default=str(DATA), help='root containing unpacked official suite demo directories')
+ap.add_argument('--output-root', default=str(HOME / 'logs' / 'cortexbench' / 'runs'),
+                help='独立运行输出根；旧结果默认保留在原路径')
 args = ap.parse_args()
+
+DATA = Path(args.data_root).resolve()
+RUNS = Path(args.output_root).resolve()
 
 
 def log(*a):
@@ -79,21 +88,52 @@ def evals_of(run):
     return [json.loads(l) for l in m.read_text().splitlines() if '"eval/epoch"' in l] if m.exists() else []
 
 
-def complete(evals):
-    return bool(evals) and evals[-1]['eval/epoch'] >= 99
+def complete(evals, epochs=100, eval_frequency=5):
+    return len(evals) == len(expected_evaluator_epochs(epochs, eval_frequency)) and [
+        int(float(e['eval/epoch'])) for e in evals
+    ] == expected_evaluator_epochs(epochs, eval_frequency)
+
+
+def validate_job(job):
+    """Validate a finished official run before creating its DONE marker."""
+    metrics_path = job['run'] / 'metrics.jsonl'
+    records = [json.loads(line) for line in metrics_path.read_text().splitlines() if line.strip()]
+    summary = validate_metric_records(records, job['epochs'], job['eval_frequency'])
+    config_path = job['run'] / '.hydra' / 'config.yaml'
+    if not config_path.exists():
+        raise ValueError(f'missing resolved config: {config_path}')
+    resolved = yaml.safe_load(config_path.read_text())
+    for key, expected in {
+        'env': job['env'], 'num_demos': job['num_demos'], 'epochs': job['epochs'],
+        'eval_frequency': job['eval_frequency'], 'eval_num_traj': job['eval_num_traj'],
+    }.items():
+        if resolved.get(key) != expected:
+            raise ValueError(f'resolved config mismatch for {key}: {resolved.get(key)!r} != {expected!r}')
+    policies = list(job['run'].rglob('best_policy.pickle'))
+    if len(policies) != 1:
+        raise ValueError(f'expected one best_policy.pickle, found {len(policies)}')
+    return summary, resolved, policies[0]
 
 
 def write_done(job, evals, minutes):
-    last = evals[-1]
+    summary, resolved, policy = validate_job(job)
     (job['run'] / 'DONE').write_text(json.dumps({**{k: job[k] for k in ('model', 'suite', 'env', 'seed')},
+                                                  'num_demos': job['num_demos'],
+                                                  'epochs': job['epochs'],
+                                                  'eval_frequency': job['eval_frequency'],
+                                                  'eval_num_traj': job['eval_num_traj'],
+                                                  'data_dir': str(job['demos']),
+                                                  'result_scope': job['result_scope'],
+                                                  'policy_path': str(policy),
+                                                  'resolved_config': resolved,
                                                   'minutes': round(minutes, 1),
-                                                  'highest_success': last['eval/highest_success'],
-                                                  'highest_score': last['eval/highest_score'],
-                                                  'final_success': last['eval/success'],
-                                                  'final_score': last['eval/score_mean'],
-                                                  'n_evals': len(evals)}))
+                                                  'highest_success': summary['best_success'],
+                                                  'highest_score': summary['best_score'],
+                                                  'final_success': summary['final_success'],
+                                                  'final_score': summary['final_score'],
+                                                  'n_evals': summary['eval_records']}))
     log('done', job['model'], job['env'], job['seed'], f'{minutes:.1f} min',
-        'highest_success', last['eval/highest_success'], 'highest_score', round(last['eval/highest_score'], 1))
+        'highest_success', summary['best_success'], 'highest_score', round(summary['best_score'], 1))
 
 
 def live_run_bc():
@@ -149,8 +189,9 @@ for seed in map(int, args.seeds.split(',')):  # seed by seed: every finished see
             demos = DATA / (demos + '-pcd' if pcd[model] else demos)
             if not (demos / f'{env}.pickle').exists():
                 sys.exit(f'missing demos {demos / env}.pickle (unpack_suite.py / convert_demos_3d.py)')
-            jobs.append(dict(model=model, suite=suite, env=env, seed=seed, cfg=cfg, demos=demos,
-                             launcher='run_bc3d.py' if pcd[model] else 'run_bc.py', run=RUNS / model / env / f's{seed}'))
+            job = build_job_contract(suite, env, model, seed, str(demos), str(RUNS / model / env / f's{seed}'), pcd[model])
+            job.update(cfg=cfg, launcher='run_bc3d.py' if pcd[model] else 'run_bc.py', run=RUNS / model / env / f's{seed}', demos=demos)
+            jobs.append(job)
 live = live_run_bc()
 running = []  # (job, proc, slots, t0)
 todo = []
@@ -161,9 +202,11 @@ for j in jobs:
         pid = live[str(j['run'])]
         running.append((j, Adopted(pid), DMC_SLOTS if j['suite'] == 'dmc' else 1, proc_start(pid)))
         log('adopted', j['model'], j['env'], j['seed'], 'pid', pid)
-    elif complete(evals_of(j['run'])):  # finished while no grid.py was watching
+    elif complete(evals_of(j['run']), j['epochs'], j['eval_frequency']):  # finished while no grid.py was watching
         m = j['run'] / 'metrics.jsonl'
         write_done(j, evals_of(j['run']), (m.stat().st_mtime - (j['run'] / '.hydra').stat().st_mtime) / 60)
+    elif j['run'].exists() and any(j['run'].iterdir()):
+        sys.exit(f'refusing to overwrite incomplete run: {j["run"]}')
     else:
         todo.append(j)
 log(f'{len(jobs)} jobs, {len(jobs) - len(todo) - len(running)} done already, {len(running)} adopted, {len(todo)} to run, '
@@ -178,20 +221,30 @@ while todo or running:
             continue
         running.remove(item)
         evals = evals_of(job['run'])
-        if proc.returncode == 0 and complete(evals):
-            write_done(job, evals, (time.time() - t0) / 60)
+        if proc.returncode == 0 and complete(evals, job['epochs'], job['eval_frequency']):
+            try:
+                write_done(job, evals, (time.time() - t0) / 60)
+            except (OSError, ValueError, KeyError) as exc:
+                log('FAILED_VALIDATION', job['model'], job['env'], job['seed'], repr(exc))
+                raise SystemExit(1)
         else:
             log('FAILED', job['model'], job['env'], job['seed'], 'exit', proc.returncode, 'see', f"{job['run']}.log")
+            raise SystemExit(1)
     used = sum(s for *_, s, _ in running)
     for job in list(todo):
         slots = DMC_SLOTS if job['suite'] == 'dmc' else 1
         if used + slots > args.slots or (job['suite'] == 'dmc' and time.time() - last_dmc_start < DMC_GAP):
             continue
-        if job['run'].exists():  # an unfinished earlier attempt: start clean (metrics.jsonl is appended to)
-            shutil.rmtree(job['run'])
+        if job['run'].exists() and any(job['run'].iterdir()):
+            raise SystemExit(f'refusing to overwrite existing run: {job["run"]}')
         job['run'].mkdir(parents=True, exist_ok=True)
+        (job['run'] / 'resolved_job.json').write_text(json.dumps(job, indent=2, default=str))
         cmd = ['nice', '-n', '10', sys.executable, str(HERE / job['launcher']), '--config-name', job['cfg'],
                f"env={job['env']}", f"embedding={job['model']}", f"seed={job['seed']}", f"data_dir={job['demos']}/",
+               f"num_demos={job['num_demos']}", f"epochs={job['epochs']}",
+               f"eval_frequency={job['eval_frequency']}", 'save_frequency=10',
+               f"eval_num_traj={job['eval_num_traj']}", 'num_cpu=1',
+               'device=cpu', 'data_parallel=false',
                'wandb.project=local', 'wandb.entity=local', f"hydra.run.dir={job['run']}"]
         out = open(f"{job['run']}.log", 'w')
         proc = subprocess.Popen(cmd, stdout=out, stderr=subprocess.STDOUT, cwd=job['run'], env=env_vars)
