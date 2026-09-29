@@ -29,11 +29,13 @@ flowchart LR
 
 ### 点云可视化
 
-下图是 seed 0 的第 51/100 帧几何预览，**只用于观察点云采样，不是策略 rollout 成绩**。
+下方 GIF 在 README 中直接播放 seed 0 的 100 帧 RGB 与 XYZRGB 点云采样预览，**仅用于检查几何，不是策略 rollout 成绩**。
 
-![Pen-v0 RGB observation and sampled XYZRGB point cloud](docs/figures/adroit_pen_pcd_preview_frame51.png)
+[![Pen-v0 100-frame RGB and PCD preview](docs/figures/adroit_pen_100_frame_preview.gif)](docs/figures/adroit_pen_100_frame_preview.gif)
 
-[打开 100 帧可旋转 3D 预览](docs/visualizations/adroit_pen_100_frame_preview.html)（拖动旋转、滚轮缩放、播放/拖动时间轴）。
+![Pen-v0 RGB observation and sampled XYZRGB point cloud, frame 51](docs/figures/adroit_pen_pcd_preview_frame51.png)
+
+完整旋转交互版保留在 [`docs/visualizations/adroit_pen_100_frame_preview.html`](docs/visualizations/adroit_pen_100_frame_preview.html)；它约 14 MB，GitHub 网页端可能不提供 HTML 预览。README 内嵌 GIF 可直接浏览全部 100 帧。
 
 ## 下游 BC 成绩
 
