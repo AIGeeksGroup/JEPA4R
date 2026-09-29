@@ -8,6 +8,7 @@ import h5py
 import numpy as np
 
 from .pcd import AdroitPCDConfig, depth_to_world, sample_adroit_pcd
+from .official_policy import OfficialPenPolicy
 
 
 @dataclass(frozen=True)
@@ -163,22 +164,16 @@ def capture_adroit_frame(env, rng, config=AdroitPCDConfig()):
     return rgb.astype(np.uint8), pcd_xyz, pcd_rgb, stats
 
 
-def pen_oracle_action(env, home_qpos: np.ndarray) -> np.ndarray:
-    """Bounded deterministic stabilizer used only for the plumbing smoke.
-
-    It is deliberately not promoted as a task-solving expert controller.
-    """
-    current = np.asarray(env.data.qpos[:24], dtype=np.float64)
-    raw = np.tanh(4.0 * (home_qpos - current)).astype(np.float32)
-    raw[:3] = np.clip(raw[:3] + 0.25 * np.asarray(env.model.body_quat[env.target_obj_bid][:3], dtype=np.float32), -1.0, 1.0)
-    return normalized_action(raw)
+def pen_oracle_action(env, home_qpos, step: int, official_policy: OfficialPenPolicy) -> np.ndarray:
+    del home_qpos
+    return official_policy.action(env, step)
 
 
-def branch_action(plan: EpisodePlan, step: int, rng, env, home_qpos):
+def branch_action(plan: EpisodePlan, step: int, rng, env, home_qpos, official_policy: OfficialPenPolicy):
     random_now = plan.sample_type == 2 or (plan.sample_type == 1 and plan.branch_t <= step < plan.branch_t + plan.branch_len)
     if random_now:
         return normalized_action(rng.uniform(-1.0, 1.0, env.action_space.shape)), True
-    raw = pen_oracle_action(env, home_qpos)
+    raw = pen_oracle_action(env, home_qpos, step, official_policy)
     if plan.noise_std:
         raw = normalized_action(raw + rng.normal(0.0, plan.noise_std, env.action_space.shape))
     return raw, False

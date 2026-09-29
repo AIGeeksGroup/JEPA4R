@@ -65,6 +65,36 @@ class LeWMEmbedding(nn.Module):
         return self.projector(self.encoder(x))
 
 
+def _remap_vit_state_dict_for_runtime(state_dict, target_keys):
+    """Adapt Transformers 5.x ViT names to the legacy 4.x runtime when needed."""
+    if set(state_dict) == set(target_keys):
+        return state_dict
+
+    replacements = (
+        ("vit.layers.", "vit.encoder.layer."),
+        (".attention.q_proj.", ".attention.attention.query."),
+        (".attention.k_proj.", ".attention.attention.key."),
+        (".attention.v_proj.", ".attention.attention.value."),
+        (".attention.o_proj.", ".attention.output.dense."),
+        (".mlp.fc1.", ".intermediate.dense."),
+        (".mlp.fc2.", ".output.dense."),
+    )
+    remapped = {}
+    for key, value in state_dict.items():
+        new_key = key
+        for source, target in replacements:
+            new_key = new_key.replace(source, target)
+        if new_key in remapped:
+            raise RuntimeError(f"duplicate remapped checkpoint key: {new_key}")
+        remapped[new_key] = value
+
+    if set(remapped) != set(target_keys):
+        missing = sorted(set(target_keys) - set(remapped))
+        unexpected = sorted(set(remapped) - set(target_keys))
+        raise RuntimeError(f"checkpoint key mismatch after ViT remap: missing={missing}, unexpected={unexpected}")
+    return remapped
+
+
 def build_lewm_embedding(checkpoint_dir, epoch=10, use_projector=True, random_init=False, seed=0):
     ckdir = Path(checkpoint_dir)
     cfg = json.loads((ckdir / 'config.json').read_text())
@@ -75,7 +105,8 @@ def build_lewm_embedding(checkpoint_dir, epoch=10, use_projector=True, random_in
     projector = instantiate(cfg['projector']) if use_projector else None  # module.MLP (lewm_pcd/module.py)
     if not random_init:
         sd = torch.load(ckdir / f'weights_epoch_{epoch}.pt', map_location='cpu')
-        encoder.load_state_dict({k[len('encoder.'):]: v for k, v in sd.items() if k.startswith('encoder.')})
+        encoder_state = {k[len('encoder.'):]: v for k, v in sd.items() if k.startswith('encoder.')}
+        encoder.load_state_dict(_remap_vit_state_dict_for_runtime(encoder_state, encoder.state_dict()), strict=True)
         if projector is not None:
             projector.load_state_dict({k[len('projector.'):]: v for k, v in sd.items() if k.startswith('projector.')})
     return LeWMEmbedding(encoder, projector).eval()

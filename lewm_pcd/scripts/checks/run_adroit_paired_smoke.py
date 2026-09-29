@@ -33,6 +33,7 @@ from bench.cortexbench.adroit.smoke import (  # noqa: E402
     capture_adroit_frame,
     dump_json,
 )
+from bench.cortexbench.adroit.official_policy import DEFAULT_POLICY_PATH, OfficialPenPolicy
 
 
 def _pen_env():
@@ -90,9 +91,14 @@ def run(args) -> dict:
     pixel_path = args.output_dir / "pen_smoke.h5"
     pcd_path = args.output_dir / "pen_smoke_pcd.h5"
     config = AdroitPCDConfig()
+    official_policy = OfficialPenPolicy.load(args.official_policy)
+    if args.episode_len > official_policy.episode_len:
+        raise ValueError(f"episode_len {args.episode_len} exceeds official policy horizon {official_policy.episode_len}")
     plan_rng = np.random.default_rng(args.seed)
     action_rng = np.random.default_rng(args.seed + 10_000)
     env = _pen_env()
+    if official_policy.action_dim != int(env.action_space.shape[0]):
+        raise ValueError(f"official action dim {official_policy.action_dim} != env action dim {env.action_space.shape[0]}")
     type_counts = np.zeros(3, dtype=np.int64)
     rows = 0
     try:
@@ -113,7 +119,7 @@ def run(args) -> dict:
                 for step in range(args.episode_len):
                     rgb, pcd_xyz, pcd_rgb, _ = capture_adroit_frame(env, action_rng, config)
                     state = env.get_env_state()
-                    action, is_random = branch_action(plan, step, action_rng, env, home_qpos)
+                    action, is_random = branch_action(plan, step, action_rng, env, home_qpos, official_policy)
                     next_obs, reward, done, info = env.step(action)
                     rows_data["pixels"].append(rgb)
                     rows_data["pcd_xyz"].append(pcd_xyz)
@@ -143,6 +149,7 @@ def run(args) -> dict:
     report = {
         "status": "PASS",
         "task": "pen-v0",
+        "official_policy": str(args.official_policy),
         "episodes": args.episodes,
         "rows": rows,
         "episode_len_requested": args.episode_len,
@@ -152,7 +159,7 @@ def run(args) -> dict:
         "seed_end": args.seed + args.episodes - 1,
         "pairing": pairing,
         "replay": replay,
-        "protocol_note": "bounded plumbing smoke; oracle is not a formal Pen expert controller",
+        "protocol_note": "official CortexBench Pen demonstrations selected by target-axis similarity",
     }
     dump_json(args.output_dir / "smoke_report.json", report)
     return report
@@ -165,6 +172,7 @@ def main():
     parser.add_argument("--replay-episodes", type=int, default=3)
     parser.add_argument("--seed", type=int, default=3072)
     parser.add_argument("--output-dir", type=Path, required=True)
+    parser.add_argument("--official-policy", type=Path, default=DEFAULT_POLICY_PATH)
     args = parser.parse_args()
     print(json.dumps(run(args), indent=2))
 

@@ -17,6 +17,8 @@ the max-pool (192-d latent), and widths scaled to match the ViT-tiny encoder's
     large  [64, 64, 128, 128, 256, 256] -> [408, 408, 816, 816, 1632, 1632]
 """
 
+from __future__ import annotations
+
 from collections.abc import Sequence
 
 import torch

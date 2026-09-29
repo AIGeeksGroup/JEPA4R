@@ -6,6 +6,7 @@ from bench.cortexbench.adroit.smoke import (
     draw_episode_plan,
     normalized_action,
 )
+from bench.cortexbench.adroit.official_policy import normalize_official_action, select_demo_for_target_axis
 
 
 def test_draw_episode_plan_is_seed_reproducible_and_bounded():
@@ -45,3 +46,16 @@ def test_paired_writer_split_keeps_visual_columns_separate():
     assert "pcd_xyz" not in pix and "pcd_xyz" in pcd
     assert "pcd_rgb" not in pix and "pcd_rgb" in pcd
     assert np.array_equal(pix["action"], pcd["action"])
+
+
+def test_official_action_is_clipped_to_normalized_contract():
+    raw = np.array([-2.0, -0.25, 0.5, 2.0], dtype=np.float32)
+    action = normalize_official_action(raw)
+    assert action.dtype == np.float32
+    np.testing.assert_array_equal(action, np.array([-1.0, -0.25, 0.5, 1.0], dtype=np.float32))
+
+
+def test_official_demo_selection_uses_target_axis_similarity():
+    demo_axes = np.eye(3, dtype=np.float32)
+    assert select_demo_for_target_axis(np.array([0.99, 0.1, 0.0]), demo_axes) == 0
+    assert select_demo_for_target_axis(np.array([0.0, 0.1, 0.99]), demo_axes) == 2
