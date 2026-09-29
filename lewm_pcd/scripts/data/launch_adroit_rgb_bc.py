@@ -92,6 +92,32 @@ def validate_resolved_config(resolved: dict, expected_demos: int, expected_epoch
         raise ValueError("resolved config proprio contract mismatch")
     if resolved.get("camera") != "vil_camera" or resolved.get("pixel_based") is not True:
         raise ValueError("resolved config RGB camera/pixel contract mismatch")
+    bc = resolved.get("bc_kwargs", {})
+    expected_bc = {
+        "hidden_sizes": "(256, 256, 256)",
+        "nonlinearity": "relu",
+        "loss_type": "MSE",
+        "batch_size": 256,
+        "lr": 1e-3,
+        "dropout": 0,
+    }
+    for key, value in expected_bc.items():
+        actual = bc.get(key)
+        if str(actual) != str(value):
+            raise ValueError(f"resolved config BC mismatch for {key}: {actual!r} != {value!r}")
+
+
+def validate_encoder_output(input_shape, output_shape, dtype, eval_mode, finite, expected_dim):
+    if tuple(input_shape) != (1, 3, 224, 224):
+        raise ValueError(f"input shape mismatch: {input_shape}")
+    if tuple(output_shape) != (1, expected_dim):
+        raise ValueError(f"output shape mismatch: {output_shape}")
+    if dtype != "torch.float32":
+        raise ValueError(f"encoder dtype mismatch: {dtype}")
+    if not eval_mode:
+        raise ValueError("encoder is not in eval mode")
+    if not finite:
+        raise ValueError("encoder output is not finite")
 
 
 def inspect_demo(path: Path, expected_count: int) -> dict:
