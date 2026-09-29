@@ -71,17 +71,27 @@ for m in models:
     res[m] = {}
     for t, vals in runs[m].items():
         vals = sorted(vals, key=lambda v: v[2])
-        res[m][t] = dict(best=round(float(np.mean([v[0] for v in vals])), 1), last=round(float(np.mean([v[1] for v in vals])), 1),
-                         seeds={int(v[2]): round(float(v[0]), 1) for v in vals}, paper=PAPER.get(m, {}).get(t))
+        best_values = [v[0] for v in vals]
+        final_values = [v[1] for v in vals]
+        res[m][t] = dict(
+            best=round(float(np.mean(best_values)), 1),
+            best_std=round(float(np.std(best_values)), 1),
+            last=round(float(np.mean(final_values)), 1),
+            last_std=round(float(np.std(final_values)), 1),
+            seeds={int(v[2]): round(float(v[0]), 1) for v in vals},
+            final_seeds={int(v[2]): round(float(v[1]), 1) for v in vals},
+            paper=PAPER.get(m, {}).get(t),
+        )
 
-lines = ['单个种子的分数 = 20 次评测中的最高值（Adroit / MetaWorld：成功率 %；DMC：回报 / 10），表中是种子均值，'
-         '括号里是各种子；"末轮"= 最后一次评测的种子均值（不做 20 选 1）；"论文"= VC-1 论文表 8。', '']
+lines = ['主指标 Best-of-20 = 每个 seed 的 20 次评测最高值，再跨 seed 求均值 ± 标准差（Adroit / MetaWorld：成功率 %；DMC：回报 / 10）。'
+         'Final = 每个 seed 最后一次评测值，仅作次指标；"论文"= VC-1 论文表 8。', '']
 for t in tasks:
-    lines += [f'### {t}', '', '| 模型 | 种子 | 均值 | 论文 | 末轮 |', '|---|---|---|---|---|']
+    lines += [f'### {t}', '', '| 模型 | Best-of-20 seeds | Best-of-20 mean ± std | 论文 | Final mean ± std |', '|---|---|---:|---:|---:|']
     for m in sorted((m for m in models if t in res[m]), key=lambda m: -res[m][t]['best']):
         r = res[m][t]
-        lines.append(f"| {LABELS.get(m, m)} | {' / '.join(f'{v:g}' for v in r['seeds'].values())} | {r['best']} | "
-                     f"{'—' if r['paper'] is None else r['paper']} | {r['last']} |")
+        best_seeds = ' / '.join(f'{v:g}' for v in r['seeds'].values())
+        lines.append(f"| {LABELS.get(m, m)} | {best_seeds} | {r['best']} ± {r['best_std']} | "
+                     f"{'—' if r['paper'] is None else r['paper']} | {r['last']} ± {r['last_std']} |")
     lines.append('')
 suites = defaultdict(list)
 for env, (suite, short) in TASKS.items():
@@ -94,6 +104,6 @@ for m in models:
 if suite_rows:
     lines += ['### suite 均值（该 suite 每个任务都有结果时）', '', '| 模型 | Adroit | MetaWorld | DMControl |', '|---|---|---|---|'] + suite_rows
 OUT.mkdir(parents=True, exist_ok=True)
-(OUT / 'scores.json').write_text(json.dumps(res, ensure_ascii=False, indent=1))
-(OUT / 'scores.md').write_text('\n'.join(lines) + '\n')
+(OUT / 'scores.json').write_text(json.dumps(res, ensure_ascii=False, indent=1), encoding='utf-8')
+(OUT / 'scores.md').write_text('\n'.join(lines) + '\n', encoding='utf-8')
 print('\n'.join(lines))

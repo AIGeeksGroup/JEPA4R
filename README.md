@@ -39,20 +39,20 @@ flowchart LR
 
 ## 下游 BC 成绩
 
-BC 配置：每个 seed 25 demos、100 epochs、每 5 epochs 评测、每次 25 条轨迹；seeds `100/200/300`。表中“最终”是 epoch 99 的 success，“训练最高”是 20 次评测中的最高 success。均值按三个 seed 等权计算。
+BC 配置：每个 seed 25 demos、100 epochs、每 5 epochs 评测、每次 25 条轨迹；seeds `100/200/300`。**主指标是每个 seed 在 20 次评测中的最高 success，再跨 seed 求均值和标准差**；最后一次 evaluator success 只作为次指标。均值按三个 seed 等权计算。
 
 2D BC 使用官方 RGB demos；PCD BC 则把官方 100 条 Pen demos 按原 action 逐条重放并转换成 PCD，再从中取 25 条训练。10,000 条新采集 paired episodes 用于 LeWM 世界模型训练，不与 BC 的官方 demos 混为同一训练集。
 
-| 轨道 | Seed 100 最终 / 最高 | Seed 200 最终 / 最高 | Seed 300 最终 / 最高 | 最终均值 | 最高均值 |
+| 轨道 | Seed 100 best / final | Seed 200 best / final | Seed 300 best / final | **Best-of-20 均值 ± std** | Final 均值 ± std |
 |---|---:|---:|---:|---:|---:|
-| LeWM 2D RGB | 16% / 28% | 24% / 32% | 28% / 32% | **22.7%** | **30.7%** |
-| LeWM 3D PCD 扩展 | 52% / 68% | 68% / 68% | 60% / 64% | **60.0%** | **66.7%** |
+| LeWM 2D RGB | 28% / 16% | 32% / 24% | 32% / 28% | **30.7% ± 1.9%** | 22.7% ± 5.0% |
+| LeWM 3D PCD 扩展 | 68% / 52% | 68% / 68% | 64% / 60% | **66.7% ± 1.9%** | 60.0% ± 6.5% |
 
 所有 6 个 seed 均完成 100 loss records、20 evaluator records，进程退出码为 0，policy pickle 可加载。PCD retry seed 300 的输出在 `/autodl-fs/data/lewm/cortexbench-adroit-pen-pcd-bc-retry-seed300-run2-20260929-v1`。上述 PCD 结果单独标记，不并入 RGB 榜单。
 
 ## 公开结果对照
 
-下图的论文行取自 BC-IB 论文 Table 6 的 **Reorient-Pen** 任务；论文对 Adroit 使用 100 demos、3 seeds。我们本次使用 25 demos，因此这张图用于结果定位，**不构成同配置排行榜或严格 apples-to-apples 对比**。PCD 更不是论文的 RGB 输入结果。
+下图的论文行取自 BC-IB 论文 Table 6 的 **Reorient-Pen** 任务；论文对 Adroit 使用 100 demos、3 seeds。我们本次使用 25 demos，因此这张图用于结果定位，**不构成同配置排行榜或严格 apples-to-apples 对比**。本图的本次结果也统一使用 Best-of-20 主指标；PCD 更不是论文的 RGB 输入结果。
 
 ![Published Reorient-Pen baselines and our RGB and PCD results](docs/figures/adroit_pen_success_comparison.png)
 
@@ -70,15 +70,15 @@ BC 配置：每个 seed 25 demos、100 epochs、每 5 epochs 评测、每次 25 
 | VC-1 + IB | 37.33% |
 | Voltron + IB | 38.67% |
 | Voltron | 32.00% |
-| **本次 LeWM 2D RGB，25 demos** | **22.7% 最终均值** |
-| **本次 LeWM 3D PCD 扩展，25 demos** | **60.0% 最终均值** |
+| **本次 LeWM 2D RGB，25 demos** | **30.7% Best-of-20 均值** |
+| **本次 LeWM 3D PCD 扩展，25 demos** | **66.7% Best-of-20 均值** |
 
 原始 VC-1 CortexBench 论文的 `Adroit` 列是 **Reorient-Pen 与 Relocate 的 benchmark-level 汇总**，不是 Pen 单任务数值；因此这里用后续论文的 task-wise Reorient-Pen 表作参考，避免把不同粒度的数字混在一起。[BC-IB Table 6](https://raw.githubusercontent.com/mlresearch/v267/main/assets/bai25e/bai25e.pdf) · [原始 CortexBench / VC-1 论文](https://papers.nips.cc/paper_files/paper/2023/file/022ca1bed6b574b962c48a2856eb207b-Paper-Conference.pdf)
 
 ## 结果解释与边界
 
 - 本次验证了从 paired 数据采集、2D/3D LeWM 训练到 BC 评测的完整工程路径；各阶段保留了 state、metrics、配置、退出码和模型产物。
-- 在本次 25-demo 设置下，PCD 扩展的最终均值高于 RGB 轨道；由于视觉模态、checkpoint 和论文 demo 数不同，这只说明本次实验观察到的差异，不能据此断言 PCD 普遍优于 RGB。
+- 在本次 25-demo 设置下，PCD 扩展的 Best-of-20 均值高于 RGB 轨道；由于视觉模态、checkpoint 和论文 demo 数不同，这只说明本次实验观察到的差异，不能据此断言 PCD 普遍优于 RGB。
 - 官方 legacy BC 环境是 CPU-only PyTorch；本次观测到训练进程约 199% CPU、GPU 峰值约 1%、RSS 峰值约 0.9 GiB。未为追求 GPU 利用率改变 MuJoCo 或 evaluator 协议。
 
 ## 主要产物
