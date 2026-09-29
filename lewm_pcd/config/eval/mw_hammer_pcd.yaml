@@ -1,0 +1,24 @@
+# mw_hammer_pix.yaml for the 3D model: the point cloud of the collection (scripts/data/config/mw_hammer.yaml) and the
+# training affine (config/train/data/mw_hammer_pcd.yaml; eval.py checks it).
+defaults:
+  - mw_hammer_pix
+  - _self_
+
+world:
+  pre_wrappers:
+    - _target_: envs.metaworld.MWPointCloudWrapper
+      num_points: 1200
+      voxel_size: 0.005
+      cube_fraction: 0.25
+
+obs: pcd
+pcd_process:
+  center: [0.0, 0.65, 0.2]
+  scale: 4.0
+  use_rgb: true
+
+eval:
+  dataset_name: metaworld/mw_hammer_test_pcd
+
+output:
+  filename: mw_hammer_pcd_results.txt

@@ -1,0 +1,25 @@
+# mw_drawer_pix.yaml for the 3D model: the point cloud of the collection (scripts/data/config/mw_drawer.yaml: the drawer
+# case is foreground) and the training affine (config/train/data/mw_drawer_pcd.yaml; eval.py checks it).
+defaults:
+  - mw_drawer_pix
+  - _self_
+
+world:
+  pre_wrappers:
+    - _target_: envs.metaworld.MWPointCloudWrapper
+      num_points: 1200
+      voxel_size: 0.005
+      cube_fraction: 0.25
+      fixtures: [drawer]
+
+obs: pcd
+pcd_process:
+  center: [0.0, 0.65, 0.2]
+  scale: 4.0
+  use_rgb: true
+
+eval:
+  dataset_name: metaworld/mw_drawer_test_pcd
+
+output:
+  filename: mw_drawer_pcd_results.txt

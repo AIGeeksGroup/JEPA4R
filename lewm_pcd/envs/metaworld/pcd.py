@@ -8,6 +8,10 @@ with a guaranteed object share, shuffle) for the MetaWorld envs. Two things diff
   peg); the rules of the CortexBench 3D demos (bench/cortexbench/pcd_fork.py). Table, bins, walls and the robot
   pedestal are background. The object share (``cube_fraction``) is drawn from the foreground outside the robot:
   the cube in bin-picking, the nut and the peg in assembly.
+* depth, segmentation and the points' colours come from a renderer without multisampling (MWTaskEnv.render(multisample=
+  False)), as the CortexBench 3D demos: with multisampling an edge pixel between two background geoms can decode to a
+  foreground id (a stray point; bin-picking data collected before this had about 3% such points, the other tasks next
+  to none).
 """
 
 from __future__ import annotations
@@ -49,9 +53,9 @@ class MWPointCloudWrapper(PointCloudWrapper):
         u = self.env.unwrapped
         if self._model_ref is not u._model:
             self._setup(u._model)
-        rgb = u.render()
-        depth = u.render(depth=True)
-        seg2 = u.render(segmentation=True)
+        rgb = u.render(multisample=False)
+        depth = u.render(depth=True, multisample=False)
+        seg2 = u.render(segmentation=True, multisample=False)
         seg = np.where(seg2[..., 1] == GEOM, seg2[..., 0], -1).reshape(-1)  # sites render too
         t, R, fovy = u.camera_pose()
 

@@ -1,0 +1,11 @@
+# MetaWorld hammer, three-part plan, paired 2D + 3D (scripts/data/collect_mw.py): mw_binpick.yaml with the hammer env
+# and the hammer backbone. The nail box never moves (background); the hammer and the nail are joints (foreground).
+defaults:
+  - mw_binpick
+  - _self_
+
+env_id: swm/MWHammer-v0
+dataset_name: metaworld/mw_hammer_pcd.h5
+
+policy:
+  _target_: envs.metaworld.HammerThreePartPolicy

@@ -42,6 +42,10 @@ PAPER = {
     'clip_vitb16': dict(bin_picking=68.0),
 }
 LABELS = {
+    'lewm_mw_hammer_pcd': 'LeWM 3D（点云，hammer 全量数据）',
+    'lewm_mw_hammer_pix': 'LeWM 2D（图像，hammer 全量数据）',
+    'lewm_mw_drawer_pcd': 'LeWM 3D（点云，drawer-open 全量数据）',
+    'lewm_mw_drawer_pix': 'LeWM 2D（图像，drawer-open 全量数据）',
     'lewm_mw_button_pcd': 'LeWM 3D（点云，button-press 全量数据）',
     'lewm_mw_button_pix': 'LeWM 2D（图像，button-press 全量数据）',
     'lewm_mw_assembly_pcd': 'LeWM 3D（点云，assembly 全量数据）',

@@ -66,6 +66,7 @@ class MWTaskEnv(gym.Env):
         self._model, self._data = mw.model, mw.data
         self.render_mode = render_mode
         self._renderer = mujoco.Renderer(self._model, height, width)
+        self._renderer_ss = None  # single-sample renderer for the point cloud, made on first use
         mujoco.mj_forward(self._model, self._data)
         self._cam = self._top_cap2()
         self.render()
@@ -98,8 +99,20 @@ class MWTaskEnv(gym.Env):
         cam.elevation = float(np.degrees(np.arcsin(d[2] / dist)))
         return cam
 
-    def render(self, camera=None, depth: bool = False, segmentation: bool = False):
-        r = self._renderer
+    def _single_sample_renderer(self) -> mujoco.Renderer:
+        """A second renderer without multisampling, for the point cloud (depth, segmentation and the points' colours), as
+        the CortexBench 3D demos (bench/cortexbench/pcd_fork.py): with multisampling an edge pixel's id colour is the
+        average of two ids' colours and decodes to an unrelated geom. MuJoCo reads offsamples when a context is made, so
+        it is 0 for this one only; the RGB frames keep CortexBench's multisampling."""
+        if self._renderer_ss is None:
+            q = self._model.vis.quality
+            saved, q.offsamples = q.offsamples, 0
+            self._renderer_ss = mujoco.Renderer(self._model, *self._view[3:])
+            q.offsamples = saved
+        return self._renderer_ss
+
+    def render(self, camera=None, depth: bool = False, segmentation: bool = False, multisample: bool = True):
+        r = self._renderer if multisample else self._single_sample_renderer()
         if depth:
             r.enable_depth_rendering()
         elif segmentation:
@@ -234,6 +247,8 @@ class MWTaskEnv(gym.Env):
 
     def close(self):
         self._renderer.close()
+        if self._renderer_ss is not None:
+            self._renderer_ss.close()
         self._mw.close()
 
 
