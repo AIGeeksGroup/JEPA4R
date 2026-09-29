@@ -212,6 +212,9 @@ def run(args: argparse.Namespace) -> int:
         repo / "bench" / "cortexbench",
         eai / "vc_models" / "src",
         eai / "cortexbench" / "mujoco_vc" / "src",
+        eai / "third_party" / "dmc2gym",
+        eai / "third_party" / "mjrl",
+        eai / "third_party" / "mj_envs",
     ]
     env["PYTHONPATH"] = os.pathsep.join(str(path) for path in python_paths) + os.pathsep + env.get("PYTHONPATH", "")
     runner = repo / "bench" / "cortexbench" / "run_bc.py"
