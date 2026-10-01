@@ -2,6 +2,13 @@
 
 本页记录 JEPA4R 上已完成的 OGBench IL（imitation learning）实验和下游 CEM 诊断。结果按协议分组；double-cube 结果不能写入 single-cube 官方 benchmark 表。
 
+## 核心结论
+
+- **Pretrained WM + BC：50/50 = 100% SR。** 在 double-cube Task-1、legacy six-camera PCD、240 步 native full-episode 协议下，冻结 epoch-10 WM 后训练 BC head，50 条轨迹全部成功。
+- **Random WM 对照：0/50 = 0% SR。** 数据、BC head、训练配置、评测 seeds 和环境完全相同；唯一变量是 WM 随机初始化（seed 3072）。该结果支持 pretrained representation 对控制有效，但目前只是单 seed 消融。
+- **Bounded strong CEM：0/50 = 0% SR。** 使用合法 action box、horizon 5、300 samples、30 iterations 后，50 条轨迹仍全部截断；问题不能简单归因于 action 越界或搜索预算不足。
+- **结果边界：以上都是 double-cube 诊断。** single-cube、front_pixels、200 步的正式 OGBench 线路尚未完成 Expert Gate、PCD Preview Gate、固定任务数据采集和正式 SR。
+
 ## 1. 实验边界
 
 | 项目 | 当前协议 |
