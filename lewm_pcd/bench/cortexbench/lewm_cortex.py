@@ -157,9 +157,11 @@ def _dexart_pointnet_class():
     return mod.DexArtPointNet
 
 
-def load_lewm_pcd(checkpoint_dir: str, epoch: int = 10, center=(0.0, 0.65, 0.2), scale: float = 4.0, use_rgb: bool = True):
+def load_lewm_pcd(checkpoint_dir: str, epoch: int = 10, center=(0.0, 0.65, 0.2), scale: float = 4.0,
+                  use_rgb: bool = True, random_init: bool = False, seed: int = 0):
     """The 3D LeWM's encoder (DexArt PointNet) + projector: one (N, 6) point cloud -> the 192-d LeWM latent.
     center / scale / use_rgb must be the checkpoint's data.preprocessor (checked against its config.yaml if present).
+    random_init uses the checkpoint's architecture with fixed seeded weights, without reading its weights file.
     CortexBench's load_pretrained_model wraps transforms for images (PIL); run_bc3d.py replaces that wrapper for
     models whose metadata says input 'pcd'."""
     ckdir = Path(checkpoint_dir)
@@ -172,13 +174,26 @@ def load_lewm_pcd(checkpoint_dir: str, epoch: int = 10, center=(0.0, 0.65, 0.2),
             and bool(pre['use_rgb']) == bool(use_rgb), f'preprocessor mismatch: checkpoint {pre}'
     encoder = _dexart_pointnet_class()(**{k: v for k, v in cfg['encoder'].items() if k != '_target_'})
     projector = instantiate(cfg['projector'])  # module.MLP (lewm_pcd/module.py)
-    sd = torch.load(ckdir / f'weights_epoch_{epoch}.pt', map_location='cpu')
+    if random_init:
+        # Match pretrained construction's RNG consumption while using one fixed
+        # random representation for both offline demos and online observations.
+        with torch.random.fork_rng(devices=[]):
+            torch.manual_seed(seed)
+            random_encoder = _dexart_pointnet_class()(**{k: v for k, v in cfg['encoder'].items() if k != '_target_'})
+            random_projector = instantiate(cfg['projector'])
+        sd = {f'encoder.{key}': value for key, value in random_encoder.state_dict().items()}
+        sd.update({f'projector.{key}': value for key, value in random_projector.state_dict().items()})
+    else:
+        sd = torch.load(ckdir / f'weights_epoch_{epoch}.pt', map_location='cpu')
     encoder.load_state_dict({k[len('encoder.'):]: v for k, v in sd.items() if k.startswith('encoder.')})
     projector.load_state_dict({k[len('projector.'):]: v for k, v in sd.items() if k.startswith('projector.')})
     model = LeWMEmbedding(encoder, projector).eval()
     with torch.no_grad():
         dim = model(torch.zeros(2, 1200, 6 if use_rgb else 3)).shape[-1]
-    metadata = {'algo': 'lewm', 'input': 'pcd', 'model': 'DexArt PointNet (LeWM 3D encoder + projector)',
-                'data': _train_data(ckdir),
-                'checkpoint': str(ckdir / f'weights_epoch_{epoch}.pt')}
+    metadata = {'algo': 'random' if random_init else 'lewm', 'input': 'pcd',
+                'model': 'DexArt PointNet (LeWM 3D encoder + projector)',
+                'data': [] if random_init else _train_data(ckdir),
+                'checkpoint': None if random_init else str(ckdir / f'weights_epoch_{epoch}.pt')}
+    if random_init:
+        metadata['initialization_seed'] = seed
     return model, int(dim), PcdTransform(center, scale, use_rgb), metadata
