@@ -5,6 +5,7 @@ env (robot.py) instead of the Sawyer one. Only what depends on the robot changes
 * rows record the RM75 controller's state instead of the Sawyer's mocap: ``ee_target`` (the hand target the actions
   move) and ``q_cmd`` (the 7 joint targets of the servos);
 * set_state restores qpos / qvel and that controller state (the Sawyer version restores the mocap body).
+Tasks: RM75BinPickEnv (bin-picking), RM75ButtonPressEnv (button-press-topdown).
 """
 
 from __future__ import annotations
@@ -13,6 +14,7 @@ import mujoco
 import numpy as np
 from gymnasium.spaces import Box
 
+from ..button_press import MWButtonPressEnv
 from ..env import MWBinPickEnv, MWTaskEnv
 from .robot import make
 
@@ -96,3 +98,21 @@ class RM75TaskEnv(MWTaskEnv):
 
 class RM75BinPickEnv(MWBinPickEnv, RM75TaskEnv):
     """MWBinPickEnv (place targets on the bins' floors) on the RM75: MRO MWBinPickEnv -> RM75TaskEnv -> MWTaskEnv."""
+
+
+class RM75ButtonPressEnv(MWButtonPressEnv, RM75TaskEnv):
+    """MWButtonPressEnv (press the button / waypoints in the air) on the RM75: MRO MWButtonPressEnv -> RM75TaskEnv ->
+    MWTaskEnv. Two things of it depend on the robot: the button's slide joint is not at qpos[9] (the RM75's joints come
+    last, robot.py), and set_state restores the RM75 controller's state besides the box (a fixture the reset moves)."""
+
+    def _task_info(self):
+        info = super()._task_info()
+        info['button_depth'] = np.float64(self._data.qpos[self._mw._q0])
+        return info
+
+    def set_state(self, qpos, qvel, ee_target=None, q_cmd=None, box_pos=None):
+        if box_pos is not None:  # as MWButtonPressEnv.set_state
+            self._model.body_pos[self._box_body] = np.asarray(box_pos, dtype=np.float64)
+            mujoco.mj_forward(self._model, self._data)
+            self._mw._target_pos = self._mw._get_site_pos('hole')
+        RM75TaskEnv.set_state(self, qpos, qvel, ee_target, q_cmd)

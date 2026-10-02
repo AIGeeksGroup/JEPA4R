@@ -137,6 +137,38 @@
   - CortexBench 每次运行的记录：`logs/cortexbench/runs/lewm_mw_binpick_rm75_{pix,pcd}/`；示范：`datasets/cortexbench/metaworld-rm75-expert{,-pcd}/`。
   - 模型：`checkpoints/mw_binpick_rm75_{pix,pcd_dexart}/`。
 
+## button-press-topdown，RM75 机械臂（2026-10-03）
+
+把 Sawyer 换成 RM75-B + EG2-4C2，其余按 button-press-topdown 一节的做法。环境是 `envs/metaworld/rm75/` 的 `RM75ButtonPressEnv`，配置是 `mw_button_rm75*`；流程用 `scripts/run_mw_pipeline.sh`，参数 `TASK=mw_button_rm75 CB_TASK=rm75-button-press-topdown`。
+
+| | 规划成功率 | CortexBench button-press（RM75） |
+|---|---|---|
+| LeWM 3D，全量 | **92.5**（88 / 94 / 90 / 98） | **100.0**（100 / 100 / 100） |
+| LeWM 2D，全量 | 41.0（42 / 46 / 46 / 30） | 49.3（56 / 36 / 56） |
+| 随机策略 | 32.0（32 / 30 / 34 / 32，同一批起点） | — |
+
+同为全量的 Sawyer button-press：规划 3D 87.5、2D 57.5、随机 32.0；CortexBench 3D 98.7、2D 29.3。
+
+- **相对 Sawyer 版改了什么**：只有和机器人有关的两处。
+  - 按钮的滑动关节在 RM75 模型里不在 `qpos[9]`（RM75 的关节排在最后），按它自己的地址读。
+  - 评测的 `set_state` 恢复 RM75 控制器的状态（手的目标点、关节指令），按钮盒照旧恢复。
+  - 采集策略（`ButtonThreePartPolicy`）和 CortexBench 的专家脚本（metaworld 的 `SawyerButtonPressTopdownV3Policy`）都用原版，没改。
+- **数据**：全量 1 万条 × 200 步，三类回合实际占 51.0%、30.2%、18.8%。
+  - 有按下的回合：主干 98.7%，分叉 82.2%，随机 0%（Sawyer：99.9%、81.5%、0%）。
+  - 关节没有超出模型的范围，点云没有空帧。
+- **CortexBench 示范**：metaworld 原版按钮脚本在 RM75 上录的 25 条，种子 12345–12369，没有跳过。
+  - 专家成功率：示范和评测实际用的布局上 984/1000，metaworld 自带的布局上 989/1000（Sawyer 1000/1000）。
+  - 失败局结束时，手都偏离按钮中心 17–21 mm，按钮压不到成功线的深度。抽查的失败局里，手是在下压过程中横向滑开的；滑开的原因还没查明（`bench/cortexbench/README.md`）。采集时主干回合按下的比例比 Sawyer 低 1.2 个百分点，应该也是同一个原因。
+- **与 Sawyer 比较**：
+  - 3D 两项都持平或略高：规划 92.5 对 87.5，CortexBench 100 对 98.7。
+  - 2D 规划低于 Sawyer（41.0 对 57.5），CortexBench 反而更高（49.3 对 29.3）。
+  - 机器人和示范都不同，所以 CortexBench 这一列不能和 Sawyer 的直接比。
+- **原始记录**（在 `$STABLEWM_HOME` 下）：
+  - 采集日志：`logs/collect_mw_button_rm75.log`；流程日志：`logs/mw_button_rm75_pipeline.log`；示范：`logs/cortexbench/make_rm75_demos_button-press-topdown.log`。
+  - 评测日志：`logs/eval/mw_button_rm75_{pix,pcd}_e10_s*.log`、`logs/eval/mw_button_rm75_random_s*.log`。
+  - CortexBench 每次运行的记录：`logs/cortexbench/runs/lewm_mw_button_rm75_{pix,pcd}/`；示范：`datasets/cortexbench/metaworld-rm75-expert{,-pcd}/`。
+  - 模型：`checkpoints/mw_button_rm75_{pix,pcd_dexart}/`。
+
 ## 与其他工作的对比（CortexBench MetaWorld 五任务）
 
 - "论文"行取自 VC-1 论文（arXiv 2303.18240）附录 Table 8 的 MetaWorld 各列。

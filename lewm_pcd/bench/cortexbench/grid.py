@@ -7,7 +7,7 @@
 --tasks takes suites (adroit, metaworld, dmc) and tasks by short name (bin-picking, pen, reacher_easy, ...). A model whose
 config (conf/model/<model>.yaml) calls lewm_cortex.load_lewm_pcd runs on point clouds: run_bc3d.py with the converted
 MetaWorld demos (convert_demos_3d.py). Demos are read from $STABLEWM_HOME/datasets/cortexbench/<suite dir>. The suite
-metaworld_rm75 (task rm75-bin-picking: bin-picking on the RM75-B + EG2-4C2, envs/metaworld/rm75) runs run_bc_rm75.py,
+metaworld_rm75 (tasks rm75-bin-picking, rm75-button-press-topdown: on the RM75-B + EG2-4C2, envs/metaworld/rm75) runs run_bc_rm75.py,
 for both image and point-cloud models, on its own demos (make_rm75_demos.py); its env runs in the python given by MW_PY.
 
 Each job writes $STABLEWM_HOME/logs/cortexbench/runs/<model>/<env>/s<seed>/{metrics.jsonl, DONE} and s<seed>.log next to
@@ -42,7 +42,8 @@ SUITES = {  # suite -> (hydra config, demo dir, envs)
         'drawer-open-v2-goal-observable', 'hammer-v2-goal-observable']),
     'dmc': ('DMC_BC_config', 'dmc-expert-v1.0', [
         'dmc_finger_spin-v1', 'dmc_reacher_easy-v1', 'dmc_cheetah_run-v1', 'dmc_walker_stand-v1', 'dmc_walker_walk-v1']),
-    'metaworld_rm75': ('Metaworld_BC_config', 'metaworld-rm75-expert', ['rm75-bin-picking-v2-goal-observable']),
+    'metaworld_rm75': ('Metaworld_BC_config', 'metaworld-rm75-expert', [
+        'rm75-bin-picking-v2-goal-observable', 'rm75-button-press-topdown-v2-goal-observable']),
 }
 RM75 = 'metaworld_rm75'
 DMC_SLOTS, DMC_GAP = 2, 300

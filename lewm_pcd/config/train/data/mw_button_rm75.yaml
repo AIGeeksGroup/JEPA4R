@@ -1,0 +1,7 @@
+# mw_button.yaml (2D) on the RM75-B + EG2-4C2 button-press-topdown dataset (scripts/data/config/mw_button_rm75.yaml)
+defaults:
+  - mw_button
+  - _self_
+
+dataset:
+  name: metaworld/mw_button_rm75.h5

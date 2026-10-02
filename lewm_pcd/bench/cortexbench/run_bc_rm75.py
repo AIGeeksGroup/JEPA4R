@@ -1,4 +1,4 @@
-"""One CortexBench imitation run on the RM75 port of MetaWorld bin-picking (env rm75-bin-picking-v2-goal-observable):
+"""One CortexBench imitation run on the RM75 port of a MetaWorld task (env rm75-<task>-v2-goal-observable, TASKS):
 the official hydra_launcher + train_loop (eai-vc 76fe35e, unchanged on disk) with run_bc.py's runtime patches (embedding
 configs from conf/model, metrics.jsonl logging, the logging-only train/* rollouts reusing the evaluation paths) and
 run_bc3d.py's point-cloud input for a point-cloud embedding, and with the env constructed differently for the RM75:
@@ -39,7 +39,7 @@ from mjrl.utils.gym_env import GymEnv  # noqa: E402
 from omegaconf import OmegaConf  # noqa: E402
 from PIL import Image  # noqa: E402
 
-TASKS = {'rm75-bin-picking-v2-goal-observable': 'bin-picking'}
+TASKS = {'rm75-bin-picking-v2-goal-observable': 'bin-picking', 'rm75-button-press-topdown-v2-goal-observable': 'button-press-topdown'}
 for name in TASKS:
     se.ENV_TO_SUITE[name] = 'metaworld'  # the same dict gym_wrapper imported
 EMB = next((a.split('=', 1)[1] for a in sys.argv[1:] if a.startswith('embedding=')), '')

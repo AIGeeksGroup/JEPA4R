@@ -8,7 +8,8 @@ from top_cap2 with multisampling), here with the RM75 env of envs/metaworld/rm75
   returns metaworld's own (obs, reward, info) with info['success'];
 * rgb(): 256x256 top_cap2, multisampled (the renderer the 2D LeWM data used, at CortexBench's size);
 * pcd(): (1200, 6) float32 xyz (m) + rgb 0..255 of the same camera, envs.metaworld.MWPointCloudWrapper with the 3D
-  LeWM data's settings (1200 points, 5 mm voxels, 25 % cube points; depth / segmentation without multisampling),
+  LeWM data's settings (1200 points, 5 mm voxels, 25 % object points, the task's re-placed fixtures; depth /
+  segmentation without multisampling),
   rendered at 256x256 as the Sawyer harness's 3D (pcd_fork.py). Its sampling RNG is seeded by seed().
 Used by make_rm75_demos.py (the demos) and rm75_server.py (the evaluation env behind run_bc_rm75.py's proxy)."""
 from __future__ import annotations
@@ -23,17 +24,19 @@ os.environ.setdefault('MUJOCO_GL', 'egl')
 import numpy as np  # noqa: E402
 
 from envs.metaworld import MWPointCloudWrapper  # noqa: E402
-from envs.metaworld.rm75 import RM75BinPickEnv  # noqa: E402
+from envs.metaworld.rm75 import RM75BinPickEnv, RM75ButtonPressEnv  # noqa: E402
 
-TASKS = {'bin-picking': RM75BinPickEnv}
+# task -> (env, fixtures: bodies a reset re-places, in the point-cloud foreground as in the task's collection config)
+TASKS = {'bin-picking': (RM75BinPickEnv, ()), 'button-press-topdown': (RM75ButtonPressEnv, ('box',))}
 SIZE = 256
 HORIZON = 500
 
 
 class RM75CBEnv:
     def __init__(self, task: str):
-        env = TASKS[task](width=SIZE, height=SIZE, randomize_hand=False, episode_len=HORIZON, force_type=0)
-        self.pcw = MWPointCloudWrapper(env, num_points=1200, voxel_size=0.005, cube_fraction=0.25)
+        cls, fixtures = TASKS[task]
+        env = cls(width=SIZE, height=SIZE, randomize_hand=False, episode_len=HORIZON, force_type=0)
+        self.pcw = MWPointCloudWrapper(env, num_points=1200, voxel_size=0.005, cube_fraction=0.25, fixtures=fixtures)
         self.u = env
         self._seed = 0
         self.obs = None

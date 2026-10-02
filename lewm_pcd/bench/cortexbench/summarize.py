@@ -27,6 +27,7 @@ TASKS = {  # env -> (suite, short name as in the paper's Table 8)
     'dmc_cheetah_run-v1': ('dmc', 'cheetah_run'), 'dmc_walker_stand-v1': ('dmc', 'walker_stand'),
     'dmc_walker_walk-v1': ('dmc', 'walker_walk'),
     'rm75-bin-picking-v2-goal-observable': ('metaworld_rm75', 'bin_picking_rm75'),  # on the RM75 (run_bc_rm75.py)
+    'rm75-button-press-topdown-v2-goal-observable': ('metaworld_rm75', 'button_press_rm75'),
 }
 SUITE_NAMES = {'adroit': 'Adroit', 'metaworld': 'MetaWorld', 'dmc': 'DMControl', 'metaworld_rm75': 'MetaWorld（RM75）'}
 ORDER = [short for _, short in TASKS.values()]
@@ -44,6 +45,8 @@ PAPER = {
     'clip_vitb16': dict(bin_picking=68.0),
 }
 LABELS = {
+    'lewm_mw_button_rm75_pcd': 'LeWM 3D（点云，RM75 button-press 全量数据）',
+    'lewm_mw_button_rm75_pix': 'LeWM 2D（图像，RM75 button-press 全量数据）',
     'lewm_mw_binpick_rm75_pcd': 'LeWM 3D（点云，RM75 bin-picking 全量数据）',
     'lewm_mw_binpick_rm75_pix': 'LeWM 2D（图像，RM75 bin-picking 全量数据）',
     'lewm_mw_hammer_pcd': 'LeWM 3D（点云，hammer 全量数据）',
