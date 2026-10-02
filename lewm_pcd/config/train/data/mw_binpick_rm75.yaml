@@ -1,0 +1,7 @@
+# mw_binpick.yaml (2D) on the RM75-B + EG2-4C2 bin-picking dataset (scripts/data/config/mw_binpick_rm75.yaml)
+defaults:
+  - mw_binpick
+  - _self_
+
+dataset:
+  name: metaworld/mw_binpick_rm75.h5

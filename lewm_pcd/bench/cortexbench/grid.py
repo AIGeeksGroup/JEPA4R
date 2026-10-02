@@ -6,7 +6,9 @@
 
 --tasks takes suites (adroit, metaworld, dmc) and tasks by short name (bin-picking, pen, reacher_easy, ...). A model whose
 config (conf/model/<model>.yaml) calls lewm_cortex.load_lewm_pcd runs on point clouds: run_bc3d.py with the converted
-MetaWorld demos (convert_demos_3d.py). Demos are read from $STABLEWM_HOME/datasets/cortexbench/<suite dir>.
+MetaWorld demos (convert_demos_3d.py). Demos are read from $STABLEWM_HOME/datasets/cortexbench/<suite dir>. The suite
+metaworld_rm75 (task rm75-bin-picking: bin-picking on the RM75-B + EG2-4C2, envs/metaworld/rm75) runs run_bc_rm75.py,
+for both image and point-cloud models, on its own demos (make_rm75_demos.py); its env runs in the python given by MW_PY.
 
 Each job writes $STABLEWM_HOME/logs/cortexbench/runs/<model>/<env>/s<seed>/{metrics.jsonl, DONE} and s<seed>.log next to
 it; a job whose DONE file exists is skipped, so the grid can be re-launched. On (re)launch, a run_bc process already
@@ -40,7 +42,9 @@ SUITES = {  # suite -> (hydra config, demo dir, envs)
         'drawer-open-v2-goal-observable', 'hammer-v2-goal-observable']),
     'dmc': ('DMC_BC_config', 'dmc-expert-v1.0', [
         'dmc_finger_spin-v1', 'dmc_reacher_easy-v1', 'dmc_cheetah_run-v1', 'dmc_walker_stand-v1', 'dmc_walker_walk-v1']),
+    'metaworld_rm75': ('Metaworld_BC_config', 'metaworld-rm75-expert', ['rm75-bin-picking-v2-goal-observable']),
 }
+RM75 = 'metaworld_rm75'
 DMC_SLOTS, DMC_GAP = 2, 300
 
 ap = argparse.ArgumentParser()
@@ -107,7 +111,7 @@ def live_run_bc():
             state = (p / 'stat').read_text().rsplit(')', 1)[1].split()[0]
         except OSError:
             continue
-        if len(argv) > 1 and argv[1].endswith((b'run_bc.py', b'run_bc3d.py')) and state != 'Z':
+        if len(argv) > 1 and argv[1].endswith((b'run_bc.py', b'run_bc3d.py', b'run_bc_rm75.py')) and state != 'Z':
             for a in argv:
                 if a.startswith(b'hydra.run.dir='):
                     out[a.split(b'=', 1)[1].decode()] = int(p.name)
@@ -143,14 +147,15 @@ jobs = []
 for seed in map(int, args.seeds.split(',')):  # seed by seed: every finished seed is a complete comparison
     for model in models:
         for suite, env in tasks:
-            if pcd[model] and suite != 'metaworld':
+            if pcd[model] and suite not in ('metaworld', RM75):
                 sys.exit(f'{model} runs on point clouds, which exist for MetaWorld only, not {env}')
             cfg, demos, _ = SUITES[suite]
             demos = DATA / (demos + '-pcd' if pcd[model] else demos)
             if not (demos / f'{env}.pickle').exists():
-                sys.exit(f'missing demos {demos / env}.pickle (unpack_suite.py / convert_demos_3d.py)')
+                sys.exit(f'missing demos {demos / env}.pickle (unpack_suite.py / convert_demos_3d.py / make_rm75_demos.py)')
+            launcher = 'run_bc_rm75.py' if suite == RM75 else 'run_bc3d.py' if pcd[model] else 'run_bc.py'
             jobs.append(dict(model=model, suite=suite, env=env, seed=seed, cfg=cfg, demos=demos,
-                             launcher='run_bc3d.py' if pcd[model] else 'run_bc.py', run=RUNS / model / env / f's{seed}'))
+                             launcher=launcher, run=RUNS / model / env / f's{seed}'))
 live = live_run_bc()
 running = []  # (job, proc, slots, t0)
 todo = []
@@ -166,6 +171,8 @@ for j in jobs:
         write_done(j, evals_of(j['run']), (m.stat().st_mtime - (j['run'] / '.hydra').stat().st_mtime) / 60)
     else:
         todo.append(j)
+if any(j['suite'] == RM75 for j in todo) and not os.environ.get('MW_PY'):
+    sys.exit('the RM75 jobs need MW_PY, the lewm_mw python their env runs in (run_bc_rm75.py)')
 log(f'{len(jobs)} jobs, {len(jobs) - len(todo) - len(running)} done already, {len(running)} adopted, {len(todo)} to run, '
     f'slots {args.slots}, mps {args.mps}')
 env_vars = dict(os.environ, **({'CUDA_MPS_PIPE_DIRECTORY': args.mps} if args.mps else {}))

@@ -1,0 +1,8 @@
+# LeWM 2D encoder (ViT-tiny + projector, the latent the predictor and planner use) trained on the full MetaWorld
+# bin-picking three-part data of the RM75-B + EG2-4C2 (config/train/data/mw_binpick_rm75.yaml; run mw_binpick_rm75_pix,
+# epoch 10), for the RM75 runs (../../run_bc_rm75.py). See ../../lewm_cortex.py
+_target_: lewm_cortex.load_lewm
+checkpoint_dir: ${oc.env:STABLEWM_HOME}/checkpoints/mw_binpick_rm75_pix
+epoch: 10
+use_projector: true
+random_init: false

@@ -1,0 +1,8 @@
+# mw_binpick_pcd.yaml (3D, the same affine) on the RM75-B + EG2-4C2 bin-picking dataset (same rollouts as
+# mw_binpick_rm75.yaml, row for row)
+defaults:
+  - mw_binpick_pcd
+  - _self_
+
+dataset:
+  name: metaworld/mw_binpick_rm75_pcd.h5

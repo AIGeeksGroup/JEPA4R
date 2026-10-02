@@ -26,7 +26,9 @@ TASKS = {  # env -> (suite, short name as in the paper's Table 8)
     'dmc_finger_spin-v1': ('dmc', 'finger_spin'), 'dmc_reacher_easy-v1': ('dmc', 'reacher'),
     'dmc_cheetah_run-v1': ('dmc', 'cheetah_run'), 'dmc_walker_stand-v1': ('dmc', 'walker_stand'),
     'dmc_walker_walk-v1': ('dmc', 'walker_walk'),
+    'rm75-bin-picking-v2-goal-observable': ('metaworld_rm75', 'bin_picking_rm75'),  # on the RM75 (run_bc_rm75.py)
 }
+SUITE_NAMES = {'adroit': 'Adroit', 'metaworld': 'MetaWorld', 'dmc': 'DMControl', 'metaworld_rm75': 'MetaWorld（RM75）'}
 ORDER = [short for _, short in TASKS.values()]
 # VC-1 paper (arXiv 2303.18240v2) Table 8, per task (VIP / CLIP: the bin-picking entries only)
 PAPER = {
@@ -42,6 +44,8 @@ PAPER = {
     'clip_vitb16': dict(bin_picking=68.0),
 }
 LABELS = {
+    'lewm_mw_binpick_rm75_pcd': 'LeWM 3D（点云，RM75 bin-picking 全量数据）',
+    'lewm_mw_binpick_rm75_pix': 'LeWM 2D（图像，RM75 bin-picking 全量数据）',
     'lewm_mw_hammer_pcd': 'LeWM 3D（点云，hammer 全量数据）',
     'lewm_mw_hammer_pix': 'LeWM 2D（图像，hammer 全量数据）',
     'lewm_mw_drawer_pcd': 'LeWM 3D（点云，drawer-open 全量数据）',
@@ -96,7 +100,8 @@ for m in models:
     if cells:
         suite_rows.append(f"| {LABELS.get(m, m)} | " + ' | '.join(str(cells.get(s, '—')) for s in suites) + ' |')
 if suite_rows:
-    lines += ['### suite 均值（该 suite 每个任务都有结果时）', '', '| 模型 | Adroit | MetaWorld | DMControl |', '|---|---|---|---|'] + suite_rows
+    lines += ['### suite 均值（该 suite 每个任务都有结果时）', '', '| 模型 | ' + ' | '.join(SUITE_NAMES[s] for s in suites) + ' |',
+              '|---' * (len(suites) + 1) + '|'] + suite_rows
 OUT.mkdir(parents=True, exist_ok=True)
 (OUT / 'scores.json').write_text(json.dumps(res, ensure_ascii=False, indent=1))
 (OUT / 'scores.md').write_text('\n'.join(lines) + '\n')

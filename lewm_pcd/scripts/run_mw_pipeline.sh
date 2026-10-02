@@ -9,6 +9,8 @@
 # Idempotent: finished trainings / evaluations / CortexBench runs are skipped. Detached:
 #   STABLEWM_HOME=<checkout>/lewm_pcd_data PY=<lewm_mw python> CB_PY=<cortexbench python> TASK=mw_binpick CB_TASK=bin-picking \
 #     setsid nohup bash scripts/run_mw_pipeline.sh > $STABLEWM_HOME/logs/mw_binpick_pipeline.log 2>&1 < /dev/null &
+# bin-picking on the RM75-B + EG2-4C2 (envs/metaworld/rm75): TASK=mw_binpick_rm75 CB_TASK=rm75-bin-picking, after its
+# CortexBench demos (bench/cortexbench/make_rm75_demos.py); its CortexBench env runs in the lewm_mw python (PY, as MW_PY).
 set -uo pipefail
 cd "$(dirname "$0")/.."  # lewm_pcd
 : "${STABLEWM_HOME:?set STABLEWM_HOME to the data home (<checkout>/lewm_pcd_data)}"
@@ -58,7 +60,7 @@ done
 
 log "3/3 CortexBench: lewm_${TASK}_pix, lewm_${TASK}_pcd on $CB_TASK"
 (
-  export PY=$CB_PY && cd bench/cortexbench && source env.sh \
+  export MW_PY=$PY && export PY=$CB_PY && cd bench/cortexbench && source env.sh \
     && $PY grid.py --models "lewm_${TASK}_pix,lewm_${TASK}_pcd" --tasks "$CB_TASK" --slots 6 >> "$LOGS/cortexbench/grid.log" 2>&1 \
     && $PY summarize.py > /dev/null
 ) || { log "CortexBench FAILED, see $LOGS/cortexbench/grid.log"; exit 1; }

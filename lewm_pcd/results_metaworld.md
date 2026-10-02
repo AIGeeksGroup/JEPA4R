@@ -103,6 +103,40 @@
   - 评测日志：`logs/eval/mw_hammer_{pix,pcd}_e10_s*.log`、`logs/eval/mw_hammer_random_s*.log`。
   - 模型：`checkpoints/mw_hammer_{pix,pcd_dexart}/`。
 
+## bin-picking，RM75 机械臂（2026-10-01）
+
+把 Sawyer 换成实验室的 RM75-B 机械臂 + EG2-4C2 夹爪，其余按 bin-picking 一节的做法。环境和采集策略在 `envs/metaworld/rm75/`，配置是 `mw_binpick_rm75*`；流程用 `scripts/run_mw_pipeline.sh`，参数 `TASK=mw_binpick_rm75 CB_TASK=rm75-bin-picking`。
+
+| | 规划成功率 | CortexBench bin-picking（RM75） |
+|---|---|---|
+| LeWM 3D，全量 | **80.5**（82 / 82 / 76 / 82） | **88.0**（88 / 84 / 92） |
+| LeWM 2D，全量 | 75.5（78 / 78 / 68 / 78） | 41.3（40 / 48 / 36） |
+| 随机策略 | 44.5（38 / 52 / 42 / 46，同一批起点） | — |
+
+同为全量的 Sawyer bin-picking：规划 3D 77.5、2D 83.5、随机 44.0；CortexBench 3D 100.0、2D 77.3。
+
+- **机器人**：RM75-B 七轴机械臂 + EG2-4C2 二指夹爪，模型与 OGBench cube 的 RM75 版相同，装在桌子 +x 一侧 20 cm 高的底座上。
+  - 动作接口不变：4 维动作，每步把手的目标点移动 a[:3] / 100。底层换成逆运动学 + 关节伺服，关节限速，每步新设的目标点离手不超过 3 cm。
+  - 观测仍是 metaworld 的 39 维。夹爪读数是两指间距 / 66.2 mm。
+  - 夹持力约 20 N（Sawyer 约 400 N），所以采集策略和专家的抓取都按 RM75 改过，见 `envs/metaworld/rm75/policy.py`、`expert.py`。
+- **数据**：全量 1 万条 × 200 步，三类回合实际占 50.3%、30.3%、19.5%。主干回合 97.5% 抓起过方块。
+  - 第 4 个关节有 80 行（7 个回合）超出模型的关节范围（±2.356 rad），最多超出 0.25°。MuJoCo 的关节限位是软约束，会有这种小幅超出。
+  - 有 76 帧（6 个回合）手和方块都不在相机视野里，点云为空。
+- **CortexBench 示范**：Sawyer 的官方示范不能用在 RM75 上。用改成 RM75 版的 metaworld 专家脚本重新录了 25 条，格式和种子规则与官方相同（`bench/cortexbench/make_rm75_demos.py`）。
+  - 专家在 metaworld 自带的布局上成功 1000/1000，Sawyer 用原脚本也是 1000/1000；原脚本的规则直接用在 RM75 上只有 49.7%。
+  - 在示范和评测实际用的布局上，专家成功 159/160。
+  - 机器人和示范都与 Sawyer 不同，所以这一列不能和 Sawyer 的 CortexBench 分数直接比，也不放进下面的五任务对比表。
+- **2D 在 CortexBench 上明显偏低**（41.3，Sawyer 77.3），原因还没查明。代码检查没有发现采集、示范、评测与 Sawyer 的做法不一致的地方。
+- **迁移**：这批数据、模型和分数是代码迁入仓库之前，在 TMP 里以 `rm75_binpick_full*` 的名字跑出来的，迁移时改成了现在的名字；日志和模型目录里的 `config.yaml` 保留原名。迁入后的代码与原代码核对过：
+  - 同一种子采集的数据逐位相同；2D 图像有个别像素差 1 个灰度，原代码自己重跑两次也有，是渲染噪声。
+  - 25 条示范能重新生成：3D 逐位相同，2D 只有同样的渲染噪声。
+  - 种子 42 的规划评测结果相同：2D 78、3D 82、随机 38。
+- **原始记录**（在 `$STABLEWM_HOME` 下）：
+  - 采集日志：`logs/collect_mw_binpick_rm75.log`；流程日志：`logs/mw_binpick_rm75_pipeline.log`。
+  - 评测日志：`logs/eval/mw_binpick_rm75_{pix,pcd}_e10_s*.log`、`logs/eval/mw_binpick_rm75_random_s*.log`。
+  - CortexBench 每次运行的记录：`logs/cortexbench/runs/lewm_mw_binpick_rm75_{pix,pcd}/`；示范：`datasets/cortexbench/metaworld-rm75-expert{,-pcd}/`。
+  - 模型：`checkpoints/mw_binpick_rm75_{pix,pcd_dexart}/`。
+
 ## 与其他工作的对比（CortexBench MetaWorld 五任务）
 
 - "论文"行取自 VC-1 论文（arXiv 2303.18240）附录 Table 8 的 MetaWorld 各列。
