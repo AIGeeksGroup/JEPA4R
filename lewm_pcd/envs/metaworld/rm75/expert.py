@@ -115,3 +115,37 @@ class RM75BinPickingPolicy:
         a[:3] = P * (target - hand)  # not clipped: the env clips
         a[3] = grab
         return a
+
+
+DRAWER_DZ = 0.028  # drawer-open: the hand this far above the handle point (the script: 0.02 below)
+
+
+class RM75DrawerOpenPolicy:
+    """metaworld 3.0's SawyerDrawerOpenV3Policy (the scripted Sawyer expert of CortexBench's drawer-open demos) on the RM75
+    with one change, stateless as the script: the hand's height at the handle, DRAWER_DZ above the handle point instead
+    of 2 cm below. The EG2-4C2's 3.35 cm pads then straddle the bar at its height, as the Sawyer's 9 cm pads do from 2 cm
+    below; from below they touch only one side of the bar, slide off it while pulling, and the drawer, let go, comes
+    back off its end stop (metaworld's success needs it held there). Everything else is the script's: p 4 to 30 cm
+    above the handle (beyond 6 cm in xy), p 4 down to it (beyond 4 cm in z), else p 50 towards 6 cm behind it, fingers
+    open; the move not clipped (the env clips it).
+    Success, as CortexBench counts it (info['success'] at step 500), seeds 12345 .. 13344: 998 / 1000 on the layouts of
+    the CortexBench env the demos and evaluations use (bench/cortexbench/rm75_env.py), 994 / 1000 on metaworld's own;
+    the unchanged script on the RM75 70 / 200 and 68 / 200 (each of these episodes succeeded on the way, then the
+    drawer came back off its stop), the Sawyer with it 200 / 200."""
+
+    def reset(self):
+        pass
+
+    def get_action(self, o):
+        hand = o[:3]
+        drw = o[4:7] + np.array([0.0, 0.0, DRAWER_DZ])
+        if np.linalg.norm(hand[:2] - drw[:2]) > 0.06:
+            to, p = drw + np.array([0.0, 0.0, 0.3]), 4.0
+        elif abs(hand[2] - drw[2]) > 0.04:
+            to, p = drw, 4.0
+        else:
+            to, p = drw + np.array([0.0, -0.06, 0.0]), 50.0
+        a = np.zeros(4)
+        a[:3] = p * (to - hand)  # not clipped: the env clips
+        a[3] = -1.0
+        return a

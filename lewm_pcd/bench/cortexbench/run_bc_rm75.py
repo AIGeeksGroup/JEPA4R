@@ -39,7 +39,8 @@ from mjrl.utils.gym_env import GymEnv  # noqa: E402
 from omegaconf import OmegaConf  # noqa: E402
 from PIL import Image  # noqa: E402
 
-TASKS = {'rm75-bin-picking-v2-goal-observable': 'bin-picking', 'rm75-button-press-topdown-v2-goal-observable': 'button-press-topdown'}
+TASKS = {'rm75-bin-picking-v2-goal-observable': 'bin-picking', 'rm75-button-press-topdown-v2-goal-observable': 'button-press-topdown',
+         'rm75-drawer-open-v2-goal-observable': 'drawer-open'}
 for name in TASKS:
     se.ENV_TO_SUITE[name] = 'metaworld'  # the same dict gym_wrapper imported
 EMB = next((a.split('=', 1)[1] for a in sys.argv[1:] if a.startswith('embedding=')), '')

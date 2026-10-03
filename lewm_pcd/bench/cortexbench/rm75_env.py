@@ -24,10 +24,11 @@ os.environ.setdefault('MUJOCO_GL', 'egl')
 import numpy as np  # noqa: E402
 
 from envs.metaworld import MWPointCloudWrapper  # noqa: E402
-from envs.metaworld.rm75 import RM75BinPickEnv, RM75ButtonPressEnv  # noqa: E402
+from envs.metaworld.rm75 import RM75BinPickEnv, RM75ButtonPressEnv, RM75DrawerEnv  # noqa: E402
 
 # task -> (env, fixtures: bodies a reset re-places, in the point-cloud foreground as in the task's collection config)
-TASKS = {'bin-picking': (RM75BinPickEnv, ()), 'button-press-topdown': (RM75ButtonPressEnv, ('box',))}
+TASKS = {'bin-picking': (RM75BinPickEnv, ()), 'button-press-topdown': (RM75ButtonPressEnv, ('box',)),
+         'drawer-open': (RM75DrawerEnv, ('drawer',))}
 SIZE = 256
 HORIZON = 500
 

@@ -1,4 +1,6 @@
-"""envs.metaworld.ThreePartPolicy (bin-picking) for the RM75: the plan (backbone / branch / random), the noise and the
+"""The three-part collection policies for the RM75. RM75DrawerThreePartPolicy (drawer-open): at the end of this file.
+
+envs.metaworld.ThreePartPolicy (bin-picking) for the RM75 (RM75BinPickThreePartPolicy): the plan (backbone / branch / random), the noise and the
 random actions (kept in the camera's view) unchanged; the backbone's pick-and-place oracle keeps its sub-tasks
 (approach above the grasp point, down, grasp, lift, carry at TRAVEL_Z to the env's place target, put down, release,
 retreat, next target) and changes what the RM75 / EG2-4C2 needs:
@@ -19,7 +21,10 @@ from __future__ import annotations
 
 import numpy as np
 
-from ..policy import LIFT_Z, PLACE_Z, TRAVEL_Z, ThreePartPolicy
+from ..drawer import ABOVE, HOLD_MAX, K_SLOW, PULL_COAST, PULL_OFF, PULL_START, PUSH_COAST, PUSH_OFF, PUSH_START, TOL, VMAX
+from ..drawer import DrawerThreePartPolicy
+from ..policy import LIFT_Z, P_GAIN as SAWYER_P_GAIN, PLACE_Z, STEP, TRAVEL_Z, ThreePartPolicy
+from .expert import DRAWER_DZ
 
 P_GAIN = 20.0
 APPROACH_DZ = 0.10
@@ -116,3 +121,92 @@ class RM75BinPickThreePartPolicy(ThreePartPolicy):
             desired, grab = m['wp'], RELEASE
         m['phase'] = phase
         return np.concatenate([(desired - hand) * P_GAIN, [grab]])
+
+
+HOOK_DZ = DRAWER_DZ  # drawer-open: the hand above the handle point, as RM75DrawerOpenPolicy (the script: 0.02 below)
+
+
+class RM75DrawerThreePartPolicy(DrawerThreePartPolicy):
+    """envs.metaworld's DrawerThreePartPolicy (drawer-open) for the RM75, its oracle with two changes:
+    * the hand's height at the handle bar: HOOK_DZ above the handle point instead of 2 cm below (metaworld's hook
+      point): the EG2-4C2's 3.35 cm pads straddle the bar at its height, as the Sawyer's 9 cm pads do from 2 cm below;
+      from below they touch only one side of the bar and slip off while pulling;
+    * the hand target is the RM75 controller's (env._mw._ee_target) where the Sawyer version reads its mocap.
+    Everything else (targets, speeds, offsets, waypoints, no retries) is the Sawyer version's."""
+
+    @staticmethod
+    def _oracle(m, env, info):
+        hand = np.asarray(info['hand_pos'], dtype=np.float64)
+        h = np.asarray(info['obj_pos'], dtype=np.float64) + np.array([0.0, 0.0, HOOK_DZ])  # hook point: the pads straddle the bar
+        target = np.asarray(info['place_target'], dtype=np.float64)
+        opening = float(info['drawer_open'])
+        t = int(info['step_idx'])
+        if m['last'] is not None and t != m['last'] + 1:  # back from random steps: start over
+            m['phase'], m['n'], m['hist'] = 'go', 0, []
+        m['last'] = t
+        m['hist'] = (m['hist'] + [opening])[-2:]
+
+        def act(desired):
+            return np.concatenate([(desired - hand) * SAWYER_P_GAIN, [-1.0]])
+
+        def next_target():
+            env.new_place_target()
+            m['phase'], m['n'] = 'go', 0
+
+        m['n'] += 1
+        if target[3] < 0.5:  # waypoint: from low near the drawer, back off and go up first
+            wp = target[:3]
+            low_near = hand[1] > h[1] - 0.06 and hand[2] < h[2] + 0.06
+            desired = np.array([hand[0], hand[1] - 0.03, h[2] + ABOVE]) if low_near else wp
+            if np.linalg.norm(hand - wp) < 0.03 or m['n'] > 60:
+                next_target()
+            return act(desired)
+
+        err = float(target[2]) - opening  # > 0: pull further out, < 0: push in
+        phase = m['phase']
+        vy = None
+        if phase == 'go':
+            if abs(err) < TOL or m['n'] > 60:  # already there / cannot get there
+                next_target()
+                return act(hand)
+            spot = h + np.array([0.0, -PULL_START if err > 0 else PUSH_START, 0.0])  # where the hand goes down
+            m['spot_dy'] = spot[1] - h[1]
+            if hand[2] < h[2] + 0.06 and np.linalg.norm(hand[:2] - spot[:2]) > 0.02:  # low: back off and rise first
+                desired = np.array([hand[0], min(hand[1], h[1] - 0.06), h[2] + ABOVE])
+            else:
+                desired = spot + np.array([0.0, 0.0, ABOVE])
+                if np.linalg.norm(hand[:2] - spot[:2]) < 0.015:
+                    phase, m['n'] = 'down', 0
+        if phase == 'down':  # fingers open around the handle bar
+            desired = h + np.array([0.0, m['spot_dy'], 0.0])
+            if hand[2] - h[2] < 0.02:
+                # the hand's end y: the handle's y at the target opening, less the far finger's offset from it
+                # (pull: behind the bar; push: against the drawer front), less the drawer's coasting after a pull
+                y_t = h[1] - err
+                m['y_end'] = y_t - PULL_OFF + PULL_COAST if err > 0 else y_t + PUSH_OFF - PUSH_COAST
+                phase, m['n'] = 'move', 0
+            elif m['n'] > 25:  # blocked (e.g. on top of the handle): give this target up
+                phase, m['n'] = 'lift', 0
+        if phase == 'move':  # y through the hand target (the hand lags it under load)
+            desired = np.array([h[0], hand[1], h[2]])
+            d = m['y_end'] - float(env._mw._ee_target[1])
+            vy = np.sign(d) * min(VMAX, abs(d) / K_SLOW)
+            if abs(d) < 0.002 or m['n'] > 60:
+                phase, m['n'] = 'hold', 0
+        if phase == 'hold':  # the drawer coasts on until the finger's other side stops it
+            desired = np.array([h[0], hand[1], h[2]])
+            vy = 0.0
+            still = len(m['hist']) > 1 and abs(m['hist'][-1] - m['hist'][-2]) < 0.0005
+            if (still and m['n'] >= 3) or m['n'] > HOLD_MAX:
+                phase, m['n'] = 'lift', 0
+        if phase == 'lift':
+            desired = np.array([hand[0], hand[1], h[2] + ABOVE])
+            vy = 0.0
+            if hand[2] > h[2] + ABOVE - 0.02 or m['n'] > 30:
+                next_target()
+                return act(desired)
+        m['phase'] = phase
+        a = act(desired)
+        if vy is not None:
+            a[1] = vy / STEP
+        return a

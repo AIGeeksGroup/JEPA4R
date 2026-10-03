@@ -1,0 +1,7 @@
+# mw_drawer.yaml (2D) on the RM75-B + EG2-4C2 drawer-open dataset (scripts/data/config/mw_drawer_rm75.yaml)
+defaults:
+  - mw_drawer
+  - _self_
+
+dataset:
+  name: metaworld/mw_drawer_rm75.h5

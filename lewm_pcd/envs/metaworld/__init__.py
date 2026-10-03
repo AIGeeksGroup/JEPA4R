@@ -29,6 +29,7 @@ register(id='swm/MWHammer-v0', entry_point='envs.metaworld.hammer:MWHammerEnv')
 # RealMan RM75-B + EG2-4C2 instead of the Sawyer (envs/metaworld/rm75)
 register(id='swm/MWBinPickRM75-v0', entry_point='envs.metaworld.rm75:RM75BinPickEnv')
 register(id='swm/MWButtonPressRM75-v0', entry_point='envs.metaworld.rm75:RM75ButtonPressEnv')
+register(id='swm/MWDrawerRM75-v0', entry_point='envs.metaworld.rm75:RM75DrawerEnv')
 
 __all__ = ['MWTaskEnv', 'MWBinPickEnv', 'MWAssemblyEnv', 'MWButtonPressEnv', 'MWDrawerEnv', 'MWHammerEnv',
            'MWPointCloudWrapper', 'ThreePartPolicy', 'AssemblyThreePartPolicy', 'ButtonThreePartPolicy',

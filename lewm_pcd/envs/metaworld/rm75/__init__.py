@@ -7,16 +7,19 @@ reward, success), the camera, the collection plan and the eval hooks are envs.me
     env.py     envs.metaworld's task envs on robot.py's env:
                  RM75BinPickEnv       (MWBinPickEnv)       id swm/MWBinPickRM75-v0
                  RM75ButtonPressEnv   (MWButtonPressEnv)   id swm/MWButtonPressRM75-v0
-    policy.py  RM75BinPickThreePartPolicy: bin-picking's three-part collection policy, its pick-and-place oracle made for
-               the RM75 (button-press-topdown collects with envs.metaworld's ButtonThreePartPolicy unchanged)
-    expert.py  RM75BinPickingPolicy: metaworld's scripted bin-picking expert made for the RM75 (the CortexBench demos;
-               button-press-topdown's demos use metaworld's script unchanged, bench/cortexbench/make_rm75_demos.py)
+                 RM75DrawerEnv        (MWDrawerEnv)        id swm/MWDrawerRM75-v0
+    policy.py  the three-part collection policies made for the RM75: RM75BinPickThreePartPolicy (bin-picking),
+               RM75DrawerThreePartPolicy (drawer-open); button-press-topdown collects with ButtonThreePartPolicy unchanged
+    expert.py  metaworld's scripted experts made for the RM75 (the CortexBench demos): RM75BinPickingPolicy,
+               RM75DrawerOpenPolicy; button-press-topdown's demos use metaworld's script unchanged
+               (bench/cortexbench/make_rm75_demos.py)
 
 Needs metaworld 3.0 (conda env ``lewm_mw``) like envs.metaworld; the env id is registered in envs/metaworld/__init__.py.
 """
 
-from .env import RM75BinPickEnv, RM75ButtonPressEnv, RM75TaskEnv
-from .expert import RM75BinPickingPolicy
-from .policy import RM75BinPickThreePartPolicy
+from .env import RM75BinPickEnv, RM75ButtonPressEnv, RM75DrawerEnv, RM75TaskEnv
+from .expert import RM75BinPickingPolicy, RM75DrawerOpenPolicy
+from .policy import RM75BinPickThreePartPolicy, RM75DrawerThreePartPolicy
 
-__all__ = ['RM75TaskEnv', 'RM75BinPickEnv', 'RM75ButtonPressEnv', 'RM75BinPickThreePartPolicy', 'RM75BinPickingPolicy']
+__all__ = ['RM75TaskEnv', 'RM75BinPickEnv', 'RM75ButtonPressEnv', 'RM75DrawerEnv', 'RM75BinPickThreePartPolicy',
+           'RM75DrawerThreePartPolicy', 'RM75BinPickingPolicy', 'RM75DrawerOpenPolicy']

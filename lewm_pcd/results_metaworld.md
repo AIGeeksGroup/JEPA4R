@@ -115,6 +115,8 @@
 
 同为全量的 Sawyer bin-picking：规划 3D 77.5、2D 83.5、随机 44.0；CortexBench 3D 100.0、2D 77.3。
 
+CortexBench 的随机基线（原版的 Random (ViT-B) Frozen：随机初始化、冻结的 ViT-B）：0.0（0 / 0 / 0），Sawyer bin-picking 上本机复现也是 0.0。
+
 - **机器人**：RM75-B 七轴机械臂 + EG2-4C2 二指夹爪，模型与 OGBench cube 的 RM75 版相同，装在桌子 +x 一侧 20 cm 高的底座上。
   - 动作接口不变：4 维动作，每步把手的目标点移动 a[:3] / 100。底层换成逆运动学 + 关节伺服，关节限速，每步新设的目标点离手不超过 3 cm。
   - 观测仍是 metaworld 的 39 维。夹爪读数是两指间距 / 66.2 mm。
@@ -134,7 +136,7 @@
 - **原始记录**（在 `$STABLEWM_HOME` 下）：
   - 采集日志：`logs/collect_mw_binpick_rm75.log`；流程日志：`logs/mw_binpick_rm75_pipeline.log`。
   - 评测日志：`logs/eval/mw_binpick_rm75_{pix,pcd}_e10_s*.log`、`logs/eval/mw_binpick_rm75_random_s*.log`。
-  - CortexBench 每次运行的记录：`logs/cortexbench/runs/lewm_mw_binpick_rm75_{pix,pcd}/`；示范：`datasets/cortexbench/metaworld-rm75-expert{,-pcd}/`。
+  - CortexBench 每次运行的记录：`logs/cortexbench/runs/{lewm_mw_binpick_rm75_{pix,pcd},rand_vitb}/rm75-bin-picking-v2-goal-observable/`；示范：`datasets/cortexbench/metaworld-rm75-expert{,-pcd}/`。
   - 模型：`checkpoints/mw_binpick_rm75_{pix,pcd_dexart}/`。
 
 ## button-press-topdown，RM75 机械臂（2026-10-03）
@@ -148,6 +150,8 @@
 | 随机策略 | 32.0（32 / 30 / 34 / 32，同一批起点） | — |
 
 同为全量的 Sawyer button-press：规划 3D 87.5、2D 57.5、随机 32.0；CortexBench 3D 98.7、2D 29.3。
+
+CortexBench 的随机基线（随机初始化、冻结的 ViT-B）：6.7（20 / 0 / 0），末轮 0；论文里 Sawyer button-press 是 2.7。
 
 - **相对 Sawyer 版改了什么**：只有和机器人有关的两处。
   - 按钮的滑动关节在 RM75 模型里不在 `qpos[9]`（RM75 的关节排在最后），按它自己的地址读。
@@ -166,8 +170,37 @@
 - **原始记录**（在 `$STABLEWM_HOME` 下）：
   - 采集日志：`logs/collect_mw_button_rm75.log`；流程日志：`logs/mw_button_rm75_pipeline.log`；示范：`logs/cortexbench/make_rm75_demos_button-press-topdown.log`。
   - 评测日志：`logs/eval/mw_button_rm75_{pix,pcd}_e10_s*.log`、`logs/eval/mw_button_rm75_random_s*.log`。
-  - CortexBench 每次运行的记录：`logs/cortexbench/runs/lewm_mw_button_rm75_{pix,pcd}/`；示范：`datasets/cortexbench/metaworld-rm75-expert{,-pcd}/`。
+  - CortexBench 每次运行的记录：`logs/cortexbench/runs/{lewm_mw_button_rm75_{pix,pcd},rand_vitb}/rm75-button-press-topdown-v2-goal-observable/`；示范：`datasets/cortexbench/metaworld-rm75-expert{,-pcd}/`。
   - 模型：`checkpoints/mw_button_rm75_{pix,pcd_dexart}/`。
+
+## drawer-open，RM75 机械臂（2026-10-04）
+
+把 Sawyer 换成 RM75-B + EG2-4C2，其余按 drawer-open 一节的做法。环境是 `envs/metaworld/rm75/` 的 `RM75DrawerEnv`，配置是 `mw_drawer_rm75*`；流程用 `scripts/run_mw_pipeline.sh`，参数 `TASK=mw_drawer_rm75 CB_TASK=rm75-drawer-open`。
+
+| | 规划成功率 | CortexBench drawer-open（RM75） |
+|---|---|---|
+| LeWM 3D，全量 | **87.5**（86 / 88 / 92 / 84） | **78.7**（80 / 76 / 80） |
+| LeWM 2D，全量 | 75.0（76 / 66 / 76 / 82） | 26.7（28 / 24 / 28） |
+| 随机策略 | 38.5（38 / 24 / 46 / 46，同一批起点） | — |
+
+同为全量的 Sawyer drawer-open：规划 3D 87.5、2D 71.5、随机 34.0；CortexBench 3D 100.0、2D 52.0。
+
+- **相对 Sawyer 版改了什么**：
+  - 专家（CortexBench 示范）：metaworld 的 `SawyerDrawerOpenV3Policy` 只改一个数，手停在把手上方 2.8 cm，而不是下方 2 cm。EG2-4C2 的指垫只有 3.35 cm，从下方只碰到杆的一侧，拉的时候会滑脱；抽屉一松开就离开止挡，不再算成功（metaworld 要求抽屉一直顶在完全拉开的位置）。原脚本在 RM75 上 70/200，改后在示范和评测实际用的布局上 998/1000，在 metaworld 自带的布局上 994/1000；Sawyer 用原脚本 200/200。
+  - 采集策略（`RM75DrawerThreePartPolicy`）：在 Sawyer 的 `DrawerThreePartPolicy` 上改两处，手的高度同上；原来读 mocap 的地方改读 RM75 控制器的手目标点。拉到目标开度的提前量等参数都没改。
+  - 评测的 `set_state` 恢复 RM75 控制器的状态，抽屉柜照旧恢复。
+- **数据**：全量 1 万条 × 200 步，三类回合实际占 50.1%、30.4%、19.5%。
+  - 拉开超过 5 cm 的回合：主干 99.3%，分叉 89.6%，随机 0.2%（Sawyer：98.6%、89.6%、0%）。
+  - 开度的分布和 Sawyer 接近。到达目标开度的误差比 Sawyer 大：中位数 9.1 mm 对 5.3 mm，2 cm 以内 85% 对 98%。拉到目标前的提前量是按 Sawyer 的手调的。
+  - 关节没有超出模型的范围，点云没有空帧。
+- **CortexBench 示范**：改过的专家录的 25 条，种子 12345–12369，没有跳过。
+- **规划评测的一个巧合**：3D 四个种子的成功率与 Sawyer drawer 一节完全相同。逐个起点核对过，每个种子有 8–12 个起点结果不同，只是总数相同。两边测试集用同一个世界种子采集（抽屉柜位置、回合计划相同），评测又按同样的种子抽起点，所以起点的难度相近。
+- **CortexBench 明显低于 Sawyer**（3D 78.7 对 100.0，2D 26.7 对 52.0），原因还没查。20 次评测之间起伏很大（3D 单次 8–80），最后一轮也偏低（3D 60.0，2D 8.0）。
+- **原始记录**（在 `$STABLEWM_HOME` 下）：
+  - 采集日志：`logs/collect_mw_drawer_rm75.log`；流程日志：`logs/mw_drawer_rm75_pipeline.log`；示范：`logs/cortexbench/make_rm75_demos_drawer-open.log`。
+  - 评测日志：`logs/eval/mw_drawer_rm75_{pix,pcd}_e10_s*.log`、`logs/eval/mw_drawer_rm75_random_s*.log`。
+  - CortexBench 每次运行的记录：`logs/cortexbench/runs/lewm_mw_drawer_rm75_{pix,pcd}/`；示范：`datasets/cortexbench/metaworld-rm75-expert{,-pcd}/`。
+  - 模型：`checkpoints/mw_drawer_rm75_{pix,pcd_dexart}/`。
 
 ## 与其他工作的对比（CortexBench MetaWorld 五任务）
 

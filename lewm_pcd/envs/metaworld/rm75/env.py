@@ -5,7 +5,7 @@ env (robot.py) instead of the Sawyer one. Only what depends on the robot changes
 * rows record the RM75 controller's state instead of the Sawyer's mocap: ``ee_target`` (the hand target the actions
   move) and ``q_cmd`` (the 7 joint targets of the servos);
 * set_state restores qpos / qvel and that controller state (the Sawyer version restores the mocap body).
-Tasks: RM75BinPickEnv (bin-picking), RM75ButtonPressEnv (button-press-topdown).
+Tasks: RM75BinPickEnv (bin-picking), RM75ButtonPressEnv (button-press-topdown), RM75DrawerEnv (drawer-open).
 """
 
 from __future__ import annotations
@@ -15,6 +15,7 @@ import numpy as np
 from gymnasium.spaces import Box
 
 from ..button_press import MWButtonPressEnv
+from ..drawer import MWDrawerEnv
 from ..env import MWBinPickEnv, MWTaskEnv
 from .robot import make
 
@@ -115,4 +116,18 @@ class RM75ButtonPressEnv(MWButtonPressEnv, RM75TaskEnv):
             self._model.body_pos[self._box_body] = np.asarray(box_pos, dtype=np.float64)
             mujoco.mj_forward(self._model, self._data)
             self._mw._target_pos = self._mw._get_site_pos('hole')
+        RM75TaskEnv.set_state(self, qpos, qvel, ee_target, q_cmd)
+
+
+class RM75DrawerEnv(MWDrawerEnv, RM75TaskEnv):
+    """MWDrawerEnv (bring the drawer to target openings / waypoints) on the RM75: MRO MWDrawerEnv -> RM75TaskEnv ->
+    MWTaskEnv. set_state restores the RM75 controller's state besides the drawer case (a fixture the reset moves) and the
+    target that depends on it."""
+
+    def set_state(self, qpos, qvel, ee_target=None, q_cmd=None, case_pos=None):
+        if case_pos is not None:  # as MWDrawerEnv.set_state
+            pos = np.asarray(case_pos, dtype=np.float64)
+            self._model.body_pos[self._case_body] = pos
+            self._mw.obj_init_pos = pos.copy()
+            self._mw._target_pos = pos + np.array([0.0, -0.16 - self._mw.maxDist, 0.09])
         RM75TaskEnv.set_state(self, qpos, qvel, ee_target, q_cmd)

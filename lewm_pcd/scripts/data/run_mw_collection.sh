@@ -7,7 +7,7 @@
 #          and test, ep_idx added (add_eval_columns.py, for eval.py)
 # Output: metaworld/<NAME>.h5 + <NAME>_pcd.h5 (train), metaworld/<NAME>_test.h5 + <NAME>_test_pcd.h5.
 #   STABLEWM_HOME=<checkout>/lewm_pcd_data PY=<lewm_mw python> CFG=mw_binpick NAME=mw_binpick bash scripts/data/run_mw_collection.sh
-# (bin-picking on the RM75-B + EG2-4C2, envs/metaworld/rm75: CFG=mw_binpick_rm75 NAME=mw_binpick_rm75)
+# (on the RM75-B + EG2-4C2, envs/metaworld/rm75: CFG=NAME=mw_binpick_rm75, mw_button_rm75 or mw_drawer_rm75)
 set -euo pipefail
 cd "$(dirname "$0")/../.."  # lewm_pcd
 : "${STABLEWM_HOME:?set STABLEWM_HOME to the data home (<checkout>/lewm_pcd_data)}"
