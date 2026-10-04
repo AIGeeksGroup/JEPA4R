@@ -1,0 +1,971 @@
+{
+  "schema_version": 1,
+  "audit_date": "2026-10-04",
+  "audit_timezone": "Asia/Shanghai",
+  "task": "pen-v0",
+  "status": "verified_artifact_audit",
+  "scope": {
+    "activity": "Audit of existing local and 927-5090 Pen artifacts; publish a small audit record.",
+    "training_executed": false,
+    "simulation_executed": false,
+    "evaluation_executed": false,
+    "policy_reload_executed": false,
+    "wm_reload_executed": false,
+    "large_checkpoint_bytes_read": false,
+    "raw_demo_bytes_read": false,
+    "small_policy_file_bytes_hashed": true,
+    "remote_access": "read_only",
+    "audited_runs": 12,
+    "historical_runs_checked": 6,
+    "allowed_write": "JEPA4R-cortexbench-src/docs/results/adroit_pen_release_audit_20261004.json",
+    "prior_pen_result_json_modified": false,
+    "readme_modified": false,
+    "commit_created": false,
+    "files_created_other_than_allowed_write": false
+  },
+  "definitions": {
+    "metric_unit": "percent",
+    "best": "Maximum of 20 logged eval/success values, recomputed from metrics.jsonl.",
+    "final": "Logged eval/success at zero-based epoch 99.",
+    "std": "Population standard deviation across policy seeds 100/200/300 (ddof=0).",
+    "policy_identity": "Fresh SHA256 of the small saved policy file; verifies identity, not loadability or new rollout performance.",
+    "random_control": "Frozen encoder and projector with one representation initialization seed 0 shared across the three policy seeds.",
+    "checkpoint_selection_boundary": "Best-of-20 is a logged success maximum. It is not an independent evaluation of the saved best_policy.pickle."
+  },
+  "formal_protocol": {
+    "num_demos": 100,
+    "eval_num_traj": 25,
+    "epochs": 100,
+    "eval_frequency": 5,
+    "policy_seeds": [
+      100,
+      200,
+      300
+    ],
+    "eval_epochs": [
+      5,
+      10,
+      15,
+      20,
+      25,
+      30,
+      35,
+      40,
+      45,
+      50,
+      55,
+      60,
+      65,
+      70,
+      75,
+      80,
+      85,
+      90,
+      95,
+      99
+    ],
+    "device": "cpu",
+    "representation_initialization_seed_for_random_controls": 0
+  },
+  "source_path_convention": {
+    "local_paths": "Relative to the current workspace.",
+    "remote_paths": "Absolute paths on 927-5090.",
+    "per_run_file_roles": {
+      "metrics": "metrics.jsonl",
+      "validation": "validation.json",
+      "state": "state.json",
+      "exit": "exit_code",
+      "resolved_config": "job_config.json"
+    },
+    "policy_file_by_modality": {
+      "rgb": "adroit_cortex_vil/iterations/best_policy.pickle",
+      "pcd": "adroit_cortex_pcd/iterations/best_policy.pickle"
+    },
+    "job_config_format": "YAML despite the .json extension.",
+    "file_sha_scope": "Only the listed files were freshly hashed in the completed audit. Unlisted source files were read but their hashes were not computed."
+  },
+  "local_sources": [
+    {
+      "path": "JEPA4R-cortexbench-src/docs/results/adroit_pen_100demo_random_control.json",
+      "sha256": "67910adc5331b94b09f1127a80d4e340eb7142b3c6193775b0818f7367130e41",
+      "sha256_fresh_in_completed_audit": true
+    },
+    {
+      "path": "artifacts/pen_random_control_20261001/results/reference_results.json",
+      "sha256": "61970ba4aba471371b56e4b979a201cea506403b74563f64970bb0c1e0a483b4",
+      "sha256_fresh_in_completed_audit": true,
+      "remote_copy_sha256_equal": true
+    },
+    {
+      "path": "artifacts/pen_random_control_20261001/results/results_summary.json",
+      "sha256": "5878829e7738f162b5c1cf51a014beb0f30af33a64c59113904cf1bb40fd1f0f",
+      "sha256_fresh_in_completed_audit": true,
+      "remote_copy_sha256_equal": true
+    },
+    {
+      "path": "artifacts/pen_random_control_20261001/results/reproducibility/input_audit.json",
+      "sha256": "14b365c9d5dd4f344bf2109d405664b35b3d5ff7d0567bef26f65a9ff59a5ecf",
+      "sha256_fresh_in_completed_audit": true
+    },
+    {
+      "path": "JEPA4R-cortexbench-src/docs/experiments/adroit_pen_25demo_history.md",
+      "sha256": null,
+      "sha256_fresh_in_completed_audit": false
+    }
+  ],
+  "cross_checks": {
+    "formal_local_remote_cases": 12,
+    "formal_best_final_policy_sha_mismatches": [],
+    "pretrained_reference_snapshot_exact_matches": 6,
+    "random_metrics_and_validation_sha_local_remote_matches": 6,
+    "local_recorded_artifact_sha_checks": 47,
+    "local_recorded_artifact_sha_mismatches": [],
+    "local_archived_source_sha_checks": 8,
+    "local_archived_source_sha_mismatches": [],
+    "formal_policy_sha_checks": 12,
+    "formal_policy_sha_mismatches": [],
+    "all_formal_loss_eval_finite": true,
+    "all_formal_loss_counts_100": true,
+    "all_formal_eval_counts_20": true,
+    "all_formal_eval_epoch_grids_correct": true,
+    "all_formal_loss_steps_1_through_100": true,
+    "all_formal_state_finished_and_exit_zero": true,
+    "all_formal_derived_metrics_equal_validation": true,
+    "all_formal_protocols_100_demos_25_eval": true,
+    "random_pipeline_exit_code": 0
+  },
+  "formal_runs": [
+    {
+      "track": "pretrained_rgb",
+      "seed": 100,
+      "status": "verified_artifact_audit",
+      "modality_scope": "RGB BC on the official Pen demo protocol",
+      "remote_source_root": "/autodl-fs/data/lewm/cortexbench-adroit-pen-official-100demo-rgb-20260929-v1/lewm_adroit_pen_2d/seed_100",
+      "local_source_root": null,
+      "derived": {
+        "best_success_percent": 48,
+        "final_success_percent": 44,
+        "loss_records": 100,
+        "eval_records": 20,
+        "last_eval_epoch": 99,
+        "finite": true,
+        "eval_epoch_grid_matches": true,
+        "loss_steps_1_through_100": true
+      },
+      "exit": {
+        "state_stage": "finished",
+        "state_exit_code": 0,
+        "exit_file_code": 0
+      },
+      "config": {
+        "env": "pen-v0",
+        "embedding": "lewm_adroit_pen_2d",
+        "num_demos": 100,
+        "epochs": 100,
+        "eval_frequency": 5,
+        "eval_num_traj": 25,
+        "device": "cpu"
+      },
+      "validation": {
+        "status": "PASS",
+        "derived_metrics_match": true,
+        "policy_sha_match": true,
+        "reference_snapshot_exact_match": true
+      },
+      "policy_sha256": "a030cad81aec5fcadf59f0a11e1e93ef10dec00835f95b8491cc6f089c917b67",
+      "source_file_sha256_fresh_in_completed_audit": {
+        "metrics.jsonl": "6efd9f9561098702a653cdde1c47a8f5554ce2e40073f92f0e034ac481874d51",
+        "validation.json": "dd281b5de1695ab59275fe260c0f12db324b2df4bbce4fe569d08af6969ca3e2",
+        "adroit_cortex_vil/iterations/best_policy.pickle": "a030cad81aec5fcadf59f0a11e1e93ef10dec00835f95b8491cc6f089c917b67"
+      }
+    },
+    {
+      "track": "pretrained_rgb",
+      "seed": 200,
+      "status": "verified_artifact_audit",
+      "modality_scope": "RGB BC on the official Pen demo protocol",
+      "remote_source_root": "/autodl-fs/data/lewm/cortexbench-adroit-pen-official-100demo-rgb-20260929-v1/lewm_adroit_pen_2d/seed_200",
+      "local_source_root": null,
+      "derived": {
+        "best_success_percent": 44,
+        "final_success_percent": 36,
+        "loss_records": 100,
+        "eval_records": 20,
+        "last_eval_epoch": 99,
+        "finite": true,
+        "eval_epoch_grid_matches": true,
+        "loss_steps_1_through_100": true
+      },
+      "exit": {
+        "state_stage": "finished",
+        "state_exit_code": 0,
+        "exit_file_code": 0
+      },
+      "config": {
+        "env": "pen-v0",
+        "embedding": "lewm_adroit_pen_2d",
+        "num_demos": 100,
+        "epochs": 100,
+        "eval_frequency": 5,
+        "eval_num_traj": 25,
+        "device": "cpu"
+      },
+      "validation": {
+        "status": "PASS",
+        "derived_metrics_match": true,
+        "policy_sha_match": true,
+        "reference_snapshot_exact_match": true
+      },
+      "policy_sha256": "a24b572b753e22bb47e7ed3605bbcb0ba6ea85a8fdb092dbd476a127f5dd161e",
+      "source_file_sha256_fresh_in_completed_audit": {
+        "metrics.jsonl": "4b2f3fb7b376bb363edcc1386fc62051f9ed984f1d9650e204776a5eee5fe807",
+        "validation.json": "89192b1044e77a8a37617bdf759ed3df68db514f0448b93d29392474a5dd0717",
+        "adroit_cortex_vil/iterations/best_policy.pickle": "a24b572b753e22bb47e7ed3605bbcb0ba6ea85a8fdb092dbd476a127f5dd161e"
+      }
+    },
+    {
+      "track": "pretrained_rgb",
+      "seed": 300,
+      "status": "verified_artifact_audit",
+      "modality_scope": "RGB BC on the official Pen demo protocol",
+      "remote_source_root": "/autodl-fs/data/lewm/cortexbench-adroit-pen-official-100demo-rgb-20260929-v1/lewm_adroit_pen_2d/seed_300",
+      "local_source_root": null,
+      "derived": {
+        "best_success_percent": 56,
+        "final_success_percent": 32,
+        "loss_records": 100,
+        "eval_records": 20,
+        "last_eval_epoch": 99,
+        "finite": true,
+        "eval_epoch_grid_matches": true,
+        "loss_steps_1_through_100": true
+      },
+      "exit": {
+        "state_stage": "finished",
+        "state_exit_code": 0,
+        "exit_file_code": 0
+      },
+      "config": {
+        "env": "pen-v0",
+        "embedding": "lewm_adroit_pen_2d",
+        "num_demos": 100,
+        "epochs": 100,
+        "eval_frequency": 5,
+        "eval_num_traj": 25,
+        "device": "cpu"
+      },
+      "validation": {
+        "status": "PASS",
+        "derived_metrics_match": true,
+        "policy_sha_match": true,
+        "reference_snapshot_exact_match": true
+      },
+      "policy_sha256": "52660e716bd7a4fb6ea19061c59b3e049a691bdae92d04bbb628054094272415",
+      "source_file_sha256_fresh_in_completed_audit": {
+        "metrics.jsonl": "f5a9678493e139aa9b0b1f6ad383f1288f70766590757cef0eef1c4d9e29540f",
+        "validation.json": "034d950597c691395b29d457a113c01f4f892a9b28a62c53ac09bb0f357b3b07",
+        "adroit_cortex_vil/iterations/best_policy.pickle": "52660e716bd7a4fb6ea19061c59b3e049a691bdae92d04bbb628054094272415"
+      }
+    },
+    {
+      "track": "pretrained_pcd",
+      "seed": 100,
+      "status": "verified_artifact_audit",
+      "modality_scope": "3D PCD extension; not official RGB CortexBench leaderboard result",
+      "remote_source_root": "/autodl-fs/data/lewm/cortexbench-adroit-pen-pcd-bc-100demo-20260930-v1/pcd_100demo_formal/seed_100",
+      "local_source_root": null,
+      "derived": {
+        "best_success_percent": 84,
+        "final_success_percent": 76,
+        "loss_records": 100,
+        "eval_records": 20,
+        "last_eval_epoch": 99,
+        "finite": true,
+        "eval_epoch_grid_matches": true,
+        "loss_steps_1_through_100": true
+      },
+      "exit": {
+        "state_stage": "finished",
+        "state_exit_code": 0,
+        "exit_file_code": 0
+      },
+      "config": {
+        "env": "pen-v0",
+        "embedding": "lewm_adroit_pen_pcd",
+        "num_demos": 100,
+        "epochs": 100,
+        "eval_frequency": 5,
+        "eval_num_traj": 25,
+        "device": "cpu"
+      },
+      "validation": {
+        "status": "PASS",
+        "derived_metrics_match": true,
+        "policy_sha_match": true,
+        "reference_snapshot_exact_match": true
+      },
+      "policy_sha256": "59fa9874554158a43e8493378864989c1d9626660c2555a59742e7f3b1ea7982",
+      "source_file_sha256_fresh_in_completed_audit": {
+        "metrics.jsonl": "9c1c333e030a151d727fa3c542de80255b97f8a2a619287cff0ad27b7901e75a",
+        "validation.json": "f5dcfa79e2f867134821b1ea7b1275a9683a7f506a4ad17933ec4446f37b97b6",
+        "adroit_cortex_pcd/iterations/best_policy.pickle": "59fa9874554158a43e8493378864989c1d9626660c2555a59742e7f3b1ea7982"
+      }
+    },
+    {
+      "track": "pretrained_pcd",
+      "seed": 200,
+      "status": "verified_artifact_audit",
+      "modality_scope": "3D PCD extension; not official RGB CortexBench leaderboard result",
+      "remote_source_root": "/autodl-fs/data/lewm/cortexbench-adroit-pen-pcd-bc-100demo-20260930-v1/pcd_100demo_formal/seed_200",
+      "local_source_root": null,
+      "derived": {
+        "best_success_percent": 80,
+        "final_success_percent": 72,
+        "loss_records": 100,
+        "eval_records": 20,
+        "last_eval_epoch": 99,
+        "finite": true,
+        "eval_epoch_grid_matches": true,
+        "loss_steps_1_through_100": true
+      },
+      "exit": {
+        "state_stage": "finished",
+        "state_exit_code": 0,
+        "exit_file_code": 0
+      },
+      "config": {
+        "env": "pen-v0",
+        "embedding": "lewm_adroit_pen_pcd",
+        "num_demos": 100,
+        "epochs": 100,
+        "eval_frequency": 5,
+        "eval_num_traj": 25,
+        "device": "cpu"
+      },
+      "validation": {
+        "status": "PASS",
+        "derived_metrics_match": true,
+        "policy_sha_match": true,
+        "reference_snapshot_exact_match": true
+      },
+      "policy_sha256": "573bf6ea9a3755dc3ab877cd12cbe6dab4bc3c1be425cf302c0eebc1c7af857e",
+      "source_file_sha256_fresh_in_completed_audit": {
+        "metrics.jsonl": "3816b8edc6d03db36c645a57f1f682d6aa8c67b6f57a8df3ddb39effce8281f4",
+        "validation.json": "50fe6ed205a8f8c4eff0e2172f8f14d8609f7190b1bd26eb7e150ed0747575f6",
+        "adroit_cortex_pcd/iterations/best_policy.pickle": "573bf6ea9a3755dc3ab877cd12cbe6dab4bc3c1be425cf302c0eebc1c7af857e"
+      }
+    },
+    {
+      "track": "pretrained_pcd",
+      "seed": 300,
+      "status": "verified_artifact_audit",
+      "modality_scope": "3D PCD extension; not official RGB CortexBench leaderboard result",
+      "remote_source_root": "/autodl-fs/data/lewm/cortexbench-adroit-pen-pcd-bc-100demo-20260930-v1/pcd_100demo_formal/seed_300",
+      "local_source_root": null,
+      "derived": {
+        "best_success_percent": 84,
+        "final_success_percent": 72,
+        "loss_records": 100,
+        "eval_records": 20,
+        "last_eval_epoch": 99,
+        "finite": true,
+        "eval_epoch_grid_matches": true,
+        "loss_steps_1_through_100": true
+      },
+      "exit": {
+        "state_stage": "finished",
+        "state_exit_code": 0,
+        "exit_file_code": 0
+      },
+      "config": {
+        "env": "pen-v0",
+        "embedding": "lewm_adroit_pen_pcd",
+        "num_demos": 100,
+        "epochs": 100,
+        "eval_frequency": 5,
+        "eval_num_traj": 25,
+        "device": "cpu"
+      },
+      "validation": {
+        "status": "PASS",
+        "derived_metrics_match": true,
+        "policy_sha_match": true,
+        "reference_snapshot_exact_match": true
+      },
+      "policy_sha256": "f2bd930339b7ae7816a136900e8ffe42bec2b0406ec0b18d68c44ffc873eff8a",
+      "source_file_sha256_fresh_in_completed_audit": {
+        "metrics.jsonl": "3d6fb3c0f6456706cc1cbe6ab9b9424d035e0e637d12ac3df60c49160effad77",
+        "validation.json": "21ad8dbd00753e7ff68d152bae2487fee06075f1b1027b0a05011a6ab053382e",
+        "adroit_cortex_pcd/iterations/best_policy.pickle": "f2bd930339b7ae7816a136900e8ffe42bec2b0406ec0b18d68c44ffc873eff8a"
+      }
+    },
+    {
+      "track": "random_rgb",
+      "seed": 100,
+      "status": "verified_artifact_audit",
+      "modality_scope": "RGB BC on the official Pen demo protocol",
+      "remote_source_root": "/root/autodl-tmp/workspace/users/lewm/cortexbench-adroit-pen-random-control-100demo-20261001-v1/rgb_formal/seed_100",
+      "local_source_root": "artifacts/pen_random_control_20261001/results/rgb_formal/seed_100",
+      "derived": {
+        "best_success_percent": 52,
+        "final_success_percent": 36,
+        "loss_records": 100,
+        "eval_records": 20,
+        "last_eval_epoch": 99,
+        "finite": true,
+        "eval_epoch_grid_matches": true,
+        "loss_steps_1_through_100": true
+      },
+      "exit": {
+        "state_stage": "finished",
+        "state_exit_code": 0,
+        "exit_file_code": 0
+      },
+      "config": {
+        "env": "pen-v0",
+        "embedding": "lewm_adroit_pen_2d_random",
+        "num_demos": 100,
+        "epochs": 100,
+        "eval_frequency": 5,
+        "eval_num_traj": 25,
+        "device": "cpu"
+      },
+      "validation": {
+        "status": "PASS",
+        "derived_metrics_match": true,
+        "policy_sha_match": true,
+        "reference_snapshot_exact_match": null
+      },
+      "policy_sha256": "575b22d56a065ee527c7a4749be150e216a7199aab3a88c8363f2240b1f4140a",
+      "source_file_sha256_fresh_in_completed_audit": {
+        "metrics.jsonl": "5b4ed9076cee18e4a70358c4f7bcafc8b4c6929a0686e81afcb0d14dcec64588",
+        "job_config.json": "155697db66c0ea79366b8dca3697b4fa550802c44ab6873af127f2eeb9898894",
+        ".hydra/config.yaml": "26b0aa5bdb2ce38546299d731037f8785fe4d4e03da3538685c5d24ef9890a31",
+        "validation.json": "5c3898a01fd6f342dbae9bd3356157b796894e3d0f0d4e8da311843135c882d6",
+        "state.json": "ac4265b9075033fdcd4f1fbdcf613cd11951604fae0bb69a547e011050d5fda5",
+        "exit_code": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "adroit_cortex_vil/iterations/best_policy.pickle": "575b22d56a065ee527c7a4749be150e216a7199aab3a88c8363f2240b1f4140a"
+      }
+    },
+    {
+      "track": "random_rgb",
+      "seed": 200,
+      "status": "verified_artifact_audit",
+      "modality_scope": "RGB BC on the official Pen demo protocol",
+      "remote_source_root": "/root/autodl-tmp/workspace/users/lewm/cortexbench-adroit-pen-random-control-100demo-20261001-v1/rgb_formal/seed_200",
+      "local_source_root": "artifacts/pen_random_control_20261001/results/rgb_formal/seed_200",
+      "derived": {
+        "best_success_percent": 56,
+        "final_success_percent": 44,
+        "loss_records": 100,
+        "eval_records": 20,
+        "last_eval_epoch": 99,
+        "finite": true,
+        "eval_epoch_grid_matches": true,
+        "loss_steps_1_through_100": true
+      },
+      "exit": {
+        "state_stage": "finished",
+        "state_exit_code": 0,
+        "exit_file_code": 0
+      },
+      "config": {
+        "env": "pen-v0",
+        "embedding": "lewm_adroit_pen_2d_random",
+        "num_demos": 100,
+        "epochs": 100,
+        "eval_frequency": 5,
+        "eval_num_traj": 25,
+        "device": "cpu"
+      },
+      "validation": {
+        "status": "PASS",
+        "derived_metrics_match": true,
+        "policy_sha_match": true,
+        "reference_snapshot_exact_match": null
+      },
+      "policy_sha256": "6f9aa09b7b16d714c6e909d48976b2af7bfef7fffd9259c70fc69598db4aa566",
+      "source_file_sha256_fresh_in_completed_audit": {
+        "metrics.jsonl": "a913700b37aa34338512d78550b8933697100452784459a2070f3c3108360608",
+        "job_config.json": "a5fc6248eac29640074f5ec1b172599aa9649276fcb8a48d0a2bae151a42bc4d",
+        ".hydra/config.yaml": "99a184e667fc93df88d4e08e5c54ee3f79bd2af91f43c8c32b8eab87ffaba755",
+        "validation.json": "624bacd19becca2e74ccddc9f32ede448b6d6039c5bb45bbbc6a0475395b6617",
+        "state.json": "c7c000b324adf0c10cdd35994d5f9bb9e4c875026fa4488156bea0072711ea97",
+        "exit_code": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "adroit_cortex_vil/iterations/best_policy.pickle": "6f9aa09b7b16d714c6e909d48976b2af7bfef7fffd9259c70fc69598db4aa566"
+      }
+    },
+    {
+      "track": "random_rgb",
+      "seed": 300,
+      "status": "verified_artifact_audit",
+      "modality_scope": "RGB BC on the official Pen demo protocol",
+      "remote_source_root": "/root/autodl-tmp/workspace/users/lewm/cortexbench-adroit-pen-random-control-100demo-20261001-v1/rgb_formal/seed_300",
+      "local_source_root": "artifacts/pen_random_control_20261001/results/rgb_formal/seed_300",
+      "derived": {
+        "best_success_percent": 68,
+        "final_success_percent": 68,
+        "loss_records": 100,
+        "eval_records": 20,
+        "last_eval_epoch": 99,
+        "finite": true,
+        "eval_epoch_grid_matches": true,
+        "loss_steps_1_through_100": true
+      },
+      "exit": {
+        "state_stage": "finished",
+        "state_exit_code": 0,
+        "exit_file_code": 0
+      },
+      "config": {
+        "env": "pen-v0",
+        "embedding": "lewm_adroit_pen_2d_random",
+        "num_demos": 100,
+        "epochs": 100,
+        "eval_frequency": 5,
+        "eval_num_traj": 25,
+        "device": "cpu"
+      },
+      "validation": {
+        "status": "PASS",
+        "derived_metrics_match": true,
+        "policy_sha_match": true,
+        "reference_snapshot_exact_match": null
+      },
+      "policy_sha256": "7fd0008da1550ed84d3a5b91df11e20303d0e7dd0f296eb1f4fa20df072b0758",
+      "source_file_sha256_fresh_in_completed_audit": {
+        "metrics.jsonl": "0738e9b9787b8b4cc1c60b5b5ef518d4f989fcf6508b7b9eae839a3229817cef",
+        "job_config.json": "711c1012d1eaac70cc5677cd7eb6f8040edcf964f57fc3dc8c614f491309aaf2",
+        ".hydra/config.yaml": "7df2ea9dac6803b3ef72ed36628f9d31442ae504d34cc8800d2c321e7441151c",
+        "validation.json": "e51e2b61dbc4b077b5421e9f31a852fc51d1917494dcabb631db4f53dc3a6969",
+        "state.json": "85f4018b4622b633030d8156b37632c575633312f0f81d4a92439b5d96b701ff",
+        "exit_code": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "adroit_cortex_vil/iterations/best_policy.pickle": "7fd0008da1550ed84d3a5b91df11e20303d0e7dd0f296eb1f4fa20df072b0758"
+      }
+    },
+    {
+      "track": "random_pcd",
+      "seed": 100,
+      "status": "verified_artifact_audit",
+      "modality_scope": "3D PCD extension; not official RGB CortexBench leaderboard result",
+      "remote_source_root": "/root/autodl-tmp/workspace/users/lewm/cortexbench-adroit-pen-random-control-100demo-20261001-v1/pcd_formal/seed_100",
+      "local_source_root": "artifacts/pen_random_control_20261001/results/pcd_formal/seed_100",
+      "derived": {
+        "best_success_percent": 72,
+        "final_success_percent": 68,
+        "loss_records": 100,
+        "eval_records": 20,
+        "last_eval_epoch": 99,
+        "finite": true,
+        "eval_epoch_grid_matches": true,
+        "loss_steps_1_through_100": true
+      },
+      "exit": {
+        "state_stage": "finished",
+        "state_exit_code": 0,
+        "exit_file_code": 0
+      },
+      "config": {
+        "env": "pen-v0",
+        "embedding": "lewm_adroit_pen_pcd_random",
+        "num_demos": 100,
+        "epochs": 100,
+        "eval_frequency": 5,
+        "eval_num_traj": 25,
+        "device": "cpu"
+      },
+      "validation": {
+        "status": "PASS",
+        "derived_metrics_match": true,
+        "policy_sha_match": true,
+        "reference_snapshot_exact_match": null
+      },
+      "policy_sha256": "9845c44514e5b1a56ca19067cc53b6a5534bbf4719c99ef204f6fe56a63c81dc",
+      "source_file_sha256_fresh_in_completed_audit": {
+        "metrics.jsonl": "d0f36d5f5175c0c3d242903a8b7e71cee8b8c394eabce784be48b26eb9040745",
+        "job_config.json": "e7d1ceb75f0683a37409d016df04664c9a17f505fc06cf5e1671401cebdc0fa6",
+        ".hydra/config.yaml": "31c0fe6e857b9af23909dee621246a6929419e1757f9b20f5c59376d8e688ae7",
+        "validation.json": "625c8b0acd2ec410cbbea530fe35fd7c4113f9da3ffdee1e7721744e70f6319d",
+        "state.json": "c0c23ab8c9600b46beceb4469f3a75cb550b1aa75d074dc297a700a7d94c767e",
+        "exit_code": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "adroit_cortex_pcd/iterations/best_policy.pickle": "9845c44514e5b1a56ca19067cc53b6a5534bbf4719c99ef204f6fe56a63c81dc"
+      }
+    },
+    {
+      "track": "random_pcd",
+      "seed": 200,
+      "status": "verified_artifact_audit",
+      "modality_scope": "3D PCD extension; not official RGB CortexBench leaderboard result",
+      "remote_source_root": "/root/autodl-tmp/workspace/users/lewm/cortexbench-adroit-pen-random-control-100demo-20261001-v1/pcd_formal/seed_200",
+      "local_source_root": "artifacts/pen_random_control_20261001/results/pcd_formal/seed_200",
+      "derived": {
+        "best_success_percent": 72,
+        "final_success_percent": 60,
+        "loss_records": 100,
+        "eval_records": 20,
+        "last_eval_epoch": 99,
+        "finite": true,
+        "eval_epoch_grid_matches": true,
+        "loss_steps_1_through_100": true
+      },
+      "exit": {
+        "state_stage": "finished",
+        "state_exit_code": 0,
+        "exit_file_code": 0
+      },
+      "config": {
+        "env": "pen-v0",
+        "embedding": "lewm_adroit_pen_pcd_random",
+        "num_demos": 100,
+        "epochs": 100,
+        "eval_frequency": 5,
+        "eval_num_traj": 25,
+        "device": "cpu"
+      },
+      "validation": {
+        "status": "PASS",
+        "derived_metrics_match": true,
+        "policy_sha_match": true,
+        "reference_snapshot_exact_match": null
+      },
+      "policy_sha256": "5a4c683bf063f8623c813977dc7bb147d11e7049ed3c004a7734f66c1bdab241",
+      "source_file_sha256_fresh_in_completed_audit": {
+        "metrics.jsonl": "ca57a0e67144def4a49f247bfe1de1be858e87931f4aac49d9cf5945c18c838a",
+        "job_config.json": "aa8b97981c884344f3c239b5b64793e313da0634a7daf25374989c478505f34d",
+        ".hydra/config.yaml": "7c0000e8dd05ff32e99192243cdd9b8f69aafcccc2bfff422a4a6c2a79a594bd",
+        "validation.json": "f122db8110b69a327df5b3cb974159e5cc0ad1c2f9cb82effe1b7367d53485e5",
+        "state.json": "37f11ba0166b39ac5f15f043b7f4c99b346a8fcee898594db6401be2e50d1702",
+        "exit_code": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "adroit_cortex_pcd/iterations/best_policy.pickle": "5a4c683bf063f8623c813977dc7bb147d11e7049ed3c004a7734f66c1bdab241"
+      }
+    },
+    {
+      "track": "random_pcd",
+      "seed": 300,
+      "status": "verified_artifact_audit",
+      "modality_scope": "3D PCD extension; not official RGB CortexBench leaderboard result",
+      "remote_source_root": "/root/autodl-tmp/workspace/users/lewm/cortexbench-adroit-pen-random-control-100demo-20261001-v1/pcd_formal/seed_300",
+      "local_source_root": "artifacts/pen_random_control_20261001/results/pcd_formal/seed_300",
+      "derived": {
+        "best_success_percent": 76,
+        "final_success_percent": 60,
+        "loss_records": 100,
+        "eval_records": 20,
+        "last_eval_epoch": 99,
+        "finite": true,
+        "eval_epoch_grid_matches": true,
+        "loss_steps_1_through_100": true
+      },
+      "exit": {
+        "state_stage": "finished",
+        "state_exit_code": 0,
+        "exit_file_code": 0
+      },
+      "config": {
+        "env": "pen-v0",
+        "embedding": "lewm_adroit_pen_pcd_random",
+        "num_demos": 100,
+        "epochs": 100,
+        "eval_frequency": 5,
+        "eval_num_traj": 25,
+        "device": "cpu"
+      },
+      "validation": {
+        "status": "PASS",
+        "derived_metrics_match": true,
+        "policy_sha_match": true,
+        "reference_snapshot_exact_match": null
+      },
+      "policy_sha256": "2da7d419e56c5fdfcd59ef22654226d85a85effd9195b4798bdcd9cbc453776c",
+      "source_file_sha256_fresh_in_completed_audit": {
+        "metrics.jsonl": "dd757d61dac2e8380ee6e94f0ecb6fa1f3018cc24c140f4ba1b57444c516b0e5",
+        "job_config.json": "0dc38265bc98703192e76c07645030483739810638687cb220eba2f59e8d7d83",
+        ".hydra/config.yaml": "bd7dfcd4c29c8ea5e5e69386465ebd136b5f7815f57631e71c5f77a0689e431d",
+        "validation.json": "34a241050ecd7716fcd55c5973b67ed1d86adc73120001b1235ca8dc6effe7c7",
+        "state.json": "642bfbc40df751430b2ae62453dec410203b6802674d4a01de08b07a1c746f62",
+        "exit_code": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "adroit_cortex_pcd/iterations/best_policy.pickle": "2da7d419e56c5fdfcd59ef22654226d85a85effd9195b4798bdcd9cbc453776c"
+      }
+    }
+  ],
+  "formal_summary": {
+    "pretrained_rgb": {
+      "best": {
+        "mean": 49.333333333333336,
+        "population_std": 4.988876515698588
+      },
+      "final": {
+        "mean": 37.333333333333336,
+        "population_std": 4.988876515698588
+      }
+    },
+    "random_rgb": {
+      "best": {
+        "mean": 58.666666666666664,
+        "population_std": 6.79869268479038
+      },
+      "final": {
+        "mean": 49.333333333333336,
+        "population_std": 13.59738536958076
+      }
+    },
+    "pretrained_pcd": {
+      "best": {
+        "mean": 82.66666666666667,
+        "population_std": 1.8856180831641267
+      },
+      "final": {
+        "mean": 73.33333333333333,
+        "population_std": 1.8856180831641267
+      }
+    },
+    "random_pcd": {
+      "best": {
+        "mean": 73.33333333333333,
+        "population_std": 1.8856180831641267
+      },
+      "final": {
+        "mean": 62.666666666666664,
+        "population_std": 3.7712361663282534
+      }
+    }
+  },
+  "historical_audit_resolution": {
+    "status": "resolved",
+    "audit_md": {
+      "remote_path": "/autodl-fs/data/lewm/cortexbench-adroit-pen-audit-20260929-v1/AUDIT.md",
+      "sha256": "4904cdf59f4efeb5334d29ce2f0ab468de21926b7e54835e1fe2d9a4891dbf6a",
+      "sha256_fresh_in_completed_audit": true,
+      "rgb_final_line": 44,
+      "rgb_final_success_percent": [
+        16,
+        24,
+        28
+      ],
+      "pcd_final_line": 46,
+      "pcd_final_success_percent": [
+        52,
+        68,
+        60
+      ],
+      "documentation_issue": "The CortexBench section omits the downstream demo/evaluation protocol and run roots."
+    },
+    "verified_protocol": {
+      "num_demos": 25,
+      "eval_num_traj": 25,
+      "epochs": 100,
+      "eval_frequency": 5,
+      "policy_seeds": [
+        100,
+        200,
+        300
+      ]
+    },
+    "conclusion": "AUDIT.md lines 44 and 46 match the earlier 25-demo/25-evaluation Pen runs, not the later 100-demo/25-evaluation pretrained runs. Both the historical metrics and the later metrics match their own configs and artifacts. There is no numerical conflict between the experiments.",
+    "publication_rule": "Publish the historical 25/25 runs separately. Do not relabel them as 100/25 or 25/100.",
+    "historical_runs": [
+      {
+        "track": "history_rgb",
+        "seed": 100,
+        "remote_source_root": "/autodl-fs/data/lewm/cortexbench-adroit-pen-official-bc-2d-20260928-v2/seed_100",
+        "best_success_percent": 28,
+        "final_success_percent": 16,
+        "loss_records": 100,
+        "eval_records": 20,
+        "last_eval_epoch": 99,
+        "finite": true,
+        "eval_epoch_grid_matches": true,
+        "state_stage": "finished",
+        "exit_code": 0,
+        "num_demos": 25,
+        "eval_num_traj": 25,
+        "validation_present": false,
+        "validation_status": null,
+        "source_file_sha256_fresh_in_completed_audit": {
+          "metrics.jsonl": "822b9be11d01f17e7b5ece8067eac252ed028bbed4a6979ef075df6cf024cad0"
+        },
+        "verification_scope": "Historical metrics and protocol verified. Standalone validation.json is absent; full validation gate not revalidated."
+      },
+      {
+        "track": "history_rgb",
+        "seed": 200,
+        "remote_source_root": "/autodl-fs/data/lewm/cortexbench-adroit-pen-official-bc-2d-20260928-v2/seed_200",
+        "best_success_percent": 32,
+        "final_success_percent": 24,
+        "loss_records": 100,
+        "eval_records": 20,
+        "last_eval_epoch": 99,
+        "finite": true,
+        "eval_epoch_grid_matches": true,
+        "state_stage": "finished",
+        "exit_code": 0,
+        "num_demos": 25,
+        "eval_num_traj": 25,
+        "validation_present": false,
+        "validation_status": null,
+        "source_file_sha256_fresh_in_completed_audit": {
+          "metrics.jsonl": "fde9154944689c12af1e00defa3397b6a1d362bbe78c563b828b2396591ee495"
+        },
+        "verification_scope": "Historical metrics and protocol verified. Standalone validation.json is absent; full validation gate not revalidated."
+      },
+      {
+        "track": "history_rgb",
+        "seed": 300,
+        "remote_source_root": "/autodl-fs/data/lewm/cortexbench-adroit-pen-official-bc-2d-20260928-v2/seed_300",
+        "best_success_percent": 32,
+        "final_success_percent": 28,
+        "loss_records": 100,
+        "eval_records": 20,
+        "last_eval_epoch": 99,
+        "finite": true,
+        "eval_epoch_grid_matches": true,
+        "state_stage": "finished",
+        "exit_code": 0,
+        "num_demos": 25,
+        "eval_num_traj": 25,
+        "validation_present": false,
+        "validation_status": null,
+        "source_file_sha256_fresh_in_completed_audit": {
+          "metrics.jsonl": "e82cb73392bb29e115a6badb8f872bf31fdade5026b4780ddd77968bf9cd7b08"
+        },
+        "verification_scope": "Historical metrics and protocol verified. Standalone validation.json is absent; full validation gate not revalidated."
+      },
+      {
+        "track": "history_pcd",
+        "seed": 100,
+        "remote_source_root": "/autodl-fs/data/lewm/cortexbench-adroit-pen-pcd-bc-20260929-v1/seed_100",
+        "best_success_percent": 68,
+        "final_success_percent": 52,
+        "loss_records": 100,
+        "eval_records": 20,
+        "last_eval_epoch": 99,
+        "finite": true,
+        "eval_epoch_grid_matches": true,
+        "state_stage": "finished",
+        "exit_code": 0,
+        "num_demos": 25,
+        "eval_num_traj": 25,
+        "validation_present": true,
+        "validation_status": "PASS",
+        "source_file_sha256_fresh_in_completed_audit": {
+          "metrics.jsonl": "11693cca43bf64be22ae208525b764f667ca28f54535d2372d40933bd17ad4ed",
+          "validation.json": "e8bf7cb939e8f6aaf0f333998375c5e4b24b09d25b16f8fcc179273e121b342e"
+        },
+        "verification_scope": "Metrics, protocol, state, exit, validation and small policy SHA verified; no reload or rollout."
+      },
+      {
+        "track": "history_pcd",
+        "seed": 200,
+        "remote_source_root": "/autodl-fs/data/lewm/cortexbench-adroit-pen-pcd-bc-20260929-v1/seed_200",
+        "best_success_percent": 68,
+        "final_success_percent": 68,
+        "loss_records": 100,
+        "eval_records": 20,
+        "last_eval_epoch": 99,
+        "finite": true,
+        "eval_epoch_grid_matches": true,
+        "state_stage": "finished",
+        "exit_code": 0,
+        "num_demos": 25,
+        "eval_num_traj": 25,
+        "validation_present": true,
+        "validation_status": "PASS",
+        "source_file_sha256_fresh_in_completed_audit": {
+          "metrics.jsonl": "fbc6f4140d57370fdcf775b07a825d89e52b84bacee11980c1b155dbef5dc39e",
+          "validation.json": "6c2580e5afd018c6518cf798a3c5bac75d6ce2d815f6b6e17cda3f5b830c7eb3"
+        },
+        "verification_scope": "Metrics, protocol, state, exit, validation and small policy SHA verified; no reload or rollout."
+      },
+      {
+        "track": "history_pcd",
+        "seed": 300,
+        "remote_source_root": "/autodl-fs/data/lewm/cortexbench-adroit-pen-pcd-bc-retry-seed300-run2-20260929-v1/seed_300",
+        "best_success_percent": 64,
+        "final_success_percent": 60,
+        "loss_records": 100,
+        "eval_records": 20,
+        "last_eval_epoch": 99,
+        "finite": true,
+        "eval_epoch_grid_matches": true,
+        "state_stage": "finished",
+        "exit_code": 0,
+        "num_demos": 25,
+        "eval_num_traj": 25,
+        "validation_present": true,
+        "validation_status": "PASS",
+        "source_file_sha256_fresh_in_completed_audit": {
+          "metrics.jsonl": "9b6222be710a193669b3872ce1ad23933b751f18972e8c2489dab9002a2809a1",
+          "validation.json": "d4264ac6af8f936495e237ff147b53158838960fbde50e5d1b22d360265289ed"
+        },
+        "verification_scope": "Metrics, protocol, state, exit, validation and small policy SHA verified; no reload or rollout."
+      }
+    ]
+  },
+  "demo_and_wm_sha_records": {
+    "verification_scope": "Recorded identities are consistent across the existing Pen result JSON, reference snapshot, input audit and applicable validations. Raw demos and WM checkpoints were not freshly hashed, loaded or revalidated in this audit.",
+    "fresh_hash_performed": false,
+    "records": [
+      {
+        "kind": "rgb_demo",
+        "path": "/autodl-fs/data/lewm/cortexbench-mujoco-official-smoke-v1/datasets/pen-v0.pickle",
+        "sha256": "cb6e122487f3abaed13e722eec9b4ba59441ea232ccb8a423c7e3a2c5fcfb557",
+        "fresh_hash_performed": false
+      },
+      {
+        "kind": "pcd_demo",
+        "path": "/autodl-fs/data/lewm/cortexbench-adroit-pen-pcd-demos-20260929-v1/pen-v0.pickle",
+        "sha256": "ba45961e860e3e4b7e184b9a908c80385a6e6b2d336b14d82d93ac4cfc6e089c",
+        "fresh_hash_performed": false
+      },
+      {
+        "kind": "rgb_wm",
+        "path": "/root/autodl-tmp/workspace/users/lewm/adroit_full/pen_official_10000_150_20260927/training_full_2d_v1/home/checkpoints/adroit_pen_full_2d_v1/weights_epoch_10.pt",
+        "sha256": "a2d9a034805ea295b6c731e14220d23f74bc80401c0e9f482782dbd027bb71bc",
+        "fresh_hash_performed": false
+      },
+      {
+        "kind": "pcd_wm",
+        "path": "/root/autodl-tmp/workspace/users/lewm/adroit_full/pen_official_10000_150_20260927/training_full_v1/home/checkpoints/adroit_pen_full_v1/weights_epoch_10.pt",
+        "sha256": "2e6c846ddb5087b2dff57f0e7af74b0e3193ed30ffbc2c5c839dddfa30d8877a",
+        "fresh_hash_performed": false
+      }
+    ],
+    "random_run_checkpoint_sha_note": "A WM checkpoint SHA recorded in a random run identifies the architecture/pretrained reference; it does not mean the random control loaded pretrained weights."
+  },
+  "publishable_conclusions": {
+    "verified": [
+      "The 12 formal Pen runs have mutually consistent derived metrics, 100/25 configs, completion artifacts and small policy SHA identities.",
+      "Within the frozen PCD control, pretrained minus random mean Best-of-20 is +9.333333333333334 percentage points; mean Final difference is +10.666666666666666 percentage points.",
+      "Within the frozen RGB control, pretrained minus random mean Best-of-20 is -9.333333333333334 percentage points; mean Final difference is -12.0 percentage points.",
+      "The old AUDIT final values are attributable to historical 25/25 runs; the apparent conflict is resolved."
+    ],
+    "unverified_in_this_audit": [
+      "Fresh demo and WM checkpoint hashes.",
+      "Policy or WM reload, model numerical execution, simulator rollout and new evaluation.",
+      "Variation across random representation initialization seeds, statistical significance and independent holdout generalization.",
+      "Any universal 3D-over-2D or world-model-predictor benefit."
+    ],
+    "failed_or_not_satisfying": [
+      {
+        "item": "Historical RGB standalone per-seed validation.json",
+        "status": "absent",
+        "meaning": "Historical numbers and protocol are verified; do not claim a fresh complete standalone validation gate."
+      },
+      {
+        "item": "Historical 25/25 results as 100/25 or 25/100 results",
+        "status": "does_not_satisfy_protocol",
+        "meaning": "These labels would misstate the executed experiment; this is not a runtime failure."
+      },
+      {
+        "item": "PCD extension as an official RGB leaderboard result",
+        "status": "does_not_satisfy_modality_scope",
+        "meaning": "Preserve the extension label."
+      }
+    ],
+    "limitations": [
+      "One random representation initialization seed 0 is shared by three policy seeds.",
+      "Best-of-20 selects on the evaluation values; Final is not a fresh independent holdout.",
+      "PCD uses a different information budget, including geometry and simulator segmentation."
+    ]
+  }
+}
