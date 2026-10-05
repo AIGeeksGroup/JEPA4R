@@ -21,7 +21,7 @@ from stable_worldmodel.envs.ogbench.cube_env import CubeEnv  # noqa: E402
 
 from envs.cube_rm75_env import ARM_XML, GRIPPER_XML, RM75CubeEnv  # noqa: E402
 
-HOME = Path(os.environ.get('STABLEWM_HOME', '/root/autodl-tmp/lewm234d/lewm_pcd_data'))
+HOME = Path(os.environ.get('STABLEWM_HOME', str(REPO.parent / 'lewm_pcd_data')))
 VENDOR = HOME / 'vendor' / 'realman'
 
 

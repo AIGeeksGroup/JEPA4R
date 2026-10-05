@@ -4,7 +4,7 @@
 # of the dataset differs (gzip HDF5, see scripts/data/collect_cube_pix.py). Detached:
 #   setsid nohup bash scripts/run_pix_pipeline.sh > $STABLEWM_HOME/logs/pix_pipeline.log 2>&1 < /dev/null &
 set -uo pipefail
-P=/root/autodl-tmp/lewm234d/lewm_pcd
+P=$(cd "$(dirname "$0")/.." && pwd)  # lewm_pcd
 source "$P/env.sh"
 CPY=/root/autodl-tmp/ms2_lewm_model_only_20260906/.venv-worldmodel/bin/python   # collection env (swm stack, CPU torch)
 TPY=/root/autodl-tmp/conda/envs/lewm_pcd/bin/python                              # training / eval env (CUDA)

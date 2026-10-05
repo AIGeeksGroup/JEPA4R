@@ -11,7 +11,7 @@
 # Training continues at the next epoch; per-epoch weights_epoch_N.pt keep their numbering. Logging starts a new
 # lightning_logs / _spt_cache run directory (metrics of a resumed run are split across two event files).
 set -euo pipefail
-P=/root/autodl-tmp/lewm234d/lewm_pcd
+P=$(cd "$(dirname "$0")/../.." && pwd)  # lewm_pcd
 source "$P/env.sh"
 MODEL=$1; RUN=$2; shift 2
 CACHE=${SPT_CACHE_DIR:-$STABLEWM_HOME/checkpoints/_spt_cache}

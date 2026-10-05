@@ -10,7 +10,7 @@
 # Idempotent: existing datasets / checkpoint dirs are skipped. Detached:
 #   setsid nohup bash scripts/run_rm75_pipeline.sh > $STABLEWM_HOME/logs/rm75_pipeline.log 2>&1 < /dev/null &
 set -uo pipefail
-P=/root/autodl-tmp/lewm234d/lewm_pcd
+P=$(cd "$(dirname "$0")/.." && pwd)  # lewm_pcd
 source "$P/env.sh"
 PY=/root/autodl-tmp/conda/envs/lewm_pcd/bin/python
 SHARDS=${SHARDS:-20}; MAXPAR_PIX=${MAXPAR_PIX:-8}; ENC=${ENC:-dexart}; NUM_TRAJ=${NUM_TRAJ:-10000}

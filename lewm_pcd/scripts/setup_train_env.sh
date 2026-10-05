@@ -5,7 +5,7 @@
 # collection venv (pip's resolver rejects some of those pins on paper although
 # they coexist fine in practice); `pip check` at the end reports what it dislikes.
 set -uo pipefail
-P=/root/autodl-tmp/lewm234d/lewm_pcd
+P=$(cd "$(dirname "$0")/.." && pwd)  # lewm_pcd
 ENV=/root/autodl-tmp/conda/envs/lewm_pcd
 REQ=$P/TMP/req_train_env.txt
 PIP="$ENV/bin/python -m pip install -q --root-user-action=ignore"

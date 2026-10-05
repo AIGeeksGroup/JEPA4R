@@ -4,7 +4,7 @@
 #   bash scripts/data/run_collection_detached.sh            # 20 shards, 10000 episodes, 8 shards at a time
 #   SHARDS=20 MAXPAR=8 bash scripts/data/run_collection_detached.sh [extra hydra overrides]
 set -euo pipefail
-P=/root/autodl-tmp/lewm234d/lewm_pcd
+P=$(cd "$(dirname "$0")/../.." && pwd)  # lewm_pcd
 source "$P/env.sh"
 export PATH=/root/autodl-tmp/ms2_lewm_model_only_20260906/.venv-worldmodel/bin:$PATH   # collection env
 export PYTHONPATH=$P/TMP/pydeps:$PYTHONPATH                                            # pymunk shim

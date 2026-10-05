@@ -14,6 +14,7 @@
   - 配置见 `config/eval/mw_<任务>_{pix,pcd}.yaml`。
 - **CortexBench**：官方模仿学习协议。编码器冻结，用 25 条官方示范训练行为克隆；每个种子取 20 次评测中的最高成功率，报 3 个种子的均值。3D 编码器的输入是同一台相机的点云，做法见 `bench/cortexbench/README.md`。
   - 图像输入的评测结果每次重跑会有波动，因为渲染不是逐位确定的；点云输入没有这个问题。
+  - 下面各表的 LeWM 2D 分数是在一个已修的问题下跑的，没有重跑：加载 2D 编码器时会把全局随机种子重置成 0（`bench/cortexbench/lewm_cortex.py`，2026-10-05 修复），所以三个种子的行为克隆训练数据打乱顺序相同，只在策略初始化和评测布局上不同。3D 编码器不受影响。
 
 ## bin-picking（2026-09-26）
 
@@ -117,7 +118,7 @@
 
 同为全量的 Sawyer bin-picking：规划 3D 76.0、2D 83.5、随机 44.0；CortexBench 3D 100.0、2D 77.3。
 
-CortexBench 的随机基线（原版的 Random (ViT-B) Frozen：随机初始化、冻结的 ViT-B）：0.0（0 / 0 / 0），Sawyer bin-picking 上本机复现也是 0.0。
+CortexBench 的随机基线（原版的 Random (ViT-B) Frozen：随机初始化、冻结的 ViT-B）：0.0（0 / 0 / 0），Sawyer bin-picking 上本机复现也是 0.0。它照官方代码跑：没有权重，行为克隆训练用的特征和评测时的特征各自随机初始化一次，不是同一个网络，所以不能当作"同一组随机特征"的下限。
 
 - **机器人**：RM75-B 七轴机械臂 + EG2-4C2 二指夹爪，模型与 OGBench cube 的 RM75 版相同，装在桌子 +x 一侧 20 cm 高的底座上。
   - 动作接口不变：4 维动作，每步把手的目标点移动 a[:3] / 100。底层换成逆运动学 + 关节伺服，关节限速，每步新设的目标点离手不超过 3 cm。
@@ -158,7 +159,7 @@ CortexBench 的随机基线（原版的 Random (ViT-B) Frozen：随机初始化�
 
 同为全量的 Sawyer button-press：规划 3D 86.5、2D 57.0、随机 32.0；CortexBench 3D 98.7、2D 29.3。
 
-CortexBench 的随机基线（随机初始化、冻结的 ViT-B）：6.7（20 / 0 / 0），末轮 0；论文里 Sawyer button-press 是 2.7。
+CortexBench 的随机基线（随机初始化、冻结的 ViT-B）：6.7（20 / 0 / 0），末轮 0；论文里 Sawyer button-press 是 2.7。训练和评测的特征来自两次不同的随机初始化，见 bin-picking 一节。
 
 - **相对 Sawyer 版改了什么**：只有和机器人有关的两处。
   - 按钮的滑动关节在 RM75 模型里不在 `qpos[9]`（RM75 的关节排在最后），按它自己的地址读。
@@ -248,8 +249,9 @@ CortexBench 的随机基线（随机初始化、冻结的 ViT-B）：6.7（20 / 
 | drawer-open | 78.7（76 / 72 / 88） | 78.7（80 / 76 / 80） |
 
 - 规划成功率的变化都在 2 个点以内，各节的结论不变。
+- Sawyer bin-picking、assembly、button-press 的 3D 前后差别不全来自统计量：这三个任务的数据是点云改用单采样渲染之前采的（bin-picking 约 3% 假点），规划评测时起点帧和目标帧取自这批旧数据。修复前的评测，现场渲染的帧也是旧渲染；重跑时现场渲染已是新的。另外规划评测的点云采样没有固定种子，重跑本身就有小幅波动。
 - RM75 的 3D CortexBench：bin-picking 降了 10.7，button-press 降了 1.3，drawer-open 不变。
-- 修复前的记录都留着（在 `$STABLEWM_HOME` 下）：规划评测日志在 `logs/eval/pre_stats_fix/`，结果文件改名为 `<模型目录>/<任务>_{pix,pcd}_results.pre_stats_fix.txt`；CortexBench 的运行记录和示范日志在 `logs/cortexbench/pre_pcd224/`，256 的 3D 示范在 `datasets/cortexbench/metaworld-rm75-expert-pcd-256/`。
+- 修复前的记录都留着（在 `$STABLEWM_HOME` 下）：规划评测日志在 `logs/eval/pre_stats_fix/`，结果文件改名为 `<run>/<任务>_{pix,pcd}_results.pre_stats_fix.txt`（`<run>` 是 `$STABLEWM_HOME` 下与模型同名的目录，如 `mw_binpick_pix/`，不在 `checkpoints/` 里）；CortexBench 的运行记录和示范日志在 `logs/cortexbench/pre_pcd224/`，256 的 3D 示范在 `datasets/cortexbench/metaworld-rm75-expert-pcd-256/`。
 
 ## assembly，RM75 机械臂（2026-10-05）
 

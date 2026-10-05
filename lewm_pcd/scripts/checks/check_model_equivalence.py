@@ -1,10 +1,11 @@
 """Upstream jepa.py vs new jepa.py + encoders.ViTCLS: identical embeddings and predictions."""
-import importlib.util, sys, torch
-sys.path.insert(0, '/root/autodl-tmp/lewm234d/lewm_pcd')
+import importlib.util, os, sys, torch
+REPO = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..'))  # lewm_pcd
+sys.path.insert(0, REPO)
 from jepa import JEPA as NewJEPA
 from module import ARPredictor, Embedder, MLP
 from encoders import ViTCLS
-spec = importlib.util.spec_from_file_location('jepa_old', '/root/autodl-tmp/lewm234d/jepa.py')
+spec = importlib.util.spec_from_file_location('jepa_old', os.path.join(REPO, '..', 'jepa.py'))  # le-wm's jepa.py next to lewm_pcd
 jepa_old = importlib.util.module_from_spec(spec); spec.loader.exec_module(jepa_old)
 
 torch.manual_seed(0)

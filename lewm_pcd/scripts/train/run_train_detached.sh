@@ -4,7 +4,7 @@
 #   e.g. bash scripts/train/run_train_detached.sh lewm_pcd cube_pcd_ms2
 # Checkpoints: $STABLEWM_HOME/checkpoints/<run name>/ (config.yaml + weights_epoch_N.pt); logs: $STABLEWM_HOME/logs/train/
 set -euo pipefail
-P=/root/autodl-tmp/lewm234d/lewm_pcd
+P=$(cd "$(dirname "$0")/../.." && pwd)  # lewm_pcd
 source "$P/env.sh"
 PY=/root/autodl-tmp/conda/envs/lewm_pcd/bin/python   # CUDA training env
 MODEL=$1; RUN=$2; shift 2

@@ -5,7 +5,7 @@
 # CEM 10 iterations for the world model). Detached:
 #   setsid nohup bash scripts/run_baselines.sh > $STABLEWM_HOME/logs/train/baselines.log 2>&1 < /dev/null &
 set -uo pipefail
-P=/root/autodl-tmp/lewm234d/lewm_pcd; source "$P/env.sh"; F=$P/third_party/stable-worldmodel; PY=/root/autodl-tmp/conda/envs/lewm_pcd/bin/python
+P=$(cd "$(dirname "$0")/.." && pwd); source "$P/env.sh"; F=$P/third_party/stable-worldmodel; PY=/root/autodl-tmp/conda/envs/lewm_pcd/bin/python
 export MUJOCO_GL=egl
 log() { echo "$(date +%F_%T) $*"; }
 cd "$P"

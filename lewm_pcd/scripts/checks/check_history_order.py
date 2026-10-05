@@ -8,11 +8,12 @@ Usage:
   python scripts/checks/check_history_order.py <ROOT> --pix    # pixels:       TMP/checkpoints/pix_agg_smoke,  datasets/ogbench/pix_smoke.h5
 ROOT is used as STABLEWM_HOME."""
 import os, sys, numpy as np, torch
+REPO = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..'))  # lewm_pcd
 ROOT = sys.argv[1]; PIX = '--pix' in sys.argv
 os.environ.setdefault('MUJOCO_GL', 'osmesa'); os.environ.setdefault('PYOPENGL_PLATFORM', 'osmesa')
 cfg_name, policy_name, ds_name = ('cube_pix_agg.yaml', 'pix_agg_smoke', 'ogbench/pix_smoke') if PIX else ('cube_pcd_agg.yaml', 'lewm_agg_smoke', 'ogbench/pilot_prod')
 OBS, GOAL_KEY, OBS_KEYS = ('pixels', 'goal', ('pixels',)) if PIX else ('pcd', 'goal_pcd_xyz', ('pcd_xyz', 'pcd_rgb'))
-sys.argv = ['eval.py', '--config-path=/root/autodl-tmp/lewm234d/lewm_pcd/config/eval', f'--config-name={cfg_name}', f'policy={policy_name}', 'device=cpu', 'solver.device=cpu',
+sys.argv = ['eval.py', f'--config-path={REPO}/config/eval', f'--config-name={cfg_name}', f'policy={policy_name}', 'device=cpu', 'solver.device=cpu',
             f'cache_dir={ROOT}', f'eval.dataset_name={ds_name}', 'eval.num_eval=2', 'eval.eval_budget=50', f'hydra.run.dir={ROOT}/eval_hist']
 os.environ['STABLEWM_HOME'] = ROOT
 import jepa_agg, envs.eval_policy as ep

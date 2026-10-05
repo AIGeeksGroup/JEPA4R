@@ -80,7 +80,7 @@ CortexBench 五任务均值的对照：R3M 96.0，VC-1 ViT-B 89.6（本机复现
 | drawer-open | 86.5 | 76.0 | 38.5 | 78.7 | 26.7 |
 | assembly | 77.0 | 63.5 | 33.0 | 93.3 | 48.0 |
 
-bin-picking 和 drawer-open 的 CortexBench 明显低于 Sawyer。排查结果见 `results_metaworld.md` 的 RM75 bin-picking 一节：流程本身没有问题，失败几乎都出在抓取。
+bin-picking 和 drawer-open 的 CortexBench 明显低于 Sawyer。bin-picking 排查过（见 `results_metaworld.md` 的 RM75 bin-picking 一节）：流程本身没有问题，失败几乎都出在抓取；drawer-open 还没查。
 
 ## 与 LeWM 的对应
 
@@ -227,7 +227,7 @@ checkpoint 的 config 记录了 `chunk_points`，评测用同一值；ManiSkill 
   的 `PCDWorldModelPolicy`（把 `pcd_xyz/pcd_rgb` 拼成 `pcd`、`goal_pcd_*` 拼成 `goal`，丢掉只用于视频的 `pixels`）；4D 的历史与目标窗口见上节；
   `MUJOCO_GL` 与模型设备可配置（CPU 上用 osmesa 渲染）。
 - 框架接口对齐（像素和点云共用）：求解器在 `stable_worldmodel.planning.solver`，世界模型通过 `cost=` 传入（`config/eval/solver/*.yaml`、`eval.py` 各改一处）。
-- 结果文件按官方逻辑写到 `$STABLEWM_HOME/checkpoints/<run>/ogb_cube_*_results.txt`；hydra 日志在 `logs/eval/`。
+- 结果文件按官方逻辑写到 `$STABLEWM_HOME/<run>/ogb_cube_*_results.txt`（与 `checkpoints/<run>/` 同名的目录，不在 `checkpoints/` 下）；hydra 日志在 `logs/eval/`。
 
 ### 逐 epoch 自动评测
 

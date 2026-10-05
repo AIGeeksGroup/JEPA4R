@@ -4,7 +4,7 @@
 # restart the auto-eval loop so it evaluates both runs. Detached:
 #   setsid nohup bash scripts/run_pix_agg_followup.sh > $STABLEWM_HOME/logs/pix_agg_followup.log 2>&1 < /dev/null &
 set -uo pipefail
-P=/root/autodl-tmp/lewm234d/lewm_pcd
+P=$(cd "$(dirname "$0")/.." && pwd)  # lewm_pcd
 source "$P/env.sh"
 log() { echo "$(date +%F_%T) $*"; }
 cd "$P"

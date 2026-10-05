@@ -68,11 +68,14 @@ class LeWMEmbedding(nn.Module):
 def build_lewm_embedding(checkpoint_dir, epoch=10, use_projector=True, random_init=False, seed=0):
     ckdir = Path(checkpoint_dir)
     cfg = json.loads((ckdir / 'config.json').read_text())
-    torch.manual_seed(seed)
     enc_cfg = {k: v for k, v in cfg['encoder'].items() if k != '_target_'}
     assert cfg['encoder']['_target_'] in ('encoders.ViTCLS', 'encoders.vit.ViTCLS'), cfg['encoder']['_target_']
-    encoder = ViTCLS(**enc_cfg)
-    projector = instantiate(cfg['projector']) if use_projector else None  # module.MLP (lewm_pcd/module.py)
+    # the initial (random_init: final) weights come from `seed`; the caller's global RNG is left as it was (CortexBench
+    # loads the encoder again right before its BC dataloader draws the shuffle order, which must follow the run's seed)
+    with torch.random.fork_rng(devices=[]):
+        torch.manual_seed(seed)
+        encoder = ViTCLS(**enc_cfg)
+        projector = instantiate(cfg['projector']) if use_projector else None  # module.MLP (lewm_pcd/module.py)
     if not random_init:
         sd = torch.load(ckdir / f'weights_epoch_{epoch}.pt', map_location='cpu')
         encoder.load_state_dict({k[len('encoder.'):]: v for k, v in sd.items() if k.startswith('encoder.')})

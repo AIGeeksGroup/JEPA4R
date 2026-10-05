@@ -11,7 +11,7 @@
 # Run detached:  setsid nohup bash scripts/eval/auto_eval_checkpoints.sh > $STABLEWM_HOME/logs/eval/auto_eval.log 2>&1 < /dev/null &
 # Results: $STABLEWM_HOME/logs/eval/success_rates.csv  (run,epoch,success_rate,eval_seconds,backend,finished_at)
 set -uo pipefail
-P=/root/autodl-tmp/lewm234d/lewm_pcd
+P=$(cd "$(dirname "$0")/../.." && pwd)  # lewm_pcd
 source "$P/env.sh"
 PY=/root/autodl-tmp/conda/envs/lewm_pcd/bin/python
 RUNS=${RUNS:-"cube_pcd_ms2 cube_pcd_dexart cube_pcd_ppt cube_pcd_agg_ppt cube_pcd_agg_dexart cube_pcd_agg_ms2"}

@@ -9,7 +9,7 @@ hydra:
   output_subdir: null
   mode: RUN
   run:
-    dir: ${oc.env:STABLEWM_HOME,/root/autodl-tmp/lewm234d/lewm_pcd_data}/logs/collect/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    dir: ${oc.env:STABLEWM_HOME,../lewm_pcd_data}/logs/collect/${now:%Y-%m-%d}/${now:%H-%M-%S}
 
 cache_dir: null
 dataset_name: ogbench/cube_single_expert_pcd.h5       # 3D: point cloud + states / actions
