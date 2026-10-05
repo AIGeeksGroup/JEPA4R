@@ -1,7 +1,7 @@
 # CortexBench 跑分（MuJoCo 模仿学习部分）
 
 用 CortexBench 的原协议（eai-vc 官方代码，commit 76fe35e）给 LeWM 编码器跑分，分数与 VC-1 论文表 8 同一含义：冻结的编码器 + 行为克隆策略，在专家示范上训练，看任务成功率。
-LeWM 只在它的世界模型训练过的任务上评测（MetaWorld 的五个任务，以及换成 RM75 机械臂的 bin-picking、button-press-topdown 和 drawer-open，见“RM75 上的任务”一节）；2D 编码器输入图像，3D 编码器输入同一台相机的点云。
+LeWM 只在它的世界模型训练过的任务上评测（MetaWorld 的五个任务，以及换成 RM75 机械臂的 bin-picking、button-press-topdown、drawer-open 和 assembly，见“RM75 上的任务”一节）；2D 编码器输入图像，3D 编码器输入同一台相机的点云。
 
 ## 协议（官方代码原样执行）
 
@@ -34,18 +34,19 @@ LeWM 只在它的世界模型训练过的任务上评测（MetaWorld 的五个�
 
 ## RM75 上的任务（`run_bc_rm75.py`）
 
-MetaWorld 的 bin-picking、button-press-topdown 和 drawer-open 换成实验室的 RM75-B 机械臂 + EG2-4C2 夹爪（`envs/metaworld/rm75`），按同一协议评测。任务名 `rm75-<任务>-v2-goal-observable`，在 `grid.py` 里属于 suite `metaworld_rm75`，任务简称 `rm75-bin-picking`、`rm75-button-press-topdown`、`rm75-drawer-open`。
+MetaWorld 的 bin-picking、button-press-topdown、drawer-open 和 assembly 换成实验室的 RM75-B 机械臂 + EG2-4C2 夹爪（`envs/metaworld/rm75`），按同一协议评测。任务名 `rm75-<任务>-v2-goal-observable`，在 `grid.py` 里属于 suite `metaworld_rm75`，任务简称 `rm75-bin-picking`、`rm75-button-press-topdown`、`rm75-drawer-open`、`rm75-assembly`。
 
-- **环境。** RM75 环境需要 MuJoCo 3 + metaworld 3.0（`lewm_mw` 环境），评测框架用的是 MuJoCo 2.0。所以 `run_bc_rm75.py` 把环境放在子进程里运行（`rm75_server.py`，用 `MW_PY` 指定的 python 启动）；框架这边是一个代理环境，转发 reset、step、seed 和每一帧。其余都是官方流程：256×256 的 `top_cap2` 画面（3D 是同一台相机的点云，设置与训练数据相同）、FLARE、BC、20 次评测 × 25 回合、第 500 步的 `info['success']`。2D 和 3D 用同一个入口。
+- **环境。** RM75 环境需要 MuJoCo 3 + metaworld 3.0（`lewm_mw` 环境），评测框架用的是 MuJoCo 2.0。所以 `run_bc_rm75.py` 把环境放在子进程里运行（`rm75_server.py`，用 `MW_PY` 指定的 python 启动）；框架这边是一个代理环境，转发 reset、step、seed 和每一帧。其余都是官方流程：256×256 的 `top_cap2` 画面（3D 是同一台相机的点云，设置与训练数据相同，按 224×224 渲染，与训练数据和 Sawyer 的 3D 评测一致；2026-10-04 之前跑的 bin-picking、button-press-topdown、drawer-open 的 3D 结果用的是按 256×256 渲染的点云，见 `results_metaworld.md` 的“三处修复”）、FLARE、BC、20 次评测 × 25 回合、第 500 步的 `info['success']`。2D 和 3D 用同一个入口。
 - **布局。** 环境复位用 `MWTaskEnv.reset(seed)`（`rm75_env.py`）：每个种子仍是一个随机布局，但同一个种子对应的布局与 metaworld 自带的 `seed(s)` + `reset()` 不同。
-- **示范**（`make_rm75_demos.py <任务>`）。Sawyer 的官方示范不能用在 RM75 上，所以用 metaworld 的专家脚本在 RM75 上重新录 25 条：bin-picking 和 drawer-open 用改成 RM75 版的脚本（`envs/metaworld/rm75/expert.py`），button-press-topdown 用原脚本、不改。
-  - 种子 12345 + i，与官方相同；只收第 500 步成功的回合。三个任务现有的 25 条都是种子 12345–12369，没有跳过。
+- **示范**（`make_rm75_demos.py <任务>`）。Sawyer 的官方示范不能用在 RM75 上，所以用 metaworld 的专家脚本在 RM75 上重新录 25 条：bin-picking、drawer-open 和 assembly 用改成 RM75 版的脚本（`envs/metaworld/rm75/expert.py`），button-press-topdown 用原脚本、不改。
+  - 种子 12345 + i，与官方相同；只收第 500 步成功的回合。四个任务现有的 25 条都是种子 12345–12369，没有跳过。bin-picking、button-press-topdown、drawer-open 的 3D 示范在 2026-10-04 按 224 的点云重录过（观测和动作与原示范逐位相同），2D 示范没动。
   - 动作按脚本输出原样记录，不截断（环境执行时才截断到 [-1, 1]），与官方示范相同。
   - 2D 和 3D 示范来自同一批回合，格式与官方相同。
 - **专家成功率**（第 500 步成功）：
   - bin-picking：metaworld 自带的布局（种子 12345–13344）1000/1000，Sawyer 用原脚本也是 1000/1000，原脚本的规则不改直接用在 RM75 上只有 49.7%；示范和评测实际用的布局（种子 12345–12504）159/160，种子 12404 失败。
   - button-press-topdown（原脚本）：metaworld 自带的布局（种子 12345–13344）989/1000，Sawyer 1000/1000；示范和评测实际用的布局（同样的种子）984/1000。16 个失败局结束时手都偏离按钮中心 17–21 mm，按钮停在差一点到成功线的深度。抽查的失败局里，手是在下压过程中横向滑开的；两指对按钮的压力约 130 N，成功局约 190 N（只碰按钮，不碰箱子）。先对准到 1 cm 以内再下压不能减少失败（实测），横向滑开的根本原因还没查明。
   - drawer-open（原脚本只把手的高度从把手下方 2 cm 改到上方 2.8 cm）：示范和评测实际用的布局 998/1000，metaworld 自带的布局 994/1000；原脚本在 RM75 上 70/200（每一局都中途成功过，之后指垫从杆上滑脱、抽屉离开止挡），Sawyer 200/200。
+  - assembly（原脚本改两处：夹爪只在抓取高度 5 mm 以内才合拢，原脚本从把手上方 12 cm 就开始合拢，3.35 cm 宽的指垫会落在把手上面；指垫夹紧之后才抬起，原脚本手一到把手 5 cm 以内就抬，20 N 的 EG2-4C2 这时还没合拢）：示范和评测实际用的布局（种子 12345–13344）1000/1000，metaworld 自带的布局 1000/1000；原脚本在 RM75 上两种布局都是 0/200，Sawyer 200/200。
 
 ## 安装与数据
 
@@ -84,7 +85,7 @@ setsid nohup $PY grid.py --models lewm_mw_binpick_rm75_pix,lewm_mw_binpick_rm75_
     >> $STABLEWM_HOME/logs/cortexbench/grid.log 2>&1 < /dev/null &
 ```
 
-其他任务同理，例如 button-press-topdown：`make_rm75_demos.py button-press-topdown`，模型 `lewm_mw_button_rm75_{pix,pcd}`，任务 `rm75-button-press-topdown`（drawer-open：`drawer-open`、`lewm_mw_drawer_rm75_*`、`rm75-drawer-open`）。
+其他任务同理，例如 button-press-topdown：`make_rm75_demos.py button-press-topdown`，模型 `lewm_mw_button_rm75_{pix,pcd}`，任务 `rm75-button-press-topdown`（drawer-open：`drawer-open`、`lewm_mw_drawer_rm75_*`、`rm75-drawer-open`；assembly：`assembly`、`lewm_mw_assembly_rm75_*`、`rm75-assembly`）。
 
 ## 文件
 
@@ -93,7 +94,7 @@ setsid nohup $PY grid.py --models lewm_mw_binpick_rm75_pix,lewm_mw_binpick_rm75_
 | `env.sh` | 运行环境：MuJoCo 2.0 路径、EGL、`PYTHONPATH`（lewm_pcd + 本目录）、`STABLEWM_HOME` |
 | `lewm_cortex.py` | LeWM 编码器的加载函数（2D：`load_lewm`，3D：`load_lewm_pcd`），按 checkpoint 的 `config.json` + `weights_epoch_N.pt` 重建 encoder + projector |
 | `baselines.py` | 论文里另外几个基线的加载函数（官方权重）：R3M、VIP（ResNet-50 全局池化 2048 维）、CLIP ViT-B/16（CLS） |
-| `conf/model/*.yaml` | 编码器配置：LeWM 各任务的 `lewm_mw_<任务>_{pix,pcd}`（RM75：`lewm_mw_{binpick,button,drawer}_rm75_{pix,pcd}`）和上述基线 |
+| `conf/model/*.yaml` | 编码器配置：LeWM 各任务的 `lewm_mw_<任务>_{pix,pcd}`（RM75：`lewm_mw_{binpick,button,drawer,assembly}_rm75_{pix,pcd}`）和上述基线 |
 | `run_bc.py`、`run_bc3d.py` | 一次运行（官方 `hydra_launcher.py` + 上面的补丁；3D 版再换成点云） |
 | `run_bc_rm75.py`、`rm75_server.py`、`rm75_env.py` | RM75 上的一次运行：官方流程 + 子进程里的 RM75 环境 |
 | `make_rm75_demos.py` | RM75 的示范 |

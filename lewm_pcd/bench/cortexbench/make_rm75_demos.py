@@ -1,5 +1,5 @@
 """RM75 CortexBench demos for a task, made the way CortexBench's official ones are: 25 episodes of metaworld's scripted
-expert for the task on the RM75 (EXPERTS: bin-picking and drawer-open need RM75 versions,
+expert for the task on the RM75 (EXPERTS: bin-picking, drawer-open and assembly need RM75 versions,
 envs/metaworld/rm75/expert.py; button-press-topdown runs metaworld's script unchanged), each action recorded as the
 script outputs it (p * (target - hand), not clipped; the env clips it when executing, as CortexBench's metaworld does),
 in rm75_env.RM75CBEnv, in the official demo format ('observations' (500, 39), 'actions' (500, 4), 'rewards',
@@ -19,11 +19,11 @@ from pathlib import Path
 import numpy as np
 
 from rm75_env import HORIZON, RM75CBEnv  # first: it puts lewm_pcd on sys.path
-from envs.metaworld.rm75 import RM75BinPickingPolicy, RM75DrawerOpenPolicy
+from envs.metaworld.rm75 import RM75AssemblyPolicy, RM75BinPickingPolicy, RM75DrawerOpenPolicy
 from metaworld.policies import SawyerButtonPressTopdownV3Policy
 
 EXPERTS = {'bin-picking': RM75BinPickingPolicy, 'button-press-topdown': SawyerButtonPressTopdownV3Policy,
-           'drawer-open': RM75DrawerOpenPolicy}
+           'drawer-open': RM75DrawerOpenPolicy, 'assembly': RM75AssemblyPolicy}
 TASK = sys.argv[1]
 ENV_NAME, N, BASE_SEED = f'rm75-{TASK}-v2-goal-observable', 25, 12345
 DATA = Path(os.environ['STABLEWM_HOME']) / 'datasets' / 'cortexbench'

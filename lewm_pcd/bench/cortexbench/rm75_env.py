@@ -9,8 +9,9 @@ from top_cap2 with multisampling), here with the RM75 env of envs/metaworld/rm75
 * rgb(): 256x256 top_cap2, multisampled (the renderer the 2D LeWM data used, at CortexBench's size);
 * pcd(): (1200, 6) float32 xyz (m) + rgb 0..255 of the same camera, envs.metaworld.MWPointCloudWrapper with the 3D
   LeWM data's settings (1200 points, 5 mm voxels, 25 % object points, the task's re-placed fixtures; depth /
-  segmentation without multisampling),
-  rendered at 256x256 as the Sawyer harness's 3D (pcd_fork.py). Its sampling RNG is seeded by seed().
+  segmentation without multisampling), rendered at 224x224 as the 3D LeWM data and the Sawyer harness's 3D
+  (pcd_fork.MWPointClouds): the env is made at 224, the frames come from a 256 renderer of their own. Its sampling RNG
+  is seeded by seed().
 Used by make_rm75_demos.py (the demos) and rm75_server.py (the evaluation env behind run_bc_rm75.py's proxy)."""
 from __future__ import annotations
 
@@ -21,24 +22,27 @@ LEWM = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), 
 sys.path.insert(0, LEWM)
 os.environ.setdefault('MUJOCO_GL', 'egl')
 
+import mujoco  # noqa: E402
 import numpy as np  # noqa: E402
 
 from envs.metaworld import MWPointCloudWrapper  # noqa: E402
-from envs.metaworld.rm75 import RM75BinPickEnv, RM75ButtonPressEnv, RM75DrawerEnv  # noqa: E402
+from envs.metaworld.rm75 import RM75AssemblyEnv, RM75BinPickEnv, RM75ButtonPressEnv, RM75DrawerEnv  # noqa: E402
 
 # task -> (env, fixtures: bodies a reset re-places, in the point-cloud foreground as in the task's collection config)
 TASKS = {'bin-picking': (RM75BinPickEnv, ()), 'button-press-topdown': (RM75ButtonPressEnv, ('box',)),
-         'drawer-open': (RM75DrawerEnv, ('drawer',))}
-SIZE = 256
+         'drawer-open': (RM75DrawerEnv, ('drawer',)), 'assembly': (RM75AssemblyEnv, ('peg',))}
+SIZE = 256      # CortexBench's frames
+PCD_SIZE = 224  # the point cloud's depth camera: the 3D LeWM data's (and pcd_fork.MWPointClouds')
 HORIZON = 500
 
 
 class RM75CBEnv:
     def __init__(self, task: str):
         cls, fixtures = TASKS[task]
-        env = cls(width=SIZE, height=SIZE, randomize_hand=False, episode_len=HORIZON, force_type=0)
+        env = cls(width=PCD_SIZE, height=PCD_SIZE, randomize_hand=False, episode_len=HORIZON, force_type=0)
         self.pcw = MWPointCloudWrapper(env, num_points=1200, voxel_size=0.005, cube_fraction=0.25, fixtures=fixtures)
         self.u = env
+        self._rgb = mujoco.Renderer(env._model, SIZE, SIZE)  # multisampled, as MWTaskEnv.render's renderer
         self._seed = 0
         self.obs = None
 
@@ -56,11 +60,13 @@ class RM75CBEnv:
         return self.obs, float(reward), False, {k: float(v) for k, v in info.items()}
 
     def rgb(self):
-        return self.u.render()
+        self._rgb.update_scene(self.u._data, camera=self.u._cam)  # MWTaskEnv.render at SIZE
+        return self._rgb.render()
 
     def pcd(self):
         p = self.pcw._point_cloud()
         return np.concatenate([p['pcd_xyz'], p['pcd_rgb'].astype(np.float32)], axis=1).astype(np.float32)
 
     def close(self):
+        self._rgb.close()
         self.u.close()

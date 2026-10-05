@@ -70,9 +70,12 @@ def run(cfg: DictConfig):
     }
 
     dataset = get_dataset(cfg, cfg.eval.dataset_name)
-    stats_dataset = dataset  # get_dataset(cfg, cfg.dataset.stats)
+    # the normalisation statistics are the training data's (dataset.stats): the eval dataset itself for the configs
+    # that evaluate on it (cube, ...), the training set for MetaWorld, whose eval dataset is a held-out test set
+    stats_name = cfg.dataset.get("stats") or cfg.eval.dataset_name
+    stats_dataset = dataset if stats_name == cfg.eval.dataset_name else get_dataset(cfg, stats_name)
     col_name = "episode_idx" if "episode_idx" in dataset.column_names else "ep_idx"
-    ep_indices, _ = np.unique(stats_dataset.get_col_data(col_name), return_index=True)
+    ep_indices, _ = np.unique(dataset.get_col_data(col_name), return_index=True)
 
     process = {}
     for col in cfg.dataset.keys_to_cache:

@@ -1,0 +1,36 @@
+# mw_assembly_pix.yaml (LeWM paper protocol, 2D) on the RM75-B + EG2-4C2: same protocol, RM75 env and dataset; set_state
+# restores the RM75 controller's state (hand target, joint commands) instead of the Sawyer's mocap, and the peg.
+defaults:
+  - mw_assembly_pix
+  - _self_
+
+world:
+  env_name: envs.metaworld:swm/MWAssemblyRM75-v0
+
+dataset:
+  stats: metaworld/mw_assembly_rm75   # the training set's normalisation statistics
+
+eval:
+  dataset_name: metaworld/mw_assembly_rm75_test
+  callables:
+    - method: set_state
+      args:
+        qpos:
+          value: qpos
+        qvel:
+          value: qvel
+        ee_target:
+          value: ee_target
+        q_cmd:
+          value: q_cmd
+        peg_pos:
+          value: peg_pos
+    - method: set_goal_state
+      args:
+        hand_pos:
+          value: goal_hand_pos
+        obj_pos:
+          value: goal_obj_pos
+
+output:
+  filename: mw_assembly_rm75_pix_results.txt

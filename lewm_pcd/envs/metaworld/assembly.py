@@ -20,6 +20,7 @@
 
 from __future__ import annotations
 
+import mujoco
 import numpy as np
 
 from .env import MWTaskEnv
@@ -69,6 +70,13 @@ class MWAssemblyEnv(MWTaskEnv):
         self._target = self._draw_target(self.np_random)
 
     def _reset_target(self, rng, obs):
+        # metaworld's reset runs reset_model twice and reset_model moves the peg (model data) after its last forward
+        # pass, so the reset row's frame and point cloud would show the peg where the first call put it: one more
+        # forward pass, and the reset observation redone (both stacked frames the current one), as MWDrawerEnv
+        mujoco.mj_forward(self._model, self._data)
+        cur = self._mw._get_curr_obs_combined_no_goal()
+        self._mw._prev_obs = cur.copy()
+        obs[:18], obs[18:36] = cur, cur
         self._target = self._draw_target(rng)
 
     def _task_info(self):

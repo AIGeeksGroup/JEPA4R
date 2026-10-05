@@ -8,6 +8,9 @@ defaults:
 world:
   env_name: envs.metaworld:swm/MWHammer-v0
 
+dataset:
+  stats: metaworld/mw_hammer   # the training set's normalisation statistics
+
 eval:
   dataset_name: metaworld/mw_hammer_test
 

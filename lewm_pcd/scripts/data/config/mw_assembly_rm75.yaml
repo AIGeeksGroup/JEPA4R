@@ -1,0 +1,12 @@
+# mw_assembly.yaml (full scale, three-part plan, paired 2D + 3D, the peg in the point-cloud foreground) on the RM75-B +
+# EG2-4C2 instead of the Sawyer (envs/metaworld/rm75): same collection settings, RM75 env, the assembly backbone made for
+# the RM75 (RM75AssemblyThreePartPolicy) and dataset names.
+defaults:
+  - mw_assembly
+  - _self_
+
+env_id: swm/MWAssemblyRM75-v0
+dataset_name: metaworld/mw_assembly_rm75_pcd.h5
+
+policy:
+  _target_: envs.metaworld.rm75.RM75AssemblyThreePartPolicy

@@ -149,3 +149,46 @@ class RM75DrawerOpenPolicy:
         a[:3] = p * (to - hand)  # not clipped: the env clips
         a[3] = -1.0
         return a
+
+
+ASSEMBLY_FIRM = 0.585     # assembly: obs[3] below: the pads squeeze the handle (closed on it the reading is 0.573)
+ASSEMBLY_HOLDING = 0.63   # assembly: obs[3] below: closed on something
+
+
+class RM75AssemblyPolicy:
+    """metaworld 3.0's SawyerAssemblyV3Policy (the scripted Sawyer expert of CortexBench's assembly demos) on the RM75
+    with two changes, stateless as the script:
+      bottom  the fingers close only at the grasp height, within 5 mm of handle + 3 cm (or while closed on something);
+              the script closes them from 12 cm above it on, and the EG2-4C2's closed 3.35 cm pads then land on top of
+              the handle instead of around it;
+      firm    the hand stays down at the handle until the pads squeeze it (obs[3] < ASSEMBLY_FIRM); the script lifts as
+              soon as the hand is within 5 cm of the handle, and the slow 20 N EG2-4C2 has not closed by then.
+    Everything else is the script's: grasp point handle - 2 cm in x, + 3 cm up; lift to the peg's plane (peg + (0.12, 0,
+    0.14)), over it, then down 20 cm onto the peg; grab 0.6; p 10, the move not clipped (the env clips it).
+    Success, as CortexBench counts it (info['success'] at step 500), seeds 12345 .. 13344: 1000 / 1000 on the layouts
+    of the CortexBench env the demos and evaluations use, 1000 / 1000 on metaworld's own; the unchanged script on the
+    RM75 0 / 200 on both, the Sawyer with it 200 / 200."""
+
+    def reset(self):
+        pass
+
+    def get_action(self, o):
+        hand, grip = o[:3], o[3]
+        wrench = o[4:7] + np.array([-0.02, 0.0, 0.0])
+        peg = o[-3:] + np.array([0.12, 0.0, 0.14])
+        if np.linalg.norm(hand[:2] - wrench[:2]) > 0.02:
+            to = wrench + np.array([0.0, 0.0, 0.1])
+        elif np.linalg.norm(hand[:2] - peg[:2]) <= 0.02:
+            to = peg + np.array([0.0, 0.0, -0.2])
+        elif abs(hand[2] - wrench[2]) > 0.05 or grip > ASSEMBLY_FIRM:
+            to = wrench + np.array([0.0, 0.0, 0.03])
+        elif abs(hand[2] - peg[2]) > 0.04:
+            to = np.array([hand[0], hand[1], peg[2]])
+        else:
+            to = peg
+        close = (np.linalg.norm(hand[:2] - wrench[:2]) <= 0.02 and abs(hand[2] - wrench[2]) <= 0.12
+                 and (abs(hand[2] - (wrench[2] + 0.03)) <= 0.005 or grip < ASSEMBLY_HOLDING))
+        a = np.zeros(4)
+        a[:3] = 10.0 * (to - hand)  # not clipped: the env clips
+        a[3] = 0.6 if close else 0.0
+        return a

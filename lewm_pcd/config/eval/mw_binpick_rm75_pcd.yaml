@@ -7,6 +7,9 @@ defaults:
 world:
   env_name: envs.metaworld:swm/MWBinPickRM75-v0
 
+dataset:
+  stats: metaworld/mw_binpick_rm75_pcd   # the training set's normalisation statistics
+
 eval:
   dataset_name: metaworld/mw_binpick_rm75_test_pcd
   callables:

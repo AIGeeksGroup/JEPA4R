@@ -7,6 +7,9 @@ defaults:
 world:
   env_name: envs.metaworld:swm/MWButtonPressRM75-v0
 
+dataset:
+  stats: metaworld/mw_button_rm75   # the training set's normalisation statistics
+
 eval:
   dataset_name: metaworld/mw_button_rm75_test
   callables:

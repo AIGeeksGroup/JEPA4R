@@ -9,6 +9,9 @@ defaults:
 world:
   env_name: envs.metaworld:swm/MWAssembly-v0
 
+dataset:
+  stats: metaworld/mw_assembly   # the training set's normalisation statistics
+
 eval:
   dataset_name: metaworld/mw_assembly_test
   callables:

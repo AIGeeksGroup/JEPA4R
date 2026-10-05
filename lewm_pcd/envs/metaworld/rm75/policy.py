@@ -1,4 +1,5 @@
-"""The three-part collection policies for the RM75. RM75DrawerThreePartPolicy (drawer-open): at the end of this file.
+"""The three-part collection policies for the RM75. RM75DrawerThreePartPolicy (drawer-open) and
+RM75AssemblyThreePartPolicy (assembly): at the end of this file.
 
 envs.metaworld.ThreePartPolicy (bin-picking) for the RM75 (RM75BinPickThreePartPolicy): the plan (backbone / branch / random), the noise and the
 random actions (kept in the camera's view) unchanged; the backbone's pick-and-place oracle keeps its sub-tasks
@@ -23,8 +24,10 @@ import numpy as np
 
 from ..drawer import ABOVE, HOLD_MAX, K_SLOW, PULL_COAST, PULL_OFF, PULL_START, PUSH_COAST, PUSH_OFF, PUSH_START, TOL, VMAX
 from ..drawer import DrawerThreePartPolicy
+from ..assembly import APPROACH_DZ as ASM_APPROACH_DZ, LIFT_Z as ASM_LIFT_Z, PLACE_Z as ASM_PLACE_Z
+from ..assembly import TRAVEL_Z as ASM_TRAVEL_Z, AssemblyThreePartPolicy
 from ..policy import LIFT_Z, P_GAIN as SAWYER_P_GAIN, PLACE_Z, STEP, TRAVEL_Z, ThreePartPolicy
-from .expert import DRAWER_DZ
+from .expert import ASSEMBLY_FIRM, DRAWER_DZ
 
 P_GAIN = 20.0
 APPROACH_DZ = 0.10
@@ -210,3 +213,79 @@ class RM75DrawerThreePartPolicy(DrawerThreePartPolicy):
         if vy is not None:
             a[1] = vy / STEP
         return a
+
+
+ASM_GRASP_OFF = np.array([-0.02, 0.0, 0.03])  # assembly: the hand at the handle, as RM75AssemblyPolicy (the Sawyer version 0.045 up)
+ASM_P_GAIN = 15.0   # assembly: the Sawyer version's 25 swings the nut in the 20 N grip (more lost grasps, fewer placements)
+ASM_LOST = 0.5      # assembly: gripper reading below: the fingers closed past the handle, it is no longer held
+
+
+class RM75AssemblyThreePartPolicy(AssemblyThreePartPolicy):
+    """envs.metaworld's AssemblyThreePartPolicy (assembly) for the RM75, its backbone oracle changed where the RM75 /
+    EG2-4C2 needs it (the targets, the carry to the ring centre, the placements, release and retreat are the Sawyer
+    version's):
+    * the grasp: the hand at handle + 3 cm (the Sawyer version: 4.5 cm; from there the EG2-4C2's 3.35 cm pads only catch
+      the top of the handle), the fingers close only once the hand is there (within 5 mm; the Sawyer version from 2 cm
+      above), and it lifts once the pads squeeze the handle (reading < ASSEMBLY_FIRM, else after 30 steps; the Sawyer
+      version after 6 steps below 0.7, when the slow EG2-4C2 has not closed yet);
+    * a held nut turns in the 20 N grip, so 'dropped' is read from the gripper (closed past the handle, reading <
+      ASM_LOST) and the hand up to 8 cm from the grasp point (the Sawyer version: 5 cm, which re-picks a nut still held);
+    * the release waits until the fingers are open (reading > 0.9, at most 30 steps; the EG2-4C2 opens as slowly as it
+      closes); P gain 15 instead of 25.
+    Over 48 backbone episodes (200 steps, the plan's noise): 0.92 placements, 0.79 nut-onto-peg per episode (the
+    Sawyer data: 0.99 / 0.70); the Sawyer version unchanged on the RM75: 0.04 / 0.02."""
+
+    @staticmethod
+    def _new_mem():
+        return {'phase': 'pick', 'n': 0, 'zs': []}
+
+    @staticmethod
+    def _oracle(m, env, info):
+        hand = np.asarray(info['hand_pos'], dtype=np.float64)
+        site = np.asarray(info['obj_pos'], dtype=np.float64)
+        ring = np.asarray(info['ring_pos'], dtype=np.float64)
+        target = np.asarray(info['place_target'], dtype=np.float64)
+        grip = float(info['gripper'])
+        grasp = site + ASM_GRASP_OFF
+        grab = RELEASE
+        phase = m['phase']
+
+        if phase == 'carry' and (grip < ASM_LOST or np.linalg.norm(hand - grasp) > 0.08):  # dropped it: pick again
+            phase, m['n'] = 'pick', 0
+        if phase == 'pick':
+            dz = abs(hand[2] - grasp[2])
+            if np.linalg.norm(hand[:2] - grasp[:2]) > 0.015 and m['n'] == 0:
+                desired = grasp + np.array([0.0, 0.0, ASM_APPROACH_DZ])
+            elif m['n'] == 0 and dz > 0.005:
+                desired = grasp
+            else:
+                desired, grab = grasp, GRAB
+                m['n'] += 1
+                if grip < ASSEMBLY_FIRM or m['n'] >= 30:  # the pads squeeze the handle: lift
+                    phase, m['n'], m['zs'] = 'carry', 0, []
+                elif dz > 0.02 or np.linalg.norm(hand[:2] - grasp[:2]) > 0.03:  # pushed off: start over
+                    m['n'] = 0
+        if phase == 'carry':
+            grab = GRAB
+            err = target[:2] - ring[:2]  # move the hand so that the ring centre reaches the target
+            if np.linalg.norm(err) > 0.012:
+                desired = hand + np.array([0.0, 0.0, 0.1]) if hand[2] < ASM_LIFT_Z else np.array([*(hand[:2] + err), ASM_TRAVEL_Z])
+                m['zs'] = []
+            else:
+                desired = np.array([*(hand[:2] + err), ASM_PLACE_Z])
+                m['zs'].append(hand[2])
+                stuck = len(m['zs']) >= 12 and m['zs'][-12] - hand[2] < 0.002  # e.g. the ring rests on the peg top
+                if hand[2] < ASM_PLACE_Z + 0.02 or stuck:
+                    phase, m['n'] = 'release', 0
+        if phase == 'release':
+            desired, grab = hand.copy(), RELEASE
+            m['n'] += 1
+            if (m['n'] >= 6 and grip > 0.9) or m['n'] >= 30:
+                env.new_place_target()
+                phase, m['n'] = 'retreat', 0
+        if phase == 'retreat':
+            desired, grab = np.array([hand[0], hand[1], ASM_TRAVEL_Z]), RELEASE
+            if hand[2] > ASM_LIFT_Z - 0.02:
+                phase = 'pick'
+        m['phase'] = phase
+        return np.concatenate([(desired - hand) * ASM_P_GAIN, [grab]])

@@ -18,6 +18,9 @@ pcd_process:
   scale: 4.0
   use_rgb: true
 
+dataset:
+  stats: metaworld/mw_binpick_pcd   # the training set's normalisation statistics
+
 eval:
   dataset_name: metaworld/mw_binpick_test_pcd
 

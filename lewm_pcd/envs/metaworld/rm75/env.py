@@ -5,7 +5,8 @@ env (robot.py) instead of the Sawyer one. Only what depends on the robot changes
 * rows record the RM75 controller's state instead of the Sawyer's mocap: ``ee_target`` (the hand target the actions
   move) and ``q_cmd`` (the 7 joint targets of the servos);
 * set_state restores qpos / qvel and that controller state (the Sawyer version restores the mocap body).
-Tasks: RM75BinPickEnv (bin-picking), RM75ButtonPressEnv (button-press-topdown), RM75DrawerEnv (drawer-open).
+Tasks: RM75BinPickEnv (bin-picking), RM75ButtonPressEnv (button-press-topdown), RM75DrawerEnv (drawer-open),
+RM75AssemblyEnv (assembly).
 """
 
 from __future__ import annotations
@@ -14,6 +15,7 @@ import mujoco
 import numpy as np
 from gymnasium.spaces import Box
 
+from ..assembly import MWAssemblyEnv
 from ..button_press import MWButtonPressEnv
 from ..drawer import MWDrawerEnv
 from ..env import MWBinPickEnv, MWTaskEnv
@@ -130,4 +132,17 @@ class RM75DrawerEnv(MWDrawerEnv, RM75TaskEnv):
             self._model.body_pos[self._case_body] = pos
             self._mw.obj_init_pos = pos.copy()
             self._mw._target_pos = pos + np.array([0.0, -0.16 - self._mw.maxDist, 0.09])
+        RM75TaskEnv.set_state(self, qpos, qvel, ee_target, q_cmd)
+
+
+class RM75AssemblyEnv(MWAssemblyEnv, RM75TaskEnv):
+    """MWAssemblyEnv (the nut onto the peg / table spots) on the RM75: MRO MWAssemblyEnv -> RM75TaskEnv -> MWTaskEnv.
+    set_state restores the RM75 controller's state besides the peg (a fixture the reset moves)."""
+
+    def set_state(self, qpos, qvel, ee_target=None, q_cmd=None, peg_pos=None):
+        if peg_pos is not None:  # as MWAssemblyEnv.set_state
+            top = np.asarray(peg_pos, dtype=np.float64)
+            self._mw._target_pos = top.copy()
+            self._model.body_pos[self._peg_body] = top - np.array([0.0, 0.0, 0.05])
+            self._model.site('pegTop').pos = top
         RM75TaskEnv.set_state(self, qpos, qvel, ee_target, q_cmd)

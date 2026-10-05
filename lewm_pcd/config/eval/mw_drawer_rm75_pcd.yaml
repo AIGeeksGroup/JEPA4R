@@ -7,6 +7,9 @@ defaults:
 world:
   env_name: envs.metaworld:swm/MWDrawerRM75-v0
 
+dataset:
+  stats: metaworld/mw_drawer_rm75_pcd   # the training set's normalisation statistics
+
 eval:
   dataset_name: metaworld/mw_drawer_rm75_test_pcd
   callables:

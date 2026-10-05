@@ -8,18 +8,21 @@ reward, success), the camera, the collection plan and the eval hooks are envs.me
                  RM75BinPickEnv       (MWBinPickEnv)       id swm/MWBinPickRM75-v0
                  RM75ButtonPressEnv   (MWButtonPressEnv)   id swm/MWButtonPressRM75-v0
                  RM75DrawerEnv        (MWDrawerEnv)        id swm/MWDrawerRM75-v0
+                 RM75AssemblyEnv      (MWAssemblyEnv)      id swm/MWAssemblyRM75-v0
     policy.py  the three-part collection policies made for the RM75: RM75BinPickThreePartPolicy (bin-picking),
-               RM75DrawerThreePartPolicy (drawer-open); button-press-topdown collects with ButtonThreePartPolicy unchanged
+               RM75DrawerThreePartPolicy (drawer-open), RM75AssemblyThreePartPolicy (assembly); button-press-topdown
+               collects with ButtonThreePartPolicy unchanged
     expert.py  metaworld's scripted experts made for the RM75 (the CortexBench demos): RM75BinPickingPolicy,
-               RM75DrawerOpenPolicy; button-press-topdown's demos use metaworld's script unchanged
+               RM75DrawerOpenPolicy, RM75AssemblyPolicy; button-press-topdown's demos use metaworld's script unchanged
                (bench/cortexbench/make_rm75_demos.py)
 
 Needs metaworld 3.0 (conda env ``lewm_mw``) like envs.metaworld; the env id is registered in envs/metaworld/__init__.py.
 """
 
-from .env import RM75BinPickEnv, RM75ButtonPressEnv, RM75DrawerEnv, RM75TaskEnv
-from .expert import RM75BinPickingPolicy, RM75DrawerOpenPolicy
-from .policy import RM75BinPickThreePartPolicy, RM75DrawerThreePartPolicy
+from .env import RM75AssemblyEnv, RM75BinPickEnv, RM75ButtonPressEnv, RM75DrawerEnv, RM75TaskEnv
+from .expert import RM75AssemblyPolicy, RM75BinPickingPolicy, RM75DrawerOpenPolicy
+from .policy import RM75AssemblyThreePartPolicy, RM75BinPickThreePartPolicy, RM75DrawerThreePartPolicy
 
-__all__ = ['RM75TaskEnv', 'RM75BinPickEnv', 'RM75ButtonPressEnv', 'RM75DrawerEnv', 'RM75BinPickThreePartPolicy',
-           'RM75DrawerThreePartPolicy', 'RM75BinPickingPolicy', 'RM75DrawerOpenPolicy']
+__all__ = ['RM75TaskEnv', 'RM75BinPickEnv', 'RM75AssemblyEnv', 'RM75ButtonPressEnv', 'RM75DrawerEnv', 'RM75BinPickThreePartPolicy',
+           'RM75DrawerThreePartPolicy', 'RM75AssemblyThreePartPolicy', 'RM75BinPickingPolicy', 'RM75DrawerOpenPolicy',
+           'RM75AssemblyPolicy']

@@ -12,7 +12,7 @@ world:
   max_episode_steps: ???   # eval.py sets 2 x eval_budget
 
 dataset:
-  stats: ${eval.dataset_name}
+  stats: metaworld/mw_binpick   # normalisation statistics: the model's training set (eval.dataset_name: the test set)
   keys_to_cache:
     - action
 

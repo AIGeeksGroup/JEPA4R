@@ -4,7 +4,8 @@ Tasks: bin-picking (env.MWBinPickEnv, policy.ThreePartPolicy), assembly (assembl
 button-press-topdown (button_press.MWButtonPressEnv / ButtonThreePartPolicy), drawer-open (drawer.MWDrawerEnv /
 DrawerThreePartPolicy), hammer (hammer.MWHammerEnv / HammerThreePartPolicy). On the RM75-B + EG2-4C2 instead of the
 Sawyer: the subpackage rm75 (bin-picking rm75.RM75BinPickEnv / RM75BinPickThreePartPolicy, button-press-topdown
-rm75.RM75ButtonPressEnv / ButtonThreePartPolicy), imported on first use.
+rm75.RM75ButtonPressEnv / ButtonThreePartPolicy, drawer-open rm75.RM75DrawerEnv / RM75DrawerThreePartPolicy, assembly
+rm75.RM75AssemblyEnv / RM75AssemblyThreePartPolicy), imported on first use.
 
 Needs metaworld 3.0 (conda env ``lewm_mw``), so the parent package ``envs`` does not import this one. Importing it
 registers the env ids; configs name an env as ``envs.metaworld:swm/MWBinPick-v0`` (gymnasium imports the module
@@ -30,6 +31,7 @@ register(id='swm/MWHammer-v0', entry_point='envs.metaworld.hammer:MWHammerEnv')
 register(id='swm/MWBinPickRM75-v0', entry_point='envs.metaworld.rm75:RM75BinPickEnv')
 register(id='swm/MWButtonPressRM75-v0', entry_point='envs.metaworld.rm75:RM75ButtonPressEnv')
 register(id='swm/MWDrawerRM75-v0', entry_point='envs.metaworld.rm75:RM75DrawerEnv')
+register(id='swm/MWAssemblyRM75-v0', entry_point='envs.metaworld.rm75:RM75AssemblyEnv')
 
 __all__ = ['MWTaskEnv', 'MWBinPickEnv', 'MWAssemblyEnv', 'MWButtonPressEnv', 'MWDrawerEnv', 'MWHammerEnv',
            'MWPointCloudWrapper', 'ThreePartPolicy', 'AssemblyThreePartPolicy', 'ButtonThreePartPolicy',
