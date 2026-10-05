@@ -1,9 +1,12 @@
-# LeWM-PCD：点云版 LeWorldModel（OGBench Cube）
+# LeWM-PCD：点云版 LeWorldModel（OGBench Cube、MetaWorld）
 
 在 stable-worldmodel 的 `swm/OGBCube-v0` 环境上，把 LeWM 的像素输入换成点云输入，并加一个时间聚合的 4D 变体；采集、模型、训练、评测都沿用 LeWM 的做法，只改必要的部分。
 同一套流程还跑了官方 2D 复现、像素 4D，以及框架自带的 PLDM / GCBC 基线。基于 le-wm `8edfeb3` 与 stable-worldmodel `6f1e499`。
+这个分支（`cortexbench`）另外在 CortexBench 的 MetaWorld 任务上评测 LeWM 2D / 3D：做规划评测，并按 CortexBench 原协议（冻结编码器 + 模仿学习）打分，机器人有原版 Sawyer 和换成 RM75-B + EG2-4C2 两种。
 
 ## 结果
+
+### OGBench Cube（UR5e + Robotiq 2F-85）
 
 协议：官方 `config/eval/cube.yaml`（50 个起点、seed 42、目标 25 步后、预算 50 步、CEM 300 候选 / top 30），CEM 迭代次数按论文附录 D 取 10
 （在 `cube_pix.yaml` / `cube_pcd.yaml` 里覆盖，官方文件不动）；每个 run 10 个 epoch 的 checkpoint 全部在 GPU/EGL 上评，
@@ -33,7 +36,7 @@
 - 与论文 74 的差距来自评测集（自采数据的另一组 50 道题，其中 17 个起点时方块已在目标 4 cm 内）和框架版本。
 - 论文图 6 的 cube 对照数：DINO-WM 86、GCBC 84、LeWM 74、PLDM 65、GCIQL 64、GCIVL 56、随机 48。
 
-### RM75-B + EG2-4C2 上的三个 run（换臂，见「换臂」一节）
+### OGBench Cube，RM75-B + EG2-4C2（换臂，见「换臂」一节）
 
 同一协议（50 个起点、seed 42、CEM 10 次、GPU/EGL），数据是 RM-75 环境上新采的 10000 集（`cube_rm75_single_expert{,_pcd}.h5`），起点从这份数据里抽。
 参照：随机策略在这 50 个起点上点云 50、像素 44。工作区缩到 0.5 倍、专家搬运高度受限，这张表和上面 UR5e 的表不能直接比，三行之间可比。
@@ -45,6 +48,39 @@
 | 4D 点云 dexart (`cube_rm75_pcd_agg_dexart`) | 82 | 82 | 90 | 86 | 82 | 82 | 80 | 78 | 78 | 78 | 81.8 | 90 | 78 |
 
 - 点云比像素高 6 到 8 个点，4D 比 3D 高 2 个点，都在单次 ±6 的噪声边缘；三条曲线都在第 3、4 个 epoch 附近最高、之后略降。
+
+### MetaWorld（CortexBench 的五个任务，Sawyer）
+
+每个任务用三部分采样的 1 万条游玩数据训练 2D（ViT-tiny）和 3D（DexArt PointNet），各 10 个 epoch。
+- 规划：LeWM 论文协议，留出的 150 条测试回合，种子 42–45 各 50 个起点。
+- CortexBench：原协议，冻结编码器 + 25 条示范的模仿学习，3 个种子，每个种子取 20 次评测中的最高，与 VC-1 论文表 8 同一口径。
+
+做法、逐种子结果和原始记录见 [`results_metaworld.md`](results_metaworld.md)，CortexBench 的跑法见 [`bench/cortexbench/README.md`](bench/cortexbench/README.md)。
+
+| 任务 | 规划 3D | 规划 2D | 规划随机 | CortexBench 3D | CortexBench 2D |
+|---|---|---|---|---|---|
+| bin-picking | 76.0 | 83.5 | 44.0 | 100.0 | 77.3 |
+| assembly | 94.0 | 84.5 | 27.5 | 96.0 | 72.0 |
+| button-press-topdown | 86.5 | 57.0 | 32.0 | 98.7 | 29.3 |
+| drawer-open | 88.0 | 69.5 | 34.0 | 100.0 | 52.0 |
+| hammer | 92.0 | 87.0 | 48.5 | 97.3 | 89.3 |
+| 五任务均值 | 87.3 | 76.3 | 37.2 | **98.4** | 64.0 |
+
+CortexBench 五任务均值的对照：R3M 96.0，VC-1 ViT-B 89.6（本机复现 88.8），随机初始化的 ViT-B（冻结）0.5，均取自 VC-1 论文表 8。
+
+### MetaWorld，RM75-B + EG2-4C2
+
+同样的流程，机器人换成 RM75-B + EG2-4C2（`envs/metaworld/rm75/`）。采集策略和 CortexBench 的专家都按 RM75 改过，示范按 CortexBench 的规则在 RM75 上重录。
+机器人和示范都与 Sawyer 不同，所以 CortexBench 两列不和上表直接比。hammer 没做：EG2-4C2 约 20 N 的夹持力拿不住锤子。
+
+| 任务 | 规划 3D | 规划 2D | 规划随机 | CortexBench 3D | CortexBench 2D |
+|---|---|---|---|---|---|
+| bin-picking | 80.5 | 76.5 | 44.5 | 77.3 | 41.3 |
+| button-press-topdown | 92.5 | 41.5 | 32.0 | 98.7 | 49.3 |
+| drawer-open | 86.5 | 76.0 | 38.5 | 78.7 | 26.7 |
+| assembly | 77.0 | 63.5 | 33.0 | 93.3 | 48.0 |
+
+bin-picking 和 drawer-open 的 CortexBench 明显低于 Sawyer。排查结果见 `results_metaworld.md` 的 RM75 bin-picking 一节：流程本身没有问题，失败几乎都出在抓取。
 
 ## 与 LeWM 的对应
 
@@ -66,6 +102,9 @@ lewm_pcd/
 ├── jepa_agg.py aggregators/   4D 模型（时间聚合）
 ├── encoders/                  可插拔 encoder：vit（像素基线）、ms2、dexart、ppt、sonata_cls、pointnet（参考）
 ├── envs/                      点云环境、包装器、专家策略、评测策略
+│   └── metaworld/             MetaWorld 任务环境、单相机点云、三部分采集策略；rm75/ 是换成 RM75 的版本
+├── bench/cortexbench/         CortexBench 跑分：LeWM 编码器接入、RM75 任务、汇总（third_party/eai-vc 是官方代码，不进 git）
+├── results_metaworld.md       MetaWorld 的全部结果
 ├── config/{train,eval}/       训练 / 评测配置（launcher/local.yaml 里加了 hydra 输出目录）
 ├── scripts/data|train|eval|checks/   采集 / 训练 / 评测 / 检查脚本；scripts/baselines/ 是框架基线补丁的记录；scripts/run_baselines.sh 跑基线
 ├── third_party/stable-worldmodel/   固定在 6f1e499 的本地 clone（不进 git）
