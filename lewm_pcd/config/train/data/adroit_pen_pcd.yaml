@@ -1,0 +1,9 @@
+# Candidate affine; validate real camera geometry before use.
+defaults:
+  - ogb_pcd
+  - _self_
+dataset:
+  name: adroit/pen_pcd.h5
+preprocessor:
+  center: [0.075, -0.02, 0.225]
+  scale: 4.0

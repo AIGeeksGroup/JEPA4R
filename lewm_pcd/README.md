@@ -1,5 +1,7 @@
 # LeWM-PCD：点云版 LeWorldModel（OGBench Cube）
 
+**Adroit Pen 2026-10-06 更新：** 新 paired 数据已完成两路WM及100demo／25eval的三seed BC。RGB Best-of-20为37.3±5.0%，PCD扩展为81.3±5.0%；片段CEM和旧Relocate结果分别记录。见[仓库README](../README.md)和[本轮代码／外部前置／复现命令](../docs/experiments/adroit_pen_paired_20261006.md)。RH56仍为独立未通过任务门禁的候选，没有作为已调通代码混入。
+
 在 stable-worldmodel 的 `swm/OGBCube-v0` 环境上，把 LeWM 的像素输入换成点云输入，并加一个时间聚合的 4D 变体；采集、模型、训练、评测都沿用 LeWM 的做法，只改必要的部分。
 同一套流程还跑了官方 2D 复现、像素 4D，以及框架自带的 PLDM / GCBC 基线。基于 le-wm `8edfeb3` 与 stable-worldmodel `6f1e499`。
 

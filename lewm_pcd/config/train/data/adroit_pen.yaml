@@ -1,0 +1,6 @@
+# RGB: original dmc loader/preprocessor; no learning-core overrides.
+defaults:
+  - dmc
+  - _self_
+dataset:
+  name: adroit/pen.h5

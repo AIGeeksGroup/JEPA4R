@@ -1,0 +1,21 @@
+defaults:
+  - adroit_pen_pix_fragment
+  - _self_
+obs: pcd
+video: false
+world:
+  offsamples: 0
+  pre_wrappers:
+    - _target_: envs.adroit.pcd.AdroitPointCloudWrapper
+      num_points: 1200
+      cameras: [vil_camera]
+      size: 256
+      cube_fraction: .25
+      voxel_size: .005
+      crop_box: [[-0.6, -0.6, -0.05], [0.6, 0.6, 1.1]]
+      foreground_only: true
+      keep_rgb: false
+pcd_process:
+  center: [0.075, -0.02, 0.225]
+  scale: 4.0
+  use_rgb: true

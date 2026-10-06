@@ -1,0 +1,23 @@
+{
+  "qc": "PASS_OFFICIAL100_PCD_REPLAY_LABELS_PRESERVED",
+  "demos": 100,
+  "frames": 10000,
+  "pcd_shape": [
+    100,
+    1200,
+    6
+  ],
+  "source_pickle_sha256": "cb6e122487f3abaed13e722eec9b4ba59441ea232ccb8a423c7e3a2c5fcfb557",
+  "pcd_pickle_sha256": "1724288fb2964f49da490bf0bbe553ccada9b09d40ea81d448a21367cb3b15dc",
+  "native_real_replay_state_reward_all100checked": true,
+  "all_original_labels_initstates_proprio_values_preserved": true,
+  "raw_action_labels": {
+    "min": -4.5560150146484375,
+    "max": 3.2678608894348145,
+    "not_clipped_in_dataset": true
+  },
+  "depth_seg_size": 256,
+  "MSAA": 0,
+  "pcd_backend_sha256": "d4564b9125c66f430bb0b9e92f6dd33973dcf652863e7d3ca4f22a52e3df0bd2",
+  "checked_at": 1791260307.2916417
+}

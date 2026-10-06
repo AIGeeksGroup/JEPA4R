@@ -1,5 +1,13 @@
 # CortexBench 跑分（MuJoCo 模仿学习部分）
 
+## Adroit Pen 2026-10-06（新版本化入口）
+
+本轮保留本文件下面的原MetaWorld实现与旧Adroit入口，新增 `run_adroit_bc3d.py` 和 `lewm_adroit_pen_{2d,pcd}_20261006` 配置。按官方Adroit100demos／25eval／100epochs、原评测索引5、10、…、95、99跑完三seed。RGB Best-of-20：36／44／32%；PCD扩展：80／76／88%。RGB seed300评分完整但原保存条件未产生policy文件。
+
+新配置要求显式设置 `PEN_20261006_RGB_CHECKPOINT`、`PEN_20261006_PCD_CHECKPOINT`；旧loader和旧／随机配置原样保留。新桥接器的实际权重、输出、变换和CPU随机数状态与本轮已跑主线逐值对照通过。所有数据／模型外部前置和命令见[本轮指南](../../../docs/experiments/adroit_pen_paired_20261006.md)，完整数字见[仓库README](../../../README.md)。
+
+以下为保留的原实现记录。
+
 用 CortexBench 的原协议（eai-vc 官方代码，commit 76fe35e）给 LeWM 编码器跑分，分数与 VC-1 论文表 8 同一含义：冻结的编码器 + 行为克隆策略，在专家示范上训练，看任务成功率。
 LeWM 只在它的世界模型训练过的任务上评测（现在是 MetaWorld bin-picking）；2D 编码器输入图像，3D 编码器输入同一台相机的点云。
 

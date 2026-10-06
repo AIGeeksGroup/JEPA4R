@@ -1,5 +1,31 @@
 # CortexBench Adroit：Pen / Relocate 的 LeWM BC 结果
 
+## 2026-10-06：Pen 新 paired 数据与完整三 seed 测评
+
+本轮使用新的反馈专家混合 paired 数据完成 RGB／PCD 世界模型训练，再按当前 CortexBench 原循环执行 **100 demos／每轮25条轨迹／100 epochs** 的 Adroit BC。实际评测索引为 **5、10、…、95、99，共20轮**，原网络、FLARE、优化器、保存条件及旧任务代码保留。两路均为三帧192D特征加24D proprio（600D输入→24D动作）。PCD是独立模态扩展。
+
+| seed | RGB Best-of-20 / Final | PCD Best-of-20 / Final |
+|---|---:|---:|
+| 100 | 36% / 24% | 80% / 76% |
+| 200 | 44% / 32% | 76% / 76% |
+| 300 | 32% / 24% | 88% / 68% |
+| 三seed均值±总体std | **37.3±5.0% / 26.7±3.8%** | **81.3±5.0% / 73.3±3.8%** |
+
+六个运行均已完成100轮、20轮真实评测，退出码0，loss有限。RGB seed300没有触发原最高reward策略保存条件，因此评分完整但没有该seed的策略文件；其余5个策略文件CPU重载及finite验证通过。Best-of-20 success与保存的最高reward策略是两种原有指标，未改保存规则。
+
+独立的25步片段CEM扩展也已完成同50起点：RGB **34/50（68%）**、PCD **39/50（78%）**。目标=t+25笔位置／方向，距离<0.075m、dot>0.95且掉落失败；保留原5×5规划、50步预算、300/top30/10次迭代。50起点来自40个test episode，**23起点初始已达标**；初始未达标的27段分别为11/27、16/27。该结果不作为官方BC排行榜或规划器收益归因证据。
+
+| 代码／验证范围 | 当前状态 |
+|---|---|
+| Pen paired采集→原2D/3D WM→官方BC→片段CEM | 本轮闭环代码、配置与验收证据已收录；依赖、数据、专家和权重需外部提供 |
+| Relocate | 原代码、历史调试及结果保留；本轮未重跑，旧64个合成target点与本轮Pen可见target不同 |
+| RM75-B／EG2 | 原分支前例保留，与RH56候选区分 |
+| RM75＋RH56 | 独立本地候选有编译／渲染／运动接口证据，但目标／持握门禁失败；本次未作为任务就绪代码合入 |
+
+[本轮代码清单、依赖锁和复现命令](docs/experiments/adroit_pen_paired_20261006.md) · [完整BC结果](docs/results/adroit_pen_20261006_paired_bc.json) · [CEM起点／偏置与结果](docs/results/adroit_pen_20261006_fragment_cem.json) · [世界模型验收](docs/results/adroit_pen_20261006_world_models.json)。下面保留2026-10-04及更早实验，不能与本轮不同数据／源码的结果混为同一对照。
+
+## 历史记录（2026-10-04）
+
 更新日期：**2026-10-04（Asia/Shanghai）**。本分支记录 Adroit 的 RGB 表征 BC 和独立的 3D PCD 扩展。BC 冻结 `encoder + projector`，训练动作头；这些结果不检验 WM predictor 或 MPC。下表汇总实际完成的 **100 demos / 每轮 25 条在线评测轨迹 / 100 epochs / 每 5 epochs 评测**运行，policy seeds 均为 `100/200/300`。
 
 **Relocate 的新 target-aware PCD 预训练组与 RGB 预训练组已完成；Relocate 的匹配随机对照尚未完成。Pen 已有四组完整结果。** Relocate PCD 每帧额外注入由模拟器 `target_pos` 构造的 64 个目标 site 点，这个目标信息接口与 RGB 不同，不能将两组差值解释为纯粹的 3D 优势或预训练收益。

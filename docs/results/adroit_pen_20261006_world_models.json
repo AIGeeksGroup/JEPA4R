@@ -1,0 +1,153 @@
+{
+  "qc": "PASS_FULL_RGB_PCD_ORIGINAL_WM_TRAINING_AND_RELOAD",
+  "checked_at": 1791257289.7441883,
+  "run_home": "/root/autodl-tmp/workspace/users/lewm/pen_paired_full_20261006_v1/training/pen105_2d3d_wm_readopt_v2",
+  "overall_state": {
+    "phase": "complete",
+    "started_at": 1791235179.692583,
+    "updated_at": 1791257121.2667754,
+    "completed_stages": 2,
+    "failed_stages": 0,
+    "errors": [],
+    "exit_code": 0,
+    "config_sha256": "8c86f7981b1da4fe19b1bf4c2c313136e543f647cd6b980aecee5d9f1ccf3206",
+    "rng_policy": "unchanged original train/SPT; cfg.seed explicitly split/loader only",
+    "protocol": {
+      "epochs": 10,
+      "batch": 128,
+      "precision": "bf16",
+      "history": 3,
+      "frameskip": 5,
+      "num_preds": 1,
+      "action": 24,
+      "input": 120,
+      "pcd_dim": 6,
+      "img": 224
+    },
+    "gpu": {
+      "uuid": "GPU-f13268fc-4307-b985-7f0c-ba9d292e25cd",
+      "free_mib": 32110,
+      "utilization_percent": 0,
+      "compute_process_count": 0
+    },
+    "pid": 131027
+  },
+  "runner_exit_code": 0,
+  "stages": {
+    "rgb": {
+      "epochs": 10,
+      "optimizer_steps": 50910,
+      "finite": true,
+      "strict_reload": "PASS",
+      "reload_max_abs": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checkpoint": "/root/autodl-tmp/workspace/users/lewm/pen_paired_full_20261006_v1/training/pen105_2d3d_wm_readopt_v2/checkpoints/pen105_paired_rgb_readopt_v2/weights_epoch_10.pt",
+      "checkpoint_sha256": "64642b19eb2d605cbe12171c7449da399ceca4ca27b816b17fd3e45a0e192704",
+      "trainer_checkpoint_sha256": "84c1dc5ee88e1f55db32bf31ef6cdd1edef56d5c1ff1cbe560cd8b9741847ac0",
+      "config_sha256": "df19f723f6e87d3b30bbece23741556f935c03104e1c5a30bb3f7a65c9a6ead1",
+      "evidence_sha256": "7c8a8a0fd470e87d5de844f2862dbf9225852cf77b2dbf3f4b88c325fc4dad3f",
+      "last_train_loss": {
+        "loss": 0.07436498254537582,
+        "pred_loss": 0.0035641987342387438,
+        "sigreg_loss": 0.7890625
+      },
+      "training_batch": 128,
+      "shapes": {
+        "action": [
+          128,
+          4,
+          120
+        ],
+        "observation": [
+          128,
+          4,
+          45
+        ],
+        "pixels": [
+          128,
+          4,
+          3,
+          224,
+          224
+        ]
+      },
+      "verification_report": "/root/autodl-tmp/workspace/users/lewm/pen_paired_full_20261006_v1/training/pen105_2d3d_wm_readopt_v2/logs/rgb_verify_full/report.json",
+      "verification_report_sha256": "21aad95fcd12f2d5bfd9f29b8cd99b858338783445f792b210a72f30b6b8b5df",
+      "elapsed_seconds": 13458.904978513718,
+      "internal_val_final_loss": 0.12218324095010757,
+      "spt_logged_gpu_mean": 46.99607072691552,
+      "gpu_mean_scope": "original every50step logged samples, may duplicate hardware samples; not uniform time sample"
+    },
+    "pcd": {
+      "epochs": 10,
+      "optimizer_steps": 50910,
+      "finite": true,
+      "strict_reload": "PASS",
+      "reload_max_abs": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checkpoint": "/root/autodl-tmp/workspace/users/lewm/pen_paired_full_20261006_v1/training/pen105_2d3d_wm_readopt_v2/checkpoints/pen105_paired_pcd_readopt_v2/weights_epoch_10.pt",
+      "checkpoint_sha256": "2ee49a519c7a009eabd4de1737c8bba89cd4c7fb6c6745f92a82dc4a451f14ad",
+      "trainer_checkpoint_sha256": "557bfe82358592fe09a3b53494c7e20aa7bf2170dd85583fa881b5cb2c5ccd30",
+      "config_sha256": "c01d3274535237ce79ed2c4cfed20ef769d545bdff63c65c8afe3b159ca36354",
+      "evidence_sha256": "968993cfa1478767175a9bd2598b9ef2220c01374ed5e8f74c804161dc87113f",
+      "last_train_loss": {
+        "loss": 0.11405566334724426,
+        "pred_loss": 0.013469725847244263,
+        "sigreg_loss": 1.1171875
+      },
+      "training_batch": 128,
+      "shapes": {
+        "action": [
+          128,
+          4,
+          120
+        ],
+        "observation": [
+          128,
+          4,
+          45
+        ],
+        "pcd": [
+          128,
+          4,
+          1200,
+          6
+        ]
+      },
+      "verification_report": "/root/autodl-tmp/workspace/users/lewm/pen_paired_full_20261006_v1/training/pen105_2d3d_wm_readopt_v2/logs/pcd_verify_full/report.json",
+      "verification_report_sha256": "45688a1cae702101d634c785fb42113a0c8cbab98d15ff4cfc1fe9ee79363d0f",
+      "elapsed_seconds": 8339.631289482117,
+      "internal_val_final_loss": 0.1519761085510254,
+      "spt_logged_gpu_mean": 85.96856581532417,
+      "gpu_mean_scope": "original every50step logged samples, may duplicate hardware samples; not uniform time sample"
+    }
+  },
+  "stage_exit_codes": {
+    "rgb_resolved.exit_code": 0,
+    "rgb_train.exit_code": 0,
+    "rgb_verify_full.exit_code": 0,
+    "pcd_resolved.exit_code": 0,
+    "pcd_train.exit_code": 0,
+    "pcd_verify_full.exit_code": 0
+  },
+  "source_count": 252,
+  "source_sha_mismatches": [],
+  "payload_lock_count": 812,
+  "payload_scope": "full accepted dataset/startup SHA checks reused; final monitor rereads headers and source; no duplicate full payload scan",
+  "config_sha256": "8c86f7981b1da4fe19b1bf4c2c313136e543f647cd6b980aecee5d9f1ccf3206",
+  "active_plan_sha256": "3264fad372810eca69ae10b785d0b1d3361be47730da856a9260abad3bdc6609",
+  "heldout_test_scope": "150episodes excluded from training and normalizer; original0.9 internal window split retained",
+  "monitor_expected_status": "PAUSED after complete",
+  "scope": "world model training verification; no downstream policy evaluation or final8/16worker task score equivalence claim",
+  "resources": {
+    "memory_events": "low 0\nhigh 20496598\nmax 0\noom 0\noom_kill 0\n",
+    "gpu_after": "0, 0",
+    "data_disk": "Filesystem      Size  Used Avail Use% Mounted on\n/dev/md0        200G  159G   42G  80% /root/autodl-tmp\n"
+  }
+}
