@@ -1,5 +1,7 @@
 # Official Cube → Frozen LeWM → single-frame MLP GCBC
 
+实验顺序、数据/smoke/正式训练/全量SR的阶段进度及下一步统一见[根README](../../README.md)。本页保留输入契约与代码使用方式。
+
 ## 数据与模型契约
 
 上游 encoder＋projector 来自 custom fixed5 的10000条世界模型预训练数据。下游动作头使用官方 `cube-single-play-v0` 的1000条 train、100条 val；每条1001原始行、1000有效 transition。官方 actions/terminals 不修改。Cube state 与 Visual Cube 是两份独立轨迹，不能混配。
