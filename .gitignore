@@ -1,0 +1,21 @@
+# Runtime assets and process-only artifacts
+**/__pycache__/
+**/.pytest_cache/
+**/runtime_data/
+**/checkpoints/
+**/logs/
+**/third_party/
+*.pt
+*.pth
+*.ckpt
+*.pkl
+*.h5
+*.hdf5
+*.npz
+*.npy
+*.bundle
+*.log
+*.tar.gz
+*.tgz
+.env
+.env.*

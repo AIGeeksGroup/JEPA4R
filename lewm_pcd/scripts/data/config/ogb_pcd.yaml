@@ -34,5 +34,6 @@ num_workers: 4
 seed: 3072
 world_seed: null   # direct World seed; the sharded launcher sets one per shard
 num_traj: 10000
+mixed_switch_step: null
 
 options: null

@@ -1,0 +1,162 @@
+[
+  {
+    "source": "coordination/lewm_gcbc_smoke_20261005/lewm_gcbc_adapter.py",
+    "source_sha256": "702ab5e2ea955c6bd37a97564f0d83129e512720138eb38a2efffaa7a8544798",
+    "destination": "models/frozen_lewm.py",
+    "operation": "original LeWMFrozenEncoder class extracted; head excluded",
+    "symbols": [
+      "LeWMFrozenEncoder"
+    ]
+  },
+  {
+    "source": "coordination/lewm_gcbc_smoke_20261005/gcbc_smoke.py",
+    "source_sha256": "5bc65e983040045817d49ff8b715bb9dcc57e13fa8d7192ed0a5e5d164b6eb8a",
+    "symbols": [
+      "sha_file",
+      "state_hash"
+    ]
+  },
+  {
+    "source": "coordination/lewm_gcbc_smoke_20261005/gcbc_smoke.py",
+    "source_sha256": "5bc65e983040045817d49ff8b715bb9dcc57e13fa8d7192ed0a5e5d164b6eb8a",
+    "symbols": [
+      "DataTransform"
+    ]
+  },
+  {
+    "source": "coordination/official_single_play_20261006/npz_bridge.py",
+    "source_sha256": "ff92889009843b2043779d9e8e05a8e63ebd66097e3d7551122170791fd1af46",
+    "symbols": [
+      "numeric_source"
+    ]
+  },
+  {
+    "source": "coordination/official_downstream_audit_20261006/cube_state_paired_gate_v2.py",
+    "source_sha256": "0e6d3bbe9fa2e5d61cbafc9ca8270e3583305b9becd4ebf638792247d79a3413",
+    "symbols": [
+      "sample_source_recipe"
+    ]
+  },
+  {
+    "source": "coordination/official_downstream_audit_20261006/pcd_empty_crop_fallback_v3.py",
+    "source_sha256": "367ad5418c6342e424baea193bef510f40ae63865914baf424c6825ef11d9b86",
+    "symbols": [
+      "sample_foreground"
+    ]
+  },
+  {
+    "source": "coordination/official_downstream_audit_20261006/cube_state_continuous_pilot.py",
+    "source_sha256": "d5e8a56cd90d1425be3e302be880bd110838d8efdceb877cf34fcdf865a6b5bd",
+    "symbols": [
+      "setup"
+    ]
+  },
+  {
+    "source": "coordination/official_single_play_20261006/cube_rgb_full.py",
+    "source_sha256": "665d74685205d65555b1e8ca1d3be8da54afbb15bdb1803f849c45de0775089c",
+    "destination": "data/rgb_shards.py",
+    "operation": "verbatim runtime primitives only"
+  },
+  {
+    "source": "coordination/official_single_play_20261006/cube_rgb_renderer.py",
+    "source_sha256": "2250f4a0ca8d2adb55a06400696a17d936c95fe57909bfe421de6c49ce9bb40d",
+    "destination": "data/rgb_renderer.py",
+    "operation": "package imports and portable setup provenance; render math unchanged"
+  },
+  {
+    "source": "coordination/official_single_play_20261006/test_cube_rgb_full.py",
+    "source_sha256": "e92c0be5ae2fbd13b5444a105d7ba7e6c75775cc7d035c0a9e09455e6b7e36f2",
+    "destination": "tests/test_rgb_shards.py",
+    "operation": "portable imports/paths only"
+  },
+  {
+    "source": "coordination/official_single_play_20261006/official_state_sr.py",
+    "source_sha256": "5721760f53f8f3c4afb3f85626366022f844861ff3462a46bb5a0365f1e372bb",
+    "destination": "evaluation/official_state_sr.py",
+    "operation": "portable imports/paths only"
+  },
+  {
+    "source": "coordination/official_single_play_20261006/test_official_state_sr.py",
+    "source_sha256": "7a10d34d1de351e6c1ec90d5b7152ce35eaa6ba0128196241e3c9c7e67cc2f75",
+    "destination": "tests/test_official_state_sr.py",
+    "operation": "portable imports/paths only"
+  },
+  {
+    "source": "lewm_pcd/scripts/data/collect_cube_pcd.py",
+    "source_checkout_commit": "df0496d86aeb619bcd700a29526e141a8e4b5ab6",
+    "source_sha256": "6a74de095a2984d928fc74874afa7c83914674ded1fae99560b6827d9b2ef005",
+    "operation": "current collector source snapshot; no process launcher"
+  },
+  {
+    "source": "lewm_pcd/scripts/data/collection_protocol.py",
+    "source_checkout_commit": "df0496d86aeb619bcd700a29526e141a8e4b5ab6",
+    "source_sha256": "1f95fa2d7d7ea87afc2fcf45333858eefccd78f77184b9b0536f49da715502a8",
+    "operation": "current collector source snapshot; no process launcher"
+  },
+  {
+    "source": "lewm_pcd/scripts/data/test_collection_protocol.py",
+    "source_checkout_commit": "df0496d86aeb619bcd700a29526e141a8e4b5ab6",
+    "source_sha256": "7761106c80429049b1f5b377c38adbdf68b850a3c56e3bf91262f9278c5e1bcb",
+    "operation": "current collector source snapshot; no process launcher"
+  },
+  {
+    "source": "lewm_pcd/scripts/data/test_paired_writer.py",
+    "source_checkout_commit": "df0496d86aeb619bcd700a29526e141a8e4b5ab6",
+    "source_sha256": "4ea9942d422efe6ee3b35d11a91aeb1208a0dc9a706941b36cae561b253194b6",
+    "operation": "current collector source snapshot; no process launcher"
+  },
+  {
+    "source": "lewm_pcd/scripts/data/config/ogb_pcd.yaml",
+    "source_checkout_commit": "df0496d86aeb619bcd700a29526e141a8e4b5ab6",
+    "source_sha256": "bb0a104b80ab0934fa3707a77acedf7769d19340bbe389e9fcdbb94f95f1f608",
+    "operation": "current collector source snapshot; no process launcher"
+  },
+  {
+    "source": "coordination/official_lewm_gcbc_20261006/policy.py",
+    "source_sha256": "d54e578d331f15a4f1bbf6e4335b27834fe3f120b8341da0c429dd54e9613ef4",
+    "destination": "models/policy.py",
+    "operation": "portable package imports only; behavior unchanged"
+  },
+  {
+    "source": "coordination/official_lewm_gcbc_20261006/dataset.py",
+    "source_sha256": "4dbc494ccf7ef5bf2106b4155fb2ec80daf855a4f427fa288788d4dcf9a3c120",
+    "destination": "data/dataset.py",
+    "operation": "portable package imports only; behavior unchanged"
+  },
+  {
+    "source": "coordination/official_lewm_gcbc_20261006/test_policy.py",
+    "source_sha256": "190768a72896206818e4bed61afc8be0aa8003956465223c6b09bbf5ede7e10e",
+    "destination": "tests/test_policy.py",
+    "operation": "portable package imports only; behavior unchanged"
+  },
+  {
+    "source": "coordination/official_lewm_gcbc_20261006/test_dataset.py",
+    "source_sha256": "e7720b611e2fb07c8120c8b898b7500f66681578de2b831d2e1c1960eed89ac7",
+    "destination": "tests/test_dataset.py",
+    "operation": "portable package imports only; behavior unchanged"
+  },
+  {
+    "source": "coordination/official_downstream_audit_20261006/native_single_frame_adapter.py",
+    "source_sha256": "00317219ddac460ab7a34849d59fea69aa40ab615b4e53ae8d17cecf192c99b7",
+    "destination": "evaluation/native_single_frame.py",
+    "operation": "portable package imports only; behavior unchanged"
+  },
+  {
+    "source": "coordination/official_downstream_audit_20261006/test_native_single_frame_adapter.py",
+    "source_sha256": "318c225ff65b38f4be1dc72a0d96f5918dab11f84fb2e1d78f4e73cd6c3c0c61",
+    "destination": "tests/test_native_single_frame.py",
+    "operation": "portable package imports only; behavior unchanged"
+  },
+  {
+    "source": "coordination/lewm_gcbc_train_20261006/trainer.py",
+    "source_sha256": "bbe23d3a32f868c3061b63c6a6ed72e763bd2b18b18fb6b576001eb1148e2a12",
+    "symbols": [
+      "now",
+      "atomic_json",
+      "atomic_torch_save",
+      "capture_rng",
+      "restore_rng"
+    ],
+    "operation": "shared durable-write and RNG primitives only; no old training loop"
+  }
+]
