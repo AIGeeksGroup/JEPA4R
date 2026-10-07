@@ -8,26 +8,26 @@ SR与均值单位为%。[Table 8](https://arxiv.org/html/2303.18240v2#A1.T8)为�
 
 | 模型／版本 | 输入 | 来源 | Pen SR | Relocate SR | Adroit 均值 |
 |---|---|---|---:|---:|---:|
-| CLIP (ViT-B) | RGB | 官方论文 | 72.0 | 22.7 | 47.3 |
-| MAE Ego4D (ViT-B) | RGB | 官方论文 | 74.7 | 22.7 | 48.7 |
-| MAE Ego4D (ViT-L) | RGB | 官方论文 | 76.0 | 24.0 | 50.0 |
-| MAE Ego4D+M (ViT-B) | RGB | 官方论文 | 77.3 | 25.3 | 51.3 |
-| MAE Ego4D+M (ViT-L) | RGB | 官方论文 | 74.7 | 29.3 | 52.0 |
-| MAE Ego4D+MN (ViT-B) | RGB | 官方论文 | 73.3 | 24.0 | 48.7 |
-| MAE Ego4D+MN (ViT-L) | RGB | 官方论文 | 78.7 | 26.7 | 52.7 |
-| MAE Ego4D+MNI (ViT-B) | RGB | 官方论文 | 76.0 | 32.0 | 54.0 |
-| VC-1 (ViT-L; Ego4D+MNI) | RGB | 官方论文 | 80.0 | 38.7 | 59.3 |
-| MAE Ego4D+N (ViT-B) | RGB | 官方论文 | 77.3 | 22.7 | 50.0 |
-| MAE Ego4D+N (ViT-L) | RGB | 官方论文 | 76.0 | 32.0 | 54.0 |
-| MVP (ViT-B) | RGB | 官方论文 | 69.3 | 26.7 | 48.0 |
-| MVP (ViT-L) | RGB | 官方论文 | 76.0 | 30.7 | 53.3 |
-| R3M (RN-50) | RGB | 官方论文 | 81.3 | 65.3 | 73.3 |
-| Random Frozen (ViT-B) | RGB | 官方论文 | 4.0 | 0.0 | 2.0 |
-| Random Frozen (ViT-L) | RGB | 官方论文 | 5.3 | 0.0 | 2.7 |
-| Random Fine-tuned (ViT-B) | RGB | 官方论文 | 73.3 | 14.7 | 44.0 |
-| VIP (RN-50) | RGB | 官方论文 | 81.3 | 26.7 | 54.0 |
-| **LeWM：RGB（Pen最新／Relocate v6）** | RGB | 本项目当前 | **37.33±4.99** | **8.00±0.00** | **22.67** |
 | **LeWM：可见表面PCD** | PCD† | 本项目当前 | **81.33±4.99** | **88.00±5.66** | **84.67†** |
+| R3M (RN-50) | RGB | 官方论文 | 81.3 | 65.3 | 73.3 |
+| VC-1 (ViT-L; Ego4D+MNI) | RGB | 官方论文 | 80.0 | 38.7 | 59.3 |
+| MAE Ego4D+MNI (ViT-B) | RGB | 官方论文 | 76.0 | 32.0 | 54.0 |
+| MAE Ego4D+N (ViT-L) | RGB | 官方论文 | 76.0 | 32.0 | 54.0 |
+| VIP (RN-50) | RGB | 官方论文 | 81.3 | 26.7 | 54.0 |
+| MVP (ViT-L) | RGB | 官方论文 | 76.0 | 30.7 | 53.3 |
+| MAE Ego4D+MN (ViT-L) | RGB | 官方论文 | 78.7 | 26.7 | 52.7 |
+| MAE Ego4D+M (ViT-L) | RGB | 官方论文 | 74.7 | 29.3 | 52.0 |
+| MAE Ego4D+M (ViT-B) | RGB | 官方论文 | 77.3 | 25.3 | 51.3 |
+| MAE Ego4D (ViT-L) | RGB | 官方论文 | 76.0 | 24.0 | 50.0 |
+| MAE Ego4D+N (ViT-B) | RGB | 官方论文 | 77.3 | 22.7 | 50.0 |
+| MAE Ego4D (ViT-B) | RGB | 官方论文 | 74.7 | 22.7 | 48.7 |
+| MAE Ego4D+MN (ViT-B) | RGB | 官方论文 | 73.3 | 24.0 | 48.7 |
+| MVP (ViT-B) | RGB | 官方论文 | 69.3 | 26.7 | 48.0 |
+| CLIP (ViT-B) | RGB | 官方论文 | 72.0 | 22.7 | 47.3 |
+| Random Fine-tuned (ViT-B) | RGB | 官方论文 | 73.3 | 14.7 | 44.0 |
+| **LeWM：RGB（Pen最新／Relocate v6）** | RGB | 本项目当前 | **37.33±4.99** | **8.00±0.00** | **22.67** |
+| Random Frozen (ViT-L) | RGB | 官方论文 | 5.3 | 0.0 | 2.7 |
+| Random Frozen (ViT-B) | RGB | 官方论文 | 4.0 | 0.0 | 2.0 |
 
 † PCD／目标信息接口为扩展，不参与官方RGB排名。Ours各任务使用独立WM权重，WM预训练还使用约10,000条任务内轨迹，100demos仅指BC动作头预算；该均值是描述性汇总，不能视为同一通用encoder的成绩或完全匹配预算的对照。
 
