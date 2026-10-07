@@ -97,7 +97,7 @@ bin-picking 和 drawer-open 的 CortexBench 明显低于 Sawyer。bin-picking �
 | 零动作 | 7.0 | — | — |
 | 随机策略 | 0.5 | — | — |
 
-\* move 是 CortexBench 中唯一一个策略以目标图像为条件的任务（目标是示范最后一帧的编码）。
+**\* move 的结果不好**：2D、3D 都和随机初始化的 ViT-B（冻结）的 41.3 持平，比 VC-1 ViT-B 的 60.6 低 18–19 分。
 
 CortexBench TriFinger 的对照（VC-1 论文表 8，reach / move）：R3M 86.5 / 51.9，VC-1 ViT-B 83.9 / 60.6，随机初始化的 ViT-B（冻结）74.3 / 41.3。
 
