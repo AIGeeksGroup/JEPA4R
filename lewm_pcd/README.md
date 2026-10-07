@@ -1,43 +1,8 @@
 # LeWM-PCD：点云版 LeWorldModel（OGBench Cube）
 
-## Adroit Relocate（2026-10-07）：真实 PCD replay、BC 与 epoch-10 CEM
-
-原 RGB v6 epoch-10 WM 保留；新 DexArt PCD WM 已完成 **10 epochs／127,260 optimizer steps**，严格重载与有限性检查通过。训练／独立test为10,000／150条200步轨迹，新PCD为真实可见1200×6 XYZRGB，区别于历史64个合成target点。下列3D BC与CEM共享同一PCD epoch-10权重；PCD是独立模态扩展。
-
-BC沿用100条官方demos／每轮25条在线轨迹／100epochs，共20轮评测；冻结三帧192D表征加30D proprio，606D输入→30D动作。三seed均已完成，真实训练与策略重载验证退出码0。
-
-| BC seed | 3D PCD Best-of-20 | Final（epoch99） |
-|---|---:|---:|
-| 100 | 84% | 84% |
-| 200 | 96% | 92% |
-| 300 | 84% | 68% |
-| 均值±总体std（ddof=0） | **88.00±5.66%** | **81.33±9.98%** |
-
-最高reward保存策略的对应success为84／96／84%；单seed54321的best88%／final68%另存，未混入三seed均值。Best-of-20为同评测集20轮选最大值，且当前PCD接口缺匹配随机表征对照。
-
-| epoch-10世界模型 | 配对50片段CEM | 初始未达标的19段 |
-|---|---:|---:|
-| 2D RGB v6 | **43/50（86.00%）** | **12/19（63.16%）** |
-| 3D DexArt PCD扩展 | **46/50（92.00%）** | **15/19（78.95%）** |
-
-seed42按原采样器从150条test轨迹取相同50起点，覆盖44个来源episode；goal为`t+25`物体世界位置，距离严格<0.1m。保持horizon5／action_block5／receding5、budget50、300候选／top30／10次迭代、history1与原latent MSE cost；两路实际子进程退出码0。256原生渲染、224策略处理、MSAA0；归一化沿用Pen CEM的train-only StandardScaler。
-
-**31/50（62%）起点已在目标内，两路这31段均成功。** 这是单次到达未来位置的片段扩展，不等同原生完整任务的>25帧保持成功；未做完整150episode评测或随机／无动作基线。CEM不能作为官方RGB BC分数，也不能与历史8% RGB BC直接比较或用于预训练／规划收益归因。
-
-[本轮最终结果与绑定](../docs/results/adroit_relocate_20261007.json) · [代码／依赖／数据契约与复现入口](../docs/experiments/adroit_relocate_replay_20261007.md) · [仓库README与历史结果](../README.md)。以下Pen、OGBench和换臂结果按原协议保留。
-
-**Adroit Pen 2026-10-06 更新：** 新 paired 数据已完成两路WM及100demo／25eval的三seed BC。RGB Best-of-20为37.3±5.0%，PCD扩展为81.3±5.0%；片段CEM和旧Relocate结果分别记录。见[仓库README](../README.md)和[本轮代码／外部前置／复现命令](../docs/experiments/adroit_pen_paired_20261006.md)。RH56仍为独立未通过任务门禁的候选，没有作为已调通代码混入。
-
-## Adroit Pen 25步片段 CEM（2026-10-06，独立扩展）
-
-起点抽样seed=42，两路使用相同50起点，来自独立test集中的40个episode；目标为同轨迹`t+25`原始环境步的笔位置／方向。保留原CEM的`horizon=5`、`action_block=5`（25步规划）、`receding_horizon=5`、50步预算、300候选／top30／10次迭代。两路正式运行均完成50段，真实退出码0。
-
-| 世界模型 | 全部50段成功率 | 初始未达标的27段成功率 |
-|---|---:|---:|
-| 2D RGB | **34/50（68.0%）** | **11/27（40.7%）** |
-| 3D PCD扩展 | **39/50（78.0%）** | **16/27（59.3%）** |
-
-成功判据：位置距离<0.075m、方向dot>0.95，掉落失败。**23/50（46%）起点初始已达标**，两路这23段均成功；原采样和正式结果未过滤。上述为片段规划扩展，未覆盖150条完整episode，也没有随机／无动作基线；不能作为官方CortexBench BC分数或规划器收益归因证据。[逐段结果](../docs/results/adroit_pen_20261006_fragment_cem.json) · [配对与判据审计](../docs/results/adroit_pen_20261006_cem_audit.json)。
+**Adroit结果统一见[仓库README](../README.md)：** 官方CortexBench参照矩阵、当前Pen／Relocate v6的三seed BC、当前PCD扩展与片段CEM集中记录。
+当前PCD BC Best-of-20：Pen81.33±4.99%、Relocate88.00±5.66%；Relocate原RGB v6 BC为8.00±0.00%。PCD扩展与CEM不作为官方RGB排行成绩。
+[Pen复现入口](../docs/experiments/adroit_pen_paired_20261006.md) · [Relocate复现入口](../docs/experiments/adroit_relocate_replay_20261007.md) · [完整Adroit历史](../docs/experiments/adroit_history.md)。下文保留原OGBench／Cube／RM75内容。
 
 在 stable-worldmodel 的 `swm/OGBCube-v0` 环境上，把 LeWM 的像素输入换成点云输入，并加一个时间聚合的 4D 变体；采集、模型、训练、评测都沿用 LeWM 的做法，只改必要的部分。
 同一套流程还跑了官方 2D 复现、像素 4D，以及框架自带的 PLDM / GCBC 基线。基于 le-wm `8edfeb3` 与 stable-worldmodel `6f1e499`。
