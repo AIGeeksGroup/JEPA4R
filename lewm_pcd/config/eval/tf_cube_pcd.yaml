@@ -1,0 +1,24 @@
+# tf_cube_pix.yaml for the 3D model: camera60's point cloud (envs.trifinger.TriFingerPCDWrapper, the collection's
+# settings) and the training affine (config/train/data/tf_cube_pcd.yaml; eval.py checks it against the checkpoint).
+defaults:
+  - tf_cube_pix
+  - _self_
+
+world:
+  pre_wrappers:
+    - _target_: envs.trifinger.TriFingerPCDWrapper
+
+obs: pcd
+pcd_process:
+  center: [0.0, 0.0, 0.12]
+  scale: 4.0
+  use_rgb: true
+
+dataset:
+  stats: trifinger/tf_cube_pcd   # the training set's normalisation statistics
+
+eval:
+  dataset_name: trifinger/tf_cube_test_pcd
+
+output:
+  filename: tf_cube_pcd_results.txt

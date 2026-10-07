@@ -1,0 +1,14 @@
+# ogb_pcd.yaml (point cloud) on the TriFinger three-part dataset (same rollouts as tf_cube.yaml, row for row), frameskip
+# 1 as tf_cube.yaml. Fixed affine centred above the arena; must match config/eval/tf_cube_pcd.yaml and
+# bench/cortexbench/run_tf_bc.py (PCD_AFFINE).
+defaults:
+  - ogb_pcd
+  - _self_
+
+dataset:
+  name: trifinger/tf_cube_pcd.h5
+  frameskip: 1
+
+preprocessor:
+  center: [0.0, 0.0, 0.12]   # m: the arena centre, 12 cm up (the point clouds' crop box: x, y +-0.3, z -0.01..0.25)
+  scale: 4.0
