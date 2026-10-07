@@ -7,10 +7,12 @@ for task, env_id in [('pen-v0', 'swm/AdroitPen-v0'), ('relocate-v0', 'swm/Adroit
         register(id=env_id, entry_point='envs.adroit.env:AdroitEnv', kwargs={'env_name': task})
 if 'swm/AdroitPenFragment-v0' not in registry:
     register(id='swm/AdroitPenFragment-v0', entry_point='envs.adroit.fragment_env:PenFragmentEnv')
+if 'swm/AdroitRelocateFragment-v0' not in registry:
+    register(id='swm/AdroitRelocateFragment-v0', entry_point='envs.adroit.fragment_env:RelocateFragmentEnv')
 
 _EXPORTS = {'AdroitEnv': 'env', 'AdroitFeedbackPolicy': 'policy',
             'SavedStateExpert': 'policy', 'AdroitPointCloudWrapper': 'pcd',
-            'PenFragmentEnv': 'fragment_env'}
+            'PenFragmentEnv': 'fragment_env', 'RelocateFragmentEnv': 'fragment_env'}
 __all__ = list(_EXPORTS)
 
 def __getattr__(name):

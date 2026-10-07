@@ -38,14 +38,21 @@ def datasets(f):
     return sorted(c for c in cols if c not in ('ep_len', 'ep_offset'))
 
 
-def append_shard(out_path, shard_path):
+def append_shard(out_path, shard_path, preserve_episode_indices=False):
     with h5py.File(out_path, 'a', libver='latest') as fo, h5py.File(shard_path, 'r') as fs:
         co, cs = datasets(fo), datasets(fs)
-        if 'ep_idx' in cs:
+        if 'ep_idx' in cs and not preserve_episode_indices:
             raise ValueError(f'{shard_path} already has ep_idx (shard-local episode numbers); run add_eval_columns.py only after merging')
         if co != cs:
             raise ValueError(f'schema mismatch: only in out {sorted(set(co) - set(cs))}, '
                              f'only in shard {sorted(set(cs) - set(co))}')
+        if preserve_episode_indices:
+            if 'ep_idx' not in co:
+                raise ValueError('preserve_episode_indices requires original ep_idx')
+            old_ids = fo['ep_idx'][fo['ep_offset'][:]]
+            new_ids = fs['ep_idx'][fs['ep_offset'][:]]
+            if np.intersect1d(old_ids,new_ids).size:
+                raise ValueError('overlapping original episode IDs')
         n_old = int(fo['ep_len'][:].sum())
         T = int(fs['ep_len'][:].sum())
         for c in cs:
@@ -70,6 +77,7 @@ def main():
     ap.add_argument('--out', required=True)
     ap.add_argument('shards', nargs='+')
     ap.add_argument('--delete', action='store_true', help='remove each shard after appending it')
+    ap.add_argument('--preserve-episode-indices', action='store_true', help='keep verified global replay IDs; reject overlapping shards')
     args = ap.parse_args()
 
     out = Path(args.out)
@@ -79,7 +87,7 @@ def main():
         shutil.move(shards.pop(0), out)
         print(f'moved first shard -> {out}', flush=True)
     for shard in shards:
-        n, T = append_shard(out, shard)
+        n, T = append_shard(out, shard, args.preserve_episode_indices)
         print(f'appended {n:5d} episodes / {T:8d} frames from {shard}', flush=True)
         if args.delete:
             os.remove(shard)

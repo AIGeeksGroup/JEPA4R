@@ -22,7 +22,8 @@ import runpy
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-VI = os.path.join(HERE, '..', '..', 'third_party', 'eai-vc', 'cortexbench', 'mujoco_vc', 'visual_imitation')
+EAI_VC = os.environ.get('CORTEXBENCH_EAI_VC_ROOT', os.path.join(HERE, '..', '..', 'third_party', 'eai-vc'))
+VI = os.path.join(EAI_VC, 'cortexbench', 'mujoco_vc', 'visual_imitation')
 sys.path.insert(0, VI)
 
 import mujoco_vc.gym_wrapper as gw  # noqa: E402
@@ -71,10 +72,14 @@ train_loop.setup_wandb = lambda config: JsonlRun(os.path.join(os.getcwd(), 'metr
 
 _sample_paths = train_loop.sample_paths
 _last = {}
+_config_name = next((arg.split('=', 1)[1] for arg in sys.argv if arg.startswith('--config-name=')), None)
+if '--config-name' in sys.argv:
+    _config_name = sys.argv[sys.argv.index('--config-name') + 1]
 
 
 def sample_paths(*args, **kwargs):
-    if kwargs.get('base_seed') == 54321 and 'paths' in _last:  # MetaWorld train/* rollouts: logging only
+    if kwargs.get('base_seed') == 54321 and 'paths' in _last and not (
+            _config_name == 'Adroit_BC_config' and os.environ.get('ADROIT_FRESH_EVAL') == '1'):
         return _last['paths']
     paths = _sample_paths(*args, **kwargs)
     _last['paths'] = paths

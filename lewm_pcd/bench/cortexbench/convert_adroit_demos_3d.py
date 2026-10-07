@@ -4,10 +4,35 @@ from copy import deepcopy
 from datetime import datetime, timezone
 import hashlib
 import json
+import os
 from pathlib import Path
 import pickle
 
 import numpy as np
+
+
+def load_sources(source, expected_sha256):
+    """Read one bounded migrated official demo at a time, or retain the old pickle input."""
+    binding = source.parent/'manifest.json' if source.is_dir() else source
+    payload = binding.read_bytes()
+    digest = hashlib.sha256(payload).hexdigest()
+    if digest != expected_sha256:
+        raise ValueError('official demo source SHA mismatch')
+    if source.is_dir():
+        records = json.loads(payload)['demo_files']
+        assert [r['demo_index'] for r in records] == list(range(len(records)))
+        def read(index):
+            record = records[index]
+            path = (source.parent/record['relative_path']).resolve()
+            if path.parent != source.resolve():
+                raise ValueError('demo path is outside the bound source directory')
+            raw = path.read_bytes()
+            if len(raw) != record['bytes'] or hashlib.sha256(raw).hexdigest() != record['sha256']:
+                raise ValueError('official demo file SHA/bytes mismatch')
+            return pickle.loads(raw), dict(index=index,path=str(path),sha256=record['sha256'])
+        return len(records), read, digest
+    demos = pickle.loads(payload)
+    return len(demos), lambda index:(demos[index],dict(index=index,path=str(source.resolve()),sha256=digest)), digest
 
 
 def convert_demo(demo, env, capture, atol=1e-6, rtol=1e-5):
@@ -33,7 +58,11 @@ def convert_demo(demo, env, capture, atol=1e-6, rtol=1e-5):
         _, reward, _, _ = env.step(action.copy())
         if 'rewards' in demo:
             np.testing.assert_allclose(reward, demo['rewards'][row], atol=atol, rtol=rtol)
-    return dict(demo, images=np.asarray(frames, dtype=np.float32))
+    converted = dict(demo, images=np.asarray(frames, dtype=np.float32))
+    for key in demo:
+        if key != 'images':
+            assert pickle.dumps(converted[key],protocol=4) == pickle.dumps(demo[key],protocol=4), key
+    return converted
 
 
 def main():
@@ -45,37 +74,35 @@ def main():
     parser.add_argument('--start-demo', type=int, default=0)
     parser.add_argument('--max-demos', type=int, default=1)
     args = parser.parse_args()
-    if args.output.exists() or args.output.with_suffix('.state.json').exists():
+    if any(path.exists() for path in (args.output,args.output.with_suffix('.state.json'),args.output.with_suffix('.exit_code'))):
         raise FileExistsError('use a fresh output shard')
-    # Large official pickles require a separately qualified memory/runtime gate.
-    payload = args.input.read_bytes()
-    digest = hashlib.sha256(payload).hexdigest()
-    if digest != args.source_sha256:
-        raise ValueError('official demo source SHA mismatch')
-    from run_adroit_bc3d import load_backend
+    count, read_demo, digest = load_sources(args.input,args.source_sha256)
+    from run_adroit_bc3d import build_point_clouds
     if args.task == 'pen-v0':
         from mj_envs.envs.hand_manipulation_suite.pen_v0 import PenEnvV0 as Native
     else:
         from mj_envs.envs.hand_manipulation_suite.relocate_v0 import RelocateEnvV0 as Native
-    demos = pickle.loads(payload)
-    del payload
-    assert args.start_demo >= 0 and args.max_demos > 0 and args.start_demo + args.max_demos <= len(demos)
+    assert args.start_demo >= 0 and args.max_demos > 0 and args.start_demo + args.max_demos <= count
     args.output.parent.mkdir(parents=True, exist_ok=True)
     state = dict(stage='converting', started_at=datetime.now(timezone.utc).isoformat(),
                  source=str(args.input.resolve()), source_sha256=digest, task=args.task,
-                 config={'start_demo':args.start_demo,'max_demos':args.max_demos,'size':256,'atol':1e-6,'rtol':1e-5},
-                 completed=0,failed=0,errors=[],exit_code=None)
+                 config={'start_demo':args.start_demo,'max_demos':args.max_demos,'atol':1e-6,'rtol':1e-5},
+                 sampler_config=os.environ.get('ADROIT_PCD_CONFIG'), sampler_config_sha256=os.environ.get('ADROIT_PCD_CONFIG_SHA256'),
+                 source_demos=[],completed=0,failed=0,errors=[],exit_code=None)
     def save():
         state['updated_at'] = datetime.now(timezone.utc).isoformat()
         args.output.with_suffix('.state.json').write_text(json.dumps(state,indent=2))
     save()
-    env = Native()
+    env = None
     try:
-        pcm = load_backend().AdroitPointClouds(env.sim,args.task,size=256)
+        env = Native()
+        pcm = build_point_clouds(env.sim,args.task)
         converted=[]
         for index in range(args.start_demo,args.start_demo+args.max_demos):
             env.seed(12345+index); env.reset(); pcm.seed(12345+index)
-            converted.append(convert_demo(demos[index],env,pcm))
+            demo, source_record = read_demo(index)
+            converted.append(convert_demo(demo,env,pcm))
+            state['source_demos'].append(source_record)
             state['completed']+=1; save()
         with args.output.open('xb') as handle:
             pickle.dump(converted,handle,protocol=4)
@@ -84,7 +111,8 @@ def main():
         state.update(stage='failed',failed=1,errors=[repr(error)],exit_code=1)
         raise
     finally:
-        env.close(); save()
+        if env is not None: env.close()
+        save()
         args.output.with_suffix('.exit_code').write_text(str(state['exit_code'])+'\n')
 
 

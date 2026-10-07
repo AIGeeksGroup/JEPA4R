@@ -1,0 +1,5 @@
+defaults:
+  - adroit_pen
+  - _self_
+dataset:
+  name: ${oc.env:RELOCATE_RGB_TRAIN}

@@ -70,10 +70,11 @@ def run(cfg: DictConfig):
     }
 
     dataset = get_dataset(cfg, cfg.eval.dataset_name)
-    # Only the new Pen fragment adapter requires separate held-out normalization.
+    # Only the explicit Adroit fragment adapters require held-out normalization.
     # Preserve this branch's existing behavior for every other environment.
     stats_dataset = (get_dataset(cfg, cfg.dataset.stats)
-                     if cfg.world.env_name == 'envs.adroit:swm/AdroitPenFragment-v0'
+                     if cfg.world.env_name in ('envs.adroit:swm/AdroitPenFragment-v0',
+                                               'envs.adroit:swm/AdroitRelocateFragment-v0')
                      else dataset)
     col_name = "episode_idx" if "episode_idx" in dataset.column_names else "ep_idx"
     ep_indices, _ = np.unique(dataset.get_col_data(col_name), return_index=True)

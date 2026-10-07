@@ -1,5 +1,11 @@
 # CortexBench 跑分（MuJoCo 模仿学习部分）
 
+## Adroit Relocate 2026-10-07（真实 PCD扩展）
+
+新DexArt PCD epoch-10 WM用于100demos／25eval／100epochs的三seed BC：seeds100／200／300的Best-of-20为84／96／84%，Final为84／92／68%；均值±总体std分别为**88.00±5.66%／81.33±9.98%**。三seed共享固定WM；先前seed54321另存，不纳入均值。该PCD模态扩展保留与官方RGB leaderboard及历史64个合成target点结果的区别。
+
+Relocate动作／proprio为30D，三帧192D表征与proprio组成606D输入；本文件下方MetaWorld的25demos／4D proprio说明不用于Relocate。本轮正确的WM、BC、数据重放及CEM入口见[复现指南](../../../docs/experiments/adroit_relocate_replay_20261007.md)，全部最终数字和SHA见[结果记录](../../../docs/results/adroit_relocate_20261007.json)。epoch-10 RGB／PCD片段CEM为86%／92%，使用独立片段成功定义，详情见[仓库README](../../../README.md)。
+
 ## Adroit Pen 2026-10-06（新版本化入口）
 
 本轮保留本文件下面的原MetaWorld实现与旧Adroit入口，新增 `run_adroit_bc3d.py` 和 `lewm_adroit_pen_{2d,pcd}_20261006` 配置。按官方Adroit100demos／25eval／100epochs、原评测索引5、10、…、95、99跑完三seed。RGB Best-of-20：36／44／32%；PCD扩展：80／76／88%。RGB seed300评分完整但原保存条件未产生policy文件。

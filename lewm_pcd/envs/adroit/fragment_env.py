@@ -2,28 +2,31 @@
 import gymnasium as gym
 import numpy as np
 from gymnasium.spaces import Box
-from .fragment import PenFragment
+from .fragment import PenFragment, RelocateFragment
 
 
 class PenFragmentEnv(PenFragment, gym.Env):
     metadata = {'render_modes': ['rgb_array'], 'render_fps': 100}
 
+    def _make_native(self):
+        from mj_envs.envs.hand_manipulation_suite.pen_v0 import PenEnvV0
+        return PenEnvV0()
+
     def __init__(self, width=256, height=256, camera='vil_camera', render_mode='rgb_array', offsamples=None):
         # No native import during module import/registration.
-        from mj_envs.envs.hand_manipulation_suite.pen_v0 import PenEnvV0
-        native = PenEnvV0()
+        native = self._make_native()
         PenFragment.__init__(self, native, width, height, camera)
         self.sim, self.render_mode = native.sim, render_mode
-        if native.action_space.shape != (24,) or native.observation_space.shape != (45,):
-            raise ValueError('native Pen dimensions must be action24/observation45')
+        if native.action_space.shape != (self.action_dim,) or native.observation_space.shape != (self.observation_dim,):
+            raise ValueError('native %s dimensions must be action%d/observation%d' % (self.task, self.action_dim, self.observation_dim))
         if offsamples is not None:
             if int(offsamples) != 0:
                 raise ValueError('only the independent PCD pass may request offsamples=0')
             if self.sim.render_contexts or self.sim._render_context_offscreen is not None:
                 raise RuntimeError('HOLD: offsamples=0 requires a fresh native render context')
             self.sim.model.vis.quality.offsamples = 0
-        self.action_space = Box(-1., 1., (24,), np.float32)
-        self.observation_space = Box(-np.inf, np.inf, (45,), np.float64)
+        self.action_space = Box(-1., 1., (self.action_dim,), np.float32)
+        self.observation_space = Box(-np.inf, np.inf, (self.observation_dim,), np.float64)
 
     def render(self):
         return self.sim.render(width=self.width, height=self.height, camera_name=self.camera, device_id=0)[::-1].copy()
@@ -37,3 +40,9 @@ class PenFragmentEnv(PenFragment, gym.Env):
         close = getattr(self.native_env, 'close', None)
         if close:
             close()
+
+
+class RelocateFragmentEnv(RelocateFragment, PenFragmentEnv):
+    def _make_native(self):
+        from mj_envs.envs.hand_manipulation_suite.relocate_v0 import RelocateEnvV0
+        return RelocateEnvV0()

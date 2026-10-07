@@ -1,5 +1,7 @@
 """Thin Adroit PCD entry: original run_bc.py and official BC loop unchanged."""
 import importlib.util
+import hashlib
+import json
 import os
 from pathlib import Path
 import runpy
@@ -28,11 +30,28 @@ def load_backend():
     return module
 
 
+def build_point_clouds(sim, task):
+    """One explicit sampling contract for official replay and online BC."""
+    task = task_from_env_id(task)
+    path = os.environ.get('ADROIT_PCD_CONFIG')
+    kwargs = {'size': 256}
+    if path:
+        payload = Path(path).read_bytes()
+        expected = os.environ.get('ADROIT_PCD_CONFIG_SHA256')
+        if expected and hashlib.sha256(payload).hexdigest() != expected:
+            raise ValueError('Adroit PCD configuration SHA mismatch')
+        config = json.loads(payload)
+        kwargs.update(config.get('pcd_constructor_kwargs', config))
+        if task_from_env_id(kwargs.pop('task', task)) != task:
+            raise ValueError('Adroit PCD configuration task mismatch')
+    return load_backend().AdroitPointClouds(sim, task, **kwargs)
+
+
 def get_image(self):
     assert self.width == self.height == 256, 'Adroit PCD BC requires the original 256x256 camera'
     pcm = getattr(self, '_pcm', None)
     if pcm is None:
-        pcm = self._pcm = load_backend().AdroitPointClouds(self.sim, task_from_env_id(self.spec.id), size=256)
+        pcm = self._pcm = build_point_clouds(self.sim, self.spec.id)
         if getattr(self, '_pcd_seed', None) is not None:
             pcm.seed(self._pcd_seed)
     xyz, rgb = pcm()
@@ -72,7 +91,8 @@ def main(argv=None):
             directory = Path(arg.split('=',1)[1]).expanduser()
             if directory.exists() and any(directory.iterdir()):
                 raise FileExistsError(f'existing BC output: {directory}')
-    vi = HERE.parents[1] / 'third_party/eai-vc/cortexbench/mujoco_vc/visual_imitation'
+    eai = Path(os.environ.get('CORTEXBENCH_EAI_VC_ROOT', HERE.parents[1] / 'third_party/eai-vc'))
+    vi = eai / 'cortexbench/mujoco_vc/visual_imitation'
     sys.path.insert(0, str(vi)); sys.path.insert(0, str(HERE))
     import hydra
     import mujoco_vc.gym_wrapper as gw
@@ -82,6 +102,11 @@ def main(argv=None):
 
     def load_pretrained_model(embedding_name, input_type=np.ndarray, *args, **kwargs):
         config = OmegaConf.load(os.path.join(ml.vc_models_dir_path, 'conf/model', embedding_name + '.yaml'))
+        checkpoint = os.environ.get('LEWM_PCD_CHECKPOINT_DIR')
+        if checkpoint:
+            if config.get('_target_') != 'lewm_cortex.load_lewm_pcd':
+                raise ValueError('checkpoint override requires the LeWM PCD embedding')
+            config.checkpoint_dir = checkpoint
         model, embedding_dim, transforms, metadata = hydra.utils.call(config)
         if metadata.get('input') != 'pcd':
             raise ValueError('PCD entry requires a PCD embedding; RGB uses the original run_bc.py')

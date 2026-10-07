@@ -32,11 +32,17 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--code-root', type=Path, required=True)
     parser.add_argument('--route', choices=('pix', 'pcd'), required=True)
+    parser.add_argument('--task', choices=('pen-v0', 'relocate-v0'), default='pen-v0')
+    parser.add_argument('--initials', type=Path, help='Relocate exact native initial states NPZ')
+    parser.add_argument('--rgb-cache', type=Path, help='Relocate sparse exact replay RGB HDF5')
     parser.add_argument('--train', type=Path, required=True)
     parser.add_argument('--test', type=Path, required=True)
     parser.add_argument('--checkpoint', type=Path, required=True)
     parser.add_argument('--out', type=Path, required=True)
     args = parser.parse_args(argv)
+    if args.task == 'relocate-v0' and (args.initials is None or
+            (args.route == 'pix' and args.rgb_cache is None)):
+        parser.error('Relocate requires --initials, and pix also requires --rgb-cache')
     root = args.code_root.resolve()
     if (root / 'lewm_pcd').is_dir():
         root = root / 'lewm_pcd'
@@ -45,14 +51,17 @@ def main(argv=None):
             raise FileNotFoundError(path)
     args.out = args.out.resolve()
     args.out.mkdir(parents=True, exist_ok=False)
-    report = dict(status='STARTED', qualified=False, route=args.route,
+    report = dict(status='STARTED', qualified=False, route=args.route, task=args.task,
                   started_at=datetime.now(timezone.utc).isoformat(),
                   preprocessing_note='original World resize224 and original img_transform224 retained; native raw256',
-                  fragment_criterion=dict(distance_lt=.075, axis_dot_gt=.95, drop_is_failure=True),
+                  fragment_criterion=(dict(distance_lt=.075, axis_dot_gt=.95, drop_is_failure=True)
+                                      if args.task == 'pen-v0' else dict(distance_lt=.1,
+                                      scope='future-object-position fragment; not native >25-step task success')),
                   original_result=str(args.out / 'mainline_results.txt'))
     report_path = args.out / 'report.json'
     report_path.write_text(json.dumps(report, indent=2, sort_keys=True))
     original_get_dataset = None
+    original_evaluate = None
     try:
         sys.path.insert(0, str(root))
         from hydra import compose, initialize_config_dir
@@ -60,7 +69,7 @@ def main(argv=None):
         from envs.adroit.fragment import EpisodeAliases
         mainline = importlib.import_module('eval')
         with initialize_config_dir(version_base=None, config_dir=str(root / 'config/eval')):
-            cfg = compose(config_name='adroit_pen_%s_fragment' % args.route)
+            cfg = compose(config_name='adroit_%s_%s_fragment' % (args.task[:-3], args.route))
         cfg.policy = str(args.checkpoint.resolve())
         cfg.dataset.stats = str(args.train.resolve())
         cfg.eval.dataset_name = str(args.test.resolve())
@@ -77,6 +86,14 @@ def main(argv=None):
         report['source_hashes'] = {str(path): hashlib.sha256(path.read_bytes()).hexdigest() for path in sources}
         report['input_hashes'] = {str(path.resolve()): hashlib.sha256(path.read_bytes()).hexdigest()
                                  for path in (args.train, args.test, args.checkpoint)}
+        for path in (args.initials, args.rgb_cache, args.checkpoint.parent/'config.json',
+                     args.checkpoint.parent/'config.yaml'):
+            if path is not None:
+                report['input_hashes'][str(path.resolve())] = hashlib.sha256(path.read_bytes()).hexdigest()
+        if args.task == 'relocate-v0':
+            for route in ('pix', 'pcd'):
+                path = root/('config/eval/adroit_relocate_%s_fragment.yaml' % route)
+                report['source_hashes'][str(path)] = hashlib.sha256(path.read_bytes()).hexdigest()
         for name in ('stable_worldmodel.world', 'stable_worldmodel.policy', 'stable_worldmodel.planning.solver.cem'):
             path = Path(importlib.import_module(name).__file__)
             report['source_hashes'][str(path)] = hashlib.sha256(path.read_bytes()).hexdigest()
@@ -84,14 +101,33 @@ def main(argv=None):
 
         def get_dataset(config, name):
             # CURRENT eval uses cfg.dataset.stats; original StandardScaler stays unchanged.
+            is_train = Path(name).resolve() == args.train.resolve()
+            keys = None
+            if args.task == 'relocate-v0':
+                keys = ['action'] if is_train else ['action', 'ep_idx', 'seed', 'step_idx',
+                            'qpos', 'qvel', 'observation', 'initial_state_sha256']
+                if not is_train and args.route == 'pcd':
+                    keys += ['pcd_xyz', 'pcd_rgb']
             reader = mainline.swm.data.HDF5Dataset(path=str(Path(name).resolve()),
-                                                  keys_to_cache=config.dataset.keys_to_cache)
+                          keys_to_load=keys, keys_to_cache=config.dataset.keys_to_cache)
             count = 10000 if Path(name).resolve() == args.train.resolve() else 150
             if len(reader.lengths) != count:
                 raise ValueError('expected %d episodes in %s' % (count, name))
+            if args.task == 'relocate-v0':
+                return reader if is_train else EpisodeAliases(reader, task=args.task,
+                                  initial_states=args.initials, rgb_frames=args.rgb_cache)
             return EpisodeAliases(reader)
 
         mainline.get_dataset = get_dataset
+        original_evaluate = mainline.swm.World.evaluate
+        def evaluate(world, *positional, **kwargs):
+            report['sampled_episodes'] = list(map(int, kwargs['episodes_idx']))
+            report['sampled_start_steps'] = list(map(int, kwargs['start_steps']))
+            result = original_evaluate(world, *positional, **kwargs)
+            report['metrics'] = {key: (value.tolist() if hasattr(value, 'tolist') else value)
+                                 for key, value in result.items()}
+            return result
+        mainline.swm.World.evaluate = evaluate
         report['status'] = 'RUNNING'
         report_path.write_text(json.dumps(report, indent=2, sort_keys=True))
         mainline.run.__wrapped__(cfg)
@@ -104,7 +140,9 @@ def main(argv=None):
     finally:
         if original_get_dataset is not None:
             mainline.get_dataset = original_get_dataset
-        native_module = sys.modules.get('mj_envs.envs.hand_manipulation_suite.pen_v0')
+        if original_evaluate is not None:
+            mainline.swm.World.evaluate = original_evaluate
+        native_module = sys.modules.get('mj_envs.envs.hand_manipulation_suite.' + args.task.replace('-v0', '_v0'))
         if native_module is not None:
             native_path = Path(native_module.__file__)
             report['native_source_path'] = str(native_path)

@@ -1,4 +1,38 @@
-# CortexBench Adroit：Pen / Relocate 的 LeWM BC 结果
+# CortexBench Adroit：Pen / Relocate 的 LeWM 世界模型、BC 与 CEM
+
+## 2026-10-07：Relocate 真实 PCD replay、三 seed BC 与 epoch-10 CEM
+
+本轮复用原 Relocate RGB v6 epoch-10 世界模型，按同一批真实轨迹重放生成新的可见 PCD 数据，并完成 DexArt PCD 世界模型训练：**10 epochs／127,260 optimizer steps**，checkpoint 严格重载与有限性检查通过。WM 数据为 **10,000 train／150 held-out test episodes，每条200步**；test 不参与训练或归一化。下列三 seed BC 与 3D CEM 使用同一个 PCD epoch-10 checkpoint。
+
+任务为 `relocate-v0`：原生观测39D、单步动作／proprio 30D、`vil_camera`。新 PCD 输入为1200×6 XYZRGB，来自真实可见表面；本轮保留与旧“64个合成 target 点”数据线的区别。BC 使用冻结的 `encoder + projector`，三帧192D表征加30D proprio，**606D输入→30D动作**；CEM 同时使用原 WM predictor。PCD 是独立模态扩展，不属于官方 RGB leaderboard。
+
+### Relocate 3D PCD 表征 BC
+
+沿用 CortexBench Adroit 的 **100条官方 demos／每轮25条在线轨迹／100 epochs** 循环，评测索引为 `5、10、…、95、99`，共20轮。三次运行与策略重载验证的真实退出码均为0；三 seed 共享固定 WM，随机性来自下游 BC。
+
+| BC seed | Best-of-20 success | Final（epoch 99） | 最高 reward 保存策略对应 success |
+|---|---:|---:|---:|
+| 100 | 84% | 84% | 84% |
+| 200 | 96% | 92% | 96% |
+| 300 | 84% | 68% | 84% |
+| 均值±总体std（ddof=0） | **88.00±5.66%** | **81.33±9.98%** | **88.00±5.66%** |
+
+Best-of-20 在20轮评测中选择最高 success，不是独立 holdout 成绩；最高 reward 策略按原保存指标单独核对，本轮三 seed 的对应 success 恰与 Best-of-20 相同。先前单 seed `54321` 的 **best88%／final68%** 独立保留，未纳入上表均值。当前可见 PCD 接口缺少匹配的随机表征对照，不能把分数或历史差值归因于 WM 预训练。
+
+### Relocate 25步片段 CEM（独立扩展）
+
+两路只测试 **epoch-10** checkpoint，从150条 held-out test轨迹按原采样器、seed42取相同50个起点，覆盖44个来源 episode。两路均完成50段，实际子进程退出码0；起点／目标、配置、权重和运行源码绑定经独立终验核对。
+
+| 世界模型 | 全部50段成功率 | 初始未达标的19段成功率 |
+|---|---:|---:|
+| 2D RGB v6 | **43/50（86.00%）** | **12/19（63.16%）** |
+| 3D DexArt PCD扩展 | **46/50（92.00%）** | **15/19（78.95%）** |
+
+目标为同 episode 的 `t+25` **物体世界位置**，成功要求距离严格 `<0.1m`。保持 `horizon=5`、`action_block=5`（每块含5个30D控制，共25步规划）、`receding_horizon=5`、50步预算、300候选／top30／10次迭代、`history_len=1`；代价为原 JEPA 最后预测 latent 与目标 latent 的 MSE。RGB原生256、策略处理224；离线重放和在线渲染均使用原 Relocate WM 采集的 MSAA0。归一化沿用 Pen CEM 的 train-only StandardScaler，与训练时 `torch.std(correction=1)` 的统计约定有区别。
+
+**31/50（62%）起点初始已满足目标判据，且两路这31段均成功。** 未过滤起点或改变原采样，表中另列初始未达标子集。此为单次到达未来位置的片段成功，原生完整 Relocate 成功要求目标达标超过25帧；两者不等价。未评测150条完整 episode，也没有随机／无动作基线，因此不能据此归因规划器收益。这里的86% RGB片段CEM与下方历史8% RGB BC使用不同策略、起点与成功定义，不能直接比较。
+
+[最终结果、逐 seed 指标与绑定](docs/results/adroit_relocate_20261007.json) · [本轮代码／依赖／数据契约与复现入口](docs/experiments/adroit_relocate_replay_20261007.md)。正文只汇总最终运行；历史 Pen 和 Relocate 结果继续按原日期保留。
 
 ## 2026-10-06：Pen 新 paired 数据与完整三 seed 测评
 
@@ -29,7 +63,7 @@
 | 代码／验证范围 | 当前状态 |
 |---|---|
 | Pen paired采集→原2D/3D WM→官方BC→片段CEM | 本轮闭环代码、配置与验收证据已收录；依赖、数据、专家和权重需外部提供 |
-| Relocate | 原代码、历史调试及结果保留；本轮未重跑，旧64个合成target点与本轮Pen可见target不同 |
+| Relocate | 2026-10-06 Pen发布时未重跑；2026-10-07真实PCD replay、BC与CEM结果见上节，旧64个合成target点历史另存 |
 | RM75-B／EG2 | 原分支前例保留，与RH56候选区分 |
 | RM75＋RH56 | 独立本地候选有编译／渲染／运动接口证据，但目标／持握门禁失败；本次未作为任务就绪代码合入 |
 
@@ -41,7 +75,7 @@
 
 **Relocate 的新 target-aware PCD 预训练组与 RGB 预训练组已完成；Relocate 的匹配随机对照尚未完成。Pen 已有四组完整结果。** Relocate PCD 每帧额外注入由模拟器 `target_pos` 构造的 64 个目标 site 点，这个目标信息接口与 RGB 不同，不能将两组差值解释为纯粹的 3D 优势或预训练收益。
 
-## 结果总表
+## 历史结果总表（2026-10-04）
 
 主指标是每个 seed 的 **Best-of-20 success**；Final 为 epoch 99 的日志 success。以下数字均为百分比，均值和总体标准差按三个 seed 等权计算（`ddof=0`）。Best-of-20 在同一评测集上选择最高值，不是独立 holdout 成绩。
 
@@ -70,7 +104,7 @@ RGB 使用官方任务与 RGB demo 协议；这不是官方发布的 LeWM 分数
 
 **历史数字说明：** `/autodl-fs/data/lewm/cortexbench-adroit-pen-audit-20260929-v1/AUDIT.md` 中 RGB Final `16/24/28%`、PCD Final `52/68/60%` 对应旧 **25 demos / 25 eval** 配置，不与本表 100/25 混用。旧结果保留在 [Pen 25-demo 历史记录](docs/experiments/adroit_pen_25demo_history.md)。25/25 历史、100/25 正式结果和 25/100 单 epoch smoke 是三套不同协议。
 
-## Relocate 输入与训练
+## 历史 Relocate 输入与训练（2026-10-04，64个合成 target 点）
 
 任务为 `relocate-v0`；单步 action / BC proprio 为 `30D / 30D`，native state 为 `39D`，horizon 为 200，camera 为 `vil_camera`。BC 为三帧 FLARE 融合、192D 表征和 `(256,256,256)` BatchNormMLP 动作头；MSE、Adam、`lr=0.001`、batch 256。encoder/head 在 CUDA，MJRL/MuJoCo policy rollout 在 CPU；不要将整张 GPU 的利用率当作编码器负载。
 
@@ -92,7 +126,7 @@ WM 使用 `frameskip=5`，所以 Relocate 的 action encoder 输入为五个单�
 
 target-aware 点云由场景 XYZRGB 与模拟器目标坐标生成的目标点组成。目标 site 点即使遮挡也会注入，属于显式目标信息；原几何 segmentation 过滤掉 site 的旧 PCD 和失败 root 均保留。两条 WM 数据线不同，不能称为严格的同数据模态对照。VDS HDF5 的 SHA 仅覆盖虚拟文件本身，完整溯源还需要 source manifest 和全部 shard。
 
-## Relocate RGB 低 SR 排查
+## 历史 Relocate RGB 低 SR 排查（2026-10-04）
 
 **已验证：** 官方 raw actions 与 target-aware BC demo actions 的 20,000 行逐元素一致。前 3 条 demo 的 `state[t] -> action[t] -> state[t+1]` 重放最大误差约 `7.8e-15`。正式 RGB 使用官方 raw demo；把 action 预先裁剪到 `[-1,1]` 会改写 `90.05%` 的行和 `5.13%` 的元素，即使环境内部裁剪使重放状态相同，也不能用 clipped probe 替代正式 BC 标签。
 
@@ -106,7 +140,7 @@ target-aware 点云由场景 XYZRGB 与模拟器目标坐标生成的目标点�
 
 对应发布证据：[流程审计的原始来源快照](docs/results/adroit_relocate_rgb_alignment_sources_20261004.json) · [像素/源码/颜色诊断来源与 SHA 索引](docs/results/adroit_relocate_rgb_target_sources_20261004.json) · [18 张实际输入帧](docs/figures/adroit_relocate_rgb_target_samples_20261004.png)。这些输入图像不是 BC policy rollout；索引明确标出仅在本地保存的其余素材。
 
-## Relocate 产物与 SHA
+## 历史 Relocate 产物与 SHA（2026-10-04）
 
 以下相对路径以 `R=/root/autodl-tmp/workspace/users/lewm/adroit_full/relocate_official_10000_150_20261001_v1` 为根；它们是服务器位置，GitHub 不托管这些大型数据与权重。
 

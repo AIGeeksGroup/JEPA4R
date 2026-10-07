@@ -1,0 +1,7 @@
+# Thin task switch; retain the Pen/mainline fragment CEM protocol.
+defaults:
+  - adroit_pen_pix_fragment
+  - _self_
+world:
+  env_name: envs.adroit:swm/AdroitRelocateFragment-v0
+  offsamples: 0  # Match the original Relocate RGB capture, not Pen's MSAA8.
