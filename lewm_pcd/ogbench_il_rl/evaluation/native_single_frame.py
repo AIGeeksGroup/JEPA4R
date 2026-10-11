@@ -32,8 +32,9 @@ def default_model_snapshot(u):
 
 class SingleFrameAgent:
     """Original evaluate.sample_actions API: one real image every step, no cache."""
-    def __init__(self,policy,current_rgb,preprocess_rgb,device='cpu',precision='fp32',on_action=None):
+    def __init__(self,policy,current_rgb,preprocess_rgb,device='cpu',precision='fp32',on_action=None,state_fusion=False):
         self.policy=policy.eval().requires_grad_(False);self.current_rgb=current_rgb;self.preprocess=preprocess_rgb
+        self.state_fusion=bool(state_fusion)
         self.device,self.precision,self.on_action=device,precision,on_action;self.policy_warmup_steps=0;self.reset()
     def reset(self):self.goal=None;self.model_calls=0;self.last_mean=None
     def set_goal_rgb(self,image):
@@ -46,8 +47,15 @@ class SingleFrameAgent:
         if rgb.shape!=(224,224,3) or rgb.dtype!=np.uint8:raise ValueError('Actual current224 AA4 RGB required')
         current=self.preprocess(rgb.copy())
         if current.shape!=(1,3,224,224) or self.goal.shape!=(1,3,224,224) or not torch.isfinite(current).all() or not torch.isfinite(self.goal).all():raise ValueError('Single-frame current/goal input contract differs')
+        inputs={'pixels':current.to(self.device),'goal':self.goal.to(self.device)}
+        if self.state_fusion:
+            for key,value in [('current_state',observations),('goal_state',goals)]:
+                state=torch.as_tensor(value,dtype=torch.float32,device=self.device)
+                if state.shape==(28,):state=state[None]
+                if state.shape!=(1,28) or not torch.isfinite(state).all():raise ValueError('Real paired current/goal observation28 required')
+                inputs[key]=state
         with torch.inference_mode(),torch.autocast(device_type=self.device,dtype=torch.bfloat16,enabled=self.precision=='bf16'):
-            mean=self.policy.get_action({'pixels':current.to(self.device),'goal':self.goal.to(self.device)}).float().cpu()
+            mean=self.policy.get_action(inputs).float().cpu()
         if mean.shape!=(1,5) or not torch.isfinite(mean).all():raise ValueError('Original single-frame head returned invalid mean5')
         # Identity domain: no inverse scaler and no clipping here. The pinned
         # official evaluate clips exactly once before calling env.step.

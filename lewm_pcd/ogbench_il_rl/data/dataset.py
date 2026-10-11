@@ -121,6 +121,8 @@ class CubeOfficialDataset(torch.utils.data.Dataset):
         if goal_episode != episode or goal_step < min(step + 1, self.transitions - 1): raise ValueError('Official trajectory goal crosses episode or is past')
         reader = self._reader(episode)
         cur = reader._load_slice(0, step, step + 1); target = reader._load_slice(0, goal_step, goal_step + 1)
+        if int(cur['source_episode'][0]) != episode or int(target['source_episode'][0]) != episode or int(cur['source_row'][0]) != episode * self.rows + step or int(target['source_row'][0]) != episode * self.rows + goal_step:
+            raise ValueError('Loaded source row/episode is not requested compact pair')
         if cur['source_terminal'].any() or target['source_terminal'].any(): raise ValueError('Raw terminal observation/action may not enter compact sample')
         result = dict(current=cur['pixels'][0], goal=target['pixels'][0], action=cur['action'][0],
                       source_row=cur['source_row'][0], goal_source_row=target['source_row'][0],

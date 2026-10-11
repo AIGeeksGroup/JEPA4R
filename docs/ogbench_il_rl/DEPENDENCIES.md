@@ -16,3 +16,5 @@ export PYTHONPATH="$PWD/lewm_pcd:$PWD/lewm_pcd/third_party/stable-worldmodel${PY
 原配置中引用 `jepa`、`encoders`等平铺模块，所以需保留 `lewm_pcd` 在PYTHONPATH。checkpoint与config.yaml由使用者提供，不上传模型或公开数据。
 
 官方state GCBC是另外一条 JAX基线，源码固定 OGBench `572788d97c2a6225b8edb7c420e304c04d1b3459`，JAX/Jaxlib0.4.35、Flax0.10.2、Optax0.2.4。它不经过本分支冻结LeWM factory；CUDA插件与logger兼容应在独立环境处理。
+
+DINO融合使用本地完整 `facebook/dinov2-small` 目录及现有transformers、safetensors依赖。源码不携带模型权重或认证；FrozenDinoCLS保留严格加载和三份来源文件SHA。目标XYZ融合接口使用现有PyTorch／NumPy／HDF5环境，无需创建新环境。

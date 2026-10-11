@@ -118,12 +118,6 @@
     "operation": "portable package imports only; behavior unchanged"
   },
   {
-    "source": "coordination/official_lewm_gcbc_20261006/dataset.py",
-    "source_sha256": "4dbc494ccf7ef5bf2106b4155fb2ec80daf855a4f427fa288788d4dcf9a3c120",
-    "destination": "data/dataset.py",
-    "operation": "portable package imports only; behavior unchanged"
-  },
-  {
     "source": "coordination/official_lewm_gcbc_20261006/test_policy.py",
     "source_sha256": "190768a72896206818e4bed61afc8be0aa8003956465223c6b09bbf5ede7e10e",
     "destination": "tests/test_policy.py",
@@ -139,7 +133,9 @@
     "source": "coordination/official_downstream_audit_20261006/native_single_frame_adapter.py",
     "source_sha256": "00317219ddac460ab7a34849d59fea69aa40ab615b4e53ae8d17cecf192c99b7",
     "destination": "evaluation/native_single_frame.py",
-    "operation": "portable package imports only; behavior unchanged"
+    "operation": "Portable package imports plus default-off forwarding of real current/goal observation28; reset/render/replay/control/close unchanged",
+    "published_sha256": "2f53195ce6148630d27131e9b886be676b6db388fe750709d466699d34684b2f",
+    "published_sha256_scope": "UTF-8 LF Git blob"
   },
   {
     "source": "coordination/official_downstream_audit_20261006/test_native_single_frame_adapter.py",
@@ -158,5 +154,55 @@
       "restore_rng"
     ],
     "operation": "shared durable-write and RNG primitives only; no old training loop"
+  },
+  {
+    "source": "coordination/official_lewm_gcbc_20261006/dino_state_goalxyz_100k_b256_20261011_v1/after/policy_state_fusion.py",
+    "source_sha256": "e3e02499f76954342a81a345a0bdfecdb53e1e8d6ec95352ddbe49ccd22dae4e",
+    "destination": "models/state_fusion.py",
+    "published_sha256": "9d4509611b342d8662c48f0e041d4b972eb9c83b99d436c8a89f8bfd56d6af25",
+    "operation": "Package-relative base import; same fusion class/mask/head; reuse original FrozenDinoCLS directly, omitting discarded visual-only DINO head",
+    "published_sha256_scope": "UTF-8 LF Git blob"
+  },
+  {
+    "source": "coordination/official_lewm_gcbc_20261006/encoder_dino.py",
+    "source_sha256": "60ed811903c7fe3f399f6c55671d6233fb45f08fe96a8ef8b496b0e258a1ae6a",
+    "destination": "models/frozen_dino.py",
+    "published_sha256": "5a7b0d599707c118e79b3e48441f5d56ac299a9d2bf4cf3f64b2a6c979d5b731",
+    "operation": "Extract unchanged source validation and frozen encoder; no profile/runtime paths or features cache",
+    "symbols": [
+      "FrozenDinoCLS",
+      "SOURCE_FILES",
+      "sha",
+      "validate_source"
+    ],
+    "published_sha256_scope": "UTF-8 LF Git blob"
+  },
+  {
+    "source": "coordination/official_lewm_gcbc_20261006/dataset_pcd.py",
+    "source_sha256": "12441cf27f0f9e027ecd52ad217257b06e13b29b715c8d60e4f64926cd46e6aa",
+    "destination": "data/dataset_pcd.py",
+    "published_sha256": "0323db8486413c56c4f23a110cd197ae59869ee773ebf7170a018835c6c6ddc0",
+    "operation": "Unchanged PCD reader/alias; relative dataset and transform imports; no source loader or runtime paths",
+    "symbols": [
+      "_PCDSliceView",
+      "CubeOfficialPCDDataset"
+    ],
+    "published_sha256_scope": "UTF-8 LF Git blob"
+  },
+  {
+    "source": "coordination/official_lewm_gcbc_20261006/state_lewm_gcbc_100k_b256_109_20261010_v1/dataset_state_fusion.py",
+    "source_sha256": "2dc64d6d497551a29b69419fd4e95c662ebecf46b8abce501efd641820c4c06d",
+    "destination": "data/state_fusion.py",
+    "published_sha256": "554460ab15a88b022aa10688aefd81d1934259fb8371566c05f4f37553dcda56",
+    "operation": "Unchanged same-row state wrapper; remove unused sampler dependency and add optional declared source SHA check",
+    "published_sha256_scope": "UTF-8 LF Git blob"
+  },
+  {
+    "source": "coordination/official_lewm_gcbc_20261006/dataset.py",
+    "source_sha256": "5c922fad193fbd6cffad58992504ce3107fbd4230d99741d15c4a5c77af07181",
+    "destination": "data/dataset.py",
+    "published_sha256": "c60e4ab0560aa029c5e04fddac0c9898c4c70b8b1eaa8732d8a6d9da40ece643",
+    "operation": "Add the deployed compact source row/episode identity check; all sampler/reader mathematics retained",
+    "published_sha256_scope": "UTF-8 LF Git blob"
   }
 ]

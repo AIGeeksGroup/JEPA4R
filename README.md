@@ -2,7 +2,21 @@
 
 JEPA4R 的 OGBench IL/RL 分支。当前下游接口是自采预训练的冻结 LeWM 表征，接官方 Cube 轨迹上的**单帧 MLP GCBC**。官方 state GCBC 保留为独立对照。
 
-## 实验目标与顺序
+## 最新下游输入接口（2026-10-11）
+
+显式融合接口使用**当前visual＋完整官方state28，目标visual＋目标物体XYZ**，支持DINO-small、2D LeWM和3D LeWM。目标XYZ取同一goal row的原 `state[19:22]`，保持官方中心化与×10尺度，其他目标state维度置零。目标visual保持原全景，仍包含机械臂姿态。
+
+|路线|冻结上游|动作头物理输入|有效信息维度|
+|---|---|---:|---:|
+|2D LeWM＋state|RGB encoder＋projector192|440|415|
+|3D LeWM＋state|DexArt encoder＋projector192|440|415|
+|DINO＋state|原始CLS384，无projector|824|799|
+
+三组复用512×3 MLP、unit Gaussian NLL、Adam3e-4和原数据采样器。配置见 [state_fusion.json](lewm_pcd/ogbench_il_rl/configs/state_fusion.json)：fresh seed0、micro64×4＝batch256、100000 optimizer更新、FP32，2D／3D／DINO分别W16／W8／W16，prefetch2。使用方式见[融合接口说明](docs/ogbench_il_rl/README.md#最新state融合接口)。原visual-only入口及其配置保持不变。
+
+本次发布模型、数据与推理接口及配置，不上传训练数据、权重、日志或服务器历史续训脚本。新XYZ模式的少量真实数据更新／重载已通过；发布副本另做CPU迁移验收。新模式100K训练完成与最终SR尚未确认，下方保留的历史结果不能替代。完整3D／DINO融合250条SR调度器不在此次接口发布范围内。
+
+## 历史实验目标与顺序（2026-10-06快照）
 
 目标是比较：同一份官方 Cube 下游轨迹上，原始 state、2D LeWM 表征和3D LeWM 表征分别接 GCBC 后的成功率。
 
@@ -48,7 +62,7 @@ JEPA4R 的 OGBench IL/RL 分支。当前下游接口是自采预训练的冻结 
 
 CEM使用历史custom fixed5数据上预训练的世界模型。每episode最多200个实际环境步，每次规划25步后重新规划。官方state GCBC与后续LeWM BC使用官方Cube下游轨迹，两种结果的数据和方法范围分别标注。官方state的8.8%对应单训练seed，不是论文8seed平均值。
 
-## 接下来执行什么
+## 历史后续计划（2026-10-06快照）
 
 1. **新版2D smoke**：把审计通过的RGB分片接入新版单帧loader/MLP，验证真实train/val输入、FP32/BF16、非零梯度、冻结状态、完整恢复和短环境动作接口。
 2. **2D正式训练**：smoke通过后训练10个完整epoch；按独立验证集选择best，保留last，并独立严格重载两者。
@@ -77,6 +91,10 @@ lewm_pcd/
     ├── models/frozen_lewm.py            冻结 encoder＋projector，保留 global192
     ├── models/policy.py                 current192＋goal192 → MLP512×3 → mean5
     │                                   unit Gaussian NLL、Adam3e-4
+    ├── models/state_fusion.py           LeWM/DINO＋state，显式goal XYZ mask
+    ├── models/frozen_dino.py            本地DINO-small严格加载与rawCLS384
+    ├── data/state_fusion.py             按visual source rows读取相同state
+    ├── data/dataset_pcd.py              原PCD reader复用compact-pair契约
     ├── data/dataset.py                  官方 compact-boundary goals、单帧读取
     │                                   逻辑批次与预取 RNG 的精确恢复
     ├── data/transforms.py               原真实输入预处理，动作 identity

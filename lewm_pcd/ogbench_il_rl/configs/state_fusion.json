@@ -1,0 +1,136 @@
+{
+  "scope": "Explicit frozen visual+state GCBC extension on official Cube trajectories; goal state only same-row scaled objectXYZ",
+  "variants": {
+    "lewm_2d": {
+      "factory": {
+        "_target_": "ogbench_il_rl.models.state_fusion.create_policy",
+        "history_size": 1,
+        "action_dim": 5,
+        "seed": 0,
+        "goal_state_mode": "object_xyz",
+        "modality": "pixels",
+        "latent_dim": 192,
+        "source_checkpoint": null
+      },
+      "visual_dataset": "ogbench_il_rl.data.dataset.CubeOfficialDataset",
+      "state_dataset": "ogbench_il_rl.data.state_fusion.CubeStateVisualDataset",
+      "head_input_dim": 440,
+      "effective_information_dim": 415,
+      "head_parameters": 753669,
+      "workers": 16
+    },
+    "lewm_3d": {
+      "factory": {
+        "_target_": "ogbench_il_rl.models.state_fusion.create_policy",
+        "history_size": 1,
+        "action_dim": 5,
+        "seed": 0,
+        "goal_state_mode": "object_xyz",
+        "modality": "pcd",
+        "latent_dim": 192,
+        "source_checkpoint": null
+      },
+      "visual_dataset": "ogbench_il_rl.data.dataset_pcd.CubeOfficialPCDDataset",
+      "state_dataset": "ogbench_il_rl.data.state_fusion.CubeStateVisualDataset",
+      "head_input_dim": 440,
+      "effective_information_dim": 415,
+      "head_parameters": 753669,
+      "workers": 8
+    },
+    "dino": {
+      "factory": {
+        "_target_": "ogbench_il_rl.models.state_fusion.create_policy",
+        "history_size": 1,
+        "action_dim": 5,
+        "seed": 0,
+        "goal_state_mode": "object_xyz",
+        "modality": "pixels",
+        "latent_dim": 384,
+        "model_folder": null
+      },
+      "visual_dataset": "ogbench_il_rl.data.dataset.CubeOfficialDataset",
+      "state_dataset": "ogbench_il_rl.data.state_fusion.CubeStateVisualDataset",
+      "head_input_dim": 824,
+      "effective_information_dim": 799,
+      "head_parameters": 950277,
+      "workers": 16
+    }
+  },
+  "state_dim": 28,
+  "goal_state_keep_slice": [
+    19,
+    22
+  ],
+  "goal_state_scale": "Original observation[19:22]=(object_xyz-[0.425,0,0])*10; preserve source values",
+  "training": {
+    "max_optimizer_updates": 100000,
+    "epochs_upper_bound": 26,
+    "micro_batch_size": 64,
+    "gradient_accumulation": 4,
+    "effective_batch_size": 256,
+    "prefetch_factor": 2,
+    "open_files": 16,
+    "precision": "fp32",
+    "matmul_allow_tf32": false,
+    "cudnn_allow_tf32": true,
+    "seed": 0,
+    "freeze_encoder": true,
+    "cache_encoder_features": false,
+    "action_normalization": "identity",
+    "objective": "unit Gaussian NLL; mean batch, sum action5",
+    "optimizer": {
+      "name": "Adam",
+      "lr": 0.0003,
+      "betas": [
+        0.9,
+        0.999
+      ],
+      "eps": 1e-08,
+      "weight_decay": 0
+    },
+    "head": {
+      "hidden_dims": [
+        512,
+        512,
+        512
+      ],
+      "activation": "GELU(tanh approximation)",
+      "fixed_std": 1,
+      "output_dim": 5
+    }
+  },
+  "data": {
+    "train": "cube-single-play-v0.npz",
+    "validation": "cube-single-play-v0-val.npz",
+    "train_episodes": 1000,
+    "validation_episodes": 100,
+    "raw_rows_per_episode": 1001,
+    "valid_transitions_per_episode": 1000,
+    "state_observation_sha256": {
+      "train": "3dc0ff7eb72d8a16df46f1c536fb5900f64309a8d30e585e675115942ca89677",
+      "val": "4ec3855460e0102244fa2ee845b3d8603dd977902b9e83c0679b1ddab28b2c0f"
+    },
+    "goal_sampler": "Existing compact-boundary same-trajectory sampler, unchanged"
+  },
+  "preprocessing": {
+    "rgb": "Full-FOV224/ImageNet, reuse original get_img_preprocessor; no HF256-centercrop or second normalization",
+    "pcd": "Original1200x6 PointCloudPreproc from source WM config; preserve paired raw XYZ/uint8 RGB",
+    "dino": "Original raw final-layer CLS384, built-in encoder LayerNorm retained; no extra norm/projector"
+  },
+  "evaluation": {
+    "state_fusion": true,
+    "policy_warmup_steps": 0,
+    "action_clip": "Pinned official evaluate performs one [-1,1] clip",
+    "tasks": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "episodes_per_task": 50,
+    "max_episode_steps": 200,
+    "seed_base": 970000000,
+    "full_sr_driver_included": false
+  }
+}
