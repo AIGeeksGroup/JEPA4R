@@ -68,7 +68,18 @@
 
 CortexBench 五任务均值的对照：R3M 96.0，VC-1 ViT-B 89.6（本机复现 88.8），随机初始化的 ViT-B（冻结）0.5，均取自 VC-1 论文表 8。
 
-同一套 CortexBench 跑的 JEPA 类基线（五任务均值）：V-JEPA 2.1 ViT-B（官方权重，冻结）90.1；LeJEPA 74.9、PLDM 74.4，两者都用和 LeWM 同一份游玩数据、同样 10 个 epoch 训练。逐任务、逐种子结果见 `results_metaworld.md`，训练和跑分用 `scripts/run_mw_baselines.sh`。
+同一套 CortexBench（本机，3 个种子）上的基线对比：
+
+| 编码器 | bin-picking | assembly | button-press-topdown | drawer-open | hammer | 五任务均值 |
+|---|---|---|---|---|---|---|
+| LeWM 3D（点云） | 100.0 | 96.0 | 98.7 | 100.0 | 97.3 | **98.4** |
+| V-JEPA 2.1 ViT-B | 82.7 | 90.7 | 77.3 | 100.0 | 100.0 | 90.1 |
+| VC-1 ViT-B | 80.0 | 89.3 | 74.7 | 100.0 | 100.0 | 88.8 |
+| LeJEPA | 61.3 | 34.7 | 78.7 | 100.0 | 100.0 | 74.9 |
+| PLDM | 53.3 | 54.7 | 64.0 | 100.0 | 100.0 | 74.4 |
+| LeWM 2D（图像） | 77.3 | 72.0 | 29.3 | 52.0 | 89.3 | 64.0 |
+
+LeJEPA、PLDM 和 LeWM 一样，用每个任务自己的游玩数据训 10 个 epoch 再冻结；V-JEPA 2.1、VC-1 用官方权重冻结直接测。逐种子结果见 `results_metaworld.md`，训练和跑分用 `scripts/run_mw_baselines.sh`。
 
 ### MetaWorld，RM75-B + EG2-4C2
 
