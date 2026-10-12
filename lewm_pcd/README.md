@@ -68,6 +68,8 @@
 
 CortexBench 五任务均值的对照：R3M 96.0，VC-1 ViT-B 89.6（本机复现 88.8），随机初始化的 ViT-B（冻结）0.5，均取自 VC-1 论文表 8。
 
+同一套 CortexBench 跑的 JEPA 类基线（五任务均值）：V-JEPA 2.1 ViT-B（官方权重，冻结）90.1；LeJEPA 74.9、PLDM 74.4，两者都用和 LeWM 同一份游玩数据、同样 10 个 epoch 训练。逐任务、逐种子结果见 `results_metaworld.md`，训练和跑分用 `scripts/run_mw_baselines.sh`。
+
 ### MetaWorld，RM75-B + EG2-4C2
 
 同样的流程，机器人换成 RM75-B + EG2-4C2（`envs/metaworld/rm75/`）。采集策略和 CortexBench 的专家都按 RM75 改过，示范按 CortexBench 的规则在 RM75 上重录。
@@ -123,11 +125,11 @@ lewm_pcd/
 ├── envs/                      点云环境、包装器、专家策略、评测策略
 │   ├── metaworld/             MetaWorld 任务环境、单相机点云、三部分采集策略；rm75/ 是换成 RM75 的版本
 │   └── trifinger/             CortexBench 的 TriFinger 环境封装、单相机点云、复现的官方专家、三部分采集策略
-├── bench/cortexbench/         CortexBench 跑分：LeWM 编码器接入、RM75 任务、TriFinger、汇总（third_party/eai-vc 是官方代码，不进 git）
+├── bench/cortexbench/         CortexBench 跑分：LeWM 和 JEPA 类基线的编码器接入、RM75 任务、TriFinger、汇总（third_party/eai-vc、third_party/vjepa2 是官方代码，不进 git）
 ├── results_metaworld.md       MetaWorld 的全部结果
 ├── results_trifinger.md       TriFinger 的结果
 ├── config/{train,eval}/       训练 / 评测配置（launcher/local.yaml 里加了 hydra 输出目录）
-├── scripts/data|train|eval|checks/   采集 / 训练 / 评测 / 检查脚本；scripts/baselines/ 是框架基线补丁的记录；scripts/run_baselines.sh 跑基线
+├── scripts/data|train|eval|checks/   采集 / 训练 / 评测 / 检查脚本；scripts/baselines/ 是框架基线补丁的记录和 LeJEPA 的 MetaWorld 训练；scripts/run_baselines.sh 跑 Cube 上的框架基线，scripts/run_mw_baselines.sh 跑 MetaWorld 上的 LeJEPA、PLDM、V-JEPA 2.1
 ├── third_party/stable-worldmodel/   固定在 6f1e499 的本地 clone（不进 git）
 ├── env.sh                     环境变量，跑任何脚本前先 source
 ├── TMP/                       杂物，不进 git

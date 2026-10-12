@@ -1,0 +1,6 @@
+# V-JEPA 2.1 ViT-B/16 (Meta's vjepa2_1_vitb_dist_vitG_384.pt, general video JEPA, frozen as released): single frames
+# through the image path, mean of the last layer's patch tokens, 768-d; input 384, ImageNet normalisation.
+# Weights from https://dl.fbaipublicfiles.com/vjepa2/vjepa2_1_vitb_dist_vitG_384.pt. See ../../jepa_baselines.py
+_target_: jepa_baselines.load_vjepa21
+checkpoint: ${oc.env:STABLEWM_HOME}/checkpoints/cortexbench_baselines/vjepa2_1_vitb_dist_vitG_384.pt
+resolution: 384

@@ -1,0 +1,5 @@
+# LeJEPA (HF ViT-tiny/14 + 512-d head, LeWM's backbone) trained on the MetaWorld button-press-topdown play data that LeWM uses
+# (config/train/data/mw_button.yaml's dataset; scripts/baselines/train_lejepa_mw.py, 10 epochs, epoch 10). See ../../jepa_baselines.py
+_target_: jepa_baselines.load_lejepa
+checkpoint_dir: ${oc.env:STABLEWM_HOME}/checkpoints/lejepa_mw_button
+epoch: 10

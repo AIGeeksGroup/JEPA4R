@@ -81,6 +81,9 @@ CortexBench 的 TriFinger 两个任务（reach_cube、move_cube）用 eai-vc 的
 | 3D 示范 | `$STABLEWM_HOME/datasets/cortexbench/metaworld-expert-v1.0-pcd/` |
 | RM75 示范（2D、3D） | `$STABLEWM_HOME/datasets/cortexbench/metaworld-rm75-expert{,-pcd}/`（`make_rm75_demos.py`） |
 | R3M / VIP / CLIP 权重 | `$STABLEWM_HOME/checkpoints/cortexbench_baselines/` |
+| V-JEPA 2 官方代码（204698b） | `lewm_pcd/third_party/vjepa2`（不进 git）：`git clone https://github.com/facebookresearch/vjepa2 third_party/vjepa2 && git -C third_party/vjepa2 checkout 204698b` |
+| V-JEPA 2.1 ViT-B 权重 | `$STABLEWM_HOME/checkpoints/cortexbench_baselines/vjepa2_1_vitb_dist_vitG_384.pt`，来自 `https://dl.fbaipublicfiles.com/vjepa2/vjepa2_1_vitb_dist_vitG_384.pt` |
+| LeJEPA / PLDM 编码器 | `$STABLEWM_HOME/checkpoints/{lejepa,pldm}_mw_<任务>/`（`scripts/run_mw_baselines.sh` 训练） |
 | 运行目录、结果 | `$STABLEWM_HOME/logs/cortexbench/runs/<模型>/<任务>/s<种子>/`，`$STABLEWM_HOME/logs/cortexbench/results/scores.{md,json}` |
 | conda 环境 `lewm_tf`（TriFinger） | 数据盘的 conda 目录；`lewm_pcd` 环境的克隆 + pin 2.6.20、pybullet 3.2.7、gym 0.26.2、trifinger_simulation（eai-vc 子模块 `third_party/trifinger_simulation`，ClaireLC fork @ b3629c6，`pip install` 非 editable） |
 | TriFinger 示范 | `$STABLEWM_HOME/datasets/cortexbench/trifinger/assets/`：`bc_demos/`（官方训练 / 测试划分，从 `trifinger_vc/assets/bc_demos` 复制）、`data/trifinger-demos/`（`https://dl.fbaipublicfiles.com/eai-vc/trifinger_demos.zip`，缺失时 `run_tf_bc.py prep` 用官方函数下载）、`data/pcd/`（3D 示范点云缓存） |
@@ -112,6 +115,13 @@ setsid nohup $PY grid.py --models lewm_mw_binpick_rm75_pix,lewm_mw_binpick_rm75_
 
 其他任务同理，例如 button-press-topdown：`make_rm75_demos.py button-press-topdown`，模型 `lewm_mw_button_rm75_{pix,pcd}`，任务 `rm75-button-press-topdown`（drawer-open：`drawer-open`、`lewm_mw_drawer_rm75_*`、`rm75-drawer-open`；assembly：`assembly`、`lewm_mw_assembly_rm75_*`、`rm75-assembly`）。
 
+JEPA 类基线（LeJEPA、PLDM 用和 LeWM 同一份 MetaWorld 数据训练，V-JEPA 2.1 用官方权重）：训练和跑分一起由 `scripts/run_mw_baselines.sh` 完成，也可以单独跑分，模型名 `lejepa_mw_<任务>`、`pldm_mw_<任务>`、`vjepa21_vitb`：
+
+```bash
+setsid nohup $PY grid.py --models vjepa21_vitb --tasks bin-picking,assembly,button-press-topdown,drawer-open,hammer --slots 2 \
+    >> $STABLEWM_HOME/logs/cortexbench/grid.log 2>&1 < /dev/null &
+```
+
 TriFinger（`lewm_tf` 环境的 python）：
 
 ```bash
@@ -129,7 +139,8 @@ STABLEWM_HOME=<checkout>/lewm_pcd_data python bench/cortexbench/summarize_tf.py
 | `env.sh` | 运行环境：MuJoCo 2.0 路径、EGL、`PYTHONPATH`（lewm_pcd + 本目录）、`STABLEWM_HOME` |
 | `lewm_cortex.py` | LeWM 编码器的加载函数（2D：`load_lewm`，3D：`load_lewm_pcd`），按 checkpoint 的 `config.json` + `weights_epoch_N.pt` 重建 encoder + projector |
 | `baselines.py` | 论文里另外几个基线的加载函数（官方权重）：R3M、VIP（ResNet-50 全局池化 2048 维）、CLIP ViT-B/16（CLS） |
-| `conf/model/*.yaml` | 编码器配置：LeWM 各任务的 `lewm_mw_<任务>_{pix,pcd}`（RM75：`lewm_mw_{binpick,button,drawer,assembly}_rm75_{pix,pcd}`）和上述基线 |
+| `jepa_baselines.py` | JEPA 类基线的加载函数：LeJEPA（ViT-tiny CLS 过 512 维头）、PLDM（CLS 过投影头，192 维）、V-JEPA 2.1 ViT-B（最后一层 patch token 均值，768 维，输入 384） |
+| `conf/model/*.yaml` | 编码器配置：LeWM 各任务的 `lewm_mw_<任务>_{pix,pcd}`（RM75：`lewm_mw_{binpick,button,drawer,assembly}_rm75_{pix,pcd}`）、`lejepa_mw_<任务>`、`pldm_mw_<任务>`、`vjepa21_vitb` 和上述基线 |
 | `run_bc.py`、`run_bc3d.py` | 一次运行（官方 `hydra_launcher.py` + 上面的补丁；3D 版再换成点云） |
 | `run_bc_rm75.py`、`rm75_server.py`、`rm75_env.py` | RM75 上的一次运行：官方流程 + 子进程里的 RM75 环境 |
 | `make_rm75_demos.py` | RM75 的示范 |

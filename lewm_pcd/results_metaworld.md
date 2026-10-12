@@ -280,10 +280,37 @@ CortexBench 的随机基线（随机初始化、冻结的 ViT-B）：6.7（20 / 
   - CortexBench 每次运行的记录：`logs/cortexbench/runs/lewm_mw_assembly_rm75_{pix,pcd}/`；示范：`datasets/cortexbench/metaworld-rm75-expert{,-pcd}/`。
   - 模型：`checkpoints/mw_assembly_rm75_{pix,pcd_dexart}/`。
 
+## JEPA 类基线：LeJEPA、PLDM、V-JEPA 2.1（2026-10-12）
+
+| 编码器 | assembly | bin-picking | button-press-topdown | drawer-open | hammer | 五任务均值 |
+|---|---|---|---|---|---|---|
+| V-JEPA 2.1 ViT-B | 90.7（96 / 84 / 92） | 82.7（72 / 88 / 88） | 77.3（92 / 80 / 60） | 100.0（100 / 100 / 100） | 100.0（100 / 100 / 100） | 90.1 |
+| LeJEPA | 34.7（40 / 32 / 32） | 61.3（68 / 60 / 56） | 78.7（76 / 76 / 84） | 100.0（100 / 100 / 100） | 100.0（100 / 100 / 100） | 74.9 |
+| PLDM | 54.7（72 / 40 / 52） | 53.3（52 / 48 / 60） | 64.0（60 / 72 / 60） | 100.0（100 / 100 / 100） | 100.0（100 / 100 / 100） | 74.4 |
+| 对照：LeWM 3D | 96.0 | 100.0 | 98.7 | 100.0 | 97.3 | **98.4** |
+| 对照：LeWM 2D | 72.0 | 77.3 | 29.3 | 52.0 | 89.3 | 64.0 |
+
+括号里是种子 100 / 200 / 300，CortexBench 原协议，和上面各节同一口径。
+
+- **LeJEPA、PLDM**：用和 LeWM 同一份游玩数据训练（每个任务 1 万条、201 万帧），训练量也和 LeWM 一样（10 个 epoch，取第 10 个）。骨干都是 LeWM 同款 ViT-tiny/14、224 输入。
+  - LeJEPA：官方最小配方（galilai-group/lejepa 的 MINIMAL.md），只换了骨干、数据和增强尺寸，改动逐条列在 `scripts/baselines/train_lejepa_mw.py` 开头。CortexBench 取骨干 CLS 过 512 维头的特征，即官方做线性探测用的那个。
+  - PLDM：框架的 `scripts/train/pldm.py`（6f1e499，打了「框架基线」一节的补丁），`data=ogb` 换成任务的数据集，其余默认。CortexBench 取 CLS 过投影头的 192 维，即它预测器工作的空间，和 LeWM 取的位置一致。
+- **V-JEPA 2.1**：Meta 发布的 ViT-B（`vjepa2_1_vitb_dist_vitG_384.pt`，从 ViT-G 蒸馏），冻结直接测。单帧走它的图像分词器，最后一层 patch token 取均值（768 维）；预处理照它官方评测，输入 384、ImageNet 归一化。加载和官方 hub 逐位一致。CortexBench 用 2 个并发（4 个时和两个训练一起跑，显存不够）。
+- **训练实现先在别的数据上和官方结果对过**：
+  - LeJEPA 官方最小脚本，ImageNette：第 676–685 / 800 个 epoch 的测试精度 88.8–90.0 %，官方最终 90.7 %。
+  - PLDM（框架脚本），Push-T：第 5 个 epoch 规划评测（种子 42）76 %，LeWM 论文 78.0 ± 5.0。
+  - 评测流程：作者发布的 LeWM-PushT 权重，框架现在的评测脚本 88 / 88 / 88（种子 42 / 43 / 44），论文当时的代码 94 / 90 / 84。
+- **跑法**：`scripts/run_mw_baselines.sh`（两条训练线 + CortexBench，可重复启动）；加载函数在 `bench/cortexbench/jepa_baselines.py`。
+- **原始记录**（在 `$STABLEWM_HOME` 下）：
+  - 模型：`checkpoints/{lejepa,pldm}_mw_<任务>/`；V-JEPA 2.1 权重在 `checkpoints/cortexbench_baselines/`。
+  - 训练日志：`logs/train/train_{lejepa,pldm}_mw_<任务>.log`。
+  - CortexBench：`logs/cortexbench/runs/{lejepa_mw_<任务>,pldm_mw_<任务>,vjepa21_vitb}/`。
+
 ## 与其他工作的对比（CortexBench MetaWorld 五任务）
 
 - "论文"行取自 VC-1 论文（arXiv 2303.18240）附录 Table 8 的 MetaWorld 各列。
 - "本机复现"行由 `bench/cortexbench` 在本机用各自的官方权重跑出，3 个种子。
+- "本机"行的 LeJEPA、PLDM 用和 LeWM 同一份游玩数据训练，V-JEPA 2.1 用官方权重，见上一节。
 - 按五个任务的均值排序，即 VC-1 论文中 MetaWorld 一项的分数。
 
 | 模型 | 来源 | assembly | bin-picking | button-press | drawer-open | hammer | 五任务均值 |
@@ -293,6 +320,7 @@ CortexBench 的随机基线（随机初始化、冻结的 ViT-B）：6.7（20 / 
 | MAE Ego4D (ViT-L) | 论文 | 98.0 | 84.0 | 84.0 | 100.0 | 98.7 | 92.9 |
 | MVP (ViT-B) | 论文 | 92.0 | 73.3 | 92.0 | 100.0 | 98.7 | 91.2 |
 | VIP (RN-50) | 论文 | 93.3 | 76.0 | 88.0 | 100.0 | 93.3 | 90.1 |
+| V-JEPA 2.1 (ViT-B) | 本机 | 90.7 | 82.7 | 77.3 | 100.0 | 100.0 | 90.1 |
 | VC-1 ViT-B | 论文 | 88.0 | 78.7 | 82.7 | 100.0 | 98.7 | 89.6 |
 | MAE Ego4D+N (ViT-L) | 论文 | 89.3 | 73.3 | 89.3 | 100.0 | 93.3 | 89.0 |
 | VC-1 ViT-B | 本机复现 | 89.3 | 80.0 | 74.7 | 100.0 | 100.0 | 88.8 |
@@ -305,6 +333,8 @@ CortexBench 的随机基线（随机初始化、冻结的 ViT-B）：6.7（20 / 
 | MAE Ego4D+MN (ViT-B) | 论文 | 82.7 | 74.7 | 77.3 | 100.0 | 92.0 | 85.3 |
 | MAE Ego4D+M (ViT-B) | 论文 | 76.0 | 58.7 | 84.0 | 100.0 | 98.7 | 83.5 |
 | CLIP (ViT-B) | 论文 | 70.7 | 68.0 | 48.0 | 100.0 | 90.7 | 75.5 |
+| LeJEPA (ViT-tiny) | 本机 | 34.7 | 61.3 | 78.7 | 100.0 | 100.0 | 74.9 |
+| PLDM (ViT-tiny) | 本机 | 54.7 | 53.3 | 64.0 | 100.0 | 100.0 | 74.4 |
 | **LeWM 2D（我们，图像）** | 本机 | 72.0 | 77.3 | 29.3 | 52.0 | 89.3 | **64.0** |
 | Random (ViT-B) 端到端微调 | 论文 | 61.3 | 34.7 | 20.0 | 40.0 | 93.3 | 49.9 |
 | Random (ViT-B) 冻结 | 论文 | 0.0 | 0.0 | 2.7 | 0.0 | 0.0 | 0.5 |
@@ -314,5 +344,6 @@ CortexBench 的随机基线（随机初始化、冻结的 ViT-B）：6.7（20 / 
 
 **可比性。**
 - 其他工作都是通用预训练的视觉表征，没有见过 MetaWorld。LeWM 用 bin-picking 同域的游玩数据训练过（没用 CortexBench 的示范），有同域优势。
+- LeJEPA、PLDM 和 LeWM 用的是同一份同域数据、同样的训练量，同域优势相同，可以直接比。
 - 3D 用了模拟器分割来去掉背景，相当于多了一份前景信息。
 - 本机复现与论文在 bin-picking 上相差 0 到 6.7 分：R3M 相同，VC-1 L −2.7，VC-1 B +1.3，CLIP +6.7，VIP −6.7。
