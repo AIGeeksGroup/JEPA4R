@@ -1,0 +1,10 @@
+# dmc.yaml (pixels / action / observation, frameskip 5) on the OGBench puzzle-3x3 dataset collected with the official
+# noisy recipe (envs/ogb_puzzle_env.py, scripts/data/run_puzzle_collection.sh: front_pixels 224x224, opaque arm), the
+# full 1000 episodes (seeds 1000000..1000999; puzzle-3x3-noisy-v0 is 1000 episodes too). The small run of
+# results_ogbench.md: puzzle_3x3_small.yaml
+defaults:
+  - dmc
+  - _self_
+
+dataset:
+  name: ogbench/puzzle_3x3_noisy1000.h5

@@ -1,0 +1,7 @@
+# scene.yaml on the small run's 4 x 250 episodes (the first 250 of each task in the full dataset: the same seeds)
+defaults:
+  - scene
+  - _self_
+
+dataset:
+  name: ogbench/scene_wm.h5

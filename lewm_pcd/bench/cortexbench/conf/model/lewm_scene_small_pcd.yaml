@@ -1,0 +1,8 @@
+# lewm_scene_pcd.yaml for the small run's model (config/train/data/scene_small_pcd.yaml, 4 x 250 episodes; run
+# scene_small_pcd_dexart, epoch 10)
+_target_: lewm_cortex.load_lewm_pcd
+checkpoint_dir: ${oc.env:STABLEWM_HOME}/checkpoints/scene_small_pcd_dexart
+epoch: 10
+center: [0.425, 0.0, 0.2]
+scale: 4.0
+use_rgb: true

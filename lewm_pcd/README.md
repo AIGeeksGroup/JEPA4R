@@ -1,8 +1,8 @@
-# LeWM-PCD：点云版 LeWorldModel（OGBench Cube、MetaWorld、TriFinger）
+# LeWM-PCD：点云版 LeWorldModel（OGBench Cube、MetaWorld、TriFinger、OGBench puzzle / scene）
 
 在 stable-worldmodel 的 `swm/OGBCube-v0` 环境上，把 LeWM 的像素输入换成点云输入，并加一个时间聚合的 4D 变体；采集、模型、训练、评测都沿用 LeWM 的做法，只改必要的部分。
 同一套流程还跑了官方 2D 复现、像素 4D，以及框架自带的 PLDM / GCBC 基线。基于 le-wm `8edfeb3` 与 stable-worldmodel `6f1e499`。
-这个分支（`cortexbench`）另外在 CortexBench 的 MetaWorld 任务上评测 LeWM 2D / 3D：做规划评测，并按 CortexBench 原协议（冻结编码器 + 模仿学习）打分，机器人有原版 Sawyer 和换成 RM75-B + EG2-4C2 两种；CortexBench 的 TriFinger 两个任务（reach_cube、move_cube）也按同样的方式评测。
+这个分支（`cortexbench`）另外在 CortexBench 的 MetaWorld 任务上评测 LeWM 2D / 3D：做规划评测，并按 CortexBench 原协议（冻结编码器 + 模仿学习）打分，机器人有原版 Sawyer 和换成 RM75-B + EG2-4C2 两种；CortexBench 的 TriFinger 两个任务（reach_cube、move_cube）也按同样的方式评测。OGBench 的 puzzle-3x3 和 scene 同样采游玩数据训练 2D / 3D，冻结编码器后分别用离线 RL（DQC）和 CortexBench 的模仿学习评测。
 
 ## 结果
 
@@ -114,6 +114,15 @@ bin-picking 和 drawer-open 的 CortexBench 明显低于 Sawyer。bin-picking �
 
 CortexBench TriFinger 的对照（VC-1 论文表 8，reach / move）：R3M 86.5 / 51.9，VC-1 ViT-B 83.9 / 60.6，随机初始化的 ViT-B（冻结）74.3 / 41.3。
 
+### OGBench puzzle-3x3 与 scene
+
+用 OGBench 原版的 puzzle-3x3 和 scene 环境（`envs/ogb_puzzle_env.py`、`envs/ogb_scene_env.py`）采游玩数据，训练 2D 和 3D：puzzle 照官方 noisy 数据的采法；scene 逐个物体任务按 MetaWorld 的三部分计划采，一个模型训练整个场景。冻结编码器后，puzzle 用离线 RL（DQC，`bench/dqc/`，输入是潜变量加 9 个灯的真值），scene 用 CortexBench 的模仿学习（`bench/cortexbench/run_bc_scene.py`，OGBench scene 的 5 个评测任务，策略另给 6 维本体感受）。全量规模（puzzle 1000 回合、scene 1 万回合）在跑，下表是小规模那次（puzzle 200 回合、scene 1000 回合）。做法、全部结果、代码迁出 TMP 时的逐位核对见 [`results_ogbench.md`](results_ogbench.md)。
+
+| 小规模 | LeWM 2D | LeWM 3D | 对照 |
+|---|---|---|---|
+| puzzle-3x3，DQC 第 100 万步（官方 5 个任务） | 64.4 | 77.6 | 原版 55 维状态输入 65.2 |
+| scene，CortexBench 5 个任务（种子 100） | 47.2 | 56.0 | — |
+
 ## 与 LeWM 的对应
 
 | 环节 | LeWM 原件 | 本仓库 |
@@ -133,12 +142,14 @@ lewm_pcd/
 ├── jepa.py module.py utils.py train.py eval.py   ← 来自 le-wm@8edfeb3，改动见各节
 ├── jepa_agg.py aggregators/   4D 模型（时间聚合）
 ├── encoders/                  可插拔 encoder：vit（像素基线）、ms2、dexart、ppt、sonata_cls、pointnet（参考）
-├── envs/                      点云环境、包装器、专家策略、评测策略
+├── envs/                      点云环境、包装器、专家策略、评测策略；ogb_*.py 是 OGBench 原版 puzzle-3x3 / scene 的环境、点云和采集策略
 │   ├── metaworld/             MetaWorld 任务环境、单相机点云、三部分采集策略；rm75/ 是换成 RM75 的版本
 │   └── trifinger/             CortexBench 的 TriFinger 环境封装、单相机点云、复现的官方专家、三部分采集策略
-├── bench/cortexbench/         CortexBench 跑分：LeWM 和 JEPA 类基线的编码器接入、RM75 任务、TriFinger、汇总（third_party/eai-vc、third_party/vjepa2 是官方代码，不进 git）
+├── bench/cortexbench/         CortexBench 跑分：LeWM 和 JEPA 类基线的编码器接入、RM75 任务、TriFinger、OGBench scene、汇总（third_party/eai-vc、third_party/vjepa2 是官方代码，不进 git）
+├── bench/dqc/                 OGBench puzzle-3x3 上的离线 RL（DQC）评测（third_party/dqc 是官方代码，不进 git）
 ├── results_metaworld.md       MetaWorld 的全部结果
 ├── results_trifinger.md       TriFinger 的结果
+├── results_ogbench.md         OGBench puzzle-3x3 与 scene 的结果
 ├── config/{train,eval}/       训练 / 评测配置（launcher/local.yaml 里加了 hydra 输出目录）
 ├── scripts/data|train|eval|checks/   采集 / 训练 / 评测 / 检查脚本；scripts/baselines/ 是框架基线补丁的记录和 LeJEPA 的 MetaWorld 训练；scripts/run_baselines.sh 跑 Cube 上的框架基线，scripts/run_mw_baselines.sh 跑 MetaWorld 上的 LeJEPA、PLDM、V-JEPA 2.1
 ├── third_party/stable-worldmodel/   固定在 6f1e499 的本地 clone（不进 git）
@@ -158,6 +169,7 @@ lewm_pcd/
 | torch | 2.8.0+cu128，Python 3.10；`pip install -e third_party/stable-worldmodel[train,env]`，`ogbench` |
 
 TriFinger 的采集、训练和评测用 conda 环境 `lewm_tf`（`lewm_pcd` 的克隆 + pybullet、trifinger_simulation 等，见 `bench/cortexbench/README.md` 的 TriFinger 一节），`PYTHONPATH` 里另加 `third_party/stable-worldmodel`（`scripts/run_tf_pipeline.sh` 会设好）。
+OGBench puzzle / scene 的采集、训练和 scene 的 CortexBench 环境用 `lewm_mw`，DQC 用 `lewm_dqc`（`lewm_mw` 的克隆 + jax，见 `bench/dqc/README.md`）；`scripts/run_{puzzle,scene}_pipeline.sh` 会设好路径。
 
 `env.sh` 把 `STABLEWM_HOME` 指到数据盘的 `lewm_pcd_data/`，LeWM 和 stable-worldmodel 的路径约定全部落在那里：
 

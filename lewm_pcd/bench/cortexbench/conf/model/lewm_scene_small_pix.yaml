@@ -1,0 +1,7 @@
+# lewm_scene_pix.yaml for the small run's model (config/train/data/scene_small.yaml, 4 x 250 episodes; run
+# scene_small_pix, epoch 10)
+_target_: lewm_cortex.load_lewm
+checkpoint_dir: ${oc.env:STABLEWM_HOME}/checkpoints/scene_small_pix
+epoch: 10
+use_projector: true
+random_init: false

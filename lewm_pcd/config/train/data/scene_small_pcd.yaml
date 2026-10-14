@@ -1,0 +1,7 @@
+# scene_pcd.yaml on the small run's 4 x 250 episodes (row for row with scene_small.yaml)
+defaults:
+  - scene_pcd
+  - _self_
+
+dataset:
+  name: ogbench/scene_wm_pcd.h5

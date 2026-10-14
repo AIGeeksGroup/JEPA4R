@@ -19,4 +19,15 @@ register(
     entry_point='envs.cube_rm75_env:RM75CubePCDEnv',
 )
 
+# OGBench's own scene / puzzle-3x3 (the ogbench package, not stable-worldmodel's ports) for the world-model data:
+# envs/ogb_scene_env.py, envs/ogb_puzzle_env.py; point clouds envs/ogb_pcd.py
+register(
+    id='swm/OGBenchScene-v0',
+    entry_point='envs.ogb_scene_env:OGBSceneEnv',
+)
+register(
+    id='swm/OGBenchPuzzle3x3-v0',
+    entry_point='envs.ogb_puzzle_env:OGBPuzzleEnv',
+)
+
 __all__ = ['PointCloudWrapper', 'PCDExpertPolicy', 'PCDWorldModelPolicy', 'PointCloudScaler', 'WindowedWorldModelPolicy']

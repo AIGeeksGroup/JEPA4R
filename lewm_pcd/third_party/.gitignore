@@ -1,3 +1,4 @@
-# third-party clones and binaries (not tracked): eai-vc (CortexBench), MuJoCo 2.0 for its mujoco-py; see bench/cortexbench/README.md
+# third-party clones and binaries (not tracked): eai-vc (CortexBench), MuJoCo 2.0 for its mujoco-py; see bench/cortexbench/README.md;
+# dqc (github.com/ColinQiyangLi/dqc at df89825, Decoupled Q-chunking), see bench/dqc/README.md
 *
 !.gitignore

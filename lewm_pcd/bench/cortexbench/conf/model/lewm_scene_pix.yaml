@@ -1,0 +1,7 @@
+# LeWM 2D (ViT-tiny + projector, the predictor's 192-d latent) trained on OGBench scene's world-model data, the full
+# 4 x 2500 episodes (config/train/data/scene.yaml; run scene_pix, epoch 10). See lewm_cortex.py
+_target_: lewm_cortex.load_lewm
+checkpoint_dir: ${oc.env:STABLEWM_HOME}/checkpoints/scene_pix
+epoch: 10
+use_projector: true
+random_init: false

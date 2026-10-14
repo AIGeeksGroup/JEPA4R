@@ -1,7 +1,7 @@
 # CortexBench 跑分（MuJoCo 模仿学习部分、TriFinger）
 
 用 CortexBench 的原协议（eai-vc 官方代码，commit 76fe35e）给 LeWM 编码器跑分，分数与 VC-1 论文表 8 同一含义：冻结的编码器 + 行为克隆策略，在专家示范上训练，看任务成功率。
-LeWM 只在它的世界模型训练过的任务上评测（MetaWorld 的五个任务，换成 RM75 机械臂的 bin-picking、button-press-topdown、drawer-open 和 assembly，见“RM75 上的任务”一节，以及 TriFinger 的 reach_cube 和 move_cube，见“TriFinger”一节）；2D 编码器输入图像，3D 编码器输入同一台相机的点云。
+LeWM 只在它的世界模型训练过的任务上评测（MetaWorld 的五个任务，换成 RM75 机械臂的 bin-picking、button-press-topdown、drawer-open 和 assembly，见“RM75 上的任务”一节，以及 TriFinger 的 reach_cube 和 move_cube，见“TriFinger”一节；另外 OGBench scene 的 5 个评测任务用同一套模仿学习代码评测，见“OGBench scene”一节）；2D 编码器输入图像，3D 编码器输入同一台相机的点云。
 
 ## 协议（官方代码原样执行）
 
@@ -47,6 +47,17 @@ MetaWorld 的 bin-picking、button-press-topdown、drawer-open 和 assembly 换�
   - button-press-topdown（原脚本）：metaworld 自带的布局（种子 12345–13344）989/1000，Sawyer 1000/1000；示范和评测实际用的布局（同样的种子）984/1000。16 个失败局结束时手都偏离按钮中心 17–21 mm，按钮停在差一点到成功线的深度。抽查的失败局里，手是在下压过程中横向滑开的；两指对按钮的压力约 130 N，成功局约 190 N（只碰按钮，不碰箱子）。先对准到 1 cm 以内再下压不能减少失败（实测），横向滑开的根本原因还没查明。
   - drawer-open（原脚本只把手的高度从把手下方 2 cm 改到上方 2.8 cm）：示范和评测实际用的布局 998/1000，metaworld 自带的布局 994/1000；原脚本在 RM75 上 70/200（每一局都中途成功过，之后指垫从杆上滑脱、抽屉离开止挡），Sawyer 200/200。
   - assembly（原脚本改两处：夹爪只在抓取高度 5 mm 以内才合拢，原脚本从把手上方 12 cm 就开始合拢，3.35 cm 宽的指垫会落在把手上面；指垫夹紧之后才抬起，原脚本手一到把手 5 cm 以内就抬，20 N 的 EG2-4C2 这时还没合拢）：示范和评测实际用的布局（种子 12345–13344）1000/1000，metaworld 自带的布局 1000/1000；原脚本在 RM75 上两种布局都是 0/200，Sawyer 200/200。
+
+## OGBench scene（`run_bc_scene.py`）
+
+OGBench scene 的 5 个评测任务（scene-task1..5-v0）用这里的模仿学习代码评测，做法同 RM75：环境放在 `lewm_mw` 的子进程里（`scene_server.py` + `scene_env.py`，环境是 `envs/ogb_scene_env.py` 的任务模式），框架这边是代理环境。LeWM 的 scene 编码器用 `scripts/run_scene_pipeline.sh` 采的数据训练，结果见 `results_ogbench.md`。
+
+- **任务和成功。**每回合按 OGBench 任务模式重置（手臂随机，物块、抽屉、窗户在任务初始状态附近 ±1 cm）；到达目标就结束、算成功（OGBench 的判定），所以框架记的“最后一步的 success”就是 OGBench 的成功率；最长 750 步。
+- **观测。**2D 是 front_pixels 224×224 的带抗锯齿画面（和 LeWM 2D 训练数据同一个渲染器、同一尺寸）；3D 是同一台相机的点云（`envs/ogb_pcd.ScenePointCloudWrapper`，和训练数据同一套取点），每次重置用种子 + 7919 设抽点的随机数。
+- **本体感受。**`scene_env.proprio_of` 有 8 维：手的位置、偏航的 cos / sin、夹爪开合、两个锁的状态。`scene_grid.py --proprio hand6`（默认）只给前 6 维，即机器人自己的状态，不给锁；`--proprio none` 不给本体感受。训练数据和评测输入两边一致（`SCENE_PROPRIO_DIMS`）。
+- **示范**（`make_scene_demos.py <任务号>`）。OGBench 只带单个物体的脚本，按任务目标把它们串起来当专家（`envs/ogb_scene_expert.py`）。每个任务 25 条，种子 12345 + i；录到到达目标为止，先到达的补全零动作到这个任务最慢那条的长度（框架要求同一任务的示范一样长）。
+- **协议。**策略、训练、评测循环都是官方代码原样：BatchNormMLP（256, 256, 256），3 帧 FLARE，BC，100 个 epoch，每 5 个 epoch 评 25 回合，共 20 次；分数取 20 次里最高，3 个种子取平均（`summarize_scene.py`）。
+- **共享编码进程。**`ENC_SOCKET` 设上时，冻结编码器交给 `enc_server.py` 在一个 GPU 进程里攒批计算，作业进程不碰 GPU（BC 和评测在 CPU 上）；和作业自己算的差别不超过 4e-6。`scene_grid.py` 批量跑作业（运行目录 `$STABLEWM_HOME/logs/cortexbench/runs/<编码器>/scene-task<k>-v0/s<种子>/`）。
 
 ## TriFinger（`run_tf_bc.py`）
 
@@ -140,7 +151,7 @@ STABLEWM_HOME=<checkout>/lewm_pcd_data python bench/cortexbench/summarize_tf.py
 | `lewm_cortex.py` | LeWM 编码器的加载函数（2D：`load_lewm`，3D：`load_lewm_pcd`），按 checkpoint 的 `config.json` + `weights_epoch_N.pt` 重建 encoder + projector |
 | `baselines.py` | 论文里另外几个基线的加载函数（官方权重）：R3M、VIP（ResNet-50 全局池化 2048 维）、CLIP ViT-B/16（CLS） |
 | `jepa_baselines.py` | JEPA 类基线的加载函数：LeJEPA（ViT-tiny CLS 过 512 维头）、PLDM（CLS 过投影头，192 维）、V-JEPA 2.1 ViT-B（最后一层 patch token 均值，768 维，输入 384） |
-| `conf/model/*.yaml` | 编码器配置：LeWM 各任务的 `lewm_mw_<任务>_{pix,pcd}`（RM75：`lewm_mw_{binpick,button,drawer,assembly}_rm75_{pix,pcd}`）、`lejepa_mw_<任务>`、`pldm_mw_<任务>`、`vjepa21_vitb` 和上述基线 |
+| `conf/model/*.yaml` | 编码器配置：LeWM 各任务的 `lewm_mw_<任务>_{pix,pcd}`（RM75：`lewm_mw_{binpick,button,drawer,assembly}_rm75_{pix,pcd}`；OGBench scene：`lewm_scene_{pix,pcd}`，小规模那次 `lewm_scene_small_{pix,pcd}`）、`lejepa_mw_<任务>`、`pldm_mw_<任务>`、`vjepa21_vitb` 和上述基线 |
 | `run_bc.py`、`run_bc3d.py` | 一次运行（官方 `hydra_launcher.py` + 上面的补丁；3D 版再换成点云） |
 | `run_bc_rm75.py`、`rm75_server.py`、`rm75_env.py` | RM75 上的一次运行：官方流程 + 子进程里的 RM75 环境 |
 | `make_rm75_demos.py` | RM75 的示范 |
@@ -149,3 +160,6 @@ STABLEWM_HOME=<checkout>/lewm_pcd_data python bench/cortexbench/summarize_tf.py
 | `unpack_suite.py` | 解压官方示范（MetaWorld 的 zip 里每个文件存了两份，只取一份） |
 | `run_tf_bc.py` | TriFinger 的一次运行（官方 `train_bc.py` + 上面的补丁）；`prep` 准备示范和 3D 示范点云 |
 | `run_tf_grid.sh`、`summarize_tf.py` | TriFinger 的批量运行；汇总成表 |
+| `run_bc_scene.py`、`scene_server.py`、`scene_env.py` | OGBench scene 上的一次运行：官方流程 + 子进程里的 scene 环境 |
+| `make_scene_demos.py` | OGBench scene 的示范 |
+| `enc_server.py`、`scene_grid.py`、`summarize_scene.py` | 共享编码进程；OGBench scene 的批量作业；汇总成表 |

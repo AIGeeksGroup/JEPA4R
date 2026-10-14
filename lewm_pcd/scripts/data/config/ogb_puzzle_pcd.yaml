@@ -1,0 +1,36 @@
+# OGBench puzzle-3x3 (envs/ogb_puzzle_env.py: OGBench's own puzzle-3x3-v0) with the official noisy recipe, paired 2D + 3D
+# (scripts/data/collect_ogb.py). scripts/data/run_puzzle_collection.sh runs the training set (seeds 1000000 + i) and the
+# test set (seeds 2000000 + i) in shards and merges them.
+defaults:
+  - _self_
+  - launcher/local
+
+hydra:
+  output_subdir: null
+  mode: RUN
+  run:
+    dir: ${oc.env:STABLEWM_HOME,../lewm_pcd_data}/logs/collect/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+cache_dir: null
+env_id: swm/OGBenchPuzzle3x3-v0
+dataset_name: ogbench/puzzle_3x3_noisy1000_pcd.h5   # 3D (the run script names one per shard)
+pix_dataset_name: null                              # 2D: null = dataset_name without '_pcd'
+
+world:
+  num_envs: 1              # OGBench's oracle draws from numpy's global RNG: one env per process
+  max_episode_steps: 1001  # the official --max_episode_steps
+  image_shape: [224, 224]
+
+env: {}
+
+pcd:                       # one depth camera (front_pixels), as the 2D data
+  _target_: envs.ogb_pcd.PuzzlePointCloudWrapper
+
+policy:
+  _target_: envs.ogb_puzzle_env.PuzzleNoisyPolicy
+
+episodes: 1000             # puzzle-3x3-noisy-v0's size
+seed_base: 1000000         # episode i at seed seed_base + i
+shard: 0
+num_shards: 1
+health_check: false
