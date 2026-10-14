@@ -57,7 +57,7 @@ OGBench scene 的 5 个评测任务（scene-task1..5-v0）用这里的模仿学�
 - **本体感受。**`scene_env.proprio_of` 有 8 维：手的位置、偏航的 cos / sin、夹爪开合、两个锁的状态。`scene_grid.py --proprio hand6`（默认）只给前 6 维，即机器人自己的状态，不给锁；`--proprio none` 不给本体感受。训练数据和评测输入两边一致（`SCENE_PROPRIO_DIMS`）。
 - **示范**（`make_scene_demos.py <任务号>`）。OGBench 只带单个物体的脚本，按任务目标把它们串起来当专家（`envs/ogb_scene_expert.py`）。每个任务 25 条，种子 12345 + i；录到到达目标为止，先到达的补全零动作到这个任务最慢那条的长度（框架要求同一任务的示范一样长）。
 - **协议。**策略、训练、评测循环都是官方代码原样：BatchNormMLP（256, 256, 256），3 帧 FLARE，BC，100 个 epoch，每 5 个 epoch 评 25 回合，共 20 次；分数取 20 次里最高，3 个种子取平均（`summarize_scene.py`）。
-- **共享编码进程。**`ENC_SOCKET` 设上时，冻结编码器交给 `enc_server.py` 在一个 GPU 进程里攒批计算，作业进程不碰 GPU（BC 和评测在 CPU 上）；和作业自己算的差别不超过 4e-6。`scene_grid.py` 批量跑作业（运行目录 `$STABLEWM_HOME/logs/cortexbench/runs/<编码器>/scene-task<k>-v0/s<种子>/`）。
+- **共享编码进程。**`ENC_SOCKET` 设上时，冻结编码器交给 `enc_server.py` 在一个 GPU 进程里攒批计算，作业进程不碰 GPU（BC 和评测在 CPU 上）；和作业自己算的差别不超过 4e-6。`scene_grid.py` 批量跑作业（运行目录 `$STABLEWM_HOME/logs/cortexbench/scene/runs_hand6/<编码器>/scene-task<k>-v0/s<种子>/`，`--proprio none` 的在 `scene/runs_noproprio/`；和 `grid.py` 的 `runs/` 分开，`summarize.py` 把 `runs/` 下的都当 MetaWorld / Adroit / DMC 的运行读）。
 
 ## TriFinger（`run_tf_bc.py`）
 

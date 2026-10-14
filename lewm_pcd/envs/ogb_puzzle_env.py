@@ -8,9 +8,9 @@ Collection policy as OGBench's official puzzle-3x3-noisy-v0 (data_gen_scripts/co
   * noise level xi ~ U(0, 0.1) drawn per episode, Gaussian action noise N(0, [xi, xi, xi, 3 xi, 10 xi]); each step is a
     uniform random action with probability 0.2 (--p_random_action=0.2; PuzzleNoisyPolicy); actions clipped to [-1, 1];
   * 1001 steps per episode (--max_episode_steps=1001).
-All draws as the official script makes them, from numpy's global RNG (seeded per episode), in the same order: the
-oracle's reset, xi, then per step whether the action is random (drawn by the env when the row starts, so the row can
-record it) and the action noise. One env per process (num_envs 1): env pools would share the global RNG. The random
+All draws as the official script makes them, from numpy's global RNG (seeded per episode): at the episode start the
+oracle's reset, then xi (the official script draws xi first; the same distributions), then per step whether the action
+is random (drawn by the env when the row starts, so the row can record it) and the action noise. One env per process (num_envs 1): env pools would share the global RNG. The random
 actions are OGBench's action_space.sample(): its action_space property builds a new, unseeded Box on every access, so
 the random actions (and with them the rows) are not reproducible from the seed, as in the official collection.
 The only difference from the official data is the observation:

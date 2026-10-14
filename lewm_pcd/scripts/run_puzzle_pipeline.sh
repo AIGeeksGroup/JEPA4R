@@ -14,7 +14,8 @@
 #   4/4 DQC          bench/dqc/run_dqc.py, inputs lewm2d and lewm3d (the 192-d latent + the 9 true lights), 1 M steps,
 #                    evaluation every 100 k steps on OGBench's 5 tasks x 50 episodes -> logs/dqc/<RUN>/<input>
 # Defaults = the full scale: 1000 episodes (puzzle-3x3-noisy-v0's size), 10 epochs. The small run of results_ogbench.md:
-# N=200 SHARDS=5 NAME=puzzle_3x3_noisy DATA=puzzle_3x3_small RUN=puzzle_3x3_small (its DQC also ran the state input).
+# N=200 SHARDS=5 NAME=puzzle_3x3_noisy TEST=puzzle_3x3_noisy_small_test DATA=puzzle_3x3_small RUN=puzzle_3x3_small
+# (its DQC also ran the state input).
 # Idempotent and restartable: finished steps are skipped, a running collection / training / DQC run (pid files under
 # logs/) is waited for instead of started again; DQC runs resume from their last checkpoint. Detached:
 #   STABLEWM_HOME=<checkout>/lewm_pcd_data PY=<lewm_mw python> DQC_PY=<lewm_dqc python> setsid nohup \

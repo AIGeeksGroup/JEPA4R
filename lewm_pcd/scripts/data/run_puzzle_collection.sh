@@ -4,10 +4,10 @@
 # scripts/data/collect_ogb.py (config ogb_puzzle_pcd; shard s collects i = s, s + SHARDS, ...) and TEST_N test episodes
 # at seeds 2000000 + i (for probes; not trained on) in 2 runs; each set merged in shard order (merge_h5_shards.py
 # --delete), 2D / 3D pairing checked, ep_idx added (add_eval_columns.py).
-# Output: ogbench/<NAME>{,_pcd}.h5 and ogbench/puzzle_3x3_noisy_test{,_pcd}.h5.
+# Output: ogbench/<NAME>{,_pcd}.h5 and ogbench/<TEST>{,_pcd}.h5 (default puzzle_3x3_noisy_test).
 # Defaults = the full scale: 1000 episodes (puzzle-3x3-noisy-v0's size). The small run of results_ogbench.md: N=200
-# SHARDS=5 NAME=puzzle_3x3_noisy. The random actions are not reproducible from the seeds (envs/ogb_puzzle_env.py), so
-# a rerun gives other rows.
+# SHARDS=5 NAME=puzzle_3x3_noisy TEST=puzzle_3x3_noisy_small_test. The random actions are not reproducible from the
+# seeds (envs/ogb_puzzle_env.py), so a rerun gives other rows.
 #   STABLEWM_HOME=<checkout>/lewm_pcd_data PY=<lewm_mw python> bash scripts/data/run_puzzle_collection.sh
 set -euo pipefail
 cd "$(dirname "$0")/../.."  # lewm_pcd

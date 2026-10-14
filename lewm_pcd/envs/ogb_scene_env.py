@@ -313,15 +313,15 @@ def healthy(cube_xyz: np.ndarray) -> bool:
 
 
 # ------------------------------------------------------------------ three-part plan
-def draw_plan(rng, force_type=None):
+def draw_plan(rng, force_type=None, episode_len=EPISODE_STEPS):
     """MetaWorld MWTaskEnv._draw_plan as is."""
     t = int(force_type) if force_type is not None else int(rng.choice(3, p=np.asarray(MIX) / np.sum(MIX)))
     noise = float(rng.uniform(0.0, NOISE_MAX)) if t < 2 else 0.0
     b0, blen = -1, 0
     if t == 1:
-        b0 = int(rng.integers(15, EPISODE_STEPS - 40))
+        b0 = int(rng.integers(15, episode_len - 40))
         if rng.uniform() < BRANCH_TAIL_PROB:
-            blen = EPISODE_STEPS
+            blen = episode_len
         else:
             blen = int(rng.integers(BURST_LEN[0], BURST_LEN[1] + 1))
     return t, noise, b0, blen
@@ -355,7 +355,7 @@ class OGBSceneEnv(gymnasium.Env):
                  force_type: int | None = None, render_mode: str = 'rgb_array', **kwargs):
         assert mode in ('data_collection', 'task'), mode
         self.mode, self.task, self.tid = mode, task, TASKS.index(task)
-        self.force_type = force_type
+        self.episode_len, self.force_type = episode_len, force_type
         self.render_mode = render_mode
         self._env = make_env(max_episode_steps=episode_len, mode=mode)
         self._u = self._env.unwrapped
@@ -415,6 +415,8 @@ class OGBSceneEnv(gymnasium.Env):
 
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)  # this env's own np_random (stable-worldmodel draws its episode ids from it); unused here
+        if seed is None:  # an unseeded reset gets a seed from np_random, so the episode is still recorded and reproducible
+            seed = int(self.np_random.integers(2**31))
         if self.mode == 'task':
             np.random.seed(seed % 2**32)  # OGBench's oracles and task mode draw from numpy's global RNG in places
             self.ob, self.ob_info = self._env.reset(seed=seed, options=dict(task_id=int(options['task_id'])))
@@ -434,7 +436,7 @@ class OGBSceneEnv(gymnasium.Env):
         self.agent = make_oracles(self._env)[self.task]
         self.ob, self.ob_info = set_task_target(u, self.task)
         self.agent.reset(self.ob, self.ob_info)
-        self.plan = draw_plan(self.rng, self.force_type)
+        self.plan = draw_plan(self.rng, self.force_type, self.episode_len)
         self.episode_seed = seed
         self._t = 0
         return np.asarray(self.ob, np.float32), self._row_info()

@@ -14,7 +14,8 @@
 #                    of the world model; skipped when they exist)
 #   4/4 CortexBench  bench/cortexbench/scene_grid.py with both encoders (conf/model/<ENC>_{pix,pcd}.yaml, epoch 10):
 #                    scene-task1..5 x seeds 100 / 200 / 300, PROPRIO (hand6: effector xyz, cos / sin yaw, gripper),
-#                    the encoders served by bench/cortexbench/enc_server.py; table by summarize_scene.py
+#                    the encoders served by bench/cortexbench/enc_server.py; runs under logs/cortexbench/scene/
+#                    (runs_hand6, runs_noproprio), table by summarize_scene.py
 # Defaults = the full scale: 4 x 2500 episodes (2 M rows, MetaWorld's ~2 M per model as run_tf_pipeline.sh), 10 epochs.
 # The small run of results_ogbench.md: N=250 SHARDS=5 NAME=scene_wm DATA=scene_small RUN=scene_small ENC=lewm_scene_small.
 # Idempotent and restartable: finished steps are skipped, a running collection / training (pid files under logs/) is
@@ -108,6 +109,7 @@ fi
 
 # ----------------------------------------------------------------------------------------------- 4 CortexBench
 log "4/4 CortexBench: ${ENC}_pix, ${ENC}_pcd x scene-task1..5 x seeds $SEEDS, proprioception $PROPRIO"
+RUNS=scene/runs_$([ "$PROPRIO" = hand6 ] && echo hand6 || echo noproprio)  # scene_grid.py's run root under logs/cortexbench
 (
   export MW_PY=$PY PY=$CB_PY ENC_SOCKET=@${ENC}_enc
   cd bench/cortexbench && source env.sh
@@ -120,9 +122,15 @@ log "4/4 CortexBench: ${ENC}_pix, ${ENC}_pcd x scene-task1..5 x seeds $SEEDS, pr
     done
   fi
   $PY scene_grid.py --models "${ENC}_pcd,${ENC}_pix" --seeds "$SEEDS" --proprio "$PROPRIO" --slots "$SLOTS" \
-    >> "$LOGS/cortexbench/scene_grid.log" 2>&1
+    >> "$LOGS/cortexbench/scene_grid.log" 2>&1; st=$?
   kill "$(cat "$srv")"
-  grep -q "FAILED" "$LOGS/cortexbench/scene_grid.log" && { log "some CortexBench jobs FAILED (see scene_grid.log)"; exit 1; }
-  $PY summarize_scene.py "${ENC}_pcd" "${ENC}_pix" --seeds "$SEEDS" --runs "$([ "$PROPRIO" = hand6 ] && echo runs || echo runs_noproprio)"
+  # judged by scene_grid.py's exit code and the DONE files (scene_grid.log is appended to by every attempt)
+  missing=0
+  for m in "${ENC}_pcd" "${ENC}_pix"; do for k in 1 2 3 4 5; do for s in ${SEEDS//,/ }; do
+    [ -f "$LOGS/cortexbench/$RUNS/$m/scene-task$k-v0/s$s/DONE" ] || missing=$((missing + 1))
+  done; done; done
+  [ $st = 0 ] && [ $missing = 0 ] \
+    || { log "CortexBench FAILED: scene_grid.py exit $st, $missing runs without DONE (see scene_grid.log)"; exit 1; }
+  $PY summarize_scene.py "${ENC}_pcd" "${ENC}_pix" --seeds "$SEEDS" --runs "$RUNS"
 ) || exit 1
 log "ALL_DONE"

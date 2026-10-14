@@ -1,7 +1,10 @@
 """Results table of the CortexBench imitation runs on OGBench scene (scene_grid.py): per encoder x task, a run's score
 = the highest success rate of its 20 evaluations (CortexBench as is: the 20 are one training's evaluations every 5
 epochs, the last at its end), averaged over the seeds; the last evaluation (epoch 99) is listed beside it.
-    STABLEWM_HOME=<checkout>/lewm_pcd_data python summarize_scene.py [encoder ...] [--seeds 100,200,300] [--runs runs]
+    STABLEWM_HOME=<checkout>/lewm_pcd_data python summarize_scene.py [encoder ...] [--seeds 100,200,300] \\
+        [--runs scene/runs_hand6]
+--runs: the run root under logs/cortexbench: scene_grid.py's scene/runs_hand6 or scene/runs_noproprio; the small run
+of results_ogbench.md: scene_small/runs_hand6, scene_small/runs_noproprio.
 """
 import argparse
 import json
@@ -13,7 +16,7 @@ import numpy as np
 ap = argparse.ArgumentParser()
 ap.add_argument('models', nargs='*')
 ap.add_argument('--seeds', default='100,200,300')
-ap.add_argument('--runs', default='runs')
+ap.add_argument('--runs', default='scene/runs_hand6')
 args = ap.parse_args()
 RUNS = Path(os.environ['STABLEWM_HOME']) / 'logs' / 'cortexbench' / args.runs
 SEEDS = [int(x) for x in args.seeds.split(',')]

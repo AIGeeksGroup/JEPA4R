@@ -1,12 +1,14 @@
 """CortexBench imitation jobs on OGBench scene: encoder x task x seed, one run_bc_scene.py per job; a reduced grid.py
-(the same command line, run directories, DONE files and restart rule; no DMC / MPS parts).
+(the same command line, run directory layout and DONE files; no DMC / MPS parts, and no adoption of live jobs: a rerun
+starts every run without DONE afresh, so an earlier scene_grid.py's jobs have to be stopped first).
     source env.sh && MW_PY=<lewm_mw python> [ENC_SOCKET=@lewm_scene_enc] setsid nohup $PY scene_grid.py \\
         --models lewm_scene_pix,lewm_scene_pcd [--tasks 1,2,3,4,5] [--seeds 100,200,300] [--slots 10] \\
         [--proprio hand6|none] >> $STABLEWM_HOME/logs/cortexbench/scene_grid.log 2>&1 &
-Run directories $STABLEWM_HOME/logs/cortexbench/runs/<encoder>/scene-task<k>-v0/s<seed>/{metrics.jsonl, DONE}, with
-s<seed>.log beside them. --proprio: hand6 (default) = the first 6 proprioception entries (effector xyz, cos / sin yaw,
-gripper; not the two locks); none = no proprioception, its runs under runs_noproprio/. With ENC_SOCKET, enc_server.py
-must be serving the --models.
+Run directories $STABLEWM_HOME/logs/cortexbench/scene/runs_hand6/<encoder>/scene-task<k>-v0/s<seed>/{metrics.jsonl,
+DONE}, with s<seed>.log beside them; apart from grid.py's runs/, which summarize.py reads as MetaWorld / Adroit / DMC
+runs. --proprio: hand6 (default) = the first 6 proprioception entries (effector xyz, cos / sin yaw, gripper; not the
+two locks); none = no proprioception, its runs under scene/runs_noproprio/. With ENC_SOCKET, enc_server.py must be
+serving the --models.
 """
 import argparse
 import json
@@ -32,7 +34,7 @@ ap.add_argument('--seeds', default='100,200,300')
 ap.add_argument('--slots', type=int, default=10)
 ap.add_argument('--proprio', choices=('hand6', 'none'), default='hand6')
 args = ap.parse_args()
-RUNS = HOME / 'logs' / 'cortexbench' / ('runs' if args.proprio == 'hand6' else 'runs_noproprio')
+RUNS = HOME / 'logs' / 'cortexbench' / 'scene' / ('runs_hand6' if args.proprio == 'hand6' else 'runs_noproprio')
 PROPRIO_ARGS = {'none': ['env_kwargs.add_proprio=False', 'env_kwargs.proprio_key=None'],
                 'hand6': ['env_kwargs.add_proprio=True', 'env_kwargs.proprio_key=gripper_proprio']}[args.proprio]
 
