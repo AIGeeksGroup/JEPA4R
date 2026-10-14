@@ -39,7 +39,8 @@ alive() { [ -f "$1" ] && kill -0 "$(cat "$1")" 2>/dev/null; }
 detach() {  # pidfile log cmd...: run cmd in its own session (survives this script), its pid in pidfile
   local pidf=$1 out=$2; shift 2
   rm -f "$pidf"
-  setsid nohup bash -c 'echo $$ > "$0"; exec "$@"' "$pidf" "$@" > "$out" 2>&1 < /dev/null &
+  # fd 9 (the GPU gate's lock, see train) closed: a detached training must not hold the gate for its whole run
+  setsid nohup bash -c 'echo $$ > "$0"; exec "$@"' "$pidf" "$@" > "$out" 2>&1 < /dev/null 9>&- &
   until [ -s "$pidf" ]; do sleep 1; done
 }
 
