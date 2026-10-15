@@ -1,28 +1,26 @@
 """GCIQL (OGBench's goal-conditioned implicit Q-learning: github.com/seohongpark/ogbench at a977253, impls/, in
-third_party/ogbench unchanged) trained and evaluated on OGBench puzzle-3x3-play (the official data), the setting of the
-DQC runs (bench/dqc/run_dqc.py) with GCIQL in place of DQC. The inputs, everything else equal:
-  --obs state  : the original input, the 55-d state vector;
+third_party/ogbench unchanged) on OGBench puzzle-3x3-play exactly as OGBench runs it, with one change: the observation.
+  --obs state  : OGBench's own observation, the 55-d state vector (the reproduction);
   --obs lewm2d : [the frozen LeWM 2D encoder's 192-d latent, the 9 true lights];
   --obs lewm3d : [the frozen LeWM 3D encoder's 192-d latent, the 9 true lights];
   --obs lewm2d_nolight / lewm3d_nolight : the 192-d latent only.
-The goal is the 9 lights' goal state (OGBench's oraclerep, 'puzzle-3x3-play-oraclerep-v0'), as the DQC runs.
-Agent: impls/agents/gciql.py with its default config and impls/hyperparameters.sh's puzzle-3x3-play-v0 line
-(--agent.alpha=1.0); training loop and evaluation as impls/main.py (seed 0, 1 M steps, evaluation at step 1 and every
-100 k steps on the 5 tasks x --eval_episodes=50, eval_temperature 0), with these changes:
-  1. oraclerep goals: GCIQLAgent.create sizes its networks with observation-sized goals (ex_goals = ex_observations);
-     GCIQLOracleRep.create is that method with this one line replaced by goals of the oracle representation's size (as
-     the OGBench authors' later code does, third_party/dqc/agents/dqc.py), and OracleRepGCDataset hands GCDataset the
-     oracle representations where it reads goal observations (GCDataset.get_observations, used only for goals here);
-  2. LeWM inputs: the training set's observations are extract_feats.py's latents (+ the lights); in the evaluation, each
-     step's observation is the current frame of the LeWM data's camera through the same frozen encoder
-     (bench/dqc/lewm_obs.LeWMObs, the checkpoint given by --ckpt);
-  3. no wandb (jsonl), no validation loss, evaluation on the GPU (main.py's default evaluates a CPU copy of the same agent),
-     restartable: every --save_every steps the full state (the agent, numpy / python RNG states, the step) goes to disk,
-     on SIGTERM once more before exiting.
+Everything else is OGBench's: the dataset puzzle-3x3-play-v0, impls/agents/gciql.py with its default config and
+impls/hyperparameters.sh's puzzle-3x3-play-v0 line (--agent.alpha=1.0), GCDataset (goals = observations of goal states,
+so in the LeWM runs the goal is the goal state's [latent, lights] like any observation), impls/main.py's training loop and
+evaluation (seed 0, 1 M steps, evaluation at step 1 and every 100 k steps on the 5 tasks x --eval_episodes=50,
+eval_temperature 0, the goal of a task = the observation of the goal scene OGBench builds in reset).
+What the observation change needs:
+  * training: the dataset's observations are extract_feats.py's latents of the same states (+ the lights);
+  * evaluation: each step's observation is the current frame of the LeWM data's camera through the same frozen encoder
+    (bench/dqc/lewm_obs.LeWMObs, the checkpoint given by --ckpt), and the goal is the same function of the goal scene:
+    GoalCapture takes it inside reset at the moment OGBench computes its goal observation (initialize_episode's last
+    compute_observation; with --obs state the captured goal equals OGBench's info['goal'], checked in check_goal()).
+Not about the method: no wandb (jsonl), no validation loss, evaluation on the GPU (main.py evaluates a CPU copy of the
+same agent by default), restartable: every --save_every steps the full state (the agent, numpy / python RNG states, the
+step) goes to disk, on SIGTERM once more before exiting.
     python run_gciql.py --obs lewm3d --ckpt $STABLEWM_HOME/checkpoints/puzzle_3x3_pcd_dexart \\
-        --feats_dir $STABLEWM_HOME/datasets/ogbench/dqc_feats/puzzle_3x3 --run_dir <dir>
+        --feats_dir $STABLEWM_HOME/datasets/ogbench/dqc_feats/puzzle_3x3 --run_dir <dir> --agent.alpha=1.0
 """
-import copy
 import json
 import os
 import pickle
@@ -43,22 +41,18 @@ import flax  # noqa: E402
 import jax  # noqa: E402
 import numpy as np  # noqa: E402
 import ogbench  # noqa: E402
-import optax  # noqa: E402
 from absl import app, flags  # noqa: E402
 from agents.gciql import GCIQLAgent  # noqa: E402
 from ml_collections import config_flags  # noqa: E402
 from utils.datasets import Dataset, GCDataset  # noqa: E402
-from utils.encoders import GCEncoder, encoder_modules  # noqa: E402
 from utils.evaluation import add_to, flatten, supply_rng  # noqa: E402
-from utils.flax_utils import ModuleDict, TrainState  # noqa: E402
-from utils.networks import GCActor, GCDiscreteActor, GCDiscreteCritic, GCValue  # noqa: E402
 
 from lewm_obs import LeWMObs  # noqa: E402
 
 FLAGS = flags.FLAGS
 flags.DEFINE_string('obs', 'state', 'state | lewm2d | lewm3d | lewm2d_nolight | lewm3d_nolight')
 flags.DEFINE_string('run_dir', None, 'Output directory (checkpoint, logs).')
-flags.DEFINE_string('env_name', 'puzzle-3x3-play-oraclerep-v0', '')
+flags.DEFINE_string('env_name', 'puzzle-3x3-play-v0', '')
 flags.DEFINE_string('dataset_path', str(DATA / 'official' / 'puzzle-3x3-play-v0.npz'), '')
 flags.DEFINE_string('feats_dir', None, "extract_feats.py's output directory (LeWM inputs).")
 flags.DEFINE_string('ckpt', None, "Checkpoint directory of the LeWM encoder (LeWM inputs; extract_feats.py's).")
@@ -79,111 +73,55 @@ def _on_term(signum, frame):
     _STOP['flag'] = True
 
 
-class OracleRepGCDataset(GCDataset):
-    """GCDataset with goals = the dataset's oracle representations: GCDataset reads value / actor goals through
-    get_observations (and nothing else, without frame stacking), so returning the oracle representations there makes
-    every goal the 9 lights of the sampled goal state; sampling, rewards and masks are GCDataset's."""
+class GoalCapture:
+    """The goal of an evaluation task as the observation function sees the goal scene. OGBench builds the goal inside
+    reset (PuzzleEnv.initialize_episode: the goal lights, a random arm, a few settling steps, then
+    self.compute_observation() -> info['goal'], then the actual start state); while initialize_episode runs, every
+    compute_observation call also records obs_fn(), so after reset .goal holds obs_fn() of the goal scene."""
 
-    def __post_init__(self):
-        assert self.config['frame_stack'] is None
-        super().__post_init__()
+    def __init__(self, env, obs_fn):
+        u = env.unwrapped
+        orig_init, orig_obs = u.initialize_episode, u.compute_observation
+        self.goal, self._on = None, False
 
-    def get_observations(self, idxs):
-        return self.dataset['oracle_reps'][idxs]
+        def initialize_episode(*args, **kwargs):
+            self._on = True
+            try:
+                return orig_init(*args, **kwargs)
+            finally:
+                self._on = False
 
+        def compute_observation(*args, **kwargs):
+            ob = orig_obs(*args, **kwargs)
+            if self._on:
+                self.goal = obs_fn()
+            return ob
 
-class GCIQLOracleRep(GCIQLAgent):
-    """GCIQLAgent with networks for goals of their own size (see the module docstring); losses, updates and action
-    sampling are GCIQLAgent's."""
-
-    @classmethod
-    def create(cls, seed, ex_observations, ex_goals, ex_actions, config):
-        # GCIQLAgent.create (impls/agents/gciql.py) as is, except `ex_goals = ex_observations` -> the argument ex_goals
-        rng = jax.random.PRNGKey(seed)
-        rng, init_rng = jax.random.split(rng, 2)
-
-        if config['discrete']:
-            action_dim = ex_actions.max() + 1
-        else:
-            action_dim = ex_actions.shape[-1]
-
-        # Define encoders.
-        encoders = dict()
-        if config['encoder'] is not None:
-            encoder_module = encoder_modules[config['encoder']]
-            encoders['value'] = GCEncoder(concat_encoder=encoder_module())
-            encoders['critic'] = GCEncoder(concat_encoder=encoder_module())
-            encoders['actor'] = GCEncoder(concat_encoder=encoder_module())
-
-        # Define value and actor networks.
-        value_def = GCValue(
-            hidden_dims=config['value_hidden_dims'],
-            layer_norm=config['layer_norm'],
-            ensemble=False,
-            gc_encoder=encoders.get('value'),
-        )
-
-        if config['discrete']:
-            critic_def = GCDiscreteCritic(
-                hidden_dims=config['value_hidden_dims'],
-                layer_norm=config['layer_norm'],
-                ensemble=True,
-                gc_encoder=encoders.get('critic'),
-                action_dim=action_dim,
-            )
-        else:
-            critic_def = GCValue(
-                hidden_dims=config['value_hidden_dims'],
-                layer_norm=config['layer_norm'],
-                ensemble=True,
-                gc_encoder=encoders.get('critic'),
-            )
-
-        if config['discrete']:
-            actor_def = GCDiscreteActor(
-                hidden_dims=config['actor_hidden_dims'],
-                action_dim=action_dim,
-                gc_encoder=encoders.get('actor'),
-            )
-        else:
-            actor_def = GCActor(
-                hidden_dims=config['actor_hidden_dims'],
-                action_dim=action_dim,
-                state_dependent_std=False,
-                const_std=config['const_std'],
-                gc_encoder=encoders.get('actor'),
-            )
-
-        network_info = dict(
-            value=(value_def, (ex_observations, ex_goals)),
-            critic=(critic_def, (ex_observations, ex_goals, ex_actions)),
-            target_critic=(copy.deepcopy(critic_def), (ex_observations, ex_goals, ex_actions)),
-            actor=(actor_def, (ex_observations, ex_goals)),
-        )
-        networks = {k: v[0] for k, v in network_info.items()}
-        network_args = {k: v[1] for k, v in network_info.items()}
-
-        network_def = ModuleDict(networks)
-        network_tx = optax.adam(learning_rate=config['lr'])
-        network_params = network_def.init(init_rng, **network_args)['params']
-        network = TrainState.create(network_def, network_params, tx=network_tx)
-
-        params = network_params
-        params['modules_target_critic'] = params['modules_critic']
-
-        return cls(rng, network=network, config=flax.core.FrozenDict(**config))
+        u.initialize_episode = initialize_episode
+        u.compute_observation = compute_observation
 
 
-def evaluate(agent, env, task_id, num_eval_episodes, eval_temperature, obs_fn=None):
-    """impls/utils/evaluation.py's evaluate (continuous actions, no video, no Gaussian noise) with obs_fn added: the
-    observation the policy gets at each step."""
+def check_goal(env):
+    """With the state observation, the captured goal equals OGBench's own info['goal'] for every task."""
+    u = env.unwrapped
+    state_ob = u.compute_observation  # the unwrapped method (GoalCapture replaces the attribute)
+    cap = GoalCapture(env, lambda: np.array(state_ob(), copy=True))
+    for task_id in range(1, len(u.task_infos) + 1):
+        _, info = env.reset(options=dict(task_id=task_id, render_goal=False))
+        assert np.array_equal(cap.goal, info['goal']), task_id
+    return True
+
+
+def evaluate(agent, env, task_id, num_eval_episodes, eval_temperature, obs_fn=None, goal_capture=None):
+    """impls/utils/evaluation.py's evaluate (continuous actions, no video, no Gaussian noise); with LeWM inputs the
+    observation is obs_fn() and the goal is goal_capture's (the same function of the goal scene)."""
     actor_fn = supply_rng(agent.sample_actions, rng=jax.random.PRNGKey(np.random.randint(0, 2**32)))
     stats = defaultdict(list)
     for _ in range(num_eval_episodes):
         if _STOP['flag']:
             return None  # SIGTERM: give up this evaluation round, save and exit; it is redone on restart
         observation, info = env.reset(options=dict(task_id=task_id, render_goal=False))
-        goal = info.get('goal')
+        goal = goal_capture.goal if goal_capture is not None else info.get('goal')
         done = False
         while not done:
             ob = obs_fn() if obs_fn is not None else observation
@@ -211,8 +149,8 @@ def main(_):
     flag_dict['agent'] = config.to_dict()
     (run_dir / 'flags.json').write_text(json.dumps(flag_dict, indent=1))
 
-    # env and data (as impls' make_env_and_datasets: the compact dataset; add_info keeps the lights for LeWM inputs).
-    # The LeWM inputs render into a 224 offscreen buffer: the rendering size only, not the simulation.
+    # env and data as impls' make_env_and_datasets (the compact dataset); add_info keeps the lights for the LeWM
+    # observation and is dropped after. The LeWM inputs render into a 224 offscreen buffer (the rendering size only).
     env_kwargs = dict(width=224, height=224) if lewm else {}
     env, train_dataset, _ = ogbench.make_env_and_datasets(FLAGS.env_name, dataset_path=FLAGS.dataset_path,
                                                           compact_dataset=True, add_info=True, **env_kwargs)
@@ -225,15 +163,16 @@ def main(_):
         train_dataset.pop(k, None)
     print({k: v.shape for k, v in train_dataset.items()}, flush=True)
     env.reset()
+    assert check_goal(env)
 
-    train_dataset = OracleRepGCDataset(Dataset.create(**train_dataset), config)
+    train_dataset = GCDataset(Dataset.create(**train_dataset), config)
 
     random.seed(FLAGS.seed)
     np.random.seed(FLAGS.seed)
     example_batch = train_dataset.sample(1)
-    agent = GCIQLOracleRep.create(FLAGS.seed, example_batch['observations'], example_batch['value_goals'],
-                                  example_batch['actions'], config)
+    agent = GCIQLAgent.create(FLAGS.seed, example_batch['observations'], example_batch['actions'], config)
     obs_fn = LeWMObs(env, kind, FLAGS.ckpt, FLAGS.lewm_epoch, lights=with_lights) if lewm else None
+    goal_capture = GoalCapture(env, obs_fn) if lewm else None
 
     # restart
     ckpt = run_dir / 'resume.pkl'
@@ -279,7 +218,7 @@ def main(_):
             task_infos = env.unwrapped.task_infos
             res, succ = {}, []
             for task_id in range(1, len(task_infos) + 1):
-                info = evaluate(agent, env, task_id, FLAGS.eval_episodes, FLAGS.eval_temperature, obs_fn)
+                info = evaluate(agent, env, task_id, FLAGS.eval_episodes, FLAGS.eval_temperature, obs_fn, goal_capture)
                 if info is None:
                     save(i, pending=True)
                     print(f'SIGTERM during eval: saved at step {i} (eval pending), exiting', flush=True)

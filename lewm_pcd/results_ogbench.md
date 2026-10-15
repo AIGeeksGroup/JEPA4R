@@ -23,7 +23,7 @@
   - 随机动作是 OGBench 的 `action_space.sample()`：它的 `action_space` 每次访问都新建一个没设种子的 Box，所以随机动作不能按种子复现，和官方一样。
 - **规模**：训练集 1000 回合（官方 noisy 数据就是 1000 回合），测试集另采 20 回合（种子 2000000 起，只给探针用，不参与训练）。
 - **训练**：仓库 `train.py` 原样，超参是 `config/train/lewm.yaml` 的默认值（frameskip 5、历史 3 帧、batch 128、lr 5e-5、10 个 epoch）；2D `model=lewm`，3D `model=lewm_pcd_dexart`（`config/train/data/puzzle_3x3{,_pcd}.yaml`）。
-- **评测**：全量用 GCIQL（OGBench 官方实现和它给 puzzle-3x3 的超参，`bench/gciql/`，见那里的 README），小规模那次用的是 DQC（`bench/dqc/`），其余设置相同。官方 `puzzle-3x3-play-v0` 数据（1000 回合 × 1001 步）按我们的相机重画、过冻结编码器，输入 = 192 维潜变量 + 9 个灯的真值，目标 = 9 个灯的目标状态；100 万步，每 10 万步在官方 5 个任务上各评 50 回合。
+- **评测**：全量用 GCIQL：OGBench 官方实现和它给 puzzle-3x3 的超参，按 OGBench 的方式原样跑，只把观测换成潜变量 + 灯，目标也就是目标状态的潜变量 + 灯（`bench/gciql/`，见那里的 README）。小规模那次用的是 DQC（`bench/dqc/`），目标只给 9 个灯。官方 `puzzle-3x3-play-v0` 数据（1000 回合 × 1001 步）按我们的相机重画、过冻结编码器，输入 = 192 维潜变量 + 9 个灯的真值；100 万步，每 10 万步在官方 5 个任务上各评 50 回合，报告按 OGBench 的口径取第 80、90、100 万步三次评测的平均。
 
 ### scene
 

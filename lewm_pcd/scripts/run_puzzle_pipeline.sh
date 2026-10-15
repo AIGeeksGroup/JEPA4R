@@ -11,9 +11,10 @@
 #                    run_scene_pipeline.sh (a lock file), so two trainings never take the same free memory
 #   3/4 latents      bench/dqc/extract_feats.py: OGBench's puzzle-3x3-play training set re-rendered with the LeWM data's
 #                    camera, through both frozen encoders (epoch EPOCHS) -> datasets/ogbench/dqc_feats/<RUN>
-#   4/4 GCIQL        bench/gciql/run_gciql.py: OGBench's own GCIQL with its puzzle-3x3-play hyperparameters, inputs
-#                    lewm2d and lewm3d (the 192-d latent + the 9 true lights), goals the 9 lights, 1 M steps,
-#                    evaluation at step 1 and every 100 k steps on OGBench's 5 tasks x 50 episodes -> logs/gciql/<RUN>/<input>
+#   4/4 GCIQL        bench/gciql/run_gciql.py: OGBench's own GCIQL run as OGBench runs puzzle-3x3-play-v0 with only the
+#                    observation replaced, lewm2d and lewm3d (the 192-d latent + the 9 true lights; goals = the goal
+#                    state's observation, as OGBench), 1 M steps, evaluation at step 1 and every 100 k steps on OGBench's
+#                    5 tasks x 50 episodes -> logs/gciql/<RUN>_official/<input>
 # Defaults = the full scale: 1000 episodes (puzzle-3x3-noisy-v0's size), 10 epochs. The small run of results_ogbench.md:
 # N=200 SHARDS=5 NAME=puzzle_3x3_noisy TEST=puzzle_3x3_noisy_small_test DATA=puzzle_3x3_small RUN=puzzle_3x3_small
 # (its step 4 was DQC, bench/dqc/run_dqc.py, -> logs/dqc/puzzle_3x3_small/, with the state input as well).
@@ -107,7 +108,7 @@ fi
 # ------------------------------------------------------------------------------------------------------ 4 GCIQL
 log "4/4 GCIQL: lewm2d, lewm3d (latent + lights), 1 M steps"
 HP=(--agent.alpha=1.0)  # impls/hyperparameters.sh's puzzle-3x3-play-v0 line; the rest impls/agents/gciql.py's defaults
-RUNS=$LOGS/gciql/$RUN
+RUNS=$LOGS/gciql/${RUN}_official  # (logs/gciql/<RUN>/: the superseded runs with 9-light goals, see bench/gciql/README.md)
 mkdir -p "$RUNS/.tmp"
 gciql() {  # input checkpoint
   local obs=$1 ck=$2 pidf=$RUNS/$1.pid
