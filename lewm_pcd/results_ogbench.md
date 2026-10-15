@@ -2,7 +2,7 @@
 
 两个 OGBench 场景，各自采游玩数据训练 LeWM 2D / 3D，再冻结编码器、学策略评测：
 
-- **puzzle-3x3**：9 个按钮的灯，按一个按钮会翻转它和相邻按钮的灯。评测用离线 RL（DQC），输入是冻结的潜变量加 9 个灯的真值。
+- **puzzle-3x3**：9 个按钮的灯，按一个按钮会翻转它和相邻按钮的灯。评测用离线 RL，输入是冻结的潜变量加 9 个灯的真值；全量用 OGBench 官方的 GCIQL，小规模那次用的是 DQC。
 - **scene**：1 个物块、2 个按钮（分别锁抽屉和窗户）、1 个抽屉、1 个窗户。评测用 CortexBench 的模仿学习协议，环境换成 scene 的 5 个评测任务。
 
 ## 做法
@@ -23,7 +23,7 @@
   - 随机动作是 OGBench 的 `action_space.sample()`：它的 `action_space` 每次访问都新建一个没设种子的 Box，所以随机动作不能按种子复现，和官方一样。
 - **规模**：训练集 1000 回合（官方 noisy 数据就是 1000 回合），测试集另采 20 回合（种子 2000000 起，只给探针用，不参与训练）。
 - **训练**：仓库 `train.py` 原样，超参是 `config/train/lewm.yaml` 的默认值（frameskip 5、历史 3 帧、batch 128、lr 5e-5、10 个 epoch）；2D `model=lewm`，3D `model=lewm_pcd_dexart`（`config/train/data/puzzle_3x3{,_pcd}.yaml`）。
-- **评测**：DQC（`bench/dqc/`，见那里的 README）。官方 `puzzle-3x3-play-v0` 数据（1000 回合 × 1001 步）按我们的相机重画、过冻结编码器，输入 = 192 维潜变量 + 9 个灯的真值，目标 = 9 个灯的目标状态；100 万步，每 10 万步在官方 5 个任务上各评 50 回合。
+- **评测**：全量用 GCIQL（OGBench 官方实现和它给 puzzle-3x3 的超参，`bench/gciql/`，见那里的 README），小规模那次用的是 DQC（`bench/dqc/`），其余设置相同。官方 `puzzle-3x3-play-v0` 数据（1000 回合 × 1001 步）按我们的相机重画、过冻结编码器，输入 = 192 维潜变量 + 9 个灯的真值，目标 = 9 个灯的目标状态；100 万步，每 10 万步在官方 5 个任务上各评 50 回合。
 
 ### scene
 
@@ -41,11 +41,13 @@
   - 策略：BatchNormMLP（256, 256, 256），输入 = 3 帧潜变量（FLARE）+ 6 维本体感受（手的位置、偏航的 cos / sin、夹爪开合；两个锁的状态不给）；BC，Adam 1e-3，batch 256，100 个 epoch；每 5 个 epoch 评 25 个回合，共 20 次；单次运行的分数 = 20 次里最高的成功率，种子 100 / 200 / 300 取平均（CortexBench 原样）。
   - 冻结编码器集中在一个 GPU 进程里攒批计算（`enc_server.py`），和各作业自己算的差别不超过 4e-6。
 
-流程：`scripts/run_puzzle_pipeline.sh`（采集 → 训练 → DQC 潜变量 → DQC）、`scripts/run_scene_pipeline.sh`（采集 → 训练 → 示范 → CortexBench）。默认是全量规模，可断点续跑。
+流程：`scripts/run_puzzle_pipeline.sh`（采集 → 训练 → 潜变量 → GCIQL）、`scripts/run_scene_pipeline.sh`（采集 → 训练 → 示范 → CortexBench）。默认是全量规模，可断点续跑。
 
 ## 全量（2026-10-14 开始）
 
-在跑：puzzle 1000 回合、scene 1 万回合的采集，之后训练和评测。跑完填在这里。
+采集、puzzle 的两个训练已完成，全量数据和小规模那次按种子逐回合核对过（scene 同种子的回合逐列相同，puzzle 逐行相同到第一个随机动作）。在跑：puzzle 的 GCIQL（`logs/gciql/puzzle_3x3/`），scene 的训练和之后的 CortexBench。跑完填在这里。
+
+- puzzle 的评测原先按 DQC 跑，按用户要求改成 GCIQL；DQC 停在 2D 第 62 万步、3D 第 57.6 万步（存档在 `logs/dqc/puzzle_3x3/`，可续跑），停之前最后一次评测 2D 第 60 万步 87.2 %、3D 第 50 万步 91.2 %。
 
 ## 小规模（2026-10-11 至 10-14）
 

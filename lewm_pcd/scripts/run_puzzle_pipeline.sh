@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# OGBench puzzle-3x3 from collection to DQC scores (results_ogbench.md):
+# OGBench puzzle-3x3 from collection to GCIQL scores (results_ogbench.md):
 #   1/4 collection   scripts/data/run_puzzle_collection.sh: the official noisy recipe (envs/ogb_puzzle_env.py), N training
 #                    episodes of 1001 steps + 20 test episodes -> datasets/ogbench/<NAME>{,_pcd}.h5
 #   2/4 trainings    EPOCHS epochs each (config/train/lewm.yaml):
@@ -11,13 +11,15 @@
 #                    run_scene_pipeline.sh (a lock file), so two trainings never take the same free memory
 #   3/4 latents      bench/dqc/extract_feats.py: OGBench's puzzle-3x3-play training set re-rendered with the LeWM data's
 #                    camera, through both frozen encoders (epoch EPOCHS) -> datasets/ogbench/dqc_feats/<RUN>
-#   4/4 DQC          bench/dqc/run_dqc.py, inputs lewm2d and lewm3d (the 192-d latent + the 9 true lights), 1 M steps,
-#                    evaluation every 100 k steps on OGBench's 5 tasks x 50 episodes -> logs/dqc/<RUN>/<input>
+#   4/4 GCIQL        bench/gciql/run_gciql.py: OGBench's own GCIQL with its puzzle-3x3-play hyperparameters, inputs
+#                    lewm2d and lewm3d (the 192-d latent + the 9 true lights), goals the 9 lights, 1 M steps,
+#                    evaluation at step 1 and every 100 k steps on OGBench's 5 tasks x 50 episodes -> logs/gciql/<RUN>/<input>
 # Defaults = the full scale: 1000 episodes (puzzle-3x3-noisy-v0's size), 10 epochs. The small run of results_ogbench.md:
 # N=200 SHARDS=5 NAME=puzzle_3x3_noisy TEST=puzzle_3x3_noisy_small_test DATA=puzzle_3x3_small RUN=puzzle_3x3_small
-# (its DQC also ran the state input).
-# Idempotent and restartable: finished steps are skipped, a running collection / training / DQC run (pid files under
-# logs/) is waited for instead of started again; DQC runs resume from their last checkpoint. Detached:
+# (its step 4 was DQC, bench/dqc/run_dqc.py, -> logs/dqc/puzzle_3x3_small/, with the state input as well).
+# Idempotent and restartable: finished steps are skipped, a running collection / training / GCIQL run (pid files under
+# logs/) is waited for instead of started again; GCIQL runs resume from their last checkpoint. DQC_PY: the lewm_dqc
+# python (JAX; DQC and GCIQL). Detached:
 #   STABLEWM_HOME=<checkout>/lewm_pcd_data PY=<lewm_mw python> DQC_PY=<lewm_dqc python> setsid nohup \
 #     bash scripts/run_puzzle_pipeline.sh > $STABLEWM_HOME/logs/puzzle_pipeline.log 2>&1 < /dev/null &
 # Keep TMP/ops/cache_guard.py running alongside (the container's memory cap, see README).
@@ -102,29 +104,27 @@ else
   log "latents done"
 fi
 
-# -------------------------------------------------------------------------------------------------------- 4 DQC
-log "4/4 DQC: lewm2d, lewm3d (latent + lights), 1 M steps"
-HP=(--agent.num_qs=2 --agent.policy_chunk_size=5 --agent.backup_horizon=40 --agent.use_chunk_critic=True
-    --agent.distill_method=expectile --agent.implicit_backup_type=quantile --agent.q_agg=min --agent.kappa_b=0.93
-    --agent.kappa_d=0.8 --offline_steps=1000000 --eval_interval=100000 --eval_episodes=50 --save_every=25000)
-RUNS=$LOGS/dqc/$RUN
+# ------------------------------------------------------------------------------------------------------ 4 GCIQL
+log "4/4 GCIQL: lewm2d, lewm3d (latent + lights), 1 M steps"
+HP=(--agent.alpha=1.0)  # impls/hyperparameters.sh's puzzle-3x3-play-v0 line; the rest impls/agents/gciql.py's defaults
+RUNS=$LOGS/gciql/$RUN
 mkdir -p "$RUNS/.tmp"
-dqc() {  # input checkpoint
+gciql() {  # input checkpoint
   local obs=$1 ck=$2 pidf=$RUNS/$1.pid
-  [ -f "$RUNS/$obs/DONE" ] && { log "DQC $obs done already"; return 0; }
+  [ -f "$RUNS/$obs/DONE" ] && { log "GCIQL $obs done already"; return 0; }
   if alive "$pidf"; then
-    log "DQC $obs running (pid $(cat "$pidf")), waiting"
+    log "GCIQL $obs running (pid $(cat "$pidf")), waiting"
   else
-    log "DQC $obs (resumes from its checkpoint if there is one)"
-    (cd bench/dqc && TMPDIR=$RUNS/.tmp OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 XLA_PYTHON_CLIENT_PREALLOCATE=false \
-      detach "$pidf" "$RUNS/$obs.log" $DQC_PY run_dqc.py --obs "$obs" --ckpt "$ck" --lewm_epoch "$EPOCHS" \
+    log "GCIQL $obs (resumes from its checkpoint if there is one)"
+    (cd bench/gciql && TMPDIR=$RUNS/.tmp OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 XLA_PYTHON_CLIENT_PREALLOCATE=false \
+      detach "$pidf" "$RUNS/$obs.log" $DQC_PY run_gciql.py --obs "$obs" --ckpt "$ck" --lewm_epoch "$EPOCHS" \
       --feats_dir "$FE" --run_dir "$RUNS/$obs" "${HP[@]}")
   fi
   while alive "$pidf"; do sleep 120; done
-  [ -f "$RUNS/$obs/DONE" ] && log "DQC $obs done" || { log "DQC $obs FAILED (see $RUNS/$obs.log)"; return 1; }
+  [ -f "$RUNS/$obs/DONE" ] && log "GCIQL $obs done" || { log "GCIQL $obs FAILED (see $RUNS/$obs.log)"; return 1; }
 }
-dqc lewm2d "$CK/${RUN}_pix" & d2=$!
-dqc lewm3d "$CK/${RUN}_pcd_dexart" & d3=$!
+gciql lewm2d "$CK/${RUN}_pix" & d2=$!
+gciql lewm3d "$CK/${RUN}_pcd_dexart" & d3=$!
 wait $d2; s2=$?; wait $d3; s3=$?
 for obs in lewm2d lewm3d; do
   echo "$obs: $(tail -1 "$RUNS/$obs/eval.jsonl" 2>/dev/null)"

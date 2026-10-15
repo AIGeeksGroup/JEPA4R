@@ -116,7 +116,7 @@ CortexBench TriFinger 的对照（VC-1 论文表 8，reach / move）：R3M 86.5 
 
 ### OGBench puzzle-3x3 与 scene
 
-用 OGBench 原版的 puzzle-3x3 和 scene 环境（`envs/ogb_puzzle_env.py`、`envs/ogb_scene_env.py`）采游玩数据，训练 2D 和 3D：puzzle 照官方 noisy 数据的采法；scene 逐个物体任务按 MetaWorld 的三部分计划采，一个模型训练整个场景。冻结编码器后，puzzle 用离线 RL（DQC，`bench/dqc/`，输入是潜变量加 9 个灯的真值），scene 用 CortexBench 的模仿学习（`bench/cortexbench/run_bc_scene.py`，OGBench scene 的 5 个评测任务，策略另给 6 维本体感受）。全量规模（puzzle 1000 回合、scene 1 万回合）在跑，下表是小规模那次（puzzle 200 回合、scene 1000 回合）。做法、全部结果、代码迁出 TMP 时的逐位核对见 [`results_ogbench.md`](results_ogbench.md)。
+用 OGBench 原版的 puzzle-3x3 和 scene 环境（`envs/ogb_puzzle_env.py`、`envs/ogb_scene_env.py`）采游玩数据，训练 2D 和 3D：puzzle 照官方 noisy 数据的采法；scene 逐个物体任务按 MetaWorld 的三部分计划采，一个模型训练整个场景。冻结编码器后，puzzle 用离线 RL（全量用 OGBench 官方的 GCIQL，`bench/gciql/`；小规模那次用 DQC，`bench/dqc/`；输入是潜变量加 9 个灯的真值），scene 用 CortexBench 的模仿学习（`bench/cortexbench/run_bc_scene.py`，OGBench scene 的 5 个评测任务，策略另给 6 维本体感受）。全量规模（puzzle 1000 回合、scene 1 万回合）在跑，下表是小规模那次（puzzle 200 回合、scene 1000 回合）。做法、全部结果、代码迁出 TMP 时的逐位核对见 [`results_ogbench.md`](results_ogbench.md)。
 
 | 小规模 | LeWM 2D | LeWM 3D | 对照 |
 |---|---|---|---|
@@ -146,7 +146,8 @@ lewm_pcd/
 │   ├── metaworld/             MetaWorld 任务环境、单相机点云、三部分采集策略；rm75/ 是换成 RM75 的版本
 │   └── trifinger/             CortexBench 的 TriFinger 环境封装、单相机点云、复现的官方专家、三部分采集策略
 ├── bench/cortexbench/         CortexBench 跑分：LeWM 和 JEPA 类基线的编码器接入、RM75 任务、TriFinger、OGBench scene、汇总（third_party/eai-vc、third_party/vjepa2 是官方代码，不进 git）
-├── bench/dqc/                 OGBench puzzle-3x3 上的离线 RL（DQC）评测（third_party/dqc 是官方代码，不进 git）
+├── bench/dqc/                 OGBench puzzle-3x3 上的离线 RL 评测：DQC（小规模那次）和共用的潜变量提取（third_party/dqc 是官方代码，不进 git）
+├── bench/gciql/               OGBench puzzle-3x3 上的离线 RL 评测：GCIQL（全量；third_party/ogbench 是官方代码，不进 git）
 ├── results_metaworld.md       MetaWorld 的全部结果
 ├── results_trifinger.md       TriFinger 的结果
 ├── results_ogbench.md         OGBench puzzle-3x3 与 scene 的结果
@@ -169,7 +170,7 @@ lewm_pcd/
 | torch | 2.8.0+cu128，Python 3.10；`pip install -e third_party/stable-worldmodel[train,env]`，`ogbench` |
 
 TriFinger 的采集、训练和评测用 conda 环境 `lewm_tf`（`lewm_pcd` 的克隆 + pybullet、trifinger_simulation 等，见 `bench/cortexbench/README.md` 的 TriFinger 一节），`PYTHONPATH` 里另加 `third_party/stable-worldmodel`（`scripts/run_tf_pipeline.sh` 会设好）。
-OGBench puzzle / scene 的采集、训练和 scene 的 CortexBench 环境用 `lewm_mw`，DQC 用 `lewm_dqc`（`lewm_mw` 的克隆 + jax，见 `bench/dqc/README.md`）；`scripts/run_{puzzle,scene}_pipeline.sh` 会设好路径。
+OGBench puzzle / scene 的采集、训练和 scene 的 CortexBench 环境用 `lewm_mw`，DQC 和 GCIQL 用 `lewm_dqc`（`lewm_mw` 的克隆 + jax，见 `bench/dqc/README.md`、`bench/gciql/README.md`）；`scripts/run_{puzzle,scene}_pipeline.sh` 会设好路径。
 
 `env.sh` 把 `STABLEWM_HOME` 指到数据盘的 `lewm_pcd_data/`，LeWM 和 stable-worldmodel 的路径约定全部落在那里：
 

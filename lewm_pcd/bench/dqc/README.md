@@ -1,6 +1,6 @@
 # DQC on OGBench puzzle-3x3 with frozen LeWM inputs
 
-评测 puzzle-3x3 上 LeWM 编码器的做法：编码器冻结，用在 puzzle-3x3 上做成功过的离线 RL（DQC）学策略，输入换成 LeWM 的潜变量加 9 个灯的真值。结果见 [`results_ogbench.md`](../../results_ogbench.md)。
+小规模那次评测 puzzle-3x3 上 LeWM 编码器的做法（全量改用 GCIQL，见 [`../gciql/README.md`](../gciql/README.md)；这里的潜变量提取 `extract_feats.py` 和评测观测 `lewm_obs.py` 两边共用）：编码器冻结，用在 puzzle-3x3 上做成功过的离线 RL（DQC）学策略，输入换成 LeWM 的潜变量加 9 个灯的真值。结果见 [`results_ogbench.md`](../../results_ogbench.md)。
 
 ## 协议
 
@@ -17,7 +17,7 @@ conda 环境 `lewm_dqc`：`lewm_mw` 的克隆加上 `jax[cuda12]==0.6.2` 和 `th
 
 ## 运行
 
-全量由 `scripts/run_puzzle_pipeline.sh` 的第 3、4 步跑（训练好的 LeWM → 潜变量 → `lewm2d`、`lewm3d` 两个 DQC 运行）。单独跑：
+`scripts/run_puzzle_pipeline.sh` 的第 3 步用 `extract_feats.py` 算潜变量，第 4 步现在跑 GCIQL。单独跑 DQC：
 
 ```bash
 cd bench/dqc
