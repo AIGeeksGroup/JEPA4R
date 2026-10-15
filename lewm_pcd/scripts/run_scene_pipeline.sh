@@ -6,10 +6,11 @@
 #   2/4 trainings    EPOCHS epochs each (config/train/lewm.yaml), one model for the whole scene:
 #                    2D  official LeWM (ViT-tiny)            data=<DATA>     model=lewm            -> checkpoints/<RUN>_pix
 #                    3D  point-cloud LeWM (DexArt PointNet)  data=<DATA>_pcd model=lewm_pcd_dexart -> checkpoints/<RUN>_pcd_dexart
-#                    each starts once the GPU has room for it (3D 4.5 GB, 2D 15 GB) and, for the 2D, the container's
-#                    unreclaimable memory (anon + shmem) is below 50 GiB: the 2D training holds ~25 GB of prefetched
-#                    batches (8 workers x prefetch 3) against the 90 GiB cap; the gate is shared with
-#                    run_puzzle_pipeline.sh (a lock file), so two trainings never take the same free memory
+#                    each, like the collection and the CortexBench lane, started through scripts/mem_gate.py: only
+#                    when the container's memory (anon + shmem) with the reservations of the jobs still starting and
+#                    its own stays within the budget (72 GiB; the container throttles everything above 88 GiB) and the
+#                    GPU has room for it; one lock with the other OGBench pipelines. Keep `mem_gate.py watch` running
+#                    alongside (it pauses the newest job when the memory still runs high, see mem_gate.py)
 #   3/4 demos        bench/cortexbench/make_scene_demos.py: 25 expert demos per evaluation task (2D and 3D, independent
 #                    of the world model; skipped when they exist)
 #   4/4 CortexBench  bench/cortexbench/scene_grid.py with both encoders (conf/model/<ENC>_{pix,pcd}.yaml, epoch 10):
@@ -22,7 +23,8 @@
 # waited for instead of started again. Detached:
 #   STABLEWM_HOME=<checkout>/lewm_pcd_data PY=<lewm_mw python> CB_PY=<cortexbench python> setsid nohup \
 #     bash scripts/run_scene_pipeline.sh > $STABLEWM_HOME/logs/scene_pipeline.log 2>&1 < /dev/null &
-# Keep TMP/ops/cache_guard.py running alongside (the container's memory cap, see README).
+# Keep TMP/ops/cache_guard.py (page cache) and scripts/mem_gate.py watch running alongside (the container's memory cap,
+# see README).
 set -uo pipefail
 cd "$(dirname "$0")/.."  # lewm_pcd
 : "${STABLEWM_HOME:?set STABLEWM_HOME to the data home (<checkout>/lewm_pcd_data)}"
@@ -32,19 +34,24 @@ DATA=${DATA:-scene}; RUN=${RUN:-scene}; ENC=${ENC:-lewm_scene}; EPOCHS=${EPOCHS:
 SEEDS=${SEEDS:-100,200,300}; PROPRIO=${PROPRIO:-hand6}; SLOTS=${SLOTS:-10}
 export PYTHONPATH=$PWD:$PWD/third_party/stable-worldmodel${PYTHONPATH:+:$PYTHONPATH} HYDRA_FULL_ERROR=1 MUJOCO_GL=egl \
        SPT_CACHE_DIR=$STABLEWM_HOME/checkpoints/_spt_cache PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True WANDB_MODE=disabled
+MG=$PWD/scripts/mem_gate.py
+# each job's memory (GiB of anon + shmem at most) and GPU (MiB) for the gate: 2D training ~25 GB of prefetched batches
+# (8 workers x prefetch 3) + the process; 3D training at most 15 (the memory rose 3 -> 18 GiB while puzzle-3x3's
+# started); collection ~1.4 GiB a running shard; CortexBench: scene_grid.py with its SLOTS jobs ~16 GiB (measured with
+# 10 slots), the encoder server ~1 GiB
+MEM_2D=30 MEM_3D=15 MEM_GRID=16
 DS=$STABLEWM_HOME/datasets/ogbench
 LOGS=$STABLEWM_HOME/logs
 mkdir -p "$LOGS/train" "$LOGS/collect" "$LOGS/cortexbench"
 log() { echo "$(date +%F_%T) $*"; }
-free_mib() { nvidia-smi --query-gpu=memory.free --format=csv,noheader,nounits | head -1; }
-fixed_gib() { awk '$1 == "anon" || $1 == "shmem" {s += $2} END {print int(s / 2^30)}' /sys/fs/cgroup/memory.stat; }
 alive() { [ -f "$1" ] && kill -0 "$(cat "$1")" 2>/dev/null; }
-detach() {  # pidfile log cmd...: run cmd in its own session (survives this script), its pid in pidfile
-  local pidf=$1 out=$2; shift 2
+gate() {  # name mem_gib gpu_mib pidfile log [--cwd dir] -- cmd...: cmd started detached (its own session, output
+          # appended to log, pid in pidfile) once the memory budget and the GPU have room (mem_gate.py admit, blocks)
+  local name=$1 mem=$2 gpu=$3 pidf=$4 out=$5; shift 5
   rm -f "$pidf"
-  # fd 9 (the GPU gate's lock, see train) closed: a detached training must not hold the gate for its whole run
-  setsid nohup bash -c 'echo $$ > "$0"; exec "$@"' "$pidf" "$@" > "$out" 2>&1 < /dev/null 9>&- &
-  until [ -s "$pidf" ]; do sleep 1; done
+  $PY "$MG" admit --name "$name" --mem "$mem" --gpu "$gpu" --pidfile "$pidf" --log "$out" "$@" 2>&1 \
+    | while IFS= read -r l; do log "$l"; done
+  [ -s "$pidf" ] || { log "$name not started (see above)"; return 1; }
 }
 
 # ------------------------------------------------------------------------------------------------- 1 collection
@@ -56,7 +63,8 @@ else
     log "1/4 collection running (pid $(cat "$pidf")), waiting"
   else
     log "1/4 collection: $N episodes x 4 tasks"
-    N=$N SHARDS=$SHARDS MAXPAR=$MAXPAR NAME=$NAME detach "$pidf" "$LOGS/collect/$NAME.log" bash scripts/data/run_scene_collection.sh
+    gate "collect_$NAME" $((MAXPAR * 3 / 2 + 1)) 0 "$pidf" "$LOGS/collect/$NAME.log" -- env N=$N SHARDS=$SHARDS \
+      MAXPAR=$MAXPAR NAME=$NAME bash scripts/data/run_scene_collection.sh || exit 1
   fi
   while alive "$pidf"; do sleep 60; done
   grep -q ALL_DONE "$LOGS/collect/$NAME.log" || { log "collection FAILED (see $LOGS/collect/$NAME.log)"; exit 1; }
@@ -65,30 +73,23 @@ fi
 
 # -------------------------------------------------------------------------------------------------- 2 trainings
 log "2/4 trainings: ${RUN}_pix, ${RUN}_pcd_dexart ($EPOCHS epochs)"
-train() {  # run gpu_mib max_fixed_gib workers overrides...
-  local r=$1 need=$2 maxfix=$3 w=$4; shift 4
+train() {  # run mem_gib gpu_mib workers overrides...
+  local r=$1 mem=$2 gpu=$3 w=$4; shift 4
   local ck=$STABLEWM_HOME/checkpoints/$r/weights_epoch_$EPOCHS.pt pidf=$LOGS/train/$r.pid
   [ -f "$ck" ] && { log "$r already trained"; return 0; }
   if alive "$pidf"; then
     log "$r: training running (pid $(cat "$pidf")), waiting"
   else
-    # one GPU gate for both OGBench pipelines (run_puzzle_pipeline.sh, run_scene_pipeline.sh): the check, the start and
-    # 10 minutes for the training to take its memory happen under the lock, so no two trainings count the same free memory
-    until (
-      flock 9
-      [ "$(free_mib)" -ge "$need" ] && [ "$(fixed_gib)" -lt "$maxfix" ] || exit 1
-      log "training $r ($(free_mib) MiB GPU free, $(fixed_gib) GiB anon + shmem)"
-      OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 detach "$pidf" "$LOGS/train/$r.log" nice -n 5 $PY train.py "$@" subdir="$r" \
-        output_model_name="$r" trainer.max_epochs=$EPOCHS num_workers="$w"
-      sleep 600
-    ) 9> "$LOGS/train/.gpu_gate.lock"; do sleep 120; done
+    log "training $r: waiting for the gate ($mem GiB, $gpu MiB GPU)"
+    gate "$r" "$mem" "$gpu" "$pidf" "$LOGS/train/$r.log" -- env OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 nice -n 5 \
+      $PY train.py "$@" subdir="$r" output_model_name="$r" trainer.max_epochs=$EPOCHS num_workers="$w" || return 1
   fi
   while alive "$pidf"; do sleep 60; done
   [ -f "$ck" ] && log "trained $r" || { log "training $r FAILED (see $LOGS/train/$r.log)"; return 1; }
 }
-train "${RUN}_pcd_dexart" 4500 1000 6 data="${DATA}_pcd" model=lewm_pcd_dexart & p3d=$!
+train "${RUN}_pcd_dexart" "$MEM_3D" 4500 6 data="${DATA}_pcd" model=lewm_pcd_dexart & p3d=$!
 sleep 5
-train "${RUN}_pix" 15000 50 8 data="$DATA" model=lewm & p2d=$!
+train "${RUN}_pix" "$MEM_2D" 15000 8 data="$DATA" model=lewm & p2d=$!
 wait $p3d; s3d=$?; wait $p2d; s2d=$?
 [ $s2d = 0 ] && [ $s3d = 0 ] || exit 1
 
@@ -112,26 +113,33 @@ fi
 log "4/4 CortexBench: ${ENC}_pix, ${ENC}_pcd x scene-task1..5 x seeds $SEEDS, proprioception $PROPRIO"
 RUNS=scene/runs_$([ "$PROPRIO" = hand6 ] && echo hand6 || echo noproprio)  # scene_grid.py's run root under logs/cortexbench
 (
-  export MW_PY=$PY PY=$CB_PY ENC_SOCKET=@${ENC}_enc
-  cd bench/cortexbench && source env.sh
-  srv=$LOGS/cortexbench/${ENC}_enc_server.pid
+  CBPY=$CB_PY  # the gate itself runs on $PY (the lewm_mw python; standard library only)
+  export MW_PY=$PY ENC_SOCKET=@${ENC}_enc
+  CBD_=$PWD/bench/cortexbench
+  srv=$LOGS/cortexbench/${ENC}_enc_server.pid grid=$LOGS/cortexbench/${ENC}_scene_grid.pid
   if ! alive "$srv"; then
-    detach "$srv" "$LOGS/cortexbench/${ENC}_enc_server.log" $PY enc_server.py "$ENC_SOCKET" "${ENC}_pix,${ENC}_pcd"
+    gate "${ENC}_enc_server" 2 3000 "$srv" "$LOGS/cortexbench/${ENC}_enc_server.log" --cwd "$CBD_" -- \
+      bash -c 'PY=$0; source env.sh && exec "$PY" enc_server.py "$@"' "$CBPY" "$ENC_SOCKET" "${ENC}_pix,${ENC}_pcd" \
+      || exit 1
     until grep -q "loaded ${ENC}_pcd" "$LOGS/cortexbench/${ENC}_enc_server.log"; do
       alive "$srv" || { log "enc_server FAILED (see $LOGS/cortexbench/${ENC}_enc_server.log)"; exit 1; }
       sleep 5
     done
   fi
-  $PY scene_grid.py --models "${ENC}_pcd,${ENC}_pix" --seeds "$SEEDS" --proprio "$PROPRIO" --slots "$SLOTS" \
-    >> "$LOGS/cortexbench/scene_grid.log" 2>&1; st=$?
+  if ! alive "$grid"; then
+    gate "${ENC}_scene_grid" "$MEM_GRID" 0 "$grid" "$LOGS/cortexbench/scene_grid.log" --cwd "$CBD_" -- \
+      bash -c 'PY=$0; source env.sh && exec "$PY" scene_grid.py "$@"' "$CBPY" --models "${ENC}_pcd,${ENC}_pix" \
+      --seeds "$SEEDS" --proprio "$PROPRIO" --slots "$SLOTS" || exit 1
+  fi
+  while alive "$grid"; do sleep 60; done
   kill "$(cat "$srv")"
-  # judged by scene_grid.py's exit code and the DONE files (scene_grid.log is appended to by every attempt)
+  # judged by the DONE files (scene_grid.log is appended to by every attempt)
   missing=0
   for m in "${ENC}_pcd" "${ENC}_pix"; do for k in 1 2 3 4 5; do for s in ${SEEDS//,/ }; do
     [ -f "$LOGS/cortexbench/$RUNS/$m/scene-task$k-v0/s$s/DONE" ] || missing=$((missing + 1))
   done; done; done
-  [ $st = 0 ] && [ $missing = 0 ] \
-    || { log "CortexBench FAILED: scene_grid.py exit $st, $missing runs without DONE (see scene_grid.log)"; exit 1; }
-  $PY summarize_scene.py "${ENC}_pcd" "${ENC}_pix" --seeds "$SEEDS" --runs "$RUNS"
+  [ $missing = 0 ] || { log "CortexBench FAILED: $missing runs without DONE (see scene_grid.log)"; exit 1; }
+  cd "$CBD_" && export PY=$CBPY && source env.sh && $PY summarize_scene.py "${ENC}_pcd" "${ENC}_pix" --seeds "$SEEDS" \
+    --runs "$RUNS"
 ) || exit 1
 log "ALL_DONE"

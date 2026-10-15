@@ -9,8 +9,11 @@
 # scene-task1..5 x seeds 100 / 200 / 300, the 6-d proprioception, each encoder served by its own enc_server.py; it starts
 # once LeWM's own scene CortexBench is over (all 30 of its runs done), V-JEPA 2.1 first, then each model at epoch 10;
 # table by summarize_scene.py next to LeWM's.
-# Each training starts through the OGBench pipelines' gate (logs/train/.gpu_gate.lock, see run_scene_pipeline.sh): GPU
-# room and the container's unreclaimable memory (anon + shmem) below 50 GiB, as both keep ~20 GB of prefetched batches.
+# Every training, encoder server and scene_grid.py run starts through scripts/mem_gate.py (the OGBench pipelines' gate,
+# see run_scene_pipeline.sh): only when the container's memory (anon + shmem) with the reservations of the jobs still
+# starting and its own stays within the budget (72 GiB) and the GPU has room for it. Memory each (GiB): LeJEPA 10
+# (9.1 measured), PLDM 30 (26-28 freed when its first run was stopped), scene_grid.py with 10 slots 16 (LeWM's), an
+# encoder server 2. Keep `mem_gate.py watch` running alongside.
 # Idempotent: finished trainings and CortexBench runs are skipped, a running training (pid file) is waited for. Detached:
 #   STABLEWM_HOME=<checkout>/lewm_pcd_data PY=<lewm_pcd python> MW_PY=<lewm_mw python> CB_PY=<cortexbench python> \
 #     setsid nohup bash scripts/run_scene_baselines.sh > $STABLEWM_HOME/logs/scene_baselines.log 2>&1 < /dev/null &
@@ -29,32 +32,28 @@ LOGS=$STABLEWM_HOME/logs
 RUNS=$LOGS/cortexbench/scene/runs_hand6
 mkdir -p "$LOGS/train" "$LOGS/cortexbench"
 log() { echo "$(date +%F_%T) $*"; }
-free_mib() { nvidia-smi --query-gpu=memory.free --format=csv,noheader,nounits | head -1; }
-fixed_gib() { awk '$1 == "anon" || $1 == "shmem" {s += $2} END {print int(s / 2^30)}' /sys/fs/cgroup/memory.stat; }
 alive() { [ -f "$1" ] && kill -0 "$(cat "$1")" 2>/dev/null; }
-detach() {  # pidfile log cmd...: run cmd in its own session (survives this script), its pid in pidfile
-  local pidf=$1 out=$2; shift 2
+MG=$L/scripts/mem_gate.py
+gate() {  # name mem_gib gpu_mib pidfile log [--cwd dir] -- cmd...: cmd started detached (its own session, output
+          # appended to log, pid in pidfile) once the memory budget and the GPU have room (mem_gate.py admit, blocks)
+  local name=$1 mem=$2 gpu=$3 pidf=$4 out=$5; shift 5
   rm -f "$pidf"
-  # fd 9 (the GPU gate's lock) closed: a detached training must not hold the gate for its whole run
-  setsid nohup bash -c 'echo $$ > "$0"; exec "$@"' "$pidf" "$@" > "$out" 2>&1 < /dev/null 9>&- &
-  until [ -s "$pidf" ]; do sleep 1; done
+  $PY "$MG" admit --name "$name" --mem "$mem" --gpu "$gpu" --pidfile "$pidf" --log "$out" "$@" 2>&1 \
+    | while IFS= read -r l; do log "$l"; done
+  [ -s "$pidf" ] || { log "$name not started (see above)"; return 1; }
 }
 trained() { [ -f "$STABLEWM_HOME/checkpoints/$1/weights_epoch_10.pt" ]; }
 
-train() {  # run gpu_mib cmd...: start through the gate, wait, check epoch 10
-  local r=$1 need=$2; shift 2
+train() {  # run mem_gib gpu_mib cmd...: start through the gate, wait, check epoch 10
+  local r=$1 mem=$2 gpu=$3; shift 3
   local pidf=$LOGS/train/$r.pid
   trained "$r" && { log "$r already trained"; return 0; }
   if alive "$pidf"; then
     log "$r: training running (pid $(cat "$pidf")), waiting"
   else
-    until (
-      flock 9
-      [ "$(free_mib)" -ge "$need" ] && [ "$(fixed_gib)" -lt 50 ] || exit 1
-      log "training $r ($(free_mib) MiB GPU free, $(fixed_gib) GiB anon + shmem)"
-      OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 detach "$pidf" "$LOGS/train/train_$r.log" nice -n 5 "$@"
-      sleep 600
-    ) 9> "$LOGS/train/.gpu_gate.lock"; do sleep 120; done
+    log "training $r: waiting for the gate ($mem GiB, $gpu MiB GPU)"
+    gate "$r" "$mem" "$gpu" "$pidf" "$LOGS/train/train_$r.log" --cwd "$PWD" -- env OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 \
+      nice -n 5 "$@" || return 1
   fi
   while alive "$pidf"; do sleep 60; done
   trained "$r" && log "trained $r" || { log "training $r FAILED (see $LOGS/train/train_$r.log)"; return 1; }
@@ -74,22 +73,27 @@ cortexbench() {  # model: scene_grid.py with its own enc_server, LeWM's scene ev
   [ "$(runs_done "$m")" -ge "$want" ] && { log "CortexBench $m done already"; return 0; }
   log "CortexBench $m: scene-task1..5 x seeds $SEEDS, proprioception $PROPRIO"
   (
-    export PY=$CB_PY ENC_SOCKET=@scene_bl_${m}_enc
-    cd bench/cortexbench && source env.sh
-    srv=$LOGS/cortexbench/scene_bl_${m}_enc_server.pid
+    export MW_PY ENC_SOCKET=@scene_bl_${m}_enc  # scene_grid.py runs the scene env in MW_PY
+    CBD_=$L/bench/cortexbench
+    srv=$LOGS/cortexbench/scene_bl_${m}_enc_server.pid grid=$LOGS/cortexbench/scene_bl_${m}_grid.pid
     if ! alive "$srv"; then
-      detach "$srv" "$LOGS/cortexbench/scene_bl_${m}_enc_server.log" $PY enc_server.py "$ENC_SOCKET" "$m"
+      gate "scene_bl_${m}_enc_server" 2 4000 "$srv" "$LOGS/cortexbench/scene_bl_${m}_enc_server.log" --cwd "$CBD_" -- \
+        bash -c 'PY=$0; source env.sh && exec "$PY" enc_server.py "$@"' "$CB_PY" "$ENC_SOCKET" "$m" || exit 1
       until grep -q "loaded $m" "$LOGS/cortexbench/scene_bl_${m}_enc_server.log"; do
         alive "$srv" || { log "enc_server for $m FAILED (see $LOGS/cortexbench/scene_bl_${m}_enc_server.log)"; exit 1; }
         sleep 5
       done
     fi
-    $PY scene_grid.py --models "$m" --seeds "$SEEDS" --proprio "$PROPRIO" --slots "$SLOTS" \
-      >> "$LOGS/cortexbench/scene_grid_baselines.log" 2>&1; st=$?
+    if ! alive "$grid"; then
+      gate "scene_bl_${m}_grid" 16 0 "$grid" "$LOGS/cortexbench/scene_grid_baselines.log" --cwd "$CBD_" -- \
+        bash -c 'PY=$0; source env.sh && exec "$PY" scene_grid.py "$@"' "$CB_PY" --models "$m" --seeds "$SEEDS" \
+        --proprio "$PROPRIO" --slots "$SLOTS" || exit 1
+    fi
+    while alive "$grid"; do sleep 60; done
     kill "$(cat "$srv")"
-    n=$(runs_done "$m")
-    [ $st = 0 ] && [ "$n" -ge "$want" ] \
-      || { log "CortexBench $m FAILED: scene_grid.py exit $st, $n of $want runs done (see scene_grid_baselines.log)"; exit 1; }
+    n=$(runs_done "$m")  # judged by the DONE files (scene_grid_baselines.log is appended to by every attempt)
+    [ "$n" -ge "$want" ] \
+      || { log "CortexBench $m FAILED: $n of $want runs done (see scene_grid_baselines.log)"; exit 1; }
     log "CortexBench $m finished"
   )
 }
@@ -118,12 +122,12 @@ cb_lane() {  # after LeWM's own scene CortexBench: V-JEPA 2.1 first, then every 
 [ -f "$STABLEWM_HOME/datasets/$DATASET" ] || { log "missing dataset $DATASET (run_scene_pipeline.sh step 1)"; exit 1; }
 rm -f "$LOGS/train/.scene_baselines_trainings_over"
 cb_lane & CB=$!
-train lejepa_scene 8000 env PYTHONPATH=$L:$F $PY scripts/baselines/train_lejepa_mw.py --task scene --dataset "$DATASET" \
-  --name lejepa_scene & LJ=$!
+train lejepa_scene 10 8000 env PYTHONPATH=$L:$F $PY scripts/baselines/train_lejepa_mw.py --task scene \
+  --dataset "$DATASET" --name lejepa_scene & LJ=$!
 sleep 30
 mkdir -p "$LOGS/train/pldm_scene"
-( cd "$LOGS/train/pldm_scene" && train pldm_scene 15000 env PYTHONPATH=$L:$F $PY "$F/scripts/train/pldm.py" data=ogb \
-    data.dataset.name="$DATASET" '~data.dataset.keys_to_merge' subdir=pldm_scene output_model_name=pldm_scene \
+( cd "$LOGS/train/pldm_scene" && train pldm_scene 30 15000 env PYTHONPATH=$L:$F $PY "$F/scripts/train/pldm.py" \
+    data=ogb data.dataset.name="$DATASET" '~data.dataset.keys_to_merge' subdir=pldm_scene output_model_name=pldm_scene \
     trainer.max_epochs=10 ) & PL=$!
 wait $LJ; s1=$?; wait $PL; s2=$?
 touch "$LOGS/train/.scene_baselines_trainings_over"
