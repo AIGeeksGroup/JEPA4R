@@ -1,7 +1,7 @@
 """Check: the observation computed in the evaluation (lewm_obs.LeWMObs on the eval env, OGBench's task mode) and the
 training set's observation (extract_feats.py: a data_collection-mode env re-rendering a stored state) agree for the same
 simulator state.
-    python check_eval_obs.py --ckpt-2d <2D checkpoint dir> --ckpt-3d <3D checkpoint dir>
+    python check_eval_obs.py --ckpt-2d <2D checkpoint dir> --ckpt-3d <3D checkpoint dir> [--env-type 4x4 / 4x5]
 """
 import argparse
 
@@ -18,10 +18,11 @@ def main():
     ap.add_argument('--ckpt-2d', required=True)
     ap.add_argument('--ckpt-3d', required=True)
     ap.add_argument('--epoch', type=int, default=10)
+    ap.add_argument('--env-type', default='3x3', choices=['3x3', '4x4', '4x5'], help='the puzzle board')
     a = ap.parse_args()
-    env = gymnasium.make('puzzle-3x3-v0', use_oracle_rep=True, width=224, height=224)
+    env = gymnasium.make(f'puzzle-{a.env_type}-v0', use_oracle_rep=True, width=224, height=224)
     obs2, obs3 = LeWMObs(env, 'lewm2d', a.ckpt_2d, a.epoch), LeWMObs(env, 'lewm3d', a.ckpt_3d, a.epoch)
-    ef._init_worker()
+    ef._init_worker(a.env_type)
     enc = Encoders(a.ckpt_2d, a.ckpt_3d, a.epoch)
     cos = lambda x, y: float(np.dot(x, y) / (np.linalg.norm(x) * np.linalg.norm(y)))
     rng = np.random.default_rng(0)

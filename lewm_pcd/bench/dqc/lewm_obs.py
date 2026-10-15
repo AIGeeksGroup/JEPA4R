@@ -1,8 +1,8 @@
-"""Frozen LeWM latents of OGBench puzzle-3x3 states, shared by extract_feats.py (the training set) and run_dqc.py (the
-evaluation): the camera and point clouds of the LeWM data (envs/ogb_puzzle_env.py: front_pixels 224, the opaque arm of
-ob_type='states'; 2D anti-aliased, 3D the same camera's depth with 1200 points) and the encoders as CortexBench loads them
-(bench/cortexbench/lewm_cortex.py: 2D pixels / 255 normalised with ImageNet's mean / std; 3D (xyz - center) * scale with
-rgb / 255), their output the projector's 192-d latent (LeWM's latent).
+"""Frozen LeWM latents of OGBench puzzle states (3x3, 4x4, 4x5), shared by extract_feats.py (the training set) and
+run_dqc.py (the evaluation): the camera and point clouds of the LeWM data (envs/ogb_puzzle_env.py: front_pixels 224, the
+opaque arm of ob_type='states'; 2D anti-aliased, 3D the same camera's depth with 1200 points) and the encoders as
+CortexBench loads them (bench/cortexbench/lewm_cortex.py: 2D pixels / 255 normalised with ImageNet's mean / std; 3D
+(xyz - center) * scale with rgb / 255), their output the projector's 192-d latent (LeWM's latent).
 envs/ogb_puzzle_env.py is loaded by its path: the DQC code (third_party/dqc) has packages named envs and utils too and
 comes first on run_dqc.py's sys.path (the module imports nothing from the repo).
 """
@@ -64,13 +64,14 @@ class Encoders:
 
 class LeWMObs:
     """The evaluation-time observation: the current frame of the same camera -> the frozen encoder -> the 192-d latent,
-    with the 9 true lights appended (lights=True), as the training set's observations (extract_feats.py)."""
+    with the true lights appended (lights=True; 9 on puzzle-3x3, one per button), as the training set's observations
+    (extract_feats.py)."""
 
     def __init__(self, env, kind, ckpt, epoch, lights=True):
         torch.set_num_threads(2)
         self.pdat, self.kind, self.lights = load_puzzle(), kind, lights
         self.u = env.unwrapped
-        self.cam = self.pdat.Camera(self.u._model)
+        self.cam = self.pdat.Camera(self.u._model, self.u._num_buttons)
         self.enc = Encoders(ckpt_2d=ckpt if kind == 'lewm2d' else None, ckpt_3d=ckpt if kind == 'lewm3d' else None, epoch=epoch)
         self.rng = np.random.default_rng(12345)
 

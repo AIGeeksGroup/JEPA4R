@@ -1,8 +1,9 @@
-# OGBench puzzle-3x3 与 scene 结果
+# OGBench puzzle（3x3、4x4、4x5）与 scene 结果
 
 两个 OGBench 场景，各自采游玩数据训练 LeWM 2D / 3D，再冻结编码器、学策略评测：
 
 - **puzzle-3x3**：9 个按钮的灯，按一个按钮会翻转它和相邻按钮的灯。评测用离线 RL，输入是冻结的潜变量加 9 个灯的真值；全量用 OGBench 官方的 GCIQL，小规模那次用的是 DQC。
+- **puzzle-4x4、4x5**：16 / 20 个按钮，其余同 3x3；评测用 DQC。
 - **scene**：1 个物块、2 个按钮（分别锁抽屉和窗户）、1 个抽屉、1 个窗户。评测用 CortexBench 的模仿学习协议，环境换成 scene 的 5 个评测任务。
 
 ## 做法
@@ -25,6 +26,13 @@
 - **训练**：仓库 `train.py` 原样，超参是 `config/train/lewm.yaml` 的默认值（frameskip 5、历史 3 帧、batch 128、lr 5e-5、10 个 epoch）；2D `model=lewm`，3D `model=lewm_pcd_dexart`（`config/train/data/puzzle_3x3{,_pcd}.yaml`）。
 - **评测**：全量用 GCIQL：OGBench 官方实现和它给 puzzle-3x3 的超参，按 OGBench 的方式原样跑，只把观测换成潜变量 + 灯，目标也就是目标状态的潜变量 + 灯（`bench/gciql/`，见那里的 README）。小规模那次用的是 DQC（`bench/dqc/`），目标只给 9 个灯。官方 `puzzle-3x3-play-v0` 数据（1000 回合 × 1001 步）按我们的相机重画、过冻结编码器，输入 = 192 维潜变量 + 9 个灯的真值；100 万步，每 10 万步在官方 5 个任务上各评 50 回合，报告按 OGBench 的口径取第 80、90、100 万步三次评测的平均。
 
+### puzzle-4x4、4x5
+
+- **环境**：OGBench 原版 `puzzle-4x4-v0` / `puzzle-4x5-v0`（`swm/OGBenchPuzzle4x4-v0` / `swm/OGBenchPuzzle4x5-v0`，`envs/ogb_puzzle_env.py` 的 `env_type`），相机、点云同 3x3，点云的物体是 16 / 20 个按钮帽。
+- **采样**：同 3x3 的官方 noisy 配方；规模照官方 noisy 数据，4x4 1000 回合、4x5 3000 回合，测试集各 20 回合。
+- **训练**：同 3x3，数据配置 `config/train/data/puzzle_4x4{,_pcd}.yaml`、`puzzle_4x5{,_pcd}.yaml`。
+- **评测**：DQC（`bench/dqc/`），做法同 3x3 的 DQC 运行：官方 `puzzle-4x4-play-v0`（1000 回合）/ `puzzle-4x5-play-v0`（3000 回合）按我们的相机重画、过冻结编码器，输入 = 192 维潜变量 + 16 / 20 个灯的真值，目标是灯的目标状态（oraclerep）。超参用 DQC 论文自己给 puzzle-4x5 的那组（`third_party/dqc/experiments/reproduce.py`，标准数据量：h=25、h_a=5、kappa_b 0.9、kappa_d 0.5、q_agg mean，其余是官方默认值）；DQC 没跑过 4x4，4x4 用同一组。100 万步，每 10 万步在官方 5 个任务上各评 50 回合，报告取第 80、90、100 万步三次评测的平均。
+
 ### scene
 
 - **采样**：逐任务采，每个任务按 MetaWorld 的三部分计划。
@@ -41,13 +49,29 @@
   - 策略：BatchNormMLP（256, 256, 256），输入 = 3 帧潜变量（FLARE）+ 6 维本体感受（手的位置、偏航的 cos / sin、夹爪开合；两个锁的状态不给）；BC，Adam 1e-3，batch 256，100 个 epoch；每 5 个 epoch 评 25 个回合，共 20 次；单次运行的分数 = 20 次里最高的成功率，种子 100 / 200 / 300 取平均（CortexBench 原样）。
   - 冻结编码器集中在一个 GPU 进程里攒批计算（`enc_server.py`），和各作业自己算的差别不超过 4e-6。
 
-流程：`scripts/run_puzzle_pipeline.sh`（采集 → 训练 → 潜变量 → GCIQL）、`scripts/run_scene_pipeline.sh`（采集 → 训练 → 示范 → CortexBench）。默认是全量规模，可断点续跑。
+流程：`scripts/run_puzzle_pipeline.sh`（采集 → 训练 → 潜变量 → GCIQL；`ENV_TYPE=4x4` / `4x5` 时最后一步是 DQC）、`scripts/run_scene_pipeline.sh`（采集 → 训练 → 示范 → CortexBench）。默认是全量规模，可断点续跑。
 
 ## 全量（2026-10-14 开始）
 
-采集、puzzle 的两个训练已完成，全量数据和小规模那次按种子逐回合核对过（scene 同种子的回合逐列相同，puzzle 逐行相同到第一个随机动作）。在跑：puzzle 的 GCIQL（`logs/gciql/puzzle_3x3/`），scene 的训练和之后的 CortexBench。跑完填在这里。
+采集、puzzle 的两个训练已完成，全量数据和小规模那次按种子逐回合核对过（scene 同种子的回合逐列相同，puzzle 逐行相同到第一个随机动作）。scene 的两个训练也已完成。在跑：puzzle 的 GCIQL 3D（`logs/gciql/puzzle_3x3_official/`），scene 的 CortexBench，以及 scene 上 MetaWorld 跑过的三个 JEPA 类基线（LeJEPA、PLDM 用同一份 scene 数据训练，V-JEPA 2.1 冻结；`scripts/run_scene_baselines.sh`，评测同 LeWM）。跑完填在这里。
 
-- puzzle 的评测原先按 DQC 跑，按用户要求改成 GCIQL；DQC 停在 2D 第 62 万步、3D 第 57.6 万步（存档在 `logs/dqc/puzzle_3x3/`，可续跑），停之前最后一次评测 2D 第 60 万步 87.2 %、3D 第 50 万步 91.2 %。
+- puzzle 的评测原先按 DQC 跑，按用户要求改成 GCIQL；DQC 停在 2D 第 62 万步、3D 第 57.6 万步（存档在 `logs/dqc/puzzle_3x3/`），后来按用户要求从存档续跑到 100 万步。
+- puzzle-4x4、4x5：采集中，流水线已挂上（`logs/puzzle_4x{4,5}_pipeline.log`），采完接着训练、提潜变量、跑 DQC。
+
+### puzzle-3x3：DQC（全量）
+
+成功率 %，官方 5 个任务各 50 回合，OGBench 口径（第 80、90、100 万步三次评测的平均）：
+
+| 输入 | 平均 | 任务 1–5 | 第 80 / 90 / 100 万步 |
+|---|---|---|---|
+| LeWM 2D + 灯 | 70.7 | 91.3 85.3 54.7 50.0 72.0 | 73.6 / 69.6 / 68.8 |
+| LeWM 3D + 灯 | 73.1 | 89.3 84.0 60.7 57.3 74.0 | 78.4 / 76.8 / 64.0 |
+
+两个运行第 10 万步都是 100 %，之后往下掉，同小规模那次。
+
+### puzzle-3x3：GCIQL（全量）
+
+2D 跑完，OGBench 口径 1.1 %（11 次评测都在 0–1.6 %）；3D 在跑，到第 80 万步为止都在 0–1.6 %。
 
 ## 小规模（2026-10-11 至 10-14）
 

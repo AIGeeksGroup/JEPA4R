@@ -1,0 +1,9 @@
+# ogb_pcd.yaml (point cloud, frameskip 5) on the same puzzle-4x4 rollouts as puzzle_4x4.yaml, row for row (the single
+# front_pixels depth camera). puzzle shares OGBench cube's ManipSpace workspace, so ogb_pcd.yaml's affine stays
+# ([0.425, 0, 0.2], 4.0)
+defaults:
+  - ogb_pcd
+  - _self_
+
+dataset:
+  name: ogbench/puzzle_4x4_noisy1000_pcd.h5

@@ -1,6 +1,6 @@
-# DQC on OGBench puzzle-3x3 with frozen LeWM inputs
+# DQC on OGBench puzzle with frozen LeWM inputs
 
-小规模那次评测 puzzle-3x3 上 LeWM 编码器的做法（全量改用 GCIQL，见 [`../gciql/README.md`](../gciql/README.md)；这里的潜变量提取 `extract_feats.py` 和评测观测 `lewm_obs.py` 两边共用）：编码器冻结，用在 puzzle-3x3 上做成功过的离线 RL（DQC）学策略，输入换成 LeWM 的潜变量加 9 个灯的真值。结果见 [`results_ogbench.md`](../../results_ogbench.md)。
+小规模那次评测 puzzle-3x3 上 LeWM 编码器的做法（3x3 全量改用 GCIQL，见 [`../gciql/README.md`](../gciql/README.md)；这里的潜变量提取 `extract_feats.py` 和评测观测 `lewm_obs.py` 两边共用）；全量的 puzzle-4x4、4x5 也用它，见文末。编码器冻结，用在 puzzle-3x3 上做成功过的离线 RL（DQC）学策略，输入换成 LeWM 的潜变量加 9 个灯的真值。结果见 [`results_ogbench.md`](../../results_ogbench.md)。
 
 ## 协议
 
@@ -31,3 +31,13 @@ $DQC_PY run_dqc.py --obs lewm3d --ckpt $STABLEWM_HOME/checkpoints/puzzle_3x3_pcd
 ```
 
 `run_dqc.py` 每 2.5 万步存一次完整状态（`resume.pkl`），收到 SIGTERM 存档后退出，再跑同一条命令从存档接着训。`check_eval_obs.py` 核对评测时现算的观测和训练集的观测对同一仿真状态是否一致。
+
+## puzzle-4x4、4x5（全量）
+
+同上，换三处：
+
+- **棋盘：**`extract_feats.py`、`check_eval_obs.py` 加 `--env-type 4x4` / `4x5`；`run_dqc.py` 给 `--env_name puzzle-4x5-play-oraclerep-v0 --dataset_path .../official/puzzle-4x5-play-v0.npz`。输入 = 192 维潜变量 + 16 / 20 个灯的真值。
+- **数据：**OGBench 官方 `puzzle-4x4-play-v0`（1000 回合）、`puzzle-4x5-play-v0`（3000 回合）及各自的 `-val`，放在 `$STABLEWM_HOME/datasets/ogbench/official/`。
+- **超参：**DQC 论文自己给 puzzle-4x5 的那组（`third_party/dqc/experiments/reproduce.py`，标准数据量）：h=25、h_a=5、kappa_b 0.9、kappa_d 0.5、q_agg mean，其余官方默认值；DQC 没跑过 4x4，用同一组。
+
+`scripts/run_puzzle_pipeline.sh` 用 `ENV_TYPE=4x4 SHARDS=4` / `ENV_TYPE=4x5 N=3000` 从采集一路跑到 DQC（`logs/dqc/puzzle_4x{4,5}/`）。
