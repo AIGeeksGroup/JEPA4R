@@ -17,6 +17,8 @@ CortexBench reads the backbone CLS through the 512-d head (the official linear-p
 Checked on ImageNette with the official minimal script before: test accuracy 88.8-90.0 % at epochs 676-685 of 800
 (official final: 90.7 %).
     STABLEWM_HOME=... PYTHONPATH=<lewm_pcd>:<lewm_pcd>/third_party/stable-worldmodel python scripts/baselines/train_lejepa_mw.py --task mw_binpick
+Other datasets the same way (the frames of any of the repo's HDF5 datasets; scripts/run_ogb_baselines.sh for OGBench):
+    ... train_lejepa_mw.py --task scene --dataset ogbench/scene_wm10000.h5 --name lejepa_scene
 """
 import argparse
 import json
@@ -103,6 +105,8 @@ class MWFrames(Dataset):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--task', required=True, help='mw_binpick / mw_assembly / mw_button / mw_drawer / mw_hammer')
+    ap.add_argument('--dataset', default=None, help='dataset under datasets/ (default: metaworld/<task>.h5)')
+    ap.add_argument('--name', default=None, help='checkpoint directory name (default: lejepa_<task>)')
     ap.add_argument('--epochs', type=int, default=10)
     ap.add_argument('--bs', type=int, default=256)
     ap.add_argument('--V', type=int, default=4)
@@ -114,11 +118,11 @@ def main():
     args = ap.parse_args()
     torch.manual_seed(0)
 
-    out = Path(os.environ['STABLEWM_HOME']) / 'checkpoints' / f'lejepa_{args.task}'
+    out = Path(os.environ['STABLEWM_HOME']) / 'checkpoints' / (args.name or f'lejepa_{args.task}')
     out.mkdir(parents=True, exist_ok=True)
     (out / 'config.json').write_text(json.dumps({'algo': 'lejepa', 'encoder': 'vit_hf tiny p14 224 + Linear(192,512)',
                                                  **vars(args)}, indent=1))
-    ds = MWFrames(f'metaworld/{args.task}.h5', args.V)
+    ds = MWFrames(args.dataset or f'metaworld/{args.task}.h5', args.V)
     train = DataLoader(ds, batch_size=args.bs, shuffle=True, drop_last=True, num_workers=args.workers,
                        persistent_workers=True, prefetch_factor=4)
     net = Encoder(proj_dim=args.proj_dim).to('cuda')
