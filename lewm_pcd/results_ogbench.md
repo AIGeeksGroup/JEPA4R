@@ -53,10 +53,11 @@
 
 ## 全量（2026-10-14 开始）
 
-采集、puzzle 的两个训练已完成，全量数据和小规模那次按种子逐回合核对过（scene 同种子的回合逐列相同，puzzle 逐行相同到第一个随机动作）。scene 的两个训练也已完成。在跑：puzzle 的 GCIQL 3D（`logs/gciql/puzzle_3x3_official/`），scene 的 CortexBench，以及 scene 上 MetaWorld 跑过的三个 JEPA 类基线（LeJEPA、PLDM 用同一份 scene 数据训练，V-JEPA 2.1 冻结；`scripts/run_scene_baselines.sh`，评测同 LeWM）。跑完填在这里。
+采集、puzzle 的两个训练已完成，全量数据和小规模那次按种子逐回合核对过（scene 同种子的回合逐列相同，puzzle 逐行相同到第一个随机动作）。scene 的两个训练也已完成。puzzle 的 GCIQL 也已跑完（`logs/gciql/puzzle_3x3_official/`）。在跑：scene 的 CortexBench，以及 scene 上 MetaWorld 跑过的三个 JEPA 类基线（LeJEPA、PLDM 用同一份 scene 数据训练，V-JEPA 2.1 冻结；`scripts/run_scene_baselines.sh`，评测同 LeWM）。跑完填在这里。
 
 - puzzle 的评测原先按 DQC 跑，按用户要求改成 GCIQL；DQC 停在 2D 第 62 万步、3D 第 57.6 万步（存档在 `logs/dqc/puzzle_3x3/`），后来按用户要求从存档续跑到 100 万步。
-- puzzle-4x4、4x5：采集中，流水线已挂上（`logs/puzzle_4x{4,5}_pipeline.log`），采完接着训练、提潜变量、跑 DQC。
+- puzzle-4x4、4x5：采集完成（官方 noisy 规模 1000 / 3000 回合）；世界模型训练中，之后提潜变量、跑 DQC（`logs/puzzle_4x{4,5}_pipeline.log`）。
+- scene 的 PLDM 第一次训练时机器的程序内存涨到 88 GiB（当时的门槛只在开跑那一刻看一眼占用），被用户手动停掉；之后所有长任务改经 `scripts/mem_gate.py` 排队启动，PLDM 重新排队。
 
 ### puzzle-3x3：DQC（全量）
 
@@ -71,7 +72,7 @@
 
 ### puzzle-3x3：GCIQL（全量）
 
-2D 跑完，OGBench 口径 1.1 %（11 次评测都在 0–1.6 %）；3D 在跑，到第 80 万步为止都在 0–1.6 %。
+OGBench 口径：2D 1.1 %，3D 0.1 %（两个运行的 11 次评测都在 0–1.6 %）。
 
 ## 小规模（2026-10-11 至 10-14）
 

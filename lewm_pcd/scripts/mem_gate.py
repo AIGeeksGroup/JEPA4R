@@ -6,7 +6,8 @@ dropped is anon + shmem (memory.stat), "fixed" below.
 
   admit     start a job (detached: its own session, stdin /dev/null, output appended to --log, pid in --pidfile) once
             fixed + the reservations still pending + its --mem <= BUDGET and the GPU has --gpu MiB free; a job's
-            reservation stays pending until its own processes use it (max(0, mem - used)). The check and the start run
+            reservation is pending for its first RAMP_MEM s, until its own processes use it (max(0, mem - used));
+            later its memory counts only as used (growth beyond: the watchdog). The check and the start run
             under the pipelines' gate lock (logs/train/.gpu_gate.lock), which is held RAMP s more after a start so the
             GPU reading includes the new job. Blocks until the job is started.
   register  add a job started otherwise (already running) to the registry, so the watchdog can pause it.
@@ -31,7 +32,7 @@ import sys
 import time
 
 BUDGET, PAUSE, KILL, RESUME = 72.0, 80.0, 85.0, 70.0  # GiB of fixed memory; memory.high is 88
-POLL, PAUSE_STEP, RAMP = 5.0, 30.0, 600.0
+POLL, PAUSE_STEP, RAMP, RAMP_MEM = 5.0, 30.0, 600.0, 1800.0
 HOME = os.environ.get('STABLEWM_HOME', os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..',
                                                     'lewm_pcd_data'))
 REG = os.path.join(HOME, 'logs', 'train', 'mem_gate.jsonl')
@@ -92,7 +93,10 @@ def group_gib(pgid):
 
 
 def pending_gib(jobs):
-    return sum(max(0.0, j['mem'] - group_gib(j['pid'])) for j in jobs)
+    """Reserved but not yet used memory of the jobs started in the last RAMP_MEM s."""
+    t = time.time()
+    return sum(max(0.0, j['mem'] - group_gib(j['pid'])) for j in jobs
+               if t - j.get('ts', time.mktime(time.strptime(j['t'], '%Y-%m-%d_%H:%M:%S'))) < RAMP_MEM)
 
 
 def register(name, pid, mem, gpu):
@@ -100,7 +104,7 @@ def register(name, pid, mem, gpu):
     if st is None:
         raise SystemExit(f'register: no process {pid}')
     with open(REG, 'a') as f:
-        f.write(json.dumps(dict(name=name, pid=pid, start=st, mem=mem, gpu=gpu, t=now())) + '\n')
+        f.write(json.dumps(dict(name=name, pid=pid, start=st, mem=mem, gpu=gpu, t=now(), ts=time.time())) + '\n')
 
 
 def admit(a):
