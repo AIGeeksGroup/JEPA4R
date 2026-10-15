@@ -8,12 +8,16 @@
 # Defaults = the full scale: 1000 episodes (puzzle-3x3-noisy-v0's size). The small run of results_ogbench.md: N=200
 # SHARDS=5 NAME=puzzle_3x3_noisy TEST=puzzle_3x3_noisy_small_test. The random actions are not reproducible from the
 # seeds (envs/ogb_puzzle_env.py), so a rerun gives other rows.
+# Other boards (OGBench's puzzle-4x4 / 4x5, the official noisy sizes 1000 / 3000 episodes): ENV_ID=swm/OGBenchPuzzle4x4-v0
+# N=1000 NAME=puzzle_4x4_noisy1000 TEST=puzzle_4x4_noisy_test, ENV_ID=swm/OGBenchPuzzle4x5-v0 N=3000
+# NAME=puzzle_4x5_noisy3000 TEST=puzzle_4x5_noisy_test.
 #   STABLEWM_HOME=<checkout>/lewm_pcd_data PY=<lewm_mw python> bash scripts/data/run_puzzle_collection.sh
 set -euo pipefail
 cd "$(dirname "$0")/../.."  # lewm_pcd
 : "${STABLEWM_HOME:?set STABLEWM_HOME to the data home (<checkout>/lewm_pcd_data)}"
 PY=${PY:-python}
 N=${N:-1000}; SHARDS=${SHARDS:-8}; NAME=${NAME:-puzzle_3x3_noisy1000}; TEST_N=${TEST_N:-20}; TEST=${TEST:-puzzle_3x3_noisy_test}
+ENV_ID=${ENV_ID:-swm/OGBenchPuzzle3x3-v0}
 export PYTHONPATH=$PWD:$PWD/third_party/stable-worldmodel${PYTHONPATH:+:$PYTHONPATH} MUJOCO_GL=egl PYOPENGL_PLATFORM=egl
 DS=$STABLEWM_HOME/datasets/ogbench
 LOGS=$STABLEWM_HOME/logs/collect/$NAME
@@ -28,7 +32,8 @@ run_set() {  # name episodes seed_base shards
   for ((s = 0; s < k; s++)); do
     sh=$(printf 'shard%03d' "$s")
     OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 nice -n 10 $PY scripts/data/collect_ogb.py --config-name ogb_puzzle_pcd \
-      seed_base="$base" episodes="$n" shard="$s" num_shards="$k" dataset_name="ogbench/shards/${name}_pcd.$sh.h5" \
+      env_id="$ENV_ID" seed_base="$base" episodes="$n" shard="$s" num_shards="$k" \
+      dataset_name="ogbench/shards/${name}_pcd.$sh.h5" \
       > "$LOGS/${name}_$sh.log" 2>&1 & pids+=($!)
   done
   for p in "${pids[@]}"; do wait "$p" || { log "$name: a shard FAILED (see $LOGS)"; return 1; }; done

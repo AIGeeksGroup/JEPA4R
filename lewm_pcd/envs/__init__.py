@@ -29,5 +29,15 @@ register(
     id='swm/OGBenchPuzzle3x3-v0',
     entry_point='envs.ogb_puzzle_env:OGBPuzzleEnv',
 )
+register(
+    id='swm/OGBenchPuzzle4x4-v0',
+    entry_point='envs.ogb_puzzle_env:OGBPuzzleEnv',
+    kwargs=dict(env_type='4x4'),
+)
+register(
+    id='swm/OGBenchPuzzle4x5-v0',
+    entry_point='envs.ogb_puzzle_env:OGBPuzzleEnv',
+    kwargs=dict(env_type='4x5'),
+)
 
 __all__ = ['PointCloudWrapper', 'PCDExpertPolicy', 'PCDWorldModelPolicy', 'PointCloudScaler', 'WindowedWorldModelPolicy']

@@ -1,5 +1,8 @@
 """OGBench's own ``puzzle-3x3-v0`` (the ogbench package; stable-worldmodel has no puzzle env) behind the repo's
-stable-worldmodel interface, ``swm/OGBenchPuzzle3x3-v0``, for the puzzle world-model data (scripts/data/collect_ogb.py).
+stable-worldmodel interface, ``swm/OGBenchPuzzle3x3-v0``, for the puzzle world-model data (scripts/data/collect_ogb.py);
+the larger boards the same way with ``env_type`` ('4x4': ``swm/OGBenchPuzzle4x4-v0``, 16 buttons; '4x5':
+``swm/OGBenchPuzzle4x5-v0``, 20 buttons; OGBench's puzzle-4x4-v0 / puzzle-4x5-v0, everything else as for 3x3; the
+3x3 defaults are unchanged).
 
 Collection policy as OGBench's official puzzle-3x3-noisy-v0 (data_gen_scripts/commands.sh and generate_manipspace.py):
   * mode='data_collection': the 9 button colours random at each episode start, random arm;
@@ -42,7 +45,7 @@ from gymnasium.spaces import Box
 from ogbench.manipspace.oracles.markov.button_markov import ButtonMarkovOracle
 from stable_worldmodel.policy import BasePolicy
 
-ENV_NAME = 'puzzle-3x3-v0'
+ENV_NAME = 'puzzle-3x3-v0'  # the default board; make_env(env_type=...) for the others
 CAMERA = 'front_pixels'
 IMG = 224
 EPISODE_STEPS = 1001
@@ -58,8 +61,8 @@ OBJECT_FRACTION = 0.25
 CROP_BOX = np.array([[0.10, -0.50, -0.02], [0.75, 0.50, 0.60]])  # envs/pcd_wrapper.py's DEFAULT_CROP_BOX
 
 
-def make_env(max_episode_steps=EPISODE_STEPS):
-    return gymnasium.make(ENV_NAME, ob_type='states', mode='data_collection', terminate_at_goal=False,
+def make_env(max_episode_steps=EPISODE_STEPS, env_type='3x3'):
+    return gymnasium.make(f'puzzle-{env_type}-v0', ob_type='states', mode='data_collection', terminate_at_goal=False,
                           max_episode_steps=max_episode_steps, width=IMG, height=IMG, visualize_info=False)
 
 
@@ -67,7 +70,7 @@ class Camera:
     """front_pixels with two renderers: anti-aliased for 2D, without for the point cloud (depth, segmentation, the
     points' colours)."""
 
-    def __init__(self, model: mujoco.MjModel):
+    def __init__(self, model: mujoco.MjModel, num_buttons: int = 9):
         self.model = model
         self.cid = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_CAMERA, CAMERA)
         self.fovy = float(model.cam_fovy[self.cid])
@@ -85,7 +88,7 @@ class Camera:
         # foreground / button geoms
         fg = np.zeros(model.ngeom, bool)
         obj = np.zeros(model.ngeom, bool)
-        self.cap_geom = np.array([model.geom(f'btngeom_{i}').id for i in range(9)])
+        self.cap_geom = np.array([model.geom(f'btngeom_{i}').id for i in range(num_buttons)])
         for g in range(model.ngeom):
             body = model.geom_bodyid[g]
             if model.body_weldid[body] == 0:  # welded to the world: floor, walls, button bases, robot base
@@ -165,15 +168,16 @@ def point_cloud(cam: Camera, rgb, depth, seg, R, t, rng: np.random.Generator):
 
 # -------------------------------------------------------------------------------------------------- env
 class OGBPuzzleEnv(gymnasium.Env):
-    """swm/OGBenchPuzzle3x3-v0, see the module docstring. The OGBench env is ``_env`` (gymnasium.make'd, as OGBench's
+    """swm/OGBenchPuzzle3x3-v0 (env_type '4x4' / '4x5': swm/OGBenchPuzzle4x4-v0 / 4x5-v0), see the module docstring. The OGBench env is ``_env`` (gymnasium.make'd, as OGBench's
     own scripts use it; its unwrapped PuzzleEnv is ``_u``); the oracle (``agent``) acts on ``ob`` / ``ob_info``, the
     latest observation and info of OGBench's reset / step."""
 
     metadata = {'render_modes': ['rgb_array'], 'render_fps': 20}
 
-    def __init__(self, episode_len: int = EPISODE_STEPS, render_mode: str = 'rgb_array', **kwargs):
+    def __init__(self, episode_len: int = EPISODE_STEPS, render_mode: str = 'rgb_array', env_type: str = '3x3', **kwargs):
         self.render_mode = render_mode
-        self._env = make_env(max_episode_steps=episode_len)
+        self.env_type = env_type
+        self._env = make_env(max_episode_steps=episode_len, env_type=env_type)
         self._u = self._env.unwrapped
         self.action_space = Box(-1.0, 1.0, (5,), np.float32)
         self.observation_space = Box(-np.inf, np.inf, self._env.observation_space.shape, np.float32)
@@ -204,7 +208,7 @@ class OGBPuzzleEnv(gymnasium.Env):
         if self.cam is None or self.cam.model is not self._u._model:  # OGBench builds the model at reset
             if self.cam is not None:
                 self.cam.close()
-            self.cam = Camera(self._u._model)
+            self.cam = Camera(self._u._model, self._u._num_buttons)
         self.agent = ButtonMarkovOracle(env=self._env, min_norm=MIN_NORM, gripper_always_closed=True)
         self.agent.reset(self.ob, self.ob_info)
         self.xi = np.random.uniform(0, NOISE_MAX)  # the episode's noise level (official: drawn once per episode)
