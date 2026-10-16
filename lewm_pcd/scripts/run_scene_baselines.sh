@@ -12,8 +12,9 @@
 # Every training, encoder server and scene_grid.py run starts through scripts/mem_gate.py (the OGBench pipelines' gate,
 # see run_scene_pipeline.sh): only when the container's memory (anon + shmem) with the reservations of the jobs still
 # starting and its own stays within the budget (72 GiB) and the GPU has room for it. Memory each (GiB): LeJEPA 26
-# (25.8 measured: 15.7 of it the 8 workers' prefetched batches in shared memory), PLDM 32 (28.4 freed when its first run was stopped at the cap), scene_grid.py with 10 slots 16 (LeWM's), an
-# encoder server 2. Keep `mem_gate.py watch` running alongside.
+# (25.8 measured: 15.7 of it the 8 workers' prefetched batches in shared memory), PLDM 32 (28.4 freed when its first
+# run was stopped at the cap), scene_grid.py with 10 slots 32 (V-JEPA 2.1's reached 29.4 within 6 minutes; LeWM's
+# 16), an encoder server 2. Keep `mem_gate.py watch` running alongside.
 # Idempotent: finished trainings and CortexBench runs are skipped, a running training (pid file) is waited for. Detached:
 #   STABLEWM_HOME=<checkout>/lewm_pcd_data PY=<lewm_pcd python> MW_PY=<lewm_mw python> CB_PY=<cortexbench python> \
 #     setsid nohup bash scripts/run_scene_baselines.sh > $STABLEWM_HOME/logs/scene_baselines.log 2>&1 < /dev/null &
@@ -85,7 +86,7 @@ cortexbench() {  # model: scene_grid.py with its own enc_server, LeWM's scene ev
       done
     fi
     if ! alive "$grid"; then
-      gate "scene_bl_${m}_grid" 16 0 "$grid" "$LOGS/cortexbench/scene_grid_baselines.log" --cwd "$CBD_" -- \
+      gate "scene_bl_${m}_grid" 32 0 "$grid" "$LOGS/cortexbench/scene_grid_baselines.log" --cwd "$CBD_" -- \
         bash -c 'PY=$0; source env.sh && exec "$PY" scene_grid.py "$@"' "$CB_PY" --models "$m" --seeds "$SEEDS" \
         --proprio "$PROPRIO" --slots "$SLOTS" || exit 1
     fi
