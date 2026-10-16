@@ -48,11 +48,12 @@ DATA=${DATA:-puzzle_$ENV_TYPE}; RUN=${RUN:-puzzle_$ENV_TYPE}; EPOCHS=${EPOCHS:-1
 export PYTHONPATH=$PWD:$PWD/third_party/stable-worldmodel${PYTHONPATH:+:$PYTHONPATH} HYDRA_FULL_ERROR=1 MUJOCO_GL=egl \
        SPT_CACHE_DIR=$STABLEWM_HOME/checkpoints/_spt_cache PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True WANDB_MODE=disabled
 MG=$PWD/scripts/mem_gate.py
-# each job's memory (GiB of anon + shmem at most) and GPU (MiB) for the gate: 2D training ~25 GB of prefetched batches
-# (8 workers x prefetch 3) + the process; 3D training: puzzle-3x3's took 3 -> 18 GiB; latents: 6 render workers + both
-# encoders; GCIQL / DQC: puzzle-3x3's GCIQL 5.2 GiB with 1 M rows, puzzle-4x5 has 3 M; collection: ~1.4 GiB a shard
-# (puzzle-4x5's 8 shards 10.6 GiB)
-MEM_2D=30 MEM_3D=15 MEM_FEATS=12 MEM_RL=$([ "$ENV_TYPE" = 4x5 ] && echo 12 || echo 6)
+# each job's memory (GiB of anon + shmem at most) and GPU (MiB) for the gate: 2D training 36.9 GiB measured
+# (puzzle-4x4's: the prefetched batches of 8 workers in shared memory + the process); 3D training at most 15 (the memory
+# rose 3 -> 18 GiB while puzzle-3x3's started); latents: 6 render workers + both encoders (estimate); GCIQL / DQC:
+# puzzle-3x3's GCIQL 5.2 GiB with 1 M rows, puzzle-4x5 has 3 M (estimate); collection ~1.4 GiB a shard (puzzle-4x5's
+# 8 shards 10.6 GiB)
+MEM_2D=38 MEM_3D=15 MEM_FEATS=12 MEM_RL=$([ "$ENV_TYPE" = 4x5 ] && echo 12 || echo 6)
 DS=$STABLEWM_HOME/datasets/ogbench
 OFF=$DS/official/puzzle-$ENV_TYPE-play-v0  # OGBench's play data (.npz, -val.npz)
 LOGS=$STABLEWM_HOME/logs

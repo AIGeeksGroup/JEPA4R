@@ -35,11 +35,11 @@ SEEDS=${SEEDS:-100,200,300}; PROPRIO=${PROPRIO:-hand6}; SLOTS=${SLOTS:-10}
 export PYTHONPATH=$PWD:$PWD/third_party/stable-worldmodel${PYTHONPATH:+:$PYTHONPATH} HYDRA_FULL_ERROR=1 MUJOCO_GL=egl \
        SPT_CACHE_DIR=$STABLEWM_HOME/checkpoints/_spt_cache PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True WANDB_MODE=disabled
 MG=$PWD/scripts/mem_gate.py
-# each job's memory (GiB of anon + shmem at most) and GPU (MiB) for the gate: 2D training ~25 GB of prefetched batches
-# (8 workers x prefetch 3) + the process; 3D training at most 15 (the memory rose 3 -> 18 GiB while puzzle-3x3's
-# started); collection ~1.4 GiB a running shard; CortexBench: scene_grid.py with its SLOTS jobs ~16 GiB (measured with
-# 10 slots), the encoder server ~1 GiB
-MEM_2D=30 MEM_3D=15 MEM_GRID=16
+# each job's memory (GiB of anon + shmem at most) and GPU (MiB) for the gate: 2D training 36.9 GiB measured
+# (puzzle-4x4's: the prefetched batches of 8 workers in shared memory + the process); 3D training at most 15 (the memory
+# rose 3 -> 18 GiB while puzzle-3x3's started); collection ~1.4 GiB a running shard; CortexBench: scene_grid.py with
+# its SLOTS jobs ~16 GiB (measured with 10 slots), the encoder server ~1 GiB
+MEM_2D=38 MEM_3D=15 MEM_GRID=16
 DS=$STABLEWM_HOME/datasets/ogbench
 LOGS=$STABLEWM_HOME/logs
 mkdir -p "$LOGS/train" "$LOGS/collect" "$LOGS/cortexbench"

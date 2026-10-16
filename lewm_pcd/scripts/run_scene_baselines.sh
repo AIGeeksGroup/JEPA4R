@@ -12,7 +12,7 @@
 # Every training, encoder server and scene_grid.py run starts through scripts/mem_gate.py (the OGBench pipelines' gate,
 # see run_scene_pipeline.sh): only when the container's memory (anon + shmem) with the reservations of the jobs still
 # starting and its own stays within the budget (72 GiB) and the GPU has room for it. Memory each (GiB): LeJEPA 10
-# (9.1 measured), PLDM 30 (26-28 freed when its first run was stopped), scene_grid.py with 10 slots 16 (LeWM's), an
+# (9.1 measured), PLDM 32 (28.4 freed when its first run was stopped at the cap), scene_grid.py with 10 slots 16 (LeWM's), an
 # encoder server 2. Keep `mem_gate.py watch` running alongside.
 # Idempotent: finished trainings and CortexBench runs are skipped, a running training (pid file) is waited for. Detached:
 #   STABLEWM_HOME=<checkout>/lewm_pcd_data PY=<lewm_pcd python> MW_PY=<lewm_mw python> CB_PY=<cortexbench python> \
@@ -126,7 +126,7 @@ train lejepa_scene 10 8000 env PYTHONPATH=$L:$F $PY scripts/baselines/train_leje
   --dataset "$DATASET" --name lejepa_scene & LJ=$!
 sleep 30
 mkdir -p "$LOGS/train/pldm_scene"
-( cd "$LOGS/train/pldm_scene" && train pldm_scene 30 15000 env PYTHONPATH=$L:$F $PY "$F/scripts/train/pldm.py" \
+( cd "$LOGS/train/pldm_scene" && train pldm_scene 32 15000 env PYTHONPATH=$L:$F $PY "$F/scripts/train/pldm.py" \
     data=ogb data.dataset.name="$DATASET" '~data.dataset.keys_to_merge' subdir=pldm_scene output_model_name=pldm_scene \
     trainer.max_epochs=10 ) & PL=$!
 wait $LJ; s1=$?; wait $PL; s2=$?
