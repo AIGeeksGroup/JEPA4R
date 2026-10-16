@@ -11,8 +11,8 @@
 # table by summarize_scene.py next to LeWM's.
 # Every training, encoder server and scene_grid.py run starts through scripts/mem_gate.py (the OGBench pipelines' gate,
 # see run_scene_pipeline.sh): only when the container's memory (anon + shmem) with the reservations of the jobs still
-# starting and its own stays within the budget (72 GiB) and the GPU has room for it. Memory each (GiB): LeJEPA 10
-# (9.1 measured), PLDM 32 (28.4 freed when its first run was stopped at the cap), scene_grid.py with 10 slots 16 (LeWM's), an
+# starting and its own stays within the budget (72 GiB) and the GPU has room for it. Memory each (GiB): LeJEPA 26
+# (25.8 measured: 15.7 of it the 8 workers' prefetched batches in shared memory), PLDM 32 (28.4 freed when its first run was stopped at the cap), scene_grid.py with 10 slots 16 (LeWM's), an
 # encoder server 2. Keep `mem_gate.py watch` running alongside.
 # Idempotent: finished trainings and CortexBench runs are skipped, a running training (pid file) is waited for. Detached:
 #   STABLEWM_HOME=<checkout>/lewm_pcd_data PY=<lewm_pcd python> MW_PY=<lewm_mw python> CB_PY=<cortexbench python> \
@@ -122,7 +122,7 @@ cb_lane() {  # after LeWM's own scene CortexBench: V-JEPA 2.1 first, then every 
 [ -f "$STABLEWM_HOME/datasets/$DATASET" ] || { log "missing dataset $DATASET (run_scene_pipeline.sh step 1)"; exit 1; }
 rm -f "$LOGS/train/.scene_baselines_trainings_over"
 cb_lane & CB=$!
-train lejepa_scene 10 8000 env PYTHONPATH=$L:$F $PY scripts/baselines/train_lejepa_mw.py --task scene \
+train lejepa_scene 26 8000 env PYTHONPATH=$L:$F $PY scripts/baselines/train_lejepa_mw.py --task scene \
   --dataset "$DATASET" --name lejepa_scene & LJ=$!
 sleep 30
 mkdir -p "$LOGS/train/pldm_scene"

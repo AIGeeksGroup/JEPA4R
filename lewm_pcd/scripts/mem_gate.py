@@ -76,8 +76,9 @@ def live_jobs():
 
 
 def group_gib(pgid):
-    """Memory (Pss anon + shmem) of the processes in the process group."""
-    tot = 0
+    """Memory of the process group: Pss anon + shmem of its processes, plus the shared-memory segments it holds only
+    through file descriptors (unmapped, so not in Pss; e.g. a DataLoader's prefetched batches: LeJEPA's 15.7 GiB)."""
+    kb, held, mapped = 0, {}, set()
     for p in os.listdir('/proc'):
         if not p.isdigit():
             continue
@@ -86,10 +87,21 @@ def group_gib(pgid):
                 continue
             for line in open(f'/proc/{p}/smaps_rollup'):
                 if line.startswith(('Pss_Anon:', 'Pss_Shmem:')):
-                    tot += int(line.split()[1])
+                    kb += int(line.split()[1])
+            for line in open(f'/proc/{p}/maps'):
+                f = line.split()
+                if len(f) > 5 and f[5].startswith(('/dev/shm', '/memfd:')):
+                    mapped.add(int(f[4]))
+            for fd in os.listdir(f'/proc/{p}/fd'):
+                try:
+                    if os.readlink(f'/proc/{p}/fd/{fd}').startswith(('/dev/shm', '/memfd:')):
+                        st = os.stat(f'/proc/{p}/fd/{fd}')
+                        held[st.st_ino] = st.st_blocks * 512
+                except OSError:
+                    continue
         except OSError:
             continue
-    return tot / 2**20
+    return kb / 2**20 + sum(b for ino, b in held.items() if ino not in mapped) / 2**30
 
 
 def pending_gib(jobs):
