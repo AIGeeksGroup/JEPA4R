@@ -13,8 +13,9 @@
 # see run_scene_pipeline.sh): only when the container's memory (anon + shmem) with the reservations of the jobs still
 # starting and its own stays within the budget (72 GiB) and the GPU has room for it. Memory each (GiB): LeJEPA 26
 # (25.8 measured: 15.7 of it the 8 workers' prefetched batches in shared memory), PLDM 32 (28.4 freed when its first
-# run was stopped at the cap), scene_grid.py with 10 slots 32 (V-JEPA 2.1's reached 29.4 within 6 minutes; LeWM's
-# 16), an encoder server 2. Keep `mem_gate.py watch` running alongside.
+# run was stopped at the cap), scene_grid.py 3.2 a slot (V-JEPA 2.1's reached 29.4 with 10 slots within 6 minutes;
+# LeWM's 16), an encoder server 2. SLOTS (the parallel runs) changes the pace only: every run has its own seed.
+# Keep `mem_gate.py watch` running alongside.
 # Idempotent: finished trainings and CortexBench runs are skipped, a running training (pid file) is waited for. Detached:
 #   STABLEWM_HOME=<checkout>/lewm_pcd_data PY=<lewm_pcd python> MW_PY=<lewm_mw python> CB_PY=<cortexbench python> \
 #     setsid nohup bash scripts/run_scene_baselines.sh > $STABLEWM_HOME/logs/scene_baselines.log 2>&1 < /dev/null &
@@ -27,6 +28,7 @@ L=$PWD
 F=$L/third_party/stable-worldmodel
 DATASET=ogbench/scene_wm10000.h5
 SEEDS=${SEEDS:-100,200,300}; SLOTS=${SLOTS:-10}; PROPRIO=hand6
+GRID_MEM=$(( (SLOTS * 32 + 9) / 10 ))  # GiB for scene_grid.py, 3.2 a slot (see above)
 export MUJOCO_GL=egl HYDRA_FULL_ERROR=1 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True \
        SPT_CACHE_DIR=$STABLEWM_HOME/checkpoints/_spt_cache WANDB_MODE=offline WANDB_DIR=$STABLEWM_HOME/logs/train
 LOGS=$STABLEWM_HOME/logs
@@ -86,7 +88,7 @@ cortexbench() {  # model: scene_grid.py with its own enc_server, LeWM's scene ev
       done
     fi
     if ! alive "$grid"; then
-      gate "scene_bl_${m}_grid" 32 0 "$grid" "$LOGS/cortexbench/scene_grid_baselines.log" --cwd "$CBD_" -- \
+      gate "scene_bl_${m}_grid" "$GRID_MEM" 0 "$grid" "$LOGS/cortexbench/scene_grid_baselines.log" --cwd "$CBD_" -- \
         bash -c 'PY=$0; source env.sh && exec "$PY" scene_grid.py "$@"' "$CB_PY" --models "$m" --seeds "$SEEDS" \
         --proprio "$PROPRIO" --slots "$SLOTS" || exit 1
     fi
