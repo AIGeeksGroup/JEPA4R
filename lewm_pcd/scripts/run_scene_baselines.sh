@@ -7,7 +7,8 @@
 #   V-JEPA 2.1  ViT-B as released, frozen, no training (model vjepa21_vitb)
 # CortexBench: bench/cortexbench/scene_grid.py per model (conf/model/{lejepa_scene,pldm_scene,vjepa21_vitb}.yaml):
 # scene-task1..5 x seeds 100 / 200 / 300, the 6-d proprioception, each encoder served by its own enc_server.py; it starts
-# once LeWM's own scene CortexBench is over (all 30 of its runs done), V-JEPA 2.1 first, then each model at epoch 10;
+# once LeWM's own scene CortexBench is over (all 30 of its runs done), V-JEPA 2.1 and each model at epoch 10 in lanes
+# of their own (the memory gate decides how many run at once);
 # table by summarize_scene.py next to LeWM's.
 # Every training, encoder server and scene_grid.py run starts through scripts/mem_gate.py (the OGBench pipelines' gate,
 # see run_scene_pipeline.sh): only when the container's memory (anon + shmem) with the reservations of the jobs still
@@ -101,16 +102,17 @@ cortexbench() {  # model: scene_grid.py with its own enc_server, LeWM's scene ev
   )
 }
 
-cb_lane() {  # after LeWM's own scene CortexBench: V-JEPA 2.1 first, then every trained model
-  local m left ok=0
+cb_lane() {  # after LeWM's own scene CortexBench: V-JEPA 2.1 and every trained model, each in a lane of its own
+  local m left ok=0 lanes=() p
   until [ "$(runs_done lewm_scene_pcd)" -ge 15 ] && [ "$(runs_done lewm_scene_pix)" -ge 15 ]; do sleep 600; done
   log "LeWM's scene CortexBench is over"
-  cortexbench vjepa21_vitb || ok=1
+  cortexbench vjepa21_vitb & lanes+=($!)
   left="lejepa_scene pldm_scene"
   while [ -n "$left" ]; do
     for m in $left; do
       if trained "$m"; then
-        cortexbench "$m" || ok=1
+        cortexbench "$m" & lanes+=($!)
+        sleep 30  # the lanes' gate calls in a fixed order
         left=$(echo "$left" | tr ' ' '\n' | grep -vx "$m" | tr '\n' ' ' | xargs)
       elif [ -f "$LOGS/train/.scene_baselines_trainings_over" ]; then
         log "$m not trained, no CortexBench"; ok=1
@@ -119,6 +121,7 @@ cb_lane() {  # after LeWM's own scene CortexBench: V-JEPA 2.1 first, then every 
     done
     [ -n "$left" ] && sleep 300
   done
+  for p in "${lanes[@]}"; do wait "$p" || ok=1; done
   return $ok
 }
 
