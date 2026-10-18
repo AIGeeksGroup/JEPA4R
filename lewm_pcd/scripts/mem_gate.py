@@ -12,12 +12,15 @@ dropped is anon + shmem (memory.stat), "fixed" below.
             under the pipelines' gate lock (logs/train/.gpu_gate.lock), which is held RAMP s more after a start so the
             GPU reading includes the new job. Blocks until the job is started.
   register  add a job started otherwise (already running) to the registry, so the watchdog can pause it.
-  watch     every PEAK_EVERY s: each registered job's memory, its peak kept (PEAKS); every POLL s: fixed above PAUSE:
-            the newest running registered job is paused (SIGSTOP to its process group), the next newest one
-            PAUSE_STEP s later if still above; above KILL: the newest one gets SIGTERM
-            (DQC / GCIQL save and exit on it); below RESUME the paused jobs are continued in the reverse order (the
-            older jobs first, the newest last), one per PAUSE_STEP s. On its start it continues every registered job
-            (none is left stopped by an earlier watchdog).
+  watch     every PEAK_EVERY s: each registered job's memory, its peak kept (PEAKS); every POLL s: the jobs' memory
+            read fast (groups_gib), the readings of the last WINDOW s kept; fixed above PAUSE: the running registered
+            job whose memory rose most in the last WINDOW s, if by more than GROW, is paused (SIGSTOP to its process
+            group), the next growing one PAUSE_STEP s later if still above; memory that only stays above PAUSE pauses
+            nothing (a paused job keeps its memory: pausing the others would free nothing and leave them waiting for
+            RESUME while they hold it, all of them stopped for good); above KILL: the fastest growing job, else the
+            newest one, gets SIGTERM (DQC / GCIQL save and exit on it); below RESUME the paused jobs are continued,
+            the last paused first, one per PAUSE_STEP s. On its start it continues every registered job (none is left
+            stopped by an earlier watchdog).
   status    the registry's live jobs with their memory now.
 Registry: logs/train/mem_gate.jsonl, one line per job (name, pid, its start time, mem, gpu); peaks:
 logs/train/mem_gate_peaks.json.
@@ -36,6 +39,7 @@ import time
 
 BUDGET, PAUSE, KILL, RESUME = 72.0, 80.0, 85.0, 70.0  # GiB of fixed memory; memory.high is 88
 POLL, PAUSE_STEP, RAMP, RAMP_MEM, PEAK_EVERY = 5.0, 30.0, 600.0, 1800.0, 30.0
+GROW, WINDOW = 0.5, 90.0  # a job whose memory rose by more than GROW GiB within the last WINDOW s is growing
 HOME = os.environ.get('STABLEWM_HOME', os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..',
                                                     'lewm_pcd_data'))
 REG = os.path.join(HOME, 'logs', 'train', 'mem_gate.jsonl')
@@ -79,33 +83,40 @@ def live_jobs():
     return jobs
 
 
-def group_gib(pgid):
-    """Memory of the process group: Pss anon + shmem of its processes, plus the shared-memory segments it holds only
-    through file descriptors (unmapped, so not in Pss; e.g. a DataLoader's prefetched batches: LeJEPA's 15.7 GiB)."""
-    kb, held, mapped = 0, {}, set()
+def groups_gib(pgids, fast=False):
+    """Memory of each process group (one pass over /proc): Pss anon + shmem of its processes (fast: Rss anon + shmem,
+    shared pages counted in every process that maps them, without Pss's walk over the page tables (1 s for the
+    pipelines' jobs): for spotting growth), plus the shared-memory segments it holds only through file descriptors
+    (unmapped, so not in Pss; e.g. a DataLoader's prefetched batches: LeJEPA's 15.7 GiB)."""
+    kb, held, mapped = {g: 0 for g in pgids}, {g: {} for g in pgids}, {g: set() for g in pgids}
     for p in os.listdir('/proc'):
         if not p.isdigit():
             continue
         try:
-            if os.getpgid(int(p)) != pgid:
+            g = os.getpgid(int(p))
+            if g not in kb:
                 continue
-            for line in open(f'/proc/{p}/smaps_rollup'):
-                if line.startswith(('Pss_Anon:', 'Pss_Shmem:')):
-                    kb += int(line.split()[1])
+            for line in open(f'/proc/{p}/status' if fast else f'/proc/{p}/smaps_rollup'):
+                if line.startswith(('RssAnon:', 'RssShmem:') if fast else ('Pss_Anon:', 'Pss_Shmem:')):
+                    kb[g] += int(line.split()[1])
             for line in open(f'/proc/{p}/maps'):
                 f = line.split()
                 if len(f) > 5 and f[5].startswith(('/dev/shm', '/memfd:')):
-                    mapped.add(int(f[4]))
+                    mapped[g].add(int(f[4]))
             for fd in os.listdir(f'/proc/{p}/fd'):
                 try:
                     if os.readlink(f'/proc/{p}/fd/{fd}').startswith(('/dev/shm', '/memfd:')):
                         st = os.stat(f'/proc/{p}/fd/{fd}')
-                        held[st.st_ino] = st.st_blocks * 512
+                        held[g][st.st_ino] = st.st_blocks * 512
                 except OSError:
                     continue
         except OSError:
             continue
-    return kb / 2**20 + sum(b for ino, b in held.items() if ino not in mapped) / 2**30
+    return {g: kb[g] / 2**20 + sum(b for ino, b in held[g].items() if ino not in mapped[g]) / 2**30 for g in kb}
+
+
+def group_gib(pgid):
+    return groups_gib([pgid])[pgid]
 
 
 def job_key(j):
@@ -122,11 +133,11 @@ def load_peaks():
 def pending_gib(jobs):
     """What the running jobs may still take: max(0, R - used), R = max(mem, peak) in a job's first RAMP_MEM s, its
     peak (seen by the watchdog) after."""
-    t, peaks, total = time.time(), load_peaks(), 0.0
+    t, peaks, used, total = time.time(), load_peaks(), groups_gib([j['pid'] for j in jobs]), 0.0
     for j in jobs:
         age = t - j.get('ts', time.mktime(time.strptime(j['t'], '%Y-%m-%d_%H:%M:%S')))
         peak = peaks.get(job_key(j), 0.0)
-        total += max(0.0, (max(j['mem'], peak) if age < RAMP_MEM else peak) - group_gib(j['pid']))
+        total += max(0.0, (max(j['mem'], peak) if age < RAMP_MEM else peak) - used[j['pid']])
     return total
 
 
@@ -178,39 +189,49 @@ def signal_group(j, sig):
 def watch(_):
     print(f'{now()} watch: fixed memory pause above {PAUSE} GiB, SIGTERM above {KILL}, resume below {RESUME}; '
           f'budget for starts {BUDGET}', flush=True)
-    paused, last_act, last_print, last_peak = [], 0.0, 0.0, 0.0  # paused: registry entries, in pause order
-    peaks = load_peaks()
+    paused, last_act, last_print, last_peak, last_flat = [], 0.0, 0.0, 0.0, 0.0  # paused: entries, in pause order
+    peaks, hist = load_peaks(), {}  # hist: each job's memory samples (fast reading) of the last WINDOW s, [(t, GiB)]
     for j in live_jobs():
         signal_group(j, signal.SIGCONT)
     while True:
         fx, t = fixed_gib(), time.time()
         jobs = live_jobs()
+        keys, pgids = {job_key(j) for j in jobs}, [j['pid'] for j in jobs]
         if t - last_peak > PEAK_EVERY:
-            keys = {job_key(j) for j in jobs}
+            used = groups_gib(pgids)
             peaks = {k: v for k, v in peaks.items() if k in keys}
             for j in jobs:
-                peaks[job_key(j)] = max(peaks.get(job_key(j), 0.0), group_gib(j['pid']))
+                peaks[job_key(j)] = max(peaks.get(job_key(j), 0.0), used[j['pid']])
             tmp = PEAKS + '.tmp'
             with open(tmp, 'w') as f:
                 json.dump(peaks, f)
             os.replace(tmp, PEAKS)
             last_peak = t
+        fast = groups_gib(pgids, fast=True)
+        hist = {k: [(s, v) for s, v in h if t - s <= WINDOW] for k, h in hist.items() if k in keys}
+        for j in jobs:
+            hist.setdefault(job_key(j), []).append((t, fast[j['pid']]))
         live = {(j['pid'], j['start']) for j in jobs}
         paused = [j for j in paused if (j['pid'], j['start']) in live]
+        rise = {k: h[-1][1] - min(v for _, v in h) for k, h in hist.items() if k in keys and h}
+        growing = sorted((j for j in jobs if j not in paused and rise.get(job_key(j), 0.0) > GROW),
+                         key=lambda j: rise[job_key(j)])  # the fastest growing last
         if fx > KILL and t - last_act > PAUSE_STEP and jobs:
-            j = jobs[-1]
+            j = (growing or jobs)[-1]  # the fastest growing job, else the newest
             signal_group(j, signal.SIGTERM)
             signal_group(j, signal.SIGCONT)
             print(f'{now()} fixed {fx:.1f} GiB > {KILL}: SIGTERM to {j["name"]} (pid {j["pid"]})', flush=True)
             last_act = t
-        elif fx > PAUSE and t - last_act > PAUSE_STEP:
-            run = [j for j in jobs if j not in paused]
-            if run:
-                j = run[-1]
-                if signal_group(j, signal.SIGSTOP):
-                    paused.append(j)
-                    print(f'{now()} fixed {fx:.1f} GiB > {PAUSE}: paused {j["name"]} (pid {j["pid"]})', flush=True)
-                last_act = t
+        elif fx > PAUSE and t - last_act > PAUSE_STEP and growing:
+            j = growing[-1]
+            if signal_group(j, signal.SIGSTOP):
+                paused.append(j)
+                print(f'{now()} fixed {fx:.1f} GiB > {PAUSE}: paused {j["name"]} (pid {j["pid"]}; up '
+                      f'{rise[job_key(j)]:.1f} GiB in {WINDOW:.0f} s)', flush=True)
+            last_act = t
+        elif fx > PAUSE and not growing and t - last_flat > 600:
+            print(f'{now()} fixed {fx:.1f} GiB > {PAUSE}, no registered job growing: none paused', flush=True)
+            last_flat = t
         elif fx < RESUME and paused and t - last_act > PAUSE_STEP:
             j = paused.pop()
             signal_group(j, signal.SIGCONT)
@@ -225,9 +246,9 @@ def watch(_):
 def status(_):
     jobs = live_jobs()
     print(f'fixed {fixed_gib():.1f} GiB, budget {BUDGET}, GPU {free_gpu_mib()} MiB free')
-    peaks = load_peaks()
+    peaks, used = load_peaks(), groups_gib([j['pid'] for j in jobs])
     for j in jobs:
-        print(f'  {j["name"]:28s} pid {j["pid"]:7d}  uses {group_gib(j["pid"]):5.1f} GiB of {j["mem"]:4.0f}, peak '
+        print(f'  {j["name"]:28s} pid {j["pid"]:7d}  uses {used[j["pid"]]:5.1f} GiB of {j["mem"]:4.0f}, peak '
               f'{peaks.get(job_key(j), 0.0):5.1f}  since {j["t"]}')
 
 
