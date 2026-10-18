@@ -4,6 +4,8 @@ loads it (lewm_obs.BaselineEncoder: its own transforms, its frozen embedding) ->
 --obs vjepa21 / lejepa / pldm. One rendering pass serves all the given encoders.
 * Only the latents are stored (float32, N x D, row for row with the npz), written in chunks, restartable; each encoder
   has its own done file ({split}_done_<name>.npy), so a pass can be resumed or an encoder added later.
+* At most 2 x workers rendered chunks wait for the encoders (Pool.imap alone renders ahead without bound: with V-JEPA
+  2.1, slower than the rendering, the waiting 384 frames grew to 66 GB in five minutes).
     python extract_feats_baselines.py --env-type 4x5 --out $STABLEWM_HOME/datasets/ogbench/dqc_feats/puzzle_4x5 \\
         --encoder vjepa21=$STABLEWM_HOME/checkpoints/cortexbench_baselines/vjepa2_1_vitb_dist_vitG_384.pt \\
         [--encoder lejepa=.../checkpoints/lejepa_puzzle_4x5 --encoder pldm=.../checkpoints/pldm_puzzle_4x5] --workers 6
@@ -11,6 +13,7 @@ loads it (lewm_obs.BaselineEncoder: its own transforms, its frozen embedding) ->
 import argparse
 import multiprocessing as mp
 import os
+import threading
 import time
 from pathlib import Path
 
@@ -78,15 +81,22 @@ def main():
           f'{", ".join(f"{k} ({e.dim}-d at {e.size})" for k, e in encs.items())}', flush=True)
     sizes = sorted({e.size for e in encs.values()})
     sl = lambda x, s: x[s: min(s + a.chunk, n)]  # noqa: E731
-    tasks = ((starts[i], sl(qpos, starts[i]), sl(qvel, starts[i]), sl(bst, starts[i])) for i in todo)
+    window = threading.BoundedSemaphore(2 * a.workers)  # chunks handed to the pool and not yet encoded
+
+    def tasks():
+        for i in todo:
+            window.acquire()  # Pool.imap draws tasks in its own thread: this holds it back
+            yield starts[i], sl(qpos, starts[i]), sl(qvel, starts[i]), sl(bst, starts[i])
     t0, n_done = time.time(), 0
     with mp.get_context('spawn').Pool(a.workers, initializer=_init_worker, initargs=(a.env_type, sizes)) as pool:
-        for j, (s, frames) in enumerate(pool.imap(_render_chunk, tasks)):
+        for j, (s, frames) in enumerate(pool.imap(_render_chunk, tasks())):
             for k, enc in encs.items():
                 if not done[k][s // a.chunk]:
                     Z[k][s: s + len(frames[enc.size])] = enc.encode(frames[enc.size])
                     done[k][s // a.chunk] = True
             n_done += len(frames[sizes[0]])
+            del frames
+            window.release()
             if j % 20 == 0:
                 for k in encs:
                     Z[k].flush()

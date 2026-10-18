@@ -67,7 +67,7 @@ feats() {  # board name=path...: the encoders' latents of the board's play data 
     log "latents ($b, $*) running (pid $(cat "$pidf")), waiting"
   else
     log "latents of puzzle-$b-play: $*"
-    gate "extract_bl_${b}_${1%%=*}" 12 8000 "$pidf" "$LOGS/dqc/extract_bl_$b.log" --cwd "$L/bench/dqc" -- \
+    gate "extract_bl_${b}_${1%%=*}" 16 8000 "$pidf" "$LOGS/dqc/extract_bl_$b.log" --cwd "$L/bench/dqc" -- \
       env OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 nice -n 5 $DQC_PY extract_feats_baselines.py --env-type "$b" \
       --out "$fe" --split train --workers 6 "${args[@]}" || return 1
   fi
