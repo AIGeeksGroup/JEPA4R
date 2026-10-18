@@ -123,10 +123,13 @@ def main(_):
     eval_env = make_ogbench_env_and_datasets(FLAGS.env_name, dataset_path=FLAGS.dataset_path, compact_dataset=True,
                                              env_only=True, **env_kwargs)
     if lewm:
-        z = np.load(Path(FLAGS.feats_dir) / f'{FLAGS.feats_split}_z{kind if baseline else kind[-2:]}.npy')
+        z = np.load(Path(FLAGS.feats_dir) / f'{FLAGS.feats_split}_z{kind if baseline else kind[-2:]}.npy',
+                    mmap_mode='r')
         assert len(z) == len(train_dataset['observations']), (z.shape, train_dataset['observations'].shape)
-        parts = [z.astype(np.float32)] + ([train_dataset['button_states'].astype(np.float32)] if with_lights else [])
+        parts = [z.astype(np.float32, copy=False)] + ([train_dataset['button_states'].astype(np.float32)]
+                                                      if with_lights else [])
         train_dataset['observations'] = np.concatenate(parts, axis=1)
+        del z, parts  # the latents in memory once (the input; before: also the loaded file and its float32 copy)
     train_dataset = Dataset.create(**train_dataset)
     print(train_dataset.keys(), train_dataset.size, 'obs', train_dataset['observations'].shape, flush=True)
     env.reset()

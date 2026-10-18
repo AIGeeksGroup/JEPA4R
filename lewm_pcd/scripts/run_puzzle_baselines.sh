@@ -81,7 +81,7 @@ feats() {  # board name=path...: the encoders' latents of the board's play data 
 }
 
 dqc() {  # board encoder checkpoint: run_dqc.py with the board's configuration of the LeWM runs
-  local b=$1 enc=$2 ck=$3 runs=$LOGS/dqc/puzzle_$b hp mem
+  local b=$1 enc=$2 ck=$3 runs=$LOGS/dqc/puzzle_$b hp mem dim
   local pidf=$runs/$enc.pid
   if [ "$b" = 3x3 ]; then
     hp=(--agent.backup_horizon=40 --agent.q_agg=min --agent.kappa_b=0.93 --agent.kappa_d=0.8)
@@ -92,9 +92,10 @@ dqc() {  # board encoder checkpoint: run_dqc.py with the board's configuration o
        --agent.implicit_backup_type=quantile --env_name="puzzle-$b-play-oraclerep-v0"
        --dataset_path="$DS/official/puzzle-$b-play-v0.npz" --offline_steps=1000000 --eval_interval=100000
        --eval_episodes=50 --save_every=25000)
-  # memory: LeWM's 192-d input took 5-6 GiB a million rows (puzzle-4x5's DQC 12 GiB with 3 M), the latent the main part
-  case $enc in vjepa21) mem=$(( 7 * $(rows_m "$b") + 2 )) ;; lejepa) mem=$(( 5 * $(rows_m "$b") + 2 )) ;;
-               *) mem=$(( 4 * $(rows_m "$b") + 2 )) ;; esac
+  # memory: the latents (float32, millions of rows x dim x 4 B, held once by run_dqc.py; it used to hold three copies:
+  # puzzle-3x3's V-JEPA 2.1 DQC 13.9 GiB) + up to 6 GiB besides (V-JEPA 2.1's 5.3 with its encoder for the evaluations)
+  case $enc in vjepa21) dim=768 ;; lejepa) dim=512 ;; *) dim=192 ;; esac
+  mem=$(( 6 + ($(rows_m "$b") * dim * 4 + 1023) / 1024 ))
   mkdir -p "$runs/.tmp"
   [ -f "$runs/$enc/DONE" ] && { log "DQC $enc ($b) done already"; return 0; }
   if alive "$pidf"; then
