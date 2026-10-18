@@ -53,7 +53,7 @@
 
 ## 全量（2026-10-14 开始）
 
-采集、puzzle 的两个训练已完成，全量数据和小规模那次按种子逐回合核对过（scene 同种子的回合逐列相同，puzzle 逐行相同到第一个随机动作）。scene 的两个训练也已完成。puzzle 的 GCIQL 也已跑完（`logs/gciql/puzzle_3x3_official/`）。在跑：scene 的 CortexBench，以及 scene 上 MetaWorld 跑过的三个 JEPA 类基线（LeJEPA、PLDM 用同一份 scene 数据训练，V-JEPA 2.1 冻结；`scripts/run_scene_baselines.sh`，评测同 LeWM）。跑完填在这里。
+采集、puzzle 的两个训练已完成，全量数据和小规模那次按种子逐回合核对过（scene 同种子的回合逐列相同，puzzle 逐行相同到第一个随机动作）。scene 的两个训练也已完成。puzzle 的 GCIQL 也已跑完（`logs/gciql/puzzle_3x3_official/`）。在跑：scene 的 CortexBench 和三个 JEPA 类基线也已跑完（下表）。
 
 - puzzle 的评测原先按 DQC 跑，按用户要求改成 GCIQL；DQC 停在 2D 第 62 万步、3D 第 57.6 万步（存档在 `logs/dqc/puzzle_3x3/`），后来按用户要求从存档续跑到 100 万步。
 - puzzle-4x4 跑完（下表）；puzzle-4x5：采集完成（官方 noisy 规模 3000 回合），3D 世界模型训完，2D 训练中，之后提潜变量、跑 DQC（`logs/puzzle_4x5_pipeline.log`）。
@@ -91,8 +91,7 @@
 | LeWM 2D | 44.0（32.0） | 54.7（37.3） | 36.0（29.3） | 46.7（24.0） | 22.7（13.3） | 40.8（27.2） |
 | V-JEPA 2.1（冻结） | 62.7（33.3） | 30.7（18.7） | 25.3（24.0） | 49.3（33.3） | 24.0（8.0） | 38.4（23.5） |
 | PLDM | 62.7 | 52.0 | 25.3 | 72.0 | 18.7 | 46.1 |
-
-LeJEPA 的评测在跑。
+| LeJEPA | 90.7 | 36.0 | 25.3 | 41.3 | 12.0 | 41.1 |
 
 ### puzzle-3x3：GCIQL（全量）
 
