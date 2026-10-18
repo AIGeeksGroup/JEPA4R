@@ -12,6 +12,8 @@ from pathlib import Path
 
 import numpy as np
 import torch
+import torchvision.transforms as T
+from PIL import Image
 
 LEWM = Path(__file__).resolve().parents[2]  # lewm_pcd
 sys.path.insert(0, str(LEWM / 'bench' / 'cortexbench'))  # lewm_cortex
@@ -60,6 +62,60 @@ class Encoders:
             x = torch.stack([self.tf(np.concatenate([a, b], 1)) for a, b in zip(xyz[i: i + bs], col[i: i + bs])])
             out.append(self.m3(x.to(DEV)).float().cpu())
         return torch.cat(out).numpy()
+
+
+class BaselineEncoder:
+    """A JEPA-family baseline as CortexBench loads it (bench/cortexbench/jepa_baselines.py: the frozen model and its own
+    transforms, Resize + ToTensor + Normalize applied to a PIL image as run_bc_scene.py does): vjepa21 (a checkpoint
+    file, 768-d at 384), lejepa (a checkpoint directory, 512-d), pldm (a checkpoint directory, 192-d). prep() is the PIL
+    resize of 224 frames to the encoder's input size (identity at 224), encode() the rest on the GPU (/ 255 =
+    ToTensor, Normalize, the model)."""
+
+    LOADERS = {'vjepa21': 'load_vjepa21', 'lejepa': 'load_lejepa', 'pldm': 'load_pldm'}
+
+    def __init__(self, name, path, epoch=10):
+        import jepa_baselines as jb  # bench/cortexbench, on sys.path above
+        load = getattr(jb, self.LOADERS[name])
+        model, self.dim, tf, _ = load(path) if name == 'vjepa21' else load(path, epoch)
+        self.model = model.to(DEV)
+        resize = [t for t in tf.transforms if isinstance(t, T.Resize)][0]
+        norm = [t for t in tf.transforms if isinstance(t, T.Normalize)][0]
+        self.size = tuple(resize.size) if isinstance(resize.size, (list, tuple)) else (resize.size, resize.size)
+        self.mean = torch.tensor(norm.mean, device=DEV).view(1, 3, 1, 1)
+        self.std = torch.tensor(norm.std, device=DEV).view(1, 3, 1, 1)
+
+    @staticmethod
+    def prep_frames(pix, size):
+        """uint8 [N, H, W, 3] -> the size the encoder takes, resized as its transforms resize a PIL image."""
+        if tuple(pix.shape[1:3]) == tuple(size):
+            return pix
+        return np.stack([np.asarray(Image.fromarray(p).resize((size[1], size[0]), Image.BICUBIC)) for p in pix])
+
+    @torch.no_grad()
+    def encode(self, pix, bs=64):
+        out = []
+        for i in range(0, len(pix), bs):
+            x = torch.from_numpy(np.ascontiguousarray(pix[i: i + bs])).to(DEV).permute(0, 3, 1, 2).float() / 255
+            out.append(self.model((x - self.mean) / self.std).float().cpu())
+        return torch.cat(out).numpy()
+
+
+class BaselineObs:
+    """The evaluation-time observation for a baseline encoder: the current frame of the LeWM data's camera (the 2D
+    frame LeWMObs gives LeWM 2D) -> BaselineEncoder -> its latent, the true lights appended, as
+    extract_feats_baselines.py builds the training set's observations."""
+
+    def __init__(self, env, kind, path, epoch):
+        torch.set_num_threads(2)
+        self.pdat, self.u = load_puzzle(), env.unwrapped
+        self.cam = self.pdat.Camera(self.u._model, self.u._num_buttons)
+        self.enc = BaselineEncoder(kind, path, epoch)
+
+    def __call__(self):
+        self.cam.r2d.update_scene(self.u._data, camera=self.pdat.CAMERA)
+        pix = BaselineEncoder.prep_frames(self.cam.r2d.render().copy()[None], self.enc.size)
+        z = self.enc.encode(pix)[0]
+        return np.concatenate([z, self.u._cur_button_states.astype(np.float32)])
 
 
 class LeWMObs:

@@ -3,7 +3,9 @@ evaluated on OGBench puzzle-3x3-play (the official data, 1 M steps). The inputs,
   --obs state  : the original input, the 55-d state vector (the reproduction);
   --obs lewm2d : [the frozen LeWM 2D encoder's 192-d latent, the 9 true lights];
   --obs lewm3d : [the frozen LeWM 3D encoder's 192-d latent, the 9 true lights];
-  --obs lewm2d_nolight / lewm3d_nolight : the 192-d latent only (the lights only through the latent).
+  --obs lewm2d_nolight / lewm3d_nolight : the 192-d latent only (the lights only through the latent);
+  --obs vjepa21 / lejepa / pldm : [a JEPA-family baseline encoder's latent (lewm_obs.BaselineEncoder, as CortexBench
+                                   loads it; extract_feats_baselines.py), the true lights]; --ckpt its checkpoint.
 The goal is always the 9 lights' goal state (OGBench's oraclerep); algorithm, hyperparameters, data and evaluation
 (OGBench's 5 tasks) are unchanged.
 The training loop is dqc's main.py with three changes:
@@ -45,10 +47,11 @@ from envs.env_utils import make_ogbench_env_and_datasets  # noqa: E402
 from utils.datasets import CGCDataset, Dataset  # noqa: E402
 from utils.evaluation import add_to, flatten, supply_rng  # noqa: E402
 
-from lewm_obs import LeWMObs  # noqa: E402
+from lewm_obs import BaselineEncoder, BaselineObs, LeWMObs  # noqa: E402
 
 FLAGS = flags.FLAGS
-flags.DEFINE_string('obs', 'state', 'state | lewm2d | lewm3d | lewm2d_nolight | lewm3d_nolight')
+flags.DEFINE_string('obs', 'state', 'state | lewm2d | lewm3d | lewm2d_nolight | lewm3d_nolight | '
+                    'vjepa21 | lejepa | pldm')
 flags.DEFINE_string('run_dir', None, 'Output directory (checkpoint, logs).')
 flags.DEFINE_string('env_name', 'puzzle-3x3-play-oraclerep-v0', '')
 flags.DEFINE_string('dataset_path', str(DATA / 'official' / 'puzzle-3x3-play-v0.npz'), '')
@@ -101,9 +104,11 @@ def main(_):
     run_dir.mkdir(parents=True, exist_ok=True)
     signal.signal(signal.SIGTERM, _on_term)
     config = FLAGS.agent
-    assert FLAGS.obs in ('state', 'lewm2d', 'lewm3d', 'lewm2d_nolight', 'lewm3d_nolight'), FLAGS.obs
-    lewm = FLAGS.obs != 'state'
-    kind = FLAGS.obs.split('_')[0]            # lewm2d / lewm3d
+    assert FLAGS.obs in ('state', 'lewm2d', 'lewm3d', 'lewm2d_nolight', 'lewm3d_nolight',
+                         *BaselineEncoder.LOADERS), FLAGS.obs
+    lewm = FLAGS.obs != 'state'               # a frozen encoder's latent (LeWM or a baseline)
+    kind = FLAGS.obs.split('_')[0]            # lewm2d / lewm3d / vjepa21 / lejepa / pldm
+    baseline = kind in BaselineEncoder.LOADERS
     with_lights = not FLAGS.obs.endswith('_nolight')
     flag_dict = {k: getattr(FLAGS, k) for k in FLAGS if '.' not in k and k in (
         'obs', 'env_name', 'dataset_path', 'feats_dir', 'feats_split', 'ckpt', 'lewm_epoch', 'seed', 'offline_steps', 'log_interval',
@@ -118,7 +123,7 @@ def main(_):
     eval_env = make_ogbench_env_and_datasets(FLAGS.env_name, dataset_path=FLAGS.dataset_path, compact_dataset=True,
                                              env_only=True, **env_kwargs)
     if lewm:
-        z = np.load(Path(FLAGS.feats_dir) / f'{FLAGS.feats_split}_z{kind[-2:]}.npy')
+        z = np.load(Path(FLAGS.feats_dir) / f'{FLAGS.feats_split}_z{kind if baseline else kind[-2:]}.npy')
         assert len(z) == len(train_dataset['observations']), (z.shape, train_dataset['observations'].shape)
         parts = [z.astype(np.float32)] + ([train_dataset['button_states'].astype(np.float32)] if with_lights else [])
         train_dataset['observations'] = np.concatenate(parts, axis=1)
@@ -135,7 +140,11 @@ def main(_):
     agent = agents[config['agent_name']].create(FLAGS.seed, example_batch, config)
     metric_rng, _ = jax.random.split(jax.random.PRNGKey(FLAGS.seed))
     action_dim = example_batch['actions'].shape[-1]
-    obs_fn = LeWMObs(eval_env, kind, FLAGS.ckpt, FLAGS.lewm_epoch, lights=with_lights) if lewm else None
+    obs_fn = None
+    if baseline:
+        obs_fn = BaselineObs(eval_env, kind, FLAGS.ckpt, FLAGS.lewm_epoch)
+    elif lewm:
+        obs_fn = LeWMObs(eval_env, kind, FLAGS.ckpt, FLAGS.lewm_epoch, lights=with_lights)
 
     # restart
     ckpt = run_dir / 'resume.pkl'

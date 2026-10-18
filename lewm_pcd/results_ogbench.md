@@ -53,7 +53,7 @@
 
 ## 全量（2026-10-14 开始）
 
-采集、puzzle 的两个训练已完成，全量数据和小规模那次按种子逐回合核对过（scene 同种子的回合逐列相同，puzzle 逐行相同到第一个随机动作）。scene 的两个训练也已完成。puzzle 的 GCIQL 也已跑完（`logs/gciql/puzzle_3x3_official/`）。scene 的 CortexBench 和三个 JEPA 类基线也已跑完（下表）。在跑：puzzle-4x5 的 DQC。
+采集、puzzle 的两个训练已完成，全量数据和小规模那次按种子逐回合核对过（scene 同种子的回合逐列相同，puzzle 逐行相同到第一个随机动作）。scene 的两个训练也已完成。puzzle 的 GCIQL 也已跑完（`logs/gciql/puzzle_3x3_official/`）。scene 的 CortexBench 和三个 JEPA 类基线也已跑完（下表）。在跑：puzzle-4x5 的 DQC；它跑完后，三个 JEPA 类基线在 puzzle 3×3、4×4、4×5 上照 LeWM 的 DQC 流程跑（`scripts/run_puzzle_baselines.sh`）。
 
 - puzzle 的评测原先按 DQC 跑，按用户要求改成 GCIQL；DQC 停在 2D 第 62 万步、3D 第 57.6 万步（存档在 `logs/dqc/puzzle_3x3/`），后来按用户要求从存档续跑到 100 万步。
 - puzzle-4x4 跑完（下表）；puzzle-4x5：采集完成（官方 noisy 规模 3000 回合），3D 世界模型训完，2D 训练中，之后提潜变量、跑 DQC（`logs/puzzle_4x5_pipeline.log`）。

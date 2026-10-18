@@ -41,3 +41,12 @@ $DQC_PY run_dqc.py --obs lewm3d --ckpt $STABLEWM_HOME/checkpoints/puzzle_3x3_pcd
 - **超参：**DQC 论文自己给 puzzle-4x5 的那组（`third_party/dqc/experiments/reproduce.py`，标准数据量）：h=25、h_a=5、kappa_b 0.9、kappa_d 0.5、q_agg mean，其余官方默认值；DQC 没跑过 4x4，用同一组。
 
 `scripts/run_puzzle_pipeline.sh` 用 `ENV_TYPE=4x4 SHARDS=4` / `ENV_TYPE=4x5 N=3000` 从采集一路跑到 DQC（`logs/dqc/puzzle_4x{4,5}/`）。
+
+## JEPA 类基线（puzzle 3×3、4×4、4×5）
+
+MetaWorld、scene 上跑过的三个基线，在三个棋盘上照 LeWM 的 DQC 流程跑（`scripts/run_puzzle_baselines.sh`）：
+
+- **编码器：**LeJEPA、PLDM 用该棋盘 LeWM 的同一份数据、按各自官方配置训 10 个 epoch（同 scene）；V-JEPA 2.1 冻结原版。都按 CortexBench 的加载方式（`bench/cortexbench/jepa_baselines.py`，各自的预处理：V-JEPA 2.1 用 PIL 双三次放大到 384，另外两个 224）读 LeWM 2D 看到的同一帧（`lewm_obs.BaselineEncoder`）。
+- **潜变量：**`extract_feats_baselines.py`，一次渲染供多个编码器用，每个编码器各自的完成标记，可续跑。
+- **DQC：**`run_dqc.py --obs vjepa21 / lejepa / pldm --ckpt <权重>`，输入 = 该编码器的潜变量 + 灯的真值；超参、数据、评测与同棋盘 LeWM 的运行相同。评测时现算的观测（`lewm_obs.BaselineObs`）和训练集的潜变量对同一仿真状态一致（余弦 1.00000）。
+- **汇总：**`summarize_dqc.py`：每个输入按 OGBench 口径（第 80、90、100 万步平均）和训练中评测的最高值。
