@@ -6,18 +6,21 @@ dropped is anon + shmem (memory.stat), "fixed" below.
 
   admit     start a job (detached: its own session, stdin /dev/null, output appended to --log, pid in --pidfile) once
             fixed + the reservations still pending + its --mem <= BUDGET and the GPU has --gpu MiB free; a job's
-            reservation is pending for its first RAMP_MEM s, until its own processes use it (max(0, mem - used));
-            later its memory counts only as used (growth beyond: the watchdog). The check and the start run
+            reservation is what it may still take: max(0, R - used), R = max(mem, its peak) in its first RAMP_MEM s,
+            its peak after (the peak the watchdog has seen; a LeJEPA training's prefetched batches empty at each epoch
+            end, and what it then frees is not free). The check and the start run
             under the pipelines' gate lock (logs/train/.gpu_gate.lock), which is held RAMP s more after a start so the
             GPU reading includes the new job. Blocks until the job is started.
   register  add a job started otherwise (already running) to the registry, so the watchdog can pause it.
-  watch     every POLL s: fixed above PAUSE: the newest running registered job is paused (SIGSTOP to its process
-            group), the next newest one PAUSE_STEP s later if still above; above KILL: the newest one gets SIGTERM
+  watch     every PEAK_EVERY s: each registered job's memory, its peak kept (PEAKS); every POLL s: fixed above PAUSE:
+            the newest running registered job is paused (SIGSTOP to its process group), the next newest one
+            PAUSE_STEP s later if still above; above KILL: the newest one gets SIGTERM
             (DQC / GCIQL save and exit on it); below RESUME the paused jobs are continued in the reverse order (the
             older jobs first, the newest last), one per PAUSE_STEP s. On its start it continues every registered job
             (none is left stopped by an earlier watchdog).
   status    the registry's live jobs with their memory now.
-Registry: logs/train/mem_gate.jsonl, one line per job (name, pid, its start time, mem, gpu).
+Registry: logs/train/mem_gate.jsonl, one line per job (name, pid, its start time, mem, gpu); peaks:
+logs/train/mem_gate_peaks.json.
     python scripts/mem_gate.py admit --name puzzle_4x4_pix --mem 30 --gpu 15000 --pidfile <f> --log <f> [--cwd <dir>] \\
         -- cmd args...
     setsid nohup python scripts/mem_gate.py watch > $STABLEWM_HOME/logs/mem_gate_watch.log 2>&1 < /dev/null &
@@ -32,10 +35,11 @@ import sys
 import time
 
 BUDGET, PAUSE, KILL, RESUME = 72.0, 80.0, 85.0, 70.0  # GiB of fixed memory; memory.high is 88
-POLL, PAUSE_STEP, RAMP, RAMP_MEM = 5.0, 30.0, 600.0, 1800.0
+POLL, PAUSE_STEP, RAMP, RAMP_MEM, PEAK_EVERY = 5.0, 30.0, 600.0, 1800.0, 30.0
 HOME = os.environ.get('STABLEWM_HOME', os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..',
                                                     'lewm_pcd_data'))
 REG = os.path.join(HOME, 'logs', 'train', 'mem_gate.jsonl')
+PEAKS = os.path.join(HOME, 'logs', 'train', 'mem_gate_peaks.json')
 LOCK = os.path.join(HOME, 'logs', 'train', '.gpu_gate.lock')
 
 
@@ -104,11 +108,26 @@ def group_gib(pgid):
     return kb / 2**20 + sum(b for ino, b in held.items() if ino not in mapped) / 2**30
 
 
+def job_key(j):
+    return f"{j['pid']}:{j['start']}"
+
+
+def load_peaks():
+    try:
+        return json.load(open(PEAKS))
+    except (OSError, ValueError):
+        return {}
+
+
 def pending_gib(jobs):
-    """Reserved but not yet used memory of the jobs started in the last RAMP_MEM s."""
-    t = time.time()
-    return sum(max(0.0, j['mem'] - group_gib(j['pid'])) for j in jobs
-               if t - j.get('ts', time.mktime(time.strptime(j['t'], '%Y-%m-%d_%H:%M:%S'))) < RAMP_MEM)
+    """What the running jobs may still take: max(0, R - used), R = max(mem, peak) in a job's first RAMP_MEM s, its
+    peak (seen by the watchdog) after."""
+    t, peaks, total = time.time(), load_peaks(), 0.0
+    for j in jobs:
+        age = t - j.get('ts', time.mktime(time.strptime(j['t'], '%Y-%m-%d_%H:%M:%S')))
+        peak = peaks.get(job_key(j), 0.0)
+        total += max(0.0, (max(j['mem'], peak) if age < RAMP_MEM else peak) - group_gib(j['pid']))
+    return total
 
 
 def register(name, pid, mem, gpu):
@@ -159,12 +178,23 @@ def signal_group(j, sig):
 def watch(_):
     print(f'{now()} watch: fixed memory pause above {PAUSE} GiB, SIGTERM above {KILL}, resume below {RESUME}; '
           f'budget for starts {BUDGET}', flush=True)
-    paused, last_act, last_print = [], 0.0, 0.0  # paused: registry entries, in pause order
+    paused, last_act, last_print, last_peak = [], 0.0, 0.0, 0.0  # paused: registry entries, in pause order
+    peaks = load_peaks()
     for j in live_jobs():
         signal_group(j, signal.SIGCONT)
     while True:
         fx, t = fixed_gib(), time.time()
         jobs = live_jobs()
+        if t - last_peak > PEAK_EVERY:
+            keys = {job_key(j) for j in jobs}
+            peaks = {k: v for k, v in peaks.items() if k in keys}
+            for j in jobs:
+                peaks[job_key(j)] = max(peaks.get(job_key(j), 0.0), group_gib(j['pid']))
+            tmp = PEAKS + '.tmp'
+            with open(tmp, 'w') as f:
+                json.dump(peaks, f)
+            os.replace(tmp, PEAKS)
+            last_peak = t
         live = {(j['pid'], j['start']) for j in jobs}
         paused = [j for j in paused if (j['pid'], j['start']) in live]
         if fx > KILL and t - last_act > PAUSE_STEP and jobs:
@@ -195,9 +225,10 @@ def watch(_):
 def status(_):
     jobs = live_jobs()
     print(f'fixed {fixed_gib():.1f} GiB, budget {BUDGET}, GPU {free_gpu_mib()} MiB free')
+    peaks = load_peaks()
     for j in jobs:
-        print(f'  {j["name"]:28s} pid {j["pid"]:7d}  uses {group_gib(j["pid"]):5.1f} GiB of {j["mem"]:4.0f}  '
-              f'since {j["t"]}')
+        print(f'  {j["name"]:28s} pid {j["pid"]:7d}  uses {group_gib(j["pid"]):5.1f} GiB of {j["mem"]:4.0f}, peak '
+              f'{peaks.get(job_key(j), 0.0):5.1f}  since {j["t"]}')
 
 
 def main():

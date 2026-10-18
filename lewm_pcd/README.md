@@ -264,8 +264,9 @@ checkpoint 的 config 记录了 `chunk_points`，评测用同一值；ManiSkill 
   本地跑 `train.py` 一定要传 `subdir=<run 名>`，否则 checkpoint 互相覆盖。崩溃续训：`scripts/train/resume_train_detached.sh`。
 - 官方 2D 与像素 4D 的完整流程（采集 → 合并 → 评测列 → 训练 → 逐 epoch 评测）：`scripts/run_pix_pipeline.sh`、`scripts/run_pix_agg_followup.sh`。
 - 容器内存上限 90 GB：像素数据集的页缓存加两个训练会顶到上限并被平台杀掉进程，训练时要控制并行数（脚本里的并行度和显存门槛是本机参数）。
-  程序占的内存（anon + shmem）过了 88 GiB 整台机器会被限速、几乎连不上。OGBench 的三条流水线（`run_puzzle_pipeline.sh`、`run_scene_pipeline.sh`、`run_scene_baselines.sh`）
-  的每个长任务都经 `scripts/mem_gate.py admit` 启动：按各任务实测或估计的占用算，加上去不超过 72 GiB、显存也够才放行；
+  程序占的内存（anon + shmem）过了 88 GiB 整台机器会被限速、几乎连不上。OGBench 的四条流水线（`run_puzzle_pipeline.sh`、`run_scene_pipeline.sh`、`run_scene_baselines.sh`、
+  `run_puzzle_baselines.sh`）的每个长任务都经 `scripts/mem_gate.py admit` 启动：按各任务实测或估计的占用算（已在跑的按它出现过的最高占用算，
+  LeJEPA 训练每个 epoch 末会暂时降下来），加上去不超过 72 GiB、显存也够才放行；
   另开 `scripts/mem_gate.py watch` 常驻：超过 80 GiB 暂停最新的任务，超过 85 GiB 停掉它，降回 70 GiB 以下再恢复。页缓存仍由 `TMP/ops/cache_guard.py` 清。
 
 ## 评测
