@@ -1,8 +1,8 @@
 # OGBench puzzle（3x3、4x4、4x5）与 scene 结果
 
-两个 OGBench 场景，各自采游玩数据训练 LeWM 2D / 3D，再冻结编码器、学策略评测：
+两个 OGBench 场景，各自采游玩数据训练 LeWM 2D / 3D，再冻结编码器、学策略评测；三个 JEPA 类基线（V-JEPA 2.1 冻结原版，LeJEPA、PLDM 用同一份数据按各自官方配方训练）按同样的方式评测：
 
-- **puzzle-3x3**：9 个按钮的灯，按一个按钮会翻转它和相邻按钮的灯。评测用离线 RL，输入是冻结的潜变量加 9 个灯的真值；全量用 OGBench 官方的 GCIQL，小规模那次用的是 DQC。
+- **puzzle-3x3**：9 个按钮的灯，按一个按钮会翻转它和相邻按钮的灯。评测用离线 RL（DQC），输入是冻结的潜变量加 9 个灯的真值；全量另用 OGBench 官方的 GCIQL 跑过一次。
 - **puzzle-4x4、4x5**：16 / 20 个按钮，其余同 3x3；评测用 DQC。
 - **scene**：1 个物块、2 个按钮（分别锁抽屉和窗户）、1 个抽屉、1 个窗户。评测用 CortexBench 的模仿学习协议，环境换成 scene 的 5 个评测任务。
 
@@ -56,7 +56,7 @@
 采集、puzzle 的两个训练已完成，全量数据和小规模那次按种子逐回合核对过（scene 同种子的回合逐列相同，puzzle 逐行相同到第一个随机动作）。scene 的两个训练也已完成。puzzle 的 GCIQL 也已跑完（`logs/gciql/puzzle_3x3_official/`）。scene 的 CortexBench 和三个 JEPA 类基线也已跑完（下表）。puzzle-4x5 的 DQC 也已跑完（下表）。三个 JEPA 类基线在 puzzle 3×3、4×4、4×5 上照 LeWM 的 DQC 流程也已跑完（`scripts/run_puzzle_baselines.sh`，下表）。
 
 - puzzle 的评测原先按 DQC 跑，按用户要求改成 GCIQL；DQC 停在 2D 第 62 万步、3D 第 57.6 万步（存档在 `logs/dqc/puzzle_3x3/`），后来按用户要求从存档续跑到 100 万步。
-- puzzle-4x4 跑完（下表）；puzzle-4x5：采集完成（官方 noisy 规模 3000 回合），3D 世界模型训完，2D 训练中，之后提潜变量、跑 DQC（`logs/puzzle_4x5_pipeline.log`）。
+- puzzle-4x4、4x5 都已跑完（下表）。
 - scene 的 PLDM 第一次训练时机器的程序内存涨到 88 GiB（当时的门槛只在开跑那一刻看一眼占用），被用户手动停掉；之后所有长任务改经 `scripts/mem_gate.py` 排队启动，PLDM 重新排队。
 
 ### puzzle-3x3：DQC（全量）

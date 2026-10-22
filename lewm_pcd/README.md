@@ -2,7 +2,7 @@
 
 在 stable-worldmodel 的 `swm/OGBCube-v0` 环境上，把 LeWM 的像素输入换成点云输入，并加一个时间聚合的 4D 变体；采集、模型、训练、评测都沿用 LeWM 的做法，只改必要的部分。
 同一套流程还跑了官方 2D 复现、像素 4D，以及框架自带的 PLDM / GCBC 基线。基于 le-wm `8edfeb3` 与 stable-worldmodel `6f1e499`。
-这个分支（`cortexbench`）另外在 CortexBench 的 MetaWorld 任务上评测 LeWM 2D / 3D：做规划评测，并按 CortexBench 原协议（冻结编码器 + 模仿学习）打分，机器人有原版 Sawyer 和换成 RM75-B + EG2-4C2 两种；CortexBench 的 TriFinger 两个任务（reach_cube、move_cube）也按同样的方式评测。OGBench 的 puzzle-3x3 和 scene 同样采游玩数据训练 2D / 3D，冻结编码器后分别用离线 RL（DQC）和 CortexBench 的模仿学习评测。
+这个分支（`cortexbench`）另外在 CortexBench 的 MetaWorld 任务上评测 LeWM 2D / 3D：做规划评测，并按 CortexBench 原协议（冻结编码器 + 模仿学习）打分，机器人有原版 Sawyer 和换成 RM75-B + EG2-4C2 两种；CortexBench 的 TriFinger 两个任务（reach_cube、move_cube）也按同样的方式评测。OGBench 的 puzzle（3x3、4x4、4x5）和 scene 同样采游玩数据训练 2D / 3D，冻结编码器后分别用离线 RL（DQC）和 CortexBench 的模仿学习评测，三个 JEPA 类基线同样评测。
 
 ## 结果
 
@@ -114,14 +114,31 @@ bin-picking 和 drawer-open 的 CortexBench 明显低于 Sawyer。bin-picking �
 
 CortexBench TriFinger 的对照（VC-1 论文表 8，reach / move）：R3M 86.5 / 51.9，VC-1 ViT-B 83.9 / 60.6，随机初始化的 ViT-B（冻结）74.3 / 41.3。
 
-### OGBench puzzle-3x3 与 scene
+### OGBench puzzle（3x3、4x4、4x5）与 scene
 
-用 OGBench 原版的 puzzle-3x3 和 scene 环境（`envs/ogb_puzzle_env.py`、`envs/ogb_scene_env.py`）采游玩数据，训练 2D 和 3D：puzzle 照官方 noisy 数据的采法；scene 逐个物体任务按 MetaWorld 的三部分计划采，一个模型训练整个场景。冻结编码器后，puzzle 用离线 RL（全量用 OGBench 官方的 GCIQL，`bench/gciql/`；小规模那次用 DQC，`bench/dqc/`；输入是潜变量加 9 个灯的真值），scene 用 CortexBench 的模仿学习（`bench/cortexbench/run_bc_scene.py`，OGBench scene 的 5 个评测任务，策略另给 6 维本体感受）。全量规模（puzzle 1000 回合、scene 1 万回合）在跑，下表是小规模那次（puzzle 200 回合、scene 1000 回合）。做法、全部结果、代码迁出 TMP 时的逐位核对见 [`results_ogbench.md`](results_ogbench.md)。更大的 puzzle-4x4、4x5 照同样的采法采（官方 noisy 的规模，1000 / 3000 回合）、同样训练，评测用 DQC（DQC 论文给 puzzle-4x5 的超参），在跑。
+用 OGBench 原版的 puzzle 和 scene 环境（`envs/ogb_puzzle_env.py`、`envs/ogb_scene_env.py`）采游玩数据，训练 2D 和 3D：puzzle 照官方 noisy 数据的采法（3x3、4x4 各 1000 回合，4x5 3000 回合）；scene 逐个物体任务按 MetaWorld 的三部分计划采（1 万回合），一个模型训练整个场景。冻结编码器后，puzzle 用离线 RL 评测（DQC，`bench/dqc/`：OGBench 官方 play 数据按我们的相机重画、过冻结编码器，输入是潜变量加灯的真值；3x3 用它自己那组超参，4x4、4x5 用 DQC 论文给 puzzle-4x5 的超参；100 万步，每 10 万步在官方 5 个任务上各评 50 回合），scene 用 CortexBench 的模仿学习（`bench/cortexbench/run_bc_scene.py`，OGBench scene 的 5 个评测任务，策略另给 6 维本体感受）。三个 JEPA 类基线按同样的方式评测：V-JEPA 2.1 冻结原版，LeJEPA、PLDM 用同一份数据按各自官方配方训练 10 个 epoch（`scripts/run_puzzle_baselines.sh`、`scripts/run_scene_baselines.sh`）。做法、逐任务结果、小规模那次和各项核对见 [`results_ogbench.md`](results_ogbench.md)。
 
-| 小规模 | LeWM 2D | LeWM 3D | 对照 |
+puzzle，DQC 成功率 %：OGBench 口径（第 80、90、100 万步三次评测的平均）/ 训练中评测的最高值，每个输入一个种子：
+
+| 输入 | 3x3 | 4x4 | 4x5 |
 |---|---|---|---|
-| puzzle-3x3，DQC 第 100 万步（官方 5 个任务） | 64.4 | 77.6 | 原版 55 维状态输入 65.2 |
-| scene，CortexBench 5 个任务（种子 100） | 47.2 | 56.0 | — |
+| LeWM 2D | 70.7 / 100 | 15.3 / 99.6 | 25.2 / 26.4 |
+| LeWM 3D | 73.1 / 100 | 7.6 / 95.6 | 58.4 / 68.0 |
+| V-JEPA 2.1（冻结） | 54.4 / 100 | 3.1 / 99.6 | 31.9 / 32.8 |
+| LeJEPA | 25.7 / 96.8 | 7.7 / 99.2 | 94.7 / 96.4 |
+| PLDM | 63.3 / 100 | 12.5 / 95.6 | 20.7 / 21.6 |
+
+对照：DQC 论文原版（状态输入）puzzle-4x5 第 100 万步 95.8（10 个种子）。3x3、4x4 上所有输入第 10–20 万步就接近满分，之后往下掉；4x5 上 LeJEPA 这一行核对过，没有找到错误，但只有一个种子（见 results_ogbench.md）。puzzle-3x3 另用 OGBench 官方的 GCIQL 跑过：2D 1.1，3D 0.1。
+
+scene，CortexBench 模仿学习，种子 100 / 200 / 300 平均，20 次评测里最高的那次，%：
+
+| 编码器 | 5 个任务平均 |
+|---|---|
+| LeWM 3D | 64.8 |
+| PLDM | 46.1 |
+| LeJEPA | 41.1 |
+| LeWM 2D | 40.8 |
+| V-JEPA 2.1（冻结） | 38.4 |
 
 ## 与 LeWM 的对应
 
@@ -146,7 +163,7 @@ lewm_pcd/
 │   ├── metaworld/             MetaWorld 任务环境、单相机点云、三部分采集策略；rm75/ 是换成 RM75 的版本
 │   └── trifinger/             CortexBench 的 TriFinger 环境封装、单相机点云、复现的官方专家、三部分采集策略
 ├── bench/cortexbench/         CortexBench 跑分：LeWM 和 JEPA 类基线的编码器接入、RM75 任务、TriFinger、OGBench scene、汇总（third_party/eai-vc、third_party/vjepa2 是官方代码，不进 git）
-├── bench/dqc/                 OGBench puzzle 上的离线 RL 评测：DQC（3x3 小规模那次、4x4 / 4x5 全量）和共用的潜变量提取（third_party/dqc 是官方代码，不进 git）
+├── bench/dqc/                 OGBench puzzle 上的离线 RL 评测：DQC（3x3、4x4、4x5，LeWM 和三个 JEPA 类基线）和潜变量提取（third_party/dqc 是官方代码，不进 git）
 ├── bench/gciql/               OGBench puzzle-3x3 上的离线 RL 评测：GCIQL（全量；third_party/ogbench 是官方代码，不进 git）
 ├── results_metaworld.md       MetaWorld 的全部结果
 ├── results_trifinger.md       TriFinger 的结果
