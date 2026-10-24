@@ -280,11 +280,12 @@ CortexBench 的随机基线（随机初始化、冻结的 ViT-B）：6.7（20 / 
   - CortexBench 每次运行的记录：`logs/cortexbench/runs/lewm_mw_assembly_rm75_{pix,pcd}/`；示范：`datasets/cortexbench/metaworld-rm75-expert{,-pcd}/`。
   - 模型：`checkpoints/mw_assembly_rm75_{pix,pcd_dexart}/`。
 
-## JEPA 类基线：LeJEPA、PLDM、V-JEPA 2.1（2026-10-12）
+## JEPA 类基线：LeJEPA、PLDM、V-JEPA 2.1（2026-10-12）、VISReg（2026-10-24）
 
 | 编码器 | assembly | bin-picking | button-press-topdown | drawer-open | hammer | 五任务均值 |
 |---|---|---|---|---|---|---|
 | V-JEPA 2.1 ViT-B | 90.7（96 / 84 / 92） | 82.7（72 / 88 / 88） | 77.3（92 / 80 / 60） | 100.0（100 / 100 / 100） | 100.0（100 / 100 / 100） | 90.1 |
+| VISReg ViT-B | 89.3（96 / 76 / 96） | 74.7（76 / 76 / 72） | 77.3（72 / 84 / 76） | 100.0（100 / 100 / 100） | 100.0（100 / 100 / 100） | 88.3 |
 | LeJEPA | 34.7（40 / 32 / 32） | 61.3（68 / 60 / 56） | 78.7（76 / 76 / 84） | 100.0（100 / 100 / 100） | 100.0（100 / 100 / 100） | 74.9 |
 | PLDM | 54.7（72 / 40 / 52） | 53.3（52 / 48 / 60） | 64.0（60 / 72 / 60） | 100.0（100 / 100 / 100） | 100.0（100 / 100 / 100） | 74.4 |
 | 对照：LeWM 3D | 96.0 | 100.0 | 98.7 | 100.0 | 97.3 | **98.4** |
@@ -296,21 +297,22 @@ CortexBench 的随机基线（随机初始化、冻结的 ViT-B）：6.7（20 / 
   - LeJEPA：官方最小配方（galilai-group/lejepa 的 MINIMAL.md），只换了骨干、数据和增强尺寸，改动逐条列在 `scripts/baselines/train_lejepa_mw.py` 开头。CortexBench 取骨干 CLS 过 512 维头的特征，即官方做线性探测用的那个。
   - PLDM：框架的 `scripts/train/pldm.py`（6f1e499，打了「框架基线」一节的补丁），`data=ogb` 换成任务的数据集，其余默认。CortexBench 取 CLS 过投影头的 192 维，即它预测器工作的空间，和 LeWM 取的位置一致。
 - **V-JEPA 2.1**：Meta 发布的 ViT-B（`vjepa2_1_vitb_dist_vitG_384.pt`，从 ViT-G 蒸馏），冻结直接测。单帧走它的图像分词器，最后一层 patch token 取均值（768 维）；预处理照它官方评测，输入 384、ImageNet 归一化。加载和官方 hub 逐位一致。CortexBench 用 2 个并发（4 个时和两个训练一起跑，显存不够）。
+- **VISReg**：作者发布的 ViT-B/16（arXiv 2606.02572，ImageNet-1K 预训练 400 个 epoch，`visreg-vit-b-inet1k.pth`，作者给的下载链接），冻结直接测。骨干严格载入 timm 的 `vit_base_patch16_224`（num_classes=0），取最后一层 norm 之后的 CLS（768 维），即作者 stable-pretraining 代码里 VISReg 评测用的 `backbone(images)`；只在训练时用的投影头不用。输入 224、ImageNet 归一化。用之前先复现了论文的线性探测（冻结、最后 4 层的 CLS 拼接、10 个 epoch）：CIFAR-10 96.2（论文 94.6）、CIFAR-100 84.0（论文 78.8），不低于论文，权重和加载是对的。CortexBench 用 4 个并发。
 - **训练实现先在别的数据上和官方结果对过**：
   - LeJEPA 官方最小脚本，ImageNette：第 676–685 / 800 个 epoch 的测试精度 88.8–90.0 %，官方最终 90.7 %。
   - PLDM（框架脚本），Push-T：第 5 个 epoch 规划评测（种子 42）76 %，LeWM 论文 78.0 ± 5.0。
   - 评测流程：作者发布的 LeWM-PushT 权重，框架现在的评测脚本 88 / 88 / 88（种子 42 / 43 / 44），论文当时的代码 94 / 90 / 84。
-- **跑法**：`scripts/run_mw_baselines.sh`（两条训练线 + CortexBench，可重复启动）；加载函数在 `bench/cortexbench/jepa_baselines.py`。
+- **跑法**：`scripts/run_mw_baselines.sh`（两条训练线 + CortexBench，可重复启动），VISReg 用 `scripts/run_visreg_baselines.sh`（MetaWorld、scene、puzzle 一起跑）；加载函数在 `bench/cortexbench/jepa_baselines.py`。
 - **原始记录**（在 `$STABLEWM_HOME` 下）：
-  - 模型：`checkpoints/{lejepa,pldm}_mw_<任务>/`；V-JEPA 2.1 权重在 `checkpoints/cortexbench_baselines/`。
+  - 模型：`checkpoints/{lejepa,pldm}_mw_<任务>/`；V-JEPA 2.1 权重在 `checkpoints/cortexbench_baselines/`，VISReg 在 `checkpoints/visreg/`。
   - 训练日志：`logs/train/train_{lejepa,pldm}_mw_<任务>.log`。
-  - CortexBench：`logs/cortexbench/runs/{lejepa_mw_<任务>,pldm_mw_<任务>,vjepa21_vitb}/`。
+  - CortexBench：`logs/cortexbench/runs/{lejepa_mw_<任务>,pldm_mw_<任务>,vjepa21_vitb,visreg_vitb}/`。
 
 ## 与其他工作的对比（CortexBench MetaWorld 五任务）
 
 - "论文"行取自 VC-1 论文（arXiv 2303.18240）附录 Table 8 的 MetaWorld 各列。
 - "本机复现"行由 `bench/cortexbench` 在本机用各自的官方权重跑出，3 个种子。
-- "本机"行的 LeJEPA、PLDM 用和 LeWM 同一份游玩数据训练，V-JEPA 2.1 用官方权重，见上一节。
+- "本机"行的 LeJEPA、PLDM 用和 LeWM 同一份游玩数据训练，V-JEPA 2.1、VISReg 用官方权重，见上一节。
 - 按五个任务的均值排序，即 VC-1 论文中 MetaWorld 一项的分数。
 
 | 模型 | 来源 | assembly | bin-picking | button-press | drawer-open | hammer | 五任务均值 |
@@ -325,6 +327,7 @@ CortexBench 的随机基线（随机初始化、冻结的 ViT-B）：6.7（20 / 
 | MAE Ego4D+N (ViT-L) | 论文 | 89.3 | 73.3 | 89.3 | 100.0 | 93.3 | 89.0 |
 | VC-1 ViT-B | 本机复现 | 89.3 | 80.0 | 74.7 | 100.0 | 100.0 | 88.8 |
 | VC-1 ViT-L | 论文 | 88.0 | 84.0 | 80.0 | 100.0 | 92.0 | 88.8 |
+| VISReg (ViT-B) | 本机 | 89.3 | 74.7 | 77.3 | 100.0 | 100.0 | 88.3 |
 | MAE Ego4D+M (ViT-L) | 论文 | 89.3 | 73.3 | 84.0 | 100.0 | 94.7 | 88.3 |
 | MVP (ViT-L) | 论文 | 89.3 | 78.7 | 70.7 | 100.0 | 98.7 | 87.5 |
 | MAE Ego4D+MN (ViT-L) | 论文 | 93.3 | 70.7 | 74.7 | 100.0 | 94.7 | 86.7 |

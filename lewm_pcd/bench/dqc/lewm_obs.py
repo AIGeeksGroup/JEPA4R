@@ -67,16 +67,18 @@ class Encoders:
 class BaselineEncoder:
     """A JEPA-family baseline as CortexBench loads it (bench/cortexbench/jepa_baselines.py: the frozen model and its own
     transforms, Resize + ToTensor + Normalize applied to a PIL image as run_bc_scene.py does): vjepa21 (a checkpoint
-    file, 768-d at 384), lejepa (a checkpoint directory, 512-d), pldm (a checkpoint directory, 192-d). prep() is the PIL
+    file, 768-d at 384), visreg (a checkpoint file, 768-d at 224), lejepa (a checkpoint directory, 512-d), pldm (a
+    checkpoint directory, 192-d). prep() is the PIL
     resize of 224 frames to the encoder's input size (identity at 224), encode() the rest on the GPU (/ 255 =
     ToTensor, Normalize, the model)."""
 
-    LOADERS = {'vjepa21': 'load_vjepa21', 'lejepa': 'load_lejepa', 'pldm': 'load_pldm'}
+    LOADERS = {'vjepa21': 'load_vjepa21', 'visreg': 'load_visreg', 'lejepa': 'load_lejepa', 'pldm': 'load_pldm'}
+    FILE = ('vjepa21', 'visreg')  # loaders that take a checkpoint file (the others a directory and an epoch)
 
     def __init__(self, name, path, epoch=10):
         import jepa_baselines as jb  # bench/cortexbench, on sys.path above
         load = getattr(jb, self.LOADERS[name])
-        model, self.dim, tf, _ = load(path) if name == 'vjepa21' else load(path, epoch)
+        model, self.dim, tf, _ = load(path) if name in self.FILE else load(path, epoch)
         self.model = model.to(DEV)
         resize = [t for t in tf.transforms if isinstance(t, T.Resize)][0]
         norm = [t for t in tf.transforms if isinstance(t, T.Normalize)][0]

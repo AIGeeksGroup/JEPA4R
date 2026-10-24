@@ -8,8 +8,8 @@ import json
 import os
 from pathlib import Path
 
-INPUTS = [('lewm2d', 'LeWM 2D'), ('lewm3d', 'LeWM 3D'), ('vjepa21', 'V-JEPA 2.1 (frozen)'), ('lejepa', 'LeJEPA'),
-          ('pldm', 'PLDM')]
+INPUTS = [('lewm2d', 'LeWM 2D'), ('lewm3d', 'LeWM 3D'), ('vjepa21', 'V-JEPA 2.1 (frozen)'), ('visreg', 'VISReg (frozen)'),
+          ('lejepa', 'LeJEPA'), ('pldm', 'PLDM')]
 
 
 def main():

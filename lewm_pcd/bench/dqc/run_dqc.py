@@ -4,7 +4,7 @@ evaluated on OGBench puzzle-3x3-play (the official data, 1 M steps). The inputs,
   --obs lewm2d : [the frozen LeWM 2D encoder's 192-d latent, the 9 true lights];
   --obs lewm3d : [the frozen LeWM 3D encoder's 192-d latent, the 9 true lights];
   --obs lewm2d_nolight / lewm3d_nolight : the 192-d latent only (the lights only through the latent);
-  --obs vjepa21 / lejepa / pldm : [a JEPA-family baseline encoder's latent (lewm_obs.BaselineEncoder, as CortexBench
+  --obs vjepa21 / visreg / lejepa / pldm : [a JEPA-family baseline encoder's latent (lewm_obs.BaselineEncoder, as CortexBench
                                    loads it; extract_feats_baselines.py), the true lights]; --ckpt its checkpoint.
 The goal is always the 9 lights' goal state (OGBench's oraclerep); algorithm, hyperparameters, data and evaluation
 (OGBench's 5 tasks) are unchanged.
@@ -51,7 +51,7 @@ from lewm_obs import BaselineEncoder, BaselineObs, LeWMObs  # noqa: E402
 
 FLAGS = flags.FLAGS
 flags.DEFINE_string('obs', 'state', 'state | lewm2d | lewm3d | lewm2d_nolight | lewm3d_nolight | '
-                    'vjepa21 | lejepa | pldm')
+                    'vjepa21 | visreg | lejepa | pldm')
 flags.DEFINE_string('run_dir', None, 'Output directory (checkpoint, logs).')
 flags.DEFINE_string('env_name', 'puzzle-3x3-play-oraclerep-v0', '')
 flags.DEFINE_string('dataset_path', str(DATA / 'official' / 'puzzle-3x3-play-v0.npz'), '')

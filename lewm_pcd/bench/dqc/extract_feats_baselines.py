@@ -46,7 +46,8 @@ def _render_chunk(args):
 def main():
     home = Path(os.environ['STABLEWM_HOME'])
     ap = argparse.ArgumentParser()
-    ap.add_argument('--encoder', action='append', required=True, help='name=path, name in vjepa21 / lejepa / pldm')
+    ap.add_argument('--encoder', action='append', required=True,
+                    help='name=path, name in vjepa21 / visreg / lejepa / pldm')
     ap.add_argument('--epoch', type=int, default=10, help='epoch of the trained baselines (lejepa, pldm)')
     ap.add_argument('--env-type', default='4x5', choices=['3x3', '4x4', '4x5'])
     ap.add_argument('--data', default=str(home / 'datasets' / 'ogbench' / 'official'))

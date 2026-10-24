@@ -75,11 +75,12 @@ CortexBench 五任务均值的对照：R3M 96.0，VC-1 ViT-B 89.6（本机复现
 | LeWM 3D（点云） | 100.0 | 96.0 | 98.7 | 100.0 | 97.3 | **98.4** |
 | V-JEPA 2.1 ViT-B | 82.7 | 90.7 | 77.3 | 100.0 | 100.0 | 90.1 |
 | VC-1 ViT-B | 80.0 | 89.3 | 74.7 | 100.0 | 100.0 | 88.8 |
+| VISReg ViT-B | 74.7 | 89.3 | 77.3 | 100.0 | 100.0 | 88.3 |
 | LeJEPA | 61.3 | 34.7 | 78.7 | 100.0 | 100.0 | 74.9 |
 | PLDM | 53.3 | 54.7 | 64.0 | 100.0 | 100.0 | 74.4 |
 | LeWM 2D（图像） | 77.3 | 72.0 | 29.3 | 52.0 | 89.3 | 64.0 |
 
-LeJEPA、PLDM 和 LeWM 一样，用每个任务自己的游玩数据训 10 个 epoch 再冻结；V-JEPA 2.1、VC-1 用官方权重冻结直接测。逐种子结果见 `results_metaworld.md`，训练和跑分用 `scripts/run_mw_baselines.sh`。
+LeJEPA、PLDM 和 LeWM 一样，用每个任务自己的游玩数据训 10 个 epoch 再冻结；V-JEPA 2.1、VISReg、VC-1 用官方权重冻结直接测。逐种子结果见 `results_metaworld.md`，训练和跑分用 `scripts/run_mw_baselines.sh`（VISReg 用 `scripts/run_visreg_baselines.sh`）。
 
 ### MetaWorld，RM75-B + EG2-4C2
 
@@ -116,7 +117,7 @@ CortexBench TriFinger 的对照（VC-1 论文表 8，reach / move）：R3M 86.5 
 
 ### OGBench puzzle（3x3、4x4、4x5）与 scene
 
-用 OGBench 原版的 puzzle 和 scene 环境（`envs/ogb_puzzle_env.py`、`envs/ogb_scene_env.py`）采游玩数据，训练 2D 和 3D：puzzle 照官方 noisy 数据的采法（3x3、4x4 各 1000 回合，4x5 3000 回合）；scene 逐个物体任务按 MetaWorld 的三部分计划采（1 万回合），一个模型训练整个场景。冻结编码器后，puzzle 用离线 RL 评测（DQC，`bench/dqc/`：OGBench 官方 play 数据按我们的相机重画、过冻结编码器，输入是潜变量加灯的真值；3x3 用它自己那组超参，4x4、4x5 用 DQC 论文给 puzzle-4x5 的超参；100 万步，每 10 万步在官方 5 个任务上各评 50 回合），scene 用 CortexBench 的模仿学习（`bench/cortexbench/run_bc_scene.py`，OGBench scene 的 5 个评测任务，策略另给 6 维本体感受）。三个 JEPA 类基线按同样的方式评测：V-JEPA 2.1 冻结原版，LeJEPA、PLDM 用同一份数据按各自官方配方训练 10 个 epoch（`scripts/run_puzzle_baselines.sh`、`scripts/run_scene_baselines.sh`）。做法、逐任务结果、小规模那次和各项核对见 [`results_ogbench.md`](results_ogbench.md)。
+用 OGBench 原版的 puzzle 和 scene 环境（`envs/ogb_puzzle_env.py`、`envs/ogb_scene_env.py`）采游玩数据，训练 2D 和 3D：puzzle 照官方 noisy 数据的采法（3x3、4x4 各 1000 回合，4x5 3000 回合）；scene 逐个物体任务按 MetaWorld 的三部分计划采（1 万回合），一个模型训练整个场景。冻结编码器后，puzzle 用离线 RL 评测（DQC，`bench/dqc/`：OGBench 官方 play 数据按我们的相机重画、过冻结编码器，输入是潜变量加灯的真值；3x3 用它自己那组超参，4x4、4x5 用 DQC 论文给 puzzle-4x5 的超参；100 万步，每 10 万步在官方 5 个任务上各评 50 回合），scene 用 CortexBench 的模仿学习（`bench/cortexbench/run_bc_scene.py`，OGBench scene 的 5 个评测任务，策略另给 6 维本体感受）。JEPA 类基线按同样的方式评测：V-JEPA 2.1、VISReg 冻结原版，LeJEPA、PLDM 用同一份数据按各自官方配方训练 10 个 epoch（`scripts/run_puzzle_baselines.sh`、`scripts/run_scene_baselines.sh`；VISReg 用 `scripts/run_visreg_baselines.sh`）。做法、逐任务结果、小规模那次和各项核对见 [`results_ogbench.md`](results_ogbench.md)。
 
 puzzle，DQC 成功率 %：OGBench 口径（第 80、90、100 万步三次评测的平均）/ 训练中评测的最高值，每个输入一个种子：
 
@@ -125,10 +126,13 @@ puzzle，DQC 成功率 %：OGBench 口径（第 80、90、100 万步三次评测
 | LeWM 2D | 70.7 / 100 | 15.3 / 99.6 | 25.2 / 26.4 |
 | LeWM 3D | 73.1 / 100 | 7.6 / 95.6 | 58.4 / 68.0 |
 | V-JEPA 2.1（冻结） | 54.4 / 100 | 3.1 / 99.6 | 31.9 / 32.8 |
+| VISReg（冻结） | 0.5 / 1.2 | 0.0 / 0.4 | 0.0 / 0.0 |
 | LeJEPA | 25.7 / 96.8 | 7.7 / 99.2 | 94.7 / 96.4 |
 | PLDM | 63.3 / 100 | 12.5 / 95.6 | 20.7 / 21.6 |
 
-对照：DQC 论文原版（状态输入）puzzle-4x5 第 100 万步 95.8（10 个种子）。3x3、4x4 上所有输入第 10–20 万步就接近满分，之后往下掉；4x5 上 LeJEPA 这一行核对过，没有找到错误，但只有一个种子（见 results_ogbench.md）。puzzle-3x3 另用 OGBench 官方的 GCIQL 跑过：2D 1.1，3D 0.1。
+对照：DQC 论文原版（状态输入）puzzle-4x5 第 100 万步 95.8（10 个种子）。3x3、4x4 上除 VISReg 外所有输入第 10–20 万步就接近满分，之后往下掉；4x5 上 LeJEPA 这一行核对过，没有找到错误，但只有一个种子（见 results_ogbench.md）。puzzle-3x3 另用 OGBench 官方的 GCIQL 跑过：2D 1.1，3D 0.1。
+
+VISReg 在三个盘面上都接近 0：3x3 第 10 万步 0.4（其余输入都在 96.8 以上），和没训练的策略一样，而它在 MetaWorld（88.3）、scene（40.5）上正常。先当作异常处理，原因在查，查清之前这一行不作为 VISReg 的结论。
 
 scene，CortexBench 模仿学习，种子 100 / 200 / 300 平均，20 次评测里最高的那次，%：
 
@@ -138,6 +142,7 @@ scene，CortexBench 模仿学习，种子 100 / 200 / 300 平均，20 次评测�
 | PLDM | 46.1 |
 | LeJEPA | 41.1 |
 | LeWM 2D | 40.8 |
+| VISReg（冻结） | 40.5 |
 | V-JEPA 2.1（冻结） | 38.4 |
 
 ## 与 LeWM 的对应

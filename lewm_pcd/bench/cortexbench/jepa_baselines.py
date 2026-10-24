@@ -8,6 +8,9 @@
 * load_lejepa: a LeJEPA trained by scripts/baselines/train_lejepa_mw.py (same data as LeWM): the backbone CLS through the
   512-d head, the feature the official recipe probes linearly (not the projector). Preprocessing as LeWM's.
 * load_vjepa21: Meta's V-JEPA 2.1 ViT-B (general video JEPA, frozen as released).
+* load_visreg: VISReg ViT-B/16 (arXiv 2606.02572; ImageNet-1K, 400 epochs; the authors' visreg-vit-b-inet1k.pth, shared
+  by them), frozen as released: timm's vit_base_patch16_224, the CLS after the final norm (timm's pooled output, what
+  the authors' code returns as the embedding), 768-d; the pretraining projector is dropped. Preprocessing as LeWM's.
 """
 import json
 import sys
@@ -144,3 +147,19 @@ def load_vjepa21(checkpoint: str, resolution: int = 384):
     metadata = {'algo': 'vjepa2.1', 'model': 'vit_base_patch16 (V-JEPA 2.1, distilled from ViT-G, 384)',
                 'checkpoint': str(checkpoint), 'resolution': resolution}
     return model, 768, transforms, metadata
+
+
+def load_visreg(checkpoint: str):
+    """VISReg ViT-B/16 (visreg-vit-b-inet1k.pth: timm ViT-B/16 backbone keys + the projector's 'proj.*'), frozen. The
+    backbone loads strictly into timm's vit_base_patch16_224 (num_classes=0: CLS-pooled after the final norm, as the
+    authors' stable-pretraining VISReg builds it); input 224, ImageNet normalisation (_transforms)."""
+    import timm
+    sd = torch.load(checkpoint, map_location='cpu', weights_only=True)
+    model = timm.create_model('vit_base_patch16_224', pretrained=False, num_classes=0)
+    model.load_state_dict({k: v for k, v in sd.items() if not k.startswith('proj.')}, strict=True)
+    model.eval()
+    for p in model.parameters():
+        p.requires_grad_(False)
+    metadata = {'algo': 'visreg', 'model': 'vit_base_patch16_224 (VISReg, ImageNet-1K, 400 epochs)',
+                'checkpoint': str(checkpoint)}
+    return model, 768, _transforms(), metadata
