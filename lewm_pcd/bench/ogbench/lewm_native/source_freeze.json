@@ -1,0 +1,117 @@
+{
+  "stage": "FROZEN_HELPER_BOUNDARY_FIX_V3",
+  "frozen_at": "2026-10-14T17:42:07.749789+00:00",
+  "files": {
+    "/root/autodl-tmp/workspace/users/lewm/coordination/double_cube_lewm_full10ep_109_20261015_v1/core_v1/train.py": "5a91153791f2d3a46eb6d463ebf97cc20d6777b6fdd83b6ee64c25646dc1c699",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/double_cube_lewm_full10ep_109_20261015_v1/core_v1/training_hdf5.py": "1e1d8541cd3a7e33893e24102fa80e6f83ed24546060c3da7573bbd8253ea511",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/double_cube_lewm_full10ep_109_20261015_v1/core_v1/training_checks.py": "bb88b92fa2ae03191d618602cff1433b169c9d680db040f9f555c17f40304136",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/double_cube_lewm_full10ep_109_20261015_v1/core_v1/test_training_io.py": "658c97a99ce5b34ac083d5aae251da6182c9814be0a06bc60a59a602cfdf8ec3",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/double_cube_lewm_full10ep_109_20261015_v1/core_v1/before/train.py": "733564c824ce4023abdcdcf0a65ad72f5b71efe9d21d7958a466f87c7cdfe6e5",
+    "/root/autodl-tmp/workspace/users/lewm/JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/jepa.py": "7e6680f9941268b13526082fa888a46de7dca9385bfc837e77ee649e5c034135",
+    "/root/autodl-tmp/workspace/users/lewm/JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/module.py": "0b258a9e8dc24c29fcb1e8c50a09ec78b8ea85aeb79e21dd8adf712396646620",
+    "/root/autodl-tmp/workspace/users/lewm/JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/utils.py": "a6a386523779ede2ef4453b23198e46e371a0c73200e8f957ae272b5d7b63259",
+    "/root/autodl-tmp/workspace/users/lewm/JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/encoders/__init__.py": "90e5ab276c362b6a5c1e4cd2c2363335eba8c5c34bf72fa48b4942ffc4ac5788",
+    "/root/autodl-tmp/workspace/users/lewm/JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/encoders/vit.py": "829efe4f2c11884253d236050a9fd2146732c91393547f92475a862c8fcd669a",
+    "/root/autodl-tmp/workspace/users/lewm/JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/encoders/pointnet_dexart.py": "78a545f7f41f42ed9714101d203a1ec14875495cf43fb86e72ff729fb29b184b",
+    "/root/autodl-tmp/workspace/users/lewm/JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/data/formats/hdf5.py": "0edde080986c6853a59c5c9ac85fbf055caa7672f2204002e7d7ea3b1a634294",
+    "/root/autodl-tmp/workspace/users/lewm/JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/data/dataset.py": "1b91ed58dfad9729dd618b15573358794d698af7deca8f643f17a33326a80ff4",
+    "/root/autodl-tmp/workspace/users/lewm/JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/data/format.py": "666c3613c63faf06a77f4b24a6c0b87802590473b155925841a9ac47de776b66",
+    "/root/autodl-tmp/workspace/users/lewm/JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/data/utils.py": "cc23a1852319ac8b60d027d96cb300c27da2a72e051998a6ad86e86a828bd5d3",
+    "/root/autodl-tmp/workspace/users/lewm/JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/utils.py": "f203cb4826cec6d4b474900f136fa09d6dbc13a366bf0906b67bbdac4297344c",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/double_cube_lewm_full10ep_109_20261015_v1/core_v1/check_helper_v2_fixture.py": "67815032d61f0e55300588db88875cea71beea5d6306d5100e0fa5a650826437",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/double_cube_lewm_full10ep_109_20261015_v1/core_v1/check_swmr_boundary_v1.py": "8ef9b23123df8f7c8c096d8713081f98bc71c8c1741992233835c109a6b6a95a",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/double_cube_lewm_full10ep_109_20261015_v1/core_v1/check_boundary_fix_v1.py": "4ff4cf5a232634b9775b7df1b454e1a6c0e75557079b57b0a2811622843ed84a"
+  },
+  "forward_math_ast_unchanged": true,
+  "actual_cpu_evidence": {
+    "command": "python -m pytest test_training_io.py -q --basetemp=core_v1/cpu_train16_val0_v1",
+    "actual_exit_code": 0,
+    "tests_passed": 7,
+    "wall_seconds_reported": 11.68,
+    "lifecycle_path": "/root/autodl-tmp/workspace/users/lewm/coordination/double_cube_lewm_full10ep_109_20261015_v1/core_v1/cpu_train16_val0_v1/test_actual_train16_validation0/loader_lifecycle.json",
+    "lifecycle_sha256": "a2a3c479b550994f0143909c1b1331db4553691ee65c8c2f440eb7604fec0515",
+    "CUDA_initialized": true,
+    "GPU_model_steps": 0,
+    "optimizer_steps": 0,
+    "peak_owned_workers": 16,
+    "train_workers_distinct_across_two_epochs": 32,
+    "validation_worker_pids": [
+      76058
+    ],
+    "remaining_owned_workers": 0
+  },
+  "contract": {
+    "fresh_seed": 0,
+    "epochs_per_modality": 10,
+    "train_episodes": 10000,
+    "validation_episodes": 1000,
+    "training_view_rows_per_episode": 500,
+    "physical_source_rows_per_episode": 501,
+    "history_size": 3,
+    "num_preds": 1,
+    "num_steps": 4,
+    "frameskip": 5,
+    "action_raw_dim": 5,
+    "action_chunk_dim": 25,
+    "batch_size": 128,
+    "train_num_workers": 16,
+    "validation_num_workers": 0,
+    "prefetch_factor": 2,
+    "persistent_workers": false,
+    "reader_format": "hdf5_train_bounded",
+    "raw_chunk_cache_bytes": 1048576,
+    "state_or_goal_model_inputs": false,
+    "encoder_feature_cache": false
+  },
+  "pending": [
+    "full125 source seal",
+    "actual production VDS",
+    "real all-shard CPU source coverage/FD/RSS",
+    "GPU encoder forward/backward/strict temporary reload",
+    "fresh formal training",
+    "actual epoch10 exit/reload"
+  ],
+  "relay_only_execution": true,
+  "previous_freeze_sha256": "bd389a7632e63a2fbee243fed4a3f18f8fa2c4bc462b651e6084e24cf9c01917",
+  "allowed_delta": {
+    "file": "/root/autodl-tmp/workspace/users/lewm/coordination/double_cube_lewm_full10ep_109_20261015_v1/core_v1/training_checks.py",
+    "old_sha256": "b33af54f5633a1f40268f44b75143760ebd12e9a87e2e9b7d9f59d038bd68e0d",
+    "new_sha256": "bb88b92fa2ae03191d618602cff1433b169c9d680db040f9f555c17f40304136",
+    "reason": "copy reference action arrays and close plain backing-file handle before SWMR VDS reads; reader/train/model bytes unchanged"
+  },
+  "actual_helper_fixture": {
+    "path": "/root/autodl-tmp/workspace/users/lewm/coordination/double_cube_lewm_full10ep_109_20261015_v1/core_v1/helper_v2_fixture_v1/receipt.json",
+    "sha256": "1c627022d8cfa3bd9f1ab4d824107bd2e4d216bec51c9c86b1403b713966d805",
+    "actual_exit_code": 0
+  },
+  "production_queue_probe": {
+    "batches": 48,
+    "warm": 8,
+    "measured": 32,
+    "tail": 8,
+    "batch_size": 128,
+    "workers": 16,
+    "prefetch_factor": 2,
+    "consumer_sleep_seconds": 0.3,
+    "modalities": [
+      "2D",
+      "3D"
+    ],
+    "actual_execution": "pending production seal, relay only",
+    "old_7CPU_evidence": "reused unchanged; not rerun"
+  },
+  "root_cause_receipt": {
+    "path": "/root/autodl-tmp/workspace/users/lewm/coordination/double_cube_lewm_full10ep_109_20261015_v1/core_v1/swmr_root_cause_v1/receipt.json",
+    "sha256": "650b6a1722b6ab6edd2f3c5b890187960c6ee066f1bf845ef0642631b6a0002a",
+    "actual_child_exit_code": 0,
+    "result": "all four production views at starts0/480: direct read succeeds, overlapping plain raw fails, closing raw restores exact actions"
+  },
+  "boundary_fix_receipt": {
+    "path": "/root/autodl-tmp/workspace/users/lewm/coordination/double_cube_lewm_full10ep_109_20261015_v1/core_v1/boundary_fix_v1/receipt.json",
+    "sha256": "e456597d49fb62c9a235ddbe883a84f2bbaad1060e7b8adeefb3f0eb1cc63da0",
+    "actual_child_exit_code": 0,
+    "scope": "actual cpu_profile boundary only; explicit SourceProbe test stub prevents workers/queue/NN"
+  },
+  "reused_evidence": "previous seven-test core/lifecycle and helper weight-count/failed-pin fixture unchanged; no rerun",
+  "production_cpu_queue_execution": "pending sole recovery relay; old production_cpu_v1 failure remains intact"
+}

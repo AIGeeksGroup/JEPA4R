@@ -1,0 +1,26 @@
+{
+  "train.py": {
+    "source": "coordination/double_cube_lewm_full10ep_109_20261015_v1/core_v1/train.py",
+    "sha256": "5a91153791f2d3a46eb6d463ebf97cc20d6777b6fdd83b6ee64c25646dc1c699"
+  },
+  "source_freeze.json": {
+    "source": "coordination/double_cube_lewm_full10ep_109_20261015_v1/core_v1/core_source_freeze_v3.json",
+    "sha256": "9a141b88399424b25c8e2dc1b797def519026a7c38a6a946c977c461bb0c0453"
+  },
+  "accepted_2d_source.yaml": {
+    "source": "coordination/triple_cube_migration_10155090_20261016_v1/code_front600_v1/lewm_pcd/config/train/triple_2d.yaml",
+    "sha256": "8de1d0b2681c811090f6c65282b4680a59d1350053aaa38a1586419928b7e699"
+  },
+  "accepted_3d_source.yaml": {
+    "source": "coordination/triple_cube_migration_10155090_20261016_v1/code_front600_v1/lewm_pcd/config/train/triple_3d.yaml",
+    "sha256": "e63c24348c2b7fe0ec36f3aa5fc74862788e77e89c6d5f3d3c2c0f0158fc1b5d"
+  },
+  "recipe_adaptation": {
+    "source_models_loss_optimizer_precision_epochs_unchanged": true,
+    "data_paths": "injected only from sealed profile descriptor",
+    "loader_resources": "2 workers per split, prefetch2; explicit flags may change resources",
+    "fresh_seed": 0,
+    "rgb_preprocessor_placement": "original CPU transform",
+    "training_loop": "preserved train.run.__wrapped__(cfg)"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "source_sealed_report_sha256": "2aea0bf9ecb3faebb3ade322a4899e1550a071533b5070c89ed58a5b620c93d1",
+  "source_contracts_sha256": "d274146c2efb545d7c24c0e9aa89528eaa2a333823cc55eb50c43c3a841e7d12",
+  "source_archive_sha256": "35d48e3fdb69d21d5ea3d560bc549d31d8c1ccfc699a9f73681228bd120c43ae",
+  "historical_files": {
+    "train_pix": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/ogbench-train-20261003/datasets/ogbench/fixed5_mixed_pix_train_chunk5.h5",
+      "bytes": 41981444252,
+      "mtime_ns": 1791020813031529406,
+      "sha256": "e7ac4326bd6254011a73b295117371ade18dedf489bf478ced5aafd7d4a38c94"
+    },
+    "train_pcd": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/ogbench-train-20261003/datasets/ogbench/fixed5_mixed_pcd_train.h5",
+      "bytes": 16483328,
+      "mtime_ns": 1791011926181161385,
+      "sha256": "ad2265ef0b9cb72658c87c58c87c711c356bd954b07491eb04ebb7b47f48c169"
+    },
+    "all_pcd": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/ogbench-train-20261003/datasets/ogbench/fixed5_mixed_all_pcd.h5",
+      "bytes": 43671274468,
+      "mtime_ns": 1791011817125415622,
+      "sha256": "9f5c640ccd0798c8017ec28cdfbfbe172e1f5ae177bfcdb266585cc534f6869d"
+    }
+  },
+  "source_unchanged_and_append_backup": {
+    "actual_exit_code": 0,
+    "archive": "coordination\\cube_unified_single_lewm_20261025_v3\\DATA_EVIDENCE_APPEND_BACKUP.tar.gz",
+    "archive_sha256": "85d253d2ee9405186216529a827db8616dd6cbbf08bf85fe6cd87f6c6b29026e",
+    "source_sha256": {
+      "coordination\\lewm_gcbc_train_20261006\\data_audit\\sealed_report.json": "2aea0bf9ecb3faebb3ade322a4899e1550a071533b5070c89ed58a5b620c93d1",
+      "coordination\\lewm_gcbc_train_20261006\\data_audit\\contracts.json": "d274146c2efb545d7c24c0e9aa89528eaa2a333823cc55eb50c43c3a841e7d12",
+      "coordination\\lewm_gcbc_train_20261006\\data_audit\\hashes.json": "6dbd24c693cf4e6fe52fb08a0cf70323277af79ac25996c84c9edbc469bb19dd"
+    },
+    "archive_members_verified": {
+      "coordination\\lewm_gcbc_train_20261006\\data_audit\\sealed_report.json": true,
+      "coordination\\lewm_gcbc_train_20261006\\data_audit\\contracts.json": true,
+      "coordination\\lewm_gcbc_train_20261006\\data_audit\\hashes.json": true
+    },
+    "sources_unchanged": true
+  },
+  "raw_scan_performed": false,
+  "large_file_current_full_hash_performed": false
+}

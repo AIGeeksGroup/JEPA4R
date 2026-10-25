@@ -1,0 +1,5 @@
+{
+  "data_root": "/root/autodl-tmp/workspace/users/lewm/ogbench-train-20261003/datasets/ogbench",
+  "output_root": "/autodl-fs/data/lewm/cube_unified/single_original_new_run",
+  "python": "/root/autodl-tmp/conda/envs/jepa4r-smoke/bin/python"
+}

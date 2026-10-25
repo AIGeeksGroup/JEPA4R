@@ -1,0 +1,10 @@
+{
+  "command": [
+    "C:\\Users\\\u6881.LAPTOP-7MN0U0VK\\OneDrive\\\u6587\u6863\\ChatGPT\\\u4ece\u5934\u5230\u5c3e\u7eafog\\coordination\\cube_unified_switch_merge_20261025_v1\\test_runtime\\Scripts\\python.exe",
+    "-m",
+    "unittest",
+    "bench.ogbench.tests.test_single_original_data.SingleOriginalDataTests.test_describe_has_original_windows_and_one_source",
+    "-v"
+  ],
+  "actual_exit_code": 1
+}

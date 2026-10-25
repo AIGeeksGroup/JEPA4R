@@ -1,0 +1,7 @@
+{
+  "data_root": "/root/autodl-tmp/workspace/users/lewm/quadruple_cube_portable_20261016_v1/data/views/quadruple600_serial_v1",
+  "output_root": "/autodl-fs/data/lewm/cube_unified/lewm_quadruple600_new_run",
+  "python": "/root/autodl-tmp/conda/envs/quad-wm/bin/python",
+  "workers": 20,
+  "prefetch": 2
+}

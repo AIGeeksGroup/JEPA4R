@@ -1,0 +1,15 @@
+{
+  "actual_exit_code": 0,
+  "command": [
+    "C:\\Users\\\u6881.LAPTOP-7MN0U0VK\\OneDrive\\\u6587\u6863\\ChatGPT\\\u4ece\u5934\u5230\u5c3e\u7eafog\\coordination\\cube_unified_switch_merge_20261025_v1\\test_runtime\\Scripts\\python.exe",
+    "-m",
+    "pytest",
+    "bench/ogbench/tests/test_single_original_data.py",
+    "bench/ogbench/tests/test_lewm_data.py",
+    "-q"
+  ],
+  "prior_failure_log": "coordination\\cube_unified_single_lewm_20261025_v3\\local_all_v1.log",
+  "prior_failure_log_sha256": "0359e1415cdc82f81360cc249eb4ebbb31975664298b1ab8e157a64484ad5d87",
+  "change": "Canonicalize both actual and expected SHA-call paths with Path.resolve; keep exact 3d VDS-only/no 2d hash list assertion",
+  "production_changes": false
+}

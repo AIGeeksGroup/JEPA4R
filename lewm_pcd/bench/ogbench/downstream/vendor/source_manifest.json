@@ -1,0 +1,97 @@
+{
+  "files": {
+    "source/ogbench/impls/utils/__init__.py": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source": "C:\\Users\\\u6881.LAPTOP-7MN0U0VK\\OneDrive\\\u6587\u6863\\ChatGPT\\\u4ece\u5934\u5230\u5c3e\u7eafog\\coordination\\cube_unified_switch_merge_20261025_v1\\closure_backup.tar.gz::source/ogbench/impls/utils/__init__.py"
+    },
+    "source/ogbench/impls/utils/datasets.py": {
+      "sha256": "52c373922a87e1ba8ad8b3b96c3474d5e6385e2ea2c7206930f7a8a315816609",
+      "source": "C:\\Users\\\u6881.LAPTOP-7MN0U0VK\\OneDrive\\\u6587\u6863\\ChatGPT\\\u4ece\u5934\u5230\u5c3e\u7eafog\\coordination\\cube_unified_switch_merge_20261025_v1\\closure_backup.tar.gz::source/ogbench/impls/utils/datasets.py"
+    },
+    "source/ogbench/impls/utils/encoders.py": {
+      "sha256": "6bd7fdd82838b754d26af01f9e84d70fa63fca1e09efee38a09f325884073ecc",
+      "source": "C:\\Users\\\u6881.LAPTOP-7MN0U0VK\\OneDrive\\\u6587\u6863\\ChatGPT\\\u4ece\u5934\u5230\u5c3e\u7eafog\\coordination\\cube_unified_switch_merge_20261025_v1\\closure_backup.tar.gz::source/ogbench/impls/utils/encoders.py"
+    },
+    "source/ogbench/impls/utils/env_utils.py": {
+      "sha256": "a92d391a3d95e26717b80ea783f487f0639c956f23ef603bfa8b7bb098f763d7",
+      "source": "C:\\Users\\\u6881.LAPTOP-7MN0U0VK\\OneDrive\\\u6587\u6863\\ChatGPT\\\u4ece\u5934\u5230\u5c3e\u7eafog\\coordination\\cube_unified_switch_merge_20261025_v1\\closure_backup.tar.gz::source/ogbench/impls/utils/env_utils.py"
+    },
+    "source/ogbench/impls/utils/evaluation.py": {
+      "sha256": "4d9a2732bc9ef89ce99fbc0f07a76d3f4d035783af3a658251709140ff9de3d5",
+      "source": "C:\\Users\\\u6881.LAPTOP-7MN0U0VK\\OneDrive\\\u6587\u6863\\ChatGPT\\\u4ece\u5934\u5230\u5c3e\u7eafog\\coordination\\cube_unified_switch_merge_20261025_v1\\closure_backup.tar.gz::source/ogbench/impls/utils/evaluation.py"
+    },
+    "source/ogbench/impls/utils/flax_utils.py": {
+      "sha256": "5b6a8e9a919bf57dae0c1454f327ded4235385f9d9dcd1e62263fe4fad9fd484",
+      "source": "C:\\Users\\\u6881.LAPTOP-7MN0U0VK\\OneDrive\\\u6587\u6863\\ChatGPT\\\u4ece\u5934\u5230\u5c3e\u7eafog\\coordination\\cube_unified_switch_merge_20261025_v1\\closure_backup.tar.gz::source/ogbench/impls/utils/flax_utils.py"
+    },
+    "source/ogbench/impls/utils/log_utils.py": {
+      "sha256": "ba5ad408d91ee35d92bf06ec7846846c5a75af4ae7cc62c329ec43d074bfaeb6",
+      "source": "C:\\Users\\\u6881.LAPTOP-7MN0U0VK\\OneDrive\\\u6587\u6863\\ChatGPT\\\u4ece\u5934\u5230\u5c3e\u7eafog\\coordination\\cube_unified_switch_merge_20261025_v1\\closure_backup.tar.gz::source/ogbench/impls/utils/log_utils.py"
+    },
+    "source/ogbench/impls/utils/networks.py": {
+      "sha256": "e7e4c4a439b691911e5ae6c2653f253c5703e6b5d190d813e28ebc32e7306094",
+      "source": "C:\\Users\\\u6881.LAPTOP-7MN0U0VK\\OneDrive\\\u6587\u6863\\ChatGPT\\\u4ece\u5934\u5230\u5c3e\u7eafog\\coordination\\cube_unified_switch_merge_20261025_v1\\closure_backup.tar.gz::source/ogbench/impls/utils/networks.py"
+    },
+    "source/ogbench/LICENSE": {
+      "sha256": "715578d1f9e969ec0e99b730b443a4a3b7d07dbc0da462e47b50c36782b1812b",
+      "source": "C:\\Users\\\u6881.LAPTOP-7MN0U0VK\\OneDrive\\\u6587\u6863\\ChatGPT\\\u4ece\u5934\u5230\u5c3e\u7eafog\\coordination\\cube_unified_switch_merge_20261025_v1\\closure_backup.tar.gz::source/ogbench/LICENSE"
+    },
+    "gciql.py": {
+      "sha256": "8611cd476d8849ad014ca43304073c3e88fc3d3aa5dab369a343ae425bba7ba7",
+      "source": "C:\\Users\\\u6881.LAPTOP-7MN0U0VK\\OneDrive\\\u6587\u6863\\ChatGPT\\\u4ece\u5934\u5230\u5c3e\u7eafog\\coordination\\cube_unified_switch_merge_20261025_v1\\closure_backup.tar.gz::assets/imports/single_cube_rl3_101632_20261018_v1/source_layout/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/core_v1/gciql.py"
+    },
+    "cube_inputs.py": {
+      "sha256": "36358548ef7a78311730913fccfdfa025d354a18edd4f8197b03b4c0d5ae5d9b",
+      "source": "coordination/cube3_pldm_gciql_103032Test_20261021_v1/functional_v1/reference_source/cube_inputs.py"
+    },
+    "legacy_distance_inputs.py": {
+      "sha256": "b9906dc2f4e7a38826f5ee05031713618a6ce408ee5555302801505452758f90",
+      "source": "coordination/cube3_pldm_gciql_103032Test_20261021_v1/functional_v1/reference_source/cube23_distance_gciql_v1/distance_inputs.py"
+    },
+    "visual_sr.py": {
+      "sha256": "e40a2ff52bd0915b7953d9011c65e02c75f9e0b2d0e454b613d18c275f6c13f0",
+      "source": "coordination/cube3_pldm_gciql_103032Test_20261021_v1/functional_v1/reference_source/cube23_distance_gciql_v1/native_sr_visual_v1/visual_sr.py"
+    },
+    "train.py": {
+      "sha256": "73ba082f730e9000a238c789726c26b075590807968a0016bc75e8e9111231d0",
+      "source": "coordination\\cube_unified_switch_merge_20261025_v1\\closure_backup.tar.gz::assets/imports/single_cube_rl3_101632_20261018_v1/source_layout/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/core_v1/train.py"
+    },
+    "run_formal.py": {
+      "sha256": "306797e1fa07dee8616adf9cc404af48380a4143d5fb36a6b04b425aae4c6928",
+      "source": "coordination\\cube_unified_switch_merge_20261025_v1\\closure_backup.tar.gz::assets/imports/single_cube_rl3_101632_20261018_v1/source_layout/ogbench-official-single-play-20261006/official_lewm_gcbc_20261006/run_formal.py"
+    },
+    "external/native_pcd_frame.py": {
+      "sha256": "ffc7cc1436381a84da5690557167f2d7b482711350f2ae4fe8ffe56a99156b98",
+      "source": "coordination\\cube_unified_switch_merge_20261025_v1\\native_capture_backup.tar.gz::external/native_pcd_frame.py"
+    },
+    "external/pcd_geometry.py": {
+      "sha256": "e1b0f13db624d4e579946cfe909dd0acb342ad261c3d190e962260ed47b30bf2",
+      "source": "coordination\\cube_unified_switch_merge_20261025_v1\\native_capture_backup.tar.gz::external/pcd_geometry.py"
+    },
+    "source/lewm_pcd/envs/cube_pcd_env.py": {
+      "sha256": "fc8be1866de1d07b2bf1c0677c9182a1b760a280e4d07a1002d7477e1984c7ab",
+      "source": "coordination\\cube_unified_switch_merge_20261025_v1\\driver_closure_backup.tar.gz::source/lewm_pcd/envs/cube_pcd_env.py"
+    },
+    "source/lewm_pcd/envs/pcd_wrapper.py": {
+      "sha256": "821d056ecf41ea69e116c0d37ac99be30dfd9ec3bda4d8e7531d03f67f9beb8e",
+      "source": "coordination\\cube_unified_switch_merge_20261025_v1\\driver_closure_backup.tar.gz::source/lewm_pcd/envs/pcd_wrapper.py"
+    },
+    "reader.py": {
+      "sha256": "08438efa11157128208385e2a044349e26a50f6a7304535967824ce47881db12",
+      "source": "coordination\\cube_unified_switch_merge_20261025_v1\\driver_closure_backup.tar.gz::assets/imports/single_cube_rl3_101632_20261018_v1/source_layout/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/core_v1/reader.py"
+    },
+    "trainer_runtime.py": {
+      "sha256": "18acaead938e573f80ec6e87e0cb44822a734decf2e97730861886841a22b82c",
+      "source": "coordination\\cube3_pldm_gciql_103032Test_20261021_v1\\functional_v1\\reference_source\\cube23_distance_gciql_v1\\trainer_runtime.py"
+    },
+    "gciql_boundary.py": {
+      "sha256": "a81363583a4826194b90974be2ad62c5895ab6b963e15ba042c9f893a46ba5e6",
+      "source": "coordination\\cube3_pldm_gciql_103032Test_20261021_v1\\functional_v1\\reference_source\\cube23_distance_gciql_v1\\gciql_boundary.py"
+    },
+    "native_runtime_helpers.py": {
+      "sha256": "a83bcf181b00d57fe5b41ef4e61c42dded0561b1ec9d4dc2c7a1c64dfdb8bc3a",
+      "source": "coordination\\cube_unified_switch_merge_20261025_v1\\physics_closure_backup.tar.gz::assets/imports/single_cube_rl3_101632_20261018_v1/source_layout/coordination/cached_lewm_state_gciql_xyz_109_20261012_v1/native_v1/locked_dependencies/native_runtime_helpers.py"
+    }
+  },
+  "original_bytes_preserved": true
+}

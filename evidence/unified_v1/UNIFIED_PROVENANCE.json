@@ -1,0 +1,79 @@
+{
+  "canonical_base_commit": "6cec281879e8b866e567dc2e936072bb652b7326",
+  "canonical_blob_line_endings_sha256": "1e871ac517c7b019eadbdb3da69ead61519c724c16038b5598b7b93be0e1f592",
+  "canonical_tracked_files_unchanged": 307,
+  "created_at": "2026-10-25T07:08:23.876641+00:00",
+  "data_collection_started": false,
+  "downstream_cpu_result": {
+    "candidate_member_sha_verified": true,
+    "device": "cpu",
+    "evaluation_started": false,
+    "formal_training_started": false,
+    "parity_actual_exit_code": null,
+    "pytest_actual_exit_code": 0,
+    "remote": "/root/autodl-tmp/workspace/users/lewm/coordination/cube_unified_switch_verify_20261025_v1/downstream_candidate_v5",
+    "scope": "downstream_contract_and_sampler"
+  },
+  "evaluation_started": false,
+  "final_all_tests_result": {
+    "candidate_member_sha_verified": true,
+    "device": "cpu",
+    "evaluation_started": false,
+    "formal_training_started": false,
+    "parity_actual_exit_code": null,
+    "pytest_actual_exit_code": 0,
+    "remote": "/root/autodl-tmp/workspace/users/lewm/coordination/cube_unified_switch_verify_20261025_v1/all_tests_final",
+    "scope": "downstream_contract_and_sampler"
+  },
+  "formal_training_started": false,
+  "impact_note": "Canonical archive exports applied Windows EOL filters. Final canonical files equal raw Git blobs; changes were verified newline-only. Final CPU suite covers the resulting tree. PLDM/Tiny numerical core bytes match the numeric candidate.",
+  "independent_reviews": {
+    "REVIEW_CLI_DATA_TRAINING_OWNER.json": "a62613211f2e79e5acddf718fb6d47abe7de0b0ef00ea1ff9e8f757c622be038",
+    "REVIEW_DOWNSTREAM_INDEPENDENT.json": "8aa84a7e748b745a4bf346db89c7b1708a52fa0275aed8c00fbb7401dbef8a25",
+    "REVIEW_DOWNSTREAM_RESOLUTION.json": "12bda3f0348db4bf62a76bcd2fd1c6acec097aba719941f753d6ac37124e0eca",
+    "REVIEW_DOWNSTREAM_RESOLUTION_v5.json": "0bde72a3b0055bd420bffac31e57474533883db5f4964d65d10e4de200b926dc",
+    "REVIEW_TRAINING_DATA_OWNER.json": "53ba45304b3133d3a282d8a67730f64b28c7aca5d8cd35e53f221f6ea0d7cc05",
+    "REVIEW_TRAINING_RESOLUTION.json": "90253d1307948b43e8b63d7e0ca27b6d4ec3af9f3f2818915ed8992dc3d5c532"
+  },
+  "local_test_log_sha256": "5b56c9a8ca08cb9d6286b3d5805a1d2fb12a5f8289ecc11f900d7b1c36538622",
+  "original_code_backup": {
+    "bytes": 75882700,
+    "path": "coordination/cube_unified_switch_merge_20261025_v1/original_code.tar.gz",
+    "sha256": "78a0909a17d2974398855e587eb3a0d97148db23ef8af568f0172266451f74da"
+  },
+  "original_snapshot_files_unchanged": 545,
+  "pushed": false,
+  "registered_lejepa_recipe": "cortexbench_tiny_only",
+  "schema": "cube_unified_provenance_v1",
+  "source_roots_preserved": true,
+  "stable_worldmodel_commit": "6f1e499e9cc0c898d326112f485c1062c3d20f24",
+  "unsupported_runtime": "Unchanged PLDM author factory is incompatible with Python3.12; use existing Python3.10.",
+  "upstream_cpu_candidate_sha256": "7fd118a6c62a3e91294a10b8ce3ef337704b2834954e12d22bff7f559afa7bf9",
+  "upstream_result": {
+    "checkpoint_sha256": {
+      "pldm_cpu_state.pt": "8e62fcfea3619a958d412be61765eb26e25432e0d2e91981793fcea2b341c7b8",
+      "tiny_cpu_state.pt": "9faafaf9da4e966cd000e9c62241d1ea727798333339ba367f92969cc798049c"
+    },
+    "cuda_sigreg_calls": 0,
+    "device": "cpu",
+    "optimizer_updates": 0,
+    "pldm_forward_loss_exact": true,
+    "pldm_gradients_exact": true,
+    "pldm_preprocess_exact": true,
+    "pldm_strict_reload_exact": true,
+    "reference_root": "/root/autodl-tmp/workspace/users/lewm/coordination/cube_unified_switch_verify_20261025_v1/cpu_candidate_002/reference",
+    "threads": 1,
+    "tiny_embedding_shape": [
+      2,
+      512
+    ],
+    "tiny_strict_reload_exact": true,
+    "torch_version": "2.8.0+cu128"
+  },
+  "validation_limits": [
+    "CPU synthetic parity and source/contract tests only.",
+    "No formal CUDA training, Native SR, full-data scan or all-server deployment.",
+    "Historical Single sealed views do not re-attest exact camera pose.",
+    "State Native and legacy LeWM training retain their original entries."
+  ]
+}

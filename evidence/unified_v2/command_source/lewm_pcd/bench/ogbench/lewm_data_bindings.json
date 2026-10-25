@@ -1,0 +1,54 @@
+{
+  "schema": "lewm_sealed_cube_bindings_v1",
+  "identity_rule": "Use the registered original manifest SHA256. Each modality and split must have its own exact view name and SHA256 in that SHA-bound manifest; never substitute an RGB view hash for PCD.",
+  "profiles": {
+    "single200": {
+      "enabled": false,
+      "reason": "Single LeWM original data identity/split contract is unclosed. Historical RGB/PCD configs exist (seed3072, train_split0.9, observation column, raw fixed5_mixed_pix_train_chunk5.h5/fixed5_mixed_pcd_train.h5); their random-window split differs from the later PLDM Single200 sealed train/validation views. A fresh LeWM recipe needs explicit approved source/split binding."
+    },
+    "double500": {
+      "enabled": true,
+      "producer_guard": "all_tasks_H500_action_bearing_rows500_v1",
+      "producer_source": "coordination/double_cube_lewm_full10ep_109_20261015_v1/aux_v1/build_training_views.py",
+      "producer_source_sha256": "5da5c35472d32293bc7abf525881c028c36494cd14f0f6d2a8e00ddaa3236323",
+      "2d": {
+        "train_view": "2d_train_action_rows500.h5",
+        "validation_view": "2d_validation_action_rows500.h5"
+      },
+      "3d": {
+        "train_view": "3d_train_action_rows500.h5",
+        "validation_view": "3d_validation_action_rows500.h5"
+      }
+    },
+    "triple_front600": {
+      "enabled": true,
+      "producer_guard": "triple_front600_v1",
+      "producer_source": "coordination/triple_cube_migration_10155090_20261016_v1/code_front600_v1/lewm_pcd/triple_training_contract.py",
+      "producer_source_sha256": "f3b2db86cc102a824fe0108a6adf04f4691fce1dfd15b826d1d58a23a2e27ee1",
+      "2d": {
+        "train_view": "2d_train_action_rows600.h5",
+        "validation_view": "2d_validation_action_rows600.h5"
+      },
+      "3d": {
+        "train_view": "3d_train_action_rows600.h5",
+        "validation_view": "3d_validation_action_rows600.h5",
+        "train_sha256": "cc78cad95b8da1f3475045bb369d9f23dc22897cd61397f352df08d997b11afc",
+        "validation_sha256": "08dddfcc0cbee051f6a60d35bc7e2bbfa60030b8e34bcb967c2b77567098759a"
+      }
+    },
+    "quadruple600": {
+      "enabled": true,
+      "producer_guard": "quadruple_H600_action_bearing_rows600_v1",
+      "producer_source": "coordination/quadruple_cube_migration_10164090d_20261016_v1/training600_serial_v1/bridge.py",
+      "producer_source_sha256": "7fd5418d347b5ea2ba20dad5cb7fb814dff99f255da2f73422b430399124a1ea",
+      "2d": {
+        "train_view": "2d_train_action_rows600.h5",
+        "validation_view": "2d_validation_action_rows600.h5"
+      },
+      "3d": {
+        "train_view": "3d_train_action_rows600.h5",
+        "validation_view": "3d_validation_action_rows600.h5"
+      }
+    }
+  }
+}

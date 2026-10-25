@@ -1,0 +1,125 @@
+output_model_name: triple_fixed5_2d_fresh_seed0
+subdir: triple_fixed5_2d_fresh_seed0
+num_workers: 2
+validation_num_workers: 0
+train_split: 0.9
+seed: 0
+fresh_seed: 0
+img_size: 224
+embed_dim: 192
+pcd_in_dim: 6
+history_size: 3
+trainer:
+  max_epochs: 10
+  devices: 1
+  accelerator: gpu
+  precision: bf16-mixed
+  gradient_clip_val: 1.0
+loader:
+  batch_size: 128
+  num_workers: ${num_workers}
+  persistent_workers: false
+  prefetch_factor: 2
+  pin_memory: true
+optimizer:
+  type: AdamW
+  lr: 5.0e-05
+  weight_decay: 0.001
+num_preds: 1
+loss:
+  sigreg:
+    weight: 0.09
+    kwargs:
+      knots: 17
+      num_proj: 1024
+wandb:
+  enabled: false
+  config:
+    entity: lewm
+    project: lewm
+    name: ${output_model_name}
+    id: ${subdir}
+    resume: allow
+    log_model: false
+data:
+  dataset:
+    format: hdf5_train_bounded
+    name: ${oc.env:TRIPLE_ROOT}/data/views/production_v1/2d_train_action_rows1000.h5
+    num_steps: 4
+    frameskip: 5
+    keys_to_load:
+    - pixels
+    - action
+    keys_to_cache:
+    - action
+  validation_dataset:
+    format: hdf5_train_bounded
+    name: ${oc.env:TRIPLE_ROOT}/data/views/production_v1/2d_validation_action_rows1000.h5
+    num_steps: 4
+    frameskip: 5
+    keys_to_load:
+    - pixels
+    - action
+    keys_to_cache:
+    - action
+    raw_chunk_cache_nbytes: 8388608
+  preprocessor:
+    _target_: utils.get_img_preprocessor
+    source: pixels
+    target: pixels
+    img_size: ${img_size}
+model:
+  _target_: jepa.JEPA
+  obs_key: pixels
+  encoder:
+    _target_: encoders.ViTCLS
+    size: tiny
+    patch_size: 14
+    image_size: ${img_size}
+    pretrained: false
+    use_mask_token: false
+  predictor:
+    _target_: module.ARPredictor
+    num_frames: ${history_size}
+    input_dim: ${embed_dim}
+    hidden_dim: ${embed_dim}
+    output_dim: ${embed_dim}
+    depth: 6
+    heads: 16
+    mlp_dim: 2048
+    dim_head: 64
+    dropout: 0.1
+    emb_dropout: 0.0
+  action_encoder:
+    _target_: module.Embedder
+    input_dim: 25
+    emb_dim: ${embed_dim}
+  projector:
+    _target_: module.MLP
+    input_dim: ${embed_dim}
+    output_dim: ${embed_dim}
+    hidden_dim: 2048
+    norm_fn:
+      _target_: torch.nn.BatchNorm1d
+      _partial_: true
+  pred_proj:
+    _target_: module.MLP
+    input_dim: ${embed_dim}
+    output_dim: ${embed_dim}
+    hidden_dim: 2048
+    norm_fn:
+      _target_: torch.nn.BatchNorm1d
+      _partial_: true
+migration_root: ${oc.env:TRIPLE_ROOT}
+triple_contract:
+  env_type: triple
+  physical_cube_count: 3
+  horizon_actions: 1000
+  raw_rows_per_episode: 1001
+  observation_dim: 46
+  qpos_dim: 35
+  qvel_dim: 32
+  action_dim: 5
+  train_episodes: 10000
+  validation_episodes: 1000
+resume_checkpoint: null

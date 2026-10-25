@@ -1,0 +1,16 @@
+{
+  "actual_exit_code": 0,
+  "canonical_source_changes": 0,
+  "downstream_cpu_summary_sha256": "743574a77bf178ae23d5e329be10356e164327bad0a248dff72bc629717d2faf",
+  "file_count": 858,
+  "final_all_tests_summary_sha256": "eb9c1b682ca8cf4b9d36c82cae2c16e9e02ca0fcbb3943896f50a1d8127b2412",
+  "final_local_log_sha256": "5b56c9a8ca08cb9d6286b3d5805a1d2fb12a5f8289ecc11f900d7b1c36538622",
+  "formal_training_or_evaluation_run": false,
+  "independent_review_resolved": true,
+  "old_sources_verified_unchanged": true,
+  "push_performed": false,
+  "schema": "cube_unified_code_acceptance_v1",
+  "source_manifest_sha256": "7fb1484fe899f3f83bb80f31fd616d3ecd7ca3238c4364d95290b6a5012aa303",
+  "upstream_cpu_tests": "26 passed; no skips in tensor/runtime suite",
+  "upstream_numerical_result_sha256": "fafd866a73ab247737daa8b7f6ad05c72d4c2fe40d7fc7940bcf1ec6a858289a"
+}

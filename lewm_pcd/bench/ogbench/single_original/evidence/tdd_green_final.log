@@ -1,0 +1,24 @@
+test_changed_schema_and_episode_index_reject_after_matching_stat (bench.ogbench.tests.test_single_original_data.SingleOriginalDataTests.test_changed_schema_and_episode_index_reject_after_matching_stat) ... ok
+test_changed_stat_and_missing_backing_are_rejected (bench.ogbench.tests.test_single_original_data.SingleOriginalDataTests.test_changed_stat_and_missing_backing_are_rejected) ... ok
+test_describe_has_original_windows_and_one_source (bench.ogbench.tests.test_single_original_data.SingleOriginalDataTests.test_describe_has_original_windows_and_one_source) ... ok
+test_invalid_mode_and_remote_root_fail (bench.ogbench.tests.test_single_original_data.SingleOriginalDataTests.test_invalid_mode_and_remote_root_fail) ... ok
+test_original_schema_allows_terminal_nan_and_avoids_large_rehash (bench.ogbench.tests.test_single_original_data.SingleOriginalDataTests.test_original_schema_allows_terminal_nan_and_avoids_large_rehash) ... ok
+test_reader_delegates_original_loader_and_exact_rgb_options (bench.ogbench.tests.test_single_original_data.SingleOriginalDataTests.test_reader_delegates_original_loader_and_exact_rgb_options) ... ok
+test_reader_rejects_new_sampling_and_cache_protocol (bench.ogbench.tests.test_single_original_data.SingleOriginalDataTests.test_reader_rejects_new_sampling_and_cache_protocol) ... ok
+test_recipe_override_must_equal_frozen_original (bench.ogbench.tests.test_single_original_data.SingleOriginalDataTests.test_recipe_override_must_equal_frozen_original) ... ok
+test_recipe_preserves_original_sampling_normalization_and_workers (bench.ogbench.tests.test_single_original_data.SingleOriginalDataTests.test_recipe_preserves_original_sampling_normalization_and_workers) ... ok
+test_manifest_checksum_rejects_before_hdf5_or_torch (bench.ogbench.tests.test_lewm_data.LeWMDataTests.test_manifest_checksum_rejects_before_hdf5_or_torch) ... ok
+test_manifest_may_not_substitute_split_or_missing_pcd_hash (bench.ogbench.tests.test_lewm_data.LeWMDataTests.test_manifest_may_not_substitute_split_or_missing_pcd_hash) ... ok
+test_native_scalar_skip5_observation_and_action_boundaries (bench.ogbench.tests.test_lewm_data.LeWMDataTests.test_native_scalar_skip5_observation_and_action_boundaries) ... skipped "No module named 'torch'"
+test_pcd_identity_comes_from_exact_sealed_manifest_entry (bench.ogbench.tests.test_lewm_data.LeWMDataTests.test_pcd_identity_comes_from_exact_sealed_manifest_entry) ... ok
+test_plan_has_exact_wm_sampling_without_opening_data (bench.ogbench.tests.test_lewm_data.LeWMDataTests.test_plan_has_exact_wm_sampling_without_opening_data) ... ok
+test_reader_rejects_protocol_override_before_tensor_import (bench.ogbench.tests.test_lewm_data.LeWMDataTests.test_reader_rejects_protocol_override_before_tensor_import) ... ok
+test_real_pcd_guard_rejects_wrong_terminal_attrs_even_with_new_hash (bench.ogbench.tests.test_lewm_data.LeWMDataTests.test_real_pcd_guard_rejects_wrong_terminal_attrs_even_with_new_hash) ... ok
+test_real_pcd_vds_accepts_and_missing_source_rejects (bench.ogbench.tests.test_lewm_data.LeWMDataTests.test_real_pcd_vds_accepts_and_missing_source_rejects) ... ok
+test_shared_reader_still_delegates_scalar_math (bench.ogbench.tests.test_lewm_data.LeWMDataTests.test_shared_reader_still_delegates_scalar_math) ... ok
+test_single_describes_original_data_and_official_profiles_fail (bench.ogbench.tests.test_lewm_data.LeWMDataTests.test_single_describes_original_data_and_official_profiles_fail) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 0.688s
+
+OK (skipped=1)
