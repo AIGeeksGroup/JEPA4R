@@ -75,3 +75,9 @@ WM编码器输入RGB或1200×6 XYZRGB，原生状态只用于数据、恢复和�
 - [完整历史：旧PCD合成64点、随机对照、旧协议与后续论文参照](docs/experiments/adroit_history.md)
 
 MuJoCo200／license、外部运行时、数据与checkpoint需另行提供。合并后未重跑完整训练或其他任务GPU回归；当前PCD接口缺匹配随机表征对照，不作预训练、模态优势或sim2real结论。
+
+## 可选：原生 RH56 Relocate
+
+[RH56 数据／接口与显式开关](docs/experiments/rh56_native_20261025.md)接入原生 RM75-B/RH56 的56D专家观测、13D proprio和12D动作。通过独立 `lewm_pcd/scripts/run_rh56.py` 选择阶段及 `--route rgb|pcd`；原Adroit入口和共享学习核心保持不变，数据／专家资产／权重作为外部输入。
+
+[2026-10-25历史生产结果及版本绑定](docs/results/rh56_relocate_20261025.json)单独记录RH56本体，不并入上方官方Adroit矩阵。该记录不是本次集成提交的完整重训验收；RGB uint8/GPU开关默认关闭，原完整模型数值等价失败记录保留。
