@@ -44,3 +44,34 @@ The first Linux harness attempt stopped before adapter execution because that en
 Data and learning modules had separate owners, froze before independent review and passed a final scope review. Added runtime files contain no deployment-specific PID/server/Nix/license path, private key, dataset or model weights. External expert/EAI paths remain explicit.
 
 This is integration/interface validation, not six new training runs. [Original production results](../results/rh56_relocate_20261025.json) retain their real producer hashes and known limits. In particular, the earlier RGB full-model CPU/GPU numerical-equivalence gate remains failed, the uint8/GPU switch remains default-off, and exact resume continuity or legacy BC numerical parity is not newly established here.
+
+## Local consolidation after the original packaging
+
+Base: `ef46345b5f2ba820e80fc777856db4e139e9d955`, itself based on the
+`cortexbench-adroit` source at `09f020747b22176cb145e84845600f9ca8e91efe`.
+
+The follow-up only consolidates duplicated file hashes, JSON writes and protected
+output checks in a dependency-free `_runtime.py`, and scopes existing runtime
+bindings with the standard-library `ExitStack`. The eight BC module bindings now
+restore after both normal return and an exception; WM and official-initial-state
+collection use the same restoration primitive. Public CLI flags, experiment
+parameters and all training/acceptance checks remain in place. New records bind
+the shared helper SHA separately; old data, reports and resume identities are not
+rewritten or relabelled.
+
+Fresh local result with the same six test files listed above: **47 passed,
+2 skipped**. Added checks cover successful/failed BC binding restoration, nested
+and partially failed installation, the actual BC call's restoring scope,
+streamed SHA equivalence, JSON encoding and exclusive immutable receipts.
+
+A source-AST comparison with `ef46345` also confirmed 42 selected contract,
+environment, preprocessing, callback and sampling definitions unchanged, plus
+identical WM and BC training configuration blocks. Shared learning sources,
+native physics, camera, uint8 implementation and the original results are
+byte-identical to that base.
+
+The earlier Linux evidence above belongs to the original packaging candidate.
+This follow-up did not repeat Linux/CUDA execution, training or SR evaluation.
+Restoring module bindings is not a claim of full in-process isolation of RNG,
+Torch thread settings or third-party caches. Exact resume and the failed RGB
+full-model numerical-equivalence gate retain their prior limitations.

@@ -4,7 +4,6 @@ Only Object/target positions are imported. RH56 reset, feedback expert, actions,
 physics, renderer, camera, sampling and the original collection loop are reused.
 """
 import argparse
-import hashlib
 import json
 from pathlib import Path
 import re
@@ -14,21 +13,11 @@ import traceback
 
 import numpy as np
 
-
-def sha(path):
-    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
-
+from rh56_adapter._runtime import (RUNTIME_HELPERS_SHA256, atomic_json,
+                                   file_sha256 as sha, temporary_bindings)
 
 def write_json(path, value, *, new=False):
-    path = Path(path)
-    text = json.dumps(value, sort_keys=True, indent=2, allow_nan=False)
-    if new:
-        with path.open('x', encoding='utf-8') as stream:
-            stream.write(text)
-    else:
-        temp = path.with_suffix('.tmp.json')
-        temp.write_text(text, encoding='utf-8')
-        temp.replace(path)
+    return atomic_json(path, value, new=new, sort_keys=True, allow_nan=False)
 
 
 def load_initials(path, seed_base):
@@ -153,7 +142,6 @@ def main(argv=None):
         write_json(out / 'wrapper_state.json', state)
 
     save()
-    old_factory = None
     try:
         code = Path(__file__).resolve().parents[1]
         sys.path.insert(0, str(code))
@@ -163,7 +151,8 @@ def main(argv=None):
         write_json(out / 'init_source.json', payload, new=True)
         write_json(out / 'plan.json', plan, new=True)
         chain = dict(schema='official-task-init-producer-chain-v1', wrapper=str(Path(__file__).resolve()),
-                     wrapper_sha256=sha(__file__), init_source_path=str(args.init_source.resolve()),
+                     wrapper_sha256=sha(__file__), runtime_helpers_sha256=RUNTIME_HELPERS_SHA256,
+                     init_source_path=str(args.init_source.resolve()),
                      init_source_sha256=args.init_source_sha256,
                      source_manifest=payload['source_manifest'], source_sha=payload['source_sha'],
                      original_collect_sha256=sha(collect.__file__), native_sha256=sha(native.__file__),
@@ -178,12 +167,12 @@ def main(argv=None):
             resets[str(value['seed'])] = value
             write_json(out / 'reset_receipts.json', resets)
 
-        old_factory = camera_preview.OppositeCameraBridge
-        camera_preview.OppositeCameraBridge = make_bridge(old_factory, records, mujoco.mj_forward, receipt)
+        bridge = make_bridge(camera_preview.OppositeCameraBridge, records, mujoco.mj_forward, receipt)
         state['phase'] = 'collecting_original_loop'
         save()
-        collect.main(['--plan', str(out / 'plan.json'), '--output', str(out / 'episodes'),
-                      '--camera', 'opposite', '--allow-expert-failure'])
+        with temporary_bindings((camera_preview, 'OppositeCameraBridge', bridge)):
+            collect.main(['--plan', str(out / 'plan.json'), '--output', str(out / 'episodes'),
+                          '--camera', 'opposite', '--allow-expert-failure'])
         manifest = json.loads((out / 'episodes/manifest.json').read_text())
         summary = summarize_attempts(manifest['auxiliary'], seeds)
         write_json(out / 'attempt_summary.json', summary, new=True)
@@ -204,9 +193,6 @@ def main(argv=None):
         state.update(phase='failed', exit_code=1, error=traceback.format_exc())
         save()
         raise
-    finally:
-        if old_factory is not None:
-            camera_preview.OppositeCameraBridge = old_factory
 
 
 if __name__ == '__main__':

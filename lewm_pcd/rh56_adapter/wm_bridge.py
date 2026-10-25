@@ -18,6 +18,9 @@ import traceback
 
 import numpy as np
 
+from rh56_adapter._runtime import (RUNTIME_HELPERS_SHA256, atomic_json, file_sha256 as sha,
+                                   temporary_bindings, validate_output_location)
+
 
 class EpisodePartition:
     def __init__(self, dataset, manifest):
@@ -137,21 +140,9 @@ def install_episode_split(train_module, dataset_path, manifest, subset_factory=N
             factory = Subset
         return [factory(dataset, audit.partition.clip_indices[s]) for s in ('train', 'val')]
 
-    train_module.get_column_normalizer = fit
-    train_module.spt.data.random_split = split
-    try:
+    with temporary_bindings((train_module, 'get_column_normalizer', fit),
+                            (train_module.spt.data, 'random_split', split)):
         yield audit
-    finally:
-        train_module.get_column_normalizer = normalizer
-        train_module.spt.data.random_split = splitter
-
-
-def sha(path):
-    digest = hashlib.sha256()
-    with Path(path).open('rb') as stream:
-        for block in iter(lambda: stream.read(8 << 20), b''):
-            digest.update(block)
-    return digest.hexdigest()
 
 
 def resolve_budget(mode, batch_size=None, workers=None, prefetch_factor=2):
@@ -232,14 +223,6 @@ BASELINE_FINGERPRINT_SCOPE = (
 )
 
 
-def validate_output_location(output, baseline):
-    """Output directories may not replace or live under protected source trees."""
-    output, baseline = Path(output).resolve(), Path(baseline).resolve()
-    protected = [baseline / name for name in ('encoders', 'config', 'bench', 'envs', 'scripts', 'rh56_adapter')]
-    if baseline.is_relative_to(output) or any(output.is_relative_to(path) for path in protected):
-        raise ValueError('RH56 output must stay outside protected repository sources')
-
-
 def tree_sha(root):
     """Fingerprint learning sources, never mutable run outputs or cache files.
 
@@ -262,12 +245,6 @@ def tree_sha(root):
             digest.update(str(path.relative_to(root)).replace('\\', '/').encode())
             digest.update(bytes.fromhex(sha(path)))
     return digest.hexdigest()
-
-
-def atomic_json(path, value):
-    temp = Path(path).with_suffix('.tmp.json')
-    temp.write_text(json.dumps(value, indent=2), encoding='utf-8')
-    temp.replace(path)
 
 
 def capture_training_batch(batch):
@@ -379,7 +356,8 @@ def main(argv=None):
                         seed_scope='cfg/data/shim startup seed; baseline Manager default retained',
                         budget=budget, dataset=str(Path(args.dataset).resolve()),
                         dataset_sha256=sha(args.dataset), manifest_sha256=sha(args.manifest),
-                        adapter_sha256=sha(__file__), baseline_tree_sha256=tree_sha(baseline),
+                        adapter_sha256=sha(__file__), runtime_helpers_sha256=RUNTIME_HELPERS_SHA256,
+                        baseline_tree_sha256=tree_sha(baseline),
                         baseline_fingerprint_scope=BASELINE_FINGERPRINT_SCOPE,
                         config=OmegaConf.to_container(cfg, resolve=False),
                         torch_version=torch.__version__, cuda_version=torch.version.cuda,
@@ -516,8 +494,8 @@ def main(argv=None):
         state['phase']='training';write_state()
         verification_only = bool(resume_receipt and int(resume_receipt['epoch'])==10)
         if not verification_only:
-            train.SaveCkptCallback = Evidence; train.spt.Manager = manager
-            try:
+            with temporary_bindings((train, 'SaveCkptCallback', Evidence),
+                                    (train.spt, 'Manager', manager)):
                 with install_episode_split(train,args.dataset,manifest,
                         generator_state=restored_rng['train_loader_generator'] if restored_rng else None,
                         gpu_image_preprocess=args.uint8_gpu_preprocess) as audit:
@@ -529,8 +507,6 @@ def main(argv=None):
                         schema=hook.schema if hook else None)
                     if args.uint8_gpu_preprocess and not image_io['processed_batches']:
                         raise RuntimeError('SPT uint8 GPU image preprocessing hook was never executed')
-            finally:
-                train.SaveCkptCallback=original_callback; train.spt.Manager=original_manager
             atomic_json(out/'data_boundary.json',dict(split=partition.receipt(),normalizers=normalizers,
                 train_loader_generator_restored=audit.train_loader_generator_restored,
                 parent_hdf5_handle_closed=audit.parent_hdf5_handle_closed,
@@ -596,7 +572,8 @@ def main(argv=None):
                     actual_adam_step_values=sorted(set(steps)),action_encoder_input_dim=int(model_cfg.action_encoder.input_dim),
                     checkpoint=str(weight_path),checkpoint_epoch=completed,checkpoints=checkpoint_records,
                     checkpoint_sha256=sha(weight_path),manifest_sha256=identity['manifest_sha256'],dataset_sha256=identity['dataset_sha256'],
-                    script_sha256=identity['adapter_sha256'],baseline_tree_sha256=identity['baseline_tree_sha256'],
+                    script_sha256=identity['adapter_sha256'],runtime_helpers_sha256=RUNTIME_HELPERS_SHA256,
+                    baseline_tree_sha256=identity['baseline_tree_sha256'],
                     baseline_fingerprint_scope=BASELINE_FINGERPRINT_SCOPE,
                     train_py_sha256=sha(baseline/'train.py'),utils_py_sha256=sha(baseline/'utils.py'),
                     gradient_check_interval=gradient_interval,resume_used=args.resume,verification_only=verification_only)

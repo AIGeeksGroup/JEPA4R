@@ -12,15 +12,8 @@ import time
 
 import numpy as np
 
-def sha(path):
-    digest=hashlib.sha256()
-    with Path(path).open('rb') as f:
-        for block in iter(lambda:f.read(8<<20),b''):digest.update(block)
-    return digest.hexdigest()
-
-def save(path,value):
-    path=Path(path);temp=path.with_suffix(path.suffix+'.tmp')
-    temp.write_text(json.dumps(value,indent=2));temp.replace(path)
+from rh56_adapter._runtime import (RUNTIME_HELPERS_SHA256, atomic_json as save,
+                                   file_sha256 as sha)
 
 def check_registry(records):
     seeds={};initials={};counts={}
@@ -117,6 +110,7 @@ def validate_batch(attempt,plan_path=None,deep=True,report_path=None):
         path=attempt/name
         if path.exists():files.append(dict(path=str(path.resolve()),sha256=sha(path),bytes=path.stat().st_size))
     result=dict(status='PASS_BATCH',validated=time.time(),registry=registry,records=records,validator_sha256=sha(__file__),
+                runtime_helpers_sha256=RUNTIME_HELPERS_SHA256,
                 files=files,plan_sha256=sha(plan_path) if plan_path else None,deep_data_check=deep,
                 numeric_contract='T+1 physical states; T actual actions; outgoing HDF terminal NaN')
     save(receipt,result)

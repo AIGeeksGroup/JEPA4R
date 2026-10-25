@@ -19,6 +19,9 @@ from types import SimpleNamespace
 
 import numpy as np
 
+from rh56_adapter._runtime import (RUNTIME_HELPERS_SHA256, atomic_json, file_sha256 as _sha,
+                                   temporary_bindings, validate_output_location)
+
 ENV_ID = 'rh56-relocate-v0'
 
 
@@ -274,10 +277,6 @@ class RH56LegacyCore:
         return 100. * float(np.mean(success))
 
 
-def _sha(path):
-    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
-
-
 def _model_sha(model, parameters_only=False):
     digest = hashlib.sha256()
     items = model.named_parameters() if parameters_only else model.state_dict().items()
@@ -333,17 +332,28 @@ def load_demos(args, spec):
     return demos, receipts
 
 
+def install_bc_runtime(official, gym_wrapper, *, load_embedding, env_constructor,
+                       logger, make_policy, sample_paths, train_rollout):
+    """Scope the existing official loop's RH56 boundary and observation-only hooks."""
+    return temporary_bindings(
+        (gym_wrapper, 'load_pretrained_model', load_embedding),
+        (gym_wrapper, 'get_proprioception', lambda env, suite: env.unwrapped.get_proprio()),
+        (official, 'load_pretrained_model', load_embedding),
+        (official, 'env_constructor', env_constructor),
+        (official, 'setup_wandb', lambda config: logger),
+        (official, 'BatchNormMLP', make_policy),
+        (official, 'sample_paths', sample_paths),
+        (official, 'rollout_from_init_states', train_rollout))
+
+
 def run_bc(args):
     """Adapt inputs/constructors, then call the existing official training loop."""
     out = Path(args.out).resolve()
     baseline = Path(args.baseline).resolve()
-    protected = [baseline / name for name in ('encoders', 'config', 'bench', 'envs', 'scripts', 'rh56_adapter')]
-    if baseline.is_relative_to(out) or any(out.is_relative_to(path) for path in protected):
-        raise ValueError('RH56 output must stay outside protected repository sources')
+    validate_output_location(out, baseline)
     if getattr(args, 'demo_cache_root', None):
         cache = demo_directory(out, args.demo_cache_root)
-        if baseline.is_relative_to(cache) or any(cache.is_relative_to(path) for path in protected):
-            raise ValueError('RH56 demo cache must stay outside protected repository sources')
+        validate_output_location(cache, baseline)
     out.mkdir(parents=True, exist_ok=False)
     spec = build_run_spec(args.mode, args.epoch, args.train_seed, args.eval_seed_base)
     state = dict(phase='preflight', started=time.time(), updated=None, route=args.route, mode=args.mode,
@@ -351,9 +361,7 @@ def run_bc(args):
 
     def save_state():
         state['updated'] = time.time()
-        temp = out / 'state.tmp.json'
-        temp.write_text(json.dumps(state, indent=2))
-        temp.replace(out / 'state.json')
+        atomic_json(out / 'state.json', state)
 
     save_state()
     original_cwd = Path.cwd()
@@ -438,11 +446,6 @@ def run_bc(args):
             environments.append(environment)
             return environment
 
-        gw.load_pretrained_model = load_embedding
-        gw.get_proprioception = lambda env, suite: env.unwrapped.get_proprio()
-        official.load_pretrained_model = load_embedding
-        official.env_constructor = env_constructor
-
         class JsonLogger:
             def __init__(self):
                 self.stream = (out / 'metrics.jsonl').open('x')
@@ -465,7 +468,6 @@ def run_bc(args):
                 save_state()
 
         logger = JsonLogger()
-        official.setup_wandb = lambda config: logger
         policies, online_paths, train_initial_paths = [], [], []
         optimizer_evidence = dict(steps=0, finite_gradient_checks=0)
         optimizers = []
@@ -488,9 +490,6 @@ def run_bc(args):
             train_initial_paths.extend(paths)
             return paths
 
-        official.BatchNormMLP = make_policy
-        official.sample_paths = sample_paths
-        official.rollout_from_init_states = train_rollout
         # Public global hooks observe the original optimizer; neither Adam nor
         # the policy is replaced or modified, and policy pickles stay ordinary.
         from torch.optim.optimizer import register_optimizer_step_pre_hook, register_optimizer_step_post_hook
@@ -533,7 +532,10 @@ def run_bc(args):
         state['phase'] = 'official_bc_train_and_online_evaluation'
         save_state()
         os.chdir(out)
-        official.bc_pvr_train_loop(config)
+        with install_bc_runtime(official, gw, load_embedding=load_embedding,
+                env_constructor=env_constructor, logger=logger, make_policy=make_policy,
+                sample_paths=sample_paths, train_rollout=train_rollout):
+            official.bc_pvr_train_loop(config)
         for handle in optimizer_hook_handles:
             handle.remove()
         os.chdir(original_cwd)
@@ -623,7 +625,8 @@ def run_bc(args):
                       train_seed=spec['train_seed'], eval_seed_base=spec['eval_seed_base'],
                       official_loop=str(Path(official.__file__).resolve()),
                       official_loop_sha256=_sha(official.__file__),
-                      adapter_sha256=_sha(__file__), policy_sha256=_sha(policy_file),
+                      adapter_sha256=_sha(__file__), runtime_helpers_sha256=RUNTIME_HELPERS_SHA256,
+                      policy_sha256=_sha(policy_file),
                       final_policy_sha256=_sha(out / 'policy/iterations/final_policy.pickle'),
                       input_dim=589, action_dim=12, loss=metrics['final_loss'], metrics=metrics,
                       optimizer_evidence=optimizer_evidence, expected_adam_updates=expected_updates,

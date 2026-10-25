@@ -8,10 +8,7 @@ from pathlib import Path
 from types import SimpleNamespace
 import numpy as np
 
-def atomic_json(path,value):
-    temp=path.with_suffix('.tmp.json');temp.write_text(json.dumps(value,indent=2));temp.replace(path)
-
-def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+from rh56_adapter._runtime import RUNTIME_HELPERS_SHA256, atomic_json, file_sha256 as sha
 
 def validate_plan(payload):
     rows=payload.get('episodes') if isinstance(payload,dict) else None
@@ -94,7 +91,8 @@ def main(argv=None):
                     action_alignment='outgoing; last row NaN; NPZ T actions/T+1 states',
                     goal_columns='goal_achieved/geometry_goal_achieved use synchronized current geometry; native_goal_achieved/native_success preserve original step info')
         config_hash=hashlib.sha256(json.dumps(config,sort_keys=True,separators=(',',':')).encode()).hexdigest()
-        provenance=dict(producer_sha256=sha(__file__),native_adapter_sha256=sha(native_module.__file__),
+        provenance=dict(producer_sha256=sha(__file__),runtime_helpers_sha256=RUNTIME_HELPERS_SHA256,
+                        native_adapter_sha256=sha(native_module.__file__),
                         expert_artifacts={name:dict(path=str(path),sha256=sha(path))
                                           for name,path in native_module.expert_files().items()},
                         camera_adapter_sha256=sha(camera_module.__file__) if camera_module else None,

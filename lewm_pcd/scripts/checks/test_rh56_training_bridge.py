@@ -6,6 +6,7 @@ import io
 import json
 import os
 from pathlib import Path
+import sys
 from types import SimpleNamespace
 import tempfile
 import unittest
@@ -21,7 +22,8 @@ def load(name):
     spec = importlib.util.spec_from_file_location(
         '_rh56_training_test_' + name, ROOT / 'rh56_adapter' / (name + '.py'))
     module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
+    with mock.patch.object(sys, 'path', [str(ROOT), *sys.path]):
+        spec.loader.exec_module(module)
     return module
 
 
@@ -30,6 +32,98 @@ class TrainingBoundaryTests(unittest.TestCase):
     def setUpClass(cls):
         cls.wm = load('wm_bridge')
         cls.bc = load('bc_bridge')
+
+    def test_bc_bindings_restore_after_success_and_failure(self):
+        official_names = ('load_pretrained_model', 'env_constructor', 'setup_wandb',
+                          'BatchNormMLP', 'sample_paths', 'rollout_from_init_states')
+        wrapper_names = ('load_pretrained_model', 'get_proprioception')
+        for fail in (False, True):
+            with self.subTest(fail=fail):
+                official = SimpleNamespace(**{name: object() for name in official_names})
+                wrapper = SimpleNamespace(**{name: object() for name in wrapper_names})
+                before = (vars(official).copy(), vars(wrapper).copy())
+                replacements = {name: object() for name in
+                    ('load_embedding', 'env_constructor', 'make_policy', 'sample_paths', 'train_rollout')}
+                logger = object()
+                try:
+                    with self.bc.install_bc_runtime(official, wrapper, logger=logger, **replacements):
+                        self.assertIs(official.load_pretrained_model, replacements['load_embedding'])
+                        self.assertIs(wrapper.load_pretrained_model, replacements['load_embedding'])
+                        self.assertIs(official.env_constructor, replacements['env_constructor'])
+                        self.assertIs(official.setup_wandb({}), logger)
+                        self.assertIs(official.BatchNormMLP, replacements['make_policy'])
+                        self.assertIs(official.sample_paths, replacements['sample_paths'])
+                        self.assertIs(official.rollout_from_init_states, replacements['train_rollout'])
+                        env = SimpleNamespace(unwrapped=SimpleNamespace(get_proprio=lambda: 'proprio13'))
+                        self.assertEqual(wrapper.get_proprioception(env, 'adroit'), 'proprio13')
+                        if fail:
+                            raise RuntimeError('original loop failed')
+                except RuntimeError as error:
+                    self.assertTrue(fail)
+                    self.assertEqual(str(error), 'original loop failed')
+                self.assertEqual(vars(official), before[0])
+                self.assertEqual(vars(wrapper), before[1])
+
+    def test_bc_training_call_is_inside_restoring_scope(self):
+        tree = ast.parse((ROOT / 'rh56_adapter/bc_bridge.py').read_text())
+        scopes = [node for node in ast.walk(tree) if isinstance(node, ast.With)
+                  and any(isinstance(item.context_expr, ast.Call)
+                          and ast.unparse(item.context_expr.func) == 'install_bc_runtime'
+                          for item in node.items)]
+        self.assertEqual(len(scopes), 1)
+        self.assertIn('official.bc_pvr_train_loop', {
+            ast.unparse(node.func) for node in ast.walk(scopes[0]) if isinstance(node, ast.Call)})
+
+    def test_temporary_bindings_restore_nested_and_partial_installation(self):
+        runtime = load('_runtime')
+        target = SimpleNamespace(value='original')
+        with runtime.temporary_bindings((target, 'value', 'outer')):
+            with runtime.temporary_bindings((target, 'value', 'inner')):
+                self.assertEqual(target.value, 'inner')
+            self.assertEqual(target.value, 'outer')
+        self.assertEqual(target.value, 'original')
+        with self.assertRaises(AttributeError):
+            with runtime.temporary_bindings((target, 'value', 'changed'),
+                                            (target, 'missing', 'invalid')):
+                self.fail('partial installation must fail before running the loop')
+        self.assertEqual(vars(target), {'value': 'original'})
+
+    def test_shared_file_hash_matches_original_full_file_formula(self):
+        import hashlib
+        runtime = load('_runtime')
+        functions = [self.wm.sha, self.bc._sha,
+                     *(load(name).sha for name in ('collect', 'data_tools', 'official_init'))]
+        with tempfile.TemporaryDirectory() as temp:
+            path = Path(temp) / 'payload'
+            for data in (b'', b'RH56', b'x' * ((8 << 20) + 17)):
+                path.write_bytes(data)
+                self.assertEqual(runtime.file_sha256(path), hashlib.sha256(data).hexdigest())
+                for function in functions:
+                    self.assertEqual(function(path), runtime.file_sha256(path))
+
+    def test_shared_json_preserves_encoding_and_exclusive_receipts(self):
+        runtime = load('_runtime')
+        payload = {'z': [1, True], 'a': 'RH56-测试'}
+        writers = [self.wm.atomic_json, self.bc.atomic_json,
+                   load('collect').atomic_json, load('data_tools').save]
+        with tempfile.TemporaryDirectory() as temp:
+            path = Path(temp) / 'state.json'
+            for writer in writers:
+                writer(path, payload)
+                expected = json.dumps(payload, indent=2).replace('\n', os.linesep).encode('utf-8')
+                self.assertEqual(path.read_bytes(), expected)
+                self.assertFalse(path.with_suffix('.tmp.json').exists())
+            path = Path(temp) / 'immutable.json'
+            original = load('official_init')
+            original.write_json(path, payload, new=True)
+            expected = json.dumps(payload, sort_keys=True, indent=2, allow_nan=False)
+            expected = expected.replace('\n', os.linesep).encode('utf-8')
+            self.assertEqual(path.read_bytes(), expected)
+            with self.assertRaises(FileExistsError):
+                runtime.atomic_json(path, {'changed': True}, new=True)
+            with self.assertRaises(ValueError):
+                original.write_json(path, {'bad': float('nan')})
+            self.assertEqual(path.read_bytes(), expected)
 
     def dataset(self, path):
         seeds = np.repeat([61000000, 62000000, 63000000], 6)

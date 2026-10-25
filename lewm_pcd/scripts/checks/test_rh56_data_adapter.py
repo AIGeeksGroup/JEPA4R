@@ -10,6 +10,7 @@ import tempfile
 import subprocess
 import sys
 import unittest
+from unittest import mock
 
 import numpy as np
 
@@ -22,7 +23,8 @@ def wrapper():
     assert SOURCE.exists(), 'official initialization wrapper is not implemented'
     spec = importlib.util.spec_from_file_location('official_init_collect_tested', SOURCE)
     module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
+    with mock.patch.object(sys, 'path', [str(LEWM_ROOT), *sys.path]):
+        spec.loader.exec_module(module)
     return module
 
 
@@ -188,7 +190,8 @@ def package_module(name):
     path=LEWM_ROOT/'rh56_adapter'/f'{name}.py'
     spec=importlib.util.spec_from_file_location('_rh56_test_'+name,path)
     module=importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
+    with mock.patch.object(sys, 'path', [str(LEWM_ROOT), *sys.path]):
+        spec.loader.exec_module(module)
     return module
 
 
