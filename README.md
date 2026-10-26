@@ -1,6 +1,25 @@
-# CortexBench Adroit：官方参照与 LeWM 结果
+# CortexBench Adroit：LeWM 与视觉 baseline 结果
 
-截至2026-10-07，CortexBench采用的Adroit任务为 **Reorient-Pen（Pen）与 Relocate**。下表汇总官方论文参照、我们的三seed BC，以及单独记录的片段CEM。
+本页汇总 **Reorient-Pen（Pen）与 Relocate** 的官方论文参照、我们的BC和单独记录的片段CEM。2026-10-26新增Pen的四条RGB baseline；既有LeWM、CEM和RH56记录保留各自版本与协议。
+
+## Pen：四条 RGB baseline（2026-10-26）
+
+四条均复用原BC学习循环：**100条官方示范／每轮25条在线轨迹／100epochs／seeds100、200、300**，评测索引 `5、10、…、95、99` 共20轮。下表每seed为 **Best-of-20／Final（epoch99）**，均值的±为三seed样本标准差（`ddof=1`，单位百分点）。本节与下面历史LeWM表沿用的总体标准差（`ddof=0`）分别标注。
+
+| 方法／编码器 | 表征来源 | Seed100 best／final | Seed200 best／final | Seed300 best／final | Best均值±样本SD | Final均值±样本SD |
+|---|---|---:|---:|---:|---:|---:|
+| PLDM／ViT-Tiny/14 | Pen任务内原PLDM，10epochs | 72／52 | 76／76 | 64／64 | **70.67±6.11** | **64.00±12.00** |
+| LeJEPA／ViT-Tiny/14＋512D head | Pen任务内仓库四视图配方，10epochs | 68／56 | 68／52 | 64／64 | **66.67±2.31** | **57.33±6.11** |
+| V-JEPA 2.1／ViT-B/16，384 | Meta发布的distilled ViT-G权重，冻结 | 64／52 | 64／44 | 72／48 | **66.67±4.62** | **48.00±4.00** |
+| VISReg／ViT-B/16，224 | 作者提供的ImageNet-1K权重，冻结 | 52／8 | 52／24 | 52／44 | **52.00±0.00** | **25.33±18.04** |
+
+全部12组BC均有100轮有限loss、20次完整在线评测及实际退出0；保存的reward-selected policy通过CPU重载检查。Best-of-20与Final来自评测曲线，不能直接赋给按reward选择的保存policy。`train/*`日志复用评测轨迹，不代表独立的训练初态评测。
+
+PLDM／LeJEPA保留各自原方法；VISReg／V-JEPA 2.1直接使用发布权重。本节只测Pen，未给这四条新增Relocate成绩或双任务Adroit均值。模型容量、预训练数据、原生分辨率及训练预算不同，三seed结果仅作描述性比较。
+
+复现使用现有 `embedding=pldm_pen|lejepa_pen|visreg_vitb|vjepa21_vitb` 开关；特征宽度保留192／512／768／768，三帧FLARE加24D proprio后为600／1560／2328／2328D，未做PCA或统一维度。数据、权重、外部运行时和许可证继续外置。
+
+[最薄入口、权重来源与复现命令](docs/experiments/adroit_pen_baselines_20261026.md) · [逐seed结果、协议与SHA证据](docs/results/adroit_pen_baselines_20261026.json)
 
 ## Adroit BC 参考矩阵
 

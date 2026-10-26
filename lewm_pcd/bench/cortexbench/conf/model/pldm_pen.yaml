@@ -1,0 +1,4 @@
+# Optional native Adroit Pen baseline; existing loader and BC loop are unchanged.
+_target_: jepa_baselines.load_pldm
+checkpoint_dir: ${oc.env:PEN_PLDM_CHECKPOINT}
+epoch: 10

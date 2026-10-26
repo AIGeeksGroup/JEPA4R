@@ -1,0 +1,1085 @@
+{
+  "schema_version": 1,
+  "experiment": "Native Adroit Pen RGB baselines, 2026-10-26",
+  "scope": {
+    "task_id": "pen-v0",
+    "embodiment": "native Adroit",
+    "modality": "RGB",
+    "action_dim": 24,
+    "proprio_dim": 24,
+    "relocate_evaluated": false,
+    "adroit_two_task_mean_reported": false,
+    "official_leaderboard_claim": false
+  },
+  "statistics": {
+    "unit": "success percent",
+    "seed_sd_unit": "percentage points",
+    "ddof": 1,
+    "aggregation": "arithmetic mean and sample SD across three per-seed results; not pooled trajectories or a confidence interval"
+  },
+  "protocol": {
+    "bc": {
+      "num_demos": 100,
+      "epochs": 100,
+      "batch_size": 256,
+      "head_loss": "MSE",
+      "optimizer": "Adam",
+      "learning_rate": 0.001,
+      "history_size": 3,
+      "eval_trajectories": 25,
+      "eval_epoch_indices": [
+        5,
+        10,
+        15,
+        20,
+        25,
+        30,
+        35,
+        40,
+        45,
+        50,
+        55,
+        60,
+        65,
+        70,
+        75,
+        80,
+        85,
+        90,
+        95,
+        99
+      ],
+      "seeds": [
+        100,
+        200,
+        300
+      ],
+      "same_eval_initial_states_reused_within_each_seed": true,
+      "strict_serial": true,
+      "frozen_encoder": true,
+      "expected_adam_updates_per_seed": 4000,
+      "actual_optimizer_step_hooks_observed": false,
+      "runtime_encoder_before_after_hash_observed": false,
+      "train_logs_reuse_eval_paths": true
+    },
+    "local_pretraining": {
+      "applies_to": [
+        "pldm",
+        "lejepa"
+      ],
+      "training_episodes": 10000,
+      "training_visual_rows": 914082,
+      "epochs": 10,
+      "workers_per_loader": 24,
+      "prefetch_factor": 2,
+      "independent_test_episodes_not_used_for_pretraining_or_validation": 150,
+      "pldm_split": "native random clip split 90/10",
+      "lejepa_split": "native all-visual-frame training; no validation loop",
+      "terminal_frame_or_window_filter_added": false,
+      "worker_configuration_scope": "workers_per_loader=24 and prefetch_factor=2 describe the final adopted configuration; the actual accepted PLDM prefix and continuation are distinguished below",
+      "actual_history": {
+        "pldm": "Completed epochs 1-3 were restored from the full checkpoint produced with 8 workers/prefetch 2; epochs 4-10 completed with 24 workers/prefetch 2. Uninterrupted RNG/DataLoader ordering equivalence is not claimed.",
+        "lejepa": "The accepted complete seed-0 ten-epoch run used 24 workers/prefetch 2 throughout. The earlier stopped 8-worker/prefetch-2 attempt with 9000 updates was not counted in its budget."
+      }
+    }
+  },
+  "external_data": {
+    "wm_rgb_header": {
+      "filename": "train_rgb.h5",
+      "sha256": "c85cc6368e4b4f9e485d3a817f68e0b9851f4c8accc4d3e75a7e589ed62cec2f",
+      "sha256_scope": "VDS header; referenced payloads remain external and are required"
+    },
+    "official_bc_demos": {
+      "filename": "pen-v0.pickle",
+      "bytes": 2101413432,
+      "demos": 100,
+      "frames": 10000,
+      "sha256": "cb6e122487f3abaed13e722eec9b4ba59441ea232ccb8a423c7e3a2c5fcfb557"
+    }
+  },
+  "producer_refs": {
+    "recipe_repository": "https://github.com/AIGeeksGroup/JEPA4R",
+    "recipe_branch": "cortexbench",
+    "recipe_commit": "6cec281879e8b866e567dc2e936072bb652b7326",
+    "executed_adapter_commit": "a10d76e260bfc750e47bef281d761c1d16418b03",
+    "stable_worldmodel_commit": "6f1e499e9cc0c898d326112f485c1062c3d20f24",
+    "released_interface_reference": "cortexbench@3de0e4caef82478a55a00acb42ea42c04fd33baa",
+    "released_interfaces_identical_git_blobs": {
+      "jepa_baselines.py": "ff49870cab29cea4e652f5c11810e85591b75edf",
+      "run_bc.py": "07f86c2a095bf18dfb7f571256b9771ff5b4f2b7",
+      "conf/model/visreg_vitb.yaml": "6f3f663a5c8f6833ce20c24bff80f1d5584e2aa3",
+      "conf/model/vjepa21_vitb.yaml": "3e3d35167bf38f449c099ce4f2d73d90d1e2ec73"
+    },
+    "learning_core_modified": false,
+    "pen_native_driver_sha256": "b223351facfcb2ff53ab68169838e218fc342a322e9516d3b016f6fb81c60927",
+    "pen_released_driver_sha256": "064ea4021a64daef9b923122194d0ac4343220eb665c2679cb278fa7d8f74cd6",
+    "pen_native_policy_CPU_verifier_sha256": "d4f2432b5e95772bb8e54b36c5c9fda905dbc4dd705b5be8bcf29813c01c07af",
+    "pen_released_policy_CPU_verifier_sha256": "658317736aa7277747dbbe2be873b99ce788ba38f2f6868d32d93f780fcf5fa8"
+  },
+  "sources": {
+    "pen_native": {
+      "report_file": "pen_pldm_lejepa_final_results_v1.json",
+      "sha256": "d5553ca024d0ba71cc148bc66c053b95f9d971afa49a5d588cb601beb32e09d0",
+      "coordinator_actual_exit_code": 0
+    },
+    "pen_released": {
+      "report_file": "pen_released_encoders_final_results_v1.json",
+      "sha256": "de9e8d13fef3f60cff3627d8ef574a402183e4960ea2207e15ee372502abc41d",
+      "coordinator_actual_exit_code": 0
+    }
+  },
+  "methods": {
+    "pldm": {
+      "display_name": "PLDM",
+      "embedding_selector": "pldm_pen",
+      "embedding_dim": 192,
+      "policy_input_dim": 600,
+      "input_resolution": 224,
+      "encoder_provenance": "native_pen_pretraining",
+      "local_pretraining_performed": true,
+      "source_report_ref": "pen_native",
+      "summary": {
+        "best_of_20_values_pct": [
+          72.0,
+          76.0,
+          64.0
+        ],
+        "best_of_20_mean_pct": 70.66666666666667,
+        "best_of_20_sample_sd_pp": 6.110100926607787,
+        "final_values_pct": [
+          52.0,
+          76.0,
+          64.0
+        ],
+        "final_mean_pct": 64.0,
+        "final_sample_sd_pp": 12.0
+      },
+      "runs": [
+        {
+          "run_id": "pldm_seed100_formal_v1",
+          "seed": 100,
+          "best_of_20_success_pct": 72.0,
+          "final_success_pct": 52.0,
+          "final_loss": 0.0031908017059322446,
+          "eval_success_pct": [
+            28.0,
+            56.0,
+            52.0,
+            56.0,
+            72.0,
+            48.0,
+            52.0,
+            64.0,
+            68.0,
+            56.0,
+            56.0,
+            56.0,
+            52.0,
+            60.0,
+            52.0,
+            52.0,
+            56.0,
+            60.0,
+            60.0,
+            52.0
+          ],
+          "evidence": {
+            "loss_epochs": 100,
+            "evaluation_rounds": 20,
+            "actual_child_exit_code": 0,
+            "saved_policy_CPU_reload_max_abs": 0
+          },
+          "artifacts": {
+            "validation_sha256": "8184c6351614719f1705995f89a85b5f9fd664e954f0f2bcf9d7831321b98cea",
+            "metrics": {
+              "filename": "metrics.jsonl",
+              "sha256": "b86a9df17b28398f452eb30c227bf21943163cee7421b62a41b4211ae2a50155"
+            },
+            "reward_selected_policy": {
+              "filename": "policy/iterations/best_policy.pickle",
+              "sha256": "753c07ff188bbb4fb26fd05441857da2adbd103d575f0420b1ceea2ddac2d238"
+            },
+            "policy_CPU_probe": {
+              "report_file": "bc_pldm_seed100_completed_probe_v1.json",
+              "sha256": "1723d8403ea8595093ff1d44e2f56a15320067f45d565f0826ce56c66ecb6c6b"
+            }
+          }
+        },
+        {
+          "run_id": "pldm_seed200_formal_v1",
+          "seed": 200,
+          "best_of_20_success_pct": 76.0,
+          "final_success_pct": 76.0,
+          "final_loss": 0.0034463086863979696,
+          "eval_success_pct": [
+            44.0,
+            40.0,
+            52.0,
+            48.0,
+            48.0,
+            56.0,
+            44.0,
+            60.0,
+            60.0,
+            60.0,
+            68.0,
+            60.0,
+            72.0,
+            68.0,
+            64.0,
+            64.0,
+            60.0,
+            60.0,
+            64.0,
+            76.0
+          ],
+          "evidence": {
+            "loss_epochs": 100,
+            "evaluation_rounds": 20,
+            "actual_child_exit_code": 0,
+            "saved_policy_CPU_reload_max_abs": 0
+          },
+          "artifacts": {
+            "validation_sha256": "9700608c090444959ab480ce686d18e5685becd66e8c68578fa4f697bb8e9341",
+            "metrics": {
+              "filename": "metrics.jsonl",
+              "sha256": "0743105217071a633d8b0375e54aad613bc7e3e0e9554099640a1639e6807e8a"
+            },
+            "reward_selected_policy": {
+              "filename": "policy/iterations/best_policy.pickle",
+              "sha256": "281506165fa50362f8d2b7b956c7ab90d15dcf85efaca2e99bdd566187e20789"
+            },
+            "policy_CPU_probe": {
+              "report_file": "bc_pldm_seed200_completed_probe_v1.json",
+              "sha256": "0b93e56229d458a556d2e2480818a6b896f2db8824c701a1c645509550f2e2eb"
+            }
+          }
+        },
+        {
+          "run_id": "pldm_seed300_formal_v1",
+          "seed": 300,
+          "best_of_20_success_pct": 64.0,
+          "final_success_pct": 64.0,
+          "final_loss": 0.0038478829606901853,
+          "eval_success_pct": [
+            24.0,
+            52.0,
+            60.0,
+            52.0,
+            48.0,
+            52.0,
+            56.0,
+            52.0,
+            48.0,
+            44.0,
+            52.0,
+            52.0,
+            64.0,
+            56.0,
+            52.0,
+            56.0,
+            64.0,
+            52.0,
+            60.0,
+            64.0
+          ],
+          "evidence": {
+            "loss_epochs": 100,
+            "evaluation_rounds": 20,
+            "actual_child_exit_code": 0,
+            "saved_policy_CPU_reload_max_abs": 0
+          },
+          "artifacts": {
+            "validation_sha256": "b43d3b61d718234a3d29d627cc4a4926527320323bcd00fb5d62f1e6eb0bdc5f",
+            "metrics": {
+              "filename": "metrics.jsonl",
+              "sha256": "6e6dbcb2462ae684a4887042781cb4f5acc5942dff486fefcbb3449150e04308"
+            },
+            "reward_selected_policy": {
+              "filename": "policy/iterations/best_policy.pickle",
+              "sha256": "6f7466b4d4ce4959c1bdb464eed9a4a17563f314ece20a224a1f80860e716807"
+            },
+            "policy_CPU_probe": {
+              "report_file": "bc_pldm_seed300_completed_probe_v1.json",
+              "sha256": "059ec253b890aacb4b2e8fd8be7ad6d9bb7faba714a1154cae68e4e4294a683c"
+            }
+          }
+        }
+      ],
+      "model": {
+        "filename": "weights_epoch_10.pt",
+        "sha256": "5d983929ddc54e25cdc0c34586f8b68369843d9b2ed1d1904925a817ec118d1a",
+        "epoch": 10,
+        "acceptance_report": {
+          "report_file": "pldm_formal_w24_completed_acceptance_v1.json",
+          "sha256": "fe83a283c33a817b93565a88960b7337d911dbfda566277f0e38aab7caac205e"
+        },
+        "native_wrapper_actual_exit_code": 0,
+        "observer_actual_exit_code": 0,
+        "strict_BC_loader_load": true
+      },
+      "recipe": {
+        "backbone": "ViT-Tiny/14",
+        "latent_dim": 192,
+        "selected_frames": 4,
+        "frameskip": 5,
+        "raw_span": 20,
+        "history_size": 3,
+        "num_preds": 1,
+        "raw_action_dim": 24,
+        "action_block_dim": 120,
+        "method": "original action-conditioned PLDM dynamics/predictor/action encoder and full native configured loss",
+        "batch_size": 128,
+        "precision": "BF16",
+        "native_clip_indices_preserved": true
+      },
+      "pretraining_evidence": {
+        "completed_epochs": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "actual_train_batches_total": 50910,
+        "actual_validation_batches_total": 5660,
+        "actual_adam_steps_each": [
+          50910,
+          50910
+        ],
+        "full_bare_exact": true,
+        "strict_full_state_CPU_reload": true,
+        "final_full_checkpoint_sha256": "ff04a64b4f394ac7b8cec3705d5ce860317154d11bd70463d0221990cdb9cba5",
+        "continuation": {
+          "completed_source_epochs": 3,
+          "source_checkpoint_epoch_index": 2,
+          "source_global_step": 15273,
+          "source_checkpoint_sha256": "6ad7edde15ce3598f55f8696a4a24823ee07d5cb8ec30a64e5daac7a36589fa4",
+          "new_train_batches": 35637,
+          "restore_scope": "full model/optimizer/scheduler",
+          "uninterrupted_RNG_and_data_order_equivalence_established": false,
+          "other_stopped_or_unsaved_updates_added_to_total": false
+        }
+      }
+    },
+    "lejepa": {
+      "display_name": "LeJEPA",
+      "embedding_selector": "lejepa_pen",
+      "embedding_dim": 512,
+      "policy_input_dim": 1560,
+      "input_resolution": 224,
+      "encoder_provenance": "native_pen_pretraining",
+      "local_pretraining_performed": true,
+      "source_report_ref": "pen_native",
+      "summary": {
+        "best_of_20_values_pct": [
+          68.0,
+          68.0,
+          64.0
+        ],
+        "best_of_20_mean_pct": 66.66666666666667,
+        "best_of_20_sample_sd_pp": 2.309401076758503,
+        "final_values_pct": [
+          56.0,
+          52.0,
+          64.0
+        ],
+        "final_mean_pct": 57.333333333333336,
+        "final_sample_sd_pp": 6.110100926607787
+      },
+      "runs": [
+        {
+          "run_id": "lejepa_seed100_formal_v1",
+          "seed": 100,
+          "best_of_20_success_pct": 68.0,
+          "final_success_pct": 56.0,
+          "final_loss": 0.008808186720125377,
+          "eval_success_pct": [
+            36.0,
+            48.0,
+            24.0,
+            28.0,
+            28.0,
+            48.0,
+            36.0,
+            48.0,
+            40.0,
+            40.0,
+            68.0,
+            28.0,
+            48.0,
+            64.0,
+            56.0,
+            60.0,
+            52.0,
+            68.0,
+            44.0,
+            56.0
+          ],
+          "evidence": {
+            "loss_epochs": 100,
+            "evaluation_rounds": 20,
+            "actual_child_exit_code": 0,
+            "saved_policy_CPU_reload_max_abs": 0
+          },
+          "artifacts": {
+            "validation_sha256": "d933d0c934d4e7e0e78b898de3da6f25f1fe6d0abf0d8af6c8448e36227aeb37",
+            "metrics": {
+              "filename": "metrics.jsonl",
+              "sha256": "7899ba7cb14119a127504180085f5e5657004f7ad6b1eab8c67908745996a6ac"
+            },
+            "reward_selected_policy": {
+              "filename": "policy/iterations/best_policy.pickle",
+              "sha256": "a021739b6e01c5659b0b8d8d58a94d3b60dfa10da84b03244ccd21368d2d36df"
+            },
+            "policy_CPU_probe": {
+              "report_file": "bc_lejepa_seed100_completed_probe_v1.json",
+              "sha256": "519359495c04714350ab8d3dbda1d28c5c3c8aafd8af0c4771b128cd19b6f64f"
+            }
+          }
+        },
+        {
+          "run_id": "lejepa_seed200_formal_v1",
+          "seed": 200,
+          "best_of_20_success_pct": 68.0,
+          "final_success_pct": 52.0,
+          "final_loss": 0.007081007061060518,
+          "eval_success_pct": [
+            20.0,
+            28.0,
+            24.0,
+            32.0,
+            36.0,
+            36.0,
+            32.0,
+            44.0,
+            44.0,
+            32.0,
+            40.0,
+            52.0,
+            48.0,
+            32.0,
+            56.0,
+            68.0,
+            36.0,
+            36.0,
+            60.0,
+            52.0
+          ],
+          "evidence": {
+            "loss_epochs": 100,
+            "evaluation_rounds": 20,
+            "actual_child_exit_code": 0,
+            "saved_policy_CPU_reload_max_abs": 0
+          },
+          "artifacts": {
+            "validation_sha256": "3e018b4979c5db83f35d36495f84cba7e18435aa8acccaaed9972687cc12a781",
+            "metrics": {
+              "filename": "metrics.jsonl",
+              "sha256": "7a8606d425136271d6b3406728911474cb25ebef06ecd1cd491ad5f102c2f949"
+            },
+            "reward_selected_policy": {
+              "filename": "policy/iterations/best_policy.pickle",
+              "sha256": "4395ba082fe0e08d89828af1306b9e1157b9a3cca3458f1be149df87fd4e47c3"
+            },
+            "policy_CPU_probe": {
+              "report_file": "bc_lejepa_seed200_completed_probe_v1.json",
+              "sha256": "5fef5e1a9fef92b7d0704a45fa008337bb841569332ba2a773d63045657c5b30"
+            }
+          }
+        },
+        {
+          "run_id": "lejepa_seed300_formal_v1",
+          "seed": 300,
+          "best_of_20_success_pct": 64.0,
+          "final_success_pct": 64.0,
+          "final_loss": 0.009022479155100882,
+          "eval_success_pct": [
+            36.0,
+            64.0,
+            28.0,
+            40.0,
+            32.0,
+            56.0,
+            64.0,
+            48.0,
+            28.0,
+            36.0,
+            56.0,
+            52.0,
+            64.0,
+            44.0,
+            20.0,
+            60.0,
+            64.0,
+            56.0,
+            60.0,
+            64.0
+          ],
+          "evidence": {
+            "loss_epochs": 100,
+            "evaluation_rounds": 20,
+            "actual_child_exit_code": 0,
+            "saved_policy_CPU_reload_max_abs": 0
+          },
+          "artifacts": {
+            "validation_sha256": "7fb68475c941652bc808e5f0190c5f4414de989c6485cd3eef6f2601f3d7c0bd",
+            "metrics": {
+              "filename": "metrics.jsonl",
+              "sha256": "020a68616c4a551aaec52065bba57da33ec00941124de957005c313a60e3481c"
+            },
+            "reward_selected_policy": {
+              "filename": "policy/iterations/best_policy.pickle",
+              "sha256": "6e24ac832ee1dde7f63f584dbd2929693d7f2ace494ab0989ce40c8adebc124d"
+            },
+            "policy_CPU_probe": {
+              "report_file": "bc_lejepa_seed300_completed_probe_v1.json",
+              "sha256": "f8276b13085962695e04f42975992c698c62c02bde1a9df0ebc646d274ab328e"
+            }
+          }
+        }
+      ],
+      "model": {
+        "filename": "weights_epoch_10.pt",
+        "sha256": "729e7a1d0c965defbd899263e2e1b63cc1d7c8460ffc311c42ec71d61d05d9e1",
+        "epoch": 10,
+        "acceptance_report": {
+          "report_file": "lejepa_formal_w24_completed_acceptance_v1.json",
+          "sha256": "ee6cb611138cd30eb4c993f9874d5c4f1b380d52f14b60a1bb75de24e3c6013f"
+        },
+        "native_wrapper_actual_exit_code": 0,
+        "observer_actual_exit_code": 0,
+        "strict_BC_loader_load": true
+      },
+      "recipe": {
+        "backbone": "ViT-Tiny/14",
+        "downstream_head_dim": 512,
+        "training_projector_dim": 16,
+        "views": 4,
+        "view_augmentation": "original CPU augmentation",
+        "loss": "0.98 invariance + 0.02 SIGReg",
+        "batch_size": 256,
+        "precision": "BF16",
+        "all_visual_frames_including_terminal": true,
+        "validation_loop_present": false
+      },
+      "pretraining_evidence": {
+        "completed_epochs": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "actual_adamw_updates": 35700,
+        "actual_forward_batches": 35700,
+        "all_native_checkpoint_tensors_finite": true,
+        "strict_Encoder_CPU_reload_parts": [
+          "backbone",
+          "head",
+          "proj"
+        ],
+        "BC_vs_native_embed_max_abs": 0.0,
+        "native_checkpoint_contains_optimizer_or_scheduler": false,
+        "stopped_prior_attempt_updates_added_to_total": false,
+        "native_checkpoints": [
+          {
+            "epoch": 1,
+            "filename": "weights_epoch_1.pt",
+            "bytes": 43663359,
+            "sha256": "689cf98246c6a35cbcbe1a427fce08bcb1749ae37e48fca2a5f9349a9d1c5dd9"
+          },
+          {
+            "epoch": 2,
+            "filename": "weights_epoch_2.pt",
+            "bytes": 43663359,
+            "sha256": "81e743ffc81ac2f529e7e35ac2d4f4df6658a8a40966ae702812e68ab0d1b26e"
+          },
+          {
+            "epoch": 3,
+            "filename": "weights_epoch_3.pt",
+            "bytes": 43663359,
+            "sha256": "ee84acc6b7716015fb0251c87b28c2dd3de8bceb038b7866b2f63ddad0883648"
+          },
+          {
+            "epoch": 4,
+            "filename": "weights_epoch_4.pt",
+            "bytes": 43663359,
+            "sha256": "72d2ef9b1c61e9914d37daa1718d4d1705caf7c04263e194f70d66b9292931c0"
+          },
+          {
+            "epoch": 5,
+            "filename": "weights_epoch_5.pt",
+            "bytes": 43663359,
+            "sha256": "46061a1d0ca6728651feee42e7c08b50fe520c47857fbf95005c42842e5f8bb2"
+          },
+          {
+            "epoch": 6,
+            "filename": "weights_epoch_6.pt",
+            "bytes": 43663359,
+            "sha256": "d1db098d105a1a78e546edc31ff34d56b72a3842c6805bee113dc90286d47c05"
+          },
+          {
+            "epoch": 7,
+            "filename": "weights_epoch_7.pt",
+            "bytes": 43663359,
+            "sha256": "bb6268f0f4b857e15fcf69022fa312acf93fd2de6b9319f3202347264f34085d"
+          },
+          {
+            "epoch": 8,
+            "filename": "weights_epoch_8.pt",
+            "bytes": 43663359,
+            "sha256": "8ad5058565f78ad0542cb64a9ff3912274f8df8134a2d8ad2afddc4574176fd4"
+          },
+          {
+            "epoch": 9,
+            "filename": "weights_epoch_9.pt",
+            "bytes": 43663359,
+            "sha256": "bba4c0de2adc38c2a9a2ec45cc530d9f2203ea068ad829c8beffddcc956f0c2f"
+          },
+          {
+            "epoch": 10,
+            "filename": "weights_epoch_10.pt",
+            "bytes": 43663581,
+            "sha256": "729e7a1d0c965defbd899263e2e1b63cc1d7c8460ffc311c42ec71d61d05d9e1"
+          }
+        ]
+      }
+    },
+    "visreg": {
+      "display_name": "VISReg",
+      "embedding_selector": "visreg_vitb",
+      "embedding_dim": 768,
+      "policy_input_dim": 2328,
+      "input_resolution": 224,
+      "encoder_provenance": "author_shared_frozen_weights",
+      "local_pretraining_performed": false,
+      "source_report_ref": "pen_released",
+      "summary": {
+        "best_of_20_values_pct": [
+          52.0,
+          52.0,
+          52.0
+        ],
+        "best_of_20_mean_pct": 52.0,
+        "best_of_20_sample_sd_pp": 0.0,
+        "final_values_pct": [
+          8.0,
+          24.0,
+          44.0
+        ],
+        "final_mean_pct": 25.333333333333332,
+        "final_sample_sd_pp": 18.036999011291577
+      },
+      "runs": [
+        {
+          "run_id": "visreg_seed100_formal_v1",
+          "seed": 100,
+          "best_of_20_success_pct": 52.0,
+          "final_success_pct": 8.0,
+          "final_loss": 0.0025982898543588815,
+          "eval_success_pct": [
+            8.0,
+            52.0,
+            20.0,
+            16.0,
+            8.0,
+            16.0,
+            16.0,
+            8.0,
+            20.0,
+            8.0,
+            8.0,
+            12.0,
+            20.0,
+            8.0,
+            24.0,
+            36.0,
+            12.0,
+            44.0,
+            36.0,
+            8.0
+          ],
+          "evidence": {
+            "loss_epochs": 100,
+            "evaluation_rounds": 20,
+            "actual_child_exit_code": 0,
+            "saved_policy_CPU_reload_max_abs": 0
+          },
+          "artifacts": {
+            "validation_sha256": "1524b131b24f13db88280241355cfe3718389fa2f9561d1e720169d85bcc6492",
+            "metrics": {
+              "filename": "metrics.jsonl",
+              "sha256": "a7b75d1686c421f106cbe2a5261bda9ed99bdcd267dc15faa523f0ca4809572d"
+            },
+            "reward_selected_policy": {
+              "filename": "policy/iterations/best_policy.pickle",
+              "sha256": "8a14ae6d17987f7ad48a4a4859cc770f700232d97cf038b59481fddb14fe813e"
+            },
+            "policy_CPU_probe": {
+              "report_file": "bc_visreg_seed100_completed_probe_v1.json",
+              "sha256": "31ae90265cd1c00e83bf61a076360c769bdb3f6fb5b20d8706d56ac1f2addf75"
+            }
+          }
+        },
+        {
+          "run_id": "visreg_seed200_formal_v1",
+          "seed": 200,
+          "best_of_20_success_pct": 52.0,
+          "final_success_pct": 24.0,
+          "final_loss": 0.002404863841366023,
+          "eval_success_pct": [
+            20.0,
+            20.0,
+            12.0,
+            8.0,
+            24.0,
+            52.0,
+            16.0,
+            20.0,
+            20.0,
+            16.0,
+            12.0,
+            20.0,
+            24.0,
+            12.0,
+            36.0,
+            12.0,
+            24.0,
+            20.0,
+            8.0,
+            24.0
+          ],
+          "evidence": {
+            "loss_epochs": 100,
+            "evaluation_rounds": 20,
+            "actual_child_exit_code": 0,
+            "saved_policy_CPU_reload_max_abs": 0
+          },
+          "artifacts": {
+            "validation_sha256": "f2262c8dd0cdea0cf72858c498884fb776a2eec51763de77650ebc501e56f76f",
+            "metrics": {
+              "filename": "metrics.jsonl",
+              "sha256": "ea5a96830077da5890ea5d17a81f765dfa4cdb409229153ddc68aec046bd7342"
+            },
+            "reward_selected_policy": {
+              "filename": "policy/iterations/best_policy.pickle",
+              "sha256": "5ca6b0841fa8c22d8892b4f0daacdd785ae2ee7a9809c7bd5e6bc7fda31ee06e"
+            },
+            "policy_CPU_probe": {
+              "report_file": "bc_visreg_seed200_completed_probe_v1.json",
+              "sha256": "cb9d32a2c9d831e7a164359a0d3ebda47790201eeca8a5ff0f092bbaa384b026"
+            }
+          }
+        },
+        {
+          "run_id": "visreg_seed300_formal_v1",
+          "seed": 300,
+          "best_of_20_success_pct": 52.0,
+          "final_success_pct": 44.0,
+          "final_loss": 0.002230773601331748,
+          "eval_success_pct": [
+            32.0,
+            52.0,
+            36.0,
+            36.0,
+            20.0,
+            28.0,
+            36.0,
+            28.0,
+            28.0,
+            44.0,
+            28.0,
+            36.0,
+            40.0,
+            32.0,
+            48.0,
+            40.0,
+            48.0,
+            48.0,
+            52.0,
+            44.0
+          ],
+          "evidence": {
+            "loss_epochs": 100,
+            "evaluation_rounds": 20,
+            "actual_child_exit_code": 0,
+            "saved_policy_CPU_reload_max_abs": 0
+          },
+          "artifacts": {
+            "validation_sha256": "bcde9325a9c8618ed711a4cf41d975ca471c174887b4b271f37f816d48f24375",
+            "metrics": {
+              "filename": "metrics.jsonl",
+              "sha256": "203d44b23601bd10923731df713e2027a2d37b2a9617a92aa1f99340d9df7c8d"
+            },
+            "reward_selected_policy": {
+              "filename": "policy/iterations/best_policy.pickle",
+              "sha256": "27b323b1625c29193396f63e85693d2600cafa999240d5c23afc973915691aef"
+            },
+            "policy_CPU_probe": {
+              "report_file": "bc_visreg_seed300_completed_probe_v1.json",
+              "sha256": "96d3f0653105b0aadd627b90b278bd83777a68139cd86395ad3023505fa8747c"
+            }
+          }
+        }
+      ],
+      "model": {
+        "filename": "visreg-vit-b-inet1k.pth",
+        "bytes": 368495235,
+        "sha256": "23e6aa5fe93cc61b3d9ab13e35cb4966580612d39bae39b1991f35c19c8087b8",
+        "gate_report": {
+          "report_file": "visreg_encoder_gate_v1.json",
+          "sha256": "cdf94cd45ceffab551736613c74a3481e63640fb81fd7fd786e86d8c283ed7eb"
+        },
+        "acquisition": "author-shared external checkpoint; obtain through an authorized source; private sharing identifiers omitted"
+      },
+      "encoder_gate": {
+        "strict_load": true,
+        "eval": true,
+        "frozen": true,
+        "finite_forward": true,
+        "BC_native_reset_passed": true,
+        "BC_action_dim": 24,
+        "original_readout_maxabs": 0.0,
+        "used_substate_all_tensors_finite": true
+      },
+      "recipe": {
+        "backbone": "ViT-B/16",
+        "feature": "last normalized CLS",
+        "pretraining": "released ImageNet-1K 400-epoch weights; no local pretraining",
+        "training_projector_used_for_BC": false
+      }
+    },
+    "vjepa21": {
+      "display_name": "V-JEPA 2.1",
+      "embedding_selector": "vjepa21_vitb",
+      "embedding_dim": 768,
+      "policy_input_dim": 2328,
+      "input_resolution": 384,
+      "encoder_provenance": "official_released_frozen_weights",
+      "local_pretraining_performed": false,
+      "source_report_ref": "pen_released",
+      "summary": {
+        "best_of_20_values_pct": [
+          64.0,
+          64.0,
+          72.0
+        ],
+        "best_of_20_mean_pct": 66.66666666666667,
+        "best_of_20_sample_sd_pp": 4.618802153517006,
+        "final_values_pct": [
+          52.0,
+          44.0,
+          48.0
+        ],
+        "final_mean_pct": 48.0,
+        "final_sample_sd_pp": 4.0
+      },
+      "runs": [
+        {
+          "run_id": "vjepa21_seed100_formal_v1",
+          "seed": 100,
+          "best_of_20_success_pct": 64.0,
+          "final_success_pct": 52.0,
+          "final_loss": 0.0020158266474027187,
+          "eval_success_pct": [
+            24.0,
+            36.0,
+            16.0,
+            48.0,
+            64.0,
+            60.0,
+            28.0,
+            32.0,
+            56.0,
+            60.0,
+            60.0,
+            56.0,
+            64.0,
+            56.0,
+            36.0,
+            56.0,
+            56.0,
+            52.0,
+            60.0,
+            52.0
+          ],
+          "evidence": {
+            "loss_epochs": 100,
+            "evaluation_rounds": 20,
+            "actual_child_exit_code": 0,
+            "saved_policy_CPU_reload_max_abs": 0
+          },
+          "artifacts": {
+            "validation_sha256": "3a8264f65d4fbac8010671dbeacbf375adf902a594af5b08e82a5f02ff81a790",
+            "metrics": {
+              "filename": "metrics.jsonl",
+              "sha256": "096c31cfb18b0c2508d6db4f9e189c7c3a95e962fdefafd95464a2773638488c"
+            },
+            "reward_selected_policy": {
+              "filename": "policy/iterations/best_policy.pickle",
+              "sha256": "00d3888a4dba636a6f5636a88969da4f9843e74953febf32f78486f5e104aec5"
+            },
+            "policy_CPU_probe": {
+              "report_file": "bc_vjepa21_seed100_completed_probe_v1.json",
+              "sha256": "96081c7302d3ab2ed76867aa3337b801f3404909e08ae97e784339cc7f000730"
+            }
+          }
+        },
+        {
+          "run_id": "vjepa21_seed200_formal_v1",
+          "seed": 200,
+          "best_of_20_success_pct": 64.0,
+          "final_success_pct": 44.0,
+          "final_loss": 0.002299367857631296,
+          "eval_success_pct": [
+            44.0,
+            52.0,
+            52.0,
+            52.0,
+            32.0,
+            16.0,
+            60.0,
+            52.0,
+            40.0,
+            48.0,
+            56.0,
+            52.0,
+            52.0,
+            56.0,
+            56.0,
+            52.0,
+            48.0,
+            64.0,
+            44.0,
+            44.0
+          ],
+          "evidence": {
+            "loss_epochs": 100,
+            "evaluation_rounds": 20,
+            "actual_child_exit_code": 0,
+            "saved_policy_CPU_reload_max_abs": 0
+          },
+          "artifacts": {
+            "validation_sha256": "ca8522325a06ddd9ce251071082846623f40190aa7eee407e09140217129a6bd",
+            "metrics": {
+              "filename": "metrics.jsonl",
+              "sha256": "5cd4a7a0815188ff64d661f9d9aeb62e9d15edb4f44c3eee83adc02ccf49a131"
+            },
+            "reward_selected_policy": {
+              "filename": "policy/iterations/best_policy.pickle",
+              "sha256": "cda8483e7e18322006ea149091ed671e276d91a01cad8e21df107ca8e65e693f"
+            },
+            "policy_CPU_probe": {
+              "report_file": "bc_vjepa21_seed200_completed_probe_v1.json",
+              "sha256": "5ae525f83b7443f2796bb1f5f266a9fd246ee40627eb313d6678933f55f86cdb"
+            }
+          }
+        },
+        {
+          "run_id": "vjepa21_seed300_formal_v1",
+          "seed": 300,
+          "best_of_20_success_pct": 72.0,
+          "final_success_pct": 48.0,
+          "final_loss": 0.0023799497983418407,
+          "eval_success_pct": [
+            44.0,
+            36.0,
+            24.0,
+            32.0,
+            52.0,
+            60.0,
+            60.0,
+            72.0,
+            52.0,
+            48.0,
+            56.0,
+            60.0,
+            52.0,
+            60.0,
+            40.0,
+            52.0,
+            64.0,
+            60.0,
+            68.0,
+            48.0
+          ],
+          "evidence": {
+            "loss_epochs": 100,
+            "evaluation_rounds": 20,
+            "actual_child_exit_code": 0,
+            "saved_policy_CPU_reload_max_abs": 0
+          },
+          "artifacts": {
+            "validation_sha256": "d85e232d5fe056912ef56dcfdfe2b239442572d939509588ba473da4cd73c745",
+            "metrics": {
+              "filename": "metrics.jsonl",
+              "sha256": "de5894b9f037d25d45fda49fd7401d2614ae1a9d6468931625021d87941606bb"
+            },
+            "reward_selected_policy": {
+              "filename": "policy/iterations/best_policy.pickle",
+              "sha256": "c55c39d908ad90f6fca38b55b2df14710563ea1eb5a849c4dd40c68971103e2d"
+            },
+            "policy_CPU_probe": {
+              "report_file": "bc_vjepa21_seed300_completed_probe_v1.json",
+              "sha256": "d526e427e8e15f350320b71d54c3aff035adf9726a101749f1edd85e2c655fc4"
+            }
+          }
+        }
+      ],
+      "model": {
+        "filename": "vjepa2_1_vitb_dist_vitG_384.pt",
+        "bytes": 1664223428,
+        "sha256": "848a77c33cc9e6649ed2119c9bea1e2c569bcdab9539ff3e7c02ccc2959ddf4d",
+        "gate_report": {
+          "report_file": "vjepa21_encoder_gate_v1.json",
+          "sha256": "14cf4c50e9a180da851e45baae7ef7800269c71c014dbe1c65686ce2fb0b7e27"
+        },
+        "public_url": "https://dl.fbaipublicfiles.com/vjepa2/vjepa2_1_vitb_dist_vitG_384.pt"
+      },
+      "encoder_gate": {
+        "strict_load": true,
+        "eval": true,
+        "frozen": true,
+        "finite_forward": true,
+        "BC_native_reset_passed": true,
+        "BC_action_dim": 24,
+        "original_readout_maxabs": 0.0,
+        "used_substate_all_tensors_finite": true
+      },
+      "recipe": {
+        "backbone": "ViT-B/16 distilled from ViT-G",
+        "feature": "mean of 576 last-normalized image-path patch tokens",
+        "model_input_temporal_length": 1,
+        "EMA_substate_tensor_count": 158,
+        "precision": "native FP32; no new autocast"
+      },
+      "official_source": {
+        "official_commit": "204698b45b3712590f06245fbfba32d3be539812",
+        "official_archive_url": "https://codeload.github.com/facebookresearch/vjepa2/tar.gz/204698b45b3712590f06245fbfba32d3be539812",
+        "archive_sha256": "e7e9c554c67e72c2c6884d751f4731bbf25d0d203b01d4b367b5157371b13ee1",
+        "loaded_encoder_source_sha256": "d2932eabeba684d8f558302a13cfd4be70a0170ee5112f5a794652d0a29089b9",
+        "version_identity": "official pinned codeload archive; no fabricated Git metadata"
+      }
+    }
+  },
+  "limits": [
+    "Best-of-20 is the maximum success percentage over the 20 evaluation rounds; Final is evaluation index 99.",
+    "The native saved best_policy is reward-selected with conditional save frequency; its success is not automatically Best-of-20 or Final. No final_policy export was invented.",
+    "The train/* logging shortcut reuses evaluation trajectories and is not an independent training-initial-state evaluation.",
+    "BC 4000 Adam updates are expected from the native loop; no BC optimizer-step hook or before/after runtime encoder hash was observed.",
+    "Pen-trained Tiny baselines and released general ViT-B encoders differ in pretraining data, capacity, resolution, feature width, sample exposure and training budget; these results do not establish a causal or statistically significant method ranking.",
+    "Only native Pen was evaluated in this experiment; no Relocate result or two-task Adroit mean is inferred.",
+    "Raw reports, checkpoints, policies, datasets and runtime environments remain external. This manifest retains portable identifiers and checksums only."
+  ]
+}
