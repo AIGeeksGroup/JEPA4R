@@ -118,31 +118,51 @@ class PcdTransform:
         return torch.cat([xyz, x[:, 3:6] / 255.0], dim=-1) if self.use_rgb else xyz
 
 
-def _dexart_pointnet_class():
-    """encoders.DexArtPointNet without importing the encoders package (its __init__ imports encoders.vit ->
-    stable_pretraining, which fails under the timm 0.6.11 CortexBench pins)."""
+# the 3D LeWM encoders (lewm_pcd/encoders, config/train/model/encoder/{dexart,ms2,ppt}.yaml): the _target_ in a
+# checkpoint's config.json -> (file in lewm_pcd/encoders, class, name for the metadata)
+PCD_ENCODERS = {
+    'encoders.DexArtPointNet': ('pointnet_dexart.py', 'DexArtPointNet', 'DexArt PointNet'),
+    'encoders.pointnet_dexart.DexArtPointNet': ('pointnet_dexart.py', 'DexArtPointNet', 'DexArt PointNet'),
+    'encoders.ManiSkillPointNet': ('pointnet_ms2.py', 'ManiSkillPointNet', 'ManiSkill PointNet'),
+    'encoders.pointnet_ms2.ManiSkillPointNet': ('pointnet_ms2.py', 'ManiSkillPointNet', 'ManiSkill PointNet'),
+    'encoders.PointPatchTransformer': ('ppt.py', 'PointPatchTransformer', 'PointPatchTransformer'),
+    'encoders.ppt.PointPatchTransformer': ('ppt.py', 'PointPatchTransformer', 'PointPatchTransformer'),
+}
+
+
+def _pcd_encoder_class(target):
+    """A 3D LeWM encoder class (PCD_ENCODERS) loaded from its file, without importing the encoders package (its
+    __init__ imports encoders.vit -> stable_pretraining, which fails under the timm 0.6.11 CortexBench pins)."""
     import importlib.util
-    path = Path(__file__).resolve().parents[2] / 'encoders' / 'pointnet_dexart.py'  # lewm_pcd/encoders
-    spec = importlib.util.spec_from_file_location('lewm_pointnet_dexart', path)
+    fname, cls, _ = PCD_ENCODERS[target]
+    path = Path(__file__).resolve().parents[2] / 'encoders' / fname  # lewm_pcd/encoders
+    spec = importlib.util.spec_from_file_location('lewm_' + fname[:-len('.py')], path)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
-    return mod.DexArtPointNet
+    return getattr(mod, cls)
+
+
+def _dexart_pointnet_class():
+    """encoders.DexArtPointNet (see _pcd_encoder_class)."""
+    return _pcd_encoder_class('encoders.DexArtPointNet')
 
 
 def load_lewm_pcd(checkpoint_dir: str, epoch: int = 10, center=(0.0, 0.65, 0.2), scale: float = 4.0, use_rgb: bool = True):
-    """The 3D LeWM's encoder (DexArt PointNet) + projector: one (N, 6) point cloud -> the 192-d LeWM latent.
+    """The 3D LeWM's encoder (the one its config.json names: DexArt PointNet, ManiSkill PointNet or
+    PointPatchTransformer) + projector: one (N, 6) point cloud -> the 192-d LeWM latent.
     center / scale / use_rgb must be the checkpoint's data.preprocessor (checked against its config.yaml if present).
     CortexBench's load_pretrained_model wraps transforms for images (PIL); run_bc3d.py replaces that wrapper for
     models whose metadata says input 'pcd'."""
     ckdir = Path(checkpoint_dir)
     cfg = json.loads((ckdir / 'config.json').read_text())
-    assert cfg['encoder']['_target_'] in ('encoders.DexArtPointNet', 'encoders.pointnet_dexart.DexArtPointNet'), cfg['encoder']['_target_']
+    target = cfg['encoder']['_target_']
+    assert target in PCD_ENCODERS, target
     if (ckdir / 'config.yaml').exists():
         import yaml
         pre = yaml.safe_load((ckdir / 'config.yaml').read_text())['data']['preprocessor']
         assert [float(c) for c in pre['center']] == [float(c) for c in center] and float(pre['scale']) == float(scale) \
             and bool(pre['use_rgb']) == bool(use_rgb), f'preprocessor mismatch: checkpoint {pre}'
-    encoder = _dexart_pointnet_class()(**{k: v for k, v in cfg['encoder'].items() if k != '_target_'})
+    encoder = _pcd_encoder_class(target)(**{k: v for k, v in cfg['encoder'].items() if k != '_target_'})
     projector = instantiate(cfg['projector'])  # module.MLP (lewm_pcd/module.py)
     sd = torch.load(ckdir / f'weights_epoch_{epoch}.pt', map_location='cpu')
     encoder.load_state_dict({k[len('encoder.'):]: v for k, v in sd.items() if k.startswith('encoder.')})
@@ -150,7 +170,7 @@ def load_lewm_pcd(checkpoint_dir: str, epoch: int = 10, center=(0.0, 0.65, 0.2),
     model = LeWMEmbedding(encoder, projector).eval()
     with torch.no_grad():
         dim = model(torch.zeros(2, 1200, 6 if use_rgb else 3)).shape[-1]
-    metadata = {'algo': 'lewm', 'input': 'pcd', 'model': 'DexArt PointNet (LeWM 3D encoder + projector)',
+    metadata = {'algo': 'lewm', 'input': 'pcd', 'model': f'{PCD_ENCODERS[target][2]} (LeWM 3D encoder + projector)',
                 'data': _train_data(ckdir),
                 'checkpoint': str(ckdir / f'weights_epoch_{epoch}.pt')}
     return model, int(dim), PcdTransform(center, scale, use_rgb), metadata

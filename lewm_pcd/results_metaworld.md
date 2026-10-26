@@ -297,7 +297,7 @@ CortexBench 的随机基线（随机初始化、冻结的 ViT-B）：6.7（20 / 
   - LeJEPA：官方最小配方（galilai-group/lejepa 的 MINIMAL.md），只换了骨干、数据和增强尺寸，改动逐条列在 `scripts/baselines/train_lejepa_mw.py` 开头。CortexBench 取骨干 CLS 过 512 维头的特征，即官方做线性探测用的那个。
   - PLDM：框架的 `scripts/train/pldm.py`（6f1e499，打了「框架基线」一节的补丁），`data=ogb` 换成任务的数据集，其余默认。CortexBench 取 CLS 过投影头的 192 维，即它预测器工作的空间，和 LeWM 取的位置一致。
 - **V-JEPA 2.1**：Meta 发布的 ViT-B（`vjepa2_1_vitb_dist_vitG_384.pt`，从 ViT-G 蒸馏），冻结直接测。单帧走它的图像分词器，最后一层 patch token 取均值（768 维）；预处理照它官方评测，输入 384、ImageNet 归一化。加载和官方 hub 逐位一致。CortexBench 用 2 个并发（4 个时和两个训练一起跑，显存不够）。
-- **VISReg**：作者发布的 ViT-B/16（arXiv 2606.02572，ImageNet-1K 预训练 400 个 epoch，`visreg-vit-b-inet1k.pth`，作者给的下载链接），冻结直接测。骨干严格载入 timm 的 `vit_base_patch16_224`（num_classes=0），取最后一层 norm 之后的 CLS（768 维），即作者 stable-pretraining 代码里 VISReg 评测用的 `backbone(images)`；只在训练时用的投影头不用。输入 224、ImageNet 归一化。用之前先复现了论文的线性探测（冻结、最后 4 层的 CLS 拼接、10 个 epoch）：CIFAR-10 96.2（论文 94.6）、CIFAR-100 84.0（论文 78.8），不低于论文，权重和加载是对的。CortexBench 用 4 个并发。
+- **VISReg**：作者发布的 ViT-B/16（arXiv 2606.02572，ImageNet-1K 预训练 400 个 epoch），冻结直接测；取骨干最后一层 norm 之后的 CLS（768 维），输入 224、ImageNet 归一化。
 - **训练实现先在别的数据上和官方结果对过**：
   - LeJEPA 官方最小脚本，ImageNette：第 676–685 / 800 个 epoch 的测试精度 88.8–90.0 %，官方最终 90.7 %。
   - PLDM（框架脚本），Push-T：第 5 个 epoch 规划评测（种子 42）76 %，LeWM 论文 78.0 ± 5.0。
