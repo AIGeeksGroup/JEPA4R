@@ -1,6 +1,6 @@
 # CortexBench Adroit：LeWM 与视觉 baseline 结果
 
-本页汇总 **Reorient-Pen（Pen）与 Relocate** 的官方论文参照、我们的BC和单独记录的片段CEM。2026-10-26新增Pen的四条RGB baseline；既有LeWM、CEM和RH56记录保留各自版本与协议。
+本页汇总 **Reorient-Pen（Pen）与 Relocate** 的官方论文参照、我们的BC和单独记录的片段CEM。2026-10-26新增Pen的四条RGB baseline；2026-10-27补充下方RH56 Relocate的完整2D／3D结果与PCD权重入口。各实验保留各自版本与协议。
 
 ## Pen：LeWM 2D／3D 与四条 baseline
 
@@ -99,8 +99,23 @@ WM编码器输入RGB或1200×6 XYZRGB，原生状态只用于数据、恢复和�
 
 MuJoCo200／license、外部运行时、数据与checkpoint需另行提供。合并后未重跑完整训练或其他任务GPU回归；当前PCD接口缺匹配随机表征对照，不作预训练、模态优势或sim2real结论。
 
-## 可选：原生 RH56 Relocate
+## RH56 Relocate：原生 RM75-B／RH56 的 2D／3D 结果
 
 [RH56 数据／接口与显式开关](docs/experiments/rh56_native_20261025.md)接入原生 RM75-B/RH56 的56D专家观测、13D proprio和12D动作。通过独立 `lewm_pcd/scripts/run_rh56.py` 选择阶段及 `--route rgb|pcd`；原Adroit入口和共享学习核心保持不变，数据／专家资产／权重作为外部输入。
 
-[2026-10-25历史生产结果及版本绑定](docs/results/rh56_relocate_20261025.json)单独记录RH56本体，不并入上方官方Adroit矩阵。该记录不是本次集成提交的完整重训验收；RGB uint8/GPU开关默认关闭，原完整模型数值等价失败记录保留。
+以下为 **2026-10-25完成的自定义RH56仿真结果**，不并入上方官方Adroit本体矩阵。BC使用100条新采RH56示范，仅迁移官方Relocate示范的物体／目标初始位置；RH56本体初态、专家、控制与实际12D动作保持原生。
+
+两路使用各自的WM epoch10冻结encoder＋projector，BC预算为 **100 demos／每轮25条在线轨迹／100 epochs／seeds100、200、300**，评测索引 `5、10、…、95、99` 共20轮。单元格为 **Best-of-20／Final（epoch99）**；均值取三seed算术平均，样本SD按 `ddof=1` 计算、单位为百分点。
+
+| 视觉输入 | Seed100 best／final | Seed200 best／final | Seed300 best／final | Best均值±样本SD | Final均值±样本SD |
+|---|---:|---:|---:|---:|---:|
+| LeWM 2D／RGB | 4／0 | 8／0 | 4／0 | **5.33±2.31** | **0.00±0.00** |
+| LeWM 3D／PCD | 60／60 | 44／24 | 36／20 | **46.67±12.22** | **34.67±22.03** |
+
+两路WM均完成10轮、125,480次优化器更新及13,950个验证batch；六组BC均完成100轮、20次评测、7,900次Adam更新与有限梯度检查，冻结表征未变，策略重载通过，实际退出码为0。完整证据见[原生产结果与版本绑定](docs/results/rh56_relocate_20261025.json)；这些是训练完整性和重载验收，不代表真机效果或本次文档更新重跑了实验。
+
+**PCD上游与下游权重：** [AIGeeksGroup/RH56-Relocate-PCD](https://huggingface.co/AIGeeksGroup/RH56-Relocate-PCD) 为**私有仓库，需获授权的Hugging Face账号**。包含PCD epoch10完整WM、训练checkpoint、三个种子的 `best_policy`（原pickle及可独立加载的safetensors）、配置、动作归一化和接口说明；[发布记录与文件SHA](docs/results/rh56_pcd_release_20261027.json)绑定已核验的Hub提交。
+
+保存的 `best_policy` 按**最高平均reward**选择，PCD三个种子对应保存轮次的SR为 **48／40／32%**，主推seed100；这些数值与上表的曲线Best-of-20及Final分别记录。RGB权重不在本次PCD发布包中。
+
+两路保留各自预处理；RGB完整模型CPU／GPU数值等价门槛仍未通过，集成入口的uint8/GPU开关默认关闭。配对抽样未见明显整体表征坍缩，但不能据此保证控制效果，或将两路SR差异归因于模态本身。**真机传感器、坐标标定和控制接口尚未验证**；下载权重可用于后续微调初始化与BC接口测试。
