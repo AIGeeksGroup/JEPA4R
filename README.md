@@ -114,7 +114,7 @@ MuJoCo200／license、外部运行时、数据与checkpoint需另行提供。合
 
 两路WM均完成10轮、125,480次优化器更新及13,950个验证batch；六组BC均完成100轮、20次评测、7,900次Adam更新与有限梯度检查，冻结表征未变，策略重载通过，实际退出码为0。完整证据见[原生产结果与版本绑定](docs/results/rh56_relocate_20261025.json)；这些是训练完整性和重载验收，不代表真机效果或本次文档更新重跑了实验。
 
-**PCD上游与下游权重：** [AIGeeksGroup/RH56-Relocate-PCD](https://huggingface.co/AIGeeksGroup/RH56-Relocate-PCD) 为**私有仓库，需获授权的Hugging Face账号**。包含PCD epoch10完整WM、训练checkpoint、三个种子的 `best_policy`（原pickle及可独立加载的safetensors）、配置、动作归一化和接口说明；[发布记录与文件SHA](docs/results/rh56_pcd_release_20261027.json)绑定已核验的Hub提交。
+**PCD上游与下游权重：** 已迁入 [AIGeeksGroup/JEPA4R 的 `rh56-relocate-pcd` 分支](https://huggingface.co/AIGeeksGroup/JEPA4R/tree/rh56-relocate-pcd)，经用户授权公开，`main` 分支保持不变。包含PCD epoch10完整WM、训练checkpoint、三个种子的 `best_policy`（原pickle及可独立加载的safetensors）、配置、动作归一化和接口说明；模型权重未改，迁移后153个文件均完成SHA核验，[迁移记录与文件SHA](docs/results/rh56_pcd_hub_migration_20261027.json)绑定已核验的Hub提交。
 
 保存的 `best_policy` 按**最高平均reward**选择，PCD三个种子对应保存轮次的SR为 **48／40／32%**，主推seed100；这些数值与上表的曲线Best-of-20及Final分别记录。RGB权重不在本次PCD发布包中。
 
