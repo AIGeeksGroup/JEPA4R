@@ -114,7 +114,11 @@ MuJoCo200／license、外部运行时、数据与checkpoint需另行提供。合
 
 两路WM均完成10轮、125,480次优化器更新及13,950个验证batch；六组BC均完成100轮、20次评测、7,900次Adam更新与有限梯度检查，冻结表征未变，策略重载通过，实际退出码为0。完整证据见[原生产结果与版本绑定](docs/results/rh56_relocate_20261025.json)；这些是训练完整性和重载验收，不代表真机效果或本次文档更新重跑了实验。
 
-**PCD上游与下游权重：** 已迁入 [AIGeeksGroup/JEPA4R 的 `rh56-relocate-pcd` 分支](https://huggingface.co/AIGeeksGroup/JEPA4R/tree/rh56-relocate-pcd)，经用户授权公开，`main` 分支保持不变。包含PCD epoch10完整WM、训练checkpoint、三个种子的 `best_policy`（原pickle及可独立加载的safetensors）、配置、动作归一化和接口说明；模型权重未改，迁移后153个文件均完成SHA核验，[迁移记录与文件SHA](docs/results/rh56_pcd_hub_migration_20261027.json)绑定已核验的Hub提交。
+**PCD上游与下游权重：** 已迁入 [AIGeeksGroup/JEPA4R 的 `rh56-relocate-pcd` 分支](https://huggingface.co/AIGeeksGroup/JEPA4R/tree/rh56-relocate-pcd)，经用户授权公开，`main` 分支保持不变。包含PCD epoch10完整WM、训练checkpoint、三个种子的 `best_policy`（原pickle及可独立加载的safetensors）、配置、动作归一化和接口说明；模型权重未改，首次迁移时153个文件均完成SHA核验，[迁移记录与文件SHA](docs/results/rh56_pcd_hub_migration_20261027.json)保留当时的版本绑定。
+
+**Checkpoint＋训练／推理代码交接：** 同一Hub分支补齐了 `code/rh56_inference.py`、`examples/infer_sequence.py` 和 `code/load_world_model.py`：支持点云→预处理→192D表征→原FLARE＋13D proprio→12D动作均值，以及完整WM的111项state严格重建。补充版本的417个文件已完成SHA核验，原8个模型／策略权重文件未改。5项CPU检查和示例的synthetic self-check／NPZ输入两条CLI路径均实际退出0；这些只验证离线加载与数据流，不是新训练、仿真SR或真机结果。[交接记录](docs/results/rh56_pcd_handoff_20261027.json)绑定补充版本与证据。
+
+原训练入口及依赖源码快照、[训练说明](https://huggingface.co/AIGeeksGroup/JEPA4R/blob/11d2802382e0aa5a66897676d7754d58d8f6c65f/docs/TRAINING.md)和[仿真依赖清单](https://huggingface.co/AIGeeksGroup/JEPA4R/blob/11d2802382e0aa5a66897676d7754d58d8f6c65f/docs/SIMULATION_DEPENDENCIES.md)已随包提供。原生仿真控制源码可供接入参考，训练数据、机器人资产／mesh、专家actor及完整legacy BC运行时仍需另行准备；包内没有一键新数据微调CLI。
 
 保存的 `best_policy` 按**最高平均reward**选择，PCD三个种子对应保存轮次的SR为 **48／40／32%**，主推seed100；这些数值与上表的曲线Best-of-20及Final分别记录。RGB权重不在本次PCD发布包中。
 
