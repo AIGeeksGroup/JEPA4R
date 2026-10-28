@@ -69,6 +69,29 @@ class PenPLDMEntryTests(unittest.TestCase):
                     self.entry.main(['--help'])
         self.assertEqual(exited.exception.code, 0)
 
+    def test_relocate_switch_preserves_recipe_and_uses_native_action_width(self):
+        plan = self.prepare('--task', 'adroit_relocate', '--workers', '24', '--prefetch-factor', '2')
+        self.assertEqual(plan['task'], 'adroit_relocate')
+        self.assertEqual(plan['name'], 'pldm_adroit_relocate')
+        self.assertEqual(plan['recipe']['raw_action_dim'], 30)
+        self.assertEqual(plan['recipe']['action_block_dim'], 150)
+        self.assertEqual(plan['expected_visual_frames'], 2000000)
+        self.assertEqual(plan['source_row_schema'], 'pre_action_rows_with_outgoing_action')
+        self.assertEqual(plan['workers'], 24)
+        self.assertEqual(plan['prefetch_factor'], 2)
+        for key in ('selected_frames', 'frameskip', 'batch_size', 'epochs', 'loss'):
+            self.assertEqual(plan['recipe'][key], self.prepare()['recipe'][key])
+        self.assertEqual(self.prepare(), self.prepare('--task', 'adroit_pen'))
+
+    def test_relocate_checkpoint_selector_uses_existing_loader(self):
+        path = LEWM / 'bench/cortexbench/conf/model/pldm_relocate.yaml'
+        self.assertTrue(path.is_file())
+        values = dict(line.split(':', 1) for line in path.read_text().splitlines()
+                      if line.strip() and not line.lstrip().startswith('#'))
+        self.assertEqual({k.strip(): v.strip() for k, v in values.items()},
+                         {'_target_': 'jepa_baselines.load_pldm',
+                          'checkpoint_dir': '${oc.env:RELOCATE_PLDM_CHECKPOINT}', 'epoch': '10'})
+
     def test_smoke_retains_ten_epoch_schedule_budget_and_caps_actual_steps(self):
         plan = self.prepare('--mode', 'smoke', '--dry-run')
         self.assertIn('trainer.max_epochs=10', plan['hydra_overrides'])
@@ -80,6 +103,7 @@ class PenPLDMEntryTests(unittest.TestCase):
     def test_invalid_budgets_and_names_fail_before_runtime(self):
         for extra in (('--mode', 'formal', '--max-steps', '2'), ('--prefetch-factor', '4'),
                       ('--workers', '-1'), ('--mode', 'smoke', '--max-steps', '0'),
+                      ('--task', 'rh56_relocate'),
                       ('--name', '../escape')):
             with self.subTest(extra=extra), contextlib.redirect_stderr(io.StringIO()):
                 with self.assertRaises(SystemExit):

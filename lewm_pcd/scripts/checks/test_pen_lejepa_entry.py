@@ -49,6 +49,28 @@ class PenLejepaEntryTests(unittest.TestCase):
                     self.module.main(['--help'])
         self.assertEqual(exited.exception.code, 0)
 
+    def test_relocate_switch_only_changes_data_and_task_metadata(self):
+        result = self.prepared(['--task', 'adroit_relocate', '--workers', '24', '--prefetch-factor', '2'])
+        self.assertEqual(result['task'], 'adroit_relocate')
+        self.assertEqual(result['native_argv'][result['native_argv'].index('--task') + 1], 'adroit_relocate')
+        self.assertEqual(result['native_argv'][result['native_argv'].index('--name') + 1], 'lejepa_adroit_relocate')
+        self.assertEqual(result['expected_visual_frames'], 2000000)
+        self.assertEqual(result['source_row_schema'], 'pre_action_rows_with_outgoing_action')
+        self.assertNotIn('expected_pen_visual_frames', result)
+        self.assertEqual(result['recipe'], self.prepared()['recipe'])
+        self.assertEqual(result['workers'], 24)
+        self.assertEqual(result['prefetch_factor'], 2)
+        self.assertEqual(self.prepared(), self.prepared(['--task', 'adroit_pen']))
+
+    def test_relocate_checkpoint_selector_uses_existing_loader(self):
+        path = LEWM / 'bench/cortexbench/conf/model/lejepa_relocate.yaml'
+        self.assertTrue(path.is_file())
+        values = dict(line.split(':', 1) for line in path.read_text().splitlines()
+                      if line.strip() and not line.lstrip().startswith('#'))
+        self.assertEqual({k.strip(): v.strip() for k, v in values.items()},
+                         {'_target_': 'jepa_baselines.load_lejepa',
+                          'checkpoint_dir': '${oc.env:RELOCATE_LEJEPA_CHECKPOINT}', 'epoch': '10'})
+
     def test_explicit_dry_run_never_executes(self):
         result = self.prepared(['--mode', 'formal', '--dry-run'])
         self.assertEqual(result['execution'], 'PREPARED_ONLY')
@@ -63,6 +85,7 @@ class PenLejepaEntryTests(unittest.TestCase):
     def test_formal_cannot_hide_a_smoke_limit_and_prefetch_is_bounded(self):
         for extra in (['--mode', 'formal', '--max-steps', '2'], ['--prefetch-factor', '4'],
                       ['--mode', 'smoke', '--max-steps', '0'], ['--name', '../escape'],
+                      ['--task', 'rh56_relocate'],
                       ['--exclude-terminal-frames']):
             with self.subTest(extra=extra), contextlib.redirect_stderr(io.StringIO()):
                 with self.assertRaises(SystemExit):
@@ -98,7 +121,11 @@ class PenLejepaEntryTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             self.check_native_dispatch(Path(directory))
 
-    def check_native_dispatch(self, directory):
+    def test_relocate_execution_forwards_task_to_native_main(self):
+        with tempfile.TemporaryDirectory() as directory:
+            self.check_native_dispatch(Path(directory), task='adroit_relocate')
+
+    def check_native_dispatch(self, directory, task='adroit_pen'):
         # A fake native backend verifies dispatch and restoration without tensor work.
         data = Path(directory) / 'input.h5'
         data.write_bytes(b'not opened by the fake native implementation')
@@ -138,11 +165,12 @@ class PenLejepaEntryTests(unittest.TestCase):
                 with patch.object(self.module, '_load_data_helpers', return_value=helpers):
                     with contextlib.redirect_stdout(io.StringIO()):
                         self.assertEqual(self.module.main(['--dataset', str(data), '--output', str(output),
-                                                           '--mode', 'smoke', '--max-steps', '2']), 0)
+                                                           '--mode', 'smoke', '--max-steps', '2', '--task', task]), 0)
         self.assertEqual([item[0] for item in seen], ['data', 'handle', 'main', 'data_restored'])
         self.assertIs(seen[1][1], raw_dataset)
         self.assertEqual(raw_dataset.clip_indices, [(0, 0), (0, 1), (0, 2)])
         main_call = next(item for item in seen if item[0] == 'main')
+        self.assertEqual(main_call[1][main_call[1].index('--task') + 1], task)
         self.assertEqual(main_call[2], str(output.resolve()))
         self.assertIs(native.swm.load_dataset, original_dataset_loader)
         self.assertIs(native.DataLoader, original_loader)

@@ -1,4 +1,4 @@
-"""Pen data/output boundary around the framework PLDM entry; default is plan only.
+"""Native Adroit data/output boundary around PLDM; default is Pen and plan only.
 
 The framework's encoder, loss, predictor, optimizer and scheduler are delegated.
 Real smoke/formal execution remains unverified until a suitable CUDA host is used.
@@ -40,7 +40,8 @@ def make_parser():
     parser.add_argument('--dataset', required=True, type=Path)
     parser.add_argument('--output', required=True, type=Path,
                         help='Fresh external STABLEWM_HOME, never an existing run')
-    parser.add_argument('--name', default='pldm_adroit_pen')
+    parser.add_argument('--task', choices=('adroit_pen', 'adroit_relocate'), default='adroit_pen')
+    parser.add_argument('--name', default=None, help='Checkpoint name; default pldm_TASK')
     parser.add_argument('--mode', choices=('smoke', 'formal'),
                         help='Explicit execution switch; omission prepares only')
     parser.add_argument('--dry-run', action='store_true')
@@ -53,6 +54,8 @@ def make_parser():
 
 
 def build_plan(args, parser):
+    if args.name is None:
+        args.name = 'pldm_' + args.task
     if not args.name or args.name in ('.', '..') or any(c in args.name for c in ('/', '\\')):
         parser.error('--name must be one checkpoint-directory component')
     if args.workers < 0:
@@ -80,12 +83,19 @@ def build_plan(args, parser):
     if args.mode == 'smoke':
         overrides += [f'+trainer.max_steps={steps}', '+trainer.limit_train_batches=2',
                       '+trainer.limit_val_batches=2']
+    action_dim = 24 if args.task == 'adroit_pen' else 30
+    recipe = dict(RECIPE, raw_action_dim=action_dim,
+                  action_block_dim=action_dim * RECIPE['frameskip'])
     return {'execution': 'PREPARED_ONLY', 'method': 'framework_PLDM', 'mode': args.mode,
+            'task': args.task,
+            'expected_visual_frames': 914082 if args.task == 'adroit_pen' else 2000000,
+            'source_row_schema': 'T_plus_1_with_terminal_action_nan' if args.task == 'adroit_pen'
+                                 else 'pre_action_rows_with_outgoing_action',
             'framework_root': str(framework), 'reference_commit': FRAMEWORK_COMMIT,
             'native_script': str(script), 'native_source_sha256_lf': sha_lf(script),
             'native_config_sha256_lf': sha_lf(config),
             'dataset': str(dataset), 'output': str(output), 'name': args.name,
-            'device': args.device, 'hydra_overrides': overrides, 'recipe': dict(RECIPE),
+            'device': args.device, 'hydra_overrides': overrides, 'recipe': recipe,
             'workers': args.workers, 'prefetch_factor': args.prefetch_factor,
             'data_boundary': 'native sequence sampling and all windows preserved; original normalizer excludes NaN rows and forward applies nan_to_num',
             'compatibility': 'isolated-memory logger scope fix only; framework source stays unchanged',

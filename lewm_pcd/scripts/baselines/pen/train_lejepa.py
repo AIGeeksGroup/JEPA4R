@@ -1,4 +1,4 @@
-"""Pen data/scheduling boundary around the unchanged repository LeJEPA entry.
+"""Native Adroit data/scheduling boundary around LeJEPA; Pen remains the default.
 
 No mode selects preparation only. Explicit smoke/formal execution needs CUDA;
 neither native return nor checkpoint presence is a formal acceptance result.
@@ -27,7 +27,8 @@ def make_parser():
     parser.add_argument('--dataset', required=True, type=Path)
     parser.add_argument('--output', required=True, type=Path,
                         help='Fresh external STABLEWM_HOME; native checkpoints are under checkpoints/NAME')
-    parser.add_argument('--name', default='lejepa_adroit_pen')
+    parser.add_argument('--task', choices=('adroit_pen', 'adroit_relocate'), default='adroit_pen')
+    parser.add_argument('--name', default=None, help='Checkpoint name; default lejepa_TASK')
     parser.add_argument('--mode', choices=('smoke', 'formal'),
                         help='Explicit execution switch; omitted means preparation only')
     parser.add_argument('--dry-run', action='store_true')
@@ -38,6 +39,8 @@ def make_parser():
 
 
 def build_plan(args, parser):
+    if args.name is None:
+        args.name = 'lejepa_' + args.task
     if not args.name or args.name in ('.', '..') or any(c in args.name for c in ('/', '\\')):
         parser.error('--name must be one checkpoint-directory component')
     if args.workers < 0:
@@ -49,18 +52,23 @@ def build_plan(args, parser):
     elif args.max_steps not in (None, 0):
         parser.error('--max-steps is only valid in explicit smoke mode')
     dataset, output = args.dataset.expanduser().resolve(), args.output.expanduser().resolve()
-    native = ['--task', 'adroit_pen', '--dataset', str(dataset), '--name', args.name,
+    native = ['--task', args.task, '--dataset', str(dataset), '--name', args.name,
               '--epochs', '10', '--bs', '256', '--V', '4', '--lr', '0.002',
               '--lamb', '0.02', '--proj-dim', '16', '--workers', str(args.workers)]
     if args.mode == 'smoke':
         native += ['--max-steps', str(steps)]
     return {'execution': 'PREPARED_ONLY', 'method': 'repository_Tiny_LeJEPA',
+            'task': args.task,
             'mode': args.mode, 'dataset': str(dataset), 'output': str(output),
             'native_script': str(NATIVE_SCRIPT),
             'native_source_sha256_lf': hashlib.sha256(NATIVE_SCRIPT.read_bytes().replace(b'\r\n', b'\n')).hexdigest(),
             'native_argv': native, 'recipe': dict(RECIPE), 'workers': args.workers,
             'prefetch_factor': args.prefetch_factor,
-            'data_boundary': 'native_all_visual_frames', 'expected_pen_visual_frames': 914082,
+            'data_boundary': 'native_all_visual_frames',
+            'expected_visual_frames': 914082 if args.task == 'adroit_pen' else 2000000,
+            **({'expected_pen_visual_frames': 914082} if args.task == 'adroit_pen' else {}),
+            'source_row_schema': 'T_plus_1_with_terminal_action_nan' if args.task == 'adroit_pen'
+                                 else 'pre_action_rows_with_outgoing_action',
             'checkpoint_scope': 'native_smoke_does_not_save_a_checkpoint' if args.mode == 'smoke'
                                 else 'native_epoch1_to10_exports_require_separate_acceptance'}
 

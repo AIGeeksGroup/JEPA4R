@@ -1,6 +1,6 @@
 # CortexBench Adroit：LeWM 与视觉 baseline 结果
 
-本页汇总 **Reorient-Pen（Pen）与 Relocate** 的官方论文参照、我们的BC和单独记录的片段CEM。2026-10-26新增Pen的四条RGB baseline；2026-10-27补充下方RH56 Relocate的完整2D／3D结果与PCD权重入口。各实验保留各自版本与协议。
+本页汇总 **Reorient-Pen（Pen）与 Relocate** 的官方论文参照、我们的BC和单独记录的片段CEM。2026-10-26新增Pen的四条RGB baseline，2026-10-28补齐原生Relocate对应结果并合入下方主矩阵；RH56 Relocate的2D／3D结果与PCD权重入口单独保留。各实验保留各自版本与协议。
 
 ## Pen：LeWM 2D／3D 与四条 baseline
 
@@ -19,19 +19,38 @@
 
 † LeWM 3D为PCD模态扩展，输入及目标信息接口与RGB不同；集中展示用于查看已有结果，不将其视为同模态、同信息预算的官方RGB排名。
 
-PLDM／LeJEPA保留各自原方法；VISReg／V-JEPA 2.1直接使用发布权重。这四条新增实验只测Pen，未给出新增Relocate成绩或双任务Adroit均值。模型容量、预训练数据、原生分辨率及训练预算不同，三seed结果仅作描述性比较。
+PLDM／LeJEPA保留各自原方法；VISReg／V-JEPA 2.1直接使用发布权重。本节保留2026-10-26的Pen结果，后续Relocate结果及两任务描述汇总见下方。模型容量、预训练数据、原生分辨率及训练预算不同，三seed结果仅作描述性比较。
 
 复现使用现有 `embedding=pldm_pen|lejepa_pen|visreg_vitb|vjepa21_vitb` 开关；特征宽度保留192／512／768／768，三帧FLARE加24D proprio后为600／1560／2328／2328D，未做PCA或统一维度。数据、权重、外部运行时和许可证继续外置。
 
 [最薄入口、权重来源与复现命令](docs/experiments/adroit_pen_baselines_20261026.md) · [逐seed结果、协议与SHA证据](docs/results/adroit_pen_baselines_20261026.json)
 
+## Relocate：四条 RGB baseline（2026-10-28）
+
+原生 `relocate-v0` 使用 **100条官方示范／每轮25条在线轨迹／100epochs／seeds100、200、300**；Best-of-20、Final（eval99）和样本SD口径同上。PLDM／LeJEPA在已验收的Relocate RGB数据上各完成原生10轮预训练后冻结；VISReg／V-JEPA 2.1复用发布权重冻结读出。本轮不重训LeWM 2D，不混入RH56、PCD或CEM结果。
+
+| 方法／编码器 | Seed100 best／final | Seed200 best／final | Seed300 best／final | Best均值±样本SD | Final均值±样本SD |
+|---|---:|---:|---:|---:|---:|
+| PLDM／ViT-Tiny/14 | 12／0 | 8／0 | 12／4 | **10.67±2.31** | **1.33±2.31** |
+| LeJEPA／ViT-Tiny/14＋512D head | 16／8 | 16／8 | 16／4 | **16.00±0.00** | **6.67±2.31** |
+| VISReg／ViT-B/16，224 | 48／40 | 44／28 | 28／24 | **40.00±10.58** | **30.67±8.33** |
+| V-JEPA 2.1／ViT-B/16，384 | 40／16 | 32／20 | 36／20 | **36.00±4.00** | **18.67±2.31** |
+
+12组BC均完成100条有限loss、20轮完整评测并实际退出0，保存的reward-selected policy通过两次CPU重载；曲线Best／Final不自动等于该保存文件的SR。官方100条示范的RGB由保留的官方初态与动作配对重渲，非视觉字段一致；没有声称与已缺失的历史RGB逐像素相同。动作／proprio保留30D，原192／512／768／768D读出对应606／1566／2334／2334D策略输入，未统一宽度或重写BC。
+
+仅在现有薄入口显式增加 `--task adroit_relocate`，BC沿用 `embedding=pldm_relocate|lejepa_relocate|visreg_vitb|vjepa21_vitb`；数据、权重、运行环境和许可证继续外置。[接口与复现条件](docs/experiments/adroit_relocate_baselines_20261028.md) · [逐seed曲线、真实生产版本与SHA](docs/results/adroit_relocate_baselines_20261028.json)
+
 ## Adroit BC 参考矩阵
 
-SR与均值单位为%。[Table 8](https://arxiv.org/html/2303.18240v2#A1.T8)为原论文公开结果参照，本项目未正式提交官方榜。官方任务列取Table 8，官方均值沿用Table 2／4；Ours为三seed Best-of-20，均值按两任务算术平均。输入列为视觉模态，BC另用proprio。
+SR与均值单位为%。[Table 8](https://arxiv.org/html/2303.18240v2#A1.T8)为原论文公开结果参照，本项目未正式提交官方榜。官方任务列取Table 8，官方均值沿用Table 2／4。新增四条RGB baseline在单元格中分别列 **Best／Final** 的三seed均值±样本SD（`ddof=1`）；Adroit列分别对两个任务的Best均值、Final均值取算术平均。既有LeWM两行仍为Best-of-20及总体std（`ddof=0`），保留历史口径。输入列为视觉模态，BC另用proprio。
 
 | 模型／版本 | 输入 | 来源 | Pen SR | Relocate SR | Adroit 均值 |
 |---|---|---|---:|---:|---:|
 | **LeWM：可见表面PCD** | PCD† | 本项目当前 | **81.33±4.99** | **88.00±5.66** | **84.67†** |
+| V-JEPA 2.1／ViT-B/16，384 | RGB | Meta发布权重，冻结 | Best **66.67±4.62**<br>Final **48.00±4.00** | Best **36.00±4.00**<br>Final **18.67±2.31** | Best **51.33**<br>Final **33.33** |
+| VISReg／ViT-B/16，224 | RGB | 作者发布权重，冻结 | Best **52.00±0.00**<br>Final **25.33±18.04** | Best **40.00±10.58**<br>Final **30.67±8.33** | Best **46.00**<br>Final **28.00** |
+| LeJEPA／ViT-Tiny/14＋512D head | RGB | 各任务原生10轮预训练，冻结 | Best **66.67±2.31**<br>Final **57.33±6.11** | Best **16.00±0.00**<br>Final **6.67±2.31** | Best **41.33**<br>Final **32.00** |
+| PLDM／ViT-Tiny/14 | RGB | 各任务原生10轮预训练，冻结 | Best **70.67±6.11**<br>Final **64.00±12.00** | Best **10.67±2.31**<br>Final **1.33±2.31** | Best **40.67**<br>Final **32.67** |
 | R3M (RN-50) | RGB | 官方论文 | 81.3 | 65.3 | 73.3 |
 | VC-1 (ViT-L; Ego4D+MNI) | RGB | 官方论文 | 80.0 | 38.7 | 59.3 |
 | MAE Ego4D+MNI (ViT-B) | RGB | 官方论文 | 76.0 | 32.0 | 54.0 |
@@ -52,9 +71,9 @@ SR与均值单位为%。[Table 8](https://arxiv.org/html/2303.18240v2#A1.T8)为�
 | Random Frozen (ViT-L) | RGB | 官方论文 | 5.3 | 0.0 | 2.7 |
 | Random Frozen (ViT-B) | RGB | 官方论文 | 4.0 | 0.0 | 2.0 |
 
-† PCD／目标信息接口为扩展，不参与官方RGB排名。Ours各任务使用独立WM权重，WM预训练还使用约10,000条任务内轨迹，100demos仅指BC动作头预算；该均值是描述性汇总，不能视为同一通用encoder的成绩或完全匹配预算的对照。
+† PCD／目标信息接口为扩展，不参与官方RGB排名。LeWM、PLDM、LeJEPA各任务使用独立WM权重，预训练还使用约10,000条任务内轨迹；VISReg／V-JEPA使用各自同一发布encoder、分别训练任务BC head。100demos仅指BC动作头预算。两任务均值为描述性汇总，模型容量、预训练数据及预算不同，不代表官方榜成绩或匹配预算的因果对照；不为两任务均值构造合并轨迹SR或置信区间。
 
-新版RGB的Relocate **8.00%** 沿用原v6 checkpoint的BC结果，本轮没有新增RGB BC；它与下方86%片段CEM使用不同策略和成功定义。官方Table 8未给逐任务std，Ours的±为三BCseed总体std（ddof=0）。
+LeWM RGB的Relocate **8.00%** 沿用原v6 checkpoint的BC结果，本轮没有重训LeWM 2D；新增四条RGB baseline单独列于主表。LeWM v6与下方86%片段CEM使用不同策略和成功定义。官方Table 8未给逐任务std；既有LeWM两行及下方历史明细的±保持总体std（`ddof=0`），新增四条baseline使用样本SD（`ddof=1`）。
 
 ## BC 三 seed 明细
 
@@ -91,7 +110,7 @@ Pen目标为未来笔位置／方向，距离<0.075m且dot>0.95，掉落失败�
 | Pen | 45D | 24D／24D | 600D→24D | 120D |
 | Relocate | 39D | 30D／30D | 606D→30D | 150D |
 
-WM编码器输入RGB或1200×6 XYZRGB，原生状态只用于数据、恢复和成功检查。最新Pen两路WM完成10epochs；Relocate复用RGB v6，新PCD完成10epochs／127,260steps并严格重载通过。
+WM编码器输入RGB或1200×6 XYZRGB，原生状态只用于数据、恢复和成功检查。此处192D表征输入对应LeWM；新增baseline的各自宽度见上方。LeWM最新Pen两路WM完成10epochs；Relocate的LeWM复用RGB v6，新PCD完成10epochs／127,260steps并严格重载通过。
 
 - [Pen配置、依赖和复现入口](docs/experiments/adroit_pen_paired_20261006.md)
 - [Relocate重放、WM、BC与CEM入口](docs/experiments/adroit_relocate_replay_20261007.md)
