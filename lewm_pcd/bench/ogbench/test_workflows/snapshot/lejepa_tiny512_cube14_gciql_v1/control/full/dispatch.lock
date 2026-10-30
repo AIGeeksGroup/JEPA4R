@@ -1,9 +1,0 @@
-{
-  "schema_version": 1,
-  "owner": 5473,
-  "at": 1793212277.3147638,
-  "attempt_id": "623e5fa38ed535e0065babc40476eeab",
-  "worker_token_sha256": "a6675f601c91642ecb48d0da5998a43338c24f77b1d133df1ad02e902788e92f",
-  "worker_script_sha256": "e2d78b65a1cc285a22f49f0bc2da0710ae28ee213575ec10b5019fb5b99a0f78",
-  "launch_plan_SHA256": "ba4ca64b31fb60b8f02b4637d0f56c73d1615bfc8641c0e94bd4a9c6baa9d74b"
-}

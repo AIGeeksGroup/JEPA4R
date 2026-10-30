@@ -1,8 +1,0 @@
-{
-  "actual_exit_code": 0,
-  "cause": "Frozen WindowsCRLF vs target emittedLF; logicalJSON and all fields identical",
-  "first_emit_sha256": "0e5f648085084320cf81b927e9eab3357dc7917a619e54cfb65db408f5d9da58",
-  "frozen_deployed_sha256": "319355585e08d686337a6d84a43fab75f64cf4c5e4dd33f041f0201d6f25d951",
-  "first_emit_preserved": true,
-  "no_NN_or_scientific_parameter_change": true
-}

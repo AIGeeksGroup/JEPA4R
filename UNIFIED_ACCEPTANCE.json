@@ -1,44 +1,22 @@
 {
-  "schema": "cube_unified_code_acceptance_v5_tiny_only",
   "actual_exit_code": 0,
-  "at": "2026-10-30T11:43:14.064345+00:00",
-  "base_commit": "fd65faeee94ee9638f99c9a52eb63bf327f348c7",
-  "comparison_groups": 24,
-  "state_baseline_groups": 4,
-  "lejepa_variant": "Tiny replacement only",
-  "source_manifest_sha256": "e44da36dc43c63c9b5c06e1e55c2d9e98417b84d2c4ed743423b3d55e5ef097c",
-  "file_count": 2302,
-  "native_source_verification": {
-    "native_files": 2526,
-    "unique_repository_files": 1752,
-    "reused_v3_files": 1024,
-    "hash_mismatches": [],
-    "executed": false
-  },
-  "checks": {
-    "schema": "tiny_replacement_code_checks_v1",
-    "current_tests": {
-      "run": 10,
-      "passed": 10,
-      "actual_exit_code": 0
-    },
-    "comparison_groups": 24,
-    "state_baseline_groups": 4,
-    "lejepa_variant": "Tiny only",
-    "deprecated_lejepa_source_paths_removed": 126,
-    "prior_v3_test_evidence_reused_because_code_unchanged": true,
-    "baseline_v3_checks": {
-      "local_passed": 83,
-      "linux_hdf5_supplement_passed": 2,
-      "dependency_skips": 9
-    },
-    "code_acceptance_only": true,
-    "GPU_or_formal_result_acceptance": false,
-    "formal_training_started": false,
-    "evaluation_started": false
-  },
-  "original_model_and_training_code_modified": false,
-  "formal_training_started": false,
   "evaluation_started": false,
-  "pushed": false
+  "file_count": 919,
+  "final_tests_summary_sha256": "28931011a1768b69bc838da5d14fcd9970163b8ed8b659b0c3d06e47f8810bf7",
+  "formal_training_started": false,
+  "full_window_split_counts": [
+    1638001,
+    181999
+  ],
+  "manager_seed_argument": "omitted",
+  "original_server_source_unchanged": true,
+  "protocol_report_sha256": "7720a960b9557839e9685abfe1699ecf324f8e29f786f177bc7e9ecc2bff0be4",
+  "pushed": false,
+  "schema": "cube_unified_code_acceptance_v3",
+  "seed": 3072,
+  "single_protocol_verified": true,
+  "source_and_data_metadata_verified": true,
+  "source_manifest_sha256": "b458fcdf43110e157e1b49d8c461b48ebb5e207d515223c89453fe3fd64d6c9d",
+  "split_scope": "window",
+  "v2_unchanged": true
 }
