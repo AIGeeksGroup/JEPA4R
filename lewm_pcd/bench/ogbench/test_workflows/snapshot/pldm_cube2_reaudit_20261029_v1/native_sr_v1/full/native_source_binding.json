@@ -1,0 +1,36 @@
+{
+  "actual_exit_code": 0,
+  "binding_sha256": "2e0580fa27f3b74b6fce794ce586fb4a8536a3bddec4b44b6d3a3085fa416b4d",
+  "cuda_matmul_allow_tf32": false,
+  "encoder_family": "pldm",
+  "encoding_protocol": "fresh_current_and_goal_each_policy_call_2N",
+  "latent_dim": 512,
+  "numpy_physics": {
+    "BLAS_threads": 4,
+    "library_sha256": {
+      "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/lib/python3.12/site-packages/numpy.libs/libscipy_openblas64_-56d6093b.so": "0bd815d04b6b54990e3cccc7528fbb696456d09569f533d0390c13f0cdc4dd4a"
+    },
+    "numpy_path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/lib/python3.12/site-packages/numpy/__init__.py",
+    "numpy_version": "2.2.6",
+    "other_threadpools_record_only": [],
+    "reference": "official_state_sr NumPy BLAS4 physics; other BLAS/OpenMP pools are recorded, not constrained to4",
+    "threadpools": [
+      {
+        "architecture": "SkylakeX",
+        "filepath": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/lib/python3.12/site-packages/numpy.libs/libscipy_openblas64_-56d6093b.so",
+        "internal_api": "openblas",
+        "num_threads": 4,
+        "prefix": "libscipy_openblas",
+        "threading_layer": "pthreads",
+        "user_api": "blas",
+        "version": "0.3.29"
+      }
+    ],
+    "torch_num_threads": null
+  },
+  "original_Native_sha256": "e40a2ff52bd0915b7953d9011c65e02c75f9e0b2d0e454b613d18c275f6c13f0",
+  "selected_preprocess_device": "cpu",
+  "source_sha256": "f21f604bf4652ab5fb3ecfd4629c0acce8c343faccbbd9831203ad5c9ffe76e4",
+  "torch_float32_matmul_precision": "highest",
+  "torch_num_threads": 1
+}

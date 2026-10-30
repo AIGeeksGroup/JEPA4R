@@ -1,0 +1,267 @@
+{
+  "cube_count": 4,
+  "data_id": "cube-quadruple-play-v0",
+  "training_updates": 0,
+  "SR_episodes": 0,
+  "source_pins": {
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/adapter_v1/materialize.py": "f0ec88f369936a319ead35063a87d51935234bceca4ef6714a013b400fbf34c5",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/adapter_v2/materialize.py": "cbc20a5bad9f158419c0e0a37d08a8ee1df0031d471206401c8ade61a5b1dfc8",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/adapter_v2/test_materialize.py": "cfed6da43eacf15a92be8bc1009046dcc7eb829a9453b30b69efcce2fa03ede2",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/adapter_v2/SOURCE_FREEZE_v2.json": "848c4f7a4e5abdbde2b07d765c994b1a1166a39b3352f9d5f634f201eb8b189e",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/adapter_v2/ADAPTER_HANDOFF_v2.json": "01e69ba1472dcaa520fe7c7d0aaaa0ad22304608389dc378b3b2269a0f6b344e",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/ENCODING_BINDING_v2.json": "382d2655e1fb619b338021f38b64fe66e64ab1e9bbcb8d8adbf5aa3543738ea8",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/control_v2/run_relay.py": "da1533a3f25a011f2afa280cb5f4f7a05a32e39b46bb58390d572eba282899d2",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/control_v2/after_five.py": "dd9f10ffa47dce42833aada259fdddb9f0316e3e9e8d6fb6eefb60576cf28b31",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/control_v2/run.sh": "302b10874809010b829537f9504b55e23214604ac1d0d8d4978d4cfc4283f33b",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_official_embeddings_v1/serial_relay.py": "ff7eb51417c8301f27987743701d4a0336117c356904443bb174ab84475366cb",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/prepare_runtime.py": "0331473db0b0566d3097c8cd9cf7362a820badc8c8537134ea39388ab79e6063"
+  },
+  "process_guard": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/prepare_runtime.py",
+  "own_RSS_limit_bytes": 12884901888,
+  "profile": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/training_camera_v2",
+  "phases": [
+    {
+      "name": "01_CPU_camera_tests",
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/adapter_v2",
+        "-p",
+        "test_materialize.py",
+        "-v"
+      ],
+      "environment": {
+        "CUDA_VISIBLE_DEVICES": "",
+        "JAX_PLATFORMS": "cpu",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "OMP_NUM_THREADS": "1",
+        "OPENBLAS_NUM_THREADS": "1",
+        "MKL_NUM_THREADS": "1",
+        "ORIGINAL_2D_CACHE_WORKSPACE": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_official_embeddings_v1/workspace",
+        "ORIGINAL_2D_PLAN_PATH": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_official_embeddings_v1/workspace/official_state_2d_cache_v1/producer_plan.json"
+      },
+      "cwd": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1"
+    },
+    {
+      "name": "02_CPU_materialize",
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/adapter_v2/materialize.py",
+        "--base-root",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1",
+        "--original-workspace",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_official_embeddings_v1/workspace",
+        "--case",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/training_camera_v2",
+        "--binding",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/ENCODING_BINDING_v2.json",
+        "--phase",
+        "materialize"
+      ],
+      "environment": {
+        "CUDA_VISIBLE_DEVICES": "",
+        "JAX_PLATFORMS": "cpu",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "OMP_NUM_THREADS": "1",
+        "OPENBLAS_NUM_THREADS": "1",
+        "MKL_NUM_THREADS": "1"
+      },
+      "cwd": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1"
+    },
+    {
+      "name": "03_CPU_prepare_arrays",
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/adapter_v2/materialize.py",
+        "--base-root",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1",
+        "--original-workspace",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_official_embeddings_v1/workspace",
+        "--case",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/training_camera_v2",
+        "--binding",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/ENCODING_BINDING_v2.json",
+        "--phase",
+        "prepare-arrays"
+      ],
+      "environment": {
+        "CUDA_VISIBLE_DEVICES": "",
+        "JAX_PLATFORMS": "cpu",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "OMP_NUM_THREADS": "1",
+        "OPENBLAS_NUM_THREADS": "1",
+        "MKL_NUM_THREADS": "1"
+      },
+      "cwd": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1"
+    },
+    {
+      "name": "04_wait_five_training",
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/control_v2/after_five.py",
+        "wait"
+      ],
+      "environment": {
+        "CUDA_VISIBLE_DEVICES": "",
+        "JAX_PLATFORMS": "cpu",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "OMP_NUM_THREADS": "1",
+        "OPENBLAS_NUM_THREADS": "1",
+        "MKL_NUM_THREADS": "1"
+      },
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/training_camera_v2/after_five_receipt.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "all20_main_phases_accepted": true,
+            "GPU_empty": true,
+            "model_imported": false
+          }
+        }
+      ],
+      "cwd": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1"
+    },
+    {
+      "name": "05_GPU_pilot",
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/training_camera_v2/workspace/official_state_2d_cache_v1/produce.py",
+        "--plan",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/training_camera_v2/workspace/official_state_2d_cache_v1/producer_plan.json",
+        "--execute",
+        "--pilot"
+      ],
+      "environment": {
+        "CUDA_VISIBLE_DEVICES": "0",
+        "JAX_PLATFORMS": "cpu",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "OMP_NUM_THREADS": "1",
+        "OPENBLAS_NUM_THREADS": "1",
+        "MKL_NUM_THREADS": "1",
+        "MUJOCO_GL": "egl",
+        "PYOPENGL_PLATFORM": "egl"
+      },
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/training_camera_v2/2d/cache/pilot_receipt.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "completed_episodes": 2,
+            "completed_rows": 2002,
+            "not_full_cache": true
+          }
+        }
+      ],
+      "cwd": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1"
+    },
+    {
+      "name": "06_CPU_pilot_check",
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/control_v2/after_five.py",
+        "pilot-check"
+      ],
+      "environment": {
+        "CUDA_VISIBLE_DEVICES": "",
+        "JAX_PLATFORMS": "cpu",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "OMP_NUM_THREADS": "1",
+        "OPENBLAS_NUM_THREADS": "1",
+        "MKL_NUM_THREADS": "1"
+      },
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/training_camera_v2/pilot_independent_readback.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "episodes": 2,
+            "features": 2002,
+            "selected_device": "cuda"
+          }
+        }
+      ],
+      "cwd": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1"
+    },
+    {
+      "name": "07_GPU_full_resume",
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/training_camera_v2/workspace/official_state_2d_cache_v1/produce.py",
+        "--plan",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/training_camera_v2/workspace/official_state_2d_cache_v1/producer_plan.json",
+        "--execute"
+      ],
+      "environment": {
+        "CUDA_VISIBLE_DEVICES": "0",
+        "JAX_PLATFORMS": "cpu",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "OMP_NUM_THREADS": "1",
+        "OPENBLAS_NUM_THREADS": "1",
+        "MKL_NUM_THREADS": "1",
+        "MUJOCO_GL": "egl",
+        "PYOPENGL_PLATFORM": "egl"
+      },
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/training_camera_v2/2d/cache/cache_manifest.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "training_updates": 0,
+            "SR_episodes": 0
+          }
+        }
+      ],
+      "cwd": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1"
+    },
+    {
+      "name": "08_CPU_full_audit",
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/training_camera_v2/workspace/official_state_2d_cache_v1/audit_cache.py",
+        "--cache-dir",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/training_camera_v2/2d/cache",
+        "--plan",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/training_camera_v2/workspace/official_state_2d_cache_v1/producer_plan.json",
+        "--output-dir",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/training_camera_v2/2d/independent_audit"
+      ],
+      "environment": {
+        "CUDA_VISIBLE_DEVICES": "",
+        "JAX_PLATFORMS": "cpu",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "OMP_NUM_THREADS": "1",
+        "OPENBLAS_NUM_THREADS": "1",
+        "MKL_NUM_THREADS": "1"
+      },
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/training_camera_v2/2d/independent_audit/report.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "episodes_verified": 5500,
+            "raw_rows_verified": 5505500,
+            "latent_dim": 192,
+            "dtype": "float32",
+            "all_new_latent_SHA_shape_dtype_finite": true,
+            "all_raw_ID_and_true_terminal_next_contracts": true
+          }
+        }
+      ],
+      "cwd": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1"
+    }
+  ],
+  "main_GCIQL_unchanged": true,
+  "all_GPU_work_after_five_accepted": true
+}

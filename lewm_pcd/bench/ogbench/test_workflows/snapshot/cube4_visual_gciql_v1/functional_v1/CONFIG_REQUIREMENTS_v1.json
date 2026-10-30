@@ -1,0 +1,76 @@
+{
+  "status": "NON_EXECUTABLE_REQUIREMENTS_NOT_A_TRAINING_CONFIG",
+  "roles": {
+    "G11": {
+      "cube_count": 4,
+      "modality": "rgb",
+      "current_dim": 211,
+      "goal_dim": 204,
+      "awaiting_actual_asset_sidecar_and_final_sourcebindings": true
+    },
+    "G12": {
+      "cube_count": 4,
+      "modality": "pcd",
+      "current_dim": 211,
+      "goal_dim": 204,
+      "executable": false,
+      "reason": "No accepted Quad PCD cache yet; no synthetic cache SHA/path/READY"
+    }
+  },
+  "common": {
+    "seed": 0,
+    "resume_from": null,
+    "batch_size": 1024,
+    "total_updates": 1000000,
+    "validation_interval": 5000,
+    "validation_count": 200,
+    "save_step1": true,
+    "save_interval": 100000,
+    "checkpoint_transactions": 11,
+    "feature_lookup_workers": 4,
+    "host_metrics": "async100",
+    "input_contract_zero_padding": false,
+    "agent_config": "Exact inherited G05/G06/G08/G09 dictionary, including alpha1/lr3e-4/DDPGBC/512x3/LN/.99/.9/.005; no new override"
+  },
+  "dataset": {
+    "data_id": "cube-quadruple-play-v0",
+    "train_EP": 5000,
+    "val_EP": 500,
+    "raw_rows_per_EP": 1001,
+    "state_dim": 55,
+    "goalXYZindices": [
+      [
+        19,
+        20,
+        21
+      ],
+      [
+        28,
+        29,
+        30
+      ],
+      [
+        37,
+        38,
+        39
+      ],
+      [
+        46,
+        47,
+        48
+      ]
+    ]
+  },
+  "feature_loader_arguments": {
+    "original_fields": [
+      "cache_dir",
+      "split",
+      "manifest_sha256",
+      "checkpoint_sha256",
+      "source_npz",
+      "expected_rows"
+    ],
+    "new_only_optional_field": "source_rebind={path,sha256}; new sidecar must prove identical source bytes and fresh file-stat; no old receipt edits"
+  },
+  "formal_activation": "Root-only after real newshape B1024 gate/reload0 and actual source/cache acceptance; requirements JSON is never a runnable config"
+}

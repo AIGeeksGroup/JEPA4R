@@ -1,0 +1,102 @@
+{
+  "schema_version": 3,
+  "actual_exit_code": 0,
+  "created": 1792548059.719718,
+  "status": "frozen_minimal_actual2D_audit_consumer_schema_recovery_CPU2_actual0_not_deployed_or_executed",
+  "files": {
+    "prepare.py": "a2a7415bd464df0b044c3bfe0ca9670b1ab1e501037a39b750b5c403a5cf8a65",
+    "test_actual_metadata.py": "900b433fa1139e931aa08dbbc50625582a4bd27b7d33d6b5d376e16bb032322e",
+    "actual_metadata_receipt.json": "06264d463938e1905393b7537046d15c79124c585c24f847cd716bf83e2d3d35"
+  },
+  "originals_preserved": {
+    "coordination\\cube3_pldm_gciql_103032Test_20261021_v1\\functional_v1\\prepare.py": "d4a1415be31368ea0bfd6d4910eaae462cc834e8dac496be22b8477e483f037c",
+    "coordination\\cube3_pldm_gciql_103032Test_20261021_v1\\functional_v1\\prepare_v2.py": "c26ac069add084cf95e880e40b33d2119cd6121e5bd647de9a3ec03dc2c237e2",
+    "coordination\\cube3_pldm_gciql_103032Test_20261021_v1\\functional_v1\\SOURCE_FREEZE_v1.json": "7677732cf677e17eec4e6de343150d3738bc6383bd8f45f5f614493af4e316d4",
+    "coordination\\cube3_pldm_gciql_103032Test_20261021_v1\\functional_v1\\SOURCE_FREEZE_v2.json": "16d7028ca0a2f26a1b29299459bbbf383476480da47a7299dcdb02b52f791ba9",
+    "coordination\\cube3_pldm_gciql_103032Test_20261021_v1\\functional_v1\\FUNCTIONAL_HANDOFF_v2.json": "774ffbe301931df0b681c822f37c1c0acba432d1d8f0d40d52cf84d550a6beee"
+  },
+  "one_expression_proof": {
+    "original_prepare_sha256": "d4a1415be31368ea0bfd6d4910eaae462cc834e8dac496be22b8477e483f037c",
+    "original_v2_sha256": "c26ac069add084cf95e880e40b33d2119cd6121e5bd647de9a3ec03dc2c237e2",
+    "exact_expression_edits": 1,
+    "inverse_function_source_exact": true,
+    "effective_function_sha256": "0cb9d4786b8485d25847335f75e153e21033e2cc06871f39b246bd4ee8ac522e",
+    "audit_checkpoint_binding": "actual plan+manifest+protocol checkpoint, authenticated by unchanged audit SHA chain",
+    "audit_fields_or_files_modified": false,
+    "numeric_tolerances_changed": false
+  },
+  "actual_metadata": {
+    "receipt_sha256": "06264d463938e1905393b7537046d15c79124c585c24f847cd716bf83e2d3d35",
+    "file_count": 11,
+    "raw_model_vector_values_read": false,
+    "SHA_and_length_exact": true,
+    "expected": {
+      "cache_v1/producer_plan.json": {
+        "sha256": "e97a406c23c6753775c77c93a16b336b123b3e2c1eb1f3ce759e60bf57b250f8",
+        "bytes": 23434
+      },
+      "cache_v1/cache/protocol.json": {
+        "sha256": "1ef3ea9a58c8b0868bac023d21dee49748c818f1c27f5be7e75804d96c54c848",
+        "bytes": 22246
+      },
+      "cache_v1/source_arrays/source_arrays.json": {
+        "sha256": "b08ab20423b66f9f9e5da005db30b2a8920fc95ed343374bdd196d006e37c7c8",
+        "bytes": 8435
+      },
+      "cache_v1/source_arrays/stat-freeze.json": {
+        "sha256": "702b7dfe6eb3c4bd3a2762637fde5b6363a0faa86553c5131f47edc35bced130",
+        "bytes": 1809
+      },
+      "cache_v1/source_arrays/data_acceptance.json": {
+        "sha256": "a22f36ce2579b2416f9716e1302dfcf3aae9e89c0d1e3a6517f6ce411e98bcb9",
+        "bytes": 14439
+      },
+      "cache_v1/cache/batch1_alignment.json": {
+        "sha256": "28f073424f6b21a3ba53217f02be8182c690bab6f69a93c85d211444d6e3aaf9",
+        "bytes": 803
+      },
+      "cache_v1/cache/cache_manifest.json": {
+        "sha256": "32105b3b147a6a29dec84f235efad53375d42aa97788cae516d1a83bbad17b96",
+        "bytes": 1024727
+      },
+      "cache_v1/cache/cache_seal.json": {
+        "sha256": "6ce0bca5c5dce1102960e5d1414d986e475449293a95b759fad253b18e5f2acc",
+        "bytes": 534
+      },
+      "cache_v1/cache/preprocess_selection.json": {
+        "sha256": "3d6886e9728ec0d057c06d2b3e2dc60421788b268991be06f4351574b35c7154",
+        "bytes": 2216
+      },
+      "cache_v1/independent_audit/report.json": {
+        "sha256": "cd303812fbb24ec5c760e1ad71c641366d9204c48d65a0f9af30f1a4ad2923fb",
+        "bytes": 980888
+      },
+      "cache_v1/independent_audit/actual_exit_code": {
+        "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "bytes": 2
+      }
+    }
+  },
+  "CPU_tests": {
+    "receipt": "cpu_actual_final_v3/receipt.json",
+    "sha256": "866f3dcd46da00e2c588226671da784a5fda4cb702b514d3157af3253f7468a4",
+    "actual_exit_code": 0,
+    "tests": 2,
+    "scope": "exactactualJSON oldKeyError reproduced before overlay, entire closed_cache/protocol/hash/ID/count schema path passes then config531521/1M/11CP; wrongplan/manifest/seal/checkpoint rejected; only local metadata filesystem remapping, no real cfg publication"
+  },
+  "syntax_help_actual_exit_code": 0,
+  "unchanged": [
+    "all original closed_cache SHA validation",
+    "all source/stat checks on real train preparation",
+    "original template_v2 resource metadata",
+    "all training/Native inputs/sampler/math/budgets",
+    "numeric tolerances and CPU preprocessing selection",
+    "old audit/cache/source and failedruntime1"
+  ],
+  "not_done": [
+    "target actualmetadata verify command",
+    "real new config generation",
+    "GPU or training or NativeSR"
+  ],
+  "no_SSH_remote_write_NN_or_cache_regeneration": true
+}

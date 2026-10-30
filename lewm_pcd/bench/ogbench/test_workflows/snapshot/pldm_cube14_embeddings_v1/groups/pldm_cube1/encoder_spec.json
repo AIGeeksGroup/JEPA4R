@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "family": "pldm",
+  "cube_count": 1,
+  "asset_id": "cube1_pldm_impala512_epoch10_20261023_v1",
+  "asset_root": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/baselines/cube1/cube1_pldm_impala512_epoch10_20261023_v1",
+  "manifest_sha256": "a14eaa740ff31d5de07af3f524f0200313a5a95de483de9440cfc8591e5e59f6",
+  "checkpoint": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/baselines/cube1/cube1_pldm_impala512_epoch10_20261023_v1/weights/weights_epoch_10.pt",
+  "checkpoint_sha256": "238c3af486097fe8875ad1fc0f4081d3e322b7e9527d5bf0268f99046fd21ae8",
+  "runtime_addendum_sha256": null,
+  "output_dim": 512,
+  "inference_precision": "fp32",
+  "preprocess_device": "cpu"
+}

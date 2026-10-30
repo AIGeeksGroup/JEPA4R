@@ -1,0 +1,51 @@
+{
+  "stage": "source_preparation_only_no_watch_or_trial_armed",
+  "root": "/root/autodl-tmp/workspace/users/lewm/triple_cube_pldm_lejepa_b128_10ep_10155090_20261017_v1",
+  "data_root": "/root/autodl-tmp/workspace/users/lewm/triple_cube_portable_20261016_v1",
+  "boundary_output": "/root/autodl-tmp/workspace/users/lewm/triple_cube_pldm_lejepa_b128_10ep_10155090_20261017_v1/outputs/pldm_readtask_boundary_epoch2_v1",
+  "parent_proof": "/root/autodl-tmp/workspace/users/lewm/triple_cube_pldm_lejepa_b128_10ep_10155090_20261017_v1/outputs/pldm_readtask_boundary_epoch2_v1/preserved_epoch2/status.json",
+  "trial_output": "/root/autodl-tmp/workspace/users/lewm/triple_cube_pldm_lejepa_b128_10ep_10155090_20261017_v1/outputs/readtask_trial_v1",
+  "parent": {
+    "completed_epochs": 2,
+    "global_step": 91406,
+    "Adam_steps": [
+      91406.0
+    ],
+    "native_schedule_index": 91405,
+    "own_new_validation_batches": 4571,
+    "own_new_validation_epoch_count": 1,
+    "external_epoch1": "existing protected proof and bare path referenced; no repeated model copy"
+  },
+  "probe": {
+    "warm_updates": 32,
+    "timed_windows": 3,
+    "updates_each_window": 128,
+    "all_updates_each_case": 416,
+    "end_global_step": 91822,
+    "last_native_before_step": 91821,
+    "validation_batches": 2,
+    "validation_tail_protocol": 40,
+    "total_schedule_updates": 457030,
+    "max_epochs": 10,
+    "extra_model_updates_discarded": true
+  },
+  "selection": {
+    "controls_drift_aggregate_max": 0.05,
+    "controls_drift_median_max": 0.05,
+    "candidate_gain_over_faster_control_each_metric_min": 0.05,
+    "eligible_candidate_choice": "highest aggregate",
+    "otherwise": "A1_native20_pf2",
+    "no_reruns_to_seek_gain": true
+  },
+  "timing": "four existing native synchronize boundaries at32/160/288/416; all actual consumption ID trace; first2 raw hash and pinned metadata only inside warm",
+  "statistics_scope": "adapter merge/read_wait cumulative CPU statistics include warmup and any native fetcher lookahead; not claimed as timed-window-only",
+  "formal_policy": "Only Root separate continuation release after actual closed trial; epoch1 external + epoch2 protected + new3..10, remaining8epochs365624 updates. Never use diagnostic weights.",
+  "runtime_requirements": [
+    "matching frozen Root boundary release before any watcher",
+    "parentCPU0 + actualwatchouter0 then Root unique identity-checked TERM only own trainer",
+    "actual old train/driver/outer exits retained and owned group drain; matchingRoot trial release; GPUempty",
+    "five cases once, every actual case/driver/outer0 and input/RNG/counters exact before selection"
+  ],
+  "no_current_F_or_old_source_changes": true,
+  "scope": "prepare only; no raw HDF5, CUDA/pinning, model or worker throughput executed by this preparation"
+}

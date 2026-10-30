@@ -1,0 +1,174 @@
+{
+  "actual_exit_code": 0,
+  "stage": "data_and_training_protocol_ready_no_PCD_features_or_GPU_gate",
+  "cube_count": 4,
+  "data_id": "cube-quadruple-play-v0",
+  "checkpoint": {
+    "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/checkpoints/cube4/3d_epoch10/weights_epoch_10.pt",
+    "sha256": "95e7980f665a0ad888a0723499f5d0771c8cf797065b1f1b39c3eae39fd951d8",
+    "bytes": 72241790
+  },
+  "checkpoint_config": {
+    "config.json": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/checkpoints/cube4/3d_epoch10/config.json",
+      "sha256": "2312179814f61cee5501bc38f4b5477fa93aa864de0924989c55a1bf35a600b7"
+    },
+    "config.yaml": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/checkpoints/cube4/3d_epoch10/config.yaml",
+      "sha256": "314c08d94014b91505b1f83e4f4f3d017120f221cd424dcd23f9015793728d07"
+    }
+  },
+  "data_acceptance": {
+    "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_visual_gciql_v1/migration_rebind_v1/data_acceptance.json",
+    "sha256": "a9d33f1ec518b32d3ccdbded1ec34cabe7856311616ea365d56039ad5ac0beb7",
+    "bytes": 10478
+  },
+  "source_stat_freeze": {
+    "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_visual_gciql_v1/migration_rebind_v1/stat-freeze.json",
+    "sha256": "e8fb544c4d7e5e3cd839972761573e38be76105f96cca75ea85a0b5b7f3701c1",
+    "bytes": 1817
+  },
+  "source_arrays_view": {
+    "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_visual_gciql_v1/migration_rebind_v1/source_arrays_view_v1/source_arrays.json",
+    "sha256": "cda190df7dc7d069417934d71725b8be35482070f196c5ab31afc4f3e04aecfe",
+    "bytes": 4693
+  },
+  "source_arrays_root": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_visual_gciql_v1/migration_rebind_v1/source_arrays_view_v1",
+  "old_quad_RGB_producer_plan": {
+    "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/training_camera_v2/workspace/official_state_2d_cache_v1/producer_plan.json",
+    "sha256": "d19cfb631a95177be48523d0ab44ae6a96534e9a1c7e34a2dfe812f6cff95801"
+  },
+  "old_quad_RGB_source_pins": {
+    "checkpoint_encoder.py": "7a8e79e0aaed7ed64fae73dcae8abe31e9bf20a3b19a3c8a714c863c497fd4e1",
+    "source/lewm_pcd/utils.py": "a6a386523779ede2ef4453b23198e46e371a0c73200e8f957ae272b5d7b63259",
+    "source/lewm_pcd/jepa.py": "7e6680f9941268b13526082fa888a46de7dca9385bfc837e77ee649e5c034135",
+    "source/lewm_pcd/module.py": "0b258a9e8dc24c29fcb1e8c50a09ec78b8ea85aeb79e21dd8adf712396646620",
+    "source/lewm_pcd/encoders/vit.py": "829efe4f2c11884253d236050a9fd2146732c91393547f92475a862c8fcd669a",
+    "source/lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/utils.py": "f203cb4826cec6d4b474900f136fa09d6dbc13a366bf0906b67bbdac4297344c",
+    "source/ogbench/ogbench/manipspace/envs/env.py": "c656f4733a1ad4cb07289bc58ac1ac0f7da378e1f2714dc80a5ed8c0b3028c38",
+    "source/ogbench/ogbench/manipspace/envs/cube_env.py": "6f8457ffd634f6620411c788c86e871f44ea5b5b5eecf76cd694fc04d12d678d",
+    "source/ogbench/ogbench/manipspace/envs/manipspace_env.py": "03524eb1c95155bbc2ec3d29e9836fccffe8eb9fce1be15b6f0e7062cc1bb5fd",
+    "source/ogbench/ogbench/manipspace/descriptions/cube_inner.xml": "03ae5a10aa56c08f46cb0152767e8d835e2a55f23267d718b825a336886e6b52",
+    "source/ogbench/ogbench/manipspace/descriptions/cube_outer.xml": "94d484308fa9d7468a84a0b5b00c53d8801d0c1cb5c80805ea9d101ecd26c86a",
+    "checkpoints/cube4/2d_epoch10/config.json": "c23f8d59c185b7e8953649eb3e18de94315bfab99e0cfc624032abc08753e536",
+    "checkpoints/cube4/2d_epoch10/config.yaml": "a0812d87ae7227840f722a3200bf235907f48508f89611fde9bba20664db356e",
+    "env_runtime/lib/python3.12/site-packages/stable_pretraining/data/dataset_stats.py": "b5063768d173792bbb38a25acf9ea2a599e3adcbea077cf9507ee0c5ca258302",
+    "env_runtime/lib/python3.12/site-packages/stable_pretraining/data/transforms.py": "1df32305b18b6f82340f22def1be0cad17b312e09000efaa6138cd2ed71ec4f1",
+    "env_runtime/lib/python3.12/site-packages/stable_pretraining/data/gpu_transforms.py": "18f385f0e7f9e99c876a50968d338b02a248a082a853e92ba29f62121752365e",
+    "official_state_2d_cache_v1/produce.py": "d8b5bdb45c5840ef58fd845fef858963c804dd4b265d0d6a59d29c5b4fdfb68a",
+    "official_state_2d_cache_v1/render_adapter.py": "f6ad9ffb28513da4091b0963ce87da950ddc2c94d5e2bd0aa5d73d46a53578af"
+  },
+  "old_quad_RGB_audit": {
+    "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/training_camera_v2/2d/independent_audit/report.json",
+    "sha256": "7f71a78cca4d7c470759bd179d23a47262bfd8afef180ac970f71521f86806fc",
+    "scope": "prior_producer_host"
+  },
+  "split_episodes": {
+    "train": 5000,
+    "val": 500
+  },
+  "raw_rows_per_episode": 1001,
+  "source_dimensions": {
+    "state": 55,
+    "qpos": 42,
+    "qvel": 38,
+    "action": 5
+  },
+  "camera": {
+    "source_name": "front",
+    "render_name": "front_pixels",
+    "position": [
+      1.3835957918490516,
+      1.1102230246251566e-17,
+      0.5348699245660802
+    ],
+    "FOV": 45.0,
+    "local_x_up_degrees": 5.0,
+    "base_quaternion": [
+      0.5792028135240382,
+      0.4056157058175116,
+      0.4056157058175116,
+      0.5792028135240384
+    ],
+    "actual_quaternion": [
+      0.5609588321928806,
+      0.4304941214288525,
+      0.4304941214288525,
+      0.5609588321928807
+    ],
+    "width": 224,
+    "height": 224,
+    "offsamples": 4,
+    "ob_type": "states",
+    "visualize_info": false,
+    "pixel_transparent_arm": false,
+    "pullback": 0.1,
+    "crop": null,
+    "source_position": [
+      1.287,
+      0.0,
+      0.509
+    ]
+  },
+  "pcd": {
+    "points": 1200,
+    "channels": 6,
+    "crop_box": [
+      [
+        -0.25,
+        -0.5,
+        -0.02
+      ],
+      [
+        0.75,
+        0.5,
+        0.9
+      ]
+    ],
+    "voxel_size": 0.005,
+    "cube_fraction": 0.25,
+    "foreground_only": true,
+    "geometry_offsamples": 0,
+    "stored_XYZ_dtype": "float32_world_metres",
+    "stored_RGB_dtype": "uint8",
+    "sampling_namespace": "quadruple_official_pcd_epoch10_v1",
+    "sampling_policy": "Reuse original private per-episode SHA namespace/split/episode seed rule; continuous1001 captures; no global RNG changes."
+  },
+  "preprocess": {
+    "center": [
+      0.425,
+      0.0,
+      0.2
+    ],
+    "scale": 4.0,
+    "use_rgb": true,
+    "original_factory": true,
+    "XYZ": "(XYZ.float32-center)*4",
+    "RGB": "RGB.float32/255",
+    "output": "concatenate XYZ RGB -> float32[1200,6]",
+    "source_path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/lewm_pcd/utils.py",
+    "source_sha256": "a6a386523779ede2ef4453b23198e46e371a0c73200e8f957ae272b5d7b63259"
+  },
+  "precision": {
+    "dtype": "float32",
+    "AMP": false,
+    "change_original_settings": false
+  },
+  "training_precision": "bf16-mixed; inference precision documented separately",
+  "pose_and_geometry_provenance": {
+    "full_plan": {
+      "local_path": "C:\\Users\\梁.LAPTOP-7MN0U0VK\\OneDrive\\文档\\ChatGPT\\从头到尾纯og\\coordination\\quadruple_cube_migration_10164090d_20261016_v1\\full600_front5_back10_v1\\closed_launch_evidence_v1\\full_plan.json",
+      "sha256": "4cf12938a200cbffa229e1a42b660eb9365531b8fc63a08657786c9e3b5b4576",
+      "fields": "parameters.camera_position/up5/localZback0.1/FOV45/PCD1200 XYZFP32 RGBuint8 NoAA/crop_box"
+    },
+    "training_source_freeze": {
+      "sha256": "62da32f776c7a53649ad389d56541246b5dc743d7a1d6359ffc359015d4e6657",
+      "pcd_wrapper_sha256": "821d056ecf41ea69e116c0d37ac99be30dfd9ec3bda4d8e7531d03f67f9beb8e"
+    },
+    "same_original_wrapper_source_snapshot": "C:\\Users\\梁.LAPTOP-7MN0U0VK\\OneDrive\\文档\\ChatGPT\\从头到尾纯og\\coordination\\gciql_m5_restore_103032Test_20261020_v1\\current_source_audit_v1\\source_layout\\source\\lewm_pcd\\envs\\pcd_wrapper.py",
+    "wrapper_default_parameters": "num_points1200/foreground_onlyTrue/voxel_size.005/cube_fraction.25; crop explicitly from approved full_plan"
+  },
+  "features_cache_ready": false,
+  "new_NN_GPU_forward_or_encoding": false,
+  "source_arrays_copy_or_rederive": false
+}

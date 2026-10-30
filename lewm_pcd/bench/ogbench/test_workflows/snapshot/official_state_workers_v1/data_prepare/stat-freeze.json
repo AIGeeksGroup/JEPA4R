@@ -1,0 +1,33 @@
+{
+  "acceptance_path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/official_state_workers_v1/data_prepare/ACCEPTANCE.json",
+  "acceptance_sha256": "916c1921cfe8200b0a7c9dc78ee1b846626a2f4ff5867d757d73b50797fa680e",
+  "real_verifier_exit_path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/official_state_workers_v1/data_prepare/finalize_exit_20261017T111514Z.json",
+  "real_verifier_exit_sha256": "dfbff79d1c9e0ff8496553a71dee0fad5f3b56abea2d07d16add914c1fc23c33",
+  "datasets": {
+    "train": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-triple-play-v0.npz",
+      "raw_sha256": "4e09a9f5ba7eaba59350dbef7e85887b9a2746490c69eaa83af34a3f9029202b",
+      "accepted_stat": {
+        "size": 1003544255,
+        "mtime_ns": 1792235697982533189,
+        "ctime_ns": 1792235723666928396,
+        "device": 2304,
+        "inode": 15090086937
+      }
+    },
+    "validation": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-triple-play-v0-val.npz",
+      "raw_sha256": "bd6cb3817fc464d7afc50bd90d766f353bc5b8d097579c70afe680a9aa0404a6",
+      "accepted_stat": {
+        "size": 100613267,
+        "mtime_ns": 1792235706194658894,
+        "ctime_ns": 1792235724838946572,
+        "device": 2304,
+        "inode": 15090086945
+      }
+    }
+  },
+  "frozen": 1792235767.1928284,
+  "actual_exit_code": 0,
+  "producer_sha256": "b513fc3924cb648061796331d3d33b88d177258c0b8bab8b01a3760ae9d0e7f3"
+}

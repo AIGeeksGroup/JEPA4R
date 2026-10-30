@@ -1,0 +1,31 @@
+{
+  "output": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/official_state_3d_cache_v1/acceleration_v1/benchmark_v2/runtime",
+  "cwd": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/official_state_3d_cache_v1/acceleration_v1",
+  "argv": [
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+    "-B",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/official_state_3d_cache_v1/acceleration_v1/benchmark_driver_v2.py"
+  ],
+  "runtime_check_argv": [
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+    "-B",
+    "-c",
+    "from pathlib import Path; import json; p=Path('/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/official_state_3d_cache_v1/acceleration_v1')/'controlled_stop_v1/receipt.json';r=json.loads(p.read_text());assert r['actual_stop_helper_exit_code']==0 and not r['uncommitted_paths'] and not r['owned_residual_members'];print('original199EPcleanstop0; benchmarksourcefrozen')"
+  ],
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "0",
+    "JAX_PLATFORMS": "cpu",
+    "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "MUJOCO_GL": "egl",
+    "PYOPENGL_PLATFORM": "egl",
+    "LD_LIBRARY_PATH": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/runtime/lib",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONUNBUFFERED": "1"
+  },
+  "own_RSS_limit_bytes": 25769803776,
+  "reused_phase_source_sha256": "b42d8bdca4e2cec3180c4d5d72ad6f1d2e656b161981c57122be5b0cc779bc4c",
+  "purpose": "same-source renderer8vs16 capacity only; colors not guaranteed bitexact; no modelencoding"
+}

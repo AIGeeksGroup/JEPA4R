@@ -1,0 +1,28 @@
+{
+  "stage": "frozen_synthetic_CPU5_passed_actual_pin_GPU_unverified",
+  "at": "2026-10-17T18:23:09.995652+00:00",
+  "root_relative_entry": "readtask_split32_v1/adapter.py",
+  "files": {
+    "adapter.py": "1a7b41fc7d0b69190f3c6c03fe3ae238e967c6399d76c4cfea6c03d5e47dfd5d",
+    "test_adapter.py": "879c882a118f22cfa0451767c4c9b0e7438e2ba171d6363f38059425097cc96a"
+  },
+  "base193_source_freeze_sha256": "cdfd14b894fda7bf7f068c489bc550e819ade12ca16f36250ebf0dda2cd374d7",
+  "CPU_evidence": {
+    "status_path": "/root/autodl-tmp/workspace/users/lewm/triple_cube_pldm_lejepa_b128_10ep_10155090_20261017_v1/migration_logs/readtask_split32_CPU_v2/status.json",
+    "status_sha256": "208b4059f0a9bdebc86e7c00bc854fad215cf40eb537eea150e0a3c6a4516ac7",
+    "stdout_path": "/root/autodl-tmp/workspace/users/lewm/triple_cube_pldm_lejepa_b128_10ep_10155090_20261017_v1/migration_logs/readtask_split32_CPU_v2/pytest_stdout.log",
+    "stdout_sha256": "c1cb2fd3688c861c92e01e4ead6b8b3dd1fbeacf14945166dbcb636caaa13d76",
+    "actual_exit_code": 0,
+    "passed": 5,
+    "CUDA_VISIBLE_DEVICES": "",
+    "threads": 1,
+    "real_multiprocess_workers": [
+      2,
+      4
+    ],
+    "actual_pin_validation": false
+  },
+  "default_activation": "Explicit wrap_loader call only; native profile does not call adapter",
+  "old_live_source_modified": false,
+  "new_GPU_HDF_NN_or_signal": false
+}

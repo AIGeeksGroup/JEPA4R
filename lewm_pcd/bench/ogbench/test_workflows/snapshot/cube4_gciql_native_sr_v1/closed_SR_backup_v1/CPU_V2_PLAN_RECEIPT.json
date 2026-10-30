@@ -1,0 +1,34 @@
+{
+  "actual_exit_code": 0,
+  "scope": "One default-plan verification of each v2 namespace entry; strict frozen SHA/count/inverse executed; no real pack/copy or payload reads",
+  "checks": [
+    {
+      "argv": [
+        "D:/newconda/python.exe",
+        "-X",
+        "utf8",
+        "-B",
+        "build_backup_v2.py"
+      ],
+      "actual_exit_code": 0,
+      "stdout": "{\"prepared_only\": true, \"asset_kind\": \"Quad_final1M_Native_SR_closed_evidence\", \"output\": \"\\\\root\\\\autodl-tmp\\\\workspace\\\\users\\\\lewm\\\\cube_downstream_20261017_v1\\\\cube4_gciql_native_sr_v1\\\\closed_SR_backup_v1\\\\completed_v2\", \"archive\": \"G11_G12_Quad_final1M_Native_SR_closed_v1.tar.gz\", \"no_pack_or_copy\": true}\r\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "D:/newconda/python.exe",
+        "-X",
+        "utf8",
+        "-B",
+        "copy_backup_v2.py",
+        "--local-output",
+        "C:\\Users\\\u6881.LAPTOP-7MN0U0VK\\OneDrive\\\u6587\u6863\\ChatGPT\\\u4ece\u5934\u5230\u5c3e\u7eafog\\coordination\\cube4_gciql_native_sr_103032Test_20261021_v1\\closed_SR_backup_v1\\completed_v2"
+      ],
+      "actual_exit_code": 0,
+      "stdout": "{\"prepared_only\": true, \"remote\": \"/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_gciql_native_sr_v1/closed_SR_backup_v1/completed_v2\", \"local_output\": \"C:\\\\Users\\\\\\u6881.LAPTOP-7MN0U0VK\\\\OneDrive\\\\\\u6587\\u6863\\\\ChatGPT\\\\\\u4ece\\u5934\\u5230\\u5c3e\\u7eafog\\\\coordination\\\\cube4_gciql_native_sr_103032Test_20261021_v1\\\\closed_SR_backup_v1\\\\completed_v2\"}\r\n",
+      "stderr": ""
+    }
+  ],
+  "completed": 1792549060.1134834,
+  "old_v1_source_and_failure_directories_untouched": true
+}

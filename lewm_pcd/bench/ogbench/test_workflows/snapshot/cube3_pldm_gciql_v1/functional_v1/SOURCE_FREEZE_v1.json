@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "actual_exit_code": 0,
+  "created": 1792518644.927657,
+  "status": "source_frozen_local_CPU4_actual0_pending_independent_review_Root_target_CPUverify_and_real_pipeline",
+  "files": {
+    "pldm_inputs.py": "45229484956cbd467b498b57146057b6f3651f283a6c900f93d27b254923ce01",
+    "pldm_runtime.py": "9572d0819a44e91012a4c7932ecb1cb5095d2ab301b1cdd30e0e62f56f20779e",
+    "native_sr.py": "c6ec01222f74f91d4e0263bda153c2b83d65d356ccc59f2ab08887336d4dd5f4",
+    "audit_native.py": "379598b36ce3cdee007c9f747e01edb47f73dc8579756c34452a21df80f2b9bf",
+    "prepare.py": "d4a1415be31368ea0bfd6d4910eaae462cc834e8dac496be22b8477e483f037c",
+    "test_inputs_native.py": "d45584e919f9b636f464f0aa90e2c72e216117acabf4978ad39516a68ee31388",
+    "test_prepare.py": "ee29f7b6528b7b6946f9a63ef69d4191e79b67400ec008987dafeb0bde359ec1",
+    "configs/P3_cube3_pldm_rgb.TEMPLATE.json": "ed905e0001dd55b3fdde4de4038d767edce3676f198ac508ff089a27cd677430"
+  },
+  "original_pins": {
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube_inputs.py": "36358548ef7a78311730913fccfdfa025d354a18edd4f8197b03b4c0d5ae5d9b",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/trainer_runtime.py": "18acaead938e573f80ec6e87e0cb44822a734decf2e97730861886841a22b82c",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/distance_inputs.py": "b9906dc2f4e7a38826f5ee05031713618a6ce408ee5555302801505452758f90",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/gciql_boundary.py": "a81363583a4826194b90974be2ad62c5895ab6b963e15ba042c9f893a46ba5e6",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/extension_runtime.py": "a9735b9b4f3fec3b01f189e910e12e985cbba3a8ba13e1fafeac878f1222c9c1",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/extension_inputs.py": "de2381f3262a5b088b11d2ac1bbc5ae258ef82a26801f398e72c09f457fd0f5b",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/extension_boundary.py": "9a6a08cfbd988bda6904c7c728ae289b8c1ff801f56754a7c0798fc067a3cb81",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/state_runtime.py": "623fff33b0c836c6268257689216cf78de8694fbab1107dddbd4bdbfc3ee1956",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/native_sr_visual_v1/visual_sr.py": "e40a2ff52bd0915b7953d9011c65e02c75f9e0b2d0e454b613d18c275f6c13f0",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/native_sr_visual_v1/m5_restore_v1/run_group.py": "2af9fc40e19478ddb91519c74f288bac4389ee6f588248b674a8fa6b317db5d6",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/native_sr_visual_v1/m5_restore_v1/audit.py": "ffccacb2f94cfd37f0480419642341e7c966e490e1a97e6056eecfe0033c5285",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/native_sr_visual_v1/cube3_successor_v1/visual_sr_cube3.py": "9ab62959e147fcdbaff270d42102a5f7ef5c2e94724a86b08aa1bef24d8131d1",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/configs/G08_cube3_rgb.json": "6d717c2123217020fec593367f3eecb42e01dfe203e9aae8d5a38733045f55b5",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/utils/datasets.py": "52c373922a87e1ba8ad8b3b96c3474d5e6385e2ea2c7206930f7a8a315816609",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/utils/evaluation.py": "4d9a2732bc9ef89ce99fbc0f07a76d3f4d035783af3a658251709140ff9de3d5",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/imports/single_cube_rl3_101632_20261018_v1/source_layout/coordination/cached_lewm_state_gciql_xyz_109_20261012_v1/native_v1/locked_dependencies/native_runtime_helpers.py": "a83bcf181b00d57fe5b41ef4e61c42dded0561b1ec9d4dc2c7a1c64dfdb8bc3a",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/cache_v1/encoder_adapter.py": "c5b1709817a88a0ed439a4a27f36500aeca67e4e3586c6c68cc24dd03fb7cc81",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/cache_v1/SOURCE_FREEZE_v1.json": "1ad6088d41a8c4f8f0eb0ed6494f54d500169f12d51254bab77e93e3e5ebb7eb",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/cache_v1/CACHE_HANDOFF_v1.json": "44ab32268c93c9f02fd22021b14dd66003604977647f0f591c191952e7f5a3ab"
+  },
+  "local_reference_readback": {
+    "path": "CURRENT_REFERENCE_READBACK_v1.json",
+    "sha256": "2fcd7e38b574be4f0fe75dcfd63876e6c9e8f678a6c3f56503b882a4c7c24628",
+    "actual_SSH_readonly_exit_code": 0,
+    "files": 15
+  },
+  "CPU_evidence": {
+    "path": "FINAL_LOCAL_VERIFICATION_v1.json",
+    "sha256": "6b045a9b5c9eea95afc84b63a757ac5edea1c5d8ca01d24b8a7266fca8f715c6",
+    "tests": 4,
+    "actual_exit_code": 0
+  },
+  "proofs": {
+    "b990_width_overlay": "9 literal192->512,1 literal211->531; inverse entire source exact; sample/sample_goals/object_xyz/create_agent AST exact",
+    "runtime": "private GROUPS P3 only; originala973+623fff async100/getbatch/save/update loops; boundary.prepare/get_batch explicitly rebound; create_agent at actual widths",
+    "Native": "entire e40 repaired visual source byte unchanged loaded as private module; pinnedlatestCube3shim9ab registration then newP3binding; only512latentvalidator and sharedPLDMencoderfactory overridden; old goal-first/current2N classes unchanged",
+    "SRaudit": "ffccac original smallresultauditor only3literal211->531; seed/task/success/2N/limitchecks unchanged",
+    "prepare": "real newcache/audit+batch1proof/selection and fresh rawstat before executablecfg; final1M153/11ledger before Nativebinding; sourcecode closure and selection SHA rebound; no fake model/manifest hashes"
+  },
+  "contracts": {
+    "group": "P3_cube3_pldm_rgb",
+    "family": "pldm",
+    "latent_dim": 512,
+    "current_dim": 531,
+    "goal_dim": 521,
+    "V_first_width": 1052,
+    "Q_first_width": 1057,
+    "GCIQL_state_leaves": 153,
+    "PLDM_model_state_leaves": 44,
+    "currentGTXYZ_only_for_reward": true,
+    "zero_padding_PCA_history_duplication": false,
+    "readonly_feature_bytes": 6765158400
+  },
+  "old_files_modified": false,
+  "GPU_priority": "Root controls; new P3 GPU after authorized Quad final SR; no priority edits to math/core",
+  "not_done": [
+    "targetCPU actualimport hook verification",
+    "GPU encoding/realcache/NN gate",
+    "actual executable config publication",
+    "formal1M or NativeSR"
+  ]
+}

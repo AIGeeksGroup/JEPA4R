@@ -1,0 +1,9 @@
+{
+  "base_commit": "fd65faeee94ee9638f99c9a52eb63bf327f348c7",
+  "comparison_groups": 24,
+  "state_baseline_groups": 4,
+  "native_source_paths": 2526,
+  "source_map_sha256": "02a205b01fda873e81eb2182c1ae30477b7c8a82012bdefb51bb1b8d6c9e3da5",
+  "source_bytes_preserved": true,
+  "native_source_files_modified_on_server": false
+}

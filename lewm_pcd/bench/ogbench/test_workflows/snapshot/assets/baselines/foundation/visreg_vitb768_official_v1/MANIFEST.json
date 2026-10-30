@@ -1,0 +1,593 @@
+{
+  "status": "PASSED_CPU_STRICT_VISREG_BACKBONE_LOAD_NN_FORWARD_PENDING",
+  "exit_code": 0,
+  "at": "2026-10-23T17:18:06.161752+00:00",
+  "checkpoint": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/baselines/foundation/visreg_vitb768_official_v1/visreg-vit-b-inet1k.pth",
+  "bytes": 368495235,
+  "sha256": "23e6aa5fe93cc61b3d9ab13e35cb4966580612d39bae39b1991f35c19c8087b8",
+  "zip_crc_members_verified": 172,
+  "spec_path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/encoder/specs/visreg_vitb768.json",
+  "spec_sha256": "16cee3c1a0cd26f38b09691b7d71ade5dd40085fbfba15f639cf269917e31354",
+  "timm_version": "1.0.29",
+  "backbone_tensor_count": 150,
+  "projector_tensor_shapes": {
+    "proj.0.weight": [
+      2048,
+      768
+    ],
+    "proj.0.bias": [
+      2048
+    ],
+    "proj.1.weight": [
+      2048
+    ],
+    "proj.1.bias": [
+      2048
+    ],
+    "proj.1.running_mean": [
+      2048
+    ],
+    "proj.1.running_var": [
+      2048
+    ],
+    "proj.1.num_batches_tracked": [],
+    "proj.4.weight": [
+      2048,
+      2048
+    ],
+    "proj.4.bias": [
+      2048
+    ],
+    "proj.5.weight": [
+      2048
+    ],
+    "proj.5.bias": [
+      2048
+    ],
+    "proj.5.running_mean": [
+      2048
+    ],
+    "proj.5.running_var": [
+      2048
+    ],
+    "proj.5.num_batches_tracked": [],
+    "proj.8.weight": [
+      256,
+      2048
+    ],
+    "proj.8.bias": [
+      256
+    ]
+  },
+  "backbone_shapes": {
+    "cls_token": [
+      1,
+      1,
+      768
+    ],
+    "pos_embed": [
+      1,
+      197,
+      768
+    ],
+    "patch_embed.proj.weight": [
+      768,
+      3,
+      16,
+      16
+    ],
+    "patch_embed.proj.bias": [
+      768
+    ],
+    "blocks.0.norm1.weight": [
+      768
+    ],
+    "blocks.0.norm1.bias": [
+      768
+    ],
+    "blocks.0.attn.qkv.weight": [
+      2304,
+      768
+    ],
+    "blocks.0.attn.qkv.bias": [
+      2304
+    ],
+    "blocks.0.attn.proj.weight": [
+      768,
+      768
+    ],
+    "blocks.0.attn.proj.bias": [
+      768
+    ],
+    "blocks.0.norm2.weight": [
+      768
+    ],
+    "blocks.0.norm2.bias": [
+      768
+    ],
+    "blocks.0.mlp.fc1.weight": [
+      3072,
+      768
+    ],
+    "blocks.0.mlp.fc1.bias": [
+      3072
+    ],
+    "blocks.0.mlp.fc2.weight": [
+      768,
+      3072
+    ],
+    "blocks.0.mlp.fc2.bias": [
+      768
+    ],
+    "blocks.1.norm1.weight": [
+      768
+    ],
+    "blocks.1.norm1.bias": [
+      768
+    ],
+    "blocks.1.attn.qkv.weight": [
+      2304,
+      768
+    ],
+    "blocks.1.attn.qkv.bias": [
+      2304
+    ],
+    "blocks.1.attn.proj.weight": [
+      768,
+      768
+    ],
+    "blocks.1.attn.proj.bias": [
+      768
+    ],
+    "blocks.1.norm2.weight": [
+      768
+    ],
+    "blocks.1.norm2.bias": [
+      768
+    ],
+    "blocks.1.mlp.fc1.weight": [
+      3072,
+      768
+    ],
+    "blocks.1.mlp.fc1.bias": [
+      3072
+    ],
+    "blocks.1.mlp.fc2.weight": [
+      768,
+      3072
+    ],
+    "blocks.1.mlp.fc2.bias": [
+      768
+    ],
+    "blocks.2.norm1.weight": [
+      768
+    ],
+    "blocks.2.norm1.bias": [
+      768
+    ],
+    "blocks.2.attn.qkv.weight": [
+      2304,
+      768
+    ],
+    "blocks.2.attn.qkv.bias": [
+      2304
+    ],
+    "blocks.2.attn.proj.weight": [
+      768,
+      768
+    ],
+    "blocks.2.attn.proj.bias": [
+      768
+    ],
+    "blocks.2.norm2.weight": [
+      768
+    ],
+    "blocks.2.norm2.bias": [
+      768
+    ],
+    "blocks.2.mlp.fc1.weight": [
+      3072,
+      768
+    ],
+    "blocks.2.mlp.fc1.bias": [
+      3072
+    ],
+    "blocks.2.mlp.fc2.weight": [
+      768,
+      3072
+    ],
+    "blocks.2.mlp.fc2.bias": [
+      768
+    ],
+    "blocks.3.norm1.weight": [
+      768
+    ],
+    "blocks.3.norm1.bias": [
+      768
+    ],
+    "blocks.3.attn.qkv.weight": [
+      2304,
+      768
+    ],
+    "blocks.3.attn.qkv.bias": [
+      2304
+    ],
+    "blocks.3.attn.proj.weight": [
+      768,
+      768
+    ],
+    "blocks.3.attn.proj.bias": [
+      768
+    ],
+    "blocks.3.norm2.weight": [
+      768
+    ],
+    "blocks.3.norm2.bias": [
+      768
+    ],
+    "blocks.3.mlp.fc1.weight": [
+      3072,
+      768
+    ],
+    "blocks.3.mlp.fc1.bias": [
+      3072
+    ],
+    "blocks.3.mlp.fc2.weight": [
+      768,
+      3072
+    ],
+    "blocks.3.mlp.fc2.bias": [
+      768
+    ],
+    "blocks.4.norm1.weight": [
+      768
+    ],
+    "blocks.4.norm1.bias": [
+      768
+    ],
+    "blocks.4.attn.qkv.weight": [
+      2304,
+      768
+    ],
+    "blocks.4.attn.qkv.bias": [
+      2304
+    ],
+    "blocks.4.attn.proj.weight": [
+      768,
+      768
+    ],
+    "blocks.4.attn.proj.bias": [
+      768
+    ],
+    "blocks.4.norm2.weight": [
+      768
+    ],
+    "blocks.4.norm2.bias": [
+      768
+    ],
+    "blocks.4.mlp.fc1.weight": [
+      3072,
+      768
+    ],
+    "blocks.4.mlp.fc1.bias": [
+      3072
+    ],
+    "blocks.4.mlp.fc2.weight": [
+      768,
+      3072
+    ],
+    "blocks.4.mlp.fc2.bias": [
+      768
+    ],
+    "blocks.5.norm1.weight": [
+      768
+    ],
+    "blocks.5.norm1.bias": [
+      768
+    ],
+    "blocks.5.attn.qkv.weight": [
+      2304,
+      768
+    ],
+    "blocks.5.attn.qkv.bias": [
+      2304
+    ],
+    "blocks.5.attn.proj.weight": [
+      768,
+      768
+    ],
+    "blocks.5.attn.proj.bias": [
+      768
+    ],
+    "blocks.5.norm2.weight": [
+      768
+    ],
+    "blocks.5.norm2.bias": [
+      768
+    ],
+    "blocks.5.mlp.fc1.weight": [
+      3072,
+      768
+    ],
+    "blocks.5.mlp.fc1.bias": [
+      3072
+    ],
+    "blocks.5.mlp.fc2.weight": [
+      768,
+      3072
+    ],
+    "blocks.5.mlp.fc2.bias": [
+      768
+    ],
+    "blocks.6.norm1.weight": [
+      768
+    ],
+    "blocks.6.norm1.bias": [
+      768
+    ],
+    "blocks.6.attn.qkv.weight": [
+      2304,
+      768
+    ],
+    "blocks.6.attn.qkv.bias": [
+      2304
+    ],
+    "blocks.6.attn.proj.weight": [
+      768,
+      768
+    ],
+    "blocks.6.attn.proj.bias": [
+      768
+    ],
+    "blocks.6.norm2.weight": [
+      768
+    ],
+    "blocks.6.norm2.bias": [
+      768
+    ],
+    "blocks.6.mlp.fc1.weight": [
+      3072,
+      768
+    ],
+    "blocks.6.mlp.fc1.bias": [
+      3072
+    ],
+    "blocks.6.mlp.fc2.weight": [
+      768,
+      3072
+    ],
+    "blocks.6.mlp.fc2.bias": [
+      768
+    ],
+    "blocks.7.norm1.weight": [
+      768
+    ],
+    "blocks.7.norm1.bias": [
+      768
+    ],
+    "blocks.7.attn.qkv.weight": [
+      2304,
+      768
+    ],
+    "blocks.7.attn.qkv.bias": [
+      2304
+    ],
+    "blocks.7.attn.proj.weight": [
+      768,
+      768
+    ],
+    "blocks.7.attn.proj.bias": [
+      768
+    ],
+    "blocks.7.norm2.weight": [
+      768
+    ],
+    "blocks.7.norm2.bias": [
+      768
+    ],
+    "blocks.7.mlp.fc1.weight": [
+      3072,
+      768
+    ],
+    "blocks.7.mlp.fc1.bias": [
+      3072
+    ],
+    "blocks.7.mlp.fc2.weight": [
+      768,
+      3072
+    ],
+    "blocks.7.mlp.fc2.bias": [
+      768
+    ],
+    "blocks.8.norm1.weight": [
+      768
+    ],
+    "blocks.8.norm1.bias": [
+      768
+    ],
+    "blocks.8.attn.qkv.weight": [
+      2304,
+      768
+    ],
+    "blocks.8.attn.qkv.bias": [
+      2304
+    ],
+    "blocks.8.attn.proj.weight": [
+      768,
+      768
+    ],
+    "blocks.8.attn.proj.bias": [
+      768
+    ],
+    "blocks.8.norm2.weight": [
+      768
+    ],
+    "blocks.8.norm2.bias": [
+      768
+    ],
+    "blocks.8.mlp.fc1.weight": [
+      3072,
+      768
+    ],
+    "blocks.8.mlp.fc1.bias": [
+      3072
+    ],
+    "blocks.8.mlp.fc2.weight": [
+      768,
+      3072
+    ],
+    "blocks.8.mlp.fc2.bias": [
+      768
+    ],
+    "blocks.9.norm1.weight": [
+      768
+    ],
+    "blocks.9.norm1.bias": [
+      768
+    ],
+    "blocks.9.attn.qkv.weight": [
+      2304,
+      768
+    ],
+    "blocks.9.attn.qkv.bias": [
+      2304
+    ],
+    "blocks.9.attn.proj.weight": [
+      768,
+      768
+    ],
+    "blocks.9.attn.proj.bias": [
+      768
+    ],
+    "blocks.9.norm2.weight": [
+      768
+    ],
+    "blocks.9.norm2.bias": [
+      768
+    ],
+    "blocks.9.mlp.fc1.weight": [
+      3072,
+      768
+    ],
+    "blocks.9.mlp.fc1.bias": [
+      3072
+    ],
+    "blocks.9.mlp.fc2.weight": [
+      768,
+      3072
+    ],
+    "blocks.9.mlp.fc2.bias": [
+      768
+    ],
+    "blocks.10.norm1.weight": [
+      768
+    ],
+    "blocks.10.norm1.bias": [
+      768
+    ],
+    "blocks.10.attn.qkv.weight": [
+      2304,
+      768
+    ],
+    "blocks.10.attn.qkv.bias": [
+      2304
+    ],
+    "blocks.10.attn.proj.weight": [
+      768,
+      768
+    ],
+    "blocks.10.attn.proj.bias": [
+      768
+    ],
+    "blocks.10.norm2.weight": [
+      768
+    ],
+    "blocks.10.norm2.bias": [
+      768
+    ],
+    "blocks.10.mlp.fc1.weight": [
+      3072,
+      768
+    ],
+    "blocks.10.mlp.fc1.bias": [
+      3072
+    ],
+    "blocks.10.mlp.fc2.weight": [
+      768,
+      3072
+    ],
+    "blocks.10.mlp.fc2.bias": [
+      768
+    ],
+    "blocks.11.norm1.weight": [
+      768
+    ],
+    "blocks.11.norm1.bias": [
+      768
+    ],
+    "blocks.11.attn.qkv.weight": [
+      2304,
+      768
+    ],
+    "blocks.11.attn.qkv.bias": [
+      2304
+    ],
+    "blocks.11.attn.proj.weight": [
+      768,
+      768
+    ],
+    "blocks.11.attn.proj.bias": [
+      768
+    ],
+    "blocks.11.norm2.weight": [
+      768
+    ],
+    "blocks.11.norm2.bias": [
+      768
+    ],
+    "blocks.11.mlp.fc1.weight": [
+      3072,
+      768
+    ],
+    "blocks.11.mlp.fc1.bias": [
+      3072
+    ],
+    "blocks.11.mlp.fc2.weight": [
+      768,
+      3072
+    ],
+    "blocks.11.mlp.fc2.bias": [
+      768
+    ],
+    "norm.weight": [
+      768
+    ],
+    "norm.bias": [
+      768
+    ]
+  },
+  "blocks": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "output_dim": 768,
+  "model_instances": 1,
+  "forward_calls": 0,
+  "CUDA_initialized": false,
+  "strict_load_missing_keys": [],
+  "strict_load_unexpected_keys": [],
+  "encoder_adapter_sha256": "3f5cb292728c809737ff0dbe851095cec8825883b0f009d913d315677f462bfe",
+  "source_evidence": "User supplied screenshot of Haiyu Wu email titled visreg ckpts; screenshot corrected old typed URL. Folder listing and exact ViT-B file identity verified; SMTP identity not independently verified.",
+  "license_from_historical_model_card": "CC-BY-NC-4.0",
+  "not_published_official_SHA": true
+}

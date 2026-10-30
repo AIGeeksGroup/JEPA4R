@@ -1,0 +1,30 @@
+{
+  "files": {
+    "resident_inputs.py": {
+      "bytes": 1451,
+      "sha256": "ba1d22d7779b8f1af338b650b92b12cabd696630655bd1028f351f18c281c496"
+    },
+    "candidate_check.py": {
+      "bytes": 5938,
+      "sha256": "137732125b5ac8944698cc338f8ad39609c17b861ce0bf7b54792fbf952ae776"
+    },
+    "candidate_supervise.py": {
+      "bytes": 2658,
+      "sha256": "3714e735e174dc7f0868ab87e01b9a069165a4d4567782ded207a17ce981d059"
+    },
+    "benchmark_profile.py": {
+      "bytes": 4157,
+      "sha256": "5a802ca8d3a81e41797feb89c48af15bbe72ff5eb05689e3a61d1eaf0fa910fc"
+    },
+    "profile_versions/v1.py": {
+      "bytes": 4044,
+      "sha256": "1053942f0c4f878bf14266a2db83027f2af12f103468f1054cbdb8e81cb944b9"
+    },
+    "smoke.py": {
+      "bytes": 8389,
+      "sha256": "6097510a71403c563f629dc8f0cb2851440099e6bd2238b5504c1397c9f63c54"
+    }
+  },
+  "default_enabled": false,
+  "strict_equivalence_before_benchmark": true
+}

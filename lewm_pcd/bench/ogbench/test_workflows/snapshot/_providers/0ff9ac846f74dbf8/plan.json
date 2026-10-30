@@ -1,0 +1,19 @@
+{
+  "argv": [
+    "/root/autodl-tmp/conda/envs/jepa4r-smoke/bin/python",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/core_v1/train.py",
+    "--config",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/configs/M5_w4_formal_config.json",
+    "--output",
+    "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/rl3_m5_gciql_seed0_b1024_1m_w4_20261013_v1",
+    "--total-updates",
+    "1000000"
+  ],
+  "output": "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/rl3_m5_gciql_seed0_b1024_1m_w4_20261013_v1",
+  "total_updates": 1000000,
+  "launcher_output": "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/formal_launches_v1/M5",
+  "config_sha256": "37e06651cbfffa3b558ea4ab80c90e6bcb51c29db88c9ba16cf05ed987e36bc8",
+  "evaluation_episodes": 0,
+  "protocol": "RL3 M5 freshseed0/B1024/1M; cachedvisual192+robotproprio19 current211 and same-IDcachedvisual192+XYZ3 goal195; readonlyRAM 4 role-map threads; parent original sampler; current_object4cm reward0/-1; no runtimeencoder/no WMdynamics; original GCIQL",
+  "rng_deviation": "Online evaluations at step1 and100K are omitted without synthetic RNG consumption; this is not the original-main training RNG stream"
+}

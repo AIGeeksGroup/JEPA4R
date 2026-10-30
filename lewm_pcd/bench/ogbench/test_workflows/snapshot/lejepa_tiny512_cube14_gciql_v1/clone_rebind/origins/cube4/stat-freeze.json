@@ -1,0 +1,26 @@
+{
+  "actual_exit_code": 0,
+  "acceptance_sha256": "de1cd08b908efb6955bb1661818a99292928d407dfb4aaf6d24434a175189563",
+  "datasets": {
+    "train": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-quadruple-play-v0.npz",
+      "accepted_stat": {
+        "size": 1861419607,
+        "mtime_ns": 1792241332419440814,
+        "ctime_ns": 1792455688283408665,
+        "device": 2304,
+        "inode": 4345416202
+      }
+    },
+    "validation": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-quadruple-play-v0-val.npz",
+      "accepted_stat": {
+        "size": 185890898,
+        "mtime_ns": 1792241530418905606,
+        "ctime_ns": 1792455677679483469,
+        "device": 2304,
+        "inode": 4345367661
+      }
+    }
+  }
+}

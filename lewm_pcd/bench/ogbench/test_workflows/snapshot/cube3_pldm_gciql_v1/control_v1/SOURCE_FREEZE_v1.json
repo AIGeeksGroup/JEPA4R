@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "status": "controller_frozen_local_not_deployed_or_armed",
+  "files": {
+    "serial.py": {
+      "bytes": 3333,
+      "sha256": "b46b65085a33243f2ed2e76eefffd632102d241e827b99c744110419659b28f2"
+    },
+    "build_launch_plan.py": {
+      "bytes": 5017,
+      "sha256": "3d3d19a2462c22ec90500c0918ce6c3c4a566bea87fd928af0ad3e9d660c2e04"
+    },
+    "run.sh": {
+      "bytes": 873,
+      "sha256": "932fff8925706b7f0a77039f0d9212fa5e27f46164c6b177544da14ac1448c14"
+    },
+    "test_serial.py": {
+      "bytes": 3749,
+      "sha256": "9e1e147f96819a7608330005d5360924311db1db1a7dd8b521833e634c69d719"
+    },
+    "CAMERA_PROVENANCE_v1.json": {
+      "bytes": 8348,
+      "sha256": "b5d21ef80b056fc898e7ba086c3ac4f623aac6226d20d814f5ed11effd6e901c"
+    },
+    "SUPERVISOR_DELTA_v1.json": {
+      "bytes": 1169,
+      "sha256": "8bf90d923e643949ad7e5538e429e9bc43629441f64046a84ff108fa1bced1f8"
+    },
+    "reference_source/serial_relay.py": {
+      "bytes": 4859,
+      "sha256": "ff7eb51417c8301f27987743701d4a0336117c356904443bb174ab84475366cb"
+    }
+  },
+  "references": {
+    "original_serial": {
+      "remote_path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_official_embeddings_v1/serial_relay.py",
+      "sha256": "ff7eb51417c8301f27987743701d4a0336117c356904443bb174ab84475366cb",
+      "current_target_readonly_SHA_verified": true
+    },
+    "process_guard": {
+      "remote_path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/prepare_runtime.py",
+      "sha256": "0331473db0b0566d3097c8cd9cf7362a820badc8c8537134ea39388ab79e6063",
+      "current_target_readonly_SHA_verified": true
+    },
+    "GPU_empty_guard": {
+      "remote_path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_visual_gciql_v1/control_v1/gpu_lease.py",
+      "sha256": "d3a1757ec4b22746da404f15cea2f99e7e830c1edf0f07e1ac20a96955a13727",
+      "scope": "existing same-PGID exec guard; before each GPU child only"
+    }
+  },
+  "strict_supervisor_metadata_edits": 6,
+  "guard_and_wait_algorithm_body_unchanged": true,
+  "frozen_at": 1792518046.7189634
+}

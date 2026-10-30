@@ -1,0 +1,220 @@
+{
+  "stage": "correctness",
+  "mode": "baseline",
+  "official_commit": "a977253ce5b88434f4e4f531c50047cc95993a51",
+  "source_sha256": {
+    "agents/gciql.py": "05a0b5d9b987d3049df8a1158bbfbaba2ca2611604d24f9e484f8fb6d0cd92bc",
+    "utils/datasets.py": "52c373922a87e1ba8ad8b3b96c3474d5e6385e2ea2c7206930f7a8a315816609",
+    "utils/flax_utils.py": "5b6a8e9a919bf57dae0c1454f327ded4235385f9d9dcd1e62263fe4fad9fd484",
+    "main.py": "375fad6375047ff59f3baea408ab7197784c1ec1457588a78a631025e434faee"
+  },
+  "harness_sha256": "d248a37188c1c306767ba17fd98d0de811877892aa4b8c879cb8f440615ac259",
+  "adapter_sha256": "4508ce847694976f8af924215d11985ac4d795093b22d62e8424928346fbdda2",
+  "old_smoke_sha256": "6097510a71403c563f629dc8f0cb2851440099e6bd2238b5504c1397c9f63c54",
+  "official_config": {
+    "actor_geom_sample": false,
+    "actor_hidden_dims": [
+      512,
+      512,
+      512
+    ],
+    "actor_loss": "ddpgbc",
+    "actor_p_curgoal": 0.0,
+    "actor_p_randomgoal": 0.0,
+    "actor_p_trajgoal": 1.0,
+    "agent_name": "gciql",
+    "alpha": 1.0,
+    "batch_size": 1024,
+    "const_std": true,
+    "dataset_class": "GCDataset",
+    "discount": 0.99,
+    "discrete": false,
+    "encoder": null,
+    "expectile": 0.9,
+    "frame_stack": null,
+    "gc_negative": true,
+    "layer_norm": true,
+    "lr": 0.0003,
+    "p_aug": 0.0,
+    "tau": 0.005,
+    "value_geom_sample": true,
+    "value_hidden_dims": [
+      512,
+      512,
+      512
+    ],
+    "value_p_curgoal": 0.2,
+    "value_p_randomgoal": 0.3,
+    "value_p_trajgoal": 0.5
+  },
+  "Python": "3.12.3 | packaged by Anaconda, Inc. | (main, May  6 2024, 19:46:43) [GCC 11.2.0]",
+  "NumPy": "2.2.6",
+  "JAX": "0.7.2",
+  "Flax": "0.11.2",
+  "JAX_default_matmul_precision": "None",
+  "devices": [
+    {
+      "platform": "gpu",
+      "kind": "NVIDIA GeForce RTX 4080 SUPER",
+      "id": 0
+    }
+  ],
+  "current_dim": 46,
+  "goal_dim": 46,
+  "action_dim": 5,
+  "batch_size": 1024,
+  "input_dtype": "float32",
+  "fixture_only": false,
+  "artificial_terminal": false,
+  "formal_training": false,
+  "SR": false,
+  "official_agent_sampler_save_restore_unmodified": true,
+  "enabled_by_default": false,
+  "CPU_affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+  ],
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "0",
+    "JAX_PLATFORMS": "cuda",
+    "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+    "XLA_PYTHON_CLIENT_MEM_FRACTION": ".45",
+    "OMP_NUM_THREADS": "4",
+    "OPENBLAS_NUM_THREADS": "4",
+    "MKL_NUM_THREADS": "4"
+  },
+  "data_receipt": {
+    "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/official_state_workers_v1/data_prepare/ACCEPTANCE.json",
+    "sha256": "916c1921cfe8200b0a7c9dc78ee1b846626a2f4ff5867d757d73b50797fa680e"
+  },
+  "data_stat_freeze": {
+    "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/official_state_workers_v1/data_prepare/stat-freeze.json",
+    "sha256": "72b1e240017d4ee56e147b3a2554ea33dda2d6820d7886922cd2db9de9d34f7f"
+  },
+  "datasets": {
+    "cube-triple-play-v0.npz": {
+      "raw_sha256": "4e09a9f5ba7eaba59350dbef7e85887b9a2746490c69eaa83af34a3f9029202b",
+      "raw_bytes": 1003544255,
+      "rows": 3003000,
+      "episodes": 3000,
+      "compact_valid_rows": 3000000,
+      "accepted_stat": {
+        "size": 1003544255,
+        "mtime_ns": 1792235697982533189,
+        "ctime_ns": 1792235723666928396,
+        "device": 2304,
+        "inode": 15090086937
+      },
+      "fields": {
+        "observations": {
+          "shape": [
+            3003000,
+            46
+          ],
+          "dtype": "<f4",
+          "bytes": 552552000
+        },
+        "actions": {
+          "shape": [
+            3003000,
+            5
+          ],
+          "dtype": "<f4",
+          "bytes": 60060000
+        },
+        "terminals": {
+          "shape": [
+            3003000
+          ],
+          "dtype": "<f4",
+          "bytes": 12012000
+        },
+        "valids": {
+          "shape": [
+            3003000
+          ],
+          "dtype": "<f4",
+          "bytes": 12012000
+        }
+      }
+    },
+    "cube-triple-play-v0-val.npz": {
+      "raw_sha256": "bd6cb3817fc464d7afc50bd90d766f353bc5b8d097579c70afe680a9aa0404a6",
+      "raw_bytes": 100613267,
+      "rows": 300300,
+      "episodes": 300,
+      "compact_valid_rows": 300000,
+      "accepted_stat": {
+        "size": 100613267,
+        "mtime_ns": 1792235706194658894,
+        "ctime_ns": 1792235724838946572,
+        "device": 2304,
+        "inode": 15090086945
+      },
+      "fields": {
+        "observations": {
+          "shape": [
+            300300,
+            46
+          ],
+          "dtype": "<f4",
+          "bytes": 55255200
+        },
+        "actions": {
+          "shape": [
+            300300,
+            5
+          ],
+          "dtype": "<f4",
+          "bytes": 6006000
+        },
+        "terminals": {
+          "shape": [
+            300300
+          ],
+          "dtype": "<f4",
+          "bytes": 1201200
+        },
+        "valids": {
+          "shape": [
+            300300
+          ],
+          "dtype": "<f4",
+          "bytes": 1201200
+        }
+      }
+    }
+  },
+  "raw_npz_stats_before": {
+    "cube-triple-play-v0.npz": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-triple-play-v0.npz",
+      "size": 1003544255,
+      "mtime_ns": 1792235697982533189,
+      "ctime_ns": 1792235723666928396,
+      "device": 2304,
+      "inode": 15090086937
+    },
+    "cube-triple-play-v0-val.npz": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-triple-play-v0-val.npz",
+      "size": 100613267,
+      "mtime_ns": 1792235706194658894,
+      "ctime_ns": 1792235724838946572,
+      "device": 2304,
+      "inode": 15090086945
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "actual_exit_code": 0,
+  "acceptance_path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_visual_gciql_v1/migration_rebind_v1/data_acceptance.json",
+  "acceptance_sha256": "a9d33f1ec518b32d3ccdbded1ec34cabe7856311616ea365d56039ad5ac0beb7",
+  "datasets": {
+    "train": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-quadruple-play-v0.npz",
+      "raw_sha256": "31053b04f5adbedaf9a5abef467057b2c216b0b3f8664cf3137b9891ee32a6ed",
+      "accepted_stat": {
+        "size": 1861419607,
+        "mtime_ns": 1792241332419440814,
+        "ctime_ns": 1792455688283408665,
+        "device": 2304,
+        "inode": 4345416202
+      }
+    },
+    "validation": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-quadruple-play-v0-val.npz",
+      "raw_sha256": "96ae20f4c7ffe673520c69f2c0339a746f7eac019bb15a92f2898fb8e1785d1d",
+      "accepted_stat": {
+        "size": 185890898,
+        "mtime_ns": 1792241530418905606,
+        "ctime_ns": 1792455677679483469,
+        "device": 2304,
+        "inode": 4345367661
+      }
+    }
+  },
+  "prior_source_stat_freeze": {
+    "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/data_readiness_v1/quadruple_stat-freeze.json",
+    "sha256": "defd3b51d55a5ab2dd13b30e6dd2ad2ebb7dd5c7084a5a6ea965205e14edd1b1"
+  },
+  "migration_byte_proof": {
+    "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_visual_gciql_v1/migration_rebind_v1/CURRENT_RAW_BYTE_PROOF_v1.json",
+    "sha256": "930f6ba589ecff87f957016489df1017c17476709ce21130f490ec789567d9ee"
+  },
+  "original_files_and_statfreeze_preserved": true,
+  "completed": 1792498752.5096347
+}

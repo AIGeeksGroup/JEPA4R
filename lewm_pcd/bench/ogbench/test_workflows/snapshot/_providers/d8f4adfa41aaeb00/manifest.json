@@ -1,0 +1,24 @@
+{
+  "status": "copied_reviewed_RL3_native_profile_sources_frozen_source_only",
+  "created_utc": "2026-10-13T13:07:57.018585+00:00",
+  "files": {
+    "cached_state_xyz_native.py": "9bfba36f36dcaf34b98100f71bcde71b6855b7ad5c9af6d4640035697f4eaad3",
+    "official_state_sr.py": "a3e1409dcd476ef00746a7e6b6ec38017f37131f7917b109357099ce95905a82",
+    "prepare_binding.py": "ba2994a1fc2707373f4e8c3d0c87a800a08f1d22b8a2e34e708b9a026829d116",
+    "run_stage.sh": "c616a4030b2c4fbd08dd8745cd4f958d09da9768431b85db334cb6d3cbf324af",
+    "test_cached_native.py": "5bbcb19ae4262e434111275a8bd50bf8c954fa83daf8f127bfbd583ccaf4976d"
+  },
+  "production_parent7ffe_bytes_exact": true,
+  "training_core_root": "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/core_v1",
+  "training_core_freeze": "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/adapter_v1/freeze_v1/manifest.json",
+  "training_core_freeze_sha256": "03f3c3551a46c80bc1f82f4472781369d806d1cdb3f773c7b8da6c53b9dbe75e",
+  "contract": {
+    "M0_current": 220,
+    "M6_M5_current": 211,
+    "goal": 195,
+    "online_encoder_calls_M0": 0,
+    "online_encoder_calls_M6_M5_per_step": 2
+  },
+  "true1M_model_and_afterhook_exit_guards_retained": true,
+  "no_CPU_or_GPU_model_load_forward_update_executed_in_this_prepare": true
+}

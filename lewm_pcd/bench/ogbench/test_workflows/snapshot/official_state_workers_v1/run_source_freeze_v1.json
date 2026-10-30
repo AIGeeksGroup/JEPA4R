@@ -1,0 +1,32 @@
+{
+  "stage": "frozen_before_complete_data_GPU_comparison",
+  "files": {
+    "ordered_input.py": {
+      "bytes": 7200,
+      "sha256": "4508ce847694976f8af924215d11985ac4d795093b22d62e8424928346fbdda2"
+    },
+    "measure.py": {
+      "bytes": 20853,
+      "sha256": "d248a37188c1c306767ba17fd98d0de811877892aa4b8c879cb8f440615ac259"
+    },
+    "run_experiments.py": {
+      "bytes": 4461,
+      "sha256": "43368459b47463dba46e41af8cfaf92337f0eafd13669eafce55e5c59f842740"
+    },
+    "test_ordered_input.py": {
+      "bytes": 11013,
+      "sha256": "c5cc75be96ec1918560414945a01c180b5d24159c0af44f9726e490c1a2c0504"
+    },
+    "ROOT_PLAN.md": {
+      "bytes": 2390,
+      "sha256": "6e7c8a3582f243de002a4c66bfa007e91fa22f3f8bab88b27f7d88a882425259"
+    }
+  },
+  "data_acceptance_sha256": "916c1921cfe8200b0a7c9dc78ee1b846626a2f4ff5867d757d73b50797fa680e",
+  "data_stat_freeze_sha256": "72b1e240017d4ee56e147b3a2554ea33dda2d6820d7886922cd2db9de9d34f7f",
+  "official_algorithm_sources_changed": false,
+  "real_CPU_pytest_passed": 8,
+  "formal_training": false,
+  "SR": false,
+  "scope": "complete official data; state46/goal46 B1024; numerical3update per4mode, fresh checkpoint3, fixed bounded benchmarks"
+}

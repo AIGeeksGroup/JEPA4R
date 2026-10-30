@@ -1,0 +1,138 @@
+{
+  "actual_exit_code": 0,
+  "group_id": "lejepa_tiny512_cube4",
+  "configs": {
+    "pilot": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/configs/pilot/lejepa_tiny512_cube4.json",
+      "sha256": "d5637e0213d28f0ad4ce08daa14084472c12de2abdf7b9609739eaf68ecfe534"
+    },
+    "formal": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/configs/formal/lejepa_tiny512_cube4.json",
+      "sha256": "bd5be80270cc755fe6e45d2030b68e995507748f8dae958ef8be85887289b685"
+    }
+  },
+  "delivery_binding": {
+    "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/cache/groups/lejepa_tiny512_cube4/delivery.json",
+    "sha256": "963bd26b399587aeeac565907bd8677deb49c66e044477f29de3203d36b97ddb"
+  },
+  "cache_plan_binding": {
+    "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/cache/groups/lejepa_tiny512_cube4/plan.json",
+    "sha256": "3451d4c2a21fe76adb7cdf3ec6f6fff9d61527203c97170d7a95c8b42d4e2fe5"
+  },
+  "cache_control_binding": [
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/control/full/runtime/lejepa_tiny512_cube4_01_encode_full_exit.json",
+      "sha256": "620fbada261c8449ef5a8cf5c2476ef3a14bbd991f7c41b05256cfe9ae0e0301"
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/control/full/runtime/lejepa_tiny512_cube4_02_cache_audit_exit.json",
+      "sha256": "8acb908a4a8a5276cd2737ac71d44115ab5f0eed5ba3bd13b78575fcf6221688"
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/control/full/runtime/lejepa_tiny512_cube4_03_deliver_exit.json",
+      "sha256": "4878c87d62240e92da83ceb65e9bc03e5cb1ae1ae745b61ac6d82af05897dbd4"
+    }
+  ],
+  "parent_template": {
+    "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/configs/G08_cube3_rgb.json",
+    "sha256": "6d717c2123217020fec593367f3eecb42e01dfe203e9aae8d5a38733045f55b5"
+  },
+  "functional_overlay": {
+    "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube14_gciql_v1/release_v1/tiny_bridge.py",
+    "sha256": "98d684a1065b4c44f026ada58ac9664d026998fd74cdbe3872bd09913bb51c62",
+    "reused_functional_SHA256": "d777c27d82a357ae0ca429a6bea7721c51e9860f9ca688c2c22dc3ed4dedbbfa",
+    "sources": {
+      "inputs": {
+        "original_SHA256": "ff66c68f50a6c73bd7928e4281a30adf4686538a2829d31d6981a4fd86b5f2ec",
+        "effective_SHA256": "51d0d49ca0f0d959073e46271e03c79fc59982b424cae4e5fe24fc5f54d8798c",
+        "counted_edits": [
+          [
+            "dim in (768, 1024)",
+            "dim in (512, 768, 1024)"
+          ]
+        ]
+      },
+      "prepare": {
+        "original_SHA256": "17141ea3dffd485455f9a54dbcb52a3b569c583b2f1326d7074d2d96b4a78464",
+        "effective_SHA256": "8bcdac1214978ff073363de965f719555ed4510aa9646c2a05bcb3b70034dee8",
+        "counted_edits": [
+          [
+            "d in (768,1024)",
+            "d in (512,768,1024)"
+          ]
+        ]
+      },
+      "runtime": {
+        "original_SHA256": "03986a4c4dd03598b9ae06e57955ce164ad3a73fcc655dcc73acf12df0632326",
+        "effective_SHA256": "c830f59464cfd1809a8d814b4cccb59482615e9aadcfb8bc7a176d1bb2dda16d",
+        "counted_edits": [
+          [
+            "d in (768,1024)",
+            "d in (512,768,1024)"
+          ]
+        ]
+      },
+      "audit_native": {
+        "original_SHA256": "c2840c183d9279623be16b5f1e882a4b121a856039fd74e8f4584fca82f8501a",
+        "effective_SHA256": "c2840c183d9279623be16b5f1e882a4b121a856039fd74e8f4584fca82f8501a",
+        "counted_edits": []
+      },
+      "native_sr": {
+        "original_SHA256": "ae16abe24a609719630357f69c2c472d4df2f58a63f044edd9fbe028f4f10e41",
+        "effective_SHA256": "ae16abe24a609719630357f69c2c472d4df2f58a63f044edd9fbe028f4f10e41",
+        "counted_edits": []
+      }
+    },
+    "original_native_audit_byteexact": true,
+    "resource_continuation": {
+      "bridge": {
+        "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/release_v1/c4_resource_bridge.py",
+        "sha256": "229627a4cf09d14af3dd940c769e5c51641135dcc017465bce4d775176dba3b2"
+      },
+      "plan": {
+        "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/cache/groups/lejepa_tiny512_cube4/plan.json",
+        "sha256": "3451d4c2a21fe76adb7cdf3ec6f6fff9d61527203c97170d7a95c8b42d4e2fe5"
+      },
+      "adoption_ledger": {
+        "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/provenance/adoption_ledger.json",
+        "sha256": "5c0f5e1600c4c39cdfa7468167e64a1ea169e507290fe0d8c1df97ab69df8fe5"
+      },
+      "resource_policy": {
+        "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/provenance/resource_policy.json",
+        "sha256": "6d0ede59a7977f026d3cdae583e8c4014d7cf5feb45ad479ab39a965f50511b6"
+      },
+      "resource_runtime_policy": {
+        "allowed_affinity": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "consecutive_windows": 2,
+        "fallback_workers": [
+          12,
+          8
+        ],
+        "initial_workers": 16,
+        "nice": 10,
+        "policy_source_sha256": "6d0ede59a7977f026d3cdae583e8c4014d7cf5feb45ad479ab39a965f50511b6",
+        "prefetch_per_worker": 2,
+        "sample_interval_seconds": 15,
+        "warmup_commits": 2
+      }
+    }
+  },
+  "NN_performed": false
+}

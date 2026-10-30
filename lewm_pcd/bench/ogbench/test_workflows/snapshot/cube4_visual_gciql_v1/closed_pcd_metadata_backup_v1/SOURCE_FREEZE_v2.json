@@ -1,0 +1,44 @@
+{
+  "schema_version": 2,
+  "status": "local_frozen_preparation_not_executed",
+  "delta": "Only select old completed OLD four phase checks/runtime files; new NEW four phases. Old full plan and failure retained; freeze/handoff refs v2.",
+  "files": {
+    "parameter_bridge.py": {
+      "bytes": 3162,
+      "sha256": "136339dcb579ea0eff46a72c123e843133db2d1d49c4e50b3696b83ff43607d3"
+    },
+    "metadata_backup_v2.py": {
+      "bytes": 11047,
+      "sha256": "599f69e31ad09e26c03a3101f84ad4d6dbfe135183f0d02a43411b2c26be74df"
+    },
+    "copy_metadata.py": {
+      "bytes": 170,
+      "sha256": "c78d92c9766113c94ea332ca90859f5e4afc37766609456c81956e6e3aaed4ce"
+    },
+    "test_metadata_v2.py": {
+      "bytes": 949,
+      "sha256": "e73bac93d25fa576668c4e693ea72499caf93b0fa0fcc5cf417e7dc7b2facf72"
+    },
+    "test_metadata.py": {
+      "bytes": 1720,
+      "sha256": "c566b65911af96180ca594df4d703afbf0acc6ccc18c0d2353beae3d49e38d68"
+    },
+    "BRIDGE_PARAMETER_DELTA_v1.json": {
+      "bytes": 2723,
+      "sha256": "cf3cedd79c7656eeaf69017aaea51afb004c473f12f7d38820b5547858282f2e"
+    }
+  },
+  "references": {
+    "closed_backup_preparation_v2/closed_role.py": "bd4a240d9a39d0d7140f873de62ce3f760651ae2223598a68882f680f30e69d4",
+    "closed_backup_preparation_v2/copy_verified.py": "bcb574502929e6c128806c7f714788d0cfe02f991592b9ae1f8024f6bec1e574",
+    "functional_v2/recovery.py": "e62099b13b11e5b81d3034a13187e531e7aadd708f69223f81bacc4bcf9f6e30",
+    "control_v2/RECOVERY_BINDING_final_v2.json": "bb47c70f0ccb998e786703e6febb4975b6438ba8da57f064c691d712ddcde693"
+  },
+  "prior_v1": {
+    "helper_sha256": "a57a6a45b57bdc065960a1e91c7cea35e0c1a05aac78fbd7b8f4c3a4cddf9e55",
+    "source_freeze_sha256": "8770fd452b1299bb2164fb06347747dc4e305567f2b86988fd808df6bcc11ef8",
+    "review_sha256": "47c76ed758118024a990870fc647f32937ba00afc27bc3ac78d789428c436bbd",
+    "review_actual_exit_code": 1
+  },
+  "frozen_at": 1792511092.5534203
+}

@@ -1,0 +1,89 @@
+{
+  "actual_exit_code": 0,
+  "group_id": "lejepa_tiny512_cube3",
+  "configs": {
+    "pilot": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube14_gciql_v1/configs/pilot/lejepa_tiny512_cube3.json",
+      "sha256": "c9a1205d8ba524fc7e92e231f3ff212be31bed56427d8e47fc0d08a656ae71ff"
+    },
+    "formal": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube14_gciql_v1/configs/formal/lejepa_tiny512_cube3.json",
+      "sha256": "c99c7c1782ed3560f8c482e96d45fcc720bc9a85f58ae8cff5350e446a5a6efb"
+    }
+  },
+  "delivery_binding": {
+    "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube14_gciql_v1/cache/groups/lejepa_tiny512_cube3/delivery.json",
+    "sha256": "171289597871b0c2ed335340b5a66b239c91be65b36292838c91220d0f29a98a"
+  },
+  "cache_plan_binding": {
+    "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube14_gciql_v1/cache/groups/lejepa_tiny512_cube3/plan.json",
+    "sha256": "e3caab413275525def96cc0d743fe43d59694db2eb75765ee538d945af571c47"
+  },
+  "cache_control_binding": [
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube14_gciql_v1/control/full/runtime/lejepa_tiny512_cube3_01_encode_full_exit.json",
+      "sha256": "7aa0848a85c20db452dfecc93f41ccf097ebcddb45caf312ce921f68b319936c"
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube14_gciql_v1/control/full/runtime/lejepa_tiny512_cube3_02_cache_audit_exit.json",
+      "sha256": "a2d86089c7423e767e1fec35df22c4c577f8ecc57b6a8283236e2949b7bc57f1"
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube14_gciql_v1/control/full/runtime/lejepa_tiny512_cube3_03_deliver_exit.json",
+      "sha256": "af8cd4a827771553cb1aa0fa0e9f7e20b92d55e075cde94f168835c04e4e33c1"
+    }
+  ],
+  "parent_template": {
+    "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/configs/G08_cube3_rgb.json",
+    "sha256": "6d717c2123217020fec593367f3eecb42e01dfe203e9aae8d5a38733045f55b5"
+  },
+  "functional_overlay": {
+    "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube14_gciql_v1/release_v1/tiny_bridge.py",
+    "sha256": "98d684a1065b4c44f026ada58ac9664d026998fd74cdbe3872bd09913bb51c62",
+    "reused_functional_SHA256": "d777c27d82a357ae0ca429a6bea7721c51e9860f9ca688c2c22dc3ed4dedbbfa",
+    "sources": {
+      "inputs": {
+        "original_SHA256": "ff66c68f50a6c73bd7928e4281a30adf4686538a2829d31d6981a4fd86b5f2ec",
+        "effective_SHA256": "51d0d49ca0f0d959073e46271e03c79fc59982b424cae4e5fe24fc5f54d8798c",
+        "counted_edits": [
+          [
+            "dim in (768, 1024)",
+            "dim in (512, 768, 1024)"
+          ]
+        ]
+      },
+      "prepare": {
+        "original_SHA256": "17141ea3dffd485455f9a54dbcb52a3b569c583b2f1326d7074d2d96b4a78464",
+        "effective_SHA256": "8bcdac1214978ff073363de965f719555ed4510aa9646c2a05bcb3b70034dee8",
+        "counted_edits": [
+          [
+            "d in (768,1024)",
+            "d in (512,768,1024)"
+          ]
+        ]
+      },
+      "runtime": {
+        "original_SHA256": "03986a4c4dd03598b9ae06e57955ce164ad3a73fcc655dcc73acf12df0632326",
+        "effective_SHA256": "c830f59464cfd1809a8d814b4cccb59482615e9aadcfb8bc7a176d1bb2dda16d",
+        "counted_edits": [
+          [
+            "d in (768,1024)",
+            "d in (512,768,1024)"
+          ]
+        ]
+      },
+      "audit_native": {
+        "original_SHA256": "c2840c183d9279623be16b5f1e882a4b121a856039fd74e8f4584fca82f8501a",
+        "effective_SHA256": "c2840c183d9279623be16b5f1e882a4b121a856039fd74e8f4584fca82f8501a",
+        "counted_edits": []
+      },
+      "native_sr": {
+        "original_SHA256": "ae16abe24a609719630357f69c2c472d4df2f58a63f044edd9fbe028f4f10e41",
+        "effective_SHA256": "ae16abe24a609719630357f69c2c472d4df2f58a63f044edd9fbe028f4f10e41",
+        "counted_edits": []
+      }
+    },
+    "original_native_audit_byteexact": true
+  },
+  "NN_performed": false
+}

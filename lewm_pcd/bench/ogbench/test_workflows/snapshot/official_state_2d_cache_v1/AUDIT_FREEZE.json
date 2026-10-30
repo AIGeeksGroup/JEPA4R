@@ -1,0 +1,65 @@
+{
+  "status": "frozen_before_Root_independent_review",
+  "frozen_UTC": "2026-10-17 15:26:45 UTC",
+  "files": {
+    "audit_cache.py": {
+      "bytes": 17771,
+      "sha256": "a97a55ce945c12b16d6fb473c71b289cdf8b2a0164b697ae0f8d4c5d7f9b5006"
+    },
+    "test_audit_cache.py": {
+      "bytes": 10982,
+      "sha256": "fdde58e0c3d42750a1b30ee6349f6592d6011db97242c481c10c2d7ac6bb234d"
+    },
+    "AUDIT_README.md": {
+      "bytes": 3901,
+      "sha256": "7d39fb9eb789a303a6bca6ceccb870c674f49924304a7171d071a8cb11b2492a"
+    },
+    "AUDIT_TEST_RED.json": {
+      "bytes": 243,
+      "sha256": "e4a236e3a825bf3259c939b4492898af1292ad5d1dd3c34a7c68b1bea66e199d"
+    },
+    "AUDIT_TEST_GREEN.json": {
+      "bytes": 400,
+      "sha256": "814ddecb98985342012048c4aed854bbd9c107512f5c1df1b278b9befd16079e"
+    },
+    "AUDIT_TEST_GREEN.log": {
+      "bytes": 394,
+      "sha256": "04f7622aaf491bb8b41bc1e893ed2f5ea70e8db5a40c9306589e2a368a68a804"
+    }
+  },
+  "CLI_required": [
+    "--cache-dir",
+    "--plan"
+  ],
+  "default_output": "cache-dir/outer_audit_v1",
+  "optional_retry_output": "--output-dir, fresh directory only",
+  "production_episodes": {
+    "train": 3000,
+    "val": 300
+  },
+  "per_episode_shape": [
+    1001,
+    192
+  ],
+  "dtype": "float32",
+  "new_feature_read_scope": "full SHA, exact NPY length/shape/dtype, all finite, row IDs/true terminal, receipt and source/protocol/gate identity",
+  "old_source_read_scope": "original NPZ and unpacked qpos/qvel only stat; no model content read, renderer or encoder execution",
+  "device_contract": "base_protocol plus selected pixel_preprocess_device and preprocessing_selection_sha256; no NN gate recomputation",
+  "source_array_contract": "independent canonical source-array payload, not feature protocol",
+  "red_actual_exit_code": 1,
+  "green_actual_exit_code": 0,
+  "CPU_tests": 2,
+  "new_NN_GPU_or_source_NPZ_scan": false,
+  "independent_static_review": {
+    "status": "two actionable issues fixed",
+    "fixes": [
+      "explicit refuse optimized Python that strips asserts",
+      "reject cache-root/split/EP symlink redirection"
+    ],
+    "no_extra_test_matrix": true
+  },
+  "ready_for_downstream": false,
+  "Root_is_final_READY_owner": true,
+  "full_real_cache_audit_run": false,
+  "producer_core_modified_by_auditor": false
+}

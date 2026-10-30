@@ -1,0 +1,22 @@
+{
+  "actual_exit_code": 0,
+  "scope": "new migration data/meta/read-only views only; old bytes preserved",
+  "base_dir": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_visual_gciql_v1/migration_rebind_v1",
+  "files": {
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_visual_gciql_v1/migration_rebind_v1/CACHE_METADATA_AUDIT_v1.json": "5541314abce293dc5270ae6f294d7ecc74fc8ec524e1a43bf7589a9ae370998f",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_visual_gciql_v1/migration_rebind_v1/CURRENT_ARRAY_BYTE_PROOF_v1.json": "b108171c9c263b54d5342d5fbc8cdbc43c47ab929d581684728096526c000d65",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_visual_gciql_v1/migration_rebind_v1/CURRENT_RAW_BYTE_PROOF_v1.json": "930f6ba589ecff87f957016489df1017c17476709ce21130f490ec789567d9ee",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_visual_gciql_v1/migration_rebind_v1/data_acceptance.json": "a9d33f1ec518b32d3ccdbded1ec34cabe7856311616ea365d56039ad5ac0beb7",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_visual_gciql_v1/migration_rebind_v1/MIGRATION_REBIND_HANDOFF_v1.json": "f0fbe242e30c586b0adf7d8bff64e254c78379ecebeb3e2c64927491ea84f84d",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_visual_gciql_v1/migration_rebind_v1/PCD_ENCODING_BINDING_v1.json": "130e5d1c1b9a8dd19f1f8b9cf8af2b9dc791c45ff71dcc8102113436146a4024",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_visual_gciql_v1/migration_rebind_v1/PCD_PREPROCESS_SOURCE_READBACK_v1.json": "9205e8bae90f7a8ccb29d4d36a6634e7354dabe3842249bd6e7c100e13e2be6d",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_visual_gciql_v1/migration_rebind_v1/rgb_source_rebind.json": "63d2609f4981ed96d146998500b5dbbb07972301a78b6c774bb6b30deb1ceeca",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_visual_gciql_v1/migration_rebind_v1/stat-freeze.json": "e8fb544c4d7e5e3cd839972761573e38be76105f96cca75ea85a0b5b7f3701c1",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_visual_gciql_v1/migration_rebind_v1/source_arrays_view_v1/source_arrays.json": "cda190df7dc7d069417934d71725b8be35482070f196c5ab31afc4f3e04aecfe"
+  },
+  "target_host": "103032Test",
+  "current_raw_files_hashed_once": 2,
+  "current_array_files_hashed_once": 4,
+  "feature_vector_payload_reads": 0,
+  "created": 1792498752.5257125
+}

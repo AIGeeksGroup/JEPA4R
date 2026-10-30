@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "actual_exit_code": 0,
+  "frozen_Beijing": "2026-10-29T00:59:15.171058+08:00",
+  "scope": "Final immutable local Tiny512 adapter/width-cache-metadata bridge, no original model/learner/Native source edits",
+  "files": {
+    "tiny_encoder.py": {
+      "sha256": "d32c467fc02fd3680d3c12d737e692dd423a9f1b5d7a0f9f20c5e21584da3b86",
+      "bytes": 5571
+    },
+    "tiny_bridge.py": {
+      "sha256": "98d684a1065b4c44f026ada58ac9664d026998fd74cdbe3872bd09913bb51c62",
+      "bytes": 20016
+    },
+    "test_metadata.py": {
+      "sha256": "2a534ea3f5ff40f1344a84a2d5ad583d87a0f85e2af452d97064864f9921267a",
+      "bytes": 15176
+    },
+    "specs/cube1.json": {
+      "sha256": "10c2f1afd5a512639d82f7fabbe7f1ad2f0f7ae2773f3fdc1b9e2469de82e1ab",
+      "bytes": 4512
+    },
+    "specs/cube2.json": {
+      "sha256": "c891e60d77badd4574bb9cfe59f0ac07b6381c547b6efbecd4c942ecfe9fbbe8",
+      "bytes": 4696
+    },
+    "specs/cube3.json": {
+      "sha256": "687345e6afb971595067b8820db088717975cddba7c67d8169c218187bfe956d",
+      "bytes": 4499
+    },
+    "specs/cube4.json": {
+      "sha256": "71fc78da02ad2d6b1840491ef98a0dcc5fb228158b943f169566ee34f05151be",
+      "bytes": 4694
+    },
+    "CODE_PLAN.md": {
+      "sha256": "a9ba13bbfa88ca8d3ab87718234f41794fc1b51c7c0cd05078c4cb43c757b0cb",
+      "bytes": 8525
+    },
+    "LOCAL_VALIDATION.json": {
+      "sha256": "8ccd126633ae14f76925f2818daa7ebbd4a941b2b215c641c5aa7032596db23a",
+      "bytes": 5335
+    },
+    "SOURCE_DEPENDENCIES.json": {
+      "sha256": "97565794938979ab454d3a1b5eeed2019c548771b4f6d0ce842e6965af643522",
+      "bytes": 1898
+    },
+    "HANDOFF.md": {
+      "sha256": "4edce38647516338905b430a539b8ccde7532fdd227242668aed8502b995099d",
+      "bytes": 6559
+    },
+    "HANDOFF_FOR_REVIEW.json": {
+      "sha256": "5b40c2f1bffcb20f91abbab382e5b31c0f0b6ee3c681427dfcdc79d7fe8dbfde",
+      "bytes": 1068
+    },
+    "ENCODER_COMPONENT_FREEZE.json": {
+      "sha256": "b8f0900dd4c822d8f044aa93ea6392209496fbd3e675f4a28ee67e4a680c1dae",
+      "bytes": 2168
+    },
+    "component_test_metadata_snapshot.py": {
+      "sha256": "215e12f00a3e00a7e7bba4c0be408431e32eb4fc3ec352f8bf9f6d494fc4ceab",
+      "bytes": 14458
+    },
+    "COMPONENT_TEST_SOURCE_RECOVERY.json": {
+      "sha256": "867069a41cbe05a7dac045fb8ceeb14d88bd8234921856cc4cce9c9ca75f8d56",
+      "bytes": 659
+    }
+  },
+  "component5_unchanged": true,
+  "component_freeze_SHA256": "b8f0900dd4c822d8f044aa93ea6392209496fbd3e675f4a28ee67e4a680c1dae",
+  "metadata_tests_actual0": 10,
+  "stdlib_compile_actual0": 3,
+  "author_SSH_NN_model_load_or_training": false,
+  "source_or_oldcfg_changes": 0,
+  "immutable_after_freeze": true,
+  "final_independent_review_pending": true
+}

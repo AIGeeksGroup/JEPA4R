@@ -1,0 +1,39 @@
+{
+  "status": "CPU_prepared_afterhook_sources_frozen_no_formal_afterhook_run_yet",
+  "created_utc": "2026-10-13T12:12:20.221544+00:00",
+  "files": {
+    "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/afterhook_v1/verify_segment.py": "481ce3920fb39f80d53bd1c8c5c7c181e6af7fdb27213a223bde11ae350885bf",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/afterhook_v1/cached_action_probe.py": "b997c3301e168951b9895d0fa22a72f44609c922591d5aba2c60926a8942b977"
+  },
+  "parent_files": {
+    "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/afterhook_v1/original_bytes/verify_segment.py": "a6ae5a1e31ed9bb00cb71ed0f6c6058b3d1fac858296495f9eff4219a3c7555a",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/afterhook_v1/original_bytes/cached_action_probe.py": "539df469f1938bc519d8dba03780e5bd1c1ca65125c3b6b15d9d1977b6fc5d1b"
+  },
+  "core_manifest": "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/adapter_v1/freeze_v1/manifest.json",
+  "core_manifest_sha256": "03f3c3551a46c80bc1f82f4472781369d806d1cdb3f773c7b8da6c53b9dbe75e",
+  "CPU_pure_profile_kernel_test": "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/afterhook_v1/CPU_prepare_report.json",
+  "CPU_pure_profile_kernel_test_sha256": "9842d5762e55608f7caea25cf72822feb51286b91a53b6964d0075d18100563c",
+  "CPU_pure_profile_actual_exit_code": 0,
+  "CLI_help_actual_exit_codes": {
+    "verify": 0,
+    "action": 0
+  },
+  "original_NP_sampler_replay_text_exact": true,
+  "original_153_Adam_target_JAX_hostRNG_and_checkpoint_SHA_checks_retained": true,
+  "expected_dimensions": {
+    "full28": {
+      "current": 220,
+      "goal": 195,
+      "actor_value_kernel415": 415,
+      "critic_kernel420": 420
+    },
+    "robot_proprio": {
+      "current": 211,
+      "goal": 195,
+      "actor_value_kernel406": 406,
+      "critic_kernel411": 411
+    }
+  },
+  "future_actual_training_exit_and_afterhook_exit_required": true,
+  "scope": "Only newROOT/core/source/worker/profile input dimensions and cache-or-zero probe guard adapted. No formal training, GPU/encoder, cache rebuild or model update performed by this preparer."
+}

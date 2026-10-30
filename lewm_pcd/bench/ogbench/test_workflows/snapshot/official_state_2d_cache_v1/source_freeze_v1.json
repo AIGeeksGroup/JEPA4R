@@ -1,0 +1,105 @@
+{
+  "status": "frozen_before_review_target_path_check_and_GPU_pilot",
+  "frozen": 1792250810.4337723,
+  "files": {
+    "produce.py": {
+      "bytes": 26688,
+      "sha256": "99668010a99faf1c74bf8761d6141b7e4f4da7e6416057fdadc7b9c21ed83e7c"
+    },
+    "render_adapter.py": {
+      "bytes": 6287,
+      "sha256": "5df6dc694f7c9d38ccff69385080b1bad814f41ad6c4ae71e9def2e6ac71662f"
+    },
+    "producer_plan.json": {
+      "bytes": 4941,
+      "sha256": "612c77d66a3528e64aadc8e99876fbfecfcaa78588d4b125518fdf0bc9753118"
+    },
+    "test_contracts.py": {
+      "bytes": 1843,
+      "sha256": "afae79e5b6189b8f72f262b3de47d3fe1bfdf60c9ebc2e76df05982bc915d27c"
+    },
+    "README.md": {
+      "bytes": 3731,
+      "sha256": "f2a69d60502408aa130fe2b2c57280f87e0f47ba442a160c4d117420c7c4f957"
+    },
+    "readonly_dependency_pins.json": {
+      "bytes": 1934,
+      "sha256": "97b9af6b631e8905ba5342c8f3f878593e6617338b19d232d67cf51307e82d2c"
+    },
+    "CPU_stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "CPU_stderr.log": {
+      "bytes": 445,
+      "sha256": "fd6d734ea3640f7d9b23fac8c208ea93d36504517594baaea615630cacee9618"
+    },
+    "CPU_exit.json": {
+      "bytes": 255,
+      "sha256": "ec4d9ed7656f142b1407cac753f3aecff72fe0233e14ba6f21ffa9cdd2d843ab"
+    }
+  },
+  "raw_source": "official cube-triple-play-v0 only",
+  "split_episodes": {
+    "train": 3000,
+    "val": 300
+  },
+  "raw_rows_per_episode": 1001,
+  "real_cache_rows": 3303300,
+  "latent_shape_per_episode": [
+    1001,
+    192
+  ],
+  "dtype": "float32",
+  "camera": {
+    "source_name": "front",
+    "render_name": "front_pixels",
+    "position": [
+      1.287,
+      0.0,
+      0.509
+    ],
+    "FOV": 45.0,
+    "local_x_up_degrees": 5.0,
+    "base_quaternion": [
+      0.5792028135240382,
+      0.4056157058175116,
+      0.4056157058175116,
+      0.5792028135240384
+    ],
+    "actual_quaternion": [
+      0.5609588321928806,
+      0.4304941214288525,
+      0.4304941214288525,
+      0.5609588321928807
+    ],
+    "width": 224,
+    "height": 224,
+    "offsamples": 4,
+    "ob_type": "states",
+    "visualize_info": false,
+    "pixel_transparent_arm": false,
+    "pullback": 0,
+    "crop": null
+  },
+  "pixel_preprocess_device_policy": "auto_validated",
+  "predeclared_gate": {
+    "pixel_atol": 1e-06,
+    "pixel_rtol": 0.0,
+    "latent_atol": 1e-05,
+    "latent_rtol": 1e-05,
+    "minimum_gain": 0.05,
+    "warmup_batches": 3,
+    "timed_batches_per_path": 20,
+    "scope": "original preprocessing plus frozen encode; rendering excluded; CUDA tail synchronized"
+  },
+  "same_pilot_full_plan": true,
+  "local_CPU_tests": 2,
+  "local_CPU_actual_exit_code": 0,
+  "GPU_model_render_started_by_owner": false,
+  "full_cache_ready": false,
+  "producer_seal_requires_actual_outer_exit_and_independent_audit": true,
+  "training_updates": 0,
+  "SR_episodes": 0,
+  "target_launch_owner": "Root"
+}

@@ -1,0 +1,13 @@
+{
+  "actual_exit_code": 0,
+  "python": "3.12.3 | packaged by Anaconda, Inc. | (main, May  6 2024, 19:46:43) [GCC 11.2.0]",
+  "groups_checked": 28,
+  "metadata_API_exercised_in_memory": true,
+  "native_files_rehashed": 2526,
+  "changed_since_frozen_snapshot": [],
+  "missing_since_frozen_snapshot": [],
+  "torch_or_jax_imported": false,
+  "remote_files_written": 0,
+  "formal_training_started": false,
+  "evaluation_started": false
+}

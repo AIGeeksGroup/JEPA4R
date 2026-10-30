@@ -1,0 +1,47 @@
+{
+  "status": "frozen_before_target_CPU_and_real_evaluation",
+  "frozen": 1792248177.5549433,
+  "files": {
+    "evaluate_last3.py": {
+      "bytes": 11158,
+      "sha256": "8b8ebbd24eb24a5011fcb6e2dead61da369eb3f76b23df863bfa9cb3966160b2"
+    },
+    "test_evaluate_last3.py": {
+      "bytes": 4260,
+      "sha256": "83e1b7f61e6c5d92d4f9c38159f20b1d2c79457109e8e493ba68336d46259feb"
+    },
+    "README.md": {
+      "bytes": 3171,
+      "sha256": "750f32d7c5bfda48003963810187d50166e594e9567c487ab48f7405846615d4"
+    },
+    "CPU_stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "CPU_stderr.log": {
+      "bytes": 419,
+      "sha256": "e796f8c00fe58f30c6064eb435dbe69399d89388cc72dac98d118a38ef5efde9"
+    },
+    "CPU_exit.json": {
+      "bytes": 278,
+      "sha256": "a9ab114b1ec721c41c7109eff9b5fd6e41a6a83f05c39ed9e9fd3a3345639482"
+    }
+  },
+  "frozen_formal_source_sha256": "616c2905f802065af10277674f39dde802075ecb9ab4ede40cc785d358a80c92",
+  "checkpoint_steps": [
+    800000,
+    900000,
+    1000000
+  ],
+  "training_updates_in_this_process": 0,
+  "source_training_updates": 1000000,
+  "changed_deferred_method_AST_sites": 1,
+  "official_main_called": false,
+  "agent_update_called": false,
+  "dataset_loaded": false,
+  "same_initial_scenes_as_stopped_run": false,
+  "CPU_fake_agent_tests": 2,
+  "CPU_actual_exit_code": 0,
+  "real_model_evaluation_started_by_entry_owner": false,
+  "target_deployment_and_evaluation_owner": "Root"
+}

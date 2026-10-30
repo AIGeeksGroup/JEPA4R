@@ -1,0 +1,33 @@
+{
+  "at": 1792239127.259989,
+  "files": [
+    {
+      "name": "download_all_mirror_v3.py",
+      "sha256": "9709d929aaac17b94a1cbe20f1f6aef1780318214548f22030fa1d71f48b4bb3"
+    },
+    {
+      "name": "mirror_plan_v1.json",
+      "sha256": "2a831a9123aa44500db1dea0ac24d2e45d0fea705197574fe94a095e1be80574"
+    },
+    {
+      "name": "build_mirror_adapter_v3.ps1",
+      "sha256": "a88ca32fc34633612b9ed453b802450382312c93b378beee1e66dd99c34dcd80"
+    }
+  ],
+  "original_sha256": "2df452e14fd3e4cf3136c4b7bfbd74d029f68331a8bf61185a9524288ebeac57",
+  "validation_report": {
+    "actual_exit_code": 0,
+    "positive_CRC_schema_episode_SHA": true,
+    "wrong_SHA_rejected": true,
+    "unchanged_functions": [
+      "write",
+      "sha",
+      "memory",
+      "status",
+      "npy_header"
+    ],
+    "GPU_calls": 0,
+    "training_started": false
+  },
+  "actual_exit_code": 0
+}

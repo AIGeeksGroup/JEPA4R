@@ -1,0 +1,201 @@
+{
+  "purpose": "formal",
+  "group_id": "visreg_vitb768_cube4",
+  "cube_count": 4,
+  "latent_dim": 768,
+  "encoder_binding": {
+    "family": "visreg_vitb768",
+    "latent_dim": 768,
+    "checkpoint_sha256": "23e6aa5fe93cc61b3d9ab13e35cb4966580612d39bae39b1991f35c19c8087b8",
+    "spec_path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/encoder/specs/visreg_vitb768.json",
+    "spec_sha256": "16cee3c1a0cd26f38b09691b7d71ade5dd40085fbfba15f639cf269917e31354",
+    "adapter": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/encoder/encoder_adapter.py",
+      "sha256": "3f5cb292728c809737ff0dbe851095cec8825883b0f009d913d315677f462bfe"
+    }
+  },
+  "data_binding": {
+    "cube_count": 4,
+    "data_id": "cube-quadruple-play-v0",
+    "splits": {
+      "train": {
+        "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-quadruple-play-v0.npz",
+        "accepted_stat": {
+          "size": 1861419607,
+          "mtime_ns": 1792241332419440814,
+          "ctime_ns": 1792455688283408665,
+          "device": 2304,
+          "inode": 4345416202
+        },
+        "accepted_raw_sha256": "31053b04f5adbedaf9a5abef467057b2c216b0b3f8664cf3137b9891ee32a6ed",
+        "observation_shape": [
+          5005000,
+          55
+        ],
+        "action_shape": [
+          5005000,
+          5
+        ],
+        "episodes": 5000,
+        "raw_rows": 5005000,
+        "headers": {
+          "observations": {
+            "shape": [
+              5005000,
+              55
+            ],
+            "dtype": "float32"
+          },
+          "actions": {
+            "shape": [
+              5005000,
+              5
+            ],
+            "dtype": "float32"
+          },
+          "terminals": {
+            "shape": [
+              5005000
+            ],
+            "dtype": "bool"
+          },
+          "qpos": {
+            "shape": [
+              5005000,
+              42
+            ],
+            "dtype": "float32"
+          },
+          "qvel": {
+            "shape": [
+              5005000,
+              38
+            ],
+            "dtype": "float32"
+          }
+        },
+        "terminal_indices_verified_this_run": true
+      },
+      "val": {
+        "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-quadruple-play-v0-val.npz",
+        "accepted_stat": {
+          "size": 185890898,
+          "mtime_ns": 1792241530418905606,
+          "ctime_ns": 1792455677679483469,
+          "device": 2304,
+          "inode": 4345367661
+        },
+        "accepted_raw_sha256": "96ae20f4c7ffe673520c69f2c0339a746f7eac019bb15a92f2898fb8e1785d1d",
+        "observation_shape": [
+          500500,
+          55
+        ],
+        "action_shape": [
+          500500,
+          5
+        ],
+        "episodes": 500,
+        "raw_rows": 500500,
+        "headers": {
+          "observations": {
+            "shape": [
+              500500,
+              55
+            ],
+            "dtype": "float32"
+          },
+          "actions": {
+            "shape": [
+              500500,
+              5
+            ],
+            "dtype": "float32"
+          },
+          "terminals": {
+            "shape": [
+              500500
+            ],
+            "dtype": "bool"
+          },
+          "qpos": {
+            "shape": [
+              500500,
+              42
+            ],
+            "dtype": "float32"
+          },
+          "qvel": {
+            "shape": [
+              500500,
+              38
+            ],
+            "dtype": "float32"
+          }
+        },
+        "terminal_indices_verified_this_run": true
+      }
+    }
+  },
+  "camera": {
+    "cube_count": 4,
+    "env_id": "cube-quadruple-v0",
+    "source_name": "front",
+    "render_name": "front_pixels",
+    "source_position": [
+      1.287,
+      0.0,
+      0.509
+    ],
+    "position": [
+      1.3835957918490516,
+      1.1102230246251566e-17,
+      0.5348699245660802
+    ],
+    "base_quaternion": [
+      0.5792028135240382,
+      0.4056157058175116,
+      0.4056157058175116,
+      0.5792028135240384
+    ],
+    "actual_quaternion": [
+      0.5609588321928806,
+      0.4304941214288525,
+      0.4304941214288525,
+      0.5609588321928807
+    ],
+    "FOV": 45.0,
+    "width": 224,
+    "height": 224,
+    "offsamples": 4,
+    "aa_samples": 4,
+    "local_x_up_degrees": 5.0,
+    "pullback": 0.1,
+    "ob_type": "states",
+    "visualize_info": false,
+    "pixel_transparent_arm": false,
+    "crop": null,
+    "provenance": "Cube1 unchanged pinned official front_pixels (prior M5 RGB recipe); Cube2/3 approved front+5; Cube4 training_camera_v2"
+  },
+  "cache_audit": {
+    "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/cache/w8_groups/visreg_vitb768_cube4/full_audit_v1/report.json",
+    "sha256": "dffc9ad14bf28dc1de66fba0000251c157004cec62de3fbc9c5774d15773b8d6"
+  },
+  "feature_loader_arguments": {
+    "train": {
+      "cache_dir": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/cache/w8_groups/visreg_vitb768_cube4/cache",
+      "split": "train",
+      "manifest_sha256": "57dcece6995527353eb04d12fea66bc340d78c3bb9a2c484e241eaab5a1993d5",
+      "checkpoint_sha256": "23e6aa5fe93cc61b3d9ab13e35cb4966580612d39bae39b1991f35c19c8087b8",
+      "source_npz": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-quadruple-play-v0.npz",
+      "expected_rows": 5005000
+    },
+    "val": {
+      "cache_dir": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/cache/w8_groups/visreg_vitb768_cube4/cache",
+      "split": "val",
+      "manifest_sha256": "57dcece6995527353eb04d12fea66bc340d78c3bb9a2c484e241eaab5a1993d5",
+      "checkpoint_sha256": "23e6aa5fe93cc61b3d9ab13e35cb4966580612d39bae39b1991f35c19c8087b8",
+      "source_npz": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-quadruple-play-v0-val.npz",
+      "expected_rows": 500500
+    }
+  }
+}

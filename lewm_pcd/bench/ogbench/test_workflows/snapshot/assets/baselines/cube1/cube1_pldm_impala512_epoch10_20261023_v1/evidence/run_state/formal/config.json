@@ -1,0 +1,40 @@
+{
+  "argv": [
+    "/root/autodl-tmp/conda/envs/jepa4r-smoke/bin/python",
+    "-B",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/train.py",
+    "--root",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source",
+    "--data-root",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1",
+    "--output",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/stages/formal/native_output",
+    "--method",
+    "pldm",
+    "--run-tag",
+    "single_cube_seed0_formal_v1",
+    "--phase",
+    "formal",
+    "--mode",
+    "train"
+  ],
+  "created_at": "2026-10-22T00:05:57.693980+00:00",
+  "cwd": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source",
+  "data_manifest_sha256": "5c00c0b1cf311bd433a0800e2822877fbf1e2adec7b0e7e0ac34b6a0047c9175",
+  "data_root": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1",
+  "environment": {
+    "HYDRA_FULL_ERROR": "1",
+    "MKL_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "PYTHONPATH": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source:/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source:/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source:/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source:"
+  },
+  "formal_uses_gate_checkpoint": false,
+  "native_output": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/stages/formal/native_output",
+  "python": "/root/autodl-tmp/conda/envs/jepa4r-smoke/bin/python",
+  "sampling_interval_seconds": 15,
+  "schema": "single_cube_pldm_rgb_stage_config_v1",
+  "seed": 0,
+  "source_freeze_sha256": "7197502d445f1d88f553fc2ce8adbf88054a0ea7a5c1c9d12b00278cecdb0331",
+  "stage": "formal"
+}

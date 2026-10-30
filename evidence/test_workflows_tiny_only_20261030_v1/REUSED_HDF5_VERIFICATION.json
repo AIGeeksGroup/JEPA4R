@@ -1,0 +1,18 @@
+{
+  "actual_exit_code": 0,
+  "tests_run": 2,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "source_sha256": {
+    "lewm_pcd/bench/ogbench/tests/test_lewm_data.py": "2d8a19243e722391a209a33ec0bdd50c25b4dec893a143fc469421e85445a385",
+    "lewm_pcd/bench/ogbench/lewm_data.py": "5e4b534de4b30a10a9f534f12d895f1a73afe32e23e78934edba24b3d687d268",
+    "lewm_pcd/bench/ogbench/contracts.py": "c1f52be52fef52f773aa45f6de60f936c818c1086d267f6a155ff587b4610833",
+    "lewm_pcd/bench/ogbench/profiles.json": "dbc3b8430010895185b2e464058740c2b86e4fe94638f7b7c4228dc7b114bb87",
+    "lewm_pcd/bench/ogbench/lewm_data_bindings.json": "7d6f026d9ec1acb1c43545a4f86c2c3228c524f24a55f580c5e93c1f11a1c576"
+  },
+  "no_torch_or_jax_import": true,
+  "formal_training_started": false,
+  "evaluation_started": false,
+  "temporary_fixture_files_cleaned": true
+}

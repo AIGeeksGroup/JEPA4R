@@ -1,0 +1,33 @@
+{
+  "actual_exit_code": 0,
+  "acceptance_sha256": "b9b1b7c92764fb6f3f44b8332a5ac7b9372b0eeba2455580438e55a9ec0f2a68",
+  "datasets": {
+    "train": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-triple-play-v0.npz",
+      "accepted_stat": {
+        "size": 1003544255,
+        "mtime_ns": 1792235697982533189,
+        "ctime_ns": 1793203233443422751,
+        "inode": 4356349951,
+        "device": 2304
+      }
+    },
+    "validation": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-triple-play-v0-val.npz",
+      "accepted_stat": {
+        "size": 100613267,
+        "mtime_ns": 1792235706194658894,
+        "ctime_ns": 1793203227880573395,
+        "inode": 4356349950,
+        "device": 2304
+      }
+    }
+  },
+  "current_target_content_verification": {
+    "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube14_gciql_v1/clone_rebind/INPUT_INTEGRITY_ACTUAL.json",
+    "sha256": "00a36d1fb42d28cd585d053b542a9e9ebb396e6f8f951f998e9c4d61c2fdd121",
+    "expected_manifest_sha256": "ae9f818f53c48344eb224a60f8ec7efa15ac676484ceb77c708845cec434d7f1",
+    "hostname": "autodl-container-1705479f78-1c6b9afc"
+  },
+  "extraction_performed_by_this_case": false
+}

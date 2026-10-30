@@ -1,0 +1,28 @@
+{
+  "status": "frozen_before_state_smoke",
+  "host": "101732Test",
+  "official_source_commit": "a977253ce5b88434f4e4f531c50047cc95993a51",
+  "files": {
+    "smoke.py": {
+      "bytes": 8389,
+      "sha256": "6097510a71403c563f629dc8f0cb2851440099e6bd2238b5504c1397c9f63c54"
+    },
+    "run_official_state.sh": {
+      "bytes": 1307,
+      "sha256": "efbf658a3e5c41da62f0fd047d580fc32776184f498f5d4cef3010a76b26b79a"
+    },
+    "supervise.py": {
+      "bytes": 3227,
+      "sha256": "9df8aa3d60cfb5026b11016ff088b9a990d46682e6fc969e246f44ad8977674b"
+    },
+    "PLAN.md": {
+      "bytes": 2154,
+      "sha256": "d6d5c961cba298d7d8ab3441ad92edba2cb19c029b4865b2a693eca99d99013e"
+    }
+  },
+  "scope": "state46/goal46 FP32 original GCIQL B1024 bounded fixture-only smoke; no formal 1M or SR",
+  "original_sources_modified": false,
+  "fixture_rows": 8,
+  "fixture_artificial_terminal": true,
+  "formal_dataset_present": false
+}

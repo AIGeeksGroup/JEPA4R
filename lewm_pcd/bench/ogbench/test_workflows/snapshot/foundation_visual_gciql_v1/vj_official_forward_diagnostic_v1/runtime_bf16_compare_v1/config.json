@@ -1,0 +1,92 @@
+{
+  "fixture_SHA256": "429d502c0c7dd5ed5f08152efd7c35fb031689acaa5606bcb98a493f71e164c3",
+  "spec_SHA256": "c8323e5c917549115e29d9374d1f453e5c1fce2b69982a2aadd7ca247a217a99",
+  "adapter_SHA256": "3f5cb292728c809737ff0dbe851095cec8825883b0f009d913d315677f462bfe",
+  "benchmark_utils_SHA256": "3cb9a822987a2ad69127de49c3f5d1a9642b78fd86ab33accb90169e8ec0489e",
+  "torch": "2.8.0+cu128",
+  "CUDA": "12.8",
+  "capability": [
+    8,
+    9
+  ],
+  "bf16_supported": true,
+  "batch": 32,
+  "raw_shape": [
+    32,
+    3,
+    224,
+    224
+  ],
+  "native_size": 384,
+  "T": 1,
+  "full_FOV": true,
+  "pool": "normalized_patch_mean_then_float32",
+  "dtype_candidates": [
+    "float16",
+    "bfloat16"
+  ],
+  "warmups": 2,
+  "trials": 5,
+  "atol": 1e-05,
+  "rtol": 1e-05,
+  "no_gradient_optimizer_render_fullcache_or_signal": true,
+  "paused_processes": [
+    {
+      "pid": 44432,
+      "state": "T",
+      "start_ticks": 2573677756
+    },
+    {
+      "pid": 55316,
+      "state": "T",
+      "start_ticks": 2575460376
+    },
+    {
+      "pid": 55338,
+      "state": "T",
+      "start_ticks": 2575462281
+    },
+    {
+      "pid": 55339,
+      "state": "T",
+      "start_ticks": 2575462282
+    },
+    {
+      "pid": 55342,
+      "state": "T",
+      "start_ticks": 2575462282
+    },
+    {
+      "pid": 55343,
+      "state": "T",
+      "start_ticks": 2575462282
+    },
+    {
+      "pid": 55344,
+      "state": "T",
+      "start_ticks": 2575462282
+    },
+    {
+      "pid": 55345,
+      "state": "T",
+      "start_ticks": 2575462282
+    },
+    {
+      "pid": 55346,
+      "state": "T",
+      "start_ticks": 2575462288
+    },
+    {
+      "pid": 55347,
+      "state": "T",
+      "start_ticks": 2575462288
+    },
+    {
+      "pid": 55348,
+      "state": "T",
+      "start_ticks": 2575462289
+    }
+  ],
+  "float32_matmul_precision": "highest",
+  "TF32": false
+}

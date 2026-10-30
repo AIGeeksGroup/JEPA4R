@@ -1,0 +1,14 @@
+{
+  "scope": "preGPU_missing_provenance_reference_only",
+  "files": {
+    "materialize_v3.py": "033c07438866090b88ef17a5a214fa7440844d5e02a548c9b97a57c8073ba2f4",
+    "test_materialize_v3.py": "83aa8adf9880f526513138ef7c5077d12d142237f7ad7bdcf9d3994ee1a79c9a",
+    "materialize.py": "28175b49b1548e512cc1b27fc720b988f8625f34b4dd1dd785779fe8a99216a5",
+    "adapter_source_freeze_v2.json": "ffaaea099a296dca32b0263cbc0da2244f73e896f24189c1e322dc1e7aaa21d7"
+  },
+  "unchanged_effective_source_freeze": "adapter_source_freeze_v2.json",
+  "new_CPU_tests_actual_exit_code": 0,
+  "new_CPU_tests": 2,
+  "no_original_or_frozen_effective_edits": true,
+  "GPU_NN_render_encoding_executed": false
+}

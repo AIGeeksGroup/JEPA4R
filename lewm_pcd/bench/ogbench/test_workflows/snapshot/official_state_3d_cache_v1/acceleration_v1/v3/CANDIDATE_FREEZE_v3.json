@@ -1,0 +1,44 @@
+{
+  "status": "candidate_v3_LUT_RGB_only_prepared_not_GPU_validated",
+  "created": 1792260581.8512685,
+  "files": {
+    "run_profile.py": {
+      "bytes": 7380,
+      "sha256": "402a53952cc1d8f304d97449ff9e2cf008c29eb6ffbcb5f07f7be06437f48f08"
+    },
+    "gpu_preprocess.py": {
+      "bytes": 1563,
+      "sha256": "5a0355b0097136679ee563e472f6857cb42e468d467f78c2f96bd769e9c91d9f"
+    },
+    "bench_gpu_preprocess.py": {
+      "bytes": 4284,
+      "sha256": "d6d2282ba63e4f0d48fff2dccaf89aa352b08b52b85d75086a75b6f401fd0d21"
+    },
+    "diagnose_prepared_only.py": {
+      "bytes": 4064,
+      "sha256": "b89e22bc27b8500b1a2199da0db77734a6f3eaafd1ce07f3dcd303b5cff9c779"
+    },
+    "profile_workers8.json": {
+      "bytes": 645,
+      "sha256": "f049cba6c34309cd2354e3b49dbc199f00700efd89618b08a0949e27512a38d1"
+    },
+    "profile_workers16.json": {
+      "bytes": 646,
+      "sha256": "20524055dd5ac3ebd01d0237884acb268a3deadb8cfff2cc03f1c50e70444f7c"
+    },
+    "versions/gpu_preprocess_v2.py": {
+      "bytes": 884,
+      "sha256": "7c278d64dc64fd70cc8ff2e9c08d003a99fcc4796a8296a4ee63c99453cd232d"
+    }
+  },
+  "changes": [
+    "GPU uint8 RGB normalized channels overwritten by GPU lookup of256 exact original CPU preprocessor values",
+    "XYZ stays FP32 with original center/scale __call__ unchanged"
+  ],
+  "original_benchmark_and_thresholds_unchanged": true,
+  "prepared_only_diagnostic_has_model_loads": 0,
+  "prepared_only_diagnostic_has_encoder_calls": 0,
+  "syntax_actual_exit_code": 0,
+  "prior_freeze_v2_sha256": "ac18c34cba7b239d7f1952aae1320af6a8e8dc1deaee7f25c0eaa96a00632c9c",
+  "requires_prepared_only_XYZ0_RGB0_and_existing_model_gate_strict0_and_gain5percent": true
+}

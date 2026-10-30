@@ -1,0 +1,376 @@
+{
+  "schema_version": 1,
+  "groups": [
+    "G01",
+    "G04",
+    "G07"
+  ],
+  "training_updates": 0,
+  "formal_episodes_each": 250,
+  "diagnostic_excluded": true,
+  "backend": "cpu",
+  "source_pins": {
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/evaluate_state_xyz.py": "f58b4d4c13523ddffb5e405ac53376af18c7a4893f0f3e7098874ec833c7cdec",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/run_serial_sr.py": "f9338a85b9026942ce0f6e0bfad0949798cc86f995aec4407cd1f390d4bd40bd",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/run_serial_sr.sh": "a01c5e1b3057c7adb723b32ff46442cab9a9b5be0dce8bf8754eb200efc7e41b",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/independent_review/audit_state_xyz_sr.py": "6630b6760ebc82770cd2032e5e2655686415d4a81964749b7b3539736528e8ac",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/utils/evaluation.py": "4d9a2732bc9ef89ce99fbc0f07a76d3f4d035783af3a658251709140ff9de3d5",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/utils/env_utils.py": "a92d391a3d95e26717b80ea783f487f0639c956f23ef603bfa8b7bb098f763d7",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/__init__.py": "b692dba53ffff6152a9e117447dde62f164ec640f967a174807ff2faff0925f1",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/envs/cube_env.py": "6f8457ffd634f6620411c788c86e871f44ea5b5b5eecf76cd694fc04d12d678d",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/envs/manipspace_env.py": "03524eb1c95155bbc2ec3d29e9836fccffe8eb9fce1be15b6f0e7062cc1bb5fd",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/__init__.py": "ac48a0d31ca62826114297539748dca26aa5fb72a6079abeb00729e2dcf8e69a",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/utils.py": "f503a3a0497f91ce02958abae5770f3e08c9d6a3a740687c828c996fedb24e9b",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/envs/env.py": "c656f4733a1ad4cb07289bc58ac1ac0f7da378e1f2714dc80a5ed8c0b3028c38",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/gciql_boundary.py": "a81363583a4826194b90974be2ad62c5895ab6b963e15ba042c9f893a46ba5e6",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/trainer_runtime.py": "18acaead938e573f80ec6e87e0cb44822a734decf2e97730861886841a22b82c",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/configs/G01.json": "dfa2eeeb4abd53c8861fe398deacf6129163c17180ea8cd28e991f57998bde0f",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/configs/G04.json": "3d3a4349076491cf1926461ddb717ee02242a36bb5840642118e53923ce7d77d",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/configs/G07.json": "3f49d2b60d0dca864c3abd4b7746c96a2bccb83294eba7bbe9fa0ebc9b7fe61a"
+  },
+  "phases": [
+    {
+      "name": "01_diagnostic_G01",
+      "group_id": "G01",
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/evaluate_state_xyz.py",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/configs/G01.json",
+        "--mode",
+        "diagnostic",
+        "--output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/diagnostic/G01"
+      ],
+      "environment": {
+        "MUJOCO_GL": "egl"
+      },
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/diagnostic/G01/report.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "episodes": 1
+          }
+        }
+      ]
+    },
+    {
+      "name": "02_audit_diagnostic_G01",
+      "group_id": "G01",
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/independent_review/audit_state_xyz_sr.py",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/configs/G01.json",
+        "--expected-config-sha256",
+        "dfa2eeeb4abd53c8861fe398deacf6129163c17180ea8cd28e991f57998bde0f",
+        "--evaluation-output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/diagnostic/G01",
+        "--phase-directory",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/runtime/01_diagnostic_G01",
+        "--expected-adapter-sha256",
+        "f58b4d4c13523ddffb5e405ac53376af18c7a4893f0f3e7098874ec833c7cdec",
+        "--audit-output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/audits/diagnostic/G01"
+      ],
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/audits/diagnostic/G01/report.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "episodes": 1
+          }
+        }
+      ]
+    },
+    {
+      "name": "03_full_G01",
+      "group_id": "G01",
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/evaluate_state_xyz.py",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/configs/G01.json",
+        "--mode",
+        "full",
+        "--output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/full/G01"
+      ],
+      "environment": {
+        "MUJOCO_GL": "egl"
+      },
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/full/G01/report.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "episodes": 250
+          }
+        }
+      ]
+    },
+    {
+      "name": "04_audit_full_G01",
+      "group_id": "G01",
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/independent_review/audit_state_xyz_sr.py",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/configs/G01.json",
+        "--expected-config-sha256",
+        "dfa2eeeb4abd53c8861fe398deacf6129163c17180ea8cd28e991f57998bde0f",
+        "--evaluation-output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/full/G01",
+        "--phase-directory",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/runtime/03_full_G01",
+        "--expected-adapter-sha256",
+        "f58b4d4c13523ddffb5e405ac53376af18c7a4893f0f3e7098874ec833c7cdec",
+        "--audit-output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/audits/full/G01"
+      ],
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/audits/full/G01/report.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "episodes": 250
+          }
+        }
+      ]
+    },
+    {
+      "name": "05_diagnostic_G04",
+      "group_id": "G04",
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/evaluate_state_xyz.py",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/configs/G04.json",
+        "--mode",
+        "diagnostic",
+        "--output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/diagnostic/G04"
+      ],
+      "environment": {
+        "MUJOCO_GL": "egl"
+      },
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/diagnostic/G04/report.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "episodes": 1
+          }
+        }
+      ]
+    },
+    {
+      "name": "06_audit_diagnostic_G04",
+      "group_id": "G04",
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/independent_review/audit_state_xyz_sr.py",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/configs/G04.json",
+        "--expected-config-sha256",
+        "3d3a4349076491cf1926461ddb717ee02242a36bb5840642118e53923ce7d77d",
+        "--evaluation-output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/diagnostic/G04",
+        "--phase-directory",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/runtime/05_diagnostic_G04",
+        "--expected-adapter-sha256",
+        "f58b4d4c13523ddffb5e405ac53376af18c7a4893f0f3e7098874ec833c7cdec",
+        "--audit-output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/audits/diagnostic/G04"
+      ],
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/audits/diagnostic/G04/report.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "episodes": 1
+          }
+        }
+      ]
+    },
+    {
+      "name": "07_full_G04",
+      "group_id": "G04",
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/evaluate_state_xyz.py",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/configs/G04.json",
+        "--mode",
+        "full",
+        "--output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/full/G04"
+      ],
+      "environment": {
+        "MUJOCO_GL": "egl"
+      },
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/full/G04/report.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "episodes": 250
+          }
+        }
+      ]
+    },
+    {
+      "name": "08_audit_full_G04",
+      "group_id": "G04",
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/independent_review/audit_state_xyz_sr.py",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/configs/G04.json",
+        "--expected-config-sha256",
+        "3d3a4349076491cf1926461ddb717ee02242a36bb5840642118e53923ce7d77d",
+        "--evaluation-output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/full/G04",
+        "--phase-directory",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/runtime/07_full_G04",
+        "--expected-adapter-sha256",
+        "f58b4d4c13523ddffb5e405ac53376af18c7a4893f0f3e7098874ec833c7cdec",
+        "--audit-output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/audits/full/G04"
+      ],
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/audits/full/G04/report.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "episodes": 250
+          }
+        }
+      ]
+    },
+    {
+      "name": "09_diagnostic_G07",
+      "group_id": "G07",
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/evaluate_state_xyz.py",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/configs/G07.json",
+        "--mode",
+        "diagnostic",
+        "--output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/diagnostic/G07"
+      ],
+      "environment": {
+        "MUJOCO_GL": "egl"
+      },
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/diagnostic/G07/report.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "episodes": 1
+          }
+        }
+      ]
+    },
+    {
+      "name": "10_audit_diagnostic_G07",
+      "group_id": "G07",
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/independent_review/audit_state_xyz_sr.py",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/configs/G07.json",
+        "--expected-config-sha256",
+        "3f49d2b60d0dca864c3abd4b7746c96a2bccb83294eba7bbe9fa0ebc9b7fe61a",
+        "--evaluation-output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/diagnostic/G07",
+        "--phase-directory",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/runtime/09_diagnostic_G07",
+        "--expected-adapter-sha256",
+        "f58b4d4c13523ddffb5e405ac53376af18c7a4893f0f3e7098874ec833c7cdec",
+        "--audit-output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/audits/diagnostic/G07"
+      ],
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/audits/diagnostic/G07/report.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "episodes": 1
+          }
+        }
+      ]
+    },
+    {
+      "name": "11_full_G07",
+      "group_id": "G07",
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/evaluate_state_xyz.py",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/configs/G07.json",
+        "--mode",
+        "full",
+        "--output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/full/G07"
+      ],
+      "environment": {
+        "MUJOCO_GL": "egl"
+      },
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/full/G07/report.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "episodes": 250
+          }
+        }
+      ]
+    },
+    {
+      "name": "12_audit_full_G07",
+      "group_id": "G07",
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/independent_review/audit_state_xyz_sr.py",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/configs/G07.json",
+        "--expected-config-sha256",
+        "3f49d2b60d0dca864c3abd4b7746c96a2bccb83294eba7bbe9fa0ebc9b7fe61a",
+        "--evaluation-output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/full/G07",
+        "--phase-directory",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/runtime/11_full_G07",
+        "--expected-adapter-sha256",
+        "f58b4d4c13523ddffb5e405ac53376af18c7a4893f0f3e7098874ec833c7cdec",
+        "--audit-output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/audits/full/G07"
+      ],
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/audits/full/G07/report.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "episodes": 250
+          }
+        }
+      ]
+    }
+  ],
+  "original_training_controller_unchanged": true
+}

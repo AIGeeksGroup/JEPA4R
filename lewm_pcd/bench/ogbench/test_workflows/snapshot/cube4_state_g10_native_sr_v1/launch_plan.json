@@ -1,0 +1,186 @@
+{
+  "schema_version": 1,
+  "groups": [
+    "G10"
+  ],
+  "training_updates": 0,
+  "formal_episodes_each": 250,
+  "diagnostic_excluded": true,
+  "backend": "cpu",
+  "config": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_state_g10_native_sr_v1/configs/G10.json",
+  "training_phase_exit_paths": [
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/runtime/03_train_G10/exit.json",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/runtime/04_accept_G10/exit.json"
+  ],
+  "training_outer_paths": [
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/runtime/outer_exit_code",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/wrapper_exit_code"
+  ],
+  "source_pins": {
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/utils/evaluation.py": "4d9a2732bc9ef89ce99fbc0f07a76d3f4d035783af3a658251709140ff9de3d5",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/utils/env_utils.py": "a92d391a3d95e26717b80ea783f487f0639c956f23ef603bfa8b7bb098f763d7",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/__init__.py": "b692dba53ffff6152a9e117447dde62f164ec640f967a174807ff2faff0925f1",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/envs/cube_env.py": "6f8457ffd634f6620411c788c86e871f44ea5b5b5eecf76cd694fc04d12d678d",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/envs/manipspace_env.py": "03524eb1c95155bbc2ec3d29e9836fccffe8eb9fce1be15b6f0e7062cc1bb5fd",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/__init__.py": "ac48a0d31ca62826114297539748dca26aa5fb72a6079abeb00729e2dcf8e69a",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/utils.py": "f503a3a0497f91ce02958abae5770f3e08c9d6a3a740687c828c996fedb24e9b",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/envs/env.py": "c656f4733a1ad4cb07289bc58ac1ac0f7da378e1f2714dc80a5ed8c0b3028c38",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/gciql_boundary.py": "a81363583a4826194b90974be2ad62c5895ab6b963e15ba042c9f893a46ba5e6",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/trainer_runtime.py": "18acaead938e573f80ec6e87e0cb44822a734decf2e97730861886841a22b82c",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/distance_inputs.py": "b9906dc2f4e7a38826f5ee05031713618a6ce408ee5555302801505452758f90",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube_inputs.py": "36358548ef7a78311730913fccfdfa025d354a18edd4f8197b03b4c0d5ae5d9b",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/imports/single_cube_rl3_101632_20261018_v1/source_layout/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/core_v1/train.py": "73ba082f730e9000a238c789726c26b075590807968a0016bc75e8e9111231d0",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/imports/single_cube_rl3_101632_20261018_v1/source_layout/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/core_v1/gciql.py": "8611cd476d8849ad014ca43304073c3e88fc3d3aa5dab369a343ae425bba7ba7",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/imports/single_cube_rl3_101632_20261018_v1/source_layout/ogbench-official-single-play-20261006/official_lewm_gcbc_20261006/run_formal.py": "306797e1fa07dee8616adf9cc404af48380a4143d5fb36a6b04b425aae4c6928",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/utils/datasets.py": "52c373922a87e1ba8ad8b3b96c3474d5e6385e2ea2c7206930f7a8a315816609",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/utils/flax_utils.py": "5b6a8e9a919bf57dae0c1454f327ded4235385f9d9dcd1e62263fe4fad9fd484",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/utils/networks.py": "e7e4c4a439b691911e5ae6c2653f253c5703e6b5d190d813e28ebc32e7306094",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/utils/encoders.py": "6bd7fdd82838b754d26af01f9e84d70fa63fca1e09efee38a09f325884073ecc",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/extension_runtime.py": "a9735b9b4f3fec3b01f189e910e12e985cbba3a8ba13e1fafeac878f1222c9c1",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/extension_inputs.py": "de2381f3262a5b088b11d2ac1bbc5ae258ef82a26801f398e72c09f457fd0f5b",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/state_runtime.py": "623fff33b0c836c6268257689216cf78de8694fbab1107dddbd4bdbfc3ee1956",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/state_inputs.py": "ada2bdc73de50753a83ee951cb99849c9bd3282f3e6527c4e8d906f85f7d9fd9",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/official_state_workers_v1/ordered_input.py": "4508ce847694976f8af924215d11985ac4d795093b22d62e8424928346fbdda2",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_state_g10_native_sr_v1/bridge.py": "039335d89a4170408a625e57e3e62ab28c1df81dfc5ad7a907a9938dd56cad47",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_state_g10_native_sr_v1/evaluate_state_xyz.py": "75ba70e26604a6d578d27564f8b7b112e44c3a74d9ccd7dae48819e7c1c353fd",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_state_g10_native_sr_v1/audit_state_xyz_sr.py": "d1693b8c59600de336ef760532a482824c1a3e0fe78f9f8f6bbbcb0735948cf1",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_state_g10_native_sr_v1/run_serial_sr.py": "6f7e3c65f298909b1744138522970976caefe8bc6616eefc035354e2d4c4261c",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_state_g10_native_sr_v1/run_serial_sr.sh": "383950ee0f26b6a985137d4929fbb2f71b60439c460b5baf85ea9be50212a461",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_state_g10_native_sr_v1/test_g10.py": "bcfcd1454be65625810ab66065ba895c9d59c6d0f4f7909d82c64f39b5c25063",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_state_g10_native_sr_v1/reference/evaluate_state_xyz.py": "f58b4d4c13523ddffb5e405ac53376af18c7a4893f0f3e7098874ec833c7cdec",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_state_g10_native_sr_v1/reference/audit_state_xyz_sr.py": "6630b6760ebc82770cd2032e5e2655686415d4a81964749b7b3539736528e8ac",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_state_g10_native_sr_v1/reference/run_serial_sr.py": "f9338a85b9026942ce0f6e0bfad0949798cc86f995aec4407cd1f390d4bd40bd",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_state_g10_native_sr_v1/reference/run_priority.py": "3b2bafcf07cb154bfbc32956375546c26fb387faf33f7d51aa2917e08ca4252a",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/prepare_runtime.py": "0331473db0b0566d3097c8cd9cf7362a820badc8c8537134ea39388ab79e6063",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_state_g10_native_sr_v1/configs/G10.json": "87c5f798282f22e135b26c5b55b9e346203bf85cc7a1a1dc96d6ce06eeac27c5",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/release_freeze.json": "d163b157001d3e3022a8663396ff9c2ba1a23717d1b04b31e9b6e9713e1dd765",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/configs/G10_cube4_state.json": "aa19f669ce840cfa52b791d040cbeb34e7701be45cf5fc70f8920616d6afada6",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/acceptance/G10_full_acceptance.json": "6d1f09aa0145be7e13c39c1e70bbfaef85761b79e8f43a1be4ab9a3f24dc6f77",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/runs/G10_cube4_state/status.json": "07c04dfeef6cce9158353e2d77251e70a9889025af40a0af469a4549a47009f8",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/runs/G10_cube4_state/trainer_exit_code": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/runs/G10_cube4_state/resolved.json": "b31c235103dab34cb5cefccda51de264f89a1cbbce541489bb6800bd27c77488",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/runs/G10_cube4_state/final_state_fingerprint.json": "7f1c1d85e14493283e7b5d4626e68d705bb22c8c10670adfc0e51e0c82c274a7",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/runs/G10_cube4_state/checkpoints/update_001000000/manifest.json": "b4f4ce44adf299b19d6f6cc7f9e5e8e6fdc558416c253ae0b0aee2e1136e32f2",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/runtime/03_train_G10/exit.json": "b57f93600bf9808f8fc182470f9c2832675243c6682b0bdcee8bc6d23a98ee78",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/runtime/04_accept_G10/exit.json": "8fa168443540f680519b11d586b9a1eb6ccce62a63bb0cd79351f8745daed3ba",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/runtime/status.json": "119dd90c43322df5d9b961680dc329310460c8a667b4fa559ab52f03b4b8cb4d",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/runtime/outer_exit_code": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/wrapper_exit_code": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+  },
+  "phases": [
+    {
+      "name": "01_diagnostic_G10",
+      "group_id": "G10",
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_state_g10_native_sr_v1/evaluate_state_xyz.py",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_state_g10_native_sr_v1/configs/G10.json",
+        "--mode",
+        "diagnostic",
+        "--output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_state_g10_native_sr_v1/diagnostic/G10"
+      ],
+      "environment": {
+        "MUJOCO_GL": "egl"
+      },
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_state_g10_native_sr_v1/diagnostic/G10/report.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "episodes": 1
+          }
+        }
+      ]
+    },
+    {
+      "name": "02_audit_diagnostic_G10",
+      "group_id": "G10",
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_state_g10_native_sr_v1/audit_state_xyz_sr.py",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_state_g10_native_sr_v1/configs/G10.json",
+        "--expected-config-sha256",
+        "87c5f798282f22e135b26c5b55b9e346203bf85cc7a1a1dc96d6ce06eeac27c5",
+        "--evaluation-output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_state_g10_native_sr_v1/diagnostic/G10",
+        "--phase-directory",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_state_g10_native_sr_v1/runtime/01_diagnostic_G10",
+        "--audit-output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_state_g10_native_sr_v1/audits/diagnostic/G10",
+        "--expected-adapter-sha256",
+        "75ba70e26604a6d578d27564f8b7b112e44c3a74d9ccd7dae48819e7c1c353fd"
+      ],
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_state_g10_native_sr_v1/audits/diagnostic/G10/report.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "episodes": 1
+          }
+        }
+      ]
+    },
+    {
+      "name": "03_full_G10",
+      "group_id": "G10",
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_state_g10_native_sr_v1/evaluate_state_xyz.py",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_state_g10_native_sr_v1/configs/G10.json",
+        "--mode",
+        "full",
+        "--output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_state_g10_native_sr_v1/full/G10"
+      ],
+      "environment": {
+        "MUJOCO_GL": "egl"
+      },
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_state_g10_native_sr_v1/full/G10/report.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "episodes": 250
+          }
+        }
+      ]
+    },
+    {
+      "name": "04_audit_full_G10",
+      "group_id": "G10",
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_state_g10_native_sr_v1/audit_state_xyz_sr.py",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_state_g10_native_sr_v1/configs/G10.json",
+        "--expected-config-sha256",
+        "87c5f798282f22e135b26c5b55b9e346203bf85cc7a1a1dc96d6ce06eeac27c5",
+        "--evaluation-output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_state_g10_native_sr_v1/full/G10",
+        "--phase-directory",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_state_g10_native_sr_v1/runtime/03_full_G10",
+        "--audit-output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_state_g10_native_sr_v1/audits/full/G10",
+        "--expected-adapter-sha256",
+        "75ba70e26604a6d578d27564f8b7b112e44c3a74d9ccd7dae48819e7c1c353fd"
+      ],
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_state_g10_native_sr_v1/audits/full/G10/report.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "episodes": 250
+          }
+        }
+      ]
+    }
+  ]
+}

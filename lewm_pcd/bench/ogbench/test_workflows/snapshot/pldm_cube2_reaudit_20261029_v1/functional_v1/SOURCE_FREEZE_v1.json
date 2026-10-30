@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "actual_exit_code": 0,
+  "case_name": "pldm_cube2_reaudit_20261029_v1",
+  "group_id": "P2_cube2_pldm_reaudit_rgb",
+  "files": {
+    "pldm_inputs.py": "3fb2d0c3bae3c192e8416911df631e7e27b36789fd067ba6f62622883da6a9c0",
+    "pldm_runtime.py": "f568110086426f1cbd9112039f304b0cea4eb11c4c37c1f71c0e58e3da1522e6",
+    "prepare.py": "e056ed0f6f680058292c405493036ecaa3b065995596b143c49ceb0c89d832e9",
+    "native_sr.py": "f21f604bf4652ab5fb3ecfd4629c0acce8c343faccbbd9831203ad5c9ffe76e4",
+    "audit_native.py": "2647567ac18614374374c967b7afc746c1d5d420aa2c735d96a0f23d23250cf3",
+    "cube2_successor_v1/visual_sr_cube2.py": "003d54b64914102b6ffe7d801ae7c06b829910016a695c6bf0fb88c050964923",
+    "configs/P2_cube2_pldm_reaudit_rgb.TEMPLATE.json": "14e23643ef6b88e0b1d0d8a9cc12e44ced33fc28b9b2ea1948eeaacc74d1e08c"
+  },
+  "original_pins": {
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube_inputs.py": "36358548ef7a78311730913fccfdfa025d354a18edd4f8197b03b4c0d5ae5d9b",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/trainer_runtime.py": "18acaead938e573f80ec6e87e0cb44822a734decf2e97730861886841a22b82c",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/distance_inputs.py": "b9906dc2f4e7a38826f5ee05031713618a6ce408ee5555302801505452758f90",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/gciql_boundary.py": "a81363583a4826194b90974be2ad62c5895ab6b963e15ba042c9f893a46ba5e6",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/extension_runtime.py": "a9735b9b4f3fec3b01f189e910e12e985cbba3a8ba13e1fafeac878f1222c9c1",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/extension_inputs.py": "de2381f3262a5b088b11d2ac1bbc5ae258ef82a26801f398e72c09f457fd0f5b",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/extension_boundary.py": "9a6a08cfbd988bda6904c7c728ae289b8c1ff801f56754a7c0798fc067a3cb81",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/state_runtime.py": "623fff33b0c836c6268257689216cf78de8694fbab1107dddbd4bdbfc3ee1956",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/native_sr_visual_v1/visual_sr.py": "e40a2ff52bd0915b7953d9011c65e02c75f9e0b2d0e454b613d18c275f6c13f0",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/native_sr_visual_v1/m5_restore_v1/run_group.py": "2af9fc40e19478ddb91519c74f288bac4389ee6f588248b674a8fa6b317db5d6",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/native_sr_visual_v1/m5_restore_v1/audit.py": "ffccacb2f94cfd37f0480419642341e7c966e490e1a97e6056eecfe0033c5285",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/native_sr_visual_v1/cube3_successor_v1/visual_sr_cube3.py": "9ab62959e147fcdbaff270d42102a5f7ef5c2e94724a86b08aa1bef24d8131d1",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/configs/G08_cube3_rgb.json": "6d717c2123217020fec593367f3eecb42e01dfe203e9aae8d5a38733045f55b5",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/utils/datasets.py": "52c373922a87e1ba8ad8b3b96c3474d5e6385e2ea2c7206930f7a8a315816609",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/utils/evaluation.py": "4d9a2732bc9ef89ce99fbc0f07a76d3f4d035783af3a658251709140ff9de3d5",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/imports/single_cube_rl3_101632_20261018_v1/source_layout/coordination/cached_lewm_state_gciql_xyz_109_20261012_v1/native_v1/locked_dependencies/native_runtime_helpers.py": "a83bcf181b00d57fe5b41ef4e61c42dded0561b1ec9d4dc2c7a1c64dfdb8bc3a",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/pldm_cube2_reaudit_20261029_v1/cache_v1/encoder_adapter.py": "72161520d1ddd839c8266ad5fea7490611f21d3681d261f86f4b993a14430a06",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/pldm_cube2_reaudit_20261029_v1/cache_v1/reference/render_adapter.py": "7607611907523a384d567f093c7c76d2438c4de9968e7ce9d3ef6c883300b144",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/pldm_cube2_reaudit_20261029_v1/cache_v1/producer_bridge.py": "134e28ecc2f83285a4d4b2d41633c7ec6d32d74ef6ff56faa89a976c44766872",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/pldm_cube2_reaudit_20261029_v1/cache_v1/audit_bridge.py": "4a061e7a670eea53e0048331291f23052529bfdf1ed74f86d3000bbdd2c63318",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/pldm_cube2_reaudit_20261029_v1/cache_v1/prepare_plan.py": "74ee502837eb7aae481344f3c6b90f6c5ae5b45070e911bce4facba587b78a91",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/pldm_cube2_reaudit_20261029_v1/cache_v1/source_overlay.py": "2efbe28c42aef8ffd7b40321efa2c3bb1ff30ad81124e3ebe0a9443ae1c3734c",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/baselines/cube2/cube2_pldm_impala512_epoch10_20261021_v1/MANIFEST.json": "1b7737dc8433cfe0f095e298ef544b245759135954b5c17ab369321cc1969dba",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/baselines/cube2/cube2_pldm_impala512_epoch10_20261021_v1/RUNTIME_ADDENDUM.json": "a9636533baa2000a5792911513950817464ea2343f763a9bb5d0acf6e6e11a51"
+  },
+  "contracts": {
+    "cube_count": 2,
+    "state_dim": 37,
+    "current_dim": 531,
+    "goal_dim": 518,
+    "latent_dim": 512,
+    "max_episode_steps": 500,
+    "training_updates": 1000000,
+    "SR_episodes": 250
+  },
+  "old_files_modified": false,
+  "NN_or_training_started": false
+}

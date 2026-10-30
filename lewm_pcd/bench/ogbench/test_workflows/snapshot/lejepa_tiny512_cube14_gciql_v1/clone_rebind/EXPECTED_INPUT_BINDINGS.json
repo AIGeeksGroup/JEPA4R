@@ -1,0 +1,2923 @@
+{
+  "schema_version": 1,
+  "created_Beijing": "2026-10-29T00:24:14.404008+08:00",
+  "status": "EXPECTED_LOCAL_BINDINGS_ONLY_NOT_CURRENT_TARGET_ACCEPTANCE",
+  "root": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1",
+  "target_alias": "test",
+  "target_endpoint_reference": "connect.westc.seetacloud.com:16755",
+  "expected_source_plan": {
+    "path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+    "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+    "original_pins": 255,
+    "selection": "Only necessary Python source/base model/Native/OGBench, plus accepted D512 overlay refs and Tiny loaders; no old VJ/VIS weights/vector caches"
+  },
+  "files": [
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/baselines/cube1/cube1_lejepa_tiny512_epoch10_20261026_v1/weights/weights_epoch_10.pt",
+      "expected_sha256": "8e9bc1a422390e7c9997f1761d0a6ec3b68f7070007d0a64f3a3b111bfd83ce6",
+      "expected_bytes": 43663581,
+      "role": "tiny_epoch10_weights",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\lejepa_tiny_cube1_fetch_20261026_v1\\DELIVERY_ACCEPTED.json",
+        "sha256": "b9ebc99f7ea135a0a1f52f97e67c40aef622c87bb93cc8f8997dcd5320039d37",
+        "bytes": 1346
+      },
+      "cube_count": 1
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/baselines/cube1/cube1_lejepa_tiny512_epoch10_20261026_v1/source/jepa_baselines.py",
+      "expected_sha256": "8c46fe85b054a2521842a3fc753f719736ab0ccd4d584f9999ee9306704d06bc",
+      "expected_bytes": 8653,
+      "role": "tiny_original_loader",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\lejepa_tiny_cube1_fetch_20261026_v1\\target_closed_records\\TARGET_CPU_LOAD_CHECK.json",
+        "sha256": "47e4dbfb15cf511a1a012c8d21beebf47d018b044ca33f212f5978edd2bc749c",
+        "bytes": 927
+      },
+      "cube_count": 1
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/baselines/cube1/cube1_lejepa_tiny512_epoch10_20261026_v1/weights/config.json",
+      "expected_sha256": "5d69ba70ba3227e6adf69eb2a66f1546a1147a7037b4e628f1769df7f9cb3d9e",
+      "expected_bytes": 435,
+      "role": "tiny_asset_small_metadata",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\lejepa_tiny_cube1_fetch_20261026_v1\\bundle\\weights\\config.json",
+        "sha256": "5d69ba70ba3227e6adf69eb2a66f1546a1147a7037b4e628f1769df7f9cb3d9e"
+      },
+      "cube_count": 1
+    },
+    {
+      "path": "/autodl-fs/data/lewm/lejepa_cube1_tiny512_epoch10_20261026_v1/ASSET.json",
+      "expected_sha256": "20f3ea625824a9d03db808144a8d6b312c0c718427b4f965f3520bcc88274d4b",
+      "expected_bytes": 2607,
+      "role": "tiny_asset_small_metadata",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\lejepa_tiny_cube1_fetch_20261026_v1\\bundle\\ASSET.json",
+        "sha256": "20f3ea625824a9d03db808144a8d6b312c0c718427b4f965f3520bcc88274d4b"
+      },
+      "cube_count": 1
+    },
+    {
+      "path": "/autodl-fs/data/lewm/lejepa_cube1_tiny512_epoch10_20261026_v1/MANIFEST.json",
+      "expected_sha256": "2b91b1a9dc13aacb5954825369ed857a12aa4c56ce4aa9103f5de88e1466614f",
+      "expected_bytes": 37578,
+      "role": "tiny_asset_small_metadata",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\lejepa_tiny_cube1_fetch_20261026_v1\\bundle\\MANIFEST.json",
+        "sha256": "2b91b1a9dc13aacb5954825369ed857a12aa4c56ce4aa9103f5de88e1466614f"
+      },
+      "cube_count": 1
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/cache/data/cube1/source_arrays.json",
+      "expected_sha256": "c92c385eeb727607dbcefd2e77f217c6746c335990e4a28acde03abcfff93faa",
+      "expected_bytes": 4341,
+      "role": "accepted_qpos_qvel_receipt",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\closed_embedding_metadata_fp16_v1\\vjepa21_vitl1024_cube1\\group\\source_arrays_receipt.json",
+        "sha256": "c92c385eeb727607dbcefd2e77f217c6746c335990e4a28acde03abcfff93faa"
+      },
+      "cube_count": 1
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-single-play-v0.npz",
+      "expected_sha256": "80f3b6fd27f4f9d9e9eb6f0d07d6951559012f45b1e15ea4046ef8ecd8d3684e",
+      "expected_bytes": 256728298,
+      "role": "official_NPZ",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\lejepa_tiny_cube1_fetch_20261026_v1\\bundle\\provenance\\TARGET_RL_REFERENCE_ONLY.json",
+        "note": "accepted_raw_sha256 of archive, not metadata-file SHA"
+      },
+      "cube_count": 1,
+      "split": "train"
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/cache/data/cube1/train_qpos.npy",
+      "expected_sha256": "23b13880cad3322c928678f3a7b7a95d21211051264c141dfb804659f9161488",
+      "expected_bytes": 84084128,
+      "role": "official_qpos_qvel_NPY",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\closed_embedding_metadata_fp16_v1\\vjepa21_vitl1024_cube1\\group\\source_arrays_receipt.json",
+        "sha256": "c92c385eeb727607dbcefd2e77f217c6746c335990e4a28acde03abcfff93faa"
+      },
+      "cube_count": 1,
+      "split": "train",
+      "array": "qpos"
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/cache/data/cube1/train_qvel.npy",
+      "expected_sha256": "1edd2c3a0a6ee7b93ded979eceab88e28077dac68c35a48195f3daec284c1a17",
+      "expected_bytes": 80080128,
+      "role": "official_qpos_qvel_NPY",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\closed_embedding_metadata_fp16_v1\\vjepa21_vitl1024_cube1\\group\\source_arrays_receipt.json",
+        "sha256": "c92c385eeb727607dbcefd2e77f217c6746c335990e4a28acde03abcfff93faa"
+      },
+      "cube_count": 1,
+      "split": "train",
+      "array": "qvel"
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-single-play-v0-val.npz",
+      "expected_sha256": "96d07401bdebdc3f0ea6d56ed1333863e0962f441483adc2c43b83105046eb00",
+      "expected_bytes": 25687020,
+      "role": "official_NPZ",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\lejepa_tiny_cube1_fetch_20261026_v1\\bundle\\provenance\\TARGET_RL_REFERENCE_ONLY.json",
+        "note": "accepted_raw_sha256 of archive, not metadata-file SHA"
+      },
+      "cube_count": 1,
+      "split": "val"
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/cache/data/cube1/val_qpos.npy",
+      "expected_sha256": "07ee12ef811c8beb1b294a0d65da173862bfbd202cf9cc81b73bb192a09bb374",
+      "expected_bytes": 8408528,
+      "role": "official_qpos_qvel_NPY",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\closed_embedding_metadata_fp16_v1\\vjepa21_vitl1024_cube1\\group\\source_arrays_receipt.json",
+        "sha256": "c92c385eeb727607dbcefd2e77f217c6746c335990e4a28acde03abcfff93faa"
+      },
+      "cube_count": 1,
+      "split": "val",
+      "array": "qpos"
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/cache/data/cube1/val_qvel.npy",
+      "expected_sha256": "0d75483fcd9d539c37b7be4c494bf04065333c843a7ba43aabd13bc5b6084419",
+      "expected_bytes": 8008128,
+      "role": "official_qpos_qvel_NPY",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\closed_embedding_metadata_fp16_v1\\vjepa21_vitl1024_cube1\\group\\source_arrays_receipt.json",
+        "sha256": "c92c385eeb727607dbcefd2e77f217c6746c335990e4a28acde03abcfff93faa"
+      },
+      "cube_count": 1,
+      "split": "val",
+      "array": "qvel"
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/baselines/cube2/cube2_lejepa_tiny512_epoch10_20261027_v1/weights/weights_epoch_10.pt",
+      "expected_sha256": "7805ca6ab8b6d01d8c3d8b3f368652b7a690fa34a89312c20dff1b8dc3fcb253",
+      "expected_bytes": 43661007,
+      "role": "tiny_epoch10_weights",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\lejepa_tiny_cube2_delivery_20261027_side_v2\\DELIVERY_ACCEPTED.json",
+        "sha256": "4c68368b5d6abab285bfae8b3f2ca22cc45cf3f992539e11a73720d3f11d863e",
+        "bytes": 1336
+      },
+      "cube_count": 2
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/baselines/cube2/cube2_lejepa_tiny512_epoch10_20261027_v1/source/jepa_baselines.py",
+      "expected_sha256": "8c46fe85b054a2521842a3fc753f719736ab0ccd4d584f9999ee9306704d06bc",
+      "expected_bytes": 8653,
+      "role": "tiny_original_loader",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\lejepa_tiny_cube2_delivery_20261027_side_v2\\asset\\evidence\\TARGET_CPU_LOAD_CHECK.json",
+        "sha256": "7891572b456b0eae5156aa541aa8c2f1f992fa59682f73754869e6b7e5b11978",
+        "bytes": 1033
+      },
+      "cube_count": 2
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/baselines/cube2/cube2_lejepa_tiny512_epoch10_20261027_v1/weights/config.json",
+      "expected_sha256": "a0cb496770c7e50ae1c49cbf1e31c2a4781a9373f4ee3696f99d0d723ba0a795",
+      "expected_bytes": 756,
+      "role": "tiny_asset_small_metadata",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\lejepa_tiny_cube2_delivery_20261027_side_v2\\asset\\weights\\config.json",
+        "sha256": "a0cb496770c7e50ae1c49cbf1e31c2a4781a9373f4ee3696f99d0d723ba0a795"
+      },
+      "cube_count": 2
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/baselines/cube2/cube2_lejepa_tiny512_epoch10_20261027_v1/ASSET.json",
+      "expected_sha256": "3aa7520b7f1f832f60f36ea8321ff33906dcfe933f34e50c52bd4c98a71c9996",
+      "expected_bytes": 3967,
+      "role": "tiny_asset_small_metadata",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\lejepa_tiny_cube2_delivery_20261027_side_v2\\asset\\ASSET.json",
+        "sha256": "3aa7520b7f1f832f60f36ea8321ff33906dcfe933f34e50c52bd4c98a71c9996"
+      },
+      "cube_count": 2
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/baselines/cube2/cube2_lejepa_tiny512_epoch10_20261027_v1/MANIFEST.json",
+      "expected_sha256": "871e55f641a7c05b501648d4057e461c8ffbd31fb0b631752d18640fc8600f46",
+      "expected_bytes": 51893,
+      "role": "tiny_asset_small_metadata",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\lejepa_tiny_cube2_delivery_20261027_side_v2\\asset\\MANIFEST.json",
+        "sha256": "871e55f641a7c05b501648d4057e461c8ffbd31fb0b631752d18640fc8600f46"
+      },
+      "cube_count": 2
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/cache/data/cube2/source_arrays.json",
+      "expected_sha256": "ca64b165aed7c7c067cecf7de32dd44cb309e73396f6773d132321505ef489f2",
+      "expected_bytes": 7253,
+      "role": "accepted_qpos_qvel_receipt",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\closed_embedding_metadata_fp16_v1\\vjepa21_vitl1024_cube2\\group\\source_arrays_receipt.json",
+        "sha256": "ca64b165aed7c7c067cecf7de32dd44cb309e73396f6773d132321505ef489f2"
+      },
+      "cube_count": 2
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-double-play-v0.npz",
+      "expected_sha256": "a73d1a33d029cedb8bc170ef94791ec585fa2d9450096f4f2a02b8cfbcf608c9",
+      "expected_bytes": 297435656,
+      "role": "official_NPZ",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\lejepa_tiny_cube2_delivery_20261027_side_v2\\asset\\provenance\\TARGET_RL_REFERENCE_ONLY.json",
+        "note": "accepted_raw_sha256 of archive, not metadata-file SHA"
+      },
+      "cube_count": 2,
+      "split": "train"
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_official_embeddings_v1/source_arrays/train_qpos.npy",
+      "expected_sha256": "1f44119d4e2d8d80496a58509d2f005774dcebb91f97d7f4193450fd52884eba",
+      "expected_bytes": 112112128,
+      "role": "official_qpos_qvel_NPY",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\closed_embedding_metadata_fp16_v1\\vjepa21_vitl1024_cube2\\group\\source_arrays_receipt.json",
+        "sha256": "ca64b165aed7c7c067cecf7de32dd44cb309e73396f6773d132321505ef489f2"
+      },
+      "cube_count": 2,
+      "split": "train",
+      "array": "qpos"
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_official_embeddings_v1/source_arrays/train_qvel.npy",
+      "expected_sha256": "d4b83642e7e4386ecac39494492bc8ab769ef8845329db880a90c988212a8fbb",
+      "expected_bytes": 104104128,
+      "role": "official_qpos_qvel_NPY",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\closed_embedding_metadata_fp16_v1\\vjepa21_vitl1024_cube2\\group\\source_arrays_receipt.json",
+        "sha256": "ca64b165aed7c7c067cecf7de32dd44cb309e73396f6773d132321505ef489f2"
+      },
+      "cube_count": 2,
+      "split": "train",
+      "array": "qvel"
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-double-play-v0-val.npz",
+      "expected_sha256": "b1fcdf4bd40750351a58d0d491d6be198366ce898f0c6a2e4cb5db331966013e",
+      "expected_bytes": 29726524,
+      "role": "official_NPZ",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\lejepa_tiny_cube2_delivery_20261027_side_v2\\asset\\provenance\\TARGET_RL_REFERENCE_ONLY.json",
+        "note": "accepted_raw_sha256 of archive, not metadata-file SHA"
+      },
+      "cube_count": 2,
+      "split": "val"
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_official_embeddings_v1/source_arrays/val_qpos.npy",
+      "expected_sha256": "93a319b2a51828f3b94084017667298a7ebecdfb7f1f8bd057b99015939f6db0",
+      "expected_bytes": 11211328,
+      "role": "official_qpos_qvel_NPY",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\closed_embedding_metadata_fp16_v1\\vjepa21_vitl1024_cube2\\group\\source_arrays_receipt.json",
+        "sha256": "ca64b165aed7c7c067cecf7de32dd44cb309e73396f6773d132321505ef489f2"
+      },
+      "cube_count": 2,
+      "split": "val",
+      "array": "qpos"
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_official_embeddings_v1/source_arrays/val_qvel.npy",
+      "expected_sha256": "b4253eba8d0443da704d34f71b714c9d45b35aa4aaba6c2d358047b343143abe",
+      "expected_bytes": 10410528,
+      "role": "official_qpos_qvel_NPY",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\closed_embedding_metadata_fp16_v1\\vjepa21_vitl1024_cube2\\group\\source_arrays_receipt.json",
+        "sha256": "ca64b165aed7c7c067cecf7de32dd44cb309e73396f6773d132321505ef489f2"
+      },
+      "cube_count": 2,
+      "split": "val",
+      "array": "qvel"
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/baselines/cube3/cube3_lejepa_tiny512_epoch10_20261026_v1/weights/weights_epoch_10.pt",
+      "expected_sha256": "89a07f725c50900520dea9a357efe531bceee27fea82fb9a4a9229ddc8a25df7",
+      "expected_bytes": 43663581,
+      "role": "tiny_epoch10_weights",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\lejepa_tiny_cube3_fetch_20261026_v1\\DELIVERY_ACCEPTED.json",
+        "sha256": "78f94419df0512cfe60e2cc7398fff489efc4d16e71bdee387b64822ce73a9a8",
+        "bytes": 1553
+      },
+      "cube_count": 3
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/baselines/cube3/cube3_lejepa_tiny512_epoch10_20261026_v1/source/jepa_baselines.py",
+      "expected_sha256": "8c46fe85b054a2521842a3fc753f719736ab0ccd4d584f9999ee9306704d06bc",
+      "expected_bytes": 8653,
+      "role": "tiny_original_loader",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\lejepa_tiny_cube3_fetch_20261026_v1\\target_closed_records\\TARGET_CPU_LOAD_CHECK.json",
+        "sha256": "f20d6585e91fb8c86faeb163d2231305f896cff68e426788b39772df19cae3b9",
+        "bytes": 927
+      },
+      "cube_count": 3
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/baselines/cube3/cube3_lejepa_tiny512_epoch10_20261026_v1/weights/config.json",
+      "expected_sha256": "7b279cb44a61da2f3404a8d351b18c80db2a27ba7e951b1641be00ca00eb5ff8",
+      "expected_bytes": 414,
+      "role": "tiny_asset_small_metadata",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\lejepa_tiny_cube3_fetch_20261026_v1\\bundle\\weights\\config.json",
+        "sha256": "7b279cb44a61da2f3404a8d351b18c80db2a27ba7e951b1641be00ca00eb5ff8"
+      },
+      "cube_count": 3
+    },
+    {
+      "path": "/autodl-fs/data/lewm/lejepa_cube3_tiny512_epoch10_20261026_v1/ASSET.json",
+      "expected_sha256": "a11d383660c5d6e016e85a16ef8d9d4fe555380c082066ea1c11b47379ec8167",
+      "expected_bytes": 3967,
+      "role": "tiny_asset_small_metadata",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\lejepa_tiny_cube3_fetch_20261026_v1\\bundle\\ASSET.json",
+        "sha256": "a11d383660c5d6e016e85a16ef8d9d4fe555380c082066ea1c11b47379ec8167"
+      },
+      "cube_count": 3
+    },
+    {
+      "path": "/autodl-fs/data/lewm/lejepa_cube3_tiny512_epoch10_20261026_v1/MANIFEST.json",
+      "expected_sha256": "04bfc5b36b0c0063d6bb4c5ae274319543726cd069891f094037ae4b1cbb7e2e",
+      "expected_bytes": 9372,
+      "role": "tiny_asset_small_metadata",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\lejepa_tiny_cube3_fetch_20261026_v1\\bundle\\MANIFEST.json",
+        "sha256": "04bfc5b36b0c0063d6bb4c5ae274319543726cd069891f094037ae4b1cbb7e2e"
+      },
+      "cube_count": 3
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/cache/data/cube3/source_arrays.json",
+      "expected_sha256": "9c8357a34791af460fa8af55727d794ed56ee2fdc7378e75396879c39316b957",
+      "expected_bytes": 7239,
+      "role": "accepted_qpos_qvel_receipt",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\closed_embedding_metadata_fp16_v1\\vjepa21_vitl1024_cube3\\group\\source_arrays_receipt.json",
+        "sha256": "9c8357a34791af460fa8af55727d794ed56ee2fdc7378e75396879c39316b957"
+      },
+      "cube_count": 3
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-triple-play-v0.npz",
+      "expected_sha256": "4e09a9f5ba7eaba59350dbef7e85887b9a2746490c69eaa83af34a3f9029202b",
+      "expected_bytes": 1003544255,
+      "role": "official_NPZ",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\lejepa_tiny_cube3_fetch_20261026_v1\\bundle\\provenance\\TARGET_RL_REFERENCE_ONLY.json",
+        "note": "accepted_raw_sha256 of archive, not metadata-file SHA"
+      },
+      "cube_count": 3,
+      "split": "train"
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/official_state_2d_cache_v1/source_arrays/train_qpos.npy",
+      "expected_sha256": "486c4f020516c64b8d5c5ff7a4b1b9c675ce3ffeab10fd4c2fac8db8a0cc7df8",
+      "expected_bytes": 420420128,
+      "role": "official_qpos_qvel_NPY",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\closed_embedding_metadata_fp16_v1\\vjepa21_vitl1024_cube3\\group\\source_arrays_receipt.json",
+        "sha256": "9c8357a34791af460fa8af55727d794ed56ee2fdc7378e75396879c39316b957"
+      },
+      "cube_count": 3,
+      "split": "train",
+      "array": "qpos"
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/official_state_2d_cache_v1/source_arrays/train_qvel.npy",
+      "expected_sha256": "9f20c912c555356af16f6c00c3afe9b5b20b8377e01e6bf4ac41fc41a2b78a06",
+      "expected_bytes": 384384128,
+      "role": "official_qpos_qvel_NPY",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\closed_embedding_metadata_fp16_v1\\vjepa21_vitl1024_cube3\\group\\source_arrays_receipt.json",
+        "sha256": "9c8357a34791af460fa8af55727d794ed56ee2fdc7378e75396879c39316b957"
+      },
+      "cube_count": 3,
+      "split": "train",
+      "array": "qvel"
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-triple-play-v0-val.npz",
+      "expected_sha256": "bd6cb3817fc464d7afc50bd90d766f353bc5b8d097579c70afe680a9aa0404a6",
+      "expected_bytes": 100613267,
+      "role": "official_NPZ",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\lejepa_tiny_cube3_fetch_20261026_v1\\bundle\\provenance\\TARGET_RL_REFERENCE_ONLY.json",
+        "note": "accepted_raw_sha256 of archive, not metadata-file SHA"
+      },
+      "cube_count": 3,
+      "split": "val"
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/official_state_2d_cache_v1/source_arrays/val_qpos.npy",
+      "expected_sha256": "4b7c7736ea855e36366aa5192cf086413a7ae5a17560b5be360d8d0fa0fae067",
+      "expected_bytes": 42042128,
+      "role": "official_qpos_qvel_NPY",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\closed_embedding_metadata_fp16_v1\\vjepa21_vitl1024_cube3\\group\\source_arrays_receipt.json",
+        "sha256": "9c8357a34791af460fa8af55727d794ed56ee2fdc7378e75396879c39316b957"
+      },
+      "cube_count": 3,
+      "split": "val",
+      "array": "qpos"
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/official_state_2d_cache_v1/source_arrays/val_qvel.npy",
+      "expected_sha256": "00c7303008431a20783c04f8b57bb3672d838bb85b6b95923e35525e46f6ffbd",
+      "expected_bytes": 38438528,
+      "role": "official_qpos_qvel_NPY",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\closed_embedding_metadata_fp16_v1\\vjepa21_vitl1024_cube3\\group\\source_arrays_receipt.json",
+        "sha256": "9c8357a34791af460fa8af55727d794ed56ee2fdc7378e75396879c39316b957"
+      },
+      "cube_count": 3,
+      "split": "val",
+      "array": "qvel"
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/baselines/cube4/cube4_lejepa_tiny512_epoch10_20261026_v1/weights/weights_epoch_10.pt",
+      "expected_sha256": "66269b172e06cfbd3b50be0460604ef3f46dc27e1e283a67cef31813c3ae244b",
+      "expected_bytes": 43663581,
+      "role": "tiny_epoch10_weights",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\lejepa_tiny_cube4_fetch_20261026_v1\\DELIVERY_ACCEPTED.json",
+        "sha256": "6d72d1542d7437543624b54989d20933c5b9286d4c3e3505f27a16ee3e66a62b",
+        "bytes": 1915
+      },
+      "cube_count": 4
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/baselines/cube4/cube4_lejepa_tiny512_epoch10_20261026_v1/source/jepa_baselines.py",
+      "expected_sha256": "8c46fe85b054a2521842a3fc753f719736ab0ccd4d584f9999ee9306704d06bc",
+      "expected_bytes": 8653,
+      "role": "tiny_original_loader",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\lejepa_tiny_cube4_fetch_20261026_v1\\target_closed_records\\CPU_LOAD_CHECK.json",
+        "sha256": "f1eadce104d2474f5e1fcf32a37970a6074ac691cde60a6930ed11904bba030b",
+        "bytes": 959
+      },
+      "cube_count": 4
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/baselines/cube4/cube4_lejepa_tiny512_epoch10_20261026_v1/weights/config.json",
+      "expected_sha256": "68b252a64def5326c6f11d985acd58fdfc83f50081163ff8c96c179834f55235",
+      "expected_bytes": 424,
+      "role": "tiny_asset_small_metadata",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\lejepa_tiny_cube4_fetch_20261026_v1\\bundle\\original_training_closure\\parallel24_home_v1\\checkpoints\\lejepa_quadruple600_cortexbench_seed0_w24pf2_v1\\config.json",
+        "sha256": "68b252a64def5326c6f11d985acd58fdfc83f50081163ff8c96c179834f55235"
+      },
+      "cube_count": 4
+    },
+    {
+      "path": "/autodl-fs/data/lewm/lejepa_cube4_tiny512_epoch10_20261026_v1/ASSET.json",
+      "expected_sha256": "51fd8eea44eb8b848be2d4e605671cfaf5cfb01703dd45667142e974c5ed2fe0",
+      "expected_bytes": 3442,
+      "role": "tiny_asset_small_metadata",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\lejepa_tiny_cube4_fetch_20261026_v1\\bundle\\ASSET.json",
+        "sha256": "51fd8eea44eb8b848be2d4e605671cfaf5cfb01703dd45667142e974c5ed2fe0"
+      },
+      "cube_count": 4
+    },
+    {
+      "path": "/autodl-fs/data/lewm/lejepa_cube4_tiny512_epoch10_20261026_v1/MANIFEST.json",
+      "expected_sha256": "9029c27685172e25978727d1b0079522c7170cbd3914235b2735e8145f4ec3a9",
+      "expected_bytes": 10444,
+      "role": "tiny_asset_small_metadata",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\lejepa_tiny_cube4_fetch_20261026_v1\\bundle\\MANIFEST.json",
+        "sha256": "9029c27685172e25978727d1b0079522c7170cbd3914235b2735e8145f4ec3a9"
+      },
+      "cube_count": 4
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/cache/data/cube4/source_arrays.json",
+      "expected_sha256": "03299d9c372b0999eefefe3e22c7fae822b3e9b3b50b354e9bc90b3f91a512a4",
+      "expected_bytes": 7489,
+      "role": "accepted_qpos_qvel_receipt",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\closed_embedding_metadata_fp16_v1\\vjepa21_vitl1024_cube4\\group\\source_arrays_receipt.json",
+        "sha256": "03299d9c372b0999eefefe3e22c7fae822b3e9b3b50b354e9bc90b3f91a512a4"
+      },
+      "cube_count": 4
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-quadruple-play-v0.npz",
+      "expected_sha256": "31053b04f5adbedaf9a5abef467057b2c216b0b3f8664cf3137b9891ee32a6ed",
+      "expected_bytes": 1861419607,
+      "role": "official_NPZ",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\lejepa_tiny_cube4_fetch_20261026_v1\\bundle\\provenance\\TARGET_EXISTING_RL_INPUTS_REFERENCE_ONLY.json",
+        "note": "accepted_raw_sha256 of archive, not metadata-file SHA"
+      },
+      "cube_count": 4,
+      "split": "train"
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/training_camera_v2/source_arrays/train_qpos.npy",
+      "expected_sha256": "e557ba464f4036756c91bc8f55b2d24e9e0d9febacd730c641b909ccf35943d7",
+      "expected_bytes": 840840128,
+      "role": "official_qpos_qvel_NPY",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\closed_embedding_metadata_fp16_v1\\vjepa21_vitl1024_cube4\\group\\source_arrays_receipt.json",
+        "sha256": "03299d9c372b0999eefefe3e22c7fae822b3e9b3b50b354e9bc90b3f91a512a4"
+      },
+      "cube_count": 4,
+      "split": "train",
+      "array": "qpos"
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/training_camera_v2/source_arrays/train_qvel.npy",
+      "expected_sha256": "2a3cfa0fc4d3e09e9a26b142d26a1af9e7a55ccc06d4da76c95a8735c9478886",
+      "expected_bytes": 760760128,
+      "role": "official_qpos_qvel_NPY",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\closed_embedding_metadata_fp16_v1\\vjepa21_vitl1024_cube4\\group\\source_arrays_receipt.json",
+        "sha256": "03299d9c372b0999eefefe3e22c7fae822b3e9b3b50b354e9bc90b3f91a512a4"
+      },
+      "cube_count": 4,
+      "split": "train",
+      "array": "qvel"
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-quadruple-play-v0-val.npz",
+      "expected_sha256": "96ae20f4c7ffe673520c69f2c0339a746f7eac019bb15a92f2898fb8e1785d1d",
+      "expected_bytes": 185890898,
+      "role": "official_NPZ",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\lejepa_tiny_cube4_fetch_20261026_v1\\bundle\\provenance\\TARGET_EXISTING_RL_INPUTS_REFERENCE_ONLY.json",
+        "note": "accepted_raw_sha256 of archive, not metadata-file SHA"
+      },
+      "cube_count": 4,
+      "split": "val"
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/training_camera_v2/source_arrays/val_qpos.npy",
+      "expected_sha256": "50bda4c776e6c3740f695950dc12b1b37d035fcaf554cf948b3e90e94a8181fb",
+      "expected_bytes": 84084128,
+      "role": "official_qpos_qvel_NPY",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\closed_embedding_metadata_fp16_v1\\vjepa21_vitl1024_cube4\\group\\source_arrays_receipt.json",
+        "sha256": "03299d9c372b0999eefefe3e22c7fae822b3e9b3b50b354e9bc90b3f91a512a4"
+      },
+      "cube_count": 4,
+      "split": "val",
+      "array": "qpos"
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/training_camera_v2/source_arrays/val_qvel.npy",
+      "expected_sha256": "fa089a9a61463d5356d29f4c05de33fe4912c6992fc20aacb7befe912f717cb5",
+      "expected_bytes": 76076128,
+      "role": "official_qpos_qvel_NPY",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\closed_embedding_metadata_fp16_v1\\vjepa21_vitl1024_cube4\\group\\source_arrays_receipt.json",
+        "sha256": "03299d9c372b0999eefefe3e22c7fae822b3e9b3b50b354e9bc90b3f91a512a4"
+      },
+      "cube_count": 4,
+      "split": "val",
+      "array": "qvel"
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/trainer_runtime.py",
+      "expected_sha256": "18acaead938e573f80ec6e87e0cb44822a734decf2e97730861886841a22b82c",
+      "expected_bytes": 12600,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/trainer_runtime.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/distance_inputs.py",
+      "expected_sha256": "b9906dc2f4e7a38826f5ee05031713618a6ce408ee5555302801505452758f90",
+      "expected_bytes": 9097,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/distance_inputs.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/gciql_boundary.py",
+      "expected_sha256": "a81363583a4826194b90974be2ad62c5895ab6b963e15ba042c9f893a46ba5e6",
+      "expected_bytes": 10540,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/gciql_boundary.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/state_runtime.py",
+      "expected_sha256": "623fff33b0c836c6268257689216cf78de8694fbab1107dddbd4bdbfc3ee1956",
+      "expected_bytes": 4735,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/state_runtime.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/state_inputs.py",
+      "expected_sha256": "ada2bdc73de50753a83ee951cb99849c9bd3282f3e6527c4e8d906f85f7d9fd9",
+      "expected_bytes": 6397,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/state_inputs.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube_inputs.py",
+      "expected_sha256": "36358548ef7a78311730913fccfdfa025d354a18edd4f8197b03b4c0d5ae5d9b",
+      "expected_bytes": 2631,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube_inputs.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/official_state_workers_v1/ordered_input.py",
+      "expected_sha256": "4508ce847694976f8af924215d11985ac4d795093b22d62e8424928346fbdda2",
+      "expected_bytes": 7200,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/official_state_workers_v1/ordered_input.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/imports/single_cube_rl3_101632_20261018_v1/source_layout/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/core_v1/gciql.py",
+      "expected_sha256": "8611cd476d8849ad014ca43304073c3e88fc3d3aa5dab369a343ae425bba7ba7",
+      "expected_bytes": 12600,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/imports/single_cube_rl3_101632_20261018_v1/source_layout/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/core_v1/gciql.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/control/barrier.py",
+      "expected_sha256": "9d4213758cdf08aa7bdc211071c93b78a4f1e687462a72a088204deb54996cde",
+      "expected_bytes": 5945,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/control/barrier.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/control/serial.py",
+      "expected_sha256": "dac39378e01c4c76d0a78dce472c9bb6e937d9f909f4ae12eabe2b7362cf6a38",
+      "expected_bytes": 2909,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/control/serial.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/encoder/encoder_adapter.py",
+      "expected_sha256": "3f5cb292728c809737ff0dbe851095cec8825883b0f009d913d315677f462bfe",
+      "expected_bytes": 6009,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/encoder/encoder_adapter.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/cache/common.py",
+      "expected_sha256": "061812303cc4b7ba74c11e817fc20cfc61c86e4f8828fe9e840c0a9fd2717f90",
+      "expected_bytes": 1438,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/cache/common.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/cache/prepare_data.py",
+      "expected_sha256": "a05b712d49026a0d52f43e4e43b3106879b0e965af2abb61a8f017bae523f595",
+      "expected_bytes": 6339,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/cache/prepare_data.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/cache/producer_bridge.py",
+      "expected_sha256": "2a366174041abd0a21cb6b299f9584601f27a32bfead141f3ced5a8228424e93",
+      "expected_bytes": 6174,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/cache/producer_bridge.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/cache/render_adapter.py",
+      "expected_sha256": "b6d696a05632bd7f030d4e9427ea180463839daddb46659e3e3354c5ae328faa",
+      "expected_bytes": 2017,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/cache/render_adapter.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/cache/audit_bridge.py",
+      "expected_sha256": "9dfe4cd0fff48de33c6bc37e442fc631fb34a2724a432a04b89d7041a4a837d7",
+      "expected_bytes": 3714,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/cache/audit_bridge.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/cache/prepare_plans.py",
+      "expected_sha256": "453c1f7ceaf370a656c5f01c604f6de348210f2e793220065fea70bd242d5b29",
+      "expected_bytes": 7646,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/cache/prepare_plans.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/cache/deliver.py",
+      "expected_sha256": "e1f49474c52fe2184414f42c375e6619361b759a9d748a088097e19ded894094",
+      "expected_bytes": 6757,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/cache/deliver.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/cache/base/produce.py",
+      "expected_sha256": "dbbce2407f11c42ee2c5aca7601c9a055a7ceb08593fb4e99b1b0cd7e5415b18",
+      "expected_bytes": 27180,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/cache/base/produce.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/cache/base/render_adapter.py",
+      "expected_sha256": "5df6dc694f7c9d38ccff69385080b1bad814f41ad6c4ae71e9def2e6ac71662f",
+      "expected_bytes": 6287,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/cache/base/render_adapter.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/cache/base/audit_cache.py",
+      "expected_sha256": "a97a55ce945c12b16d6fb473c71b289cdf8b2a0164b697ae0f8d4c5d7f9b5006",
+      "expected_bytes": 17771,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/cache/base/audit_cache.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/functional/audit_native.py",
+      "expected_sha256": "c2840c183d9279623be16b5f1e882a4b121a856039fd74e8f4584fca82f8501a",
+      "expected_bytes": 5231,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/functional/audit_native.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/functional/inputs.py",
+      "expected_sha256": "ff66c68f50a6c73bd7928e4281a30adf4686538a2829d31d6981a4fd86b5f2ec",
+      "expected_bytes": 1850,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/functional/inputs.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/functional/native_sr.py",
+      "expected_sha256": "ae16abe24a609719630357f69c2c472d4df2f58a63f044edd9fbe028f4f10e41",
+      "expected_bytes": 6101,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/functional/native_sr.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/functional/prepare.py",
+      "expected_sha256": "17141ea3dffd485455f9a54dbcb52a3b569c583b2f1326d7074d2d96b4a78464",
+      "expected_bytes": 4260,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/functional/prepare.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/functional/runtime.py",
+      "expected_sha256": "03986a4c4dd03598b9ae06e57955ce164ad3a73fcc655dcc73acf12df0632326",
+      "expected_bytes": 3912,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/functional/runtime.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/functional/test_functional.py",
+      "expected_sha256": "e5de0688733e10a8ecb90ee6ce0962778eab755d5a13ee752f4d8821a2c1e6a8",
+      "expected_bytes": 6554,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/functional/test_functional.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_official_embeddings_v1/serial_relay.py",
+      "expected_sha256": "ff7eb51417c8301f27987743701d4a0336117c356904443bb174ab84475366cb",
+      "expected_bytes": 4859,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_official_embeddings_v1/serial_relay.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_visual_gciql_v1/control_v1/gpu_lease.py",
+      "expected_sha256": "d3a1757ec4b22746da404f15cea2f99e7e830c1edf0f07e1ac20a96955a13727",
+      "expected_bytes": 589,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_visual_gciql_v1/control_v1/gpu_lease.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/main.py",
+      "expected_sha256": "375fad6375047ff59f3baea408ab7197784c1ec1457588a78a631025e434faee",
+      "expected_bytes": 6742,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/main.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/agents/__init__.py",
+      "expected_sha256": "291a2ef703bf040fc30d248d401cad4e071350470539e8a5d61ae71040c4c408",
+      "expected_bytes": 392,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/agents/__init__.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/agents/crl.py",
+      "expected_sha256": "05a9faaa8348a16154a03004b54a7eff90ec58eae2588fe7b2bedef2bfcc48af",
+      "expected_bytes": 13137,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/agents/crl.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/agents/gcbc.py",
+      "expected_sha256": "a130452c9c76d5718a6c1307525e7d5603334b479683654f7decb6b1280ec15c",
+      "expected_bytes": 6373,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/agents/gcbc.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/agents/gciql.py",
+      "expected_sha256": "05a0b5d9b987d3049df8a1158bbfbaba2ca2611604d24f9e484f8fb6d0cd92bc",
+      "expected_bytes": 12457,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/agents/gciql.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/agents/gcivl.py",
+      "expected_sha256": "643ed73b1bad4caa4cf8079aa1bd6cf77f17367f8c67cc9b43acc173bb9aecf8",
+      "expected_bytes": 10307,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/agents/gcivl.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/agents/hiql.py",
+      "expected_sha256": "0cbceb5506e465f2be793dfd69be0244f7990a4d7335afe78c1f74a42b1aa43e",
+      "expected_bytes": 15549,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/agents/hiql.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/agents/qrl.py",
+      "expected_sha256": "4dc68d9a9dbbac73f8610c348308e5044ea05ab21d740841b0e1dd450b62e4c4",
+      "expected_bytes": 13882,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/agents/qrl.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/agents/sac.py",
+      "expected_sha256": "fa0957073822df61aba6393e702b8913d0b2307a99baf7690d43e7749f9fb751",
+      "expected_bytes": 7831,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/agents/sac.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/utils/__init__.py",
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expected_bytes": 0,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/utils/__init__.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/utils/datasets.py",
+      "expected_sha256": "52c373922a87e1ba8ad8b3b96c3474d5e6385e2ea2c7206930f7a8a315816609",
+      "expected_bytes": 16774,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/utils/datasets.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/utils/encoders.py",
+      "expected_sha256": "6bd7fdd82838b754d26af01f9e84d70fa63fca1e09efee38a09f325884073ecc",
+      "expected_bytes": 4644,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/utils/encoders.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/utils/env_utils.py",
+      "expected_sha256": "a92d391a3d95e26717b80ea783f487f0639c956f23ef603bfa8b7bb098f763d7",
+      "expected_bytes": 3113,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/utils/env_utils.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/utils/evaluation.py",
+      "expected_sha256": "4d9a2732bc9ef89ce99fbc0f07a76d3f4d035783af3a658251709140ff9de3d5",
+      "expected_bytes": 3777,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/utils/evaluation.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/utils/flax_utils.py",
+      "expected_sha256": "5b6a8e9a919bf57dae0c1454f327ded4235385f9d9dcd1e62263fe4fad9fd484",
+      "expected_bytes": 6694,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/utils/flax_utils.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/utils/log_utils.py",
+      "expected_sha256": "ba5ad408d91ee35d92bf06ec7846846c5a75af4ae7cc62c329ec43d074bfaeb6",
+      "expected_bytes": 4664,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/utils/log_utils.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/utils/networks.py",
+      "expected_sha256": "e7e4c4a439b691911e5ae6c2653f253c5703e6b5d190d813e28ebc32e7306094",
+      "expected_bytes": 16753,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/utils/networks.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/__init__.py",
+      "expected_sha256": "b692dba53ffff6152a9e117447dde62f164ec640f967a174807ff2faff0925f1",
+      "expected_bytes": 357,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/__init__.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/relabel_utils.py",
+      "expected_sha256": "7b7ff7ea20fb81301ef251fc41b591de8c5f859dc96de2b4ba4a3a9bebfaa1a7",
+      "expected_bytes": 6744,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/relabel_utils.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/utils.py",
+      "expected_sha256": "f503a3a0497f91ce02958abae5770f3e08c9d6a3a740687c828c996fedb24e9b",
+      "expected_bytes": 9921,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/utils.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/locomaze/__init__.py",
+      "expected_sha256": "f17bf3484a5d552cfbce72b9f3c9aff481bb51b180b809681057f39200c07b60",
+      "expected_bytes": 14617,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/locomaze/__init__.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/locomaze/ant.py",
+      "expected_sha256": "ebe45ff724ecf5e35e643e339cd7c1d6315e49f8f0f8f96d516fd1130fd1e363",
+      "expected_bytes": 3505,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/locomaze/ant.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/locomaze/humanoid.py",
+      "expected_sha256": "656643255db15062d629e9708695d55d77bce7418b9b9e14399938e50fcd17e8",
+      "expected_bytes": 5578,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/locomaze/humanoid.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/locomaze/maze.py",
+      "expected_sha256": "2dc9c19fd6d0e0e2d27eae97430eaa0e816c6bc2221463bbde051ee9dc328714",
+      "expected_bytes": 31417,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/locomaze/maze.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/locomaze/point.py",
+      "expected_sha256": "eb9125a4b0f0cbeeb4a6a5a1e45bfd8b938a8bad9352a3e5d72dc2ac8f1987f6",
+      "expected_bytes": 3077,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/locomaze/point.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/__init__.py",
+      "expected_sha256": "ac48a0d31ca62826114297539748dca26aa5fb72a6079abeb00729e2dcf8e69a",
+      "expected_bytes": 10525,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/__init__.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/mjcf_utils.py",
+      "expected_sha256": "52bc5dfd77c4d82c8556ef553feaf6a357585bdb2e27fa381c25c99ddfb07b5d",
+      "expected_bytes": 4199,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/mjcf_utils.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/viewer_utils.py",
+      "expected_sha256": "c1ac0e1f4efc6f70e9bc49f024757d2c08c02b6648e33deb980c1e8d8d110502",
+      "expected_bytes": 351,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/viewer_utils.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/online_locomotion/__init__.py",
+      "expected_sha256": "627897cdb0c18cd6cb204d31b1850efc6fa75a2fb5f474648812b837855f9bce",
+      "expected_bytes": 437,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/online_locomotion/__init__.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/online_locomotion/ant.py",
+      "expected_sha256": "4ec264966f2cdbab29831b0d1f8d3ee312188944fe6127ed0bb5753009753456",
+      "expected_bytes": 6119,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/online_locomotion/ant.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/online_locomotion/ant_ball.py",
+      "expected_sha256": "7bbc95c72fcc19e12c156bbd2e8fa4edcd685c33035799a526b9e2bd6bd54604",
+      "expected_bytes": 4198,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/online_locomotion/ant_ball.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/online_locomotion/humanoid.py",
+      "expected_sha256": "06c73978134cca3cbc9c20ca4feb5a167931f765b5c6973211dc717780243add",
+      "expected_bytes": 8610,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/online_locomotion/humanoid.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/online_locomotion/wrappers.py",
+      "expected_sha256": "d7320339affc656e9d183f6dc739dadaad090015f1af11339ad3d52ba2711625",
+      "expected_bytes": 2867,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/online_locomotion/wrappers.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/powderworld/__init__.py",
+      "expected_sha256": "a191bab9a6bbcae799b26c59222b24182a10fd4ae9b6c912a643c6d4e6e2cd57",
+      "expected_bytes": 561,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/powderworld/__init__.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/powderworld/behaviors.py",
+      "expected_sha256": "18dad54d747dff6d024cfe2d9e71cbd09cba1c02989801c04c7be5209122b681",
+      "expected_bytes": 3194,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/powderworld/behaviors.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/powderworld/powderworld_env.py",
+      "expected_sha256": "d2bb936ce28d98c46de45e2cfd3729fa2f983f3456f7a2c67f3304d395852c40",
+      "expected_bytes": 19872,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/powderworld/powderworld_env.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/powderworld/sim.py",
+      "expected_sha256": "96a595104fceebe50b848bedaa830e4676859489cff05846f1a616d6f48e59dd",
+      "expected_bytes": 49427,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/powderworld/sim.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/controllers/__init__.py",
+      "expected_sha256": "f92c1be658e56af29c17598605f3383027b1141d17b1024e8c6371395dc6b4e2",
+      "expected_bytes": 101,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/controllers/__init__.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/controllers/diff_ik.py",
+      "expected_sha256": "4914ea5fbf6428daa4f475a0490a8786514fafd15072c5e18c5d4a5213b8f1be",
+      "expected_bytes": 4512,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/controllers/diff_ik.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/envs/__init__.py",
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expected_bytes": 0,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/envs/__init__.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/envs/cube_env.py",
+      "expected_sha256": "6f8457ffd634f6620411c788c86e871f44ea5b5b5eecf76cd694fc04d12d678d",
+      "expected_bytes": 32491,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/envs/cube_env.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/envs/env.py",
+      "expected_sha256": "c656f4733a1ad4cb07289bc58ac1ac0f7da378e1f2714dc80a5ed8c0b3028c38",
+      "expected_bytes": 15168,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/envs/env.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/envs/manipspace_env.py",
+      "expected_sha256": "03524eb1c95155bbc2ec3d29e9836fccffe8eb9fce1be15b6f0e7062cc1bb5fd",
+      "expected_bytes": 20920,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/envs/manipspace_env.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/envs/puzzle_env.py",
+      "expected_sha256": "712a4c1ac459f9cd1c90732eb6deb37f0fa0fecb98df4d4afb17e1d2a8f353b9",
+      "expected_bytes": 26572,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/envs/puzzle_env.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/envs/scene_env.py",
+      "expected_sha256": "b03395bc50d7a65fcd45a3141fe6cca419f07cbe7422d397003d824fdfcb7c54",
+      "expected_bytes": 33434,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/envs/scene_env.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/lie/__init__.py",
+      "expected_sha256": "6ae00df58e42c3d2812449831cc8b6bb54ec621aa2d537c532f76df25660ecb2",
+      "expected_bytes": 271,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/lie/__init__.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/lie/se3.py",
+      "expected_sha256": "a918b8ecdbc676bd0ddcfd64a312e5074d48892db2074748a6c979e308fb1b92",
+      "expected_bytes": 5244,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/lie/se3.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/lie/so3.py",
+      "expected_sha256": "35d1ffbd6d93e9466e49ecb2d914843cd379a302914c5ea9f79af69a7392105f",
+      "expected_bytes": 6259,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/lie/so3.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/lie/utils.py",
+      "expected_sha256": "71796041701c863eb91ccdb81e3f482f29735d0ad29c021052a8b7f67d79d147",
+      "expected_bytes": 833,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/lie/utils.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/oracles/__init__.py",
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expected_bytes": 0,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/oracles/__init__.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/oracles/markov/__init__.py",
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expected_bytes": 0,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/oracles/markov/__init__.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/oracles/markov/button_markov.py",
+      "expected_sha256": "2d302ef7b2b1c6cd5202dfcafca07ee9c50601d50f8d33ca38e8bf1cecf6abc8",
+      "expected_bytes": 3294,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/oracles/markov/button_markov.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/oracles/markov/cube_markov.py",
+      "expected_sha256": "67943a0eb3d4a22cf4191dbe2a2ae70c92847fb6b81fb5ce198c86ca94ed2f6f",
+      "expected_bytes": 5402,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/oracles/markov/cube_markov.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/oracles/markov/drawer_markov.py",
+      "expected_sha256": "d828b1898a0cb5fcdfa4c8ecab495ed194fec1433591dff204527447091a9325",
+      "expected_bytes": 3753,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/oracles/markov/drawer_markov.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/oracles/markov/markov_oracle.py",
+      "expected_sha256": "409537d2c12136a5d3d1b15e30ac6754cc66bbe4d01fd459c98247b0c1a9913b",
+      "expected_bytes": 1491,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/oracles/markov/markov_oracle.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/oracles/markov/window_markov.py",
+      "expected_sha256": "b1a504c9fb0ee2ec3af46300c01efc005e158d47322c2d721e9bc50f2667a7f6",
+      "expected_bytes": 4051,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/oracles/markov/window_markov.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/oracles/plan/__init__.py",
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expected_bytes": 0,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/oracles/plan/__init__.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/oracles/plan/button_plan.py",
+      "expected_sha256": "f2c31ee54b70843b8be3f7a7b368a37568aa7a644514884cba3188dab19c1157",
+      "expected_bytes": 2599,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/oracles/plan/button_plan.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/oracles/plan/cube_plan.py",
+      "expected_sha256": "4b31900946c682ba8fb57a38d3e08714d2aaeca186745bc7c8cf88d4ae102b28",
+      "expected_bytes": 4008,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/oracles/plan/cube_plan.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/oracles/plan/drawer_plan.py",
+      "expected_sha256": "f4dd776c45d1680dc574673d0e1196d77a7a4e5e312f0442774eef4c551db87f",
+      "expected_bytes": 3243,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/oracles/plan/drawer_plan.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/oracles/plan/plan_oracle.py",
+      "expected_sha256": "cd977fe1fd107911a1d50c1eb1bd0b2f25586d6e861638b36103322de3559329",
+      "expected_bytes": 4368,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/oracles/plan/plan_oracle.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/oracles/plan/window_plan.py",
+      "expected_sha256": "96894697e2af9b9f50372369eb14d166d925ee7a34fd93b6d82c4ce5db47b841",
+      "expected_bytes": 3243,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/oracles/plan/window_plan.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/native_sr_visual_v1/visual_sr.py",
+      "expected_sha256": "e40a2ff52bd0915b7953d9011c65e02c75f9e0b2d0e454b613d18c275f6c13f0",
+      "expected_bytes": 27635,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/native_sr_visual_v1/visual_sr.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/cache/resource_w8.py",
+      "expected_sha256": "5453be8d8d9ad6a11ddba8346e05b98284ec9cb3c185d4dd024091bf92e56316",
+      "expected_bytes": 2873,
+      "role": "frozen_base_source",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\foundation_visual_gciql_31435_20261024_v1\\activation_w8_evidence_v1\\control\\formal_w8\\launch_plan.json",
+        "sha256": "0cfaba2fefefcca1483cea98c0b3bd04bcfbf6cd6c1536636f3477958473f5e1",
+        "pin_key": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/cache/resource_w8.py"
+      },
+      "bytes_if_unknown_reason": null
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/pldm_cube14_embeddings_v1/cache_bridge.py",
+      "expected_sha256": "f898715a33c48148d5deacb35a434ffd74db38c1d561947739c87c1fd6b53409",
+      "expected_bytes": 8223,
+      "role": "accepted_D512_overlay_reference_only_not_Tiny_executable",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\pldm_cube14_embeddings_31435_20261025_v1\\release_v1\\cache_bridge.py",
+        "sha256": "f898715a33c48148d5deacb35a434ffd74db38c1d561947739c87c1fd6b53409"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/pldm_cube14_gciql_v1/functional.py",
+      "expected_sha256": "d777c27d82a357ae0ca429a6bea7721c51e9860f9ca688c2c22dc3ed4dedbbfa",
+      "expected_bytes": 10886,
+      "role": "accepted_D512_overlay_reference_only_not_Tiny_executable",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\pldm_cube14_embeddings_31435_20261025_v1\\downstream_v1\\release_v1\\functional.py",
+        "sha256": "d777c27d82a357ae0ca429a6bea7721c51e9860f9ca688c2c22dc3ed4dedbbfa"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/cube.xml",
+      "expected_sha256": "26c95a148f880c90edf391b92963003514c0a6ba945074c039a1670a8ea4c824",
+      "expected_bytes": 738,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/cube.xml"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/cube_inner.xml",
+      "expected_sha256": "03ae5a10aa56c08f46cb0152767e8d835e2a55f23267d718b825a336886e6b52",
+      "expected_bytes": 460,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/cube_inner.xml"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/cube_outer.xml",
+      "expected_sha256": "94d484308fa9d7468a84a0b5b00c53d8801d0c1cb5c80805ea9d101ecd26c86a",
+      "expected_bytes": 373,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/cube_outer.xml"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/floor_wall.xml",
+      "expected_sha256": "07130a20409c9629e187b303662ae26eb614ae5ec9e8ba9f78bad8e5e079603b",
+      "expected_bytes": 1470,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/floor_wall.xml"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/2f85.png",
+      "expected_sha256": "cce07123183ffe562768aadcdbaa487336c0c2a485c2a26c47697750630bc912",
+      "expected_bytes": 1140430,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/2f85.png"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/2f85.xml",
+      "expected_sha256": "b8dbdad1a805ed3e2ab67c60fdaec4ca04fc2ea7ae06eb55cd14ab7f957cf953",
+      "expected_bytes": 9623,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/2f85.xml"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/LICENSE",
+      "expected_sha256": "3d5edd18d1e22a17666e9bb84270171ed5ac90b192d24e0177fd171708ea2316",
+      "expected_bytes": 1297,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/LICENSE"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/README.md",
+      "expected_sha256": "7eb68400829e6ee929452fd333dfb214aed963b0a217af7d03df8363600e795b",
+      "expected_bytes": 1269,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/README.md"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/assets/base.stl",
+      "expected_sha256": "1c7b9f2bd92d705fc4e897c94e905973a3c05f406845e942229433deb7041453",
+      "expected_bytes": 1712484,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/assets/base.stl"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/assets/base_mount.stl",
+      "expected_sha256": "87971dfdd6e5311b5a723e7b73c4701ebf5c2364df671500f30dfc1c53c8e61a",
+      "expected_bytes": 1091784,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/assets/base_mount.stl"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/assets/coupler.stl",
+      "expected_sha256": "d5ee95e62f8415bf5b6e503c831a958f5fc1990bf9b2865329ec38a28932727c",
+      "expected_bytes": 89084,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/assets/coupler.stl"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/assets/driver.stl",
+      "expected_sha256": "bbd6e868b1778bead60d2516c7ede581d7ad4e431744b1828757d6ea5129c112",
+      "expected_bytes": 67084,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/assets/driver.stl"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/assets/follower.stl",
+      "expected_sha256": "633793332c081641ce200df27a40643cc293b29956e3cb5cb29cb811c33ef1c7",
+      "expected_bytes": 110484,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/assets/follower.stl"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/assets/pad.stl",
+      "expected_sha256": "4af1fa8d9bb285abecbf5dfc88e74cb30f059a7a074c2030dc35e9ee4316019d",
+      "expected_bytes": 15084,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/assets/pad.stl"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/assets/silicone_pad.stl",
+      "expected_sha256": "ca20c0fa61e6d3ce7b04bed25360e048e31dfd88ace04187aa6d9e8f4ca3fd0f",
+      "expected_bytes": 15084,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/assets/silicone_pad.stl"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/assets/spring_link.stl",
+      "expected_sha256": "4fb74a8a0d76c0e471cf19fd48bc676fd5b19123798e7a39eb6aa56869354283",
+      "expected_bytes": 84884,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/assets/spring_link.stl"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/scene.xml",
+      "expected_sha256": "7e584c60ba751b6572d66982adbc93923a82a85d7d3880c1242b9d4005ff4493",
+      "expected_bytes": 1440,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/scene.xml"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/LICENSE",
+      "expected_sha256": "5ec71ccf66c8d03261448f2441a586765b97f2248c860a1ae19689fb1c45cee6",
+      "expected_bytes": 1470,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/LICENSE"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/README.md",
+      "expected_sha256": "dd5a3c510fe94586afa8751de04a5ca38a993dfc629b64d2077528a7a9270c33",
+      "expected_bytes": 1591,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/README.md"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/base_0.obj",
+      "expected_sha256": "9a3b21f1524baef6af8a52d7af90b6e94b79f7e3c2b04a0f6581f74d22291b0b",
+      "expected_bytes": 556543,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/base_0.obj"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/base_1.obj",
+      "expected_sha256": "cf7d54691a2c1eeda280955ebd6bd83c2dbecfc46fb53c10198f05d107511b50",
+      "expected_bytes": 638415,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/base_1.obj"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/forearm_0.obj",
+      "expected_sha256": "64c049a55149c2ab355594d52302b53d3e34da3677ceaa1917c427cde7743146",
+      "expected_bytes": 1691648,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/forearm_0.obj"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/forearm_1.obj",
+      "expected_sha256": "a96fe203015cf532b193f414cd01268c7c36795e51a837dd33afd122334f81f2",
+      "expected_bytes": 76202,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/forearm_1.obj"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/forearm_2.obj",
+      "expected_sha256": "05b436505fc595aeab26675590c2b56b88a65b2d52d6352096fed9f07cb4c4ca",
+      "expected_bytes": 932534,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/forearm_2.obj"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/forearm_3.obj",
+      "expected_sha256": "fa31af19cfad7a765b62e8a2d5931cb014b88de84195a7850b4e5ee902112e9a",
+      "expected_bytes": 1095775,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/forearm_3.obj"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/shoulder_0.obj",
+      "expected_sha256": "477387a7e7312782a6040484a3c2c2fcee33f40109f419076e31b6f6e1692c68",
+      "expected_bytes": 2947794,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/shoulder_0.obj"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/shoulder_1.obj",
+      "expected_sha256": "8537bba02804640ddf6e260f79fe66e895b3229ed3d44298a95e8e027eb5d435",
+      "expected_bytes": 569646,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/shoulder_1.obj"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/shoulder_2.obj",
+      "expected_sha256": "291714518416bb8f0bafbf123867db011ecbf5146a05245ca5893ee8c57d4e21",
+      "expected_bytes": 2440344,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/shoulder_2.obj"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/upperarm_0.obj",
+      "expected_sha256": "14143d4f1175a7dbacc8e2f2f98f1cac5a2b2e238cd46cd03654d31f2610eb53",
+      "expected_bytes": 156252,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/upperarm_0.obj"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/upperarm_1.obj",
+      "expected_sha256": "272899e927f4a32b7c25e34560ec70654c0346cc8ed1c616c0555f3f53b32d14",
+      "expected_bytes": 1090164,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/upperarm_1.obj"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/upperarm_2.obj",
+      "expected_sha256": "86c05350d60eb0e7e28a81b544267478b7db997baba41cef19088ebbeffecfa1",
+      "expected_bytes": 3677923,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/upperarm_2.obj"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/upperarm_3.obj",
+      "expected_sha256": "b257dab441e6fab64ea03b4b87029d8a96554ad1a513cce944d56acba0ad948a",
+      "expected_bytes": 5346165,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/upperarm_3.obj"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist1_0.obj",
+      "expected_sha256": "7ef0c59b5c5d56a9902435c9a058b27d2a38c85fe2bae02d00a9284dd1f4d519",
+      "expected_bytes": 278871,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist1_0.obj"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist1_1.obj",
+      "expected_sha256": "ee6d5c562e6becef94109b0543329080d285d1aef521a01ed98e18a5bf1e8684",
+      "expected_bytes": 2470967,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist1_1.obj"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist1_2.obj",
+      "expected_sha256": "88c66dc64f15391287147d50add37729a3f41dadd80b1f859cf2cb6d45daf32a",
+      "expected_bytes": 1657638,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist1_2.obj"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist2_0.obj",
+      "expected_sha256": "2ac2e2e39d8f7005bc3b3ab26cd61634be2e14930074615da5318b9ee7c569a8",
+      "expected_bytes": 846741,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist2_0.obj"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist2_1.obj",
+      "expected_sha256": "a721d06dc61d3b3a8ec58c035c9e3358ed30d6991a72e077d8abf3c3c203b633",
+      "expected_bytes": 2156900,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist2_1.obj"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist2_2.obj",
+      "expected_sha256": "6df4335c8bd5e881fda2c224f770115ffe9ddd0cd321ebe3c0a4a310796f0987",
+      "expected_bytes": 2141392,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist2_2.obj"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist3.obj",
+      "expected_sha256": "0e51748f9c93bd66604360a5cf7e2e8a6e754550be64076333ff4fc19ec90c61",
+      "expected_bytes": 211390,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist3.obj"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/scene.xml",
+      "expected_sha256": "368d1ebb8453804554156dfd958cd8a00fa84816fb799150687858e8d2bac9ef",
+      "expected_bytes": 865,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/scene.xml"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/ur5e.png",
+      "expected_sha256": "90310086f1187fcda94252ff68f8c4f8be97f65bec8f4eea449179b0979da795",
+      "expected_bytes": 1956670,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/ur5e.png"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/ur5e.xml",
+      "expected_sha256": "e7d805a7a03c3194ad5992d47661aca34675c93275043aaa66045968043f5a6a",
+      "expected_bytes": 6668,
+      "role": "Cube_physics_asset",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\manifest.json",
+        "sha256": "35f0bd5176f52892524329e2c9125100bc8281912fee83ed5ee70af0154b98ce",
+        "entry": "source/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/ur5e.xml"
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/requirements.runtime.lock",
+      "expected_sha256": "667d3f52b29cd155110324310fea8a21090bf12f13d5f619f3b9656d5a36ca48",
+      "expected_bytes": 3260,
+      "role": "runtime_lock_reference",
+      "provenance": {
+        "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\requirements.runtime.lock",
+        "sha256": "667d3f52b29cd155110324310fea8a21090bf12f13d5f619f3b9656d5a36ca48"
+      }
+    }
+  ],
+  "groups": [
+    {
+      "cube_count": 1,
+      "latent_dim": 512,
+      "current_next_dim": 531,
+      "goal_dim": 515,
+      "Native_cap": 200,
+      "camera_reference": {
+        "cube_count": 1,
+        "env_id": "cube-single-v0",
+        "source_name": "front_pixels",
+        "render_name": "front_pixels",
+        "source_position": [
+          1.053,
+          -0.014,
+          0.639
+        ],
+        "position": [
+          1.053,
+          -0.014,
+          0.639
+        ],
+        "base_quaternion": [
+          0.6379859469386719,
+          0.3049162696688487,
+          0.3049162696688487,
+          0.6379859469386719
+        ],
+        "actual_quaternion": [
+          0.6379859469386719,
+          0.3049162696688487,
+          0.3049162696688487,
+          0.6379859469386719
+        ],
+        "FOV": 45.0,
+        "width": 224,
+        "height": 224,
+        "offsamples": 4,
+        "aa_samples": 4,
+        "local_x_up_degrees": 0.0,
+        "pullback": 0.0,
+        "ob_type": "states",
+        "visualize_info": false,
+        "pixel_transparent_arm": false,
+        "crop": null,
+        "provenance": "Cube1 unchanged pinned official front_pixels (prior M5 RGB recipe); Cube2/3 approved front+5; Cube4 training_camera_v2"
+      },
+      "splits": {
+        "train": {
+          "npz_path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-single-play-v0.npz",
+          "episodes": 1000,
+          "raw_rows": 1001000,
+          "headers": {
+            "observations": {
+              "shape": [
+                1001000,
+                28
+              ],
+              "dtype": "float32"
+            },
+            "actions": {
+              "shape": [
+                1001000,
+                5
+              ],
+              "dtype": "float32"
+            },
+            "terminals": {
+              "shape": [
+                1001000
+              ],
+              "dtype": "bool"
+            },
+            "qpos": {
+              "shape": [
+                1001000,
+                21
+              ],
+              "dtype": "float32"
+            },
+            "qvel": {
+              "shape": [
+                1001000,
+                20
+              ],
+              "dtype": "float32"
+            }
+          },
+          "source_arrays": {
+            "qpos": {
+              "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/cache/data/cube1/train_qpos.npy",
+              "shape": [
+                1001000,
+                21
+              ],
+              "dtype": "float32"
+            },
+            "qvel": {
+              "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/cache/data/cube1/train_qvel.npy",
+              "shape": [
+                1001000,
+                20
+              ],
+              "dtype": "float32"
+            }
+          }
+        },
+        "val": {
+          "npz_path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-single-play-v0-val.npz",
+          "episodes": 100,
+          "raw_rows": 100100,
+          "headers": {
+            "observations": {
+              "shape": [
+                100100,
+                28
+              ],
+              "dtype": "float32"
+            },
+            "actions": {
+              "shape": [
+                100100,
+                5
+              ],
+              "dtype": "float32"
+            },
+            "terminals": {
+              "shape": [
+                100100
+              ],
+              "dtype": "bool"
+            },
+            "qpos": {
+              "shape": [
+                100100,
+                21
+              ],
+              "dtype": "float32"
+            },
+            "qvel": {
+              "shape": [
+                100100,
+                20
+              ],
+              "dtype": "float32"
+            }
+          },
+          "source_arrays": {
+            "qpos": {
+              "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/cache/data/cube1/val_qpos.npy",
+              "shape": [
+                100100,
+                21
+              ],
+              "dtype": "float32"
+            },
+            "qvel": {
+              "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/cache/data/cube1/val_qvel.npy",
+              "shape": [
+                100100,
+                20
+              ],
+              "dtype": "float32"
+            }
+          }
+        }
+      }
+    },
+    {
+      "cube_count": 2,
+      "latent_dim": 512,
+      "current_next_dim": 531,
+      "goal_dim": 518,
+      "Native_cap": 500,
+      "camera_reference": {
+        "cube_count": 2,
+        "env_id": "cube-double-v0",
+        "source_name": "front",
+        "render_name": "front_pixels",
+        "source_position": [
+          1.287,
+          0.0,
+          0.509
+        ],
+        "position": [
+          1.287,
+          0.0,
+          0.509
+        ],
+        "base_quaternion": [
+          0.5792028135240382,
+          0.4056157058175116,
+          0.4056157058175116,
+          0.5792028135240384
+        ],
+        "actual_quaternion": [
+          0.5609588321928806,
+          0.4304941214288525,
+          0.4304941214288525,
+          0.5609588321928807
+        ],
+        "FOV": 45.0,
+        "width": 224,
+        "height": 224,
+        "offsamples": 4,
+        "aa_samples": 4,
+        "local_x_up_degrees": 5.0,
+        "pullback": 0.0,
+        "ob_type": "states",
+        "visualize_info": false,
+        "pixel_transparent_arm": false,
+        "crop": null,
+        "provenance": "Cube1 unchanged pinned official front_pixels (prior M5 RGB recipe); Cube2/3 approved front+5; Cube4 training_camera_v2"
+      },
+      "splits": {
+        "train": {
+          "npz_path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-double-play-v0.npz",
+          "episodes": 1000,
+          "raw_rows": 1001000,
+          "headers": {
+            "observations": {
+              "shape": [
+                1001000,
+                37
+              ],
+              "dtype": "float32"
+            },
+            "actions": {
+              "shape": [
+                1001000,
+                5
+              ],
+              "dtype": "float32"
+            },
+            "terminals": {
+              "shape": [
+                1001000
+              ],
+              "dtype": "bool"
+            },
+            "qpos": {
+              "shape": [
+                1001000,
+                28
+              ],
+              "dtype": "float32"
+            },
+            "qvel": {
+              "shape": [
+                1001000,
+                26
+              ],
+              "dtype": "float32"
+            }
+          },
+          "source_arrays": {
+            "qpos": {
+              "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_official_embeddings_v1/source_arrays/train_qpos.npy",
+              "shape": [
+                1001000,
+                28
+              ],
+              "dtype": "float32"
+            },
+            "qvel": {
+              "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_official_embeddings_v1/source_arrays/train_qvel.npy",
+              "shape": [
+                1001000,
+                26
+              ],
+              "dtype": "float32"
+            }
+          }
+        },
+        "val": {
+          "npz_path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-double-play-v0-val.npz",
+          "episodes": 100,
+          "raw_rows": 100100,
+          "headers": {
+            "observations": {
+              "shape": [
+                100100,
+                37
+              ],
+              "dtype": "float32"
+            },
+            "actions": {
+              "shape": [
+                100100,
+                5
+              ],
+              "dtype": "float32"
+            },
+            "terminals": {
+              "shape": [
+                100100
+              ],
+              "dtype": "bool"
+            },
+            "qpos": {
+              "shape": [
+                100100,
+                28
+              ],
+              "dtype": "float32"
+            },
+            "qvel": {
+              "shape": [
+                100100,
+                26
+              ],
+              "dtype": "float32"
+            }
+          },
+          "source_arrays": {
+            "qpos": {
+              "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_official_embeddings_v1/source_arrays/val_qpos.npy",
+              "shape": [
+                100100,
+                28
+              ],
+              "dtype": "float32"
+            },
+            "qvel": {
+              "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_official_embeddings_v1/source_arrays/val_qvel.npy",
+              "shape": [
+                100100,
+                26
+              ],
+              "dtype": "float32"
+            }
+          }
+        }
+      }
+    },
+    {
+      "cube_count": 3,
+      "latent_dim": 512,
+      "current_next_dim": 531,
+      "goal_dim": 521,
+      "Native_cap": 1000,
+      "camera_reference": {
+        "cube_count": 3,
+        "env_id": "cube-triple-v0",
+        "source_name": "front",
+        "render_name": "front_pixels",
+        "source_position": [
+          1.287,
+          0.0,
+          0.509
+        ],
+        "position": [
+          1.287,
+          0.0,
+          0.509
+        ],
+        "base_quaternion": [
+          0.5792028135240382,
+          0.4056157058175116,
+          0.4056157058175116,
+          0.5792028135240384
+        ],
+        "actual_quaternion": [
+          0.5609588321928806,
+          0.4304941214288525,
+          0.4304941214288525,
+          0.5609588321928807
+        ],
+        "FOV": 45.0,
+        "width": 224,
+        "height": 224,
+        "offsamples": 4,
+        "aa_samples": 4,
+        "local_x_up_degrees": 5.0,
+        "pullback": 0.0,
+        "ob_type": "states",
+        "visualize_info": false,
+        "pixel_transparent_arm": false,
+        "crop": null,
+        "provenance": "Cube1 unchanged pinned official front_pixels (prior M5 RGB recipe); Cube2/3 approved front+5; Cube4 training_camera_v2"
+      },
+      "splits": {
+        "train": {
+          "npz_path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-triple-play-v0.npz",
+          "episodes": 3000,
+          "raw_rows": 3003000,
+          "headers": {
+            "observations": {
+              "shape": [
+                3003000,
+                46
+              ],
+              "dtype": "float32"
+            },
+            "actions": {
+              "shape": [
+                3003000,
+                5
+              ],
+              "dtype": "float32"
+            },
+            "terminals": {
+              "shape": [
+                3003000
+              ],
+              "dtype": "bool"
+            },
+            "qpos": {
+              "shape": [
+                3003000,
+                35
+              ],
+              "dtype": "float32"
+            },
+            "qvel": {
+              "shape": [
+                3003000,
+                32
+              ],
+              "dtype": "float32"
+            }
+          },
+          "source_arrays": {
+            "qpos": {
+              "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/official_state_2d_cache_v1/source_arrays/train_qpos.npy",
+              "shape": [
+                3003000,
+                35
+              ],
+              "dtype": "float32"
+            },
+            "qvel": {
+              "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/official_state_2d_cache_v1/source_arrays/train_qvel.npy",
+              "shape": [
+                3003000,
+                32
+              ],
+              "dtype": "float32"
+            }
+          }
+        },
+        "val": {
+          "npz_path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-triple-play-v0-val.npz",
+          "episodes": 300,
+          "raw_rows": 300300,
+          "headers": {
+            "observations": {
+              "shape": [
+                300300,
+                46
+              ],
+              "dtype": "float32"
+            },
+            "actions": {
+              "shape": [
+                300300,
+                5
+              ],
+              "dtype": "float32"
+            },
+            "terminals": {
+              "shape": [
+                300300
+              ],
+              "dtype": "bool"
+            },
+            "qpos": {
+              "shape": [
+                300300,
+                35
+              ],
+              "dtype": "float32"
+            },
+            "qvel": {
+              "shape": [
+                300300,
+                32
+              ],
+              "dtype": "float32"
+            }
+          },
+          "source_arrays": {
+            "qpos": {
+              "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/official_state_2d_cache_v1/source_arrays/val_qpos.npy",
+              "shape": [
+                300300,
+                35
+              ],
+              "dtype": "float32"
+            },
+            "qvel": {
+              "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/official_state_2d_cache_v1/source_arrays/val_qvel.npy",
+              "shape": [
+                300300,
+                32
+              ],
+              "dtype": "float32"
+            }
+          }
+        }
+      }
+    },
+    {
+      "cube_count": 4,
+      "latent_dim": 512,
+      "current_next_dim": 531,
+      "goal_dim": 524,
+      "Native_cap": 1000,
+      "camera_reference": {
+        "cube_count": 4,
+        "env_id": "cube-quadruple-v0",
+        "source_name": "front",
+        "render_name": "front_pixels",
+        "source_position": [
+          1.287,
+          0.0,
+          0.509
+        ],
+        "position": [
+          1.3835957918490516,
+          1.1102230246251566e-17,
+          0.5348699245660802
+        ],
+        "base_quaternion": [
+          0.5792028135240382,
+          0.4056157058175116,
+          0.4056157058175116,
+          0.5792028135240384
+        ],
+        "actual_quaternion": [
+          0.5609588321928806,
+          0.4304941214288525,
+          0.4304941214288525,
+          0.5609588321928807
+        ],
+        "FOV": 45.0,
+        "width": 224,
+        "height": 224,
+        "offsamples": 4,
+        "aa_samples": 4,
+        "local_x_up_degrees": 5.0,
+        "pullback": 0.1,
+        "ob_type": "states",
+        "visualize_info": false,
+        "pixel_transparent_arm": false,
+        "crop": null,
+        "provenance": "Cube1 unchanged pinned official front_pixels (prior M5 RGB recipe); Cube2/3 approved front+5; Cube4 training_camera_v2"
+      },
+      "splits": {
+        "train": {
+          "npz_path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-quadruple-play-v0.npz",
+          "episodes": 5000,
+          "raw_rows": 5005000,
+          "headers": {
+            "observations": {
+              "shape": [
+                5005000,
+                55
+              ],
+              "dtype": "float32"
+            },
+            "actions": {
+              "shape": [
+                5005000,
+                5
+              ],
+              "dtype": "float32"
+            },
+            "terminals": {
+              "shape": [
+                5005000
+              ],
+              "dtype": "bool"
+            },
+            "qpos": {
+              "shape": [
+                5005000,
+                42
+              ],
+              "dtype": "float32"
+            },
+            "qvel": {
+              "shape": [
+                5005000,
+                38
+              ],
+              "dtype": "float32"
+            }
+          },
+          "source_arrays": {
+            "qpos": {
+              "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/training_camera_v2/source_arrays/train_qpos.npy",
+              "shape": [
+                5005000,
+                42
+              ],
+              "dtype": "float32"
+            },
+            "qvel": {
+              "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/training_camera_v2/source_arrays/train_qvel.npy",
+              "shape": [
+                5005000,
+                38
+              ],
+              "dtype": "float32"
+            }
+          }
+        },
+        "val": {
+          "npz_path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-quadruple-play-v0-val.npz",
+          "episodes": 500,
+          "raw_rows": 500500,
+          "headers": {
+            "observations": {
+              "shape": [
+                500500,
+                55
+              ],
+              "dtype": "float32"
+            },
+            "actions": {
+              "shape": [
+                500500,
+                5
+              ],
+              "dtype": "float32"
+            },
+            "terminals": {
+              "shape": [
+                500500
+              ],
+              "dtype": "bool"
+            },
+            "qpos": {
+              "shape": [
+                500500,
+                42
+              ],
+              "dtype": "float32"
+            },
+            "qvel": {
+              "shape": [
+                500500,
+                38
+              ],
+              "dtype": "float32"
+            }
+          },
+          "source_arrays": {
+            "qpos": {
+              "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/training_camera_v2/source_arrays/val_qpos.npy",
+              "shape": [
+                500500,
+                42
+              ],
+              "dtype": "float32"
+            },
+            "qvel": {
+              "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_official_embeddings_v1/training_camera_v2/source_arrays/val_qvel.npy",
+              "shape": [
+                500500,
+                38
+              ],
+              "dtype": "float32"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "runtime_dependency_versions_reference": {
+    "flax": "0.11.2",
+    "gymnasium": "1.2.1",
+    "h5py": "3.16.0",
+    "hydra-core": "1.3.6",
+    "jax": "0.7.2",
+    "jaxlib": "0.7.2",
+    "kornia": "0.8.3",
+    "ml_collections": "1.1.0",
+    "mujoco": "3.3.7",
+    "numpy": "2.2.6",
+    "ogbench": "1.2.1",
+    "optax": "0.2.5",
+    "timm": "1.0.29",
+    "torch": "2.8.0",
+    "torchvision": "0.23.0",
+    "transformers": "5.17.0"
+  },
+  "runtime_dependency_reference": {
+    "local_path": "D:\\LeWM_Artifacts\\coordination\\cube_downstream_101732Test_20261017_v1\\requirements.runtime.lock",
+    "sha256": "667d3f52b29cd155110324310fea8a21090bf12f13d5f619f3b9656d5a36ca48",
+    "note": "metadata distribution versions only; Python/CUDA actual tensor and module-import gates remain separate Root work"
+  },
+  "clone_stat_rule": "Old inode/device/ctime are deliberately absent from input expectations. Expected immutable bytes/SHA/content are rebound to new target before/after current stat. No old record is edited.",
+  "raw_npz_sha_vs_receipt_sha_rule": "official_NPZ expected_sha256 is archive bytes SHA. accepted_qpos_qvel_receipt expected_sha256 hashes the small JSON receipt; official_qpos_qvel_NPY entries hash the array payload files themselves.",
+  "expected_hash_once_large_payload_files": 28,
+  "expected_hash_once_large_payload_bytes": 7001161723,
+  "expected_unknown_small_source_size_count": 0,
+  "observer_only": true,
+  "NN_performed": false,
+  "scope_exclusions": [
+    "No existing feature/vector caches payload read/hash",
+    "No pickle or torch model load",
+    "No install/prepare/producer/rendering/training/SR",
+    "No copying/re-extracting state arrays or source modification"
+  ],
+  "resource_lower_bound": {
+    "four_groups_raw_latent_rows": 11011000,
+    "feature_FP32_D512_bytes": 22550528000,
+    "feature_NPY_header_estimate_bytes": 1408000,
+    "existing_full_feature_planner_reserved_bytes": 8589934592,
+    "original_full_feature_admission_if_same_policy_bytes": 31141870592,
+    "four_groups_checkpoint_transactions": 52,
+    "four_groups_checkpoint_payload_files": 208,
+    "VISReg_previous_3100000000_budget_not_reusable_for_new_full_encoding": true,
+    "reason": "VISReg3.1GB covered outputs26CP for two groups after their caches already existed; new Tiny four-group full feature payload alone is22.55GB.",
+    "inference_ETA_unmeasured": true,
+    "training_ETA_unmeasured": true,
+    "current_test_free_quota_and_existing_Tiny_cache_not_locally_verified": true,
+    "admission_policy": "Base projected total may be raised from real observed artifacts; credit already-paid bytes exactly once per owned STORE. Include temp atomic output, headers/receipts, qpos/qvel rebind/extraction only if needed,52 whole-agent CP includingAdam once, Native logs/probes and reserve. At insufficient gate wait; do not delete prior artifacts without new scoped authority."
+  },
+  "full_pipeline_budget_is_not_the_8GiB_encoding_reserve": true,
+  "resource_budget_limit": "22.55GB raw FP32D512 feature payload+headers plus base planner8GiB is only encoding admission floor, excludes unmeasured52CP/native/temp/map/probe production upper budget; Root must measure full per-group factory RAM and real CP size before final admission"
+}

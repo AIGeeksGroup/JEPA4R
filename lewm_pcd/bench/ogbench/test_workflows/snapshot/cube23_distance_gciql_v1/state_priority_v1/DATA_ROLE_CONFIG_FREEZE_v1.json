@@ -1,0 +1,14 @@
+{
+  "stage": "prepared_not_GPUtested_not_launched",
+  "files": {
+    "data_plan.json": "3f67c6eea0fc8cbae3834f500f7762779be8e2f940eda1cb8d26d4b2396a99ab",
+    "configs/G01_cube1_state.json": "29f2bb8bd66e7512b184e3c21fca5f001a7b646a137c12e273efe489f32d2aa3",
+    "configs/G04_cube2_state.json": "46866335d31328e5a8c74a682650d435f037b360c063e7ca31c71cfb8500d065",
+    "configs/G07_cube3_state.json": "484e009d1c432d748cbb79045b21918e85ffae29e47dea3d38d92b6d5c401f7b"
+  },
+  "metadata_schema_checks_actual_exit_code": 0,
+  "officialNPZpresent_single_no_copy": true,
+  "nozero_featuresNone_truewidths": true,
+  "save_step1_plus100K_count11": true,
+  "originalSixRoleFreezeUnchanged": "734c7ee99ebe43cede18e104a7d093909583f6cef02a6a42aec4ce2c85aec931"
+}

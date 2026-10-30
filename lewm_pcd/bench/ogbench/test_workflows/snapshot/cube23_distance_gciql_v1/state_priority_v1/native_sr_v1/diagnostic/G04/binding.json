@@ -1,0 +1,23 @@
+{
+  "actual_exit_code": 0,
+  "checkpoint": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runs/G04_cube2_state/checkpoints/update_001000000/params_1000000.pkl",
+  "checkpoint_sha256": "95246b309ed9bf45abec85597d407cd96c629febf10e9421e743296fb6655841",
+  "state": {
+    "leaves": 153,
+    "sha256": "c7bcf59b9456394adf18824953dc58645f3f3e96611a30963be8f9aa7cf8e503"
+  },
+  "current_dim": 37,
+  "goal_dim": 6,
+  "synthetic_zero_padding": false,
+  "network_step": 1000001,
+  "Adam_count": 1000000,
+  "backend": "cpu",
+  "new_optimizer_updates": 0,
+  "dataset_loaded": false,
+  "encoder_calls": 0,
+  "WM_dynamics_calls": 0,
+  "config_path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/configs/G04.json",
+  "config_sha256": "3d3a4349076491cf1926461ddb717ee02242a36bb5840642118e53923ce7d77d",
+  "adapter_sha256": "f58b4d4c13523ddffb5e405ac53376af18c7a4893f0f3e7098874ec833c7cdec",
+  "original_evaluate_sha256": "4d9a2732bc9ef89ce99fbc0f07a76d3f4d035783af3a658251709140ff9de3d5"
+}

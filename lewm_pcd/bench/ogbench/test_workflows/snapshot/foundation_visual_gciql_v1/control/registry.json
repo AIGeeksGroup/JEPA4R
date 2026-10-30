@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "host": "root@connect.westd.seetacloud.com",
+  "port": 31435,
+  "families": {
+    "visreg_vitb768": {
+      "architecture": "ViT-B/16",
+      "feature": "last_normalized_CLS",
+      "latent_dim": 768,
+      "cube_counts": [1, 2, 3, 4],
+      "enabled": true,
+      "status": "AUTHOR_DRIVE_VITB_FOUND_ASSET_AND_SMOKE_PENDING",
+      "requires": "Real official ViT-B asset, frozen spec, all four smoke acceptances and a new explicit release"
+    },
+    "vjepa21_vitl1024": {
+      "architecture": "V-JEPA 2.1 ViT-L/16",
+      "feature": "last_normalized_image_patch_mean",
+      "latent_dim": 1024,
+      "cube_counts": [1, 2, 3, 4],
+      "enabled": true,
+      "status": "AUTHORIZED_ASSET_AND_SMOKE_PENDING"
+    }
+  },
+  "active_families": ["visreg_vitb768", "vjepa21_vitl1024"],
+  "current_input": "native_feature + proprio19",
+  "goal_input": "native_goal_feature + 3*cube_count XYZ",
+  "zero_padding": false,
+  "PCA": false,
+  "training_updates_per_group": 1000000,
+  "checkpoint_steps": [1,100000,200000,300000,400000,500000,600000,700000,800000,900000,1000000],
+  "final_SR_episodes_per_group": 250,
+  "all_active_smokes_before_any_formal_group": true,
+  "formal_order": "Each active family: Cube1 -> Cube2 -> Cube3 -> Cube4; each group cache -> GCIQL -> final Native SR"
+}

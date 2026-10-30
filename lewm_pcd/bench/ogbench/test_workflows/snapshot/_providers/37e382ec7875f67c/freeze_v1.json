@@ -1,0 +1,29 @@
+{
+  "schema": "weight_only_recovery_source_freeze_v1",
+  "at_utc": "2026-10-27T02:50:29.327794+00:00",
+  "stage": "source_frozen_cpu_checked_root_gpu_and_launch_gates_pending",
+  "files": {
+    "resume_entry.py": "dc5810d4d8ea470dd003e2d33aedc47160695c9395a5585ca9d8af4a1ce93c20",
+    "resume_helpers.py": "d724631c2f7132ea8940ebd6455ba1cf054daa8b0540768fbfa6e3b4a19674ac",
+    "launch.py": "9704f3b8fc34019dd08e1e76713f7c4fd5db5b9f059b494625096a1b7a0724fc",
+    "plan.json": "8d9e5d00a81c14f320e95db83701307ad3e4010e9984cf9b15d4c7e6886c2e41",
+    "prepare_plan.py": "f1b8cc85254db6d0cfc098edfbcdc2e41e602c6aea206cd1f68e016a68105858",
+    "run_train.sh": "98798169c6b073daf68b4356ab5a0b0d8fb9c5650be4c40d0e161f0544f08e23",
+    "strict_reload_export.py": "65ae719a117fe098bd022c5fdae3c976f93e34dbaf97cef48dfe1e0b0769abe4",
+    "test_source_contract.py": "2c94f051659b9485f4de99d22872a55e7c87d5a84d68b16dbade556f633e1a4f",
+    "test_cpu_recovery.py": "04288e6120944d0c25e6e2f77d8a00df6db8ed29c2f6db7825194e1b03842eaf",
+    "run_cpu_checks.py": "d641682ec77c0d7f64eb7c3274699547f5380c9cf8bd5f723e1b2cc17e949f17",
+    "CPU_TEST_HISTORY.md": "149a15ee04676b20fa1495482521e6a6619ca173d5f5021a66c706db9c732a95",
+    "HANDOFF.md": "27b0e72079f702df97ee9d2bfa6d3de3f31b6e3c441206208f4a39fddc791b2c",
+    "freeze_source.py": "0560781119a31b978c2de565374484075a703be28f1aebac6f59e32a78c05f2e",
+    "adapted_native_main.py": "13460808fd95546f25e182397b709105558db6cbc40869a39da82155e593a610",
+    "MAIN_ALLOWED_DIFF.patch": "909e942a6f9d25c4f972b5207be46bb0bc800eea654df63d0824361e59623d18"
+  },
+  "reference_freeze_sha256": "78d3a19b0d6bebb285582bc0f13582d32f072ec11714c122084063ca68a11662",
+  "adapted_main_sha256_without_final_newline": "f027d44e73ca79815898828164320f41fb3bb9dc367f6d043989a1310ebd8292",
+  "allowed_main_replacement_count": 7,
+  "reference_model_loss_augment_copied": false,
+  "exact_resume": false,
+  "formal_training_launched": false,
+  "environment_installed_or_modified": false
+}

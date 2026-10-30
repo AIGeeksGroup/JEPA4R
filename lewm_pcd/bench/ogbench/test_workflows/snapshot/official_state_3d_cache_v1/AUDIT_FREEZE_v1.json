@@ -1,0 +1,23 @@
+{
+  "stage": "source_frozen_CPU_passed_not_actual_full_cache_audit",
+  "at": "2026-10-17T17:39:17.558868+00:00",
+  "files": {
+    "audit_cache.py": {
+      "bytes": 20447,
+      "sha256": "8b1d14046cc8ea0e97d9fd3304902a00c42bc549861dfb5b7b3db9d8491d68f7"
+    },
+    "test_audit_cache.py": {
+      "bytes": 12591,
+      "sha256": "601e68cb6b7ab3d0bf92ef109fd2dd170c0ed8e8abf2db1fa9bd4d1e1c9fb1da"
+    }
+  },
+  "dependencies": {
+    "common.py": "93ff5465c43706e59465eab1aad9764e05f1d3a6b0c54e6dd8659f1b15260950",
+    "producer_plan.json": "caf55873bd9d8bcfb08bda4cf375e54b2c330ee54f9bf6bfef65a677f75306a3",
+    "original_2d_audit_cache.py": "a97a55ce945c12b16d6fb473c71b289cdf8b2a0164b697ae0f8d4c5d7f9b5006"
+  },
+  "CPU_cases": 2,
+  "CPU_actual_exit_code": 0,
+  "scope": "1 positive4EP fixture +1 real feature byteSHA corruption; no old raw/model/sourcearray content reads; original core unchanged; no GPU/NN/remote jobs",
+  "real_full_cache_audit_executed": false
+}

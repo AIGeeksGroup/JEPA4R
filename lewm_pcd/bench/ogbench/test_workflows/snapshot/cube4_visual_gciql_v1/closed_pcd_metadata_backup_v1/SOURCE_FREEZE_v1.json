@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "status": "frozen_local_metadata_only_bridge_not_executed",
+  "files": {
+    "parameter_bridge.py": {
+      "bytes": 3162,
+      "sha256": "136339dcb579ea0eff46a72c123e843133db2d1d49c4e50b3696b83ff43607d3"
+    },
+    "metadata_backup.py": {
+      "bytes": 10784,
+      "sha256": "a57a6a45b57bdc065960a1e91c7cea35e0c1a05aac78fbd7b8f4c3a4cddf9e55"
+    },
+    "copy_metadata.py": {
+      "bytes": 170,
+      "sha256": "c78d92c9766113c94ea332ca90859f5e4afc37766609456c81956e6e3aaed4ce"
+    },
+    "test_metadata.py": {
+      "bytes": 1720,
+      "sha256": "c566b65911af96180ca594df4d703afbf0acc6ccc18c0d2353beae3d49e38d68"
+    },
+    "BRIDGE_PARAMETER_DELTA_v1.json": {
+      "bytes": 2723,
+      "sha256": "cf3cedd79c7656eeaf69017aaea51afb004c473f12f7d38820b5547858282f2e"
+    }
+  },
+  "references": {
+    "closed_backup_preparation_v2/closed_role.py": "bd4a240d9a39d0d7140f873de62ce3f760651ae2223598a68882f680f30e69d4",
+    "closed_backup_preparation_v2/copy_verified.py": "bcb574502929e6c128806c7f714788d0cfe02f991592b9ae1f8024f6bec1e574",
+    "functional_v2/recovery.py": "e62099b13b11e5b81d3034a13187e531e7aadd708f69223f81bacc4bcf9f6e30",
+    "control_v2/RECOVERY_BINDING_final_v2.json": "bb47c70f0ccb998e786703e6febb4975b6438ba8da57f064c691d712ddcde693"
+  },
+  "bridge_proof": {
+    "pack": {
+      "source_sha256": "bd4a240d9a39d0d7140f873de62ce3f760651ae2223598a68882f680f30e69d4",
+      "effective_sha256": "d6258fa6412ee0d07b4819b204863cc66b7ac18a514bdcec87fb7c11ad4369c0",
+      "exact_count_edits": 4,
+      "reverse_source_equals_original": true,
+      "only_asset_labels_namespace_receipt_semantics_changed": true
+    },
+    "copy": {
+      "source_sha256": "bcb574502929e6c128806c7f714788d0cfe02f991592b9ae1f8024f6bec1e574",
+      "effective_sha256": "cc116ce0eebc5f66b7ca5bde3298147c78d4b6fc702d90e0503e2c93d5021cb3",
+      "exact_count_edits": 9,
+      "reverse_source_equals_original": true,
+      "only_asset_labels_namespace_receipt_semantics_changed": true
+    },
+    "edits": {
+      "pack": [
+        [
+          "dict(files=files, final_only=True, old_periodics_raw_WM_cache_excluded=True)",
+          "dict(files=files, asset_kind='PCD_cache_closed_metadata', cache_payload_model_raw_excluded=True)",
+          1
+        ],
+        [
+          "f'{args.group}_final1M_closed.tar.gz'",
+          "'Quad_PCD_cache_closed_metadata_v1.tar.gz'",
+          1
+        ],
+        [
+          "actual_exit_code=0, group_id=args.group",
+          "actual_exit_code=0, asset_kind='PCD_cache_closed_metadata'",
+          1
+        ],
+        [
+          "only_final_policy_and_sidecar=True, no_periodic_WM_raw_or_cache_copy=True",
+          "metadata_only=True, no_WM_model_raw_or_cache_payload_copy=True",
+          1
+        ]
+      ],
+      "copy": [
+        [
+          "parser.add_argument('--group', choices=('G11', 'G12'), required=True)",
+          "parser.add_argument('--asset-kind', choices=('PCD_cache_closed_metadata',), default='PCD_cache_closed_metadata')",
+          1
+        ],
+        [
+          "remote = ROOT + f'/cube4_visual_gciql_v1/closed_training_backup_v2/{args.group}/completed_v1'",
+          "remote = ROOT + '/cube4_visual_gciql_v1/closed_pcd_metadata_backup_v1/completed_v1'",
+          1
+        ],
+        [
+          "r['group_id']==group",
+          "r['asset_kind']==asset_kind",
+          1
+        ],
+        [
+          "group={args.group!r}",
+          "asset_kind={args.asset_kind!r}",
+          1
+        ],
+        [
+          "f'{args.group}_final1M_closed.tar.gz'",
+          "'Quad_PCD_cache_closed_metadata_v1.tar.gz'",
+          1
+        ],
+        [
+          "checkpoint_SHA_ledger.json",
+          "PCD_receipt_SHA_ledger.json",
+          1
+        ],
+        [
+          "group_id=args.group",
+          "asset_kind=args.asset_kind",
+          1
+        ],
+        [
+          "only_final_policy_and_sidecar=True",
+          "metadata_only=True",
+          1
+        ],
+        [
+          "prefix=f'quad_{args.group}_closed_'",
+          "prefix=f'quad_{args.asset_kind}_closed_'",
+          1
+        ]
+      ]
+    }
+  },
+  "frozen_at": 1792510854.541885
+}

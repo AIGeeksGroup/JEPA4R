@@ -1,0 +1,32 @@
+{
+  "actual_exit_code": 0,
+  "acceptance_path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/data_readiness_v1/quadruple_data_acceptance.json",
+  "acceptance_sha256": "db1bb2aacf3916254aaf8d3e3f81b90e1b2de3b2e4ab93407e17a45f54fd9329",
+  "datasets": {
+    "train": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-quadruple-play-v0.npz",
+      "raw_sha256": "31053b04f5adbedaf9a5abef467057b2c216b0b3f8664cf3137b9891ee32a6ed",
+      "accepted_stat": {
+        "size": 1861419607,
+        "mtime_ns": 1792241332419440814,
+        "ctime_ns": 1792241354960323486,
+        "device": 2304,
+        "inode": 15085547564
+      }
+    },
+    "validation": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-quadruple-play-v0-val.npz",
+      "raw_sha256": "96ae20f4c7ffe673520c69f2c0339a746f7eac019bb15a92f2898fb8e1785d1d",
+      "accepted_stat": {
+        "size": 185890898,
+        "mtime_ns": 1792241530418905606,
+        "ctime_ns": 1792241532810992243,
+        "device": 2304,
+        "inode": 15085547533
+      }
+    }
+  },
+  "raw_content_rehashed": false,
+  "original_accepted_source_retained": true,
+  "at": 1792320965.1106706
+}

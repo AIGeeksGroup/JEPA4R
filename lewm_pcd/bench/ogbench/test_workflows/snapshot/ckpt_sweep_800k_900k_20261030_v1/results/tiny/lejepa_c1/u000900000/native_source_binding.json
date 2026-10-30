@@ -1,0 +1,293 @@
+{
+  "actual_exit_code": 0,
+  "checkpoint": {
+    "adam_count": 900000,
+    "agent_fingerprint": {
+      "leaves": 153,
+      "sha256": "0aa11c563870f165674cb8fc7c4284bffa5074dff331a662a24ee5b20d667bab"
+    },
+    "agent_leaf_count": 153,
+    "checkpoint": "/root/autodl-tmp/lejepa_tiny512_cube14_20261029_v1_outputs/formal/runs/lejepa_tiny512_cube1/checkpoints/update_000900000",
+    "jax_backend": "cpu",
+    "manifest": "/root/autodl-tmp/lejepa_tiny512_cube14_20261029_v1_outputs/formal/runs/lejepa_tiny512_cube1/checkpoints/update_000900000/manifest.json",
+    "manifest_sha256": "bf0caabcf31da318c2908cb8c5cec0fb704a9526df7fa3bf7d5d1821f4ec6469",
+    "network_step": 900001,
+    "params": "/root/autodl-tmp/lejepa_tiny512_cube14_20261029_v1_outputs/formal/runs/lejepa_tiny512_cube1/checkpoints/update_000900000/params_900000.pkl",
+    "params_sha256": "5ee9fae9bb08fc29d30e341407a2d0b0f1e0c163a8b0e397c02885a533bf2ae2",
+    "run_state": "/root/autodl-tmp/lejepa_tiny512_cube14_20261029_v1_outputs/formal/runs/lejepa_tiny512_cube1/checkpoints/update_000900000/run_state.pkl",
+    "run_state_binding_sha256": "ec9f16ee0bf861b59787499649d846935f8bb802978336e5521ad5d027dd7b1d",
+    "run_state_sha256": "b6c6f02e165d37f85ef58f04febe42715f20e0a1c7dc34e2be087143de91a279",
+    "training_output": "/root/autodl-tmp/lejepa_tiny512_cube14_20261029_v1_outputs/formal/runs/lejepa_tiny512_cube1",
+    "update": 900000
+  },
+  "common_sha256": "97e0750ebb1db970ea3b9bf32ccaf6ee11329246a47ecdd9bacc38547f843e95",
+  "cube": 1,
+  "evaluator_contract": {
+    "current_dim": 531,
+    "goal_dim": 515,
+    "max_episode_steps": 200,
+    "mode": "rgb"
+  },
+  "extra": {
+    "lejepa_overlay": {
+      "original_native_audit_byteexact": true,
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube14_gciql_v1/release_v1/tiny_bridge.py",
+      "reused_functional_SHA256": "d777c27d82a357ae0ca429a6bea7721c51e9860f9ca688c2c22dc3ed4dedbbfa",
+      "sha256": "98d684a1065b4c44f026ada58ac9664d026998fd74cdbe3872bd09913bb51c62",
+      "sources": {
+        "audit_native": {
+          "counted_edits": [],
+          "effective_SHA256": "c2840c183d9279623be16b5f1e882a4b121a856039fd74e8f4584fca82f8501a",
+          "original_SHA256": "c2840c183d9279623be16b5f1e882a4b121a856039fd74e8f4584fca82f8501a"
+        },
+        "inputs": {
+          "counted_edits": [
+            [
+              "dim in (768, 1024)",
+              "dim in (512, 768, 1024)"
+            ]
+          ],
+          "effective_SHA256": "51d0d49ca0f0d959073e46271e03c79fc59982b424cae4e5fe24fc5f54d8798c",
+          "original_SHA256": "ff66c68f50a6c73bd7928e4281a30adf4686538a2829d31d6981a4fd86b5f2ec"
+        },
+        "native_sr": {
+          "counted_edits": [],
+          "effective_SHA256": "ae16abe24a609719630357f69c2c472d4df2f58a63f044edd9fbe028f4f10e41",
+          "original_SHA256": "ae16abe24a609719630357f69c2c472d4df2f58a63f044edd9fbe028f4f10e41"
+        },
+        "prepare": {
+          "counted_edits": [
+            [
+              "d in (768,1024)",
+              "d in (512,768,1024)"
+            ]
+          ],
+          "effective_SHA256": "8bcdac1214978ff073363de965f719555ed4510aa9646c2a05bcb3b70034dee8",
+          "original_SHA256": "17141ea3dffd485455f9a54dbcb52a3b569c583b2f1326d7074d2d96b4a78464"
+        },
+        "runtime": {
+          "counted_edits": [
+            [
+              "d in (768,1024)",
+              "d in (512,768,1024)"
+            ]
+          ],
+          "effective_SHA256": "c830f59464cfd1809a8d814b4cccb59482615e9aadcfb8bc7a176d1bb2dda16d",
+          "original_SHA256": "03986a4c4dd03598b9ae06e57955ce164ad3a73fcc655dcc73acf12df0632326"
+        }
+      }
+    }
+  },
+  "family": "lejepa",
+  "group_id": "lejepa_tiny512_cube1",
+  "model": "LeJEPA-Tiny512",
+  "registry_sha256": "1f9e1b4e6ad0ca42aa8a682f799bb4a117b050718d641f75588b872912aaa126",
+  "requested_mode": "tiny",
+  "restore_contract": {
+    "adam_count": 900000,
+    "agent_leaf_count": 153,
+    "all_leaves_finite": true,
+    "checkpoint_counter": 900000,
+    "cpu_jax": true,
+    "network_step": 900001,
+    "one_m_state_exact": false,
+    "strict_agent_restore": true
+  },
+  "runner": "run_one.py",
+  "runner_sha256": "41665ed2d3659a8ea4103a608d840e4d1d2cccfc1a079df6b29192a9aca4bab0",
+  "runtime_environment": {
+    "JAX_PLATFORMS": "cpu",
+    "MKL_NUM_THREADS": "4",
+    "MUJOCO_GL": "egl",
+    "OMP_NUM_THREADS": "4",
+    "OPENBLAS_NUM_THREADS": "4"
+  },
+  "schema_version": 1,
+  "selected_update": 900000,
+  "source_acceptance": "/root/autodl-tmp/lejepa_tiny512_cube14_20261029_v1_outputs/formal/acceptance/lejepa_tiny512_cube1.json",
+  "source_acceptance_ledger_manifest_sha256": {
+    "1": "cda1e91ce5bcb422b0631a58914cd048648c1989946a7f738cb049d9f842077f",
+    "100000": "c1256e8c58057c79cc808435a201f33f33964ab8238d980bba6e3d7618d3eaed",
+    "200000": "49e17fbb9b4813161d0eaeb6eac89466edbd893345e5c3e9acf35d01c98fa408",
+    "300000": "bf7de0bc9c14c8a51ec69bf59745c4b149b9a7b4b16b5f3a7f5d69365628a4c0",
+    "400000": "d87ac2b3c683cb7e45810b7ebb054efd14f15e2aec9c11a13ee500fa57fcd989",
+    "500000": "35995618e7ec18d72c54c54aa2057b1a8243be7527fab38ecb01da91225fb85c",
+    "600000": "981bdc73c5602237b47899b991205db7ff639c4b9672a57089394e0ce6431728",
+    "700000": "6c5ada6a5015ea3656ab651bd4558b1cca3779c75bbea80ed28d37b14c477588",
+    "800000": "b4da6576a71b89d081fb3fd4f7758ff1c35d37b411bd0ebefad9ef74161564d7",
+    "900000": "bf0caabcf31da318c2908cb8c5cec0fb704a9526df7fa3bf7d5d1821f4ec6469",
+    "1000000": "5d10b7ffb74936b9034237143ea9202149b7af067a3fad90fac73d186ac7d267"
+  },
+  "source_acceptance_sha256": "c066520137c444b4c1a136eb63c883f638e0207cd1663bb072426cce8fe4807b",
+  "training_config": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube14_gciql_v1/configs/formal/lejepa_tiny512_cube1.json",
+  "training_config_sha256": "6bd3d8122275f32d0b8cb489320589ccadc0733cf46961064417aea3223d147a",
+  "upstream_identity": {
+    "batch_size": 1024,
+    "cache_binding": null,
+    "cube_count": 1,
+    "data_binding": {
+      "cube_count": 1,
+      "data_id": "cube-single-play-v0",
+      "splits": {
+        "train": {
+          "accepted_raw_sha256": "80f3b6fd27f4f9d9e9eb6f0d07d6951559012f45b1e15ea4046ef8ecd8d3684e",
+          "accepted_stat": {
+            "ctime_ns": 1793203227260255606,
+            "device": 2304,
+            "inode": 4356349949,
+            "mtime_ns": 1792239322934576588,
+            "size": 256728298
+          },
+          "action_shape": [
+            1001000,
+            5
+          ],
+          "episodes": 1000,
+          "headers": {
+            "actions": {
+              "dtype": "float32",
+              "shape": [
+                1001000,
+                5
+              ]
+            },
+            "observations": {
+              "dtype": "float32",
+              "shape": [
+                1001000,
+                28
+              ]
+            },
+            "qpos": {
+              "dtype": "float32",
+              "shape": [
+                1001000,
+                21
+              ]
+            },
+            "qvel": {
+              "dtype": "float32",
+              "shape": [
+                1001000,
+                20
+              ]
+            },
+            "terminals": {
+              "dtype": "bool",
+              "shape": [
+                1001000
+              ]
+            }
+          },
+          "observation_shape": [
+            1001000,
+            28
+          ],
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-single-play-v0.npz",
+          "raw_rows": 1001000,
+          "terminal_indices_verified_this_run": true
+        },
+        "val": {
+          "accepted_raw_sha256": "96d07401bdebdc3f0ea6d56ed1333863e0962f441483adc2c43b83105046eb00",
+          "accepted_stat": {
+            "ctime_ns": 1793203225843529779,
+            "device": 2304,
+            "inode": 4356349948,
+            "mtime_ns": 1792239364607280659,
+            "size": 25687020
+          },
+          "action_shape": [
+            100100,
+            5
+          ],
+          "episodes": 100,
+          "headers": {
+            "actions": {
+              "dtype": "float32",
+              "shape": [
+                100100,
+                5
+              ]
+            },
+            "observations": {
+              "dtype": "float32",
+              "shape": [
+                100100,
+                28
+              ]
+            },
+            "qpos": {
+              "dtype": "float32",
+              "shape": [
+                100100,
+                21
+              ]
+            },
+            "qvel": {
+              "dtype": "float32",
+              "shape": [
+                100100,
+                20
+              ]
+            },
+            "terminals": {
+              "dtype": "bool",
+              "shape": [
+                100100
+              ]
+            }
+          },
+          "observation_shape": [
+            100100,
+            28
+          ],
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-single-play-v0-val.npz",
+          "raw_rows": 100100,
+          "terminal_indices_verified_this_run": true
+        }
+      }
+    },
+    "encoder_binding": {
+      "adapter": {
+        "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube14_gciql_v1/release_v1/tiny_encoder.py",
+        "sha256": "d32c467fc02fd3680d3c12d737e692dd423a9f1b5d7a0f9f20c5e21584da3b86"
+      },
+      "checkpoint_sha256": "8e9bc1a422390e7c9997f1761d0a6ec3b68f7070007d0a64f3a3b111bfd83ce6",
+      "family": "lejepa_tiny512",
+      "latent_dim": 512,
+      "spec_path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube14_gciql_v1/cache/groups/lejepa_tiny512_cube1/encoder_spec.json",
+      "spec_sha256": "10c2f1afd5a512639d82f7fabbe7f1ad2f0f7ae2773f3fdc1b9e2469de82e1ab"
+    },
+    "feature_loader_arguments": {
+      "train": {
+        "cache_dir": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube14_gciql_v1/outputs/cache/lejepa_tiny512_cube1/cache",
+        "checkpoint_sha256": "8e9bc1a422390e7c9997f1761d0a6ec3b68f7070007d0a64f3a3b111bfd83ce6",
+        "expected_rows": 1001000,
+        "manifest_sha256": "abbf3c578827a84ede75d8d619d09db56c5c5a62965d0283f4ed32924f66255c",
+        "source_npz": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-single-play-v0.npz",
+        "split": "train"
+      },
+      "val": {
+        "cache_dir": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube14_gciql_v1/outputs/cache/lejepa_tiny512_cube1/cache",
+        "checkpoint_sha256": "8e9bc1a422390e7c9997f1761d0a6ec3b68f7070007d0a64f3a3b111bfd83ce6",
+        "expected_rows": 100100,
+        "manifest_sha256": "abbf3c578827a84ede75d8d619d09db56c5c5a62965d0283f4ed32924f66255c",
+        "source_npz": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-single-play-v0-val.npz",
+        "split": "val"
+      }
+    },
+    "group_id": "lejepa_tiny512_cube1",
+    "input_contract": {
+      "current_dim": 531,
+      "goal_dim": 515,
+      "latent_dim": 512,
+      "zero_padding": false
+    },
+    "role": "lejepa_tiny512_cube1",
+    "schema_version": 1,
+    "seed": 0,
+    "wm": null,
+    "wm_sha256": null
+  },
+  "upstream_identity_sha256": "12694fd9c551c0c5661fd9bf543d2e29e08f4ce4e8f125886e24a4203a5c5cbf"
+}

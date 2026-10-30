@@ -1,0 +1,19 @@
+{
+  "status": "prepared_actual_sources_no_GPU_equivalence_claim",
+  "adapter_source_sha256": "7b505f879f147ef89e13ad26ad7f94a7bde93f12fd2d81fa982333b8a4543416",
+  "base_loop_source_sha256": "f40dea29f18346e538edd15db2d035967245d6841c02a7afba781ed2b1cab745",
+  "PCD_dataset_source_sha256": "12441cf27f0f9e027ecd52ad217257b06e13b29b715c8d60e4f64926cd46e6aa",
+  "plan_sha256": "3c7f546d2d0f99f4f7d89046d4fde65096a14e9ebcc1f7e793c9e4d1dc6f0c2d",
+  "primary_code_changed": false,
+  "new_adapter_lines": 43,
+  "batch": 64,
+  "precision": "original FP32/highest/matmulTF32False/cuDNNTrue",
+  "offline_split_counts": {
+    "train": 1000,
+    "val": 100
+  },
+  "canonical_hash_origin": {
+    "path": "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/lewm_state_pcd_goalxyz_gcbc_seed0_b256_fp32_100k_109_20261011_v1_completion_gate_restart_20261012_v1/report.json",
+    "sha256": "d1d2a4a7eef7159373a619c44fca88cbfdc9d07dc287116aeeaa4267b5d01056"
+  }
+}

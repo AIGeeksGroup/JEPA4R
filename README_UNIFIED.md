@@ -1,5 +1,7 @@
 # OGBench Cube unified switches — v3 with original Single LeWM
 
+Test 的 24 组视觉对比流程及独立 State baseline 现已收录，LeJEPA 四组使用 Tiny 配方，详见 [Test 流程总览](README_TEST_WORKFLOWS.md)。下列 v3 switch 和数据契约保持原样；Test 原生 `async100`/历史 RL3 等配方由新的来源索引单独标明。
+
 This checkout keeps the original JEPA4R CortexBench entry points at commit `6cec281879e8b866e567dc2e936072bb652b7326`. New adapters live in `lewm_pcd/bench/ogbench`; the canonical Tiny trainer is unchanged. Stable Worldmodel is bundled once at `6f1e499e9cc0c898d326112f485c1062c3d20f24`.
 
 The accepted v1/v2 directories and code ZIPs are unchanged. Their original manifests/reports are retained under `evidence/unified_v1` and `evidence/unified_v2`; small byte-pinned command references support regression tests when v3 is unpacked alone.
@@ -48,7 +50,6 @@ The visual Native loop rejects `state`; use the preserved original state Native 
 
 - PLDM uses one byte-preserved Impala512/GRU method and one author-source closure, RGB16/action15, uint8/255 then antialiased Resize65, train-only sample-standard-deviation action normalization once, B128/BF16 and the original optimizer/schedule. The profile determines the epoch budget; it is never inferred from a directory name. The original author dataclasses require the existing Python 3.10 training environment; Python 3.12 is not compatible with that unchanged factory.
 - `lejepa` selects only the canonical CortexBench Tiny/14 entry: head512, projector16, four views, B256, AdamW lr0.002, lambda0.02 and its native warmup/cosine. Worker/prefetch overrides are explicit. Its native export has backbone/head/proj weights and does not provide heldout validation or full optimizer/RNG resume. The native SWM loader, encoder, augmentations and training loop remain unchanged.
-- Historical ViT-B code remains backed up and untouched in the original workspace. It is not registered in this switch and its checkpoints are not accepted as Tiny weights.
 - Downstream actual dimensions are `current=L+19`, `goal=L+3N`; state-only uses `19+9N` and `3N`. PLDM and Tiny use `L=512`, LeWM uses `L=192`. No padding or projector features are introduced. Original GCIQL sampler/model/update/checkpoint code and Native loop are preserved; only task/path/dimension/encoder bindings are supplied.
 
 World-model and downstream environments remain separate. The bound GCIQL train/gate source requires JAX CUDA; its reload and visual Native policy require JAX CPU, while the Native frozen visual encoder uses CUDA. The runtime enforces those phase-specific settings. No shared environment is installed or upgraded by this release.

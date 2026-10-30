@@ -1,0 +1,97 @@
+{
+  "status": "configs_ready_adapter_freeze_pending",
+  "source_release": "1bc9fff9ffe485cd91f5ea69fdbea4e55ae83a367e98b89ba4129fd3c7e4321d",
+  "entry": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/evaluate_state_xyz.py",
+  "groups": {
+    "G01": {
+      "config": {
+        "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/configs/G01.json",
+        "sha256": "dfa2eeeb4abd53c8861fe398deacf6129163c17180ea8cd28e991f57998bde0f"
+      },
+      "diagnostic_argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/evaluate_state_xyz.py",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/configs/G01.json",
+        "--mode",
+        "diagnostic",
+        "--output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/diagnostic/G01"
+      ],
+      "diagnostic_report": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/diagnostic/G01/report.json",
+      "full_argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/evaluate_state_xyz.py",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/configs/G01.json",
+        "--mode",
+        "full",
+        "--output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/full/G01"
+      ],
+      "full_report": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/full/G01/report.json"
+    },
+    "G04": {
+      "config": {
+        "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/configs/G04.json",
+        "sha256": "3d3a4349076491cf1926461ddb717ee02242a36bb5840642118e53923ce7d77d"
+      },
+      "diagnostic_argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/evaluate_state_xyz.py",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/configs/G04.json",
+        "--mode",
+        "diagnostic",
+        "--output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/diagnostic/G04"
+      ],
+      "diagnostic_report": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/diagnostic/G04/report.json",
+      "full_argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/evaluate_state_xyz.py",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/configs/G04.json",
+        "--mode",
+        "full",
+        "--output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/full/G04"
+      ],
+      "full_report": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/full/G04/report.json"
+    },
+    "G07": {
+      "config": {
+        "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/configs/G07.json",
+        "sha256": "3f49d2b60d0dca864c3abd4b7746c96a2bccb83294eba7bbe9fa0ebc9b7fe61a"
+      },
+      "diagnostic_argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/evaluate_state_xyz.py",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/configs/G07.json",
+        "--mode",
+        "diagnostic",
+        "--output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/diagnostic/G07"
+      ],
+      "diagnostic_report": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/diagnostic/G07/report.json",
+      "full_argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/evaluate_state_xyz.py",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/configs/G07.json",
+        "--mode",
+        "full",
+        "--output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/full/G07"
+      ],
+      "full_report": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/native_sr_v1/full/G07/report.json"
+    }
+  }
+}

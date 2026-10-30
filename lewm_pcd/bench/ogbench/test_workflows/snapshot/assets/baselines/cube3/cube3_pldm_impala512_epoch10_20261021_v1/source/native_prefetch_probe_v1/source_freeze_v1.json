@@ -1,0 +1,49 @@
+{
+  "stage": "frozen_native_prefetch_epoch4_probe_v1",
+  "root": "/root/autodl-tmp/workspace/users/lewm/triple_cube_pldm_lejepa_b128_10ep_10155090_20261017_v1",
+  "data_root": "/root/autodl-tmp/workspace/users/lewm/triple_cube_portable_20261016_v1",
+  "files": {
+    "trial.py": "c201ff2fc134e47a78b752ccdc6121f02db5f9bd5a2377833f3c9b2a8cb8658d",
+    "boundary.py": "475a1692cc49fd6fa8eb1fbacdfbd3a2e3fb60788e9754651eff5cb32500b222",
+    "test_probe.py": "9dbde2a128d4d07e5483edb9aac45b6ffbfe868770b9c7a8336df5c092a2671a",
+    "run.sh": "e2a8f0fcabe3009199f73bc626393808891e8e44ef8ce3ade3cdc3ff91e27ab5",
+    "current_identity_v1.json": "c33b0b127b5542b1371ce7a40aa8274c1d92d9901d2bbfac0d8a16bb3690eaa8"
+  },
+  "base_files": {
+    "source_freeze_v2.json": "cdfd14b894fda7bf7f068c489bc550e819ade12ca16f36250ebf0dda2cd374d7",
+    "train.py": "a6a2aedb0f51f1fca3e9034ff16dc2c734d3add48d9b08459e98b08bfa72f10c",
+    "shared_data.py": "d267b4688d7ac4237469380481dc138dfe3b456c0774107d756c4fde3a7f29bd",
+    "methods/pldm/method.py": "0400e518a220d7843f62b70427dd645300a46f3ddb951ce58e15ab52625b7712",
+    "pldm_worker_trial_v1/source_freeze_v1.json": "5a072aafc6ca523b343ba0ddcf9e2c813c17a2acc0ee058cab26440412b0584e",
+    "pldm_worker_trial_v1/trial.py": "312bac2cc7c16d8d356a9f2ec107c34518da2771bddd0d82a7377e4f0d26e794",
+    "pldm_worker_trial_v1/boundary.py": "a8d4e6782958301e93a9569f32b81779416c05b103bfe04a336cb042273604f4",
+    "pldm_continuation_v1/source_freeze_v1.json": "f2b1d8cb7e7c752f3aa2f485d25ffd8e14d26662937edad8d149ff165c9731b2",
+    "pldm_continuation_v1/continuation.py": "777be3d4c91ad5953861a70a386355369947695c792b6ab7efe38e52aa46ab37",
+    "readtask_split32_v1/source_freeze_v1.json": "1324f942a2fa3c81697cce7c559939d05af44c1a57658d3aca7723169f811358",
+    "readtask_split32_v1/adapter.py": "1a7b41fc7d0b69190f3c6c03fe3ae238e967c6399d76c4cfea6c03d5e47dfd5d",
+    "readtask_probe_v1/source_freeze_v1.json": "3a4f7b5295209af01438fbf0c3591488d296cee315fa1abfe106f9db0b9a9505",
+    "readtask_probe_v1/trial.py": "2e656e2f2e4c0b790b6246064e82534bf5cabb4eda07cfe563dab8d9d60711d7",
+    "readtask_restart_probe_v2/trial.py": "189e834110bc279dbe253985c856757474bb02eb15ac5d3d125be21e94b013e4",
+    "readtask_restart_probe_v2/source_freeze_v1.json": "090e8862f1d463edce5441e7c6aeb58d808c973963bcc894bff17e19f741d00f",
+    "readtask_restart_continuation_v2/source_freeze_v1.json": "3738c2d5f8fadd1f6824973dec1805da5e2f6a7e87371af3a5eadc6e78bf075f"
+  },
+  "runtime_manager_sha256": "d30d4a301e386cb67eab89cface92136ca03301ee8004347d724711d8de112d3",
+  "parent_epochs": 4,
+  "parent_updates": 182812,
+  "total_updates": 457030,
+  "new_updates": 274218,
+  "new_epochs": 6,
+  "diagnostic_updates_each": 416,
+  "diagnostic_validation_batches_each": 2,
+  "train_workers": 20,
+  "validation_workers": 20,
+  "validation_prefetch": 2,
+  "train_prefetch_profiles": [
+    2,
+    4,
+    2
+  ],
+  "readtask_split": false,
+  "original_sources_modified": false,
+  "actual_target_CPU_verified": false
+}

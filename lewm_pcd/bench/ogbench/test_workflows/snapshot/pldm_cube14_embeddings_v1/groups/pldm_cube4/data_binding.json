@@ -1,0 +1,122 @@
+{
+  "cube_count": 4,
+  "data_id": "cube-quadruple-play-v0",
+  "splits": {
+    "train": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-quadruple-play-v0.npz",
+      "accepted_stat": {
+        "size": 1861419607,
+        "mtime_ns": 1792241332419440814,
+        "ctime_ns": 1792455688283408665,
+        "device": 2304,
+        "inode": 4345416202
+      },
+      "accepted_raw_sha256": "31053b04f5adbedaf9a5abef467057b2c216b0b3f8664cf3137b9891ee32a6ed",
+      "observation_shape": [
+        5005000,
+        55
+      ],
+      "action_shape": [
+        5005000,
+        5
+      ],
+      "episodes": 5000,
+      "raw_rows": 5005000,
+      "headers": {
+        "observations": {
+          "shape": [
+            5005000,
+            55
+          ],
+          "dtype": "float32"
+        },
+        "actions": {
+          "shape": [
+            5005000,
+            5
+          ],
+          "dtype": "float32"
+        },
+        "terminals": {
+          "shape": [
+            5005000
+          ],
+          "dtype": "bool"
+        },
+        "qpos": {
+          "shape": [
+            5005000,
+            42
+          ],
+          "dtype": "float32"
+        },
+        "qvel": {
+          "shape": [
+            5005000,
+            38
+          ],
+          "dtype": "float32"
+        }
+      },
+      "terminal_indices_verified_this_run": true
+    },
+    "val": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-quadruple-play-v0-val.npz",
+      "accepted_stat": {
+        "size": 185890898,
+        "mtime_ns": 1792241530418905606,
+        "ctime_ns": 1792455677679483469,
+        "device": 2304,
+        "inode": 4345367661
+      },
+      "accepted_raw_sha256": "96ae20f4c7ffe673520c69f2c0339a746f7eac019bb15a92f2898fb8e1785d1d",
+      "observation_shape": [
+        500500,
+        55
+      ],
+      "action_shape": [
+        500500,
+        5
+      ],
+      "episodes": 500,
+      "raw_rows": 500500,
+      "headers": {
+        "observations": {
+          "shape": [
+            500500,
+            55
+          ],
+          "dtype": "float32"
+        },
+        "actions": {
+          "shape": [
+            500500,
+            5
+          ],
+          "dtype": "float32"
+        },
+        "terminals": {
+          "shape": [
+            500500
+          ],
+          "dtype": "bool"
+        },
+        "qpos": {
+          "shape": [
+            500500,
+            42
+          ],
+          "dtype": "float32"
+        },
+        "qvel": {
+          "shape": [
+            500500,
+            38
+          ],
+          "dtype": "float32"
+        }
+      },
+      "terminal_indices_verified_this_run": true
+    }
+  }
+}

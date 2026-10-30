@@ -1,0 +1,5 @@
+{
+  "train_root": "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/rl3_m6_gciql_seed0_b1024_1m_w4_20261013_v1",
+  "final_checkpoint": "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/rl3_m6_gciql_seed0_b1024_1m_w4_20261013_v1/checkpoints/update_001000000/params_1000000.pkl",
+  "protocol_sha256": "c1da38b21feed18b6f372d77a5bfe091b8b6931bd76b9384078759f745c1344e"
+}

@@ -1,0 +1,330 @@
+{
+  "binding": {
+    "config": {
+      "bridge_path": "/root/autodl-tmp/workspace/users/lewm/coordination/gciql_frozen_lewm_109_20261009_v1/bridge_v1/bridge.py",
+      "bridge_sha256": "7ccbf35c8750d2bf7941a11188ca604ff36bd7123aad06ac2db25f0bc5f3f59b",
+      "source_config": "/root/autodl-tmp/workspace/users/lewm/coordination/gciql_frozen_lewm_109_20261009_v1/bridge_v1/config.json",
+      "source_config_sha256": "76a517056d5b7c3e2b7b6531c965c6f0fc1668cca8ddc21394e6d92c1ed4fd24",
+      "driver_helpers": "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/official_lewm_gcbc_20261006/run_formal.py",
+      "driver_helpers_sha256": "306797e1fa07dee8616adf9cc404af48380a4143d5fb36a6b04b425aae4c6928",
+      "runtime_profile": "/root/autodl-tmp/workspace/users/lewm/coordination/cached_lewm_visual_state_gciql_b1024_1m_109_20261013_v1/runtime_autotune0_v1/activate.sh",
+      "runtime_profile_sha256": "fa1de8fca14a7088f400939b256a5fc92ef2dc06dae6709d20b2446527d31675",
+      "log_utils_sha256": "7bf01cfc6f984ea4b17dfb0224d1400e7a0d475b72b2557487d30378a84c3705",
+      "output": "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/rl3_m6_gciql_seed0_b1024_1m_w4_20261013_v1",
+      "total_updates": 1000000,
+      "batch_size": 1024,
+      "seed": 0,
+      "workers": 4,
+      "encoder_microbatch": 64,
+      "validation_interval": 5000,
+      "save_interval": 100000,
+      "heartbeat_interval": 10,
+      "evaluation_episodes": 0,
+      "precision": {
+        "dtype": "float32",
+        "matmul_precision": "highest",
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_policy": "unchanged"
+      },
+      "chunk_gate": {
+        "reference_batch": 64,
+        "microbatch": 32,
+        "atol": 1e-05,
+        "rtol": 1e-05
+      },
+      "protocol_label": "RL3 M6 freshseed0/B1024/1M; cachedvisual192+robotproprio19 current211 and same-IDcachedvisual192+XYZ3 goal195; readonlyRAM 4 role-map threads; parent original sampler; current_object4cm reward0/-1; no runtimeencoder/no WMdynamics; original GCIQL",
+      "rng_deviation": "Online evaluations at step1 and100K are omitted without synthetic RNG consumption; this is not the original-main training RNG stream",
+      "input_profile": "cached",
+      "algorithm": "gciql",
+      "kind": "pcd",
+      "goal_mode": "latent_object_xyz",
+      "reward_mode": "current_object_xyz",
+      "visual_mode": "cache",
+      "gciql_template_sha256": "8611cd476d8849ad014ca43304073c3e88fc3d3aa5dab369a343ae425bba7ba7",
+      "cache": {
+        "modality": "pcd",
+        "manifest": "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/official_lewm_gcbc_20261006/goal_xyz_mask_100k_b256_20261011_v1/pcd_latent_cache_20261012_v1/features_v1/cache_manifest.json",
+        "manifest_sha256": "7e05afd39bd163b3738776ac803d5caf812dfec8afe42a0ade10f73e13daf3aa",
+        "seal": "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/official_lewm_gcbc_20261006/goal_xyz_mask_100k_b256_20261011_v1/pcd_latent_cache_20261012_v1/features_v1/cache_seal.json",
+        "seal_sha256": "1b37c2700e0f5da387fd39ae5e939e3c9f6b3bfe16a80c4fdb8c097384fbcef6",
+        "terminal_manifest": "/root/autodl-tmp/workspace/users/lewm/coordination/cached_lewm_state_gciql_xyz_109_20261012_v1/terminal_v1/data_v2/pcd/terminal_manifest.json",
+        "terminal_manifest_sha256": "41941bd7837e73aaa20c9d5f194a67a1aed86fc8b29b45a44f1e80753fe9b257"
+      },
+      "user_confirmed_contract": {
+        "stage": "formal_training_pending_Root_performance_and_final_GPU_gate_acceptance",
+        "current": "cachedvisual192+robotproprio19",
+        "goal": "cachedvisual192+XYZ3",
+        "reward": "current_object_distance4cm_0minus1",
+        "total_updates": 1000000,
+        "batch_size": 1024,
+        "fresh_seed": 0,
+        "workers": 4,
+        "sampler_parent_only": true
+      },
+      "state_profile": "robot_proprio"
+    },
+    "agent_config": {
+      "actor_geom_sample": false,
+      "actor_hidden_dims": [
+        512,
+        512,
+        512
+      ],
+      "actor_loss": "ddpgbc",
+      "actor_p_curgoal": 0.0,
+      "actor_p_randomgoal": 0.0,
+      "actor_p_trajgoal": 1.0,
+      "agent_name": "gciql",
+      "alpha": 1.0,
+      "batch_size": 1024,
+      "const_std": true,
+      "dataset_class": "GCDataset",
+      "discount": 0.99,
+      "discrete": false,
+      "encoder": null,
+      "expectile": 0.9,
+      "frame_stack": null,
+      "gc_negative": true,
+      "layer_norm": true,
+      "lr": 0.0003,
+      "p_aug": 0.0,
+      "tau": 0.005,
+      "value_geom_sample": true,
+      "value_hidden_dims": [
+        512,
+        512,
+        512
+      ],
+      "value_p_curgoal": 0.2,
+      "value_p_randomgoal": 0.3,
+      "value_p_trajgoal": 0.5
+    },
+    "source_locks": {
+      "coordination/gciql_frozen_lewm_109_20261009_v1/environment/activate_existing_profile.sh": "e36f92e198ba0e51fce7a9c4806dccd29c9530b8067b983c1d8ecaf841f9eca2",
+      "downstream-smoke-20261005-2133/state/official-source/impls/agents/gciql.py": "05a0b5d9b987d3049df8a1158bbfbaba2ca2611604d24f9e484f8fb6d0cd92bc",
+      "downstream-smoke-20261005-2133/state/official-source/impls/utils/datasets.py": "52c373922a87e1ba8ad8b3b96c3474d5e6385e2ea2c7206930f7a8a315816609",
+      "downstream-smoke-20261005-2133/state/official-source/impls/utils/networks.py": "e7e4c4a439b691911e5ae6c2653f253c5703e6b5d190d813e28ebc32e7306094",
+      "downstream-smoke-20261005-2133/state/official-source/impls/utils/flax_utils.py": "5b6a8e9a919bf57dae0c1454f327ded4235385f9d9dcd1e62263fe4fad9fd484",
+      "downstream-smoke-20261005-2133/state/official-source/ogbench/utils.py": "f503a3a0497f91ce02958abae5770f3e08c9d6a3a740687c828c996fedb24e9b",
+      "lewm-gcbc-smoke-20261006-0002/lewm_gcbc_adapter.py": "702ab5e2ea955c6bd37a97564f0d83129e512720138eb38a2efffaa7a8544798",
+      "JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/utils.py": "a6a386523779ede2ef4453b23198e46e371a0c73200e8f957ae272b5d7b63259",
+      "JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/jepa.py": "7e6680f9941268b13526082fa888a46de7dca9385bfc837e77ee649e5c034135",
+      "JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/module.py": "0b258a9e8dc24c29fcb1e8c50a09ec78b8ea85aeb79e21dd8adf712396646620",
+      "JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/encoders/__init__.py": "90e5ab276c362b6a5c1e4cd2c2363335eba8c5c34bf72fa48b4942ffc4ac5788",
+      "JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/encoders/vit.py": "829efe4f2c11884253d236050a9fd2146732c91393547f92475a862c8fcd669a",
+      "JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/encoders/pointnet_dexart.py": "78a545f7f41f42ed9714101d203a1ec14875495cf43fb86e72ff729fb29b184b",
+      "JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/utils.py": "f203cb4826cec6d4b474900f136fa09d6dbc13a366bf0906b67bbdac4297344c",
+      "JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/data/formats/hdf5.py": "0edde080986c6853a59c5c9ac85fbf055caa7672f2204002e7d7ea3b1a634294",
+      "ogbench-official-single-play-20261006/raw/cube-single-play-v0.npz": "80f3b6fd27f4f9d9e9eb6f0d07d6951559012f45b1e15ea4046ef8ecd8d3684e",
+      "ogbench-official-single-play-20261006/raw/cube-single-play-v0-val.npz": "96d07401bdebdc3f0ea6d56ed1333863e0962f441483adc2c43b83105046eb00",
+      "ogbench-official-single-play-20261006/cube_rgb_full_20261006_v1/dataset_index.json": "2b7081891c8fb3228fa6c197a45132e554f45c37706dda744fcf8d783458428d",
+      "ogbench-official-single-play-20261006/cube_pcd_main_full_20261007_v2/dataset_index.json": "4c1443c058fd4fa71bdf82e292bc60b14ae894a1c5c4eaa5075fb6fa87c1666b",
+      "ogbench-train-20261003/checkpoints/fixed5_mixed_pix_10ep_chunk5/config.json": "c23f8d59c185b7e8953649eb3e18de94315bfab99e0cfc624032abc08753e536",
+      "ogbench-train-20261003/checkpoints/fixed5_mixed_pix_10ep_chunk5/config.yaml": "40fa58af168bc3bb8d173ae15f1e54d2d1d1956d783220d3fff8f99d09070d57",
+      "ogbench-train-20261003/checkpoints/fixed5_mixed_pix_10ep_chunk5/weights_epoch_10.pt": "88abffcda76ce55408639aa2c1ebeb2879f38d00dad6798cbb60bf30a03fe60d",
+      "ogbench-train-20261003/checkpoints/fixed5_mixed_pcd_dexart_10ep/config.json": "2312179814f61cee5501bc38f4b5477fa93aa864de0924989c55a1bf35a600b7",
+      "ogbench-train-20261003/checkpoints/fixed5_mixed_pcd_dexart_10ep/config.yaml": "f93c68a7f9a353135aef638a5efd3013ade0e7f6e1442469d648f7a6bd3ed517",
+      "ogbench-train-20261003/checkpoints/fixed5_mixed_pcd_dexart_10ep/weights_epoch_10.pt": "ab9f2e69d58eea4f4d8f469a7dd259c5944f45d0d54ec20061cf63c7a9630d03"
+    },
+    "sampler": {
+      "train": {
+        "size": 1001000,
+        "config": {
+          "actor_geom_sample": false,
+          "actor_hidden_dims": [
+            512,
+            512,
+            512
+          ],
+          "actor_loss": "ddpgbc",
+          "actor_p_curgoal": 0.0,
+          "actor_p_randomgoal": 0.0,
+          "actor_p_trajgoal": 1.0,
+          "agent_name": "gciql",
+          "alpha": 1.0,
+          "batch_size": 1024,
+          "const_std": true,
+          "dataset_class": "GCDataset",
+          "discount": 0.99,
+          "discrete": false,
+          "encoder": null,
+          "expectile": 0.9,
+          "frame_stack": null,
+          "gc_negative": true,
+          "layer_norm": true,
+          "lr": 0.0003,
+          "p_aug": 0.0,
+          "tau": 0.005,
+          "value_geom_sample": true,
+          "value_hidden_dims": [
+            512,
+            512,
+            512
+          ],
+          "value_p_curgoal": 0.2,
+          "value_p_randomgoal": 0.3,
+          "value_p_trajgoal": 0.5
+        },
+        "arrays": {
+          "terminal_locs": "7c23f31db8c4fc6117a31b76bdfcdb332c1a81abe90ecb686d779e32194e8ba7",
+          "initial_locs": "b8b7fd969ae5b3ff7a91e862452388ef067baede40a3f527af990dc1fae8ebd3"
+        },
+        "valid_idxs": "7348c81a98f92f8b92588af8aaec53f675b72d1e083bc3f0ad62bfb023119699"
+      },
+      "val": {
+        "size": 100100,
+        "config": {
+          "actor_geom_sample": false,
+          "actor_hidden_dims": [
+            512,
+            512,
+            512
+          ],
+          "actor_loss": "ddpgbc",
+          "actor_p_curgoal": 0.0,
+          "actor_p_randomgoal": 0.0,
+          "actor_p_trajgoal": 1.0,
+          "agent_name": "gciql",
+          "alpha": 1.0,
+          "batch_size": 1024,
+          "const_std": true,
+          "dataset_class": "GCDataset",
+          "discount": 0.99,
+          "discrete": false,
+          "encoder": null,
+          "expectile": 0.9,
+          "frame_stack": null,
+          "gc_negative": true,
+          "layer_norm": true,
+          "lr": 0.0003,
+          "p_aug": 0.0,
+          "tau": 0.005,
+          "value_geom_sample": true,
+          "value_hidden_dims": [
+            512,
+            512,
+            512
+          ],
+          "value_p_curgoal": 0.2,
+          "value_p_randomgoal": 0.3,
+          "value_p_trajgoal": 0.5
+        },
+        "arrays": {
+          "terminal_locs": "69f14a10659adedb43dce1d80bb0e7e5a5e0a0e09c56edc3fab5dfba60f39b44",
+          "initial_locs": "78d01ad23a1a2c428b22f843981c48784f52af05d4b1927ace53a7b30052c723"
+        },
+        "valid_idxs": "ba48a8677067d817e78f95a58cc03eba91f324d672b3d855461a5e32b253abb5"
+      }
+    },
+    "frozen_full_state": "feadb3e3db6bd60555b6df47925ab9fe107eb4c322c449ee379553daedc3308e",
+    "frozen_full_state_semantics": "cached_source_binding_not_runtime_WM",
+    "cache_sources": {
+      "caches": {
+        "train": {
+          "cache_manifest_sha256": "7e05afd39bd163b3738776ac803d5caf812dfec8afe42a0ade10f73e13daf3aa",
+          "cache_seal_sha256": "1b37c2700e0f5da387fd39ae5e939e3c9f6b3bfe16a80c4fdb8c097384fbcef6",
+          "terminal_manifest_sha256": "41941bd7837e73aaa20c9d5f194a67a1aed86fc8b29b45a44f1e80753fe9b257",
+          "split": "train",
+          "source_modality": "pcd",
+          "WM_checkpoint_sha256": "ab9f2e69d58eea4f4d8f469a7dd259c5944f45d0d54ec20061cf63c7a9630d03",
+          "runtime": "readonly_RAM_no_workers_no_runtime_encoder",
+          "BC_tail32_override": false
+        },
+        "val": {
+          "cache_manifest_sha256": "7e05afd39bd163b3738776ac803d5caf812dfec8afe42a0ade10f73e13daf3aa",
+          "cache_seal_sha256": "1b37c2700e0f5da387fd39ae5e939e3c9f6b3bfe16a80c4fdb8c097384fbcef6",
+          "terminal_manifest_sha256": "41941bd7837e73aaa20c9d5f194a67a1aed86fc8b29b45a44f1e80753fe9b257",
+          "split": "val",
+          "source_modality": "pcd",
+          "WM_checkpoint_sha256": "ab9f2e69d58eea4f4d8f469a7dd259c5944f45d0d54ec20061cf63c7a9630d03",
+          "runtime": "readonly_RAM_no_workers_no_runtime_encoder",
+          "BC_tail32_override": false
+        }
+      },
+      "visual_mode": "cache",
+      "current_next": "canonical192_plus_robot_proprio19",
+      "goal": "canonical192_plus_original_scaled_object_xyz_19_22",
+      "reward": "current_object_distance_to_value_goal_le_0.4; r=success-1; m=1-success",
+      "original_source_id_reward": false,
+      "normalization": "no_added_normalization",
+      "state_profile": "robot_proprio",
+      "network_state_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ],
+      "excluded_object_state_indices": [
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27
+      ],
+      "reward_state_source": "original_raw_current_state28_object_xyz_19_22",
+      "cache_lookup_workers": 4,
+      "cache_lookup_executor": "ThreadPoolExecutor",
+      "cache_lookup_scope": "already_parent_sampled_current_batch_role_latents_only",
+      "ahead_sampling": false
+    },
+    "original_state": {
+      "train": "98900c7907f161254987e306c21ef8ffc616a40a92b293b97d1f0f3680737529",
+      "val": "8de5cda45db0005c6e4113e029a522ce5e2d97ea7f882eaea21d43a4308e7baa"
+    },
+    "code": {
+      "reader.py": "08438efa11157128208385e2a044349e26a50f6a7304535967824ce47881db12",
+      "train.py": "73ba082f730e9000a238c789726c26b075590807968a0016bc75e8e9111231d0",
+      "test_formal.py": "8a2f1ff8df9595dbde6ced4703739c71108e83c2d46d4a7f9039dbe1c4c7f9a3",
+      "launch.py": "241117a0ca493cbb1662e43c1bdfedafd8c1fb9ff97f969b23a0ba9fc88c6df2",
+      "gciql.py": "8611cd476d8849ad014ca43304073c3e88fc3d3aa5dab369a343ae425bba7ba7",
+      "config.json": "08aa645c3a068d9eef495d628cda4a7099371b049d479d594d7405fc9350a356"
+    },
+    "versions": {
+      "torch": "2.8.0+cu128",
+      "jax": "0.4.35",
+      "jaxlib": "0.4.35",
+      "flax": "0.10.2",
+      "optax": "0.2.4",
+      "numpy": "1.26.4"
+    },
+    "runtime": {
+      "jax_backend": "gpu",
+      "workers": 4,
+      "runtime_encoder_forwards": 0,
+      "cached_feature_loading": "readonly_RAM",
+      "torch_cuda_initialized": false
+    }
+  },
+  "total_updates": 1000000,
+  "resumed_from": null,
+  "initial_counter": 0,
+  "initial_network_step": 1,
+  "argv": [
+    "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/core_v1/train.py",
+    "--config",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/configs/M6_w4_formal_config.json",
+    "--output",
+    "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/rl3_m6_gciql_seed0_b1024_1m_w4_20261013_v1",
+    "--total-updates",
+    "1000000"
+  ]
+}

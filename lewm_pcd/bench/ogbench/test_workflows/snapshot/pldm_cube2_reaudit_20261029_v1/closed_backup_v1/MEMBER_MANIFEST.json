@@ -1,0 +1,3814 @@
+{
+  "schema_version": 1,
+  "actual_exit_code": 0,
+  "created": 1793298205.6183352,
+  "scope": "PLDM Cube2 independent rerun: source/config, 11 GCIQL checkpoints, CPU acceptance, cache metadata/audit, Native tiny/full step results, control exits/logs, and final records; excludes raw datasets and feature vectors",
+  "case_root": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/pldm_cube2_reaudit_20261029_v1",
+  "group_id": "P2_cube2_pldm_reaudit_rgb",
+  "files": {
+    "FINAL_RESULTS.json": {
+      "bytes": 3129,
+      "sha256": "99d0b8967bccf0165193457a093114df17ec46875b958fd6f40f541fb8fc1c37"
+    },
+    "MATERIALIZATION.json": {
+      "bytes": 4821,
+      "sha256": "3cff68aafe6abf9bc07c3b93d1ac6c2fe440a4bdf3c353228637a78fe2c71fe5"
+    },
+    "acceptance/P2_cube2_pldm_reaudit_rgb_full_acceptance.json": {
+      "bytes": 2328,
+      "sha256": "495a4b43f88f9001289384175f05d424d3047cdf11924266618e3fc388d0092d"
+    },
+    "acceptance/P2_cube2_pldm_reaudit_rgb_gate_reload.json": {
+      "bytes": 532,
+      "sha256": "3413c31224d88d15f17dc1d8ceecd59b76fceceafc7bd7910ab82193fe685530"
+    },
+    "cache_v1/PREPARED.json": {
+      "bytes": 1051,
+      "sha256": "d86b252f5d93580ca7529bb01c19fc554121c8a38347e03d9cc5fba322c2f79a"
+    },
+    "cache_v1/audit_bridge.py": {
+      "bytes": 3246,
+      "sha256": "4a061e7a670eea53e0048331291f23052529bfdf1ed74f86d3000bbdd2c63318"
+    },
+    "cache_v1/cache/batch1_alignment.json": {
+      "bytes": 802,
+      "sha256": "87d7abbed40d87cfb18a94c6c18a56a824c15a0c301cc0116433eaea724951aa"
+    },
+    "cache_v1/cache/cache_manifest.json": {
+      "bytes": 409464,
+      "sha256": "b7901c68d07ae00f1cf05809d9c62eb947fc9770447ec7e82304ade00631be97"
+    },
+    "cache_v1/cache/cache_seal.json": {
+      "bytes": 534,
+      "sha256": "de2d78f91ffbc1b083d92b29049c36455a8255dc3876e6bda0e779e2b43c72da"
+    },
+    "cache_v1/cache/pilot_receipt.json": {
+      "bytes": 1548,
+      "sha256": "dc8a950ccef410a07b8a57625e0a0b46ccf696800ebde61e10aa566c46b7eb55"
+    },
+    "cache_v1/cache/preprocess_selection.json": {
+      "bytes": 2190,
+      "sha256": "4b62880dc2ff3b051a679f24902c87e28a9edc74b185ebc23003f74910f35237"
+    },
+    "cache_v1/cache/protocol.json": {
+      "bytes": 34832,
+      "sha256": "4d23aab8452fab10a5767042b6030f86d703023c0a569e80270c9f7813c88faa"
+    },
+    "cache_v1/cache/status.json": {
+      "bytes": 332,
+      "sha256": "249ed316b035efacb31318072cd3986e9f912552d915dde886121267da3f33ea"
+    },
+    "cache_v1/encoder_adapter.py": {
+      "bytes": 3154,
+      "sha256": "72161520d1ddd839c8266ad5fea7490611f21d3681d261f86f4b993a14430a06"
+    },
+    "cache_v1/independent_audit/actual_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "cache_v1/independent_audit/report.json": {
+      "bytes": 325888,
+      "sha256": "5bc6c0dabca5bb7071340fb8c4d238b7cad9b7fa0468c24d2b1ff99b97a2f5a2"
+    },
+    "cache_v1/prepare_plan.py": {
+      "bytes": 8561,
+      "sha256": "74ee502837eb7aae481344f3c6b90f6c5ae5b45070e911bce4facba587b78a91"
+    },
+    "cache_v1/producer_bridge.py": {
+      "bytes": 5595,
+      "sha256": "134e28ecc2f83285a4d4b2d41633c7ec6d32d74ef6ff56faa89a976c44766872"
+    },
+    "cache_v1/producer_plan.json": {
+      "bytes": 36064,
+      "sha256": "592dc0169f8e0d280f4da877e3464ea2d835dda604b19aa64ae6de3f950907c6"
+    },
+    "cache_v1/source_arrays/data_acceptance.json": {
+      "bytes": 13550,
+      "sha256": "08ab05fe7eda529709e167fa25a3b61240bb0b90b4dbde6e1017c5a998b280f5"
+    },
+    "cache_v1/source_arrays/source_arrays.json": {
+      "bytes": 8431,
+      "sha256": "1f080269344d5ac64ab4625fe3ca8b5c820b29eaa3ee64fe7e4664b9bc0dffd5"
+    },
+    "cache_v1/source_arrays/stat-freeze.json": {
+      "bytes": 2080,
+      "sha256": "5d7d44727c1c0cde6ef4c1ab019318a6f739245b0546d2088cba28ecdd9e5d30"
+    },
+    "cache_v1/source_overlay.py": {
+      "bytes": 28736,
+      "sha256": "2efbe28c42aef8ffd7b40321efa2c3bb1ff30ad81124e3ebe0a9443ae1c3734c"
+    },
+    "control/run/logs/cache-audit.launcher.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "control/run/logs/cache-audit.launcher.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "control/run/logs/cache-full.launcher.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "control/run/logs/cache-full.launcher.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "control/run/logs/native-full.launcher.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "control/run/logs/native-full.launcher.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "control/run/logs/train.launcher.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "control/run/logs/train.launcher.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "control/run/runtime/accept/actual_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "control/run/runtime/accept/argv.json": {
+      "bytes": 742,
+      "sha256": "acd53be98d1ccf798b8f76a29eec8703f07e585677ba1b3895694d6aa3ea3bcc"
+    },
+    "control/run/runtime/accept/environment.json": {
+      "bytes": 925,
+      "sha256": "fc8502b9751a254832ec5441e50ab6e9bce645de4b51ecda6dd7b3980b353dc7"
+    },
+    "control/run/runtime/accept/result.json": {
+      "bytes": 144,
+      "sha256": "2ad2de205256c00ecef3600b93d916db5818572cb87a17b2a4f2990184720c47"
+    },
+    "control/run/runtime/accept/stderr.log": {
+      "bytes": 2268,
+      "sha256": "12af44a5a0970274d8c2cb6030ecb7b67bb5656932e1b7af378aa6176cfd49e2"
+    },
+    "control/run/runtime/accept/stdout.log": {
+      "bytes": 190,
+      "sha256": "dfc10a717507cde1bcac0a1e3ce3be12a45cfa00ec693e4bc5bb2c5a6c64eba4"
+    },
+    "control/run/runtime/cache-audit/actual_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "control/run/runtime/cache-audit/argv.json": {
+      "bytes": 655,
+      "sha256": "635bd4686ca48c07a6f773204b2d83cbd03ffdaef0288b930969761916412834"
+    },
+    "control/run/runtime/cache-audit/environment.json": {
+      "bytes": 852,
+      "sha256": "635c1664568f93d89e6cd1996e5ebf142482c4e9e313acf9cffb7b2910f2f3c5"
+    },
+    "control/run/runtime/cache-audit/result.json": {
+      "bytes": 150,
+      "sha256": "d94511ab4fa39fa28373018b90d267d400b9620a8612a2334f925a5928dcb2e9"
+    },
+    "control/run/runtime/cache-audit/stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "control/run/runtime/cache-audit/stdout.log": {
+      "bytes": 231,
+      "sha256": "7ea87fa3679925f912fea71ae62cd682fb11ad3e3616e0e831e4b57aac0de1b2"
+    },
+    "control/run/runtime/cache-full/actual_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "control/run/runtime/cache-full/argv.json": {
+      "bytes": 619,
+      "sha256": "a19461429edb8452ecbd369ef1016200da98260f61ca3371bacecc4a9300b858"
+    },
+    "control/run/runtime/cache-full/environment.json": {
+      "bytes": 879,
+      "sha256": "0e27b442e053ec2f48019839e2790fea512004d6697cf424cfe0c9795d886b98"
+    },
+    "control/run/runtime/cache-full/result.json": {
+      "bytes": 148,
+      "sha256": "246e4b69a016b2a3d5fe5618e82dea17d52481d204b544355b9a14b77ec5739c"
+    },
+    "control/run/runtime/cache-full/stderr.log": {
+      "bytes": 1642,
+      "sha256": "2ac53aa6e92c283fa194ef81c40e3ddd0435eda190c1458dafdbf3df0bb27f63"
+    },
+    "control/run/runtime/cache-full/stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "control/run/runtime/cache-pilot/actual_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "control/run/runtime/cache-pilot/argv.json": {
+      "bytes": 632,
+      "sha256": "93625e36ecb656e4c034db3c06ff204fd891f06f8c14961f2596749ef58df406"
+    },
+    "control/run/runtime/cache-pilot/environment.json": {
+      "bytes": 953,
+      "sha256": "c744533d5c1c5b0f4a7a231037f1c8e984bdfb2628960eb4abfaddc9b6193945"
+    },
+    "control/run/runtime/cache-pilot/result.json": {
+      "bytes": 149,
+      "sha256": "1cdcf390188cf2a32bef35c47bde1028d4589991ca96a63b9f70e27f9b1815b7"
+    },
+    "control/run/runtime/cache-pilot/stderr.log": {
+      "bytes": 1642,
+      "sha256": "2ac53aa6e92c283fa194ef81c40e3ddd0435eda190c1458dafdbf3df0bb27f63"
+    },
+    "control/run/runtime/cache-pilot/stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "control/run/runtime/cache-prepare/actual_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "control/run/runtime/cache-prepare/argv.json": {
+      "bytes": 346,
+      "sha256": "1d8438cd1dbe8fd04eab229bdbc49b8b8fdca3050a254682455f71d7ad33584f"
+    },
+    "control/run/runtime/cache-prepare/environment.json": {
+      "bytes": 925,
+      "sha256": "e37aaec4245bdd7fe8d0a3d9c08e2885b8c2d982977799f515b1b202bb211988"
+    },
+    "control/run/runtime/cache-prepare/result.json": {
+      "bytes": 151,
+      "sha256": "f2d488c0bbf417f71c6da594e272b3acdae5bbe6982f421c60c4b8e93a660004"
+    },
+    "control/run/runtime/cache-prepare/stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "control/run/runtime/cache-prepare/stdout.log": {
+      "bytes": 1013,
+      "sha256": "ab151817040c4450f8c70527fe34661880c4cf3237bc34c69e7d5eb87e61c98b"
+    },
+    "control/run/runtime/gate/actual_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "control/run/runtime/gate/argv.json": {
+      "bytes": 794,
+      "sha256": "0c076b8d54d76870079b9843e2373daf55759f50172487f3b7a973974b7d8a7e"
+    },
+    "control/run/runtime/gate/environment.json": {
+      "bytes": 953,
+      "sha256": "9347e9ab4ba83f8733319a72dd440d210bffd57567f0b0f21e03830b3f4dafed"
+    },
+    "control/run/runtime/gate/result.json": {
+      "bytes": 143,
+      "sha256": "2b576dd25a8f82e0f1333c6264677f71199b424e6c4f11b22d31ca95de245fb9"
+    },
+    "control/run/runtime/gate/stderr.log": {
+      "bytes": 1249,
+      "sha256": "d6888c9b53f311696d2de4edda8f0258e64ee4b76ba5f0bcc04c75e05ec31694"
+    },
+    "control/run/runtime/gate/stdout.log": {
+      "bytes": 370,
+      "sha256": "6b83030a9e833e6f5a6f0c16e9b1ab7a5f9051d18180b1481e486f74a36fd976"
+    },
+    "control/run/runtime/native-full/actual_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "control/run/runtime/native-full/argv.json": {
+      "bytes": 731,
+      "sha256": "0b8f00a5b3840c31dbd4f9d6a630663115ef02bd576f6e6ad9e568f030309a3c"
+    },
+    "control/run/runtime/native-full/environment.json": {
+      "bytes": 986,
+      "sha256": "0ec5b2ece6456db0f11f0f336f5c08f32e9a50e642ef90ce6dd230aa76b69dad"
+    },
+    "control/run/runtime/native-full/result.json": {
+      "bytes": 150,
+      "sha256": "df34159b4ef9c832f99dcb37759ca66a40f189c926ab679b00eef276c2eda4c7"
+    },
+    "control/run/runtime/native-full/stderr.log": {
+      "bytes": 47151,
+      "sha256": "5a711c70f13e193ad4ff2ea1c32b83c9348d41498c38c53fef16add7d9e60013"
+    },
+    "control/run/runtime/native-full/stdout.log": {
+      "bytes": 190,
+      "sha256": "dfc10a717507cde1bcac0a1e3ce3be12a45cfa00ec693e4bc5bb2c5a6c64eba4"
+    },
+    "control/run/runtime/native-full-audit/actual_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "control/run/runtime/native-full-audit/argv.json": {
+      "bytes": 507,
+      "sha256": "5adc0aa0e769d497e4bfef7ae6dea3c19cbd4dd0ce98e497dc123f4540a438a8"
+    },
+    "control/run/runtime/native-full-audit/environment.json": {
+      "bytes": 925,
+      "sha256": "f6c0547c8a9d628db2a44ca0e477eaa930768d767a87b5314b69466b784725b0"
+    },
+    "control/run/runtime/native-full-audit/result.json": {
+      "bytes": 154,
+      "sha256": "7027c435f349b2233569f87d614e8393d8c882a4985f7382da7a2c74af80df63"
+    },
+    "control/run/runtime/native-full-audit/stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "control/run/runtime/native-full-audit/stdout.log": {
+      "bytes": 711,
+      "sha256": "8607437f5db0622bc6a3aff4624e599139cae9cdc4df2600d5e3caf60a5e195b"
+    },
+    "control/run/runtime/native-tiny/actual_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "control/run/runtime/native-tiny/argv.json": {
+      "bytes": 731,
+      "sha256": "937dc23023c773691de2bb413c1ed286a447e10ad76fbea3d472733c5bfe6a2a"
+    },
+    "control/run/runtime/native-tiny/environment.json": {
+      "bytes": 948,
+      "sha256": "be0770ac3a7cd9d24f1bb4b0b1d900bbbb4cea4edbc34e549cf8368de236b596"
+    },
+    "control/run/runtime/native-tiny/result.json": {
+      "bytes": 149,
+      "sha256": "3d8eafd472b746f190cd868e491dac27263e84ffebf0e92ecfea4e781df7cf7f"
+    },
+    "control/run/runtime/native-tiny/stderr.log": {
+      "bytes": 4572,
+      "sha256": "01b895c1fc317d535ef41f017dba3096cc67053133567492f931a84bca897a5a"
+    },
+    "control/run/runtime/native-tiny/stdout.log": {
+      "bytes": 190,
+      "sha256": "dfc10a717507cde1bcac0a1e3ce3be12a45cfa00ec693e4bc5bb2c5a6c64eba4"
+    },
+    "control/run/runtime/native-tiny-audit/actual_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "control/run/runtime/native-tiny-audit/argv.json": {
+      "bytes": 507,
+      "sha256": "9eefac2390cfc25bb1cb533f38995eef0af943f841b73f397f1b3f8146cd8547"
+    },
+    "control/run/runtime/native-tiny-audit/environment.json": {
+      "bytes": 925,
+      "sha256": "e38ad24d1ca630454d23749ec2462b74b40bd9694b6897d9e777f046feba45bd"
+    },
+    "control/run/runtime/native-tiny-audit/result.json": {
+      "bytes": 156,
+      "sha256": "3ecf78ec575b31298258e12a9b042bba50e00b8fc71c37c34a7db9a1a4a49b1d"
+    },
+    "control/run/runtime/native-tiny-audit/stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "control/run/runtime/native-tiny-audit/stdout.log": {
+      "bytes": 672,
+      "sha256": "653dd81c590ea618958dc23cff414b4ecbdb1cca58ff514830800db5572e3e0a"
+    },
+    "control/run/runtime/prepare-native/actual_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "control/run/runtime/prepare-native/argv.json": {
+      "bytes": 358,
+      "sha256": "5242ac27d63589b9cb412e69691abc389cb60b430def1c259dc5fdcb1d695bcb"
+    },
+    "control/run/runtime/prepare-native/environment.json": {
+      "bytes": 925,
+      "sha256": "5c6d922f80582ea1d8d4b895724f51ecf66aa74403cc80b1e7bacd54a353b789"
+    },
+    "control/run/runtime/prepare-native/result.json": {
+      "bytes": 152,
+      "sha256": "15fedb8b7dc87916db159f3dbcc01525bd61099e5aa82c3e00848f2186f5e66e"
+    },
+    "control/run/runtime/prepare-native/stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "control/run/runtime/prepare-native/stdout.log": {
+      "bytes": 508,
+      "sha256": "30020a0b77557665ee9fafbcb3b05a5a64abd9f3398a989e2232a2670bf071bd"
+    },
+    "control/run/runtime/prepare-train/actual_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "control/run/runtime/prepare-train/argv.json": {
+      "bytes": 357,
+      "sha256": "0565d5d78708d53aaceeaf12d5de9a325fbef2c67a745586c05e23b5975eda66"
+    },
+    "control/run/runtime/prepare-train/environment.json": {
+      "bytes": 925,
+      "sha256": "002bb4c6bf7d028c841e9aba941731b73dee5c9f00af969e18aedc9dc410ae45"
+    },
+    "control/run/runtime/prepare-train/result.json": {
+      "bytes": 151,
+      "sha256": "f8e7e2af01ab023eb52286901f6c47e04c0affe4486e2cdc7a3748a1a193b26c"
+    },
+    "control/run/runtime/prepare-train/stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "control/run/runtime/prepare-train/stdout.log": {
+      "bytes": 9638,
+      "sha256": "5530e63f14d05f629f5d099e1028e378418d5cd0ade1ff089fd9aae6b4900269"
+    },
+    "control/run/runtime/reload/actual_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "control/run/runtime/reload/argv.json": {
+      "bytes": 739,
+      "sha256": "dc608e9bbc720e1aa118709d30a69342113711f3ab95c5819536f79a5bb71591"
+    },
+    "control/run/runtime/reload/environment.json": {
+      "bytes": 925,
+      "sha256": "88ea4d49115797843010e35b7ac764cda141cfd83d0b7f77f981e58caa806835"
+    },
+    "control/run/runtime/reload/result.json": {
+      "bytes": 144,
+      "sha256": "46fe432bbb2e0d98c18a00190fd590f99cd5c533595ca73871586e9738b693fb"
+    },
+    "control/run/runtime/reload/stderr.log": {
+      "bytes": 2268,
+      "sha256": "44a4dc0d28ce03a82d876ee209b64e69ec196ffacbbf16915809630330735e71"
+    },
+    "control/run/runtime/reload/stdout.log": {
+      "bytes": 185,
+      "sha256": "58dda6d2045e086e4293bd758a2a27c72455dda3c895705edd8caf0f191c938f"
+    },
+    "control/run/runtime/train/actual_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "control/run/runtime/train/argv.json": {
+      "bytes": 647,
+      "sha256": "272a69df0ecb0077cedbf6fb31991c3b533044f7da56aa8d9c69e850d6ef8d4d"
+    },
+    "control/run/runtime/train/environment.json": {
+      "bytes": 991,
+      "sha256": "51be980ac19b455715f62b86bab1d0a826f402ebf25a904cdfbfb5c877111916"
+    },
+    "control/run/runtime/train/result.json": {
+      "bytes": 143,
+      "sha256": "cb7979557a13de9384eded28951950121eda6ead69fd9e25a762ff74d6a04669"
+    },
+    "control/run/runtime/train/stderr.log": {
+      "bytes": 1249,
+      "sha256": "d6888c9b53f311696d2de4edda8f0258e64ee4b76ba5f0bcc04c75e05ec31694"
+    },
+    "control/run/runtime/train/stdout.log": {
+      "bytes": 2075,
+      "sha256": "a6c378751d3a9854ea11d441e93f68e739c1db78a0705a9a1ece9e245f0dfb84"
+    },
+    "control/run/runtime/verify-hooks/actual_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "control/run/runtime/verify-hooks/argv.json": {
+      "bytes": 409,
+      "sha256": "a9e9ef083c500c8ffe8b6909a55d5bf00e21fca95ae94e79b5ada40c11902f26"
+    },
+    "control/run/runtime/verify-hooks/environment.json": {
+      "bytes": 925,
+      "sha256": "3686265117aa5d166b6c1510758cec9c366b8de3fd8fd4fa0b97695a5092aede"
+    },
+    "control/run/runtime/verify-hooks/result.json": {
+      "bytes": 150,
+      "sha256": "20ca1c39748cfef027100c84b5d9531b658cf7baeaa997c4ecc1d4934b90f58e"
+    },
+    "control/run/runtime/verify-hooks/stderr.log": {
+      "bytes": 2268,
+      "sha256": "08b6989829d81d29d7487cefec16de18c451a814c566bcb10fee9f3110a63462"
+    },
+    "control/run/runtime/verify-hooks/stdout.log": {
+      "bytes": 267,
+      "sha256": "0eb49a7ff229d8168a916c1fbfe5855c183147d0410df3ef0c42594fcd2708a4"
+    },
+    "functional_v1/CPU_HOOK_VERIFY_v1.json": {
+      "bytes": 282,
+      "sha256": "ebd09a5bf049b8a3b750e9db2c1920b690e96abbbe0e75131f9d8ba6dda4f3a1"
+    },
+    "functional_v1/NATIVE_BINDING_v1.json": {
+      "bytes": 101700,
+      "sha256": "2e0580fa27f3b74b6fce794ce586fb4a8536a3bddec4b44b6d3a3085fa416b4d"
+    },
+    "functional_v1/NATIVE_PREPARED_v1.json": {
+      "bytes": 534,
+      "sha256": "9b464b8d4085f3d0203f50e898a045afc814c15917301af170f4556ced7c6902"
+    },
+    "functional_v1/SOURCE_FREEZE_v1.json": {
+      "bytes": 6085,
+      "sha256": "a85047012f934b71a92ff9a1c7f3ab801f5b6c9d003a61816613ad7aeca511ca"
+    },
+    "functional_v1/TRAIN_CONFIG_PREPARED_v1.json": {
+      "bytes": 10362,
+      "sha256": "fe5520237bccca59da1fabe7cba84020d89ec19d0d4b82b600d0233513b2d072"
+    },
+    "functional_v1/__pycache__/audit_native.cpython-312.pyc": {
+      "bytes": 5072,
+      "sha256": "c9f37dd2caf42a88b5cced299afe384229f91ecf1c5fe1e210e187c78bd85368"
+    },
+    "functional_v1/__pycache__/native_sr.cpython-312.pyc": {
+      "bytes": 10876,
+      "sha256": "20ddbe0b56e3636c93e52ac80a3c029e55db72741f4e38bb0bab1a79005a99de"
+    },
+    "functional_v1/__pycache__/pldm_inputs.cpython-312.pyc": {
+      "bytes": 5197,
+      "sha256": "ed665af0d3420cccfcc41a20377f36ef1e61472d77c3b7019f9906f3f885988a"
+    },
+    "functional_v1/__pycache__/pldm_runtime.cpython-312.pyc": {
+      "bytes": 8152,
+      "sha256": "73ef7b224e489e414d444cbd6a06c7032f7d8a65f7b21bb7d981e76a954a2e46"
+    },
+    "functional_v1/__pycache__/prepare.cpython-312.pyc": {
+      "bytes": 19232,
+      "sha256": "329792eddb040639f323f9401ca17d21bf3c6981b394c41518647484d207384a"
+    },
+    "functional_v1/audit_native.py": {
+      "bytes": 2995,
+      "sha256": "2647567ac18614374374c967b7afc746c1d5d420aa2c735d96a0f23d23250cf3"
+    },
+    "functional_v1/configs/P2_cube2_pldm_reaudit_rgb.TEMPLATE.json": {
+      "bytes": 8955,
+      "sha256": "14e23643ef6b88e0b1d0d8a9cc12e44ced33fc28b9b2ea1948eeaacc74d1e08c"
+    },
+    "functional_v1/configs/P2_cube2_pldm_reaudit_rgb.v1.json": {
+      "bytes": 55392,
+      "sha256": "353f0dc5459487c1b5396370d007634bb1048fb42bbf1aa2f355a62fe576fca7"
+    },
+    "functional_v1/cube2_successor_v1/__pycache__/visual_sr_cube2.cpython-312.pyc": {
+      "bytes": 826,
+      "sha256": "08de194183ed584df65ad4e01a6b0e32cb7897fbbe710b1b377ee3c0fa15b09b"
+    },
+    "functional_v1/cube2_successor_v1/visual_sr_cube2.py": {
+      "bytes": 451,
+      "sha256": "003d54b64914102b6ffe7d801ae7c06b829910016a695c6bf0fb88c050964923"
+    },
+    "functional_v1/native_sr.py": {
+      "bytes": 6241,
+      "sha256": "f21f604bf4652ab5fb3ecfd4629c0acce8c343faccbbd9831203ad5c9ffe76e4"
+    },
+    "functional_v1/pldm_inputs.py": {
+      "bytes": 2978,
+      "sha256": "3fb2d0c3bae3c192e8416911df631e7e27b36789fd067ba6f62622883da6a9c0"
+    },
+    "functional_v1/pldm_runtime.py": {
+      "bytes": 4912,
+      "sha256": "f568110086426f1cbd9112039f304b0cea4eb11c4c37c1f71c0e58e3da1522e6"
+    },
+    "functional_v1/prepare.py": {
+      "bytes": 12921,
+      "sha256": "e056ed0f6f680058292c405493036ecaa3b065995596b143c49ceb0c89d832e9"
+    },
+    "gates/P2_cube2_pldm_reaudit_rgb/checkpoints/update_000000001/manifest.json": {
+      "bytes": 192,
+      "sha256": "a45f030d8202d925aa6272795ad719634032f3f6ca5089698bb9a1597192a35b"
+    },
+    "gates/P2_cube2_pldm_reaudit_rgb/checkpoints/update_000000001/params_1.pkl": {
+      "bytes": 76907302,
+      "sha256": "745b75db3e7565ae95cb3fe67b5d4645e5ed06dcd9277424cce873c7f61f17b6"
+    },
+    "gates/P2_cube2_pldm_reaudit_rgb/checkpoints/update_000000001/run_state.pkl": {
+      "bytes": 70711,
+      "sha256": "9243dbf7045f11aac82b633b6a8989b81236b3cbd55a4cbd32753e27150c2f80"
+    },
+    "gates/P2_cube2_pldm_reaudit_rgb/checkpoints/update_000000002/manifest.json": {
+      "bytes": 192,
+      "sha256": "2258b4572b26922ec974b5435c8d68b17dca1a085a1bcefb268ea0300730462b"
+    },
+    "gates/P2_cube2_pldm_reaudit_rgb/checkpoints/update_000000002/params_2.pkl": {
+      "bytes": 76907302,
+      "sha256": "08cbd19299424e1dd4feba9b10b09f3e2d59cb80118adc330a7d57230fd31467"
+    },
+    "gates/P2_cube2_pldm_reaudit_rgb/checkpoints/update_000000002/run_state.pkl": {
+      "bytes": 70711,
+      "sha256": "d00d1a178d9cbcd7f74c4216df45595b572875394415375b4b9f0cda0bb3aed1"
+    },
+    "gates/P2_cube2_pldm_reaudit_rgb/next_batch.npz": {
+      "bytes": 8640744,
+      "sha256": "4e171f40d48a115abe8a12c724fe6a0dcb8ce60d11138a9c6d6e898a2e405e7d"
+    },
+    "gates/P2_cube2_pldm_reaudit_rgb/next_ids.npz": {
+      "bytes": 33780,
+      "sha256": "a8afde4f136a2b58787d623b7f0a13e120ceb66bedc630c002d43ea1b0d69a59"
+    },
+    "gates/P2_cube2_pldm_reaudit_rgb/report.json": {
+      "bytes": 74949,
+      "sha256": "72c9c930f2196a0ecdcb28d72bc2dc3f46f1cede28c060ded73b03b5e9ad40cf"
+    },
+    "native_sr_v1/full/actual_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_000/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_000/result.json": {
+      "bytes": 96588,
+      "sha256": "5ee991dc76b276ed2309a9722cd4972fd610617926dcc3f41a9401df533bc347"
+    },
+    "native_sr_v1/full/episodes/task1/episode_000/steps.npz": {
+      "bytes": 9916,
+      "sha256": "82b862b74daf0b0517e296461e9ef6386657dc2f624090e7fa5f400fd2bf595e"
+    },
+    "native_sr_v1/full/episodes/task1/episode_001/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_001/result.json": {
+      "bytes": 71885,
+      "sha256": "0cedd829e02c1a5e305e394e211f20a17c9241e66b42eb88de81d2d80081122e"
+    },
+    "native_sr_v1/full/episodes/task1/episode_001/steps.npz": {
+      "bytes": 7605,
+      "sha256": "d0df8d2ea6e56475a5740d195fd4e1303ab92c5380db32d5b1b50c47ee5b8afe"
+    },
+    "native_sr_v1/full/episodes/task1/episode_002/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_002/result.json": {
+      "bytes": 13746,
+      "sha256": "4e86dbd7908aaff9b0c83f291247f976c7ce91d4b8e10ce84621d74d7396e3e3"
+    },
+    "native_sr_v1/full/episodes/task1/episode_002/steps.npz": {
+      "bytes": 1855,
+      "sha256": "1db9a6cc4b97f6bfccfa1df5270c8d6597580bdff2b3b839b879df7cfbc73229"
+    },
+    "native_sr_v1/full/episodes/task1/episode_003/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_003/result.json": {
+      "bytes": 96588,
+      "sha256": "1941eb58a8c68c24c0a199ab41c6005354997a1a855057072286198578cc9116"
+    },
+    "native_sr_v1/full/episodes/task1/episode_003/steps.npz": {
+      "bytes": 9975,
+      "sha256": "a36c34fef16acc1c387c7a3df566b0d1600024190e6c12cf6e5d2c6a72d64fe0"
+    },
+    "native_sr_v1/full/episodes/task1/episode_004/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_004/result.json": {
+      "bytes": 96589,
+      "sha256": "7c2c0060feef1a3926b68ba8a430a17aa61636a71816d53ee307017ef02c50ae"
+    },
+    "native_sr_v1/full/episodes/task1/episode_004/steps.npz": {
+      "bytes": 10008,
+      "sha256": "0900b4498342648b929a83b32867e84654b1b4bc15450cd21b5a1ad460e25e58"
+    },
+    "native_sr_v1/full/episodes/task1/episode_005/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_005/result.json": {
+      "bytes": 96589,
+      "sha256": "6a539ddc8e8092fe73692dc92cd99f6f20da462182c8d51aca54500b4d53f1e5"
+    },
+    "native_sr_v1/full/episodes/task1/episode_005/steps.npz": {
+      "bytes": 9879,
+      "sha256": "4c4fe65ffeebe6e6af223d949346d2dac1e2d5ae7d198be70a176d952cc815ed"
+    },
+    "native_sr_v1/full/episodes/task1/episode_006/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_006/result.json": {
+      "bytes": 96588,
+      "sha256": "88cebe81f579d3dce3b00ddb718e98490d64d05de08354eaa4eaa32e7347fa54"
+    },
+    "native_sr_v1/full/episodes/task1/episode_006/steps.npz": {
+      "bytes": 10030,
+      "sha256": "fbe6962f281cfd051f9e3c6c1f85c6be07b3e2315b1c8bf0719328099c30ecae"
+    },
+    "native_sr_v1/full/episodes/task1/episode_007/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_007/result.json": {
+      "bytes": 96588,
+      "sha256": "4d583b04a41a2908ce19e30c817016bd4684dfcf7d0f75fe52c3b371f66a5d4e"
+    },
+    "native_sr_v1/full/episodes/task1/episode_007/steps.npz": {
+      "bytes": 10042,
+      "sha256": "38cf90049880b2cf264dd571240aba0d15f0f2980fe2a2c50a2bc0949a20d975"
+    },
+    "native_sr_v1/full/episodes/task1/episode_008/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_008/result.json": {
+      "bytes": 11466,
+      "sha256": "0f282c55a511a2adf0ab45ed4048ec4ff3a7918e09d727d5faf67c33f2715920"
+    },
+    "native_sr_v1/full/episodes/task1/episode_008/steps.npz": {
+      "bytes": 1630,
+      "sha256": "79f38b1fa598e2d7ee06b41180a87b55fd377e6c73b0134a4778249b8f0fe53b"
+    },
+    "native_sr_v1/full/episodes/task1/episode_009/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_009/result.json": {
+      "bytes": 96588,
+      "sha256": "fcd37b0ed0fa151f23f1392ba8143634ff979b410068124bfb30dff4083fdf91"
+    },
+    "native_sr_v1/full/episodes/task1/episode_009/steps.npz": {
+      "bytes": 10021,
+      "sha256": "17ee5b900e9c154ccd6a1fcee2dae46949889bad3da1259debbbab00f5ddf9e3"
+    },
+    "native_sr_v1/full/episodes/task1/episode_010/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_010/result.json": {
+      "bytes": 96590,
+      "sha256": "30616245c2538d027bd7e27009fafa0a04113e8c1c65aaba1f8ba4489a892cd7"
+    },
+    "native_sr_v1/full/episodes/task1/episode_010/steps.npz": {
+      "bytes": 10012,
+      "sha256": "56d22aac686050f693dcc56709874509245ffb700d79ffcb75661ad1eed92a98"
+    },
+    "native_sr_v1/full/episodes/task1/episode_011/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_011/result.json": {
+      "bytes": 96589,
+      "sha256": "be597ce764e7db2f1791089345174b0cb9602cbcd5070bd78248e412fd44d8e2"
+    },
+    "native_sr_v1/full/episodes/task1/episode_011/steps.npz": {
+      "bytes": 10001,
+      "sha256": "885e7e02626dcd9134f4071849dddcec62d8f55a8b2d98ba64591fb17fb7fc23"
+    },
+    "native_sr_v1/full/episodes/task1/episode_012/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_012/result.json": {
+      "bytes": 13366,
+      "sha256": "3c3e7a097a41a328a24e084d8179704685e940a10b87513071c70132735d7959"
+    },
+    "native_sr_v1/full/episodes/task1/episode_012/steps.npz": {
+      "bytes": 1798,
+      "sha256": "5956772f87e663c747472bb2d1890a2eadef161ad4d1c5bd65df8e1144c236d4"
+    },
+    "native_sr_v1/full/episodes/task1/episode_013/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_013/result.json": {
+      "bytes": 96589,
+      "sha256": "cd4f08e176cbf17b7997b45d5aaf292f25d3a3d8ea06681a1e012ea18a7ef5f5"
+    },
+    "native_sr_v1/full/episodes/task1/episode_013/steps.npz": {
+      "bytes": 10012,
+      "sha256": "b9791a47f228d7a9d32283b3f1e9e28a88d7b01c5ef4efb2bb4f08f7bd0a7fb5"
+    },
+    "native_sr_v1/full/episodes/task1/episode_014/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_014/result.json": {
+      "bytes": 21539,
+      "sha256": "b51a8bade7d9376d5bd299d63db0337f7c1ed92c9aa110a75964c3fea53d939d"
+    },
+    "native_sr_v1/full/episodes/task1/episode_014/steps.npz": {
+      "bytes": 2619,
+      "sha256": "cafe6175f5c91ad03c6edad476aee9da9cab8d7c63481754a69e2e089ba1e6bf"
+    },
+    "native_sr_v1/full/episodes/task1/episode_015/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_015/result.json": {
+      "bytes": 96589,
+      "sha256": "3d264dcd6f64eff4ae4114b17a81b1d11fd7c56eef440b3fc4bef4fc066f104f"
+    },
+    "native_sr_v1/full/episodes/task1/episode_015/steps.npz": {
+      "bytes": 10048,
+      "sha256": "3ce01b1adc13202a51a545f76b065598547dd0ee0140c51b00399ace8854f3f4"
+    },
+    "native_sr_v1/full/episodes/task1/episode_016/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_016/result.json": {
+      "bytes": 44149,
+      "sha256": "38c4f162113a94d0b93a8b43d70f5d49fbc325dd938a57dce2ffb3d34fd18d4c"
+    },
+    "native_sr_v1/full/episodes/task1/episode_016/steps.npz": {
+      "bytes": 4863,
+      "sha256": "51f6d3298bdcd2107c1a01fcd1a75045f99a0948be5ca36a5fb9185eaf5aac6b"
+    },
+    "native_sr_v1/full/episodes/task1/episode_017/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_017/result.json": {
+      "bytes": 96589,
+      "sha256": "40e7ef0d4e876d42c50d8b3aed199d4dc9db089b2f62b6c53d485ba06037c295"
+    },
+    "native_sr_v1/full/episodes/task1/episode_017/steps.npz": {
+      "bytes": 10033,
+      "sha256": "ea1b477a99899ff25534cef21c3c4748c8565f3a02fd2e147d3926ceb021ed4c"
+    },
+    "native_sr_v1/full/episodes/task1/episode_018/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_018/result.json": {
+      "bytes": 96589,
+      "sha256": "d418c54fb0ad4bd188ba3f650f02e8ff98c9d845cea3177a67fd63d872c914fd"
+    },
+    "native_sr_v1/full/episodes/task1/episode_018/steps.npz": {
+      "bytes": 9949,
+      "sha256": "a5380549e0ce7036db1fc48d96c8c85141bfac40fe19f642a126608b5d5e8c12"
+    },
+    "native_sr_v1/full/episodes/task1/episode_019/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_019/result.json": {
+      "bytes": 96589,
+      "sha256": "577a8035b07b18da2d1b45ccfcacc484d9c00557e9417399882be9dc22db3a30"
+    },
+    "native_sr_v1/full/episodes/task1/episode_019/steps.npz": {
+      "bytes": 9961,
+      "sha256": "0e9cf53c1d43341f5acfec85a2f41a6775b075e66f9ae3b087cfed2c8fda9988"
+    },
+    "native_sr_v1/full/episodes/task1/episode_020/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_020/result.json": {
+      "bytes": 96589,
+      "sha256": "4ad229393384b753ed871e852ba04deeb564944a594d1b41b7f6c41db1b0da4d"
+    },
+    "native_sr_v1/full/episodes/task1/episode_020/steps.npz": {
+      "bytes": 9946,
+      "sha256": "6398ced9dcde501d3554edaadd5068c487e3f8907edbd46d88b344013fd610f6"
+    },
+    "native_sr_v1/full/episodes/task1/episode_021/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_021/result.json": {
+      "bytes": 96589,
+      "sha256": "ba5186bb59134e4724aa712583099445a3a64a216bb5659a2aae5ace67f0b134"
+    },
+    "native_sr_v1/full/episodes/task1/episode_021/steps.npz": {
+      "bytes": 10067,
+      "sha256": "9537bf6675bbe25b2ec282dd60513f654a864da8e1549c1ebfdb7bb83023435a"
+    },
+    "native_sr_v1/full/episodes/task1/episode_022/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_022/result.json": {
+      "bytes": 96589,
+      "sha256": "4c4fd3957f33cde8bc6971ff85f524e564ebc27064446ae6557ea16aa1548f68"
+    },
+    "native_sr_v1/full/episodes/task1/episode_022/steps.npz": {
+      "bytes": 9899,
+      "sha256": "80760cdda408cecdbbc33d525386bc5c9195c6f2afd0928c38f6132f823aed36"
+    },
+    "native_sr_v1/full/episodes/task1/episode_023/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_023/result.json": {
+      "bytes": 96589,
+      "sha256": "9750aba5dd1481c29e4a8c1782ba7b59f4015a6e06330aff7da6ae1fe771823b"
+    },
+    "native_sr_v1/full/episodes/task1/episode_023/steps.npz": {
+      "bytes": 10005,
+      "sha256": "5105a8134f9b39571f44d5bbc8659f08699c777d082c03bebcd63a6aa4d2ad1c"
+    },
+    "native_sr_v1/full/episodes/task1/episode_024/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_024/result.json": {
+      "bytes": 96589,
+      "sha256": "46582e512699cf19555c0a58b43dbb0ae21a02d030c73d4a867e86afb20ae3df"
+    },
+    "native_sr_v1/full/episodes/task1/episode_024/steps.npz": {
+      "bytes": 9959,
+      "sha256": "c697e1732fb9048bcd924cf3121a39efc94a59fda8bc674e29f73c479f33f76e"
+    },
+    "native_sr_v1/full/episodes/task1/episode_025/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_025/result.json": {
+      "bytes": 96589,
+      "sha256": "3579ca9c848b5bc4a79c826130df1a4eefd2fc5e095ff75b08c4286ac744218f"
+    },
+    "native_sr_v1/full/episodes/task1/episode_025/steps.npz": {
+      "bytes": 10021,
+      "sha256": "ae6ff38d1f3e1f94b895384721dd2c6154915097a5cd34e840f244877bd85e41"
+    },
+    "native_sr_v1/full/episodes/task1/episode_026/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_026/result.json": {
+      "bytes": 96589,
+      "sha256": "0641bb08275007ed21013b2a5e8011a92146a29a1fde70652a81954c06b2011b"
+    },
+    "native_sr_v1/full/episodes/task1/episode_026/steps.npz": {
+      "bytes": 9999,
+      "sha256": "2e6716a8103cabe00c59338ae637d2518225c02fba95d4c71686d3cd56533f79"
+    },
+    "native_sr_v1/full/episodes/task1/episode_027/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_027/result.json": {
+      "bytes": 96589,
+      "sha256": "6dae850ff38fea7cf415d6bc2dc0f413eb1932388e822b9f73b69773ffec9bc7"
+    },
+    "native_sr_v1/full/episodes/task1/episode_027/steps.npz": {
+      "bytes": 9940,
+      "sha256": "bee4ff787414c7ba11f3ee270cad7a83613cf3652ca0f2f60748cf01ebf2b000"
+    },
+    "native_sr_v1/full/episodes/task1/episode_028/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_028/result.json": {
+      "bytes": 24769,
+      "sha256": "5c51598dc69a1ac10e1486093a3de17cf7435f0230ca95c858e2847568d7909e"
+    },
+    "native_sr_v1/full/episodes/task1/episode_028/steps.npz": {
+      "bytes": 2943,
+      "sha256": "74ba6775433697b0364db65ac2435848aa675f988d6f8807a6784a179eb4477f"
+    },
+    "native_sr_v1/full/episodes/task1/episode_029/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_029/result.json": {
+      "bytes": 96589,
+      "sha256": "2da49fc12c4c341882c9401f941002e613167971b304a6b17a537238c1b93e8a"
+    },
+    "native_sr_v1/full/episodes/task1/episode_029/steps.npz": {
+      "bytes": 10035,
+      "sha256": "fe5b74b87cf40f0cd4d45e5e2debcbf7d7ccbb6d5ec8f7500ca64f57c316bab5"
+    },
+    "native_sr_v1/full/episodes/task1/episode_030/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_030/result.json": {
+      "bytes": 96589,
+      "sha256": "812af6b74fd4879fe595b304d2dca40a83034831748136c96fc7ed53fef7d98e"
+    },
+    "native_sr_v1/full/episodes/task1/episode_030/steps.npz": {
+      "bytes": 9899,
+      "sha256": "7c006370304443192c7c819d94bdaa896db890a37b07be16f8f3cec8c7b4c199"
+    },
+    "native_sr_v1/full/episodes/task1/episode_031/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_031/result.json": {
+      "bytes": 96589,
+      "sha256": "69bd1506c18f548f675ca779594403419b25993b747ea95a4ce5176847593007"
+    },
+    "native_sr_v1/full/episodes/task1/episode_031/steps.npz": {
+      "bytes": 10045,
+      "sha256": "ed450877588f48efde888ea557564327788356af16c7545266a3b07352f93f11"
+    },
+    "native_sr_v1/full/episodes/task1/episode_032/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_032/result.json": {
+      "bytes": 96589,
+      "sha256": "fdb839bb5c328317681371439d01007f4f6f2901701b6efc68b1bf002bbd96ea"
+    },
+    "native_sr_v1/full/episodes/task1/episode_032/steps.npz": {
+      "bytes": 9961,
+      "sha256": "9582ff29ddc7107b22911946dd96f7df2d3991ee003c59edb4bc4c43878b14bd"
+    },
+    "native_sr_v1/full/episodes/task1/episode_033/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_033/result.json": {
+      "bytes": 96589,
+      "sha256": "b502d33b0ee761b147c57af68673328661818ec97428f5ecce6010c874cd97d8"
+    },
+    "native_sr_v1/full/episodes/task1/episode_033/steps.npz": {
+      "bytes": 9976,
+      "sha256": "a850970c9562ed42299cce167b7f41d33d6414b11c74dbcbabd8bf8283ad5f21"
+    },
+    "native_sr_v1/full/episodes/task1/episode_034/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_034/result.json": {
+      "bytes": 54979,
+      "sha256": "6b1d3cd317c739766d7b19ebc129279d958d4a3de23fcfa10c1d4b2281423d28"
+    },
+    "native_sr_v1/full/episodes/task1/episode_034/steps.npz": {
+      "bytes": 5882,
+      "sha256": "31003060fc14938c97287f629c9452b0287fd74d8fdc873680ad5c580a89e35c"
+    },
+    "native_sr_v1/full/episodes/task1/episode_035/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_035/result.json": {
+      "bytes": 96589,
+      "sha256": "0f63d72bd07d2bf59a22dc72a5cdc0cb31ad405727af6d6ac2c56fd092e07af5"
+    },
+    "native_sr_v1/full/episodes/task1/episode_035/steps.npz": {
+      "bytes": 9982,
+      "sha256": "ad1a0169cdecde866df400c6b0d7dad6eb7ad5888d9b3e24f8be26d774c991b1"
+    },
+    "native_sr_v1/full/episodes/task1/episode_036/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_036/result.json": {
+      "bytes": 96589,
+      "sha256": "fe7f36d5f2463f891613e60aa36ce271ca9a6c3def7c6c7433e689b92cc82947"
+    },
+    "native_sr_v1/full/episodes/task1/episode_036/steps.npz": {
+      "bytes": 10026,
+      "sha256": "974a5098d40be148cba93c11f0f7e6a4fec5147112a3e9c239077432dd028c95"
+    },
+    "native_sr_v1/full/episodes/task1/episode_037/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_037/result.json": {
+      "bytes": 96589,
+      "sha256": "fe78a5ff81c7c3b894b261e9175d1025cf3704d370b842fd127dfb418184dd11"
+    },
+    "native_sr_v1/full/episodes/task1/episode_037/steps.npz": {
+      "bytes": 10003,
+      "sha256": "66af1a337aeb22f7d50053ffdf60964ae016966aafc6e3c5955ae11158270368"
+    },
+    "native_sr_v1/full/episodes/task1/episode_038/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_038/result.json": {
+      "bytes": 96589,
+      "sha256": "6294b22654f6fbf8afcd544b738f9f8f4df7e3e250d3f584465c0f0a5f7f3e05"
+    },
+    "native_sr_v1/full/episodes/task1/episode_038/steps.npz": {
+      "bytes": 10014,
+      "sha256": "75f0483c2f65a51d78f8601099ebc69387373fe0fc6c74892f6cf2388271a3e8"
+    },
+    "native_sr_v1/full/episodes/task1/episode_039/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_039/result.json": {
+      "bytes": 96589,
+      "sha256": "77a06704c61eac2f770ef3ecfc57cf25d0c2d2faffd1dc4bec62038354b867cc"
+    },
+    "native_sr_v1/full/episodes/task1/episode_039/steps.npz": {
+      "bytes": 10013,
+      "sha256": "55e6f0abb4b807ba52a0751f9f8b82b28b6c0e6fe7ab4fee70dac9a49e70c46e"
+    },
+    "native_sr_v1/full/episodes/task1/episode_040/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_040/result.json": {
+      "bytes": 96589,
+      "sha256": "d81c6be65489c3fe79588e993375a9d83a1f92160381c89e4e41317d944f6a21"
+    },
+    "native_sr_v1/full/episodes/task1/episode_040/steps.npz": {
+      "bytes": 9945,
+      "sha256": "540df88d041e30001e30bb22fc725b97e44f8f2cd414fd75d5aafc1e1a50126b"
+    },
+    "native_sr_v1/full/episodes/task1/episode_041/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_041/result.json": {
+      "bytes": 96589,
+      "sha256": "fe99b4c081ca5726e5b87dff75de16fbb1cfd48c830289c632e9cbd51355d25c"
+    },
+    "native_sr_v1/full/episodes/task1/episode_041/steps.npz": {
+      "bytes": 9941,
+      "sha256": "3bc9e977127156f11aa4dba29d0f66422e33a7f64a24b685f1d5079843560fd0"
+    },
+    "native_sr_v1/full/episodes/task1/episode_042/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_042/result.json": {
+      "bytes": 96589,
+      "sha256": "a139d49cdc7c800afe7d4d81194066a75570cd8cd0be3415520737b1a0221a6f"
+    },
+    "native_sr_v1/full/episodes/task1/episode_042/steps.npz": {
+      "bytes": 9988,
+      "sha256": "93db18ffe681fbdb7358f2bea48d3e21f10d05ea78842d8e78c2fda9bcbf63a0"
+    },
+    "native_sr_v1/full/episodes/task1/episode_043/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_043/result.json": {
+      "bytes": 96590,
+      "sha256": "178afec24e1b3c4f6842db0ed964237edc49691d43309b4f51bd85f99e9c3699"
+    },
+    "native_sr_v1/full/episodes/task1/episode_043/steps.npz": {
+      "bytes": 10012,
+      "sha256": "8f8aa59888adac4423ca9ad5b6b700ef6b1f12ab4f7f043dbdf9bb975bc58aa8"
+    },
+    "native_sr_v1/full/episodes/task1/episode_044/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_044/result.json": {
+      "bytes": 96590,
+      "sha256": "2e1ea7cceee8e806b489530013911493ecffbea53ad84849937f36df3aacfc35"
+    },
+    "native_sr_v1/full/episodes/task1/episode_044/steps.npz": {
+      "bytes": 10060,
+      "sha256": "9b194397d3caba6c4b35976c435078e3865109aba753b2bd18ce6f1a5c7b3db5"
+    },
+    "native_sr_v1/full/episodes/task1/episode_045/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_045/result.json": {
+      "bytes": 96589,
+      "sha256": "4403ebe19e0a9a5b3078cf6169c04192c9c49139b36c643ee4654ed7059923a6"
+    },
+    "native_sr_v1/full/episodes/task1/episode_045/steps.npz": {
+      "bytes": 10039,
+      "sha256": "4f46c0caf6905d01369b858bda1faf584d9733134b698637963550c2990c6b6b"
+    },
+    "native_sr_v1/full/episodes/task1/episode_046/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_046/result.json": {
+      "bytes": 96589,
+      "sha256": "232077ff05d9f01c60daa331d711632d4e600ab3b09183a901b8a740c3719493"
+    },
+    "native_sr_v1/full/episodes/task1/episode_046/steps.npz": {
+      "bytes": 9989,
+      "sha256": "8f76c04978eec5885316ec455f778f6bac7143b3c23662cc003979755a53db36"
+    },
+    "native_sr_v1/full/episodes/task1/episode_047/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_047/result.json": {
+      "bytes": 96589,
+      "sha256": "cb6f1dad55aed4bee8042d37a89bf548992613bc17e93cef2635170d00cd8493"
+    },
+    "native_sr_v1/full/episodes/task1/episode_047/steps.npz": {
+      "bytes": 9981,
+      "sha256": "fcbc50ab058540934d2dfff613dd4d229d2f82bfacfbc289e628e9c5bc0e1cb0"
+    },
+    "native_sr_v1/full/episodes/task1/episode_048/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_048/result.json": {
+      "bytes": 96588,
+      "sha256": "c820c762f838fc4405a9bd44429161321432c2a5eb1291c9a43d9e979fb111c8"
+    },
+    "native_sr_v1/full/episodes/task1/episode_048/steps.npz": {
+      "bytes": 9991,
+      "sha256": "7796ff0ef6699959f2bff84ccef97f5153a741f707d88467fae058f971d701aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_049/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task1/episode_049/result.json": {
+      "bytes": 48709,
+      "sha256": "9f9c32140c5b7f094c3b8542dc18b99760a83b4b2a83742914ec725ff63b3ea0"
+    },
+    "native_sr_v1/full/episodes/task1/episode_049/steps.npz": {
+      "bytes": 5319,
+      "sha256": "f366dceea850b5e98e19139de72cafc8b5c1175418513178d3435e2ac6ec113b"
+    },
+    "native_sr_v1/full/episodes/task2/episode_000/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_000/result.json": {
+      "bytes": 96588,
+      "sha256": "1136406f5318ab2e90a7e176b88e73f7f8ce629192c718c32cb30f791559d790"
+    },
+    "native_sr_v1/full/episodes/task2/episode_000/steps.npz": {
+      "bytes": 10053,
+      "sha256": "2960add8081f750805885deb69c3c01fa87b084dc13a453b03ee515ba97cbc2d"
+    },
+    "native_sr_v1/full/episodes/task2/episode_001/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_001/result.json": {
+      "bytes": 96588,
+      "sha256": "9fd0926be1b1347ed6ae858c7a58d5eaff1dd1c139c5ddda7d60693279c89d18"
+    },
+    "native_sr_v1/full/episodes/task2/episode_001/steps.npz": {
+      "bytes": 9965,
+      "sha256": "9f1b7397b8d1df86b13c81ca26552b94bcc1fb5ac6851344b383943198230474"
+    },
+    "native_sr_v1/full/episodes/task2/episode_002/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_002/result.json": {
+      "bytes": 96588,
+      "sha256": "23119128e6b401d31a0c47986bb3f1c581a1f5a24302797811a0116dc52ec99f"
+    },
+    "native_sr_v1/full/episodes/task2/episode_002/steps.npz": {
+      "bytes": 10052,
+      "sha256": "bcdd48d7e3c59dad074c0713079434c4eff9046fbd991d3a9ff7768229117c4a"
+    },
+    "native_sr_v1/full/episodes/task2/episode_003/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_003/result.json": {
+      "bytes": 96586,
+      "sha256": "081c35c717f855457a6b064eba0e8413e76f051ed18563ad115b21c7cf692494"
+    },
+    "native_sr_v1/full/episodes/task2/episode_003/steps.npz": {
+      "bytes": 9999,
+      "sha256": "64990c9c5781526ed1c4d5efce8f9fa516f969e40cb0364849d21e8961048eac"
+    },
+    "native_sr_v1/full/episodes/task2/episode_004/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_004/result.json": {
+      "bytes": 96588,
+      "sha256": "8e78d37a4cb24e4471a277e08b3db0cf0a6214948374e7407ed1cf118b6c5975"
+    },
+    "native_sr_v1/full/episodes/task2/episode_004/steps.npz": {
+      "bytes": 9767,
+      "sha256": "9d31332501fbd01c094d8d5bfb83c5993b7c41309adbc78aa9632f50cfcb18b7"
+    },
+    "native_sr_v1/full/episodes/task2/episode_005/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_005/result.json": {
+      "bytes": 96589,
+      "sha256": "20eea2c7d218fb1ba78da874baa700c5ab7beee36b296ebb17eae8dd795bae04"
+    },
+    "native_sr_v1/full/episodes/task2/episode_005/steps.npz": {
+      "bytes": 9956,
+      "sha256": "779a2f310e6456247c45ab30f44f70efc526e4595541270f820a9d12e81b231c"
+    },
+    "native_sr_v1/full/episodes/task2/episode_006/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_006/result.json": {
+      "bytes": 96588,
+      "sha256": "2d1a655977666a64c1f09f4d716160bea8dd0cc8de0554525e9f8950852a2222"
+    },
+    "native_sr_v1/full/episodes/task2/episode_006/steps.npz": {
+      "bytes": 10051,
+      "sha256": "30758f7ddd3a633960acff9cb161a842d543b3b06855d80806acd7a5a042d479"
+    },
+    "native_sr_v1/full/episodes/task2/episode_007/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_007/result.json": {
+      "bytes": 96588,
+      "sha256": "eef359f7533de1ac7175f8c490da123bbaf337c7f13cee77ae952938429fe96f"
+    },
+    "native_sr_v1/full/episodes/task2/episode_007/steps.npz": {
+      "bytes": 10033,
+      "sha256": "a0ff1c3068ea4e064fc08dbe8947967afa1414b7b7f066c7ef0f2b917382ed6a"
+    },
+    "native_sr_v1/full/episodes/task2/episode_008/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_008/result.json": {
+      "bytes": 96588,
+      "sha256": "7f7bb243c4014b79eb8e5b715216034272bfc3cf705428aa10a5f7fb05e017e7"
+    },
+    "native_sr_v1/full/episodes/task2/episode_008/steps.npz": {
+      "bytes": 10019,
+      "sha256": "7c15fe42402654f622dbbddfd60dd715001e9d5b0cf2b398965dbd6dd0798341"
+    },
+    "native_sr_v1/full/episodes/task2/episode_009/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_009/result.json": {
+      "bytes": 96588,
+      "sha256": "616a1e30d380e05887626c48b67ae28d99924e5deeed089d84acac5513d33225"
+    },
+    "native_sr_v1/full/episodes/task2/episode_009/steps.npz": {
+      "bytes": 10023,
+      "sha256": "3034032e512c240ee94794ef76c293322a4125119929b4af2342741459915416"
+    },
+    "native_sr_v1/full/episodes/task2/episode_010/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_010/result.json": {
+      "bytes": 96587,
+      "sha256": "b9817dc725b57527bf1f907181bef428457c0e3dc651a02a9cfe822bab425558"
+    },
+    "native_sr_v1/full/episodes/task2/episode_010/steps.npz": {
+      "bytes": 9997,
+      "sha256": "751d4c0a0395e83b06dacde176d5f00639650cc4ebca70d22ce275b49df0848a"
+    },
+    "native_sr_v1/full/episodes/task2/episode_011/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_011/result.json": {
+      "bytes": 96587,
+      "sha256": "57d51a888efae8baf611b7610f4a7668c6056516825426977349fe635b9dda2f"
+    },
+    "native_sr_v1/full/episodes/task2/episode_011/steps.npz": {
+      "bytes": 10034,
+      "sha256": "26293a994ea4d9e5d6bf70a36cf96c80bb4bc5c3478d47fb0a21060a7830dc6f"
+    },
+    "native_sr_v1/full/episodes/task2/episode_012/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_012/result.json": {
+      "bytes": 96589,
+      "sha256": "162842972b20d6b61d400913e74594d66c85045b5a1681fd4106f11d10e5cc7b"
+    },
+    "native_sr_v1/full/episodes/task2/episode_012/steps.npz": {
+      "bytes": 10057,
+      "sha256": "91e1511dce899afa44fcfc134b1f796a47abbd90435efa5bf15600658c812317"
+    },
+    "native_sr_v1/full/episodes/task2/episode_013/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_013/result.json": {
+      "bytes": 96589,
+      "sha256": "cab912c45f648306c952d411dbdab01638fba19876c3ab3ca7679af08f2b656a"
+    },
+    "native_sr_v1/full/episodes/task2/episode_013/steps.npz": {
+      "bytes": 10025,
+      "sha256": "9ae9ea63db6a93e1bc1a07d0c13626bbdd21192389135f960c78df190c8d4983"
+    },
+    "native_sr_v1/full/episodes/task2/episode_014/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_014/result.json": {
+      "bytes": 96589,
+      "sha256": "332c2d30964da9c410c867f218406896639355e8388d6c1834a76b0012a961a0"
+    },
+    "native_sr_v1/full/episodes/task2/episode_014/steps.npz": {
+      "bytes": 9902,
+      "sha256": "a334b2a179d5bec851f5ede9353be10fbade6e712e4637b166b095fbe18014f3"
+    },
+    "native_sr_v1/full/episodes/task2/episode_015/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_015/result.json": {
+      "bytes": 96590,
+      "sha256": "4924482c32c4171ceffad6e91e76c2c023f49f5df222b3be0029db062dfd3d9b"
+    },
+    "native_sr_v1/full/episodes/task2/episode_015/steps.npz": {
+      "bytes": 10053,
+      "sha256": "d34cd17d8d1acafa922c42cca712fbd950fe6458d43cbb9c2364a06aea897fbd"
+    },
+    "native_sr_v1/full/episodes/task2/episode_016/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_016/result.json": {
+      "bytes": 96589,
+      "sha256": "b5f9b172598bb3cb17a7d0e6075f6d4f8f6d2718020408f7eb5e50c1456f87c1"
+    },
+    "native_sr_v1/full/episodes/task2/episode_016/steps.npz": {
+      "bytes": 10023,
+      "sha256": "54c05f1a3e69996e558f0600fb0dbf7409be48b3578383b5d3aab53f41132915"
+    },
+    "native_sr_v1/full/episodes/task2/episode_017/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_017/result.json": {
+      "bytes": 96589,
+      "sha256": "e4f37fa15655847c7358ff49f48b813db49bd95d8479aba83b62902cd03f4953"
+    },
+    "native_sr_v1/full/episodes/task2/episode_017/steps.npz": {
+      "bytes": 10007,
+      "sha256": "5762cc5797145f57817b6119f192dd2ddabce0b81dc168bfd9a2f056ecc66617"
+    },
+    "native_sr_v1/full/episodes/task2/episode_018/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_018/result.json": {
+      "bytes": 96589,
+      "sha256": "90e76cf2081bed71a8520ef7caedcb6615a5f05c504da026bfe1b0f134ace576"
+    },
+    "native_sr_v1/full/episodes/task2/episode_018/steps.npz": {
+      "bytes": 10065,
+      "sha256": "d07f4516de685c2b189c146338ed8a94b870f40b53e36cd506acda8ff06e0030"
+    },
+    "native_sr_v1/full/episodes/task2/episode_019/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_019/result.json": {
+      "bytes": 96590,
+      "sha256": "4468aa35a29b45db3ad4d5e970a6b8bf656f9e0d21abd61ee4d17d0e6e0d9e4d"
+    },
+    "native_sr_v1/full/episodes/task2/episode_019/steps.npz": {
+      "bytes": 10015,
+      "sha256": "6fe6ec366b2a8b434ce73143cf930bea3eb3c36af92ea9379e4ca2e35da3026c"
+    },
+    "native_sr_v1/full/episodes/task2/episode_020/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_020/result.json": {
+      "bytes": 96589,
+      "sha256": "8ef315e05104e1a895ed292cd0f7f593b248662493a51c8cf3936d3661c6b1f2"
+    },
+    "native_sr_v1/full/episodes/task2/episode_020/steps.npz": {
+      "bytes": 10030,
+      "sha256": "ef52cc4d659cbc4bbaffa477acd4903b997fafdf256064662794fd14d9306eb7"
+    },
+    "native_sr_v1/full/episodes/task2/episode_021/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_021/result.json": {
+      "bytes": 96588,
+      "sha256": "b6dbc7130a5c603d73db7582284ae3201efb5298c9e6f7968b79aa9012a4c117"
+    },
+    "native_sr_v1/full/episodes/task2/episode_021/steps.npz": {
+      "bytes": 10028,
+      "sha256": "aa2dbe1b12dd73f273b452ac5ddf4c5feae794a30c56a48e8bee186317f93aeb"
+    },
+    "native_sr_v1/full/episodes/task2/episode_022/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_022/result.json": {
+      "bytes": 96589,
+      "sha256": "c908c0e24edbd371a19ff90be2537b65437f1affc54d8c249a594455a2b5e00c"
+    },
+    "native_sr_v1/full/episodes/task2/episode_022/steps.npz": {
+      "bytes": 9980,
+      "sha256": "9f7cafb1f14a17a084f80f89b17f5ee020aacb834c6b60cadc4d4a0c781acc5b"
+    },
+    "native_sr_v1/full/episodes/task2/episode_023/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_023/result.json": {
+      "bytes": 96589,
+      "sha256": "9bda57ef5792c05c4f488d8e629921f069241188eff9e327f4749607c3f05547"
+    },
+    "native_sr_v1/full/episodes/task2/episode_023/steps.npz": {
+      "bytes": 10065,
+      "sha256": "62c7ca75d7ae6dba5ce3e21dd20736995968785db313ec5b1929187c3558cf79"
+    },
+    "native_sr_v1/full/episodes/task2/episode_024/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_024/result.json": {
+      "bytes": 96589,
+      "sha256": "a0418a1e8a080d2c4a20e9012f1798922df8585edc1b69a2448018b5978bf63d"
+    },
+    "native_sr_v1/full/episodes/task2/episode_024/steps.npz": {
+      "bytes": 9953,
+      "sha256": "c71a552fffd968f63f913bea7daf648591412846aa0922d97e5b1e4487e8583c"
+    },
+    "native_sr_v1/full/episodes/task2/episode_025/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_025/result.json": {
+      "bytes": 96589,
+      "sha256": "4b56560d9f69fd9242c4639904b8c3884ab638ffa739c11688804b02c9a72919"
+    },
+    "native_sr_v1/full/episodes/task2/episode_025/steps.npz": {
+      "bytes": 9812,
+      "sha256": "d99b552640f287c7f8390646de714260378ac0068fe7dc0af80fb4bc9c447b98"
+    },
+    "native_sr_v1/full/episodes/task2/episode_026/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_026/result.json": {
+      "bytes": 96589,
+      "sha256": "f4bc48154d7e2dd0ea5314b7f4c9873d27896cacbbf106c43702b9880b4b0969"
+    },
+    "native_sr_v1/full/episodes/task2/episode_026/steps.npz": {
+      "bytes": 9977,
+      "sha256": "24305f066e71184a79b495fc7a2b51e2bbd7068411cf776012a8e826b0a9458d"
+    },
+    "native_sr_v1/full/episodes/task2/episode_027/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_027/result.json": {
+      "bytes": 96589,
+      "sha256": "84fbd5fac0a3df44db50daf445c59438ee820945b264898340805eee347e57dc"
+    },
+    "native_sr_v1/full/episodes/task2/episode_027/steps.npz": {
+      "bytes": 9908,
+      "sha256": "5350e32d39831b860b4a9fd4702fa85c4af20f20f7195eb44e3799f7e97a01e2"
+    },
+    "native_sr_v1/full/episodes/task2/episode_028/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_028/result.json": {
+      "bytes": 96589,
+      "sha256": "47781e78c00fe77728291fcfbaf4f868822a8ac26a1ab12d754a30fe14b1d78a"
+    },
+    "native_sr_v1/full/episodes/task2/episode_028/steps.npz": {
+      "bytes": 10044,
+      "sha256": "fa71b64d289829cb33a5cd89d3b8e068889643fe6e5390cdf22f46a5407bf140"
+    },
+    "native_sr_v1/full/episodes/task2/episode_029/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_029/result.json": {
+      "bytes": 96589,
+      "sha256": "c918336a5460d0ede15d76f394ed66660927b19483d4c2948902c201abe0ecf0"
+    },
+    "native_sr_v1/full/episodes/task2/episode_029/steps.npz": {
+      "bytes": 10063,
+      "sha256": "5705138fd4bee200cd9e66e6e143e6772283d957b4e7d32b0dd4279000e8fe54"
+    },
+    "native_sr_v1/full/episodes/task2/episode_030/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_030/result.json": {
+      "bytes": 96589,
+      "sha256": "4ae9fe1a65611a0c0e6b0c623227adb8bdf7a782b9b749630909e1db9a6d56c1"
+    },
+    "native_sr_v1/full/episodes/task2/episode_030/steps.npz": {
+      "bytes": 10084,
+      "sha256": "1716127858e7da3fb5b75c5c44e83431688280102a1f5f5e41d4927ca60c5369"
+    },
+    "native_sr_v1/full/episodes/task2/episode_031/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_031/result.json": {
+      "bytes": 96589,
+      "sha256": "03241601eb092ac97beaff2a10036329288e20cc10e348db197c90483cd06c3c"
+    },
+    "native_sr_v1/full/episodes/task2/episode_031/steps.npz": {
+      "bytes": 10022,
+      "sha256": "44b598690683a105f7cd486648bcc4b993d6f1d2a4433e64303a22b7524785fa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_032/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_032/result.json": {
+      "bytes": 96589,
+      "sha256": "7d3c7c0c44e641ce54d3fefcda65da1dedaf3caa0ff26e9c0589b18946089153"
+    },
+    "native_sr_v1/full/episodes/task2/episode_032/steps.npz": {
+      "bytes": 10065,
+      "sha256": "960ade046645eba91545499877e0ac46c8073fce6025cba57a79199e0213e104"
+    },
+    "native_sr_v1/full/episodes/task2/episode_033/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_033/result.json": {
+      "bytes": 96589,
+      "sha256": "6434f25f6fd5438f3cd2e79f8103bea65ef007745f1358ff8eba0d9fd557b29b"
+    },
+    "native_sr_v1/full/episodes/task2/episode_033/steps.npz": {
+      "bytes": 10038,
+      "sha256": "01b8fd3f47127ee2df8a9213d9ec9913833e46c87af77276f46dedbfe112debd"
+    },
+    "native_sr_v1/full/episodes/task2/episode_034/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_034/result.json": {
+      "bytes": 96590,
+      "sha256": "f9812da1acbf8855342e5db077ab8da2ad0858a0bb1713e418fcad47a4b00c5a"
+    },
+    "native_sr_v1/full/episodes/task2/episode_034/steps.npz": {
+      "bytes": 10024,
+      "sha256": "2f3cb84533415c2931f37520a9fc6b95bc8a8b8cf93a30b5240c7dbacc8d4188"
+    },
+    "native_sr_v1/full/episodes/task2/episode_035/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_035/result.json": {
+      "bytes": 96589,
+      "sha256": "56a70ae13c2647bdccf6f70861b9ab3afdbd2847da210422df034340ba641dae"
+    },
+    "native_sr_v1/full/episodes/task2/episode_035/steps.npz": {
+      "bytes": 10011,
+      "sha256": "ee3d8eae77c3da969c1afb2cb3af69706d7828f81560a129eac20a1edb028e40"
+    },
+    "native_sr_v1/full/episodes/task2/episode_036/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_036/result.json": {
+      "bytes": 96589,
+      "sha256": "c2075a4fcecb9521a7dc120d97688f37893b2a584faacf4d59a9d94fd6e6afa8"
+    },
+    "native_sr_v1/full/episodes/task2/episode_036/steps.npz": {
+      "bytes": 9968,
+      "sha256": "f2e6913b6a7d92c42d5af396eb2c381b85d53576f6541ea533a8dfe12f334574"
+    },
+    "native_sr_v1/full/episodes/task2/episode_037/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_037/result.json": {
+      "bytes": 96588,
+      "sha256": "4b248aed2a0c54c4c851ab1b8add4734eb0647c65d7cdd41c796fa737aaca2d4"
+    },
+    "native_sr_v1/full/episodes/task2/episode_037/steps.npz": {
+      "bytes": 10015,
+      "sha256": "b42ef1a9b464cbb9487f5f7e6da9eac4db0130762964ede9d5943fd2521110de"
+    },
+    "native_sr_v1/full/episodes/task2/episode_038/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_038/result.json": {
+      "bytes": 96589,
+      "sha256": "960b6b5e9b6ee0ce0bebdf619c0a3366e44bd338b79eae4ff7927c009d9b7797"
+    },
+    "native_sr_v1/full/episodes/task2/episode_038/steps.npz": {
+      "bytes": 9945,
+      "sha256": "1819b48e8544e984916ac5dcffc3786b95e93d34caef4c93bb419bd7d8d943cd"
+    },
+    "native_sr_v1/full/episodes/task2/episode_039/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_039/result.json": {
+      "bytes": 96588,
+      "sha256": "d90440432e958e802f9d7ef899e986ee461b2ec033579cc21ff63700354a3b4c"
+    },
+    "native_sr_v1/full/episodes/task2/episode_039/steps.npz": {
+      "bytes": 10073,
+      "sha256": "f883de50a53bbfae6707654d0a87db17c87ebd376d30350984eaa43be0386b92"
+    },
+    "native_sr_v1/full/episodes/task2/episode_040/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_040/result.json": {
+      "bytes": 96589,
+      "sha256": "6e0e47e598ba18b73794422b319ab0b654d40223f3a4837d27573d293f47720a"
+    },
+    "native_sr_v1/full/episodes/task2/episode_040/steps.npz": {
+      "bytes": 9962,
+      "sha256": "a98b5d7106f744899e00a80c6486a909293a392309aa2b480e9a5a3484ecd0ef"
+    },
+    "native_sr_v1/full/episodes/task2/episode_041/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_041/result.json": {
+      "bytes": 96590,
+      "sha256": "d01cd0a4f54d2a5e5c9038ea61665fe8a8f60f778cf8c2ad3372234163f2423b"
+    },
+    "native_sr_v1/full/episodes/task2/episode_041/steps.npz": {
+      "bytes": 9889,
+      "sha256": "248e3911a6eb8478b8897cc37494fa637e69ba745230f2359862c292afd4da78"
+    },
+    "native_sr_v1/full/episodes/task2/episode_042/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_042/result.json": {
+      "bytes": 96589,
+      "sha256": "0f557a5bb1abbc228c92ad7e145374c386946f963412b5a8d15f272381ea5a5a"
+    },
+    "native_sr_v1/full/episodes/task2/episode_042/steps.npz": {
+      "bytes": 9969,
+      "sha256": "5ba0756d079e483308ebcf035ad8ee62e3f59b0abc9f7c640306e506c76f37d7"
+    },
+    "native_sr_v1/full/episodes/task2/episode_043/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_043/result.json": {
+      "bytes": 96589,
+      "sha256": "ba3460d616d681fe0c9b6ca76026b585aa557bcecfbedc56276ccdba1e4980a8"
+    },
+    "native_sr_v1/full/episodes/task2/episode_043/steps.npz": {
+      "bytes": 10044,
+      "sha256": "f6c9bebac69e1d01146dc435617a6de3bdce4bfbfb5278d3a301a3a2cdf5d2cf"
+    },
+    "native_sr_v1/full/episodes/task2/episode_044/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_044/result.json": {
+      "bytes": 96589,
+      "sha256": "3a378c4027f737e90af25a283a07cf3416f8e6b95eb02b6c1f9b577888a48f82"
+    },
+    "native_sr_v1/full/episodes/task2/episode_044/steps.npz": {
+      "bytes": 10049,
+      "sha256": "14a6a23543373d16b44546a8dd73c9e23c2663f3c9f54c375420510995101edb"
+    },
+    "native_sr_v1/full/episodes/task2/episode_045/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_045/result.json": {
+      "bytes": 96589,
+      "sha256": "44986db026e20a5ed5a4448251179e3951be30353e86d1a61bcd4d0c7c807a24"
+    },
+    "native_sr_v1/full/episodes/task2/episode_045/steps.npz": {
+      "bytes": 10037,
+      "sha256": "45368d54a94245927d16be9b91a8e5064ed6051b60447b3c20a4cc07819a1a3c"
+    },
+    "native_sr_v1/full/episodes/task2/episode_046/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_046/result.json": {
+      "bytes": 96589,
+      "sha256": "5b138c928a6da5c78612043cd53356a306328b7c73cdb21ea029750f25cebd7c"
+    },
+    "native_sr_v1/full/episodes/task2/episode_046/steps.npz": {
+      "bytes": 10039,
+      "sha256": "7ccf152310b67a139a489e5c6330174a399663c8700f8c0f179c577ab7c3c6f2"
+    },
+    "native_sr_v1/full/episodes/task2/episode_047/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_047/result.json": {
+      "bytes": 96589,
+      "sha256": "268d5770983970e30b49db54f504d5347f0ba374883f8355c89b2947b8ad67c8"
+    },
+    "native_sr_v1/full/episodes/task2/episode_047/steps.npz": {
+      "bytes": 9890,
+      "sha256": "f5a3b6cfbf9e41a92d181733e703f7aaf830debb14c39e88a9d1c936f84924d6"
+    },
+    "native_sr_v1/full/episodes/task2/episode_048/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_048/result.json": {
+      "bytes": 96588,
+      "sha256": "f2bb9c8f9499619a54c5024a74e0263f3086a76f2568a936b75dee6ba0a0e7a6"
+    },
+    "native_sr_v1/full/episodes/task2/episode_048/steps.npz": {
+      "bytes": 10046,
+      "sha256": "e30a37d1678b3bf9163ba9153ab9ea8d690fd8e164c8ddbac2c4fe67709d2389"
+    },
+    "native_sr_v1/full/episodes/task2/episode_049/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task2/episode_049/result.json": {
+      "bytes": 96590,
+      "sha256": "866bb51890394e025f2eeb0052d2d4de841956ad6a070509468d051fdc0d4a14"
+    },
+    "native_sr_v1/full/episodes/task2/episode_049/steps.npz": {
+      "bytes": 10056,
+      "sha256": "4e977ae6e4a8009588d39943cc5189d913d4e6afce32600a4d529a3ae0d290b9"
+    },
+    "native_sr_v1/full/episodes/task3/episode_000/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_000/result.json": {
+      "bytes": 96588,
+      "sha256": "00fd3d16d420eb5462a8eed9413d74051d3864b2c25ee87ec6db477cc5c3d574"
+    },
+    "native_sr_v1/full/episodes/task3/episode_000/steps.npz": {
+      "bytes": 9986,
+      "sha256": "0e37f7db2f42f408b48f19a9b358eb431ceaa03543c17c086f9e0f0ed459ee96"
+    },
+    "native_sr_v1/full/episodes/task3/episode_001/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_001/result.json": {
+      "bytes": 96588,
+      "sha256": "2e86d2413ac9154cd0ecea071b01b1bfcaceb61e94cf758096035b92fe9e45ba"
+    },
+    "native_sr_v1/full/episodes/task3/episode_001/steps.npz": {
+      "bytes": 10010,
+      "sha256": "4ee5ef8d471035891d8c3a69a202daf1f20b60c68465b8ca0de0d06908c9085f"
+    },
+    "native_sr_v1/full/episodes/task3/episode_002/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_002/result.json": {
+      "bytes": 96588,
+      "sha256": "5a875bd179c4fc739cda587b762db662e8af35d22fd4c2db672684fbc7cd8252"
+    },
+    "native_sr_v1/full/episodes/task3/episode_002/steps.npz": {
+      "bytes": 9988,
+      "sha256": "0bdb297180a364c130867aab8424dc179826de56cb758031712b23a1550b251f"
+    },
+    "native_sr_v1/full/episodes/task3/episode_003/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_003/result.json": {
+      "bytes": 96588,
+      "sha256": "59d1142c537855a32ee69bd3c6b90d21664b0f50050500d33b9f870433834f3b"
+    },
+    "native_sr_v1/full/episodes/task3/episode_003/steps.npz": {
+      "bytes": 9995,
+      "sha256": "016576ea5dba4ec3eab69d9baa6b0ebf2c2c3d4a9d62b3bc58b13c8bb2109010"
+    },
+    "native_sr_v1/full/episodes/task3/episode_004/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_004/result.json": {
+      "bytes": 96589,
+      "sha256": "72f561d6f18ac31996e31082232f3b1d6380cf5543bbc5d6185e6dfdabbc3cc5"
+    },
+    "native_sr_v1/full/episodes/task3/episode_004/steps.npz": {
+      "bytes": 10029,
+      "sha256": "c14b24be606d6c9a5098006bde69d811511318a1bbd25ce838c5f216905aed85"
+    },
+    "native_sr_v1/full/episodes/task3/episode_005/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_005/result.json": {
+      "bytes": 96588,
+      "sha256": "c2c95c4c00e78c4f5fae54fcb618c30be26c887af8bb91a06a6d3da4761ef400"
+    },
+    "native_sr_v1/full/episodes/task3/episode_005/steps.npz": {
+      "bytes": 9975,
+      "sha256": "28cd703a2bd4f5b616a239fca73cfdb357e723fcf8d556bd6ec52047fd597ffe"
+    },
+    "native_sr_v1/full/episodes/task3/episode_006/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_006/result.json": {
+      "bytes": 96589,
+      "sha256": "7df7b357bb1aacded02d8b632e69ed098ba7ae48d5b8e72ee4c9d4dd1d0d8a28"
+    },
+    "native_sr_v1/full/episodes/task3/episode_006/steps.npz": {
+      "bytes": 9928,
+      "sha256": "7bebd4016d0bb0a7402cbab31ef4821ed8910c9b364497a1506005151e7b3bd6"
+    },
+    "native_sr_v1/full/episodes/task3/episode_007/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_007/result.json": {
+      "bytes": 96588,
+      "sha256": "9aaa485442b6b8dcef9ed2d49e0b4c9de821612eb1db2d24775a76cb40e2b024"
+    },
+    "native_sr_v1/full/episodes/task3/episode_007/steps.npz": {
+      "bytes": 10027,
+      "sha256": "d28cb6d866366bebfda3fafa0ddcbbbef3dfda9e4de05a1512e4a8bc203c1e84"
+    },
+    "native_sr_v1/full/episodes/task3/episode_008/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_008/result.json": {
+      "bytes": 96588,
+      "sha256": "1f2a48749a03b31a9311011f475b16cc63e4b0fa7496012fbf04635683c37488"
+    },
+    "native_sr_v1/full/episodes/task3/episode_008/steps.npz": {
+      "bytes": 9987,
+      "sha256": "e9fe193e17df88858a8c196086044970841f4bea245d7e82bf999ce9b86f9fb6"
+    },
+    "native_sr_v1/full/episodes/task3/episode_009/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_009/result.json": {
+      "bytes": 96588,
+      "sha256": "4fdde5d80458a3b69bd42503e9417a93bf5dd8f3f8ac3f739b673ed8277e81e9"
+    },
+    "native_sr_v1/full/episodes/task3/episode_009/steps.npz": {
+      "bytes": 9899,
+      "sha256": "2355074585794ff596c87e859cb024085ed34a706620a2b9110a8c5ea85e8712"
+    },
+    "native_sr_v1/full/episodes/task3/episode_010/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_010/result.json": {
+      "bytes": 96590,
+      "sha256": "cab276cf617d3626f845e0303ba9acd09f17acf8f3e5722f163297fa01e6c900"
+    },
+    "native_sr_v1/full/episodes/task3/episode_010/steps.npz": {
+      "bytes": 10044,
+      "sha256": "60dca95ad5461ba749bcf38c6e3adb3644a785ea3fdd6c50de5ebeb98dbd3daf"
+    },
+    "native_sr_v1/full/episodes/task3/episode_011/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_011/result.json": {
+      "bytes": 96590,
+      "sha256": "1e30e1c2ecd24ff3f5ca92be895b744498595a039a06e1e8fb1db3781eec69d8"
+    },
+    "native_sr_v1/full/episodes/task3/episode_011/steps.npz": {
+      "bytes": 10028,
+      "sha256": "039bb29f4312c6c7b58931ecd7370809eea35d750a16c169cd2dae43725b5ec6"
+    },
+    "native_sr_v1/full/episodes/task3/episode_012/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_012/result.json": {
+      "bytes": 96589,
+      "sha256": "f86e1956f6d81b5a6a2ce444f2b1e614ef0d580c3bade1426eabc01774a3406a"
+    },
+    "native_sr_v1/full/episodes/task3/episode_012/steps.npz": {
+      "bytes": 10069,
+      "sha256": "80ff388dfacd0b5a8c3d059c477b6f1cbdc05984d77df62c16c802dee366fe59"
+    },
+    "native_sr_v1/full/episodes/task3/episode_013/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_013/result.json": {
+      "bytes": 96589,
+      "sha256": "12fcb43318855df8f3b2425f1c0c653d3a5238d55764896f721e9616de291a89"
+    },
+    "native_sr_v1/full/episodes/task3/episode_013/steps.npz": {
+      "bytes": 10009,
+      "sha256": "aa50661a9de014c3e6e03c4d5a839486359858f9b5d5b48f0caa03c80f09c6d3"
+    },
+    "native_sr_v1/full/episodes/task3/episode_014/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_014/result.json": {
+      "bytes": 96589,
+      "sha256": "acd3014f3b20cc37c0a30509b338da485e4fa0fbe41a4185d5da5ebdf498743a"
+    },
+    "native_sr_v1/full/episodes/task3/episode_014/steps.npz": {
+      "bytes": 10036,
+      "sha256": "6aec290bc0ced2545fda247f37de00b205600450725dde8a3e645a1e161405aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_015/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_015/result.json": {
+      "bytes": 96589,
+      "sha256": "23de5ccd102ab399d2b3319213a559f29f7a1ba551e4a641f380d5e7be4ac3eb"
+    },
+    "native_sr_v1/full/episodes/task3/episode_015/steps.npz": {
+      "bytes": 9883,
+      "sha256": "b661b3e30a0feae7f212e316412f244b1b8da56fd76b958a91ba1d3bf7c28b36"
+    },
+    "native_sr_v1/full/episodes/task3/episode_016/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_016/result.json": {
+      "bytes": 96589,
+      "sha256": "a408e073f560393623ad09df3a360cfc84dfcfecaf1313a2d3ffa277ebe63f46"
+    },
+    "native_sr_v1/full/episodes/task3/episode_016/steps.npz": {
+      "bytes": 9986,
+      "sha256": "f94338a5e758031396f6c9ce5b911c16bfa8b169b5c96019040e24752c6780a0"
+    },
+    "native_sr_v1/full/episodes/task3/episode_017/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_017/result.json": {
+      "bytes": 96589,
+      "sha256": "dd069f82c34e5308f9efa6a118e4753949a9c7f3f560a6329d716e2ce0033b2e"
+    },
+    "native_sr_v1/full/episodes/task3/episode_017/steps.npz": {
+      "bytes": 10014,
+      "sha256": "2603fde8f9be348d3c10cc23ce324fb4f4a5fe33fa39c6e5bf18e90c587bc52f"
+    },
+    "native_sr_v1/full/episodes/task3/episode_018/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_018/result.json": {
+      "bytes": 96589,
+      "sha256": "cb7a2040ed7589c9cd4a3f4c529cd233002ee05df53b8bff236157cf7f9ca440"
+    },
+    "native_sr_v1/full/episodes/task3/episode_018/steps.npz": {
+      "bytes": 9939,
+      "sha256": "ffb7ddc3b00d0b90240cd1c8284b225d45173239df19f974169c4061f7e3dddd"
+    },
+    "native_sr_v1/full/episodes/task3/episode_019/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_019/result.json": {
+      "bytes": 96589,
+      "sha256": "cdc3bb4fc1945f71d16d047ff9e317fb3ac72d37cfb6545dbe21ab26ce3a2750"
+    },
+    "native_sr_v1/full/episodes/task3/episode_019/steps.npz": {
+      "bytes": 10070,
+      "sha256": "4aedf86dfb5405e69024d30268b33935dce4387323c0312a941c9abf8805ca9f"
+    },
+    "native_sr_v1/full/episodes/task3/episode_020/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_020/result.json": {
+      "bytes": 96588,
+      "sha256": "6683a308b66fbc31febb96b0e2c07f4cf20094a98b29adfa9bd8df6555e1ffa9"
+    },
+    "native_sr_v1/full/episodes/task3/episode_020/steps.npz": {
+      "bytes": 9973,
+      "sha256": "acfd3f5ae39ce4d6480e0473b2b96086e5b95f3622abc75d66a5c731947e69ed"
+    },
+    "native_sr_v1/full/episodes/task3/episode_021/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_021/result.json": {
+      "bytes": 96589,
+      "sha256": "8780aa8b2efd6756d0c1719cc714f4ff56bc5be40e4e82eb6120779133d4bc5b"
+    },
+    "native_sr_v1/full/episodes/task3/episode_021/steps.npz": {
+      "bytes": 10026,
+      "sha256": "c14f45eedaf3e2e62895891c5bf09a758d9441fd8ee9038638d2d3489a478f00"
+    },
+    "native_sr_v1/full/episodes/task3/episode_022/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_022/result.json": {
+      "bytes": 96589,
+      "sha256": "a00107be18d44936da411ddc62a468ed5f74f503dcfd2808365d24091eb92e1f"
+    },
+    "native_sr_v1/full/episodes/task3/episode_022/steps.npz": {
+      "bytes": 10043,
+      "sha256": "4974113bff1ade58dba5caebd6af134ebb0a379c662ed0b197120043774f22de"
+    },
+    "native_sr_v1/full/episodes/task3/episode_023/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_023/result.json": {
+      "bytes": 96589,
+      "sha256": "4757d397a318e8d04bdc762ab9409341720eebc95a67dc3a64021ebf901e5eef"
+    },
+    "native_sr_v1/full/episodes/task3/episode_023/steps.npz": {
+      "bytes": 10040,
+      "sha256": "30a2d70ab7eebbfdd43c435efcc90cd05dcd244f27a590e31fab11fa2b69a167"
+    },
+    "native_sr_v1/full/episodes/task3/episode_024/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_024/result.json": {
+      "bytes": 96589,
+      "sha256": "5ce73531da9d57a1db9645b675ad4ad3e86c543c0c050ac67c7910e0c720a468"
+    },
+    "native_sr_v1/full/episodes/task3/episode_024/steps.npz": {
+      "bytes": 9924,
+      "sha256": "b445bea2c43f7d8d6fdaec06d8b60a156926f703ac03fb2176cd0e79c1db6158"
+    },
+    "native_sr_v1/full/episodes/task3/episode_025/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_025/result.json": {
+      "bytes": 96589,
+      "sha256": "e30ecb80958180014dfe24ff5403df17c9a5e742637ef199eb81abe47e1df5a7"
+    },
+    "native_sr_v1/full/episodes/task3/episode_025/steps.npz": {
+      "bytes": 10039,
+      "sha256": "22339f64783c5819672ba8ea9955d0c8799586183772506bcd130ce6f44e87fb"
+    },
+    "native_sr_v1/full/episodes/task3/episode_026/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_026/result.json": {
+      "bytes": 96589,
+      "sha256": "b46aeb7d60f21f47e270bed6b55565dfeb8004eaf0efb1df1f8e603dcf0eb7ee"
+    },
+    "native_sr_v1/full/episodes/task3/episode_026/steps.npz": {
+      "bytes": 9961,
+      "sha256": "28b56ce1417749e8be1b41dc392258882a4e39f3a32af94c59e53ab932e511ed"
+    },
+    "native_sr_v1/full/episodes/task3/episode_027/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_027/result.json": {
+      "bytes": 96588,
+      "sha256": "029474ffd5a90f650a5a275e9f6516f67b672a5de3b9e029ac22a33f53bdd3f0"
+    },
+    "native_sr_v1/full/episodes/task3/episode_027/steps.npz": {
+      "bytes": 10009,
+      "sha256": "ae41de56cb261dec182fea947f8ec01b17c09023772fe4c13c3a7e6209429920"
+    },
+    "native_sr_v1/full/episodes/task3/episode_028/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_028/result.json": {
+      "bytes": 96590,
+      "sha256": "d008501585c82bb5f7a11f714a98f11f3bf613301fddd71bc3d8e956bd08bd04"
+    },
+    "native_sr_v1/full/episodes/task3/episode_028/steps.npz": {
+      "bytes": 10002,
+      "sha256": "fe4053ee5e7ed1708e03e0135deb29d76b1bb60d3b6c66e8015152e2a70eb56f"
+    },
+    "native_sr_v1/full/episodes/task3/episode_029/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_029/result.json": {
+      "bytes": 96590,
+      "sha256": "396c6ec1962c92cafb69b4010358b6db6a0d5f70edeb6158e05ea486fb103145"
+    },
+    "native_sr_v1/full/episodes/task3/episode_029/steps.npz": {
+      "bytes": 9858,
+      "sha256": "e2c89f4989d63ac1987d2961b979b6293631c37ddd23d22ca76f0ae0d995ea3d"
+    },
+    "native_sr_v1/full/episodes/task3/episode_030/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_030/result.json": {
+      "bytes": 96589,
+      "sha256": "49a77dbef8fee6578e5b76e56b16ddb28fffd6a68262959a9df26199a873a3c2"
+    },
+    "native_sr_v1/full/episodes/task3/episode_030/steps.npz": {
+      "bytes": 10011,
+      "sha256": "1ff2e37cbe92f4bccff2cfbfe16f5ea3ab93b8f8ad66efe561d7dedc11e552a8"
+    },
+    "native_sr_v1/full/episodes/task3/episode_031/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_031/result.json": {
+      "bytes": 96588,
+      "sha256": "bf2c393f6fea5935fbeb52df3fd9143d65814e10f74bf9c2bd2722d16f5aba55"
+    },
+    "native_sr_v1/full/episodes/task3/episode_031/steps.npz": {
+      "bytes": 10048,
+      "sha256": "f40502bbe3b4945b14021b2a7814d9b383ad6aaf0b3345c81ef03dcc192bc958"
+    },
+    "native_sr_v1/full/episodes/task3/episode_032/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_032/result.json": {
+      "bytes": 96589,
+      "sha256": "ed53130ed74288958103c298e583697ad053041532f726ffc957c5ab097a2866"
+    },
+    "native_sr_v1/full/episodes/task3/episode_032/steps.npz": {
+      "bytes": 9960,
+      "sha256": "1a3e9d93d6ac5e41b8917feaceb36639d5d781912cc1fb511abe24f5d23ee4ab"
+    },
+    "native_sr_v1/full/episodes/task3/episode_033/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_033/result.json": {
+      "bytes": 96589,
+      "sha256": "9f0bf9c8a3fcfe66cd101bf0f64ed0341319fe326e44e2ad2ea58d22131b39ce"
+    },
+    "native_sr_v1/full/episodes/task3/episode_033/steps.npz": {
+      "bytes": 10058,
+      "sha256": "cf6e45f5657129916c5e9515a8b007e323eca27b5c48fc9c73a10086e261c675"
+    },
+    "native_sr_v1/full/episodes/task3/episode_034/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_034/result.json": {
+      "bytes": 96589,
+      "sha256": "e6bdd12d64f0aabe4b51ab3aaa37fafa319a1299c71ec5190a1d09c4b0c50f04"
+    },
+    "native_sr_v1/full/episodes/task3/episode_034/steps.npz": {
+      "bytes": 9918,
+      "sha256": "abcc5d584d79c18762fab7161f2dc791926718fa304d99538e1f73687f537ecb"
+    },
+    "native_sr_v1/full/episodes/task3/episode_035/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_035/result.json": {
+      "bytes": 96589,
+      "sha256": "7f278f9b60da314e1b8eb9dd866fa254909405ca7764716bfd7057d661758901"
+    },
+    "native_sr_v1/full/episodes/task3/episode_035/steps.npz": {
+      "bytes": 10063,
+      "sha256": "8e88a5f6827ac5ed2713d6db14f70a5439fb199ce1995fabfb463ba812f96330"
+    },
+    "native_sr_v1/full/episodes/task3/episode_036/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_036/result.json": {
+      "bytes": 96589,
+      "sha256": "6528c396930ba047517334e91c3b7e3928203bc7fca27d24350b209f607cb42e"
+    },
+    "native_sr_v1/full/episodes/task3/episode_036/steps.npz": {
+      "bytes": 10072,
+      "sha256": "45ed2c2bdb8caced8f1063c22d7f8e802438c982796e00df87f20e0b172db067"
+    },
+    "native_sr_v1/full/episodes/task3/episode_037/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_037/result.json": {
+      "bytes": 96589,
+      "sha256": "ae09999f6f479fcaa6ed38eb695dfde48c0bdbbb4f8fdbe41a3bb4934433d4d0"
+    },
+    "native_sr_v1/full/episodes/task3/episode_037/steps.npz": {
+      "bytes": 9868,
+      "sha256": "b6743eac68d3e95e77b162929492cbdecafa5fd96d154df295703b25e2b335bf"
+    },
+    "native_sr_v1/full/episodes/task3/episode_038/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_038/result.json": {
+      "bytes": 96589,
+      "sha256": "c8cac79f5e9e7be49ee624b1361af1f97aad2334923172b59791db1f79451267"
+    },
+    "native_sr_v1/full/episodes/task3/episode_038/steps.npz": {
+      "bytes": 10058,
+      "sha256": "404a4be1ac3f4438c070018716615cd820bb00c0a7b8d5237b75b62a860ccb5b"
+    },
+    "native_sr_v1/full/episodes/task3/episode_039/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_039/result.json": {
+      "bytes": 96588,
+      "sha256": "51febb6573115c8f81fa0e62faa9a307587ddca764d75a40c42964f4f3d2dd6c"
+    },
+    "native_sr_v1/full/episodes/task3/episode_039/steps.npz": {
+      "bytes": 10033,
+      "sha256": "e234bf7cd530b3410c49ad88c7774672c03a299cb5132c169e0cab02ebe44fe6"
+    },
+    "native_sr_v1/full/episodes/task3/episode_040/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_040/result.json": {
+      "bytes": 96589,
+      "sha256": "312e453c39af4ea9305126b4af3db979a232d8f9da8c7aec0d792da76787d89d"
+    },
+    "native_sr_v1/full/episodes/task3/episode_040/steps.npz": {
+      "bytes": 10056,
+      "sha256": "e8baaafd37cd00ee6afedf5861c76f5c19096f9de52887d83b9fb439a84e20bf"
+    },
+    "native_sr_v1/full/episodes/task3/episode_041/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_041/result.json": {
+      "bytes": 96589,
+      "sha256": "8c203f6d9d5bce39aef4bdb5bc99d91803ff9b1e046b53f915e3e0a0930ac71f"
+    },
+    "native_sr_v1/full/episodes/task3/episode_041/steps.npz": {
+      "bytes": 9935,
+      "sha256": "b486a276be98148f22f2aac731ce74fe2fb64c2e1fc3312488f58c30c50d2d3d"
+    },
+    "native_sr_v1/full/episodes/task3/episode_042/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_042/result.json": {
+      "bytes": 96589,
+      "sha256": "64774e95858c3bfd429cfa42432dd874686640af6e4084ca184bf99d102e7635"
+    },
+    "native_sr_v1/full/episodes/task3/episode_042/steps.npz": {
+      "bytes": 9915,
+      "sha256": "81ec34053359275652a1f0d42762e2201ddb003643785836caa7969e1ef95544"
+    },
+    "native_sr_v1/full/episodes/task3/episode_043/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_043/result.json": {
+      "bytes": 96589,
+      "sha256": "5bac2d29f9949ea40579ac4b69a0d79af708cf7ebf23f04896b9e86cc7a15d9c"
+    },
+    "native_sr_v1/full/episodes/task3/episode_043/steps.npz": {
+      "bytes": 9883,
+      "sha256": "da6a3bb8d0bf51046bebc0e5edaa1fddd1c1f26dfb9d36711a789f1147ad71f1"
+    },
+    "native_sr_v1/full/episodes/task3/episode_044/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_044/result.json": {
+      "bytes": 96589,
+      "sha256": "15454aa467c86a9f4de68f5c672f8e8d979b318d5c0fcc64cd80d39eb1929a13"
+    },
+    "native_sr_v1/full/episodes/task3/episode_044/steps.npz": {
+      "bytes": 10063,
+      "sha256": "2c60e9a9f28ff332a8d90e3c90df62e8e020b5d22bcd3aa0f9d6cd5a56b53163"
+    },
+    "native_sr_v1/full/episodes/task3/episode_045/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_045/result.json": {
+      "bytes": 96590,
+      "sha256": "ce210b9f5614e5371b6a10cba52ee0e35f2b46640911b56859efa7db475701f0"
+    },
+    "native_sr_v1/full/episodes/task3/episode_045/steps.npz": {
+      "bytes": 10016,
+      "sha256": "7cbf2528256a818623c24f50f43a8ddae60c84829699ae4139d954fd6a7734ba"
+    },
+    "native_sr_v1/full/episodes/task3/episode_046/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_046/result.json": {
+      "bytes": 96590,
+      "sha256": "34091e9845c4f0a356ce0f8e2ef0fd9a6b6e2864561e8702edcd4fcfe21598db"
+    },
+    "native_sr_v1/full/episodes/task3/episode_046/steps.npz": {
+      "bytes": 10001,
+      "sha256": "b81caadf5333adb442198c64c991e2f39b94fcdac2fc849c32f9a198d18d9358"
+    },
+    "native_sr_v1/full/episodes/task3/episode_047/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_047/result.json": {
+      "bytes": 96590,
+      "sha256": "3d0dd0bccee5404e03339e3cabfec97a7517dea94ca870e5483b3957bf7fa79e"
+    },
+    "native_sr_v1/full/episodes/task3/episode_047/steps.npz": {
+      "bytes": 10040,
+      "sha256": "ff7012ce719a10c19876f554e48d07e72aac4bb56e7e9dd5b523cd27189ec9a9"
+    },
+    "native_sr_v1/full/episodes/task3/episode_048/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_048/result.json": {
+      "bytes": 96588,
+      "sha256": "8d08d23a3a677953eab2701f828a0bc1d8f11729bcb434613c695324b5e02b37"
+    },
+    "native_sr_v1/full/episodes/task3/episode_048/steps.npz": {
+      "bytes": 10042,
+      "sha256": "57f1da590044b0d237878d4912c20c8a0b0e737c2c86d8f6d49231bff0416292"
+    },
+    "native_sr_v1/full/episodes/task3/episode_049/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task3/episode_049/result.json": {
+      "bytes": 96590,
+      "sha256": "45f39673d744bca643b9ffed3162782c0173177e558066a9c9bec6c1b28aacb4"
+    },
+    "native_sr_v1/full/episodes/task3/episode_049/steps.npz": {
+      "bytes": 9924,
+      "sha256": "a15dbfa63a1ec3d7caf03a615e8a1ff13176f787eb6058fd9083668470369ad2"
+    },
+    "native_sr_v1/full/episodes/task4/episode_000/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_000/result.json": {
+      "bytes": 96588,
+      "sha256": "b4c9dcac95511ecb917924d44b0f8d91cc4908e392acdd37a13f4742aebfbef2"
+    },
+    "native_sr_v1/full/episodes/task4/episode_000/steps.npz": {
+      "bytes": 9997,
+      "sha256": "617511ac244a789f2e20f210d8eb7f9f54a91c175037e897c8ce2cf5e261eebd"
+    },
+    "native_sr_v1/full/episodes/task4/episode_001/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_001/result.json": {
+      "bytes": 96589,
+      "sha256": "7c020d075ff32435991b296d34950866240a6d9115b1419576e81f803aa5f241"
+    },
+    "native_sr_v1/full/episodes/task4/episode_001/steps.npz": {
+      "bytes": 10049,
+      "sha256": "e7e0bff5f6cf5424b0dcdecb0f1c2f26ba33dd7d31e173da6bcfbefe5fc28ca2"
+    },
+    "native_sr_v1/full/episodes/task4/episode_002/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_002/result.json": {
+      "bytes": 96588,
+      "sha256": "7a156c1758e76adff13a776fe93b3d8803b902ee85a2cea9262b02e990611a72"
+    },
+    "native_sr_v1/full/episodes/task4/episode_002/steps.npz": {
+      "bytes": 9989,
+      "sha256": "2bb4dd773effdf631511b6daf35b0735b0800c741adb7f5c16ff8397da2f3ad9"
+    },
+    "native_sr_v1/full/episodes/task4/episode_003/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_003/result.json": {
+      "bytes": 96588,
+      "sha256": "22a32c4d6b1acd6d2a09c8a5f8f7120ca087cf483ec0e64324ecad706c9d16a7"
+    },
+    "native_sr_v1/full/episodes/task4/episode_003/steps.npz": {
+      "bytes": 10061,
+      "sha256": "1912b8daaed7f27df072e7b68476db9ddd94f310ded8d7766ddbd426b5825b49"
+    },
+    "native_sr_v1/full/episodes/task4/episode_004/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_004/result.json": {
+      "bytes": 96588,
+      "sha256": "18c8b0855ef921b4f65b228f70bcce14dde08ad6c2046efd4df3ece57810c9af"
+    },
+    "native_sr_v1/full/episodes/task4/episode_004/steps.npz": {
+      "bytes": 9909,
+      "sha256": "3c297566e773b4465815755f5cabe8d023f273f6d87cdc6e38f25c1cf493e4be"
+    },
+    "native_sr_v1/full/episodes/task4/episode_005/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_005/result.json": {
+      "bytes": 96587,
+      "sha256": "172ca4e54eb5b31343f8657abd550bd5f84d599d658eb66045c008ee628bea8d"
+    },
+    "native_sr_v1/full/episodes/task4/episode_005/steps.npz": {
+      "bytes": 10034,
+      "sha256": "37e711027a9646f06833e23d70f2196c469d6d23eba9cf12cea79b3c4d94f275"
+    },
+    "native_sr_v1/full/episodes/task4/episode_006/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_006/result.json": {
+      "bytes": 96588,
+      "sha256": "91b48bc223fa98f52e35d6c6a23fca8c686db1c50a966f2fc1b2a2dba77de1c6"
+    },
+    "native_sr_v1/full/episodes/task4/episode_006/steps.npz": {
+      "bytes": 10014,
+      "sha256": "e5b1dee29be84acd351d5c742101e11e1edcb26f8b5443f8fab01de80f5a8547"
+    },
+    "native_sr_v1/full/episodes/task4/episode_007/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_007/result.json": {
+      "bytes": 96588,
+      "sha256": "6fadac66a8cecdcf92da5adc82ae9dbb9ca79e6ae969757ece6e16d1692d5a19"
+    },
+    "native_sr_v1/full/episodes/task4/episode_007/steps.npz": {
+      "bytes": 10004,
+      "sha256": "1a2d99960b87553ed66ca30288cab8ff406ca54af239f19e2acbc2d416930df2"
+    },
+    "native_sr_v1/full/episodes/task4/episode_008/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_008/result.json": {
+      "bytes": 96587,
+      "sha256": "5958ad03f478acfd6b3bab27cb5f42209f9d07ab77c93e3caeac46fe316cf485"
+    },
+    "native_sr_v1/full/episodes/task4/episode_008/steps.npz": {
+      "bytes": 10001,
+      "sha256": "8a014f85f102ccde31954aaee5016d219a7702626f317048177680a7cd307f84"
+    },
+    "native_sr_v1/full/episodes/task4/episode_009/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_009/result.json": {
+      "bytes": 96588,
+      "sha256": "4b332d2f20fb290d2bc8be2465d2e73031fb25b17013bb486c39b754c5b31910"
+    },
+    "native_sr_v1/full/episodes/task4/episode_009/steps.npz": {
+      "bytes": 10013,
+      "sha256": "c99dc4b336a5d76f3d24f6cb4efc288f9f38404e5dfdb914e718d4426c42b934"
+    },
+    "native_sr_v1/full/episodes/task4/episode_010/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_010/result.json": {
+      "bytes": 96589,
+      "sha256": "795a891ecd26ff2b8138191d814e36e6ff1cfe1b70142bc763c42e09947ee16c"
+    },
+    "native_sr_v1/full/episodes/task4/episode_010/steps.npz": {
+      "bytes": 9972,
+      "sha256": "05c19c296d5c3dad5974c8b2498317d2060a283b7bfc107617c5c8270f203a94"
+    },
+    "native_sr_v1/full/episodes/task4/episode_011/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_011/result.json": {
+      "bytes": 96590,
+      "sha256": "6c0b88f2f63e59e70022c96054405c76a7d73d1c91d88aef2e81615514033742"
+    },
+    "native_sr_v1/full/episodes/task4/episode_011/steps.npz": {
+      "bytes": 10000,
+      "sha256": "afe164bbca4f0b469601e6f751c2e00077d0fc30fa64d3b6aa2f670cac38a40e"
+    },
+    "native_sr_v1/full/episodes/task4/episode_012/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_012/result.json": {
+      "bytes": 96589,
+      "sha256": "147c2fb4bfb8c7ac57202c50d986c3c7f06ae1619281727251342b5756b3e127"
+    },
+    "native_sr_v1/full/episodes/task4/episode_012/steps.npz": {
+      "bytes": 10041,
+      "sha256": "f3b86586a7fb54a35d3855c715b92ebea9718bed075ebfb4c4a6d431bbb93348"
+    },
+    "native_sr_v1/full/episodes/task4/episode_013/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_013/result.json": {
+      "bytes": 96589,
+      "sha256": "411b7386faefaf1d6d28e0e4f89a848f55bc4b3a111f8e2fba1963373ed94f49"
+    },
+    "native_sr_v1/full/episodes/task4/episode_013/steps.npz": {
+      "bytes": 10036,
+      "sha256": "3d394ebe489757d4eb40a08dbb12644f252b73b796bc9fe07c4c761754613e64"
+    },
+    "native_sr_v1/full/episodes/task4/episode_014/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_014/result.json": {
+      "bytes": 96590,
+      "sha256": "501bab5e411f2959cafbf8ef22ea3e64282cb28bd336840f784c3b6b3129220a"
+    },
+    "native_sr_v1/full/episodes/task4/episode_014/steps.npz": {
+      "bytes": 10064,
+      "sha256": "6ef49947a69e74a789fb9971c0de227215d06fc3c84043d3ab53c001adce0363"
+    },
+    "native_sr_v1/full/episodes/task4/episode_015/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_015/result.json": {
+      "bytes": 96589,
+      "sha256": "6d42d902af6cfb2390b3c750b45f3fe0649cd220c6abe78cf6a8b18e7c854295"
+    },
+    "native_sr_v1/full/episodes/task4/episode_015/steps.npz": {
+      "bytes": 9970,
+      "sha256": "f7173d61908e098bc6277ea2b96456ed4bc5dc1ead35dcedd7f2814de2844c69"
+    },
+    "native_sr_v1/full/episodes/task4/episode_016/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_016/result.json": {
+      "bytes": 96589,
+      "sha256": "d2372d55ed67ae9b31930cda140d0a8e7421dad440a316ff20b860a978f71b8d"
+    },
+    "native_sr_v1/full/episodes/task4/episode_016/steps.npz": {
+      "bytes": 10016,
+      "sha256": "4c9abcd4c77934b4867de28b1a7f85100dce5b5f7c3449332c5985c5d8ea32bd"
+    },
+    "native_sr_v1/full/episodes/task4/episode_017/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_017/result.json": {
+      "bytes": 96589,
+      "sha256": "e0dca3e56b3430cf89d7c2830af93ef164188eb7236b59dc5bbf689cef06dfa8"
+    },
+    "native_sr_v1/full/episodes/task4/episode_017/steps.npz": {
+      "bytes": 9779,
+      "sha256": "7a29cc0bb8f8480d29931e546445362a881fd9d4ba2aeb12e94b5901dc9ab1da"
+    },
+    "native_sr_v1/full/episodes/task4/episode_018/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_018/result.json": {
+      "bytes": 96589,
+      "sha256": "d203c5c262ff95faa97f6bbdb535107ce33ca0343203aace09149828a76c483c"
+    },
+    "native_sr_v1/full/episodes/task4/episode_018/steps.npz": {
+      "bytes": 10036,
+      "sha256": "80416e826dd544c08c212fd42d1e66d7c02fc8516d05af0ac32dc4f18c48a4f4"
+    },
+    "native_sr_v1/full/episodes/task4/episode_019/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_019/result.json": {
+      "bytes": 96589,
+      "sha256": "3ebf637878f3aaf742cdc7b3971152bb84602ffe348dbb80f574f6e18df8774e"
+    },
+    "native_sr_v1/full/episodes/task4/episode_019/steps.npz": {
+      "bytes": 10044,
+      "sha256": "fb30f5eae76cb97ea43c041865f9fe003dc7a0bf38fed17ca6ce9a395ae159af"
+    },
+    "native_sr_v1/full/episodes/task4/episode_020/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_020/result.json": {
+      "bytes": 96590,
+      "sha256": "507a6c70230dbcf3dfb27bab24570fd08ad72b1572504cdb4d6a81d0a18621b7"
+    },
+    "native_sr_v1/full/episodes/task4/episode_020/steps.npz": {
+      "bytes": 10060,
+      "sha256": "670a030c991fa319cac41ade7c296c1861d5737a851c250fb7bf9cca0107dc95"
+    },
+    "native_sr_v1/full/episodes/task4/episode_021/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_021/result.json": {
+      "bytes": 96589,
+      "sha256": "2c9906f4ed0fac690025d827836d5748dbf05c03d8eecc828a293ff41ee5877c"
+    },
+    "native_sr_v1/full/episodes/task4/episode_021/steps.npz": {
+      "bytes": 9732,
+      "sha256": "7a7fc00cbf4653538585ef846c8275b6c9315682e77cf982f095dde490d6f462"
+    },
+    "native_sr_v1/full/episodes/task4/episode_022/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_022/result.json": {
+      "bytes": 96589,
+      "sha256": "bdb518accdf547f0d5937b3007688977f464a846396970243f44b9ef260eeaea"
+    },
+    "native_sr_v1/full/episodes/task4/episode_022/steps.npz": {
+      "bytes": 10061,
+      "sha256": "95a5dba069cb6417c72f6523f7f7615f5012312f396b68d81484fd46c4e54d60"
+    },
+    "native_sr_v1/full/episodes/task4/episode_023/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_023/result.json": {
+      "bytes": 96589,
+      "sha256": "f27987bd84b8b11ffcee2229e646e0ce45c667c5aec3f88d04004fab4d9fc885"
+    },
+    "native_sr_v1/full/episodes/task4/episode_023/steps.npz": {
+      "bytes": 9975,
+      "sha256": "123304d6d2f386211dfa6f753bbe7f497509a261427c7953e851ce387ec1f425"
+    },
+    "native_sr_v1/full/episodes/task4/episode_024/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_024/result.json": {
+      "bytes": 96589,
+      "sha256": "140e0c8c705def3eff8799c0ff20091e904f77c5c980b0d9b1a51a87229131c1"
+    },
+    "native_sr_v1/full/episodes/task4/episode_024/steps.npz": {
+      "bytes": 10043,
+      "sha256": "80f8cca58654a6c835a4b067f41fc220a715f4d4da9203747b75271ec842a329"
+    },
+    "native_sr_v1/full/episodes/task4/episode_025/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_025/result.json": {
+      "bytes": 96589,
+      "sha256": "d158b80a5aa68f06dce901908da622b92d95cfe24fe1207565a9f7d64a9be753"
+    },
+    "native_sr_v1/full/episodes/task4/episode_025/steps.npz": {
+      "bytes": 9981,
+      "sha256": "7102dfe2bef895d0beb3db04227b725dc6a8cfff1541805d63670c1f889cd5e8"
+    },
+    "native_sr_v1/full/episodes/task4/episode_026/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_026/result.json": {
+      "bytes": 96589,
+      "sha256": "5e2116647d742ef9f5f08fc5328b0c79c6bca18af10a4c8c0b7cc2e1224487c9"
+    },
+    "native_sr_v1/full/episodes/task4/episode_026/steps.npz": {
+      "bytes": 9958,
+      "sha256": "6c5be88e06224e4abcb156d59618f1c30c3aed5ba90e41087dbbdfba8c6efa55"
+    },
+    "native_sr_v1/full/episodes/task4/episode_027/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_027/result.json": {
+      "bytes": 96588,
+      "sha256": "823fd11f9764511573ff19d94c6b6d1a871cdb2f6f731f040f6fc88e60967304"
+    },
+    "native_sr_v1/full/episodes/task4/episode_027/steps.npz": {
+      "bytes": 9914,
+      "sha256": "5972cfe3e2035f9f331bb5603e2749baebd1b3c76c6ebd25a43231b9f4c2cb46"
+    },
+    "native_sr_v1/full/episodes/task4/episode_028/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_028/result.json": {
+      "bytes": 96589,
+      "sha256": "07c01b1e6e403c6e654f3b206425ac171f92906fc3dc67bc5a87938cf81f994f"
+    },
+    "native_sr_v1/full/episodes/task4/episode_028/steps.npz": {
+      "bytes": 9818,
+      "sha256": "7e06a9a3f366b5c50815a02ac78ff47e8bbf1863b86a1f246dbdfb8625199b1f"
+    },
+    "native_sr_v1/full/episodes/task4/episode_029/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_029/result.json": {
+      "bytes": 96589,
+      "sha256": "9e3d9dfec02692ca1b72134d1ce565a2e256a5b817721b29fdb4afe7130aa42f"
+    },
+    "native_sr_v1/full/episodes/task4/episode_029/steps.npz": {
+      "bytes": 9933,
+      "sha256": "15aea1ef9dd63227b2f114a133eb0fa9db77eee0f0fc9f88bfcbe2246e77d68e"
+    },
+    "native_sr_v1/full/episodes/task4/episode_030/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_030/result.json": {
+      "bytes": 96589,
+      "sha256": "5e7c3d4a0df74ff2c99a4abf23df0e893b4426bf51d75c63e64805844b6f5dd4"
+    },
+    "native_sr_v1/full/episodes/task4/episode_030/steps.npz": {
+      "bytes": 10007,
+      "sha256": "747a44509df1db99075b1d1f1ed73abd2e613b319662e89e238f819d2da37893"
+    },
+    "native_sr_v1/full/episodes/task4/episode_031/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_031/result.json": {
+      "bytes": 96589,
+      "sha256": "828265fa65b9d345fac9e16a7bce160908f74feeda46755fdd1f3cfe0f30e1f1"
+    },
+    "native_sr_v1/full/episodes/task4/episode_031/steps.npz": {
+      "bytes": 10049,
+      "sha256": "c204b799d44ce4196486ae974b74876a043847fe77496ddba8df7ad11085c178"
+    },
+    "native_sr_v1/full/episodes/task4/episode_032/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_032/result.json": {
+      "bytes": 96589,
+      "sha256": "bd5f8da7fe9791002c3f645238d291f125e9f5cfe32346861ed963024b70ad74"
+    },
+    "native_sr_v1/full/episodes/task4/episode_032/steps.npz": {
+      "bytes": 10062,
+      "sha256": "59bed632d3720c79e1c23f5134ac7bfa50544db838752fcc9b26523a5886199c"
+    },
+    "native_sr_v1/full/episodes/task4/episode_033/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_033/result.json": {
+      "bytes": 96589,
+      "sha256": "2b77d69d52086d26f425c7a078df6d5e1a9009851b4d3dac14fdc47167f5507c"
+    },
+    "native_sr_v1/full/episodes/task4/episode_033/steps.npz": {
+      "bytes": 9932,
+      "sha256": "c9499fd40c22eed10467988a4528d9bc0e2afc57c86ce0a6011138077802e141"
+    },
+    "native_sr_v1/full/episodes/task4/episode_034/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_034/result.json": {
+      "bytes": 96589,
+      "sha256": "d25e25ffe1aa0157be0c18b209a38b1c126f4ebf4157f92c86eb104b4cfb43ad"
+    },
+    "native_sr_v1/full/episodes/task4/episode_034/steps.npz": {
+      "bytes": 10001,
+      "sha256": "c65a2fd9e81d23e90a1f08438af8a879bc31191033ecf30113319c49bb4bdcae"
+    },
+    "native_sr_v1/full/episodes/task4/episode_035/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_035/result.json": {
+      "bytes": 96587,
+      "sha256": "cd12d91a618f9046f1980bb4675ebe005b53d97848029130c57b3835ed189654"
+    },
+    "native_sr_v1/full/episodes/task4/episode_035/steps.npz": {
+      "bytes": 10020,
+      "sha256": "031de3283caae8bfbb9a6fe5286ddbc4b6d04b86c7f1e629bf5cf64c50877435"
+    },
+    "native_sr_v1/full/episodes/task4/episode_036/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_036/result.json": {
+      "bytes": 96589,
+      "sha256": "f484e6c22592273a63b8d55e758a3f0c20ad7f1110496ca9d73e92962cec0bfc"
+    },
+    "native_sr_v1/full/episodes/task4/episode_036/steps.npz": {
+      "bytes": 10026,
+      "sha256": "b4547fd6e983b8b573753df268c52ecab1035f7909cf29361db52395fd55e332"
+    },
+    "native_sr_v1/full/episodes/task4/episode_037/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_037/result.json": {
+      "bytes": 96589,
+      "sha256": "5b91f04b4b64dba552ee4b743439a5f9bce49d201ce73cbdde0c952dd5230af1"
+    },
+    "native_sr_v1/full/episodes/task4/episode_037/steps.npz": {
+      "bytes": 9967,
+      "sha256": "260ab129b8f2986ca4dc6625ff0190a953f0763a6d94f5181f126ebede668649"
+    },
+    "native_sr_v1/full/episodes/task4/episode_038/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_038/result.json": {
+      "bytes": 96589,
+      "sha256": "d04325691c284533edbcfedb5edc789856352f5d2fa8cad018747efa5c3056e8"
+    },
+    "native_sr_v1/full/episodes/task4/episode_038/steps.npz": {
+      "bytes": 10019,
+      "sha256": "57d13b898b9ba3dee93676c65e1470d48ccd30fc18c8cd0739a899247592fd6d"
+    },
+    "native_sr_v1/full/episodes/task4/episode_039/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_039/result.json": {
+      "bytes": 96589,
+      "sha256": "d334889bc9dbcc0dbc50c3af962ee774b74ed908fc9a76671815f65dca270848"
+    },
+    "native_sr_v1/full/episodes/task4/episode_039/steps.npz": {
+      "bytes": 10034,
+      "sha256": "b3887683c521c3536dc1250e079f112f134ef7c8a405575d0eedf5a4f2d03719"
+    },
+    "native_sr_v1/full/episodes/task4/episode_040/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_040/result.json": {
+      "bytes": 96589,
+      "sha256": "6c8b197ede923bbc82a19953ca4b0ca8fc6a0395ae6d96f7f799f2c3e9369ed3"
+    },
+    "native_sr_v1/full/episodes/task4/episode_040/steps.npz": {
+      "bytes": 9924,
+      "sha256": "e66f5d4b730b7105bc50441a1558dcb2d390b3c7ebbf5083af0cd83e71e0880e"
+    },
+    "native_sr_v1/full/episodes/task4/episode_041/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_041/result.json": {
+      "bytes": 96589,
+      "sha256": "8932fc08e841a6290dda6487e79a1fadfc6027222b636dba7c414dd5eb80bb99"
+    },
+    "native_sr_v1/full/episodes/task4/episode_041/steps.npz": {
+      "bytes": 9960,
+      "sha256": "40507d71bcaabead6ea5e5a14dcca87865d67cd7c3dae06d08ea8c633a7b9a3b"
+    },
+    "native_sr_v1/full/episodes/task4/episode_042/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_042/result.json": {
+      "bytes": 96589,
+      "sha256": "d1eb8790f39b523eb63ed5c6d8ef6d59fa9ed5fa14062919ed1c12b3efde3329"
+    },
+    "native_sr_v1/full/episodes/task4/episode_042/steps.npz": {
+      "bytes": 9924,
+      "sha256": "a137bbfd736060c5017d84425414570bcdfc6339bbebe2a8096bfc74672b8436"
+    },
+    "native_sr_v1/full/episodes/task4/episode_043/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_043/result.json": {
+      "bytes": 96589,
+      "sha256": "fa62412dea1c437605162a6a5f37708e03912d812db041a68fd3c534445773e6"
+    },
+    "native_sr_v1/full/episodes/task4/episode_043/steps.npz": {
+      "bytes": 10050,
+      "sha256": "c3c10494c29a45d72d60fbbaf1ce44d292f7fa996eb4a3b5b1a397812e2ec5d8"
+    },
+    "native_sr_v1/full/episodes/task4/episode_044/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_044/result.json": {
+      "bytes": 96589,
+      "sha256": "03ccdfa366ec447a5dc9c5b7848b52bbcb73d97a754c5c129412fb6d19c70d58"
+    },
+    "native_sr_v1/full/episodes/task4/episode_044/steps.npz": {
+      "bytes": 10046,
+      "sha256": "0342d44caaa9c5caa26385b6445cb28d5d0e9a45a9f85d777ef73a7c994c09e1"
+    },
+    "native_sr_v1/full/episodes/task4/episode_045/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_045/result.json": {
+      "bytes": 96589,
+      "sha256": "f93128293630bf19b2cceadb78abd66d63dd1215bbee52731be2106b587387e0"
+    },
+    "native_sr_v1/full/episodes/task4/episode_045/steps.npz": {
+      "bytes": 10046,
+      "sha256": "05336cc382f5610c07721f13ee356c170aa4c08022e7059685b2238d9c31d4c6"
+    },
+    "native_sr_v1/full/episodes/task4/episode_046/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_046/result.json": {
+      "bytes": 96590,
+      "sha256": "e25c016fa1c28b7767240eb8acc74082cfa8c7f19603ba95d1beb3ad8aea857a"
+    },
+    "native_sr_v1/full/episodes/task4/episode_046/steps.npz": {
+      "bytes": 9885,
+      "sha256": "75cdd790d37c49745e315ff849be1a7e21c53aa5a1b2557492685f7f2a1fb136"
+    },
+    "native_sr_v1/full/episodes/task4/episode_047/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_047/result.json": {
+      "bytes": 96590,
+      "sha256": "7530714cf8a0dff5eefa3499d58aa465c71d99f36abc575554752f9271fb0840"
+    },
+    "native_sr_v1/full/episodes/task4/episode_047/steps.npz": {
+      "bytes": 10013,
+      "sha256": "92a2d3603cdcfb9ce9c1575243bd85fdd0e1cf7696c36584fc5912c68d845c01"
+    },
+    "native_sr_v1/full/episodes/task4/episode_048/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_048/result.json": {
+      "bytes": 96589,
+      "sha256": "000efeb9edaaf4f78e56783751fc11b13c7026b70da57f2348ca43f7b902f1e6"
+    },
+    "native_sr_v1/full/episodes/task4/episode_048/steps.npz": {
+      "bytes": 10075,
+      "sha256": "91acd07a1cd2535dcd247798186ad905e37a100244673d20f78e5edf006ff364"
+    },
+    "native_sr_v1/full/episodes/task4/episode_049/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task4/episode_049/result.json": {
+      "bytes": 96589,
+      "sha256": "a4065a68928f79a2ab554e88484787a145b761c1f4e4f4e27a6cf968237812a7"
+    },
+    "native_sr_v1/full/episodes/task4/episode_049/steps.npz": {
+      "bytes": 9915,
+      "sha256": "31dd5ddcb5f02e96995d303144a4df5efe4fa97dd874a807481494bb4813193b"
+    },
+    "native_sr_v1/full/episodes/task5/episode_000/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_000/result.json": {
+      "bytes": 96588,
+      "sha256": "f692238b95259bd033100cda1f81c9f5613216d5e9c4a51f811690ff52666f30"
+    },
+    "native_sr_v1/full/episodes/task5/episode_000/steps.npz": {
+      "bytes": 10014,
+      "sha256": "46924b7aa3bb27fc79352fb2a04b1036cb2d99199a21ee45fe936f676572d2e8"
+    },
+    "native_sr_v1/full/episodes/task5/episode_001/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_001/result.json": {
+      "bytes": 96588,
+      "sha256": "cca7cdedf455919575c84a8cb6308c6936178746405a3667ebf97d4e35fde51b"
+    },
+    "native_sr_v1/full/episodes/task5/episode_001/steps.npz": {
+      "bytes": 10053,
+      "sha256": "a42a9ebde5a4629d522e9dc923d5a4ecdcbee16d7f4cfc2f515fdbc266b5278d"
+    },
+    "native_sr_v1/full/episodes/task5/episode_002/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_002/result.json": {
+      "bytes": 96588,
+      "sha256": "cd41c3aef3cdbeb37abde38580c901912be699ab0f62761a4a37e88f4b525cd7"
+    },
+    "native_sr_v1/full/episodes/task5/episode_002/steps.npz": {
+      "bytes": 9990,
+      "sha256": "e5868446dfd582bafd2f5d9a5b511948cc42050bb0aafa880049ef976781bd50"
+    },
+    "native_sr_v1/full/episodes/task5/episode_003/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_003/result.json": {
+      "bytes": 96588,
+      "sha256": "86110d447ab464fa49306910178f89a2b1765a9a253231c327d86a18c48fb36b"
+    },
+    "native_sr_v1/full/episodes/task5/episode_003/steps.npz": {
+      "bytes": 9881,
+      "sha256": "142a9f55ae07e0a988780ac7b9b3a803458552c5bc65698a5423796277a9851d"
+    },
+    "native_sr_v1/full/episodes/task5/episode_004/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_004/result.json": {
+      "bytes": 96587,
+      "sha256": "6228da8d271027161a54e204c16fb403bf1d6e28e4855ce3138150b5b27a3f13"
+    },
+    "native_sr_v1/full/episodes/task5/episode_004/steps.npz": {
+      "bytes": 9971,
+      "sha256": "b9670cd2cd8f9310acd6b07fec82afc3c23d405abf2f8750772c95e490922531"
+    },
+    "native_sr_v1/full/episodes/task5/episode_005/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_005/result.json": {
+      "bytes": 96588,
+      "sha256": "6ab396d712c0a5762cf44d0235cbe04d07807db66e15ff4c7b382b0cf525e522"
+    },
+    "native_sr_v1/full/episodes/task5/episode_005/steps.npz": {
+      "bytes": 9982,
+      "sha256": "3c27a360fb06560ecadd3c6a24e55417fcebf2b6000c8ba89a353f104feecdde"
+    },
+    "native_sr_v1/full/episodes/task5/episode_006/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_006/result.json": {
+      "bytes": 96588,
+      "sha256": "0aeaee6c9dec58f0e263cd4e142ab4396bf003194b2f6c35e4514792456a63a2"
+    },
+    "native_sr_v1/full/episodes/task5/episode_006/steps.npz": {
+      "bytes": 9979,
+      "sha256": "4abcc985fb1e51334099a8ff48c70e250c6adc86ba488a1ddee14898829e1c23"
+    },
+    "native_sr_v1/full/episodes/task5/episode_007/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_007/result.json": {
+      "bytes": 96589,
+      "sha256": "a8f0a731d8bdaa8a57c968ffd1d9e791fbe5ce308be1e3b819219ff17ed15704"
+    },
+    "native_sr_v1/full/episodes/task5/episode_007/steps.npz": {
+      "bytes": 9996,
+      "sha256": "9e33ebcf1547a84d9a3121d742878e3848595b3a60598fd601a64d739ddb6b1f"
+    },
+    "native_sr_v1/full/episodes/task5/episode_008/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_008/result.json": {
+      "bytes": 96589,
+      "sha256": "9fe2ae3e3ff25ef8eea4cba261e71c4808729ac97b40298865e4c55ed8020a11"
+    },
+    "native_sr_v1/full/episodes/task5/episode_008/steps.npz": {
+      "bytes": 10029,
+      "sha256": "1906bee41a28582808ea870174b4df6f05db72a54f856dd640651bd2f8e9103a"
+    },
+    "native_sr_v1/full/episodes/task5/episode_009/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_009/result.json": {
+      "bytes": 96587,
+      "sha256": "3d15cdc18db2b56f5077a6a695e186276588b087c88aba206954fcf81a128968"
+    },
+    "native_sr_v1/full/episodes/task5/episode_009/steps.npz": {
+      "bytes": 9928,
+      "sha256": "e4e70fb547839a0179e708be8ddd8121290b64327eff342a3d85e327a9d1e3e1"
+    },
+    "native_sr_v1/full/episodes/task5/episode_010/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_010/result.json": {
+      "bytes": 96589,
+      "sha256": "0d06b4fb5515f8b69a4a9484163fe3045155d392495e77cb99e04d2c5849ea5e"
+    },
+    "native_sr_v1/full/episodes/task5/episode_010/steps.npz": {
+      "bytes": 10040,
+      "sha256": "0c4e807cd2b2c3b09792a7e2742a015bd00059ef646621dbded7b8993b842386"
+    },
+    "native_sr_v1/full/episodes/task5/episode_011/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_011/result.json": {
+      "bytes": 96590,
+      "sha256": "0f20673063ded0fbdf1c08e92db8edd4c17a0566a390f934ce29b53bd7c38acc"
+    },
+    "native_sr_v1/full/episodes/task5/episode_011/steps.npz": {
+      "bytes": 10015,
+      "sha256": "42cb9a78ed19e6fdd470ca40bca26895fcd41b711988f8c8a10187c36f85d294"
+    },
+    "native_sr_v1/full/episodes/task5/episode_012/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_012/result.json": {
+      "bytes": 96589,
+      "sha256": "db8140bade854316c230c377fbab8807043290f963a3cc1d2addb024d57f7342"
+    },
+    "native_sr_v1/full/episodes/task5/episode_012/steps.npz": {
+      "bytes": 9980,
+      "sha256": "8b5d077fdc498a3b5cd9711d96904d52a820e7f5d2eced7109a2d51e074d092a"
+    },
+    "native_sr_v1/full/episodes/task5/episode_013/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_013/result.json": {
+      "bytes": 96589,
+      "sha256": "ab801c0d3c0717db4ba5a3e1d4a94e8c6f0f4f731bc96b4359d5e7dbf812c50c"
+    },
+    "native_sr_v1/full/episodes/task5/episode_013/steps.npz": {
+      "bytes": 9901,
+      "sha256": "67ecec8e3f2e04736d26e657a2b838cec846d7873515fd5e21ae547b906798a8"
+    },
+    "native_sr_v1/full/episodes/task5/episode_014/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_014/result.json": {
+      "bytes": 96589,
+      "sha256": "2e01b499625d3c30a3e58ca8a9c1dd9060e58451324719a701bb5f8a1c2a5b07"
+    },
+    "native_sr_v1/full/episodes/task5/episode_014/steps.npz": {
+      "bytes": 9896,
+      "sha256": "507c16d23c45088071f8e55ffdc40cbfafc459ba276e6a2b406dfda4e01b4dc0"
+    },
+    "native_sr_v1/full/episodes/task5/episode_015/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_015/result.json": {
+      "bytes": 96590,
+      "sha256": "49382253d03955d006874871970bcc48bf5d722f271579ed6256ed325cbbf2fb"
+    },
+    "native_sr_v1/full/episodes/task5/episode_015/steps.npz": {
+      "bytes": 10041,
+      "sha256": "8e1d6200bdc4d3deaa80cf4f54c0e276a8b5c9a1e6352f7b777dbbaae190e596"
+    },
+    "native_sr_v1/full/episodes/task5/episode_016/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_016/result.json": {
+      "bytes": 96589,
+      "sha256": "146a712064b709fc5c3ac0504728f60be1b5f3ec3322874b4eb21ca829c5537f"
+    },
+    "native_sr_v1/full/episodes/task5/episode_016/steps.npz": {
+      "bytes": 9982,
+      "sha256": "35aa8d2cce0b59c2ed54f12bf7c5079660f00a3cb4e72b7924d18a3d7b7b7c2d"
+    },
+    "native_sr_v1/full/episodes/task5/episode_017/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_017/result.json": {
+      "bytes": 96589,
+      "sha256": "5834ba44bd51930e2a92e75d460bc281d761df6e674d2edde792174390616b6c"
+    },
+    "native_sr_v1/full/episodes/task5/episode_017/steps.npz": {
+      "bytes": 10027,
+      "sha256": "89c7a1bf0d104d0be70eb455e1b6804b9cb25a76aa67e252651b132ecaac70f4"
+    },
+    "native_sr_v1/full/episodes/task5/episode_018/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_018/result.json": {
+      "bytes": 96590,
+      "sha256": "dfef77bb979f6e835ba0eb308361f6e36c1ad32fffab3cad296e631bd4fb3d4f"
+    },
+    "native_sr_v1/full/episodes/task5/episode_018/steps.npz": {
+      "bytes": 9991,
+      "sha256": "5c441fc1e4780bb8c0ebc311d332ae21f2281be4967295631e9bf27b4666953a"
+    },
+    "native_sr_v1/full/episodes/task5/episode_019/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_019/result.json": {
+      "bytes": 96589,
+      "sha256": "0665a3e67502acb27f3d2665dbb3b5afc6331ccc6028ae1560d525b1802acda4"
+    },
+    "native_sr_v1/full/episodes/task5/episode_019/steps.npz": {
+      "bytes": 10042,
+      "sha256": "3b78da9c0127b69910f33bcaf33dfb39cda31cfdf6b703658e7fc1bd590d4d13"
+    },
+    "native_sr_v1/full/episodes/task5/episode_020/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_020/result.json": {
+      "bytes": 96589,
+      "sha256": "7880c10d31c9c82564972534de633d3bb8e512527ea5a62ba13e67f9ca90ec1d"
+    },
+    "native_sr_v1/full/episodes/task5/episode_020/steps.npz": {
+      "bytes": 10031,
+      "sha256": "cf54810e8d875e4a2f4c4f0ee4fd3c51fd4935268612171664dde288a935b1cc"
+    },
+    "native_sr_v1/full/episodes/task5/episode_021/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_021/result.json": {
+      "bytes": 96589,
+      "sha256": "d3041d950aec10ffb15afee558aba4376b5a6282de9c418f1c4978fde4216435"
+    },
+    "native_sr_v1/full/episodes/task5/episode_021/steps.npz": {
+      "bytes": 10010,
+      "sha256": "64b5f71b906d283458e18c194f7e3b92d0dcf30d3eec1409ae4d2fc5595c6d56"
+    },
+    "native_sr_v1/full/episodes/task5/episode_022/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_022/result.json": {
+      "bytes": 96589,
+      "sha256": "26fc32740f803d9d4ab7ac756d585ec72d4990f6855710ec623307374d5a5f55"
+    },
+    "native_sr_v1/full/episodes/task5/episode_022/steps.npz": {
+      "bytes": 9993,
+      "sha256": "315d82bef196ecb3f1eac89724f81f38022a3d259a532a4ad898f598e58d5487"
+    },
+    "native_sr_v1/full/episodes/task5/episode_023/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_023/result.json": {
+      "bytes": 96589,
+      "sha256": "088023f0449bf3a3af096315bb6700127fe2738a9455409d207a34ff14b41577"
+    },
+    "native_sr_v1/full/episodes/task5/episode_023/steps.npz": {
+      "bytes": 9956,
+      "sha256": "0406a8c653ee5efbf5763eb02c70b790f93f61e54a5b2da10903198aba729881"
+    },
+    "native_sr_v1/full/episodes/task5/episode_024/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_024/result.json": {
+      "bytes": 96589,
+      "sha256": "096295e12253b87a4688c61f3d0ee6cd3ee135f9bd30d02dab6c1244727da73a"
+    },
+    "native_sr_v1/full/episodes/task5/episode_024/steps.npz": {
+      "bytes": 9922,
+      "sha256": "6a701c0a54f853a395ef7cd05d52624939ef768de9300de925aa050e2969a07d"
+    },
+    "native_sr_v1/full/episodes/task5/episode_025/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_025/result.json": {
+      "bytes": 96589,
+      "sha256": "9d2e5f5e233cdb5d4873877cc00e76eab11f6772255f8e6ea79581e73bdd7627"
+    },
+    "native_sr_v1/full/episodes/task5/episode_025/steps.npz": {
+      "bytes": 10016,
+      "sha256": "e0c9f72d67e7bf96ca9abe59f79f67b11a60d7fa86d7bcd19e88d10d3808d2c2"
+    },
+    "native_sr_v1/full/episodes/task5/episode_026/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_026/result.json": {
+      "bytes": 96589,
+      "sha256": "74cda1f2d925a4ab8a81915113e14a6e6d3bcfd19eaaa91f65b70fdfc00e99b2"
+    },
+    "native_sr_v1/full/episodes/task5/episode_026/steps.npz": {
+      "bytes": 9929,
+      "sha256": "c47827e5f588b62ce785d58331027db7cd46702bef476a6d852cd9ccb53cf301"
+    },
+    "native_sr_v1/full/episodes/task5/episode_027/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_027/result.json": {
+      "bytes": 96589,
+      "sha256": "0d3257f79463b10da72200417bed3896a8323f4a0c5045bd8f19c04de6f43289"
+    },
+    "native_sr_v1/full/episodes/task5/episode_027/steps.npz": {
+      "bytes": 9830,
+      "sha256": "0f084ee2eaee650dc0406b167adec7c14956712bba25a59d5f40c69f5237b279"
+    },
+    "native_sr_v1/full/episodes/task5/episode_028/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_028/result.json": {
+      "bytes": 96589,
+      "sha256": "594ab2fc2f34963dfb5504b209b5ee157f81150e0a96917682c5e51972e5e443"
+    },
+    "native_sr_v1/full/episodes/task5/episode_028/steps.npz": {
+      "bytes": 10024,
+      "sha256": "72ef114e7539faf5381f45a0116ce8d7ceaa0d866976dc4887c58eaad0f6823e"
+    },
+    "native_sr_v1/full/episodes/task5/episode_029/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_029/result.json": {
+      "bytes": 96589,
+      "sha256": "782f7b6ed10ee8927f63e95cde678421a907c82ac674fcc6545ef5dab64d40cf"
+    },
+    "native_sr_v1/full/episodes/task5/episode_029/steps.npz": {
+      "bytes": 9928,
+      "sha256": "e2a673c6ccc677a1f66db6b3a06905078e81049cc0cc6b0ed7b5f5c104a55d14"
+    },
+    "native_sr_v1/full/episodes/task5/episode_030/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_030/result.json": {
+      "bytes": 96589,
+      "sha256": "1c712dbbdc8ab0a9aa9b2568f760dc1a01f4d073b512c094def25e8166367543"
+    },
+    "native_sr_v1/full/episodes/task5/episode_030/steps.npz": {
+      "bytes": 9990,
+      "sha256": "94fa1af2c13134081b7debbcb34e7663965ee8de4b361f54e2203c2aeea9d335"
+    },
+    "native_sr_v1/full/episodes/task5/episode_031/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_031/result.json": {
+      "bytes": 96589,
+      "sha256": "0de542cd05acf8787ec9c5f897cddd21b73c78925ae6c3d91a1cc7dc01d96e8c"
+    },
+    "native_sr_v1/full/episodes/task5/episode_031/steps.npz": {
+      "bytes": 10026,
+      "sha256": "f300a7bfd6e7f30bb9f689dab699e040aaa23ae92d3006dec763ee8c15d28eb6"
+    },
+    "native_sr_v1/full/episodes/task5/episode_032/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_032/result.json": {
+      "bytes": 96589,
+      "sha256": "a816bc7aa6b136e2d5da58e6a3d9f925b7e61da26aba65115830c8e3b35916d6"
+    },
+    "native_sr_v1/full/episodes/task5/episode_032/steps.npz": {
+      "bytes": 9960,
+      "sha256": "d453ccafe22235ad841021c3a66b398e6dd36151c1658691c1b2b818b1b1990c"
+    },
+    "native_sr_v1/full/episodes/task5/episode_033/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_033/result.json": {
+      "bytes": 96589,
+      "sha256": "1ca6cefa86aeaf9e19cfaab88edfca318d639de28be7f1b74344da9fef539f7c"
+    },
+    "native_sr_v1/full/episodes/task5/episode_033/steps.npz": {
+      "bytes": 9879,
+      "sha256": "1885203a215c2d667f1e0747c2e3ae893b0cea35420b49a74c125242e58fa26d"
+    },
+    "native_sr_v1/full/episodes/task5/episode_034/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_034/result.json": {
+      "bytes": 96589,
+      "sha256": "4f9d3d1f4f98e5c1124b96f5c5820005ce5712fc60fdc241df93d644c293ec92"
+    },
+    "native_sr_v1/full/episodes/task5/episode_034/steps.npz": {
+      "bytes": 10037,
+      "sha256": "25771fb1e39df5b84940e010aad315ea25b27052e4551a20a6669e354d2827f0"
+    },
+    "native_sr_v1/full/episodes/task5/episode_035/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_035/result.json": {
+      "bytes": 96588,
+      "sha256": "a646695026fa9d9e2c78604a1bad078c37924384dd4b1a86fcc53d577ed38205"
+    },
+    "native_sr_v1/full/episodes/task5/episode_035/steps.npz": {
+      "bytes": 10012,
+      "sha256": "b28064d57220db80b110fb6aff54d892b8295db77c89b7abaa8311e0b6820e3d"
+    },
+    "native_sr_v1/full/episodes/task5/episode_036/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_036/result.json": {
+      "bytes": 96590,
+      "sha256": "f9750f3f2ff8f73d260d104f6afd119dce7f628c5345fa8cc65260c6d1550a22"
+    },
+    "native_sr_v1/full/episodes/task5/episode_036/steps.npz": {
+      "bytes": 9978,
+      "sha256": "ca486fd147f5c3b61e0887fc2ff508ef5eff83bd9a42c80f3f36fc0158c99d8b"
+    },
+    "native_sr_v1/full/episodes/task5/episode_037/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_037/result.json": {
+      "bytes": 96590,
+      "sha256": "4e5264c29c2caa0b8f6385bf82bdbe152a795d057366ca6d004d4e6bdc97fc75"
+    },
+    "native_sr_v1/full/episodes/task5/episode_037/steps.npz": {
+      "bytes": 9995,
+      "sha256": "6d1a8e0aaa6a0ec08fec33b058671b59501a5d076eda835d55e75b8431ea09a8"
+    },
+    "native_sr_v1/full/episodes/task5/episode_038/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_038/result.json": {
+      "bytes": 96589,
+      "sha256": "6144b32ebe75e4f5b00695630571ca1d21664549e44a38c11bd06d17924a3eab"
+    },
+    "native_sr_v1/full/episodes/task5/episode_038/steps.npz": {
+      "bytes": 9988,
+      "sha256": "4d7d32b50a29418582c7aa070f66dcb3577a8a2c65b4d2e8bafc0f5fd26b729d"
+    },
+    "native_sr_v1/full/episodes/task5/episode_039/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_039/result.json": {
+      "bytes": 96589,
+      "sha256": "3abbdceeae0f569df17a1a5a9798dc3b8b87d99793126a1ee6db4536da7e16ab"
+    },
+    "native_sr_v1/full/episodes/task5/episode_039/steps.npz": {
+      "bytes": 10039,
+      "sha256": "ed28a600e1704b129796aeeb475a0a51f384d96ef6274fff8df52d7de5943e73"
+    },
+    "native_sr_v1/full/episodes/task5/episode_040/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_040/result.json": {
+      "bytes": 96589,
+      "sha256": "b7b68410b8264b2660d348f4a077a4b0fa7e7341c67a1123740613600cf5cacc"
+    },
+    "native_sr_v1/full/episodes/task5/episode_040/steps.npz": {
+      "bytes": 10034,
+      "sha256": "9ea15e38cc6f692934345327f649936b8ca991c80f553410e665ba099aebe612"
+    },
+    "native_sr_v1/full/episodes/task5/episode_041/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_041/result.json": {
+      "bytes": 96589,
+      "sha256": "9e3a4abe5f6618e912e49bbaca2a16270d3147b6fcce1bd0be5a005cf09b0227"
+    },
+    "native_sr_v1/full/episodes/task5/episode_041/steps.npz": {
+      "bytes": 9983,
+      "sha256": "c15ab26b6e4eae80707e445e408d9a996b9933906c46269cf5b6c283ef7fd32b"
+    },
+    "native_sr_v1/full/episodes/task5/episode_042/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_042/result.json": {
+      "bytes": 96589,
+      "sha256": "32d586f451196d0546fbabf5ac41f325d5fff0a4a184ee6d759b25065ab70f6d"
+    },
+    "native_sr_v1/full/episodes/task5/episode_042/steps.npz": {
+      "bytes": 10011,
+      "sha256": "802c57ef378804198aef5fcc17626b419d893dc060d97d7ff926712b372d4983"
+    },
+    "native_sr_v1/full/episodes/task5/episode_043/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_043/result.json": {
+      "bytes": 96589,
+      "sha256": "7c3ba4a5890538a105ae7526c7863eab9559f097c2421900d257897c6fc259e7"
+    },
+    "native_sr_v1/full/episodes/task5/episode_043/steps.npz": {
+      "bytes": 10063,
+      "sha256": "a24cf613f901bd687a85273e5f7b15f5f7ae7480c487484fe81a3bcccd15bae1"
+    },
+    "native_sr_v1/full/episodes/task5/episode_044/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_044/result.json": {
+      "bytes": 96589,
+      "sha256": "d7c91af8b6151332204a819849137509879042816aaeb5b35a70fcee4020f648"
+    },
+    "native_sr_v1/full/episodes/task5/episode_044/steps.npz": {
+      "bytes": 9927,
+      "sha256": "220e8577982a552bd5e855ae6baeb58b679ec0d9138e537c6b9bd80b6dfe0fbe"
+    },
+    "native_sr_v1/full/episodes/task5/episode_045/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_045/result.json": {
+      "bytes": 96589,
+      "sha256": "1a8ad28d223fe4db8bbb9e4f58b3e3399e69b30c5f93293eb985045b7e43f861"
+    },
+    "native_sr_v1/full/episodes/task5/episode_045/steps.npz": {
+      "bytes": 9921,
+      "sha256": "d6e598ad1fe3cc8cfbced841aee0789e50ceaecca6d822a782d84b0a7656224f"
+    },
+    "native_sr_v1/full/episodes/task5/episode_046/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_046/result.json": {
+      "bytes": 96589,
+      "sha256": "325041a0a5329b96215faaf3e6def0c9113a30cbcea638fec2e2252d9b8c0f63"
+    },
+    "native_sr_v1/full/episodes/task5/episode_046/steps.npz": {
+      "bytes": 9945,
+      "sha256": "7ba179ffa0fe1596ffc96b02f1a2bc520c51d963b5ad32e891bccc7f51331425"
+    },
+    "native_sr_v1/full/episodes/task5/episode_047/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_047/result.json": {
+      "bytes": 96589,
+      "sha256": "81bbbc3f13f1f144b2d518e837ecc75c2740b62bf45803423f3926ac5b421e9b"
+    },
+    "native_sr_v1/full/episodes/task5/episode_047/steps.npz": {
+      "bytes": 9920,
+      "sha256": "e1ec0d5156e4a774f9492e523faf1ad0217aa812102819069514ea94939a0781"
+    },
+    "native_sr_v1/full/episodes/task5/episode_048/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_048/result.json": {
+      "bytes": 96589,
+      "sha256": "623e67eed79102afa21e30b2dbfe9d8c1fbcdeddc1bbb3493104f6b60a60a418"
+    },
+    "native_sr_v1/full/episodes/task5/episode_048/steps.npz": {
+      "bytes": 10039,
+      "sha256": "147b195fe84cd999747570b6ec7a89ab38c188e698d68d9fb0f8cc195d013d10"
+    },
+    "native_sr_v1/full/episodes/task5/episode_049/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/full/episodes/task5/episode_049/result.json": {
+      "bytes": 96589,
+      "sha256": "3d41182d94ab04d867af7ed6c558d77abab62701b42bfeb5631e6b9e5cbb949f"
+    },
+    "native_sr_v1/full/episodes/task5/episode_049/steps.npz": {
+      "bytes": 9999,
+      "sha256": "c0edc7c0a745babef9b494468c26f76a3c6978a1eaa472fd7ff6cdec0968e939"
+    },
+    "native_sr_v1/full/independent_audit.json": {
+      "bytes": 775,
+      "sha256": "400bd8a89cf7b3c815056b308c8e6f9742d865708cd271d5ac22fd9f4b13e33a"
+    },
+    "native_sr_v1/full/native_source_binding.json": {
+      "bytes": 1685,
+      "sha256": "ffe1304381ec999ab2b2daa3d62cac482eaac70b8d234f67f1a6ce7feff5b71a"
+    },
+    "native_sr_v1/full/report.json": {
+      "bytes": 533,
+      "sha256": "c82cce45130032928f96dc3f395dd7ba45bd28a34011d85048dc8541cb67b59e"
+    },
+    "native_sr_v1/full/status.json": {
+      "bytes": 556,
+      "sha256": "f355d11dfca670e8a12ec37bdb78a86ecd0dd89357c8188bb339f4ceadd99b49"
+    },
+    "native_sr_v1/tiny/actual_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/tiny/episodes/task1/episode_000/attempt_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "native_sr_v1/tiny/episodes/task1/episode_000/result.json": {
+      "bytes": 2340,
+      "sha256": "907188646a1b2d92e3b9f590c966813f7950ee731a6ed0c05f36407663ff1ccd"
+    },
+    "native_sr_v1/tiny/episodes/task1/episode_000/steps.npz": {
+      "bytes": 676,
+      "sha256": "68daee0113f07e61490db930bfb6a580a01ea9664fa1c68a868a5b2d85fa71be"
+    },
+    "native_sr_v1/tiny/independent_audit.json": {
+      "bytes": 720,
+      "sha256": "836a17a6bad5d73f41309cf6b009ed95b093b9588f868ed4b6359d0202e3ee7e"
+    },
+    "native_sr_v1/tiny/native_source_binding.json": {
+      "bytes": 1685,
+      "sha256": "ffe1304381ec999ab2b2daa3d62cac482eaac70b8d234f67f1a6ce7feff5b71a"
+    },
+    "native_sr_v1/tiny/report.json": {
+      "bytes": 534,
+      "sha256": "9496f09fab5fc41163e4d13b699284d3e9123062c8679a43f8e01b570c2d93dd"
+    },
+    "native_sr_v1/tiny/status.json": {
+      "bytes": 557,
+      "sha256": "de6661027fa3df5d14d5942356d153deb2e538d48c11b0680b0e1c740e14664e"
+    },
+    "runs/P2_cube2_pldm_reaudit_rgb/checkpoints/update_000000001/manifest.json": {
+      "bytes": 192,
+      "sha256": "dfb2f8d74dece22140975e01578d059c659eb0f02399ec88d6418a3d6495c658"
+    },
+    "runs/P2_cube2_pldm_reaudit_rgb/checkpoints/update_000000001/params_1.pkl": {
+      "bytes": 76907302,
+      "sha256": "745b75db3e7565ae95cb3fe67b5d4645e5ed06dcd9277424cce873c7f61f17b6"
+    },
+    "runs/P2_cube2_pldm_reaudit_rgb/checkpoints/update_000000001/run_state.pkl": {
+      "bytes": 70711,
+      "sha256": "1aaa43a9ca58ddf140736834bfc5584a2e5fd5fd45094c9ad92e86aadcb2e5ae"
+    },
+    "runs/P2_cube2_pldm_reaudit_rgb/checkpoints/update_000100000/manifest.json": {
+      "bytes": 197,
+      "sha256": "4e3f5711a40eb6197a8b3e83b57bc4ed39e1b496e8174525b7e7027946620a10"
+    },
+    "runs/P2_cube2_pldm_reaudit_rgb/checkpoints/update_000100000/params_100000.pkl": {
+      "bytes": 76907302,
+      "sha256": "67e26364041879fbb578c877ac79bb2ab3033f86fc00e431715cc9591b0e2381"
+    },
+    "runs/P2_cube2_pldm_reaudit_rgb/checkpoints/update_000100000/run_state.pkl": {
+      "bytes": 70726,
+      "sha256": "79873f4dc5f2ce2a43e76454896f6e7ff7772290f8d676664d1e92707424197b"
+    },
+    "runs/P2_cube2_pldm_reaudit_rgb/checkpoints/update_000200000/manifest.json": {
+      "bytes": 197,
+      "sha256": "7419c072e77318682af08057ee4cae3f31cbda3a0722f7207dead974541e8281"
+    },
+    "runs/P2_cube2_pldm_reaudit_rgb/checkpoints/update_000200000/params_200000.pkl": {
+      "bytes": 76907302,
+      "sha256": "263e17a135382271d25b4c9c82aac2b9734855fb2a2ed42b89496b266ef8e2c4"
+    },
+    "runs/P2_cube2_pldm_reaudit_rgb/checkpoints/update_000200000/run_state.pkl": {
+      "bytes": 70725,
+      "sha256": "c8d970c1c43cf1d5099f60184751e3f51f28ec086ccb2f74479f3e10c6af1490"
+    },
+    "runs/P2_cube2_pldm_reaudit_rgb/checkpoints/update_000300000/manifest.json": {
+      "bytes": 197,
+      "sha256": "15940978a5a723796cda1d80a9bf0a03b70a1ef5552379fef92bbfc3b0b580b4"
+    },
+    "runs/P2_cube2_pldm_reaudit_rgb/checkpoints/update_000300000/params_300000.pkl": {
+      "bytes": 76907302,
+      "sha256": "5a62ff42ab8301de0d992d04da4973d98b79090aed6e53c4ea46c7af2ac41ca9"
+    },
+    "runs/P2_cube2_pldm_reaudit_rgb/checkpoints/update_000300000/run_state.pkl": {
+      "bytes": 70726,
+      "sha256": "b5bcca12afeec8709e43e7a79c37a9c36360aa72ad73e7791fc152738bfe8f83"
+    },
+    "runs/P2_cube2_pldm_reaudit_rgb/checkpoints/update_000400000/manifest.json": {
+      "bytes": 197,
+      "sha256": "dd479de4e41ff94a56b7e525861a78dbb03bfb7924ed01f82176d2c9629fd06b"
+    },
+    "runs/P2_cube2_pldm_reaudit_rgb/checkpoints/update_000400000/params_400000.pkl": {
+      "bytes": 76907302,
+      "sha256": "41d54df4d9b5d1839d1ee67bce89e25f35469e544e126d9f1007498bf78168b5"
+    },
+    "runs/P2_cube2_pldm_reaudit_rgb/checkpoints/update_000400000/run_state.pkl": {
+      "bytes": 70725,
+      "sha256": "dc46ea629783588a2605a14b20d43a6a5a30fd6ba1e4af54c167242c282ac28d"
+    },
+    "runs/P2_cube2_pldm_reaudit_rgb/checkpoints/update_000500000/manifest.json": {
+      "bytes": 197,
+      "sha256": "2fcddfecc8d0e0c5abca7b39b987254779c4cb56bbf4387c298ac658e6c98bb2"
+    },
+    "runs/P2_cube2_pldm_reaudit_rgb/checkpoints/update_000500000/params_500000.pkl": {
+      "bytes": 76907302,
+      "sha256": "9933a28985335e1399515242f6c0877dc6b728175fd0145c82f2ea84eab021f4"
+    },
+    "runs/P2_cube2_pldm_reaudit_rgb/checkpoints/update_000500000/run_state.pkl": {
+      "bytes": 70726,
+      "sha256": "a8ef956e8ff3127fd9ddd5b2fc79db73fc9dfda165b6c0ad6787c45bb59ab5e4"
+    },
+    "runs/P2_cube2_pldm_reaudit_rgb/checkpoints/update_000600000/manifest.json": {
+      "bytes": 197,
+      "sha256": "36fafdc5fc51ddb53ffb94bb51e6fd2e553b8b68dd04dfafc36c002b73b43f7b"
+    },
+    "runs/P2_cube2_pldm_reaudit_rgb/checkpoints/update_000600000/params_600000.pkl": {
+      "bytes": 76907302,
+      "sha256": "b0c57898994fd2fbdd8fedcc42c04e2fc3eafadbade0e6d06838525805c99c2d"
+    },
+    "runs/P2_cube2_pldm_reaudit_rgb/checkpoints/update_000600000/run_state.pkl": {
+      "bytes": 70726,
+      "sha256": "0c0864e9a3fb17880b174366466987ccc8476bd1f8e04278fb43ca09debf35b1"
+    },
+    "runs/P2_cube2_pldm_reaudit_rgb/checkpoints/update_000700000/manifest.json": {
+      "bytes": 197,
+      "sha256": "378436a6572de3f8944a3919517833cf13b3ec3f361e8bdceea90e28312dbfd4"
+    },
+    "runs/P2_cube2_pldm_reaudit_rgb/checkpoints/update_000700000/params_700000.pkl": {
+      "bytes": 76907302,
+      "sha256": "472bd9cc08d2c2de61b81574081ef482cf6965b7ae86b1b5acfd2d211460090d"
+    },
+    "runs/P2_cube2_pldm_reaudit_rgb/checkpoints/update_000700000/run_state.pkl": {
+      "bytes": 70725,
+      "sha256": "12db72634a8f1fd2c2189d100a587ec10a2dee7c172d360d54e597236bae0050"
+    },
+    "runs/P2_cube2_pldm_reaudit_rgb/checkpoints/update_000800000/manifest.json": {
+      "bytes": 197,
+      "sha256": "266d07f8d4c0353626178b7c6d55e0e985cfdbe4b15be23bf236dc84a10d9968"
+    },
+    "runs/P2_cube2_pldm_reaudit_rgb/checkpoints/update_000800000/params_800000.pkl": {
+      "bytes": 76907302,
+      "sha256": "f1f2aa89591b029b88f8be7ea2232ea3e9fe932f819688e2b022c00e4d1dcd69"
+    },
+    "runs/P2_cube2_pldm_reaudit_rgb/checkpoints/update_000800000/run_state.pkl": {
+      "bytes": 70725,
+      "sha256": "54199962b0276dfb204abd187a4a7c773b84dffe599f9a60caf1403bed49cd8f"
+    },
+    "runs/P2_cube2_pldm_reaudit_rgb/checkpoints/update_000900000/manifest.json": {
+      "bytes": 197,
+      "sha256": "c964c2e83734071427799a9fa420072aacd9a403a38051ea146f34be398b38f3"
+    },
+    "runs/P2_cube2_pldm_reaudit_rgb/checkpoints/update_000900000/params_900000.pkl": {
+      "bytes": 76907302,
+      "sha256": "21742aa78b5498fc445c0becf381f9c064989edfb493058dc1834c56e0d343fd"
+    },
+    "runs/P2_cube2_pldm_reaudit_rgb/checkpoints/update_000900000/run_state.pkl": {
+      "bytes": 70726,
+      "sha256": "c01b8abaac1b5fb3c82769b4736d1a732ec889788ca2ac52a4fe7f448ddd7c5b"
+    },
+    "runs/P2_cube2_pldm_reaudit_rgb/checkpoints/update_001000000/manifest.json": {
+      "bytes": 198,
+      "sha256": "e0dff5f71a83f9a18184ab5d715d0289def6bb95bc1d4cdc82561e7ea6f6e8c6"
+    },
+    "runs/P2_cube2_pldm_reaudit_rgb/checkpoints/update_001000000/params_1000000.pkl": {
+      "bytes": 76907302,
+      "sha256": "a7774e1d32dff0cbd92b1bd0f148576ec015ee544413c0fcd733d96f329ffd17"
+    },
+    "runs/P2_cube2_pldm_reaudit_rgb/checkpoints/update_001000000/run_state.pkl": {
+      "bytes": 70725,
+      "sha256": "0dcf94d7c71daa3d8ffb76afded63c95cb85dd19d0cd388b9af8f210d18eb230"
+    },
+    "runs/P2_cube2_pldm_reaudit_rgb/final_state_fingerprint.json": {
+      "bytes": 99,
+      "sha256": "1f70dd91280dccf8260e7559fa436be701eb85eed622167ba01c8a6d4086b527"
+    },
+    "runs/P2_cube2_pldm_reaudit_rgb/final_val_probe.npz": {
+      "bytes": 8640744,
+      "sha256": "4505f38e753eaf6a3171dbd0be10aff3b33fd70b1c4816707cf03ddd4633367a"
+    },
+    "runs/P2_cube2_pldm_reaudit_rgb/resolved.json": {
+      "bytes": 71575,
+      "sha256": "4efadd3de992273f3bfbd586dc4564d364637ac2cb5efb7bbc6c8ac3a5e2d4e2"
+    },
+    "runs/P2_cube2_pldm_reaudit_rgb/status.json": {
+      "bytes": 1532,
+      "sha256": "9749098c9320ec439c5616742a2fb91a488a1130b7a41621989c01f9bd0f80c4"
+    },
+    "runs/P2_cube2_pldm_reaudit_rgb/train.csv": {
+      "bytes": 144238,
+      "sha256": "a94274e857e076299baec02c6d10f357655630b30b3ad23e63b42b681b7a49de"
+    },
+    "runs/P2_cube2_pldm_reaudit_rgb/trainer_exit_code": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    }
+  }
+}

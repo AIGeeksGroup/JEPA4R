@@ -1,0 +1,50 @@
+{
+  "status": "frozen_namespace_v2_CPU_actual0_wait_Root_PCD_GPU_retry",
+  "created": "2026-10-12T11:56:03.514499+00:00",
+  "source_sha256": {
+    "/root/autodl-tmp/workspace/users/lewm/coordination/cached_lewm_state_gciql_xyz_109_20261012_v1/terminal_v1/terminal_producer.py": "65548dd57e8214dfab12e9706ddea09f6aaa009da6d556aa3a5643a551f51e3e",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/cached_lewm_state_gciql_xyz_109_20261012_v1/terminal_v1/terminal_audit_cpu.py": "1e7310a1c5115fa0b47c27041cc52ed201388fbc621e24931728e85a97ebebe9",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/cached_lewm_state_gciql_xyz_109_20261012_v1/terminal_v1/test_terminal_contracts.py": "8a6e74336c854fd8040025c1ecfe3e2bc4bed28dc95bf205da7e44f2775316dc",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/cached_lewm_state_gciql_xyz_109_20261012_v1/terminal_v1/run_terminal_stage_v2.sh": "db12d39e47dacdb490d105b48462935412042dfa0275f54e9446e71a42e9bd0f",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/cached_lewm_state_gciql_xyz_109_20261012_v1/terminal_v1/terminal_plan.pcd.v2.json": "30e260a6cad880f5fc6f4370f1d867185f1404dd8555fb804500077fb206f978",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/cached_lewm_state_gciql_xyz_109_20261012_v1/terminal_v1/terminal_plan.rgb.v2.json": "f5839a52ec5c61c10125ddff6b6e1669a5b39a7005115a6235a21ae055267fed"
+  },
+  "plans": {
+    "pcd": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/coordination/cached_lewm_state_gciql_xyz_109_20261012_v1/terminal_v1/terminal_plan.pcd.v2.json",
+      "sha256": "30e260a6cad880f5fc6f4370f1d867185f1404dd8555fb804500077fb206f978"
+    },
+    "rgb": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/coordination/cached_lewm_state_gciql_xyz_109_20261012_v1/terminal_v1/terminal_plan.rgb.v2.json",
+      "sha256": "f5839a52ec5c61c10125ddff6b6e1669a5b39a7005115a6235a21ae055267fed"
+    }
+  },
+  "original_v1_producer_sha256": "81481ebca7b85d732400b3de38644ddadf9958f1650122f9fff26bd2e149b576",
+  "original_v1_freeze_sha256": "002223e6c783d825e75c6c99aabe1fbbb6f62d79e1fea08338ee56d3dee786f3",
+  "same_function_AST": {
+    "sha": true,
+    "stat": true,
+    "read": true,
+    "save": true,
+    "now": true,
+    "terminal_raw_ids": true,
+    "padding_for64": true,
+    "validate_identity": true,
+    "validate_payload": true,
+    "classify": true,
+    "parse_args": true,
+    "alias": true,
+    "source_input": true,
+    "prepare": true,
+    "main": true
+  },
+  "execute_body_AST_identical_except_namespace_registration": true,
+  "namespace_import_source": "/root/autodl-tmp/workspace/users/lewm/downstream-smoke-20261005-2133/state/official-source/impls/utils/__init__.py",
+  "namespace_init_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "namespace_CPU_actual_exit": 0,
+  "original_six_contract_results_reused": true,
+  "no_six_case_or_model_matrix_rerun": true,
+  "GPU_used": false,
+  "terminal_generated": false,
+  "old_failed_output_preserved": "/root/autodl-tmp/workspace/users/lewm/coordination/cached_lewm_state_gciql_xyz_109_20261012_v1/terminal_v1/data/pcd/status.json"
+}

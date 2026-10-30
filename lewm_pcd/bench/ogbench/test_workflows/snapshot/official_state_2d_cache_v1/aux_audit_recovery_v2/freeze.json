@@ -1,0 +1,14 @@
+{
+  "pins": {
+    "aux_audit_recovery_v2/audit_gate_metadata.py": "3f4dd510910dc04c74202bcc1027ac8213a9f211d3ed3ce90d7b3ad2482c7ec2",
+    "aux_audit_recovery_v2/test_real_gate.py": "fd8128f68f086db06d4b5a163be172e5f97b9496e65735385a7bb3c00dd17b5a",
+    "aux_audit_recovery_v2/recover_closed_cache.py": "19c2bf7ee8764c552e2d2316f90a817aa55a26166fea3d10680d7bc55dfd9f32",
+    "aux_audit_recovery_v2/static_review.json": "96d7fb3eca581553e71ec0dd05604bf598c7b4380eb82024505a1a4fb0cdb744",
+    "audit_cache.py": "a97a55ce945c12b16d6fb473c71b289cdf8b2a0164b697ae0f8d4c5d7f9b5006",
+    "producer_plan.json": "e969fb9d9c00bba550173c08e4530a620950206ae2bea49e7a82fc225cc40eed",
+    "source_freeze_v2.json": "eea6c9b2adfdc67c69a5196615606773c0da7419daac300de42d45839f636558"
+  },
+  "scope": "original frozen gate numeric/timing plus exact descriptive scope only; original producer/raw/cache/failed exits unchanged",
+  "original_audit_exit": 1,
+  "actual_CPU_regression_tests": 0
+}

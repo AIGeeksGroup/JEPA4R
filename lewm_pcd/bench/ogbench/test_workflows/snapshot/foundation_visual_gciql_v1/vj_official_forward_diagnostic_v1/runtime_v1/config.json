@@ -1,0 +1,154 @@
+{
+  "spec_sha256": "c8323e5c917549115e29d9374d1f453e5c1fce2b69982a2aadd7ca247a217a99",
+  "adapter_sha256": "3f5cb292728c809737ff0dbe851095cec8825883b0f009d913d315677f462bfe",
+  "fixture": {
+    "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/vj_official_forward_diagnostic_v1/raw_RGB_B32.npy",
+    "sha256": "429d502c0c7dd5ed5f08152efd7c35fb031689acaa5606bcb98a493f71e164c3",
+    "key": "pixels"
+  },
+  "raw_batch_shape": [
+    32,
+    3,
+    224,
+    224
+  ],
+  "raw_dtype": "torch.uint8",
+  "native_size": 384,
+  "expected_tokens": [
+    32,
+    576,
+    1024
+  ],
+  "temporal_input": 1,
+  "feature": "last_normalized_image_patch_mean",
+  "full_FOV": true,
+  "seed": 0,
+  "torch": "2.8.0+cu128",
+  "CUDA": "12.8",
+  "device": "NVIDIA vGPU-32GB",
+  "Torch_threads": 1,
+  "warmups": 2,
+  "trials": 5,
+  "official_autocast_evidence": {
+    "scope": "read-only actual remote spec/source and primary official pinnedGitHub text; no weights hash/download, no GPU or NN",
+    "findings": [
+      {
+        "claim": "No missingSDPA constructor flag",
+        "verified": true,
+        "evidence": "src/hub/backbones.py:229-245 officialkwargs SDPAtrue RoPEtrue img_temporal1 interpolateTrue; actualspec identical effective encoderkwargs, defaults use_siluFalse/wide_siluTrue/uniform_powerFalse"
+      },
+      {
+        "claim": "num_frames64 does not replicate image to64",
+        "verified": true,
+        "evidence": "app/vjepa_2_1/models/vision_transformer.py:245-280 T1 recognition and patch_embed_img branch; actualwrapper onlyunsqueeze2;576=(384/16)^2"
+      },
+      {
+        "claim": "SDPA enabled does not proveFlash kernel",
+        "verified": false,
+        "evidence": "app/vjepa_2_1/models/utils/modules.py:285-289 calls F.scaled_dot_product_attention; backend actual dispatch not inspected"
+      },
+      {
+        "claim": "Official imageclassification mixedprecision isFP16, despite use_bfloat16 flagname",
+        "verified": true,
+        "evidence": "configs/eval_2_1/vitl-384/in1k.yaml:148 true; evals/image_classification_frozen/eval.py:283 autocast dtype=torch.float16"
+      },
+      {
+        "claim": "Official frozen imageeval is differentprotocol",
+        "verified": true,
+        "evidence": "config:162 repeat16frames; modelcustom/vit_encoder.py:31 imports src.models,55-64 repeats image16,78 strictFalse; eval.py:143-148 AttentiveClassifier depthconfig4,381-384 Resizeint384*256/224=438 then CenterCrop384; current adapter fullFOV resize384 singleT1 and meanpool"
+      }
+    ],
+    "sources": [
+      {
+        "fetched_UTF8_SHA256": "391cdde1e9a1da47cb8094bbea5fbbe8acac0135b27e82f1a6ab19c0b39cc692",
+        "path": "src/hub/backbones.py",
+        "raw_url": "https://raw.githubusercontent.com/facebookresearch/vjepa2/204698b45b3712590f06245fbfba32d3be539812/src/hub/backbones.py",
+        "official_url": "https://github.com/facebookresearch/vjepa2/blob/204698b45b3712590f06245fbfba32d3be539812/src/hub/backbones.py"
+      },
+      {
+        "fetched_UTF8_SHA256": "d2932eabeba684d8f558302a13cfd4be70a0170ee5112f5a794652d0a29089b9",
+        "path": "app/vjepa_2_1/models/vision_transformer.py",
+        "raw_url": "https://raw.githubusercontent.com/facebookresearch/vjepa2/204698b45b3712590f06245fbfba32d3be539812/app/vjepa_2_1/models/vision_transformer.py",
+        "official_url": "https://github.com/facebookresearch/vjepa2/blob/204698b45b3712590f06245fbfba32d3be539812/app/vjepa_2_1/models/vision_transformer.py"
+      },
+      {
+        "fetched_UTF8_SHA256": "64be6a87bd9f18d385f4e44186db3347d1665e18a1f0511d51d3b305531562e2",
+        "path": "app/vjepa_2_1/models/utils/modules.py",
+        "raw_url": "https://raw.githubusercontent.com/facebookresearch/vjepa2/204698b45b3712590f06245fbfba32d3be539812/app/vjepa_2_1/models/utils/modules.py",
+        "official_url": "https://github.com/facebookresearch/vjepa2/blob/204698b45b3712590f06245fbfba32d3be539812/app/vjepa_2_1/models/utils/modules.py"
+      },
+      {
+        "fetched_UTF8_SHA256": "ff35b2729d45fc6b212275bec580704673b69058b00064f6e54b90e01e1a50e0",
+        "path": "evals/image_classification_frozen/eval.py",
+        "raw_url": "https://raw.githubusercontent.com/facebookresearch/vjepa2/204698b45b3712590f06245fbfba32d3be539812/evals/image_classification_frozen/eval.py",
+        "official_url": "https://github.com/facebookresearch/vjepa2/blob/204698b45b3712590f06245fbfba32d3be539812/evals/image_classification_frozen/eval.py"
+      },
+      {
+        "fetched_UTF8_SHA256": "f60598f6cef9f0d7045ee7c0ab990913934b06128c1e57f6757ed664a9a4f87b",
+        "path": "evals/image_classification_frozen/modelcustom/vit_encoder.py",
+        "raw_url": "https://raw.githubusercontent.com/facebookresearch/vjepa2/204698b45b3712590f06245fbfba32d3be539812/evals/image_classification_frozen/modelcustom/vit_encoder.py",
+        "official_url": "https://github.com/facebookresearch/vjepa2/blob/204698b45b3712590f06245fbfba32d3be539812/evals/image_classification_frozen/modelcustom/vit_encoder.py"
+      },
+      {
+        "fetched_UTF8_SHA256": "c9e378792ae3437ca77d3c9d6f7ff3f448128312cca34c25b4718a1365937129",
+        "path": "configs/eval_2_1/vitl-384/in1k.yaml",
+        "raw_url": "https://raw.githubusercontent.com/facebookresearch/vjepa2/204698b45b3712590f06245fbfba32d3be539812/configs/eval_2_1/vitl-384/in1k.yaml",
+        "official_url": "https://github.com/facebookresearch/vjepa2/blob/204698b45b3712590f06245fbfba32d3be539812/configs/eval_2_1/vitl-384/in1k.yaml"
+      }
+    ],
+    "compute_interpretation": {
+      "attention_quadratic_ratio": 8.63640149937526,
+      "tokens384": 576,
+      "scope": "theoretical resolution scaling only; not measured endtoend10x explanation",
+      "token_ratio": 2.938775510204082,
+      "FP32_vs_mixed_precision": "plausible performance factor pending fixedinput actualkernel diagnostic; no speedup claimed",
+      "tokens224": 196
+    },
+    "commit": "204698b45b3712590f06245fbfba32d3be539812",
+    "actual_spec": {
+      "kwargs": {
+        "tubelet_size": 2,
+        "use_rope": true,
+        "interpolate_rope": true,
+        "patch_size": 16,
+        "img_temporal_dim_size": 1,
+        "use_sdpa": true,
+        "num_frames": 64,
+        "img_size": [
+          384,
+          384
+        ]
+      },
+      "output_dim": 1024,
+      "input": "B3x1x384x384 from uint8BCHW224",
+      "family": "vjepa21_vitl1024",
+      "native_size": 384,
+      "precision": "FP32 autocast disabled",
+      "constructor": "app.vjepa_2_1.models.vision_transformer.vit_large",
+      "output": "normalizedB576x1024 patch mean"
+    },
+    "allowed_diagnostic_candidate": "C changes only FP16autocast while preserving current384/T1/fullFOV/meanpatchpool; classification resize/crop16framewrapper and attentivehead excluded from current experiment",
+    "exact_selected_classification_config": {
+      "dispatch_evidence": "eval.py66-70 reads config model_kwargs checkpoint/module/pretrain_kwargs/wrapper_kwargs;132-140 calls models.init_module; models.py importlib imports exactly module_name",
+      "tubelet_size": 2,
+      "model_name": "vit_large",
+      "path": "configs/eval_2_1/vitl-384/in1k.yaml",
+      "use_rope": true,
+      "checkpoint": "vjepa2_1_vitl_dist_vitG_384.pt",
+      "uniform_power": true,
+      "patch_size": 16,
+      "img_as_video_nframes": 16,
+      "module_name": "evals.image_classification_frozen.modelcustom.vit_encoder",
+      "interpretation": "verified pinnedconfig pointer; description of official classification reference only, not prescription to replace general embedding extraction",
+      "lines": "149-162",
+      "checkpoint_key": "ema_encoder",
+      "img_temporal_dim_size": 1
+    }
+  },
+  "official_evidence_sha256": "a5d0bb23807609693b17f779ccec8d3474f1435c490b09e42d43ceef411ad228",
+  "old_cache_not_modified": true,
+  "matmul_allow_tf32": false,
+  "cudnn_allow_tf32": true,
+  "float32_matmul_precision": "highest",
+  "precision_flags_modified": false
+}

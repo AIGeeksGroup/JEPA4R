@@ -1,0 +1,626 @@
+{
+  "schema_version": 1,
+  "groups": [
+    "G10",
+    "G05",
+    "G06",
+    "G08",
+    "G09"
+  ],
+  "updates_per_group": 1000000,
+  "checkpoint_steps": [
+    1,
+    100000,
+    200000,
+    300000,
+    400000,
+    500000,
+    600000,
+    700000,
+    800000,
+    900000,
+    1000000
+  ],
+  "source_pins": {
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/trainer_runtime.py": "18acaead938e573f80ec6e87e0cb44822a734decf2e97730861886841a22b82c",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/distance_inputs.py": "b9906dc2f4e7a38826f5ee05031713618a6ce408ee5555302801505452758f90",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/gciql_boundary.py": "a81363583a4826194b90974be2ad62c5895ab6b963e15ba042c9f893a46ba5e6",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/state_runtime.py": "623fff33b0c836c6268257689216cf78de8694fbab1107dddbd4bdbfc3ee1956",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/state_inputs.py": "ada2bdc73de50753a83ee951cb99849c9bd3282f3e6527c4e8d906f85f7d9fd9",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube_inputs.py": "36358548ef7a78311730913fccfdfa025d354a18edd4f8197b03b4c0d5ae5d9b",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/official_state_workers_v1/ordered_input.py": "4508ce847694976f8af924215d11985ac4d795093b22d62e8424928346fbdda2",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/imports/single_cube_rl3_101632_20261018_v1/source_layout/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/core_v1/gciql.py": "8611cd476d8849ad014ca43304073c3e88fc3d3aa5dab369a343ae425bba7ba7",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/extension_inputs.py": "de2381f3262a5b088b11d2ac1bbc5ae258ef82a26801f398e72c09f457fd0f5b",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/extension_runtime.py": "a9735b9b4f3fec3b01f189e910e12e985cbba3a8ba13e1fafeac878f1222c9c1",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/extension_boundary.py": "9a6a08cfbd988bda6904c7c728ae289b8c1ff801f56754a7c0798fc067a3cb81",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/test_extension_inputs.py": "b39d2a84a2903839e7fc704e42c23289745bd43c127c3edf54aea176bf5f6788",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/data_plan.json": "3dd17b956bfb5249a876edbd6d14ab41655dbc46ccd74790dc1376eabba5dd88",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/configs/G10_cube4_state.json": "aa19f669ce840cfa52b791d040cbeb34e7701be45cf5fc70f8920616d6afada6",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/configs/G05_cube2_rgb.json": "8c3af1e965e3266965cfac9a1baedbfb081da1c5a15549de1574b3cdfbf8b65b",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/configs/G06_cube2_pcd.json": "c782818914cf29b8ed33b1d5119833d0d4990fa59c7221e24680ac23b37d84d8",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/configs/G08_cube3_rgb.json": "6d717c2123217020fec593367f3eecb42e01dfe203e9aae8d5a38733045f55b5",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/configs/G09_cube3_pcd.json": "16aa74533db3187e581eb3aee6ccf90d6930c37119e29320983c425125216893",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/data_readiness_v1/quadruple_data_acceptance.json": "db1bb2aacf3916254aaf8d3e3f81b90e1b2de3b2e4ab93407e17a45f54fd9329",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/data_readiness_v1/quadruple_stat-freeze.json": "defd3b51d55a5ab2dd13b30e6dd2ad2ebb7dd5c7084a5a6ea965205e14edd1b1",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/run_extension.py": "af4c4526697a49d041db9720a460f06dac1867a94796b32443f564aa99bacd48",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/run_extension.sh": "932241ff549bbdb57930b23e28529ab97492fadeee1b48a8a7121bfe26fcc09a",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/FUNCTION_FREEZE_v2.json": "5cb23ce8cd6ef29b669f16931d7939a70230f9b82b0a5cb51d1fa2bfe6964c1e",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/FUNCTION_HANDOFF_v2.json": "cbd4dc6c446241415da99717d965cfbe4947fa906b44d779bf1e5be34b94278e",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/DATA_CONFIG_FREEZE_v1.json": "0410b22a872d2fb4bf29c46283d843b79dbdde43b6b7ee3adc9adf6acd2ce32f",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/DATA_HANDOFF_v1.json": "33b8120cd5cbe29e2f0a29389377230c91f11d4c2a0f5bb7340b782f768d73e9",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/run_priority.py": "3b2bafcf07cb154bfbc32956375546c26fb387faf33f7d51aa2917e08ca4252a"
+  },
+  "phases": [
+    {
+      "name": "01_gate_G10",
+      "group_id": "G10",
+      "action": "gate",
+      "cpu": false,
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/extension_boundary.py",
+        "gate",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/configs/G10_cube4_state.json",
+        "--output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/gates/G10",
+        "--input-mode",
+        "baseline"
+      ],
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/gates/G10/report.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "updates": 2,
+            "network_step": 3,
+            "adam_count": 2
+          }
+        }
+      ]
+    },
+    {
+      "name": "02_reload_G10",
+      "group_id": "G10",
+      "action": "reload",
+      "cpu": true,
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/extension_boundary.py",
+        "reload",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/configs/G10_cube4_state.json",
+        "--output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/gates/G10",
+        "--report",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/acceptance/G10_gate_reload.json",
+        "--input-mode",
+        "baseline"
+      ],
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/acceptance/G10_gate_reload.json",
+          "equals": {
+            "actual_exit_code": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "03_train_G10",
+      "group_id": "G10",
+      "action": "train",
+      "cpu": false,
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/extension_runtime.py",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/configs/G10_cube4_state.json",
+        "--input-mode",
+        "baseline"
+      ],
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/runs/G10_cube4_state/status.json",
+          "equals": {
+            "exit_code": 0,
+            "completed_updates": 1000000,
+            "network_step": 1000001,
+            "validation_count": 200,
+            "adam_count": 1000000
+          }
+        }
+      ]
+    },
+    {
+      "name": "04_accept_G10",
+      "group_id": "G10",
+      "action": "accept",
+      "cpu": true,
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/extension_boundary.py",
+        "accept",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/configs/G10_cube4_state.json",
+        "--output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/runs/G10_cube4_state",
+        "--report",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/acceptance/G10_full_acceptance.json",
+        "--input-mode",
+        "baseline"
+      ],
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/acceptance/G10_full_acceptance.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "Adam_count": 1000000,
+            "network_step": 1000001
+          }
+        }
+      ]
+    },
+    {
+      "name": "05_gate_G05",
+      "group_id": "G05",
+      "action": "gate",
+      "cpu": false,
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/extension_boundary.py",
+        "gate",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/configs/G05_cube2_rgb.json",
+        "--output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/gates/G05",
+        "--input-mode",
+        "baseline"
+      ],
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/gates/G05/report.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "updates": 2,
+            "network_step": 3,
+            "adam_count": 2
+          }
+        }
+      ]
+    },
+    {
+      "name": "06_reload_G05",
+      "group_id": "G05",
+      "action": "reload",
+      "cpu": true,
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/extension_boundary.py",
+        "reload",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/configs/G05_cube2_rgb.json",
+        "--output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/gates/G05",
+        "--report",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/acceptance/G05_gate_reload.json",
+        "--input-mode",
+        "baseline"
+      ],
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/acceptance/G05_gate_reload.json",
+          "equals": {
+            "actual_exit_code": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "07_train_G05",
+      "group_id": "G05",
+      "action": "train",
+      "cpu": false,
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/extension_runtime.py",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/configs/G05_cube2_rgb.json",
+        "--input-mode",
+        "baseline"
+      ],
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/runs/G05_cube2_rgb/status.json",
+          "equals": {
+            "exit_code": 0,
+            "completed_updates": 1000000,
+            "network_step": 1000001,
+            "validation_count": 200,
+            "adam_count": 1000000
+          }
+        }
+      ]
+    },
+    {
+      "name": "08_accept_G05",
+      "group_id": "G05",
+      "action": "accept",
+      "cpu": true,
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/extension_boundary.py",
+        "accept",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/configs/G05_cube2_rgb.json",
+        "--output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/runs/G05_cube2_rgb",
+        "--report",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/acceptance/G05_full_acceptance.json",
+        "--input-mode",
+        "baseline"
+      ],
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/acceptance/G05_full_acceptance.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "Adam_count": 1000000,
+            "network_step": 1000001
+          }
+        }
+      ]
+    },
+    {
+      "name": "09_gate_G06",
+      "group_id": "G06",
+      "action": "gate",
+      "cpu": false,
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/extension_boundary.py",
+        "gate",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/configs/G06_cube2_pcd.json",
+        "--output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/gates/G06",
+        "--input-mode",
+        "baseline"
+      ],
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/gates/G06/report.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "updates": 2,
+            "network_step": 3,
+            "adam_count": 2
+          }
+        }
+      ]
+    },
+    {
+      "name": "10_reload_G06",
+      "group_id": "G06",
+      "action": "reload",
+      "cpu": true,
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/extension_boundary.py",
+        "reload",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/configs/G06_cube2_pcd.json",
+        "--output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/gates/G06",
+        "--report",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/acceptance/G06_gate_reload.json",
+        "--input-mode",
+        "baseline"
+      ],
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/acceptance/G06_gate_reload.json",
+          "equals": {
+            "actual_exit_code": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "11_train_G06",
+      "group_id": "G06",
+      "action": "train",
+      "cpu": false,
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/extension_runtime.py",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/configs/G06_cube2_pcd.json",
+        "--input-mode",
+        "baseline"
+      ],
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/runs/G06_cube2_pcd/status.json",
+          "equals": {
+            "exit_code": 0,
+            "completed_updates": 1000000,
+            "network_step": 1000001,
+            "validation_count": 200,
+            "adam_count": 1000000
+          }
+        }
+      ]
+    },
+    {
+      "name": "12_accept_G06",
+      "group_id": "G06",
+      "action": "accept",
+      "cpu": true,
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/extension_boundary.py",
+        "accept",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/configs/G06_cube2_pcd.json",
+        "--output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/runs/G06_cube2_pcd",
+        "--report",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/acceptance/G06_full_acceptance.json",
+        "--input-mode",
+        "baseline"
+      ],
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/acceptance/G06_full_acceptance.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "Adam_count": 1000000,
+            "network_step": 1000001
+          }
+        }
+      ]
+    },
+    {
+      "name": "13_gate_G08",
+      "group_id": "G08",
+      "action": "gate",
+      "cpu": false,
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/extension_boundary.py",
+        "gate",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/configs/G08_cube3_rgb.json",
+        "--output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/gates/G08",
+        "--input-mode",
+        "baseline"
+      ],
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/gates/G08/report.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "updates": 2,
+            "network_step": 3,
+            "adam_count": 2
+          }
+        }
+      ]
+    },
+    {
+      "name": "14_reload_G08",
+      "group_id": "G08",
+      "action": "reload",
+      "cpu": true,
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/extension_boundary.py",
+        "reload",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/configs/G08_cube3_rgb.json",
+        "--output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/gates/G08",
+        "--report",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/acceptance/G08_gate_reload.json",
+        "--input-mode",
+        "baseline"
+      ],
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/acceptance/G08_gate_reload.json",
+          "equals": {
+            "actual_exit_code": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "15_train_G08",
+      "group_id": "G08",
+      "action": "train",
+      "cpu": false,
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/extension_runtime.py",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/configs/G08_cube3_rgb.json",
+        "--input-mode",
+        "baseline"
+      ],
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/runs/G08_cube3_rgb/status.json",
+          "equals": {
+            "exit_code": 0,
+            "completed_updates": 1000000,
+            "network_step": 1000001,
+            "validation_count": 200,
+            "adam_count": 1000000
+          }
+        }
+      ]
+    },
+    {
+      "name": "16_accept_G08",
+      "group_id": "G08",
+      "action": "accept",
+      "cpu": true,
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/extension_boundary.py",
+        "accept",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/configs/G08_cube3_rgb.json",
+        "--output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/runs/G08_cube3_rgb",
+        "--report",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/acceptance/G08_full_acceptance.json",
+        "--input-mode",
+        "baseline"
+      ],
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/acceptance/G08_full_acceptance.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "Adam_count": 1000000,
+            "network_step": 1000001
+          }
+        }
+      ]
+    },
+    {
+      "name": "17_gate_G09",
+      "group_id": "G09",
+      "action": "gate",
+      "cpu": false,
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/extension_boundary.py",
+        "gate",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/configs/G09_cube3_pcd.json",
+        "--output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/gates/G09",
+        "--input-mode",
+        "baseline"
+      ],
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/gates/G09/report.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "updates": 2,
+            "network_step": 3,
+            "adam_count": 2
+          }
+        }
+      ]
+    },
+    {
+      "name": "18_reload_G09",
+      "group_id": "G09",
+      "action": "reload",
+      "cpu": true,
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/extension_boundary.py",
+        "reload",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/configs/G09_cube3_pcd.json",
+        "--output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/gates/G09",
+        "--report",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/acceptance/G09_gate_reload.json",
+        "--input-mode",
+        "baseline"
+      ],
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/acceptance/G09_gate_reload.json",
+          "equals": {
+            "actual_exit_code": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "19_train_G09",
+      "group_id": "G09",
+      "action": "train",
+      "cpu": false,
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/extension_runtime.py",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/configs/G09_cube3_pcd.json",
+        "--input-mode",
+        "baseline"
+      ],
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/runs/G09_cube3_pcd/status.json",
+          "equals": {
+            "exit_code": 0,
+            "completed_updates": 1000000,
+            "network_step": 1000001,
+            "validation_count": 200,
+            "adam_count": 1000000
+          }
+        }
+      ]
+    },
+    {
+      "name": "20_accept_G09",
+      "group_id": "G09",
+      "action": "accept",
+      "cpu": true,
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/extension_boundary.py",
+        "accept",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/configs/G09_cube3_pcd.json",
+        "--output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/runs/G09_cube3_pcd",
+        "--report",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/acceptance/G09_full_acceptance.json",
+        "--input-mode",
+        "baseline"
+      ],
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/acceptance/G09_full_acceptance.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "Adam_count": 1000000,
+            "network_step": 1000001
+          }
+        }
+      ]
+    }
+  ],
+  "existing_trainers_and_sources_unmodified": true
+}

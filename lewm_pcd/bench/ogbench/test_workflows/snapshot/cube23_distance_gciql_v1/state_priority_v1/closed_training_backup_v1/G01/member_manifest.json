@@ -1,0 +1,1022 @@
+{
+  "group_id": "G01",
+  "files": [
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/imports/single_cube_rl3_101632_20261018_v1/source_layout/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/core_v1/gciql.py",
+      "member": "assets/imports/single_cube_rl3_101632_20261018_v1/source_layout/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/core_v1/gciql.py",
+      "bytes": 12600,
+      "sha256": "8611cd476d8849ad014ca43304073c3e88fc3d3aa5dab369a343ae425bba7ba7",
+      "before": {
+        "size": 12600,
+        "mtime_ns": 1792297732866685588,
+        "ctime_ns": 1792297732866685588,
+        "device": 2304,
+        "inode": 12903717995
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/imports/single_cube_rl3_101632_20261018_v1/source_layout/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/core_v1/train.py",
+      "member": "assets/imports/single_cube_rl3_101632_20261018_v1/source_layout/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/core_v1/train.py",
+      "bytes": 21028,
+      "sha256": "73ba082f730e9000a238c789726c26b075590807968a0016bc75e8e9111231d0",
+      "before": {
+        "size": 21028,
+        "mtime_ns": 1792297732866685588,
+        "ctime_ns": 1792297732866685588,
+        "device": 2304,
+        "inode": 12903717992
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/imports/single_cube_rl3_101632_20261018_v1/source_layout/ogbench-official-single-play-20261006/official_lewm_gcbc_20261006/run_formal.py",
+      "member": "assets/imports/single_cube_rl3_101632_20261018_v1/source_layout/ogbench-official-single-play-20261006/official_lewm_gcbc_20261006/run_formal.py",
+      "bytes": 3636,
+      "sha256": "306797e1fa07dee8616adf9cc404af48380a4143d5fb36a6b04b425aae4c6928",
+      "before": {
+        "size": 3636,
+        "mtime_ns": 1792297732966691402,
+        "ctime_ns": 1792297732966691402,
+        "device": 2304,
+        "inode": 26872967620
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/cpu_input_acceptance_v1/COMPLETION_RECEIPT.json",
+      "member": "cube23_distance_gciql_v1/cpu_input_acceptance_v1/COMPLETION_RECEIPT.json",
+      "bytes": 991,
+      "sha256": "7330a8b0ca411253b3a739ffd4b48c485fcba6c8ddc59137ea4f368b63a3fbf8",
+      "before": {
+        "size": 991,
+        "mtime_ns": 1792302055236566155,
+        "ctime_ns": 1792302055236566155,
+        "device": 2304,
+        "inode": 27967385229
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/distance_inputs.py",
+      "member": "cube23_distance_gciql_v1/distance_inputs.py",
+      "bytes": 9097,
+      "sha256": "b9906dc2f4e7a38826f5ee05031713618a6ce408ee5555302801505452758f90",
+      "before": {
+        "size": 9097,
+        "mtime_ns": 1792302054252520705,
+        "ctime_ns": 1792302054252520705,
+        "device": 2304,
+        "inode": 26925964634
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/gciql_boundary.py",
+      "member": "cube23_distance_gciql_v1/gciql_boundary.py",
+      "bytes": 10540,
+      "sha256": "a81363583a4826194b90974be2ad62c5895ab6b963e15ba042c9f893a46ba5e6",
+      "before": {
+        "size": 10540,
+        "mtime_ns": 1792303123958712036,
+        "ctime_ns": 1792303123958712036,
+        "device": 2304,
+        "inode": 26925992130
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/DATA_ROLE_CONFIG_FREEZE_v1.json",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/DATA_ROLE_CONFIG_FREEZE_v1.json",
+      "bytes": 762,
+      "sha256": "867ea05f08a2108652b75058e1d80dfb69976c19d422df036f0948bff461a4e9",
+      "before": {
+        "size": 762,
+        "mtime_ns": 1792302054256520890,
+        "ctime_ns": 1792302054256520890,
+        "device": 2304,
+        "inode": 29138527349
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/FINAL_STATIC_REVIEW_v1.json",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/FINAL_STATIC_REVIEW_v1.json",
+      "bytes": 5657,
+      "sha256": "a790cdd5ec5475869b14380166eaba8514146f605deb5f2227b828d1b9cbdf68",
+      "before": {
+        "size": 5657,
+        "mtime_ns": 1792303123966711760,
+        "ctime_ns": 1792303123966711760,
+        "device": 2304,
+        "inode": 29150845189
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/INPUT_FREEZE_v1.json",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/INPUT_FREEZE_v1.json",
+      "bytes": 1643,
+      "sha256": "2f90dad82968d47f872399620fda2f29fc2d14be11c185c4dfdaac85d0b7efab",
+      "before": {
+        "size": 1643,
+        "mtime_ns": 1792302054252520705,
+        "ctime_ns": 1792302054252520705,
+        "device": 2304,
+        "inode": 29138527317
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/INPUT_HANDOFF_v1.json",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/INPUT_HANDOFF_v1.json",
+      "bytes": 3146,
+      "sha256": "101fa2eeda0197ed7de1a029d06294bfc7b5c047a57cd89dc0b03be43514138f",
+      "before": {
+        "size": 3146,
+        "mtime_ns": 1792302054252520705,
+        "ctime_ns": 1792302054252520705,
+        "device": 2304,
+        "inode": 29138527318
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/RUN_PLAN.md",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/RUN_PLAN.md",
+      "bytes": 3491,
+      "sha256": "05bf5905f2f07377252d7bb2eaef59e7877ab5806b1e2d9a90f4bbee8ba5059c",
+      "before": {
+        "size": 3491,
+        "mtime_ns": 1792303123966711760,
+        "ctime_ns": 1792303123966711760,
+        "device": 2304,
+        "inode": 29150845190
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/acceptance/G01/report.json",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/acceptance/G01/report.json",
+      "bytes": 2514,
+      "sha256": "75de32a57c57a10971eefe19fd21f1b85d11bb7e667bbd5b6fb421479be35ed4",
+      "before": {
+        "size": 2514,
+        "mtime_ns": 1792306991051525120,
+        "ctime_ns": 1792306991051525120,
+        "device": 2304,
+        "inode": 23702950605
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/closed_training_backup_v1/G01/build_closed_g01.py",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/closed_training_backup_v1/G01/build_closed_g01.py",
+      "bytes": 8675,
+      "sha256": "dfb9c4f8a35223b67b8bcb589bcfad7fd104d41b4635eef73b572f863ddd8393",
+      "before": {
+        "size": 8675,
+        "mtime_ns": 1792309187186540135,
+        "ctime_ns": 1792309187186540135,
+        "device": 2304,
+        "inode": 22603059409
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/closed_training_backup_v1/G01/checkpoint_SHA_ledger.json",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/closed_training_backup_v1/G01/checkpoint_SHA_ledger.json",
+      "bytes": 13910,
+      "sha256": "a41911e7dc4d842330898be82eef195dfaac3a697db4d7ba7beb64d4b81d2ec7",
+      "before": {
+        "size": 13910,
+        "mtime_ns": 1792309187318534612,
+        "ctime_ns": 1792309187318534612,
+        "device": 2304,
+        "inode": 22603059423
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/configs/G01_cube1_state.json",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/configs/G01_cube1_state.json",
+      "bytes": 12055,
+      "sha256": "29f2bb8bd66e7512b184e3c21fca5f001a7b646a137c12e273efe489f32d2aa3",
+      "before": {
+        "size": 12055,
+        "mtime_ns": 1792302054256520890,
+        "ctime_ns": 1792302054256520890,
+        "device": 2304,
+        "inode": 30113739720
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/data_plan.json",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/data_plan.json",
+      "bytes": 23187,
+      "sha256": "3f67c6eea0fc8cbae3834f500f7762779be8e2f940eda1cb8d26d4b2396a99ab",
+      "before": {
+        "size": 23187,
+        "mtime_ns": 1792302054252520705,
+        "ctime_ns": 1792302054252520705,
+        "device": 2304,
+        "inode": 29138527319
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/dispatch_receipt.json",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/dispatch_receipt.json",
+      "bytes": 595,
+      "sha256": "c70133044b876780809b3e76fdae9ea8e5c5eff503f02ab1dcc097cd3d9d2641",
+      "before": {
+        "size": 595,
+        "mtime_ns": 1792303124154705272,
+        "ctime_ns": 1792303124154705272,
+        "device": 2304,
+        "inode": 29150845193
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/gates/G01/numerical_comparison.json",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/gates/G01/numerical_comparison.json",
+      "bytes": 5627,
+      "sha256": "62e909a0dfeacd2855ae8119ae7300679e7d4da15ecc375bcaf415030a349c8d",
+      "before": {
+        "size": 5627,
+        "mtime_ns": 1792303161601496818,
+        "ctime_ns": 1792303161605496697,
+        "device": 2304,
+        "inode": 87464107
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/gates/G01/reference/report.json",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/gates/G01/reference/report.json",
+      "bytes": 29666,
+      "sha256": "edc75eba2f56d3263613d8e733e0872bab0b4f573eba8f15ab22da5ec0477366",
+      "before": {
+        "size": 29666,
+        "mtime_ns": 1792303218542689718,
+        "ctime_ns": 1792303218542689718,
+        "device": 2304,
+        "inode": 18290742332
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/gates/G01/reference/selection.json",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/gates/G01/reference/selection.json",
+      "bytes": 4470,
+      "sha256": "c773a6c1915ab0e6c2fcbe3817bc4151e2563500a0087ad1383006102ff44ffa",
+      "before": {
+        "size": 4470,
+        "mtime_ns": 1792303218546687623,
+        "ctime_ns": 1792303218546687623,
+        "device": 2304,
+        "inode": 18290742333
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/gates/G01/reload_report.json",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/gates/G01/reload_report.json",
+      "bytes": 518,
+      "sha256": "c9798315f6ad2ebdb900c81ade04153d5b8b1acf1186dfae373c9287fc51cf75",
+      "before": {
+        "size": 518,
+        "mtime_ns": 1792303235002076008,
+        "ctime_ns": 1792303235006073918,
+        "device": 2304,
+        "inode": 87464103
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/gates/G01/throughput_selection.json",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/gates/G01/throughput_selection.json",
+      "bytes": 4470,
+      "sha256": "c773a6c1915ab0e6c2fcbe3817bc4151e2563500a0087ad1383006102ff44ffa",
+      "before": {
+        "size": 4470,
+        "mtime_ns": 1792303202592357983,
+        "ctime_ns": 1792303202592357983,
+        "device": 2304,
+        "inode": 87464102
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/release_freeze.json",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/release_freeze.json",
+      "bytes": 3819,
+      "sha256": "1bc9fff9ffe485cd91f5ea69fdbea4e55ae83a367e98b89ba4129fd3c7e4321d",
+      "before": {
+        "size": 3819,
+        "mtime_ns": 1792303123966711760,
+        "ctime_ns": 1792303123966711760,
+        "device": 2304,
+        "inode": 29150845191
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/run_priority.py",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/run_priority.py",
+      "bytes": 10906,
+      "sha256": "3b2bafcf07cb154bfbc32956375546c26fb387faf33f7d51aa2917e08ca4252a",
+      "before": {
+        "size": 10906,
+        "mtime_ns": 1792303123962711898,
+        "ctime_ns": 1792303123962711898,
+        "device": 2304,
+        "inode": 29150659199
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/run_priority.sh",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/run_priority.sh",
+      "bytes": 852,
+      "sha256": "c4bdcdf97b6966bd643ef5bec96de309723165f7e6fdae78b9903890824ee98f",
+      "before": {
+        "size": 852,
+        "mtime_ns": 1792303123966711760,
+        "ctime_ns": 1792303123966711760,
+        "device": 2304,
+        "inode": 29150734848
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_000000001/manifest.json",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_000000001/manifest.json",
+      "bytes": 192,
+      "sha256": "c23c3829033b8312c1ded05e786b553ce4e967751a3a714fd769c3483f93ff2e",
+      "before": {
+        "size": 192,
+        "mtime_ns": 1792303487621971273,
+        "ctime_ns": 1792303487621971273,
+        "device": 2304,
+        "inode": 23702950601
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_000000001/run_state.pkl",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_000000001/run_state.pkl",
+      "bytes": 26116,
+      "sha256": "7f252400330e24f78968f62a84fdb2f78b742d13e8792b2fdcfce476135d76d2",
+      "before": {
+        "size": 26116,
+        "mtime_ns": 1792303487501971566,
+        "ctime_ns": 1792303487501971566,
+        "device": 2304,
+        "inode": 23702950600
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_000100000/manifest.json",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_000100000/manifest.json",
+      "bytes": 197,
+      "sha256": "dcae276eb3130e2921b00d7322c260b2042ee8760b8bfbf9d7ca5954ea0a6b49",
+      "before": {
+        "size": 197,
+        "mtime_ns": 1792303840264148363,
+        "ctime_ns": 1792303840264148363,
+        "device": 2304,
+        "inode": 24732829204
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_000100000/run_state.pkl",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_000100000/run_state.pkl",
+      "bytes": 26131,
+      "sha256": "a1034849cf93945777a8589229124579a5d989e1b0df3faee3c7115a260586bd",
+      "before": {
+        "size": 26131,
+        "mtime_ns": 1792303840100146227,
+        "ctime_ns": 1792303840100146227,
+        "device": 2304,
+        "inode": 24732829203
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_000200000/manifest.json",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_000200000/manifest.json",
+      "bytes": 197,
+      "sha256": "46158d380077485014e2943f5c3c5d32579270917ef7dddc890225be6f91c3b9",
+      "before": {
+        "size": 197,
+        "mtime_ns": 1792304190382208229,
+        "ctime_ns": 1792304190382208229,
+        "device": 2304,
+        "inode": 27928421325
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_000200000/run_state.pkl",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_000200000/run_state.pkl",
+      "bytes": 26130,
+      "sha256": "ca757ae57906bee66210307025a97b4cd0c28fc91884502c7dd3289141460b02",
+      "before": {
+        "size": 26130,
+        "mtime_ns": 1792304190194204332,
+        "ctime_ns": 1792304190194204332,
+        "device": 2304,
+        "inode": 27928421324
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_000300000/manifest.json",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_000300000/manifest.json",
+      "bytes": 197,
+      "sha256": "69a7c86e3f511680fe573d94dd61d58e8096c71f03eb425bfa3ea9f13e0f40d0",
+      "before": {
+        "size": 197,
+        "mtime_ns": 1792304556982630112,
+        "ctime_ns": 1792304556986630212,
+        "device": 2304,
+        "inode": 9723690097
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_000300000/run_state.pkl",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_000300000/run_state.pkl",
+      "bytes": 26131,
+      "sha256": "10b5d7d9bb7bf13d6492905d6b9cf6c844425d146dfb9d0b2716aac0d893cd21",
+      "before": {
+        "size": 26131,
+        "mtime_ns": 1792304556850626847,
+        "ctime_ns": 1792304556850626847,
+        "device": 2304,
+        "inode": 9723690096
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_000400000/manifest.json",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_000400000/manifest.json",
+      "bytes": 197,
+      "sha256": "45787c503f89742d9dc0037decd4a3911e4cb6629eba26b9f290c50093fcca14",
+      "before": {
+        "size": 197,
+        "mtime_ns": 1792304900775494691,
+        "ctime_ns": 1792304900775494691,
+        "device": 2304,
+        "inode": 10799333422
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_000400000/run_state.pkl",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_000400000/run_state.pkl",
+      "bytes": 26130,
+      "sha256": "cb51d5ce56a69f383f33780ad458c7de2e3540242960d4260a80abc0257c32f0",
+      "before": {
+        "size": 26130,
+        "mtime_ns": 1792304900647491283,
+        "ctime_ns": 1792304900647491283,
+        "device": 2304,
+        "inode": 10799333421
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_000500000/manifest.json",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_000500000/manifest.json",
+      "bytes": 197,
+      "sha256": "845bdb5dcf09a0b127e513967e783aab07901296048f4fb01e6dd24b1e185415",
+      "before": {
+        "size": 197,
+        "mtime_ns": 1792305253004756396,
+        "ctime_ns": 1792305253004756396,
+        "device": 2304,
+        "inode": 29150845201
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_000500000/run_state.pkl",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_000500000/run_state.pkl",
+      "bytes": 26131,
+      "sha256": "9689733a105c5038b4b0557353fab6df6275457863de31b12436c96ff8fe3ccd",
+      "before": {
+        "size": 26131,
+        "mtime_ns": 1792305252808740515,
+        "ctime_ns": 1792305252808740515,
+        "device": 2304,
+        "inode": 29150845200
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_000600000/manifest.json",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_000600000/manifest.json",
+      "bytes": 197,
+      "sha256": "f20553c231326027aa7646d5a25ac9cfaacbcdd1b73c6a53dd856869be9b7959",
+      "before": {
+        "size": 197,
+        "mtime_ns": 1792305592620260901,
+        "ctime_ns": 1792305592620260901,
+        "device": 2304,
+        "inode": 30115685306
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_000600000/run_state.pkl",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_000600000/run_state.pkl",
+      "bytes": 26131,
+      "sha256": "cfea3129189674bc6244a183a5bdd6c8d07a2e3c5dad556ff02a99bf99f6860f",
+      "before": {
+        "size": 26131,
+        "mtime_ns": 1792305592392247270,
+        "ctime_ns": 1792305592392247270,
+        "device": 2304,
+        "inode": 30115685305
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_000700000/manifest.json",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_000700000/manifest.json",
+      "bytes": 197,
+      "sha256": "31b3815d3a353053ac65628267b39a70a6cc82f33c7666e98470981ed978140d",
+      "before": {
+        "size": 197,
+        "mtime_ns": 1792305944191086993,
+        "ctime_ns": 1792305944195087188,
+        "device": 2304,
+        "inode": 31193899487
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_000700000/run_state.pkl",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_000700000/run_state.pkl",
+      "bytes": 26130,
+      "sha256": "e022090425140e234954ffe2d94c587e5b2870947b5c99a5800a9810648c7d1c",
+      "before": {
+        "size": 26130,
+        "mtime_ns": 1792305944059080580,
+        "ctime_ns": 1792305944059080580,
+        "device": 2304,
+        "inode": 31193899486
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_000800000/manifest.json",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_000800000/manifest.json",
+      "bytes": 197,
+      "sha256": "1f3e68e61ad9e7d694deb74b866aa7ae4024338e44c4ffc943aa8792ce2f8242",
+      "before": {
+        "size": 197,
+        "mtime_ns": 1792306290770855611,
+        "ctime_ns": 1792306290770855611,
+        "device": 2304,
+        "inode": 16173210354
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_000800000/run_state.pkl",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_000800000/run_state.pkl",
+      "bytes": 26130,
+      "sha256": "26c8e46adb62ca01d5a3e73becc7873b2397d28ea11d5367b4aeba27e392b702",
+      "before": {
+        "size": 26130,
+        "mtime_ns": 1792306290622849244,
+        "ctime_ns": 1792306290622849244,
+        "device": 2304,
+        "inode": 16173210353
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_000900000/manifest.json",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_000900000/manifest.json",
+      "bytes": 197,
+      "sha256": "936bbc33557099ac5370ef1b4f49c5f1506297b2ca75029a2fae877900a2d210",
+      "before": {
+        "size": 197,
+        "mtime_ns": 1792306626448784140,
+        "ctime_ns": 1792306626448784140,
+        "device": 2304,
+        "inode": 87464120
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_000900000/run_state.pkl",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_000900000/run_state.pkl",
+      "bytes": 26131,
+      "sha256": "6bf0c0a79436e0d2c24dc8ea3687bc54f42be5011d58dc37238b33892687d199",
+      "before": {
+        "size": 26131,
+        "mtime_ns": 1792306626296778019,
+        "ctime_ns": 1792306626296778019,
+        "device": 2304,
+        "inode": 87464119
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_001000000/manifest.json",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_001000000/manifest.json",
+      "bytes": 198,
+      "sha256": "521c2405e530968285cf10c3b0463ca1808ae7c8f2a24afbcd2b9f77c2ca4db6",
+      "before": {
+        "size": 198,
+        "mtime_ns": 1792306976810973115,
+        "ctime_ns": 1792306976814973270,
+        "device": 2304,
+        "inode": 18290742335
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_001000000/params_1000000.pkl",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_001000000/params_1000000.pkl",
+      "bytes": 39379738,
+      "sha256": "9dbf4f244041572714e035653744488afca26cea0026429dc5eae9c9ee9c3787",
+      "before": {
+        "size": 39379738,
+        "mtime_ns": 1792306976542962720,
+        "ctime_ns": 1792306976542962720,
+        "device": 2304,
+        "inode": 18290742300
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_001000000/run_state.pkl",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/checkpoints/update_001000000/run_state.pkl",
+      "bytes": 26130,
+      "sha256": "e9797da43668f92e08a8361fe10f8cb8609a076b9a5913de93ed4b881cb58f37",
+      "before": {
+        "size": 26130,
+        "mtime_ns": 1792306976542962720,
+        "ctime_ns": 1792306976542962720,
+        "device": 2304,
+        "inode": 18290742334
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/final_state_fingerprint.json",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/final_state_fingerprint.json",
+      "bytes": 99,
+      "sha256": "9e853895c9b4291e74f6d73126b3fdf4c076194911a61eebf5a2eb592a2a3543",
+      "before": {
+        "size": 99,
+        "mtime_ns": 1792306976882975907,
+        "ctime_ns": 1792306976882975907,
+        "device": 2304,
+        "inode": 21511104837
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/final_val_probe.npz",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/final_val_probe.npz",
+      "bytes": 301288,
+      "sha256": "95a8a451665594bbae83aec73d4688b36b9b7032ea365d204eac76b6549e6b6b",
+      "before": {
+        "size": 301288,
+        "mtime_ns": 1792306976814973270,
+        "ctime_ns": 1792306976814973270,
+        "device": 2304,
+        "inode": 21511104835
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/resolved.json",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/resolved.json",
+      "bytes": 25694,
+      "sha256": "69495c96b71c49a171ff02f79a371d017d64692a7b8b5c619be691cf05491a83",
+      "before": {
+        "size": 25694,
+        "mtime_ns": 1792303477169999992,
+        "ctime_ns": 1792303477173999980,
+        "device": 2304,
+        "inode": 21511104846
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/status.json",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/status.json",
+      "bytes": 1517,
+      "sha256": "f93dffc89dd2eb0941ca2e85f9c09bcc3409174ce5cdfb873740c7b2a522434c",
+      "before": {
+        "size": 1517,
+        "mtime_ns": 1792306976882975907,
+        "ctime_ns": 1792306976882975907,
+        "device": 2304,
+        "inode": 21511104843
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/train.csv",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/train.csv",
+      "bytes": 144643,
+      "sha256": "858ffa5f906ee1fe5dcfb3a5303f4e31e4f01390e9fb48d3801accb29f9cf747",
+      "before": {
+        "size": 144643,
+        "mtime_ns": 1792306976458959462,
+        "ctime_ns": 1792306976458959462,
+        "device": 2304,
+        "inode": 21511104845
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/trainer_exit_code",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runs/G01_cube1_state/trainer_exit_code",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "before": {
+        "size": 2,
+        "mtime_ns": 1792306976882975907,
+        "ctime_ns": 1792306976882975907,
+        "device": 2304,
+        "inode": 21511104847
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runtime/07_train_G01/actual_argv.json",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runtime/07_train_G01/actual_argv.json",
+      "bytes": 904,
+      "sha256": "d253ad8e232f59c4cb5dd285eff9420842d08b62783220c4f3972ce6d3e4bb7f",
+      "before": {
+        "size": 904,
+        "mtime_ns": 1792303462038053580,
+        "ctime_ns": 1792303462038053580,
+        "device": 2304,
+        "inode": 87464109
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runtime/07_train_G01/actual_exit_code",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runtime/07_train_G01/actual_exit_code",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "before": {
+        "size": 2,
+        "mtime_ns": 1792306978347032685,
+        "ctime_ns": 1792306978347032685,
+        "device": 2304,
+        "inode": 87464122
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runtime/07_train_G01/exit.json",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runtime/07_train_G01/exit.json",
+      "bytes": 95,
+      "sha256": "5d7df07a24542ad3d85fab59da397b09279f81c050f8f54faa95061f0ea33f4a",
+      "before": {
+        "size": 95,
+        "mtime_ns": 1792306978347032685,
+        "ctime_ns": 1792306978347032685,
+        "device": 2304,
+        "inode": 87464123
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runtime/07_train_G01/resources.jsonl",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runtime/07_train_G01/resources.jsonl",
+      "bytes": 204283,
+      "sha256": "116c3fbd42dcb6edfcd70273b4f54625fdc09e212abbf6a05b082b2b29df557e",
+      "before": {
+        "size": 204283,
+        "mtime_ns": 1792306953834081202,
+        "ctime_ns": 1792306953834081202,
+        "device": 2304,
+        "inode": 87464110
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runtime/07_train_G01/run.log",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runtime/07_train_G01/run.log",
+      "bytes": 3346,
+      "sha256": "3dadc9db123ffc233c7e0a4882014900f236786b94e2791bf90b9aaf0b6ace58",
+      "before": {
+        "size": 3346,
+        "mtime_ns": 1792306976542962720,
+        "ctime_ns": 1792306976542962720,
+        "device": 2304,
+        "inode": 87464108
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runtime/07_train_G01/status.json",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runtime/07_train_G01/status.json",
+      "bytes": 122,
+      "sha256": "792c0ba21e23106f59cf13b20b5ecd07a81a1fedcef7058ddc1bc3f19c579c34",
+      "before": {
+        "size": 122,
+        "mtime_ns": 1792306978347032685,
+        "ctime_ns": 1792306978347032685,
+        "device": 2304,
+        "inode": 87464124
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runtime/08_accept_G01/actual_argv.json",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runtime/08_accept_G01/actual_argv.json",
+      "bytes": 1189,
+      "sha256": "1ccfdf962f8ee5674695bd07805af237d0313185a31795ae69715c74ca009795",
+      "before": {
+        "size": 1189,
+        "mtime_ns": 1792306978351032840,
+        "ctime_ns": 1792306978351032840,
+        "device": 2304,
+        "inode": 19391525764
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runtime/08_accept_G01/actual_exit_code",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runtime/08_accept_G01/actual_exit_code",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "before": {
+        "size": 2,
+        "mtime_ns": 1792306992131566961,
+        "ctime_ns": 1792306992131566961,
+        "device": 2304,
+        "inode": 19391525760
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runtime/08_accept_G01/exit.json",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runtime/08_accept_G01/exit.json",
+      "bytes": 95,
+      "sha256": "648ea766aa06dafc680152217701b6972c5696acbcaae871ef785916a5899f64",
+      "before": {
+        "size": 95,
+        "mtime_ns": 1792306992131566961,
+        "ctime_ns": 1792306992131566961,
+        "device": 2304,
+        "inode": 19391525766
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runtime/08_accept_G01/resources.jsonl",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runtime/08_accept_G01/resources.jsonl",
+      "bytes": 1687,
+      "sha256": "25dbf77cfd797703bc2dd9c659bfe879088c7e946f95141e67170ec1575994e9",
+      "before": {
+        "size": 1687,
+        "mtime_ns": 1792306978427035788,
+        "ctime_ns": 1792306978427035788,
+        "device": 2304,
+        "inode": 19391525765
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runtime/08_accept_G01/run.log",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runtime/08_accept_G01/run.log",
+      "bytes": 2460,
+      "sha256": "ef26f0f7e9d93f4c75e2b94c41f605df470b3a420281e382f8f0d89763cb6c3f",
+      "before": {
+        "size": 2460,
+        "mtime_ns": 1792306990627508691,
+        "ctime_ns": 1792306990627508691,
+        "device": 2304,
+        "inode": 19391525763
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/runtime/08_accept_G01/status.json",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/runtime/08_accept_G01/status.json",
+      "bytes": 122,
+      "sha256": "2a028be4b9937e148d24c45df7777def8a29a61c613f7d514e838076425aaad9",
+      "before": {
+        "size": 122,
+        "mtime_ns": 1792306992131566961,
+        "ctime_ns": 1792306992131566961,
+        "device": 2304,
+        "inode": 19391525767
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/state_boundary.py",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/state_boundary.py",
+      "bytes": 6808,
+      "sha256": "992a1c0f2d7246e3b4d68e7ff97e91847be7d99c6e331108654da665cf11060e",
+      "before": {
+        "size": 6808,
+        "mtime_ns": 1792303123962711898,
+        "ctime_ns": 1792303123962711898,
+        "device": 2304,
+        "inode": 29150215256
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/state_inputs.py",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/state_inputs.py",
+      "bytes": 6397,
+      "sha256": "ada2bdc73de50753a83ee951cb99849c9bd3282f3e6527c4e8d906f85f7d9fd9",
+      "before": {
+        "size": 6397,
+        "mtime_ns": 1792302054252520705,
+        "ctime_ns": 1792302054252520705,
+        "device": 2304,
+        "inode": 29138527315
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/state_runtime.py",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/state_runtime.py",
+      "bytes": 4735,
+      "sha256": "623fff33b0c836c6268257689216cf78de8694fbab1107dddbd4bdbfc3ee1956",
+      "before": {
+        "size": 4735,
+        "mtime_ns": 1792303123958712036,
+        "ctime_ns": 1792303123958712036,
+        "device": 2304,
+        "inode": 29150215255
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/test_state_inputs.py",
+      "member": "cube23_distance_gciql_v1/state_priority_v1/test_state_inputs.py",
+      "bytes": 8975,
+      "sha256": "05b9f282b24cbcb193beeb23132d26a9263022e960d38055843dda68a1cb01f1",
+      "before": {
+        "size": 8975,
+        "mtime_ns": 1792302054252520705,
+        "ctime_ns": 1792302054252520705,
+        "device": 2304,
+        "inode": 29138527316
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/test_distance_inputs.py",
+      "member": "cube23_distance_gciql_v1/test_distance_inputs.py",
+      "bytes": 10128,
+      "sha256": "6121b47e8f846c68fc4cff9133eccf5f804f7c2daff2efbb41b73781485c806a",
+      "before": {
+        "size": 10128,
+        "mtime_ns": 1792302054252520705,
+        "ctime_ns": 1792302054252520705,
+        "device": 2304,
+        "inode": 26925964635
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/trainer_runtime.py",
+      "member": "cube23_distance_gciql_v1/trainer_runtime.py",
+      "bytes": 12600,
+      "sha256": "18acaead938e573f80ec6e87e0cb44822a734decf2e97730861886841a22b82c",
+      "before": {
+        "size": 12600,
+        "mtime_ns": 1792303123954712175,
+        "ctime_ns": 1792303123954712175,
+        "device": 2304,
+        "inode": 26925992129
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube_inputs.py",
+      "member": "cube_inputs.py",
+      "bytes": 2631,
+      "sha256": "36358548ef7a78311730913fccfdfa025d354a18edd4f8197b03b4c0d5ae5d9b",
+      "before": {
+        "size": 2631,
+        "mtime_ns": 1792230252671900767,
+        "ctime_ns": 1792230252671900767,
+        "device": 2304,
+        "inode": 9679670241
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/official_state_workers_v1/ordered_input.py",
+      "member": "official_state_workers_v1/ordered_input.py",
+      "bytes": 7200,
+      "sha256": "4508ce847694976f8af924215d11985ac4d795093b22d62e8424928346fbdda2",
+      "before": {
+        "size": 7200,
+        "mtime_ns": 1792235430174845720,
+        "ctime_ns": 1792235430174845720,
+        "device": 2304,
+        "inode": 11833327368
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/utils/datasets.py",
+      "member": "source/ogbench/impls/utils/datasets.py",
+      "bytes": 16774,
+      "sha256": "52c373922a87e1ba8ad8b3b96c3474d5e6385e2ea2c7206930f7a8a315816609",
+      "before": {
+        "size": 16774,
+        "mtime_ns": 1792229782990520148,
+        "ctime_ns": 1792229782990520148,
+        "device": 2304,
+        "inode": 26855193387
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/utils/encoders.py",
+      "member": "source/ogbench/impls/utils/encoders.py",
+      "bytes": 4644,
+      "sha256": "6bd7fdd82838b754d26af01f9e84d70fa63fca1e09efee38a09f325884073ecc",
+      "before": {
+        "size": 4644,
+        "mtime_ns": 1792229782990520148,
+        "ctime_ns": 1792229782990520148,
+        "device": 2304,
+        "inode": 26855193388
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/utils/flax_utils.py",
+      "member": "source/ogbench/impls/utils/flax_utils.py",
+      "bytes": 6694,
+      "sha256": "5b6a8e9a919bf57dae0c1454f327ded4235385f9d9dcd1e62263fe4fad9fd484",
+      "before": {
+        "size": 6694,
+        "mtime_ns": 1792229782994520275,
+        "ctime_ns": 1792229782994520275,
+        "device": 2304,
+        "inode": 26855193391
+      }
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/utils/networks.py",
+      "member": "source/ogbench/impls/utils/networks.py",
+      "bytes": 16753,
+      "sha256": "e7e4c4a439b691911e5ae6c2653f253c5703e6b5d190d813e28ebc32e7306094",
+      "before": {
+        "size": 16753,
+        "mtime_ns": 1792229782994520275,
+        "ctime_ns": 1792229782994520275,
+        "device": 2304,
+        "inode": 26855193393
+      }
+    }
+  ],
+  "original11checkpoints_retained": true,
+  "SR_performed": false,
+  "active_files_included": false
+}

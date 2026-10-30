@@ -1,0 +1,45 @@
+{
+  "output": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/official_state_2d_cache_v1/runtime",
+  "cwd": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/official_state_2d_cache_v1",
+  "argv": [
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+    "-B",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/official_state_2d_cache_v1/relay_cache.py"
+  ],
+  "runtime_check_argv": [
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+    "-B",
+    "-c",
+    "import json,platform,torch,numpy,mujoco,gymnasium; assert torch.cuda.is_available(); a=torch.eye(2,device='cuda'); b=a@a; torch.cuda.synchronize(); assert torch.equal(b.cpu(),torch.eye(2)); print(json.dumps(dict(actual_exit_code=0,Python=platform.python_version(),torch=torch.__version__,CUDA=torch.version.cuda,numpy=numpy.__version__,mujoco=mujoco.__version__,gymnasium=gymnasium.__version__,GPU=torch.cuda.get_device_name(),CUDA_tensor_exact=True,matmul_precision=torch.get_float32_matmul_precision(),matmul_tf32=torch.backends.cuda.matmul.allow_tf32,cudnn_tf32=torch.backends.cudnn.allow_tf32)))"
+  ],
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "0",
+    "JAX_PLATFORMS": "cpu",
+    "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "MUJOCO_GL": "egl",
+    "PYOPENGL_PLATFORM": "egl",
+    "LD_LIBRARY_PATH": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/runtime/lib",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONUNBUFFERED": "1"
+  },
+  "own_RSS_limit_bytes": 12884901888,
+  "resource_policy": {
+    "nice": 10,
+    "CPU_affinity": "last8 of first16 available CPU IDs",
+    "renderer_workers": 2,
+    "Torch_threads": 1,
+    "Torch_allocator_fraction": 0.35,
+    "bounded_future_episodes": 2
+  },
+  "purpose": "offline2D LeWM epoch10 embeddings only",
+  "training_updates": 0,
+  "SR_episodes_in_this_pipeline": 0,
+  "independent_CPU_SR_untouched": true,
+  "canonical_feature_rows": 3303300,
+  "latent_dim": 192,
+  "dtype": "float32",
+  "rawRGB_full_persisted": false
+}

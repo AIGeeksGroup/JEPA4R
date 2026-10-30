@@ -1,0 +1,22 @@
+{
+  "schema": "tiny_replacement_code_checks_v1",
+  "current_tests": {
+    "run": 10,
+    "passed": 10,
+    "actual_exit_code": 0
+  },
+  "comparison_groups": 24,
+  "state_baseline_groups": 4,
+  "lejepa_variant": "Tiny only",
+  "deprecated_lejepa_source_paths_removed": 126,
+  "prior_v3_test_evidence_reused_because_code_unchanged": true,
+  "baseline_v3_checks": {
+    "local_passed": 83,
+    "linux_hdf5_supplement_passed": 2,
+    "dependency_skips": 9
+  },
+  "code_acceptance_only": true,
+  "GPU_or_formal_result_acceptance": false,
+  "formal_training_started": false,
+  "evaluation_started": false
+}

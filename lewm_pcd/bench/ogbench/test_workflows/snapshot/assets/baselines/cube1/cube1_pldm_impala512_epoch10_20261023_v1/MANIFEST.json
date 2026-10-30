@@ -1,0 +1,2108 @@
+{
+  "asset_id": "cube1_pldm_impala512_epoch10_20261023_v1",
+  "cube_count": 1,
+  "modality": "RGB",
+  "method": "PLDM",
+  "backbone": "Impala512",
+  "embedding_dim": 512,
+  "epochs": 10,
+  "global_step": 144530,
+  "source_host": "10225090",
+  "source_case": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1",
+  "source_versions": {
+    "python": "3.10.21",
+    "scope": "current source metadata; no library imports",
+    "torch": "2.8.0+cu128",
+    "torchvision": "0.23.0+cu128",
+    "numpy": "1.26.4",
+    "einops": "0.8.2",
+    "omegaconf": "2.3.1",
+    "hydra-core": "1.3.6",
+    "timm": "1.0.29",
+    "pytorch-lightning": "2.6.6"
+  },
+  "training_accepted": true,
+  "source_pipeline_actual_exit_code": 1,
+  "source_persistence_failure": "ENOSPC after successful training and acceptance; original records preserved",
+  "training_data": "custom SingleCube fixed5 mixed; 10000 train/1000 validation; 200 actions/201 observations; 200-row training view",
+  "camera": {
+    "name": "front_pixels",
+    "pos": [
+      1.053,
+      -0.014,
+      0.639
+    ],
+    "xyaxes": [
+      0,
+      1,
+      0,
+      -0.628,
+      0.001,
+      0.778
+    ],
+    "evidence": "capture_source/formal_state.json and captured cube_env.py; no Double/Triple +5 pose substitution"
+  },
+  "preprocessing": "uint8 RGB BCHW224 -> float32 /255 -> antialiased Resize65; no ImageNet normalization",
+  "budget_source": "FINAL_ACCEPT formal binding.contract; historical method.COUNTS is not the Single200 budget",
+  "checkpoint_identity": {
+    "bare": {
+      "epoch": 10,
+      "path": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/outputs/checkpoints/single200_pldm_formal_seed0_single_cube_seed0_formal_v1/weights_epoch_10.pt",
+      "sha256": "238c3af486097fe8875ad1fc0f4081d3e322b7e9527d5bf0268f99046fd21ae8"
+    },
+    "full": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/outputs/checkpoints/_spt_cache/runs/20261022/080609/5c3b4bbcec5b/checkpoints/last.ckpt",
+      "sha256": "11e63c4b5d8c56e0ebcf7fafb6cb933bb8188eb4ecf3ea0de298f11451d1efc9"
+    }
+  },
+  "members": {
+    "weights/weights_epoch_10.pt": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/outputs/checkpoints/single200_pldm_formal_seed0_single_cube_seed0_formal_v1/weights_epoch_10.pt",
+      "bytes": 11020547,
+      "source_stat": [
+        11020547,
+        1792649664187967674,
+        12934028563
+      ],
+      "sha256": "238c3af486097fe8875ad1fc0f4081d3e322b7e9527d5bf0268f99046fd21ae8"
+    },
+    "weights/last.ckpt": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/outputs/checkpoints/_spt_cache/runs/20261022/080609/5c3b4bbcec5b/checkpoints/last.ckpt",
+      "bytes": 33066931,
+      "source_stat": [
+        33066931,
+        1792649664415972010,
+        16591464981
+      ],
+      "sha256": "11e63c4b5d8c56e0ebcf7fafb6cb933bb8188eb4ecf3ea0de298f11451d1efc9"
+    },
+    "source/data_bridge/code_front600_v1/lewm_pcd/double_cube_contract.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/data_bridge/code_front600_v1/lewm_pcd/double_cube_contract.py",
+      "bytes": 1973,
+      "source_stat": [
+        1973,
+        1792467963625455000,
+        25777471440
+      ],
+      "sha256": "63c8e434735898286fee3e45e597678c6bd2f85be81eeb34f06a3812cb568d22"
+    },
+    "source/data_bridge/code_front600_v1/lewm_pcd/single_cube_contract.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/data_bridge/code_front600_v1/lewm_pcd/single_cube_contract.py",
+      "bytes": 2449,
+      "source_stat": [
+        2449,
+        1792627337192547468,
+        25777471460
+      ],
+      "sha256": "f196a0597d027715c34b46d1988afb6e9709a28983c69e6d625ef528416b3090"
+    },
+    "source/data_bridge/code_front600_v1/lewm_pcd/training_hdf5.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/data_bridge/code_front600_v1/lewm_pcd/training_hdf5.py",
+      "bytes": 3218,
+      "source_stat": [
+        3218,
+        1792627336996455014,
+        25777471441
+      ],
+      "sha256": "e179f0f329d795cb2d634cf4cd0e9285f8b06ce3985eb50ac96e7f61ac54e173"
+    },
+    "source/data_bridge/code_front600_v1/lewm_pcd/utils.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/data_bridge/code_front600_v1/lewm_pcd/utils.py",
+      "bytes": 3784,
+      "source_stat": [
+        3784,
+        1792467963945462500,
+        25777471442
+      ],
+      "sha256": "a6a386523779ede2ef4453b23198e46e371a0c73200e8f957ae272b5d7b63259"
+    },
+    "source/data_contract.json": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/data_contract.json",
+      "bytes": 2078,
+      "source_stat": [
+        2078,
+        1792627424178307856,
+        22573209107
+      ],
+      "sha256": "1cf9c7be4c694707c073fee9f4b26e0064dd8fbeea315f0a4251d103fa12ad77"
+    },
+    "source/methods/pldm/method.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/methods/pldm/method.py",
+      "bytes": 6319,
+      "source_stat": [
+        6319,
+        1792467964301470800,
+        27942927306
+      ],
+      "sha256": "0400e518a220d7843f62b70427dd645300a46f3ddb951ce58e15ab52625b7712"
+    },
+    "source/methods/pldm/test_method.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/methods/pldm/test_method.py",
+      "bytes": 4564,
+      "source_stat": [
+        4564,
+        1792467964457474500,
+        27942927307
+      ],
+      "sha256": "332df6dabd9155f8a9d6f74d6d5f19f4d4e62a8686ec8a0641ebc8b0adaa9505"
+    },
+    "source/shared_data.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/shared_data.py",
+      "bytes": 10446,
+      "source_stat": [
+        10446,
+        1792627433970035091,
+        22573208951
+      ],
+      "sha256": "f995a931ed53a8be99ada06e88bb7b406b14b598d9dcdedfca2f65976316b24a"
+    },
+    "source/source_freeze_v1.json": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/source_freeze_v1.json",
+      "bytes": 20203,
+      "source_stat": [
+        20203,
+        1792627442473798541,
+        22573209144
+      ],
+      "sha256": "7197502d445f1d88f553fc2ce8adbf88054a0ea7a5c1c9d12b00278cecdb0331"
+    },
+    "source/tests/test_double_contract.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/tests/test_double_contract.py",
+      "bytes": 6331,
+      "source_stat": [
+        6331,
+        1792467965057488700,
+        29007028482
+      ],
+      "sha256": "f5f443bf7fbc764f43f8bfaedba1dcac48f6e36a0987c37d25e062e0c15c3689"
+    },
+    "source/tests/test_single_contract.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/tests/test_single_contract.py",
+      "bytes": 7057,
+      "source_stat": [
+        7057,
+        1792627338193019176,
+        29007028501
+      ],
+      "sha256": "b71ca65eb12a74404dbd5a2a794e4ada380949f066a9a11fc3b5a033fca4295d"
+    },
+    "source/train.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/train.py",
+      "bytes": 12962,
+      "source_stat": [
+        12962,
+        1792627335979975764,
+        22573208952
+      ],
+      "sha256": "cee7a2c91ad83fdb6ebe4a000824a63f6be2fbfda296e2ea7a6df3540562c0d0"
+    },
+    "source/vendor/pldm/source/.github/workflows/black.yml": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/.github/workflows/black.yml",
+      "bytes": 155,
+      "source_stat": [
+        155,
+        1792467965613501800,
+        134865951
+      ],
+      "sha256": "22f1aa3b528b49b15e281f41159a59cee8b9892120d382a821b3ea1ed1247ae9"
+    },
+    "source/vendor/pldm/source/pldm/__init__.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/__init__.py",
+      "bytes": 101,
+      "source_stat": [
+        101,
+        1792467978973817000,
+        1137295782
+      ],
+      "sha256": "7f675ee095938cad431466664cdb8386dbac11f25698a9a6d284695d4aed913d"
+    },
+    "source/vendor/pldm/source/pldm/configs/diverse_maze/icml/small_diverse_5maps.yaml": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/configs/diverse_maze/icml/small_diverse_5maps.yaml",
+      "bytes": 4077,
+      "source_stat": [
+        4077,
+        1792467966013511400,
+        4316324487
+      ],
+      "sha256": "1fdb0a56afdc503b2787437f74e9519cb403fc457b2263b08f4447328e085fde"
+    },
+    "source/vendor/pldm/source/pldm/configs/wall/icml/ds_1269.yaml": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/configs/wall/icml/ds_1269.yaml",
+      "bytes": 3831,
+      "source_stat": [
+        3831,
+        1792467966337519000,
+        6492240713
+      ],
+      "sha256": "3981950c7e9e3e4f861841aee6601ddf858facd6c8ca2cdec189a2c254ca5e9c"
+    },
+    "source/vendor/pldm/source/pldm/configs/wall/icml/ds_1500k.yaml": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/configs/wall/icml/ds_1500k.yaml",
+      "bytes": 3849,
+      "source_stat": [
+        3849,
+        1792467966497522800,
+        6492240714
+      ],
+      "sha256": "5968f5dfd3657ae3fcd09d3cf231c498327bc9cd0140f8148aee820034a7fc27"
+    },
+    "source/vendor/pldm/source/pldm/configs/wall/icml/ds_20312.yaml": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/configs/wall/icml/ds_20312.yaml",
+      "bytes": 3832,
+      "source_stat": [
+        3832,
+        1792467966657526500,
+        6492240715
+      ],
+      "sha256": "dd0f7688d0c758b30c3a97e5c8a857a3d6827d23fe54b8c231c50e8c69282870"
+    },
+    "source/vendor/pldm/source/pldm/configs/wall/icml/ds_325k.yaml": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/configs/wall/icml/ds_325k.yaml",
+      "bytes": 3848,
+      "source_stat": [
+        3848,
+        1792467966817530400,
+        6492240716
+      ],
+      "sha256": "241b69336932ecf8b68fa777601fd679ae292843f28b254ec9eeadef04eb810e"
+    },
+    "source/vendor/pldm/source/pldm/configs/wall/icml/ds_5078.yaml": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/configs/wall/icml/ds_5078.yaml",
+      "bytes": 3831,
+      "source_stat": [
+        3831,
+        1792467966977534000,
+        6492240717
+      ],
+      "sha256": "bac5b7404c74dbb1cab0fb419ea9eba46e7c251e93bc5a6110b968b1e26cb149"
+    },
+    "source/vendor/pldm/source/pldm/configs/wall/icml/ds_634.yaml": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/configs/wall/icml/ds_634.yaml",
+      "bytes": 3831,
+      "source_stat": [
+        3831,
+        1792467967137538000,
+        6492240718
+      ],
+      "sha256": "a473a12a25d175367450c96151b5424fb46f274f2f7059055033b5982dcc4939"
+    },
+    "source/vendor/pldm/source/pldm/configs/wall/icml/ds_81250.yaml": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/configs/wall/icml/ds_81250.yaml",
+      "bytes": 3832,
+      "source_stat": [
+        3832,
+        1792467967301541800,
+        6492240719
+      ],
+      "sha256": "c52aeacbf00dfd338b3252be772675e32bc9aad0df3bc6e99a9468fa3196523d"
+    },
+    "source/vendor/pldm/source/pldm/configs/wall/icml/noise0.yaml": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/configs/wall/icml/noise0.yaml",
+      "bytes": 3850,
+      "source_stat": [
+        3850,
+        1792467967461545500,
+        6492240720
+      ],
+      "sha256": "5f7c2de5c3293b1c6686391c7a061450ebbc3c833cf450de24a2f471eb20e1ba"
+    },
+    "source/vendor/pldm/source/pldm/configs/wall/icml/noise0d001.yaml": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/configs/wall/icml/noise0d001.yaml",
+      "bytes": 3840,
+      "source_stat": [
+        3840,
+        1792467967621549400,
+        6492240721
+      ],
+      "sha256": "c4ac4e9fe46360586089f0ccf6e474e3882d1d02ca06028a66fc25ac7ae602f6"
+    },
+    "source/vendor/pldm/source/pldm/configs/wall/icml/noise0d01.yaml": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/configs/wall/icml/noise0d01.yaml",
+      "bytes": 3842,
+      "source_stat": [
+        3842,
+        1792467967781553000,
+        6492240722
+      ],
+      "sha256": "32358489bbb087dedf9c02189e9d6492fe9fdea6f89cd176355b5f474ac1087b"
+    },
+    "source/vendor/pldm/source/pldm/configs/wall/icml/noise0d02.yaml": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/configs/wall/icml/noise0d02.yaml",
+      "bytes": 3842,
+      "source_stat": [
+        3842,
+        1792467967941557000,
+        6492240723
+      ],
+      "sha256": "bb4797134fa92662d6e975fe62ef761330bfbeb488895a4eeff422fe1a99c6f3"
+    },
+    "source/vendor/pldm/source/pldm/configs/wall/icml/noise0d04.yaml": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/configs/wall/icml/noise0d04.yaml",
+      "bytes": 3853,
+      "source_stat": [
+        3853,
+        1792467968105560800,
+        6492240724
+      ],
+      "sha256": "b011b6f4f40282b0896f3d65193d64026ad7d79327a30ae68e95991d01a1f473"
+    },
+    "source/vendor/pldm/source/pldm/configs/wall/icml/noise0d08.yaml": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/configs/wall/icml/noise0d08.yaml",
+      "bytes": 3842,
+      "source_stat": [
+        3842,
+        1792467968273564800,
+        6492240725
+      ],
+      "sha256": "914a247b08287fd9e0067ecda14833fce96d1d7b81c2826057ae712d4da1cd73"
+    },
+    "source/vendor/pldm/source/pldm/configs/wall/icml/noise0d16.yaml": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/configs/wall/icml/noise0d16.yaml",
+      "bytes": 3836,
+      "source_stat": [
+        3836,
+        1792467968433568500,
+        6492240726
+      ],
+      "sha256": "9031f4715fc5f1cadc0d82c8bb1fd0a70ce4afbe717f20ae10a9b9e41920db28"
+    },
+    "source/vendor/pldm/source/pldm/configs/wall/icml/seqlen17_3M.yaml": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/configs/wall/icml/seqlen17_3M.yaml",
+      "bytes": 3850,
+      "source_stat": [
+        3850,
+        1792467968593572100,
+        6492240727
+      ],
+      "sha256": "76ff25ef3cb9c025dfc6155d1ade5abc1bc6fd2338aedca456dbf013b61f3542"
+    },
+    "source/vendor/pldm/source/pldm/configs/wall/icml/seqlen33_3M.yaml": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/configs/wall/icml/seqlen33_3M.yaml",
+      "bytes": 3849,
+      "source_stat": [
+        3849,
+        1792467968757576200,
+        6492240728
+      ],
+      "sha256": "d4c2166f9e521bee5501fcc2280eb36878403031a26554e1463e6ae08c2359ce"
+    },
+    "source/vendor/pldm/source/pldm/configs/wall/icml/seqlen65_3M.yaml": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/configs/wall/icml/seqlen65_3M.yaml",
+      "bytes": 3849,
+      "source_stat": [
+        3849,
+        1792467968917580000,
+        6492240729
+      ],
+      "sha256": "d3d17f3386ba6d76e059df49fc8accac818a191656f052d543466cef698b1b95"
+    },
+    "source/vendor/pldm/source/pldm/configs/wall/icml/seqlen90_3M.yaml": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/configs/wall/icml/seqlen90_3M.yaml",
+      "bytes": 3847,
+      "source_stat": [
+        3847,
+        1792467969077583800,
+        6492240730
+      ],
+      "sha256": "f6ceea433cbe9bc3efd86e99ec1f507c771e3386b05cf4db17491caceb599c1d"
+    },
+    "source/vendor/pldm/source/pldm/configs/wall/icml/wc0.yaml": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/configs/wall/icml/wc0.yaml",
+      "bytes": 3863,
+      "source_stat": [
+        3863,
+        1792467969237587500,
+        6492240731
+      ],
+      "sha256": "e926663641a349ccb2e93125f5a13ddffa8f47206856156735c8fc59fe6fff2e"
+    },
+    "source/vendor/pldm/source/pldm/configs.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/configs.py",
+      "bytes": 9052,
+      "source_stat": [
+        9052,
+        1792467969521594300,
+        1137295783
+      ],
+      "sha256": "4943daad0097f8d6e9219eb9b4af250cdbf71c05463b8aea639020293d5064ce"
+    },
+    "source/vendor/pldm/source/pldm/data/__init__.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/data/__init__.py",
+      "bytes": 0,
+      "source_stat": [
+        0,
+        1792467970165609400,
+        7663471554
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "source/vendor/pldm/source/pldm/data/dataset_factory.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/data/dataset_factory.py",
+      "bytes": 7102,
+      "source_stat": [
+        7102,
+        1792467969725599000,
+        7663471555
+      ],
+      "sha256": "548849149219fbed98d1bc755307b14f1838425bb34f7e3fa823f35364e1465a"
+    },
+    "source/vendor/pldm/source/pldm/data/enums.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/data/enums.py",
+      "bytes": 1553,
+      "source_stat": [
+        1553,
+        1792467969885602700,
+        7663471556
+      ],
+      "sha256": "672c0eadec8f47b55ac624611af8ee5e7e78d07ea29877be8ca8635844343074"
+    },
+    "source/vendor/pldm/source/pldm/data/utils.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/data/utils.py",
+      "bytes": 4914,
+      "source_stat": [
+        4914,
+        1792467970041606400,
+        7663471557
+      ],
+      "sha256": "5494bdaa5f90716acfc8124b35e730c25e5fef99b534d3b22f8ed0f424635bcf"
+    },
+    "source/vendor/pldm/source/pldm/evaluation/__init__.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/evaluation/__init__.py",
+      "bytes": 0,
+      "source_stat": [
+        0,
+        1792467970529618000,
+        8600920157
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "source/vendor/pldm/source/pldm/evaluation/evaluator.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/evaluation/evaluator.py",
+      "bytes": 8051,
+      "source_stat": [
+        8051,
+        1792467970409615000,
+        8600920158
+      ],
+      "sha256": "1daeae4c3142fd719a9d175d6da51d9529e799b27a348779ef621af3330af0ae"
+    },
+    "source/vendor/pldm/source/pldm/logger.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/logger.py",
+      "bytes": 6768,
+      "source_stat": [
+        6768,
+        1792467970729622600,
+        1137295784
+      ],
+      "sha256": "228968d4f694b70d1313093b9ace7b49487099b324178bff615835c6bf77acbe"
+    },
+    "source/vendor/pldm/source/pldm/models/__init__.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/models/__init__.py",
+      "bytes": 0,
+      "source_stat": [
+        0,
+        1792467972861673000,
+        9712929179
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "source/vendor/pldm/source/pldm/models/encoders/__init__.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/models/encoders/__init__.py",
+      "bytes": 0,
+      "source_stat": [
+        0,
+        1792467971733646400,
+        10756967298
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "source/vendor/pldm/source/pldm/models/encoders/base_class.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/models/encoders/base_class.py",
+      "bytes": 3455,
+      "source_stat": [
+        3455,
+        1792467970969628300,
+        10756967299
+      ],
+      "sha256": "68b252b29d0cb50611414477a6e0fcb00aaa93ca256d6b782e4417e24eb7d51e"
+    },
+    "source/vendor/pldm/source/pldm/models/encoders/encoders.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/models/encoders/encoders.py",
+      "bytes": 16130,
+      "source_stat": [
+        16130,
+        1792467971133632200,
+        10756967300
+      ],
+      "sha256": "08a4ab2309c860990f3a134d8ae2f737d77a71c433e3827161cac10663481229"
+    },
+    "source/vendor/pldm/source/pldm/models/encoders/enums.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/models/encoders/enums.py",
+      "bytes": 1341,
+      "source_stat": [
+        1341,
+        1792467971293636000,
+        10756967301
+      ],
+      "sha256": "63e5208250897dc2dfa9e31efb506a59aad2da69ba6fdd3062506b6995c63137"
+    },
+    "source/vendor/pldm/source/pldm/models/encoders/impala.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/models/encoders/impala.py",
+      "bytes": 4245,
+      "source_stat": [
+        4245,
+        1792467971453639700,
+        10756967302
+      ],
+      "sha256": "c9a44ad63db8f8e6f3e2a8eb0a8d30355febe2ea3490320210b6106d8c81a4ed"
+    },
+    "source/vendor/pldm/source/pldm/models/encoders/resnet.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/models/encoders/resnet.py",
+      "bytes": 15836,
+      "source_stat": [
+        15836,
+        1792467971613643600,
+        10756967303
+      ],
+      "sha256": "1a81648b56fe40171deefade8ad5c7ceb530dbfeffd759e80076c17fe0bb9046"
+    },
+    "source/vendor/pldm/source/pldm/models/enums.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/models/enums.py",
+      "bytes": 2677,
+      "source_stat": [
+        2677,
+        1792467971933651200,
+        9712929180
+      ],
+      "sha256": "2767683c79092dd4e836694102b96ca65a0d1214971dc0047b1def00739c317c"
+    },
+    "source/vendor/pldm/source/pldm/models/hjepa.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/models/hjepa.py",
+      "bytes": 2850,
+      "source_stat": [
+        2850,
+        1792467972097655000,
+        9712929181
+      ],
+      "sha256": "ff37e5188b4ffd4a6f78bfdc29fc39687f5f0465e6cc306b0d7c2e3a2196a205"
+    },
+    "source/vendor/pldm/source/pldm/models/jepa.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/models/jepa.py",
+      "bytes": 8212,
+      "source_stat": [
+        8212,
+        1792467972257658700,
+        9712929182
+      ],
+      "sha256": "b12e8dddaaba05728b61c5b1d9724b27222d4a6687ab9b81d8b9f6b527081c91"
+    },
+    "source/vendor/pldm/source/pldm/models/misc.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/models/misc.py",
+      "bytes": 5935,
+      "source_stat": [
+        5935,
+        1792467972417662600,
+        9712929183
+      ],
+      "sha256": "c0aa89c165f00944b656c90e69eb549d3f106c0103e44ce1419f149bd3893197"
+    },
+    "source/vendor/pldm/source/pldm/models/predictors.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/models/predictors.py",
+      "bytes": 27181,
+      "source_stat": [
+        27181,
+        1792467972581666500,
+        9712929184
+      ],
+      "sha256": "0562b90c0d550e1d9c540e2d7af1653a768e8c0ac74dd904add822db9d1a762f"
+    },
+    "source/vendor/pldm/source/pldm/models/utils.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/models/utils.py",
+      "bytes": 3857,
+      "source_stat": [
+        3857,
+        1792467972745670300,
+        9712929185
+      ],
+      "sha256": "b2bb4a3a5addb2d5d509b93695fbb61409bb1e948d900cddc2590a492903d0ef"
+    },
+    "source/vendor/pldm/source/pldm/objectives/__init__.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/objectives/__init__.py",
+      "bytes": 3266,
+      "source_stat": [
+        3266,
+        1792467973585690000,
+        11821651989
+      ],
+      "sha256": "dcb16c2adbd60824e352a0aa555a2d9d9671bf14936ceba0f624bc555fe8350d"
+    },
+    "source/vendor/pldm/source/pldm/objectives/idm.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/objectives/idm.py",
+      "bytes": 3442,
+      "source_stat": [
+        3442,
+        1792467973105678800,
+        11821651990
+      ],
+      "sha256": "e300c70e3f56f82c0110e4e3122796b88287fb3c273e120c84c4234eeef3b054"
+    },
+    "source/vendor/pldm/source/pldm/objectives/prediction.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/objectives/prediction.py",
+      "bytes": 2372,
+      "source_stat": [
+        2372,
+        1792467973265682500,
+        11821651991
+      ],
+      "sha256": "3a338ebcfc8189cbedcb5cf1fe256d2518bb0347910a90d56d21ad076a40d0ba"
+    },
+    "source/vendor/pldm/source/pldm/objectives/vicreg.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/objectives/vicreg.py",
+      "bytes": 7022,
+      "source_stat": [
+        7022,
+        1792467973425686400,
+        11821651992
+      ],
+      "sha256": "e440d56d86d82a01fda4297be037ef9e05155f12f1e8a122f19ad110307353c2"
+    },
+    "source/vendor/pldm/source/pldm/optimizers/__init__.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/optimizers/__init__.py",
+      "bytes": 0,
+      "source_stat": [
+        0,
+        1792467974265706000,
+        12933709126
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "source/vendor/pldm/source/pldm/optimizers/lars.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/optimizers/lars.py",
+      "bytes": 1838,
+      "source_stat": [
+        1838,
+        1792467973825695800,
+        12933709127
+      ],
+      "sha256": "6859a1899401128f8ced68611e9a51bbfbaed4d7f3f67e036f459f704b980dbd"
+    },
+    "source/vendor/pldm/source/pldm/optimizers/optimizer_factory.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/optimizers/optimizer_factory.py",
+      "bytes": 1219,
+      "source_stat": [
+        1219,
+        1792467973985699400,
+        12933709128
+      ],
+      "sha256": "fea2469e3df5d900c531195b2b22cdf7352cc3d1a74966b70643152e88644a64"
+    },
+    "source/vendor/pldm/source/pldm/optimizers/schedulers.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/optimizers/schedulers.py",
+      "bytes": 1716,
+      "source_stat": [
+        1716,
+        1792467974145703300,
+        12933709129
+      ],
+      "sha256": "1e4e5ec03686115fb0acdb505af2db69c575f5de3a9e460685e0f6c11fa7756b"
+    },
+    "source/vendor/pldm/source/pldm/planning/__init__.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/planning/__init__.py",
+      "bytes": 0,
+      "source_stat": [
+        0,
+        1792467977637785700,
+        13992134564
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "source/vendor/pldm/source/pldm/planning/d4rl/__init__.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/planning/d4rl/__init__.py",
+      "bytes": 0,
+      "source_stat": [
+        0,
+        1792467974825719400,
+        15059511007
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "source/vendor/pldm/source/pldm/planning/d4rl/enums.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/planning/d4rl/enums.py",
+      "bytes": 1667,
+      "source_stat": [
+        1667,
+        1792467974545712700,
+        15059511008
+      ],
+      "sha256": "0ec363ff5a8c6b0ddcf911ed4a32273ca0b120cafee509320842a96eaa78806e"
+    },
+    "source/vendor/pldm/source/pldm/planning/d4rl/mpc.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/planning/d4rl/mpc.py",
+      "bytes": 6259,
+      "source_stat": [
+        6259,
+        1792467974705716600,
+        15059511009
+      ],
+      "sha256": "22cc86fbcaf1505e4b85cd996303d934aef72b0887fed1214280bbe915b24fc7"
+    },
+    "source/vendor/pldm/source/pldm/planning/enums.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/planning/enums.py",
+      "bytes": 3804,
+      "source_stat": [
+        3804,
+        1792467975025724200,
+        13992134565
+      ],
+      "sha256": "41c7bcfe5ad0e3e304fb4954c4ed402744e279beba216258a2016d108edfe75c"
+    },
+    "source/vendor/pldm/source/pldm/planning/mpc.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/planning/mpc.py",
+      "bytes": 11493,
+      "source_stat": [
+        11493,
+        1792467975189728000,
+        13992134566
+      ],
+      "sha256": "150f18029623897d96b6144c72af08f07ba8ba543f1e86b3833519f347b84248"
+    },
+    "source/vendor/pldm/source/pldm/planning/objectives.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/planning/objectives.py",
+      "bytes": 775,
+      "source_stat": [
+        775,
+        1792467975349731700,
+        13992134567
+      ],
+      "sha256": "82ed067409116ac597737a3c69fc1d3f6f8b0ef2caa5c87b236813e983805a59"
+    },
+    "source/vendor/pldm/source/pldm/planning/objectives_v2.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/planning/objectives_v2.py",
+      "bytes": 6450,
+      "source_stat": [
+        6450,
+        1792467975513735500,
+        13992134568
+      ],
+      "sha256": "7fa193fc875ebe7ea2639f287468a0e982163b642e1c471edc9400202b18ce94"
+    },
+    "source/vendor/pldm/source/pldm/planning/planners/__init__.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/planning/planners/__init__.py",
+      "bytes": 0,
+      "source_stat": [
+        0,
+        1792467976477758400,
+        16314495990
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "source/vendor/pldm/source/pldm/planning/planners/enums.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/planning/planners/enums.py",
+      "bytes": 1232,
+      "source_stat": [
+        1232,
+        1792467975717740300,
+        16314495991
+      ],
+      "sha256": "132263b0f86465fe257bd7fd491875acaf843b02f8b8d650f4cb0dfbecff5fcb"
+    },
+    "source/vendor/pldm/source/pldm/planning/planners/mppi_planner.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/planning/planners/mppi_planner.py",
+      "bytes": 8369,
+      "source_stat": [
+        8369,
+        1792467975877744200,
+        16314495992
+      ],
+      "sha256": "c7d9315ab22a1289044bc2a32765d7f1e3426e5f9b9bbd348aaa5d5383fc4063"
+    },
+    "source/vendor/pldm/source/pldm/planning/planners/mppi_torch.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/planning/planners/mppi_torch.py",
+      "bytes": 14125,
+      "source_stat": [
+        14125,
+        1792467976037747900,
+        16314495993
+      ],
+      "sha256": "a40353be9eaf2e53cc19d84f9b8121b6eb2759164d88509a47a80886a99dc0bd"
+    },
+    "source/vendor/pldm/source/pldm/planning/planners/planner.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/planning/planners/planner.py",
+      "bytes": 861,
+      "source_stat": [
+        861,
+        1792467976197751800,
+        16314495994
+      ],
+      "sha256": "2fa7e5dda1dfc71d155eccd9a2ad22fbf74c847fe0ab3b58ddbfb12d15de3f7a"
+    },
+    "source/vendor/pldm/source/pldm/planning/planners/sgd_planner.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/planning/planners/sgd_planner.py",
+      "bytes": 6074,
+      "source_stat": [
+        6074,
+        1792467976357755400,
+        16314495995
+      ],
+      "sha256": "e2cc506d29450c2407079fe0ef65ec67919149643cc58ccc9d3647890c47ba79"
+    },
+    "source/vendor/pldm/source/pldm/planning/plotting.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/planning/plotting.py",
+      "bytes": 6617,
+      "source_stat": [
+        6617,
+        1792467976681763200,
+        13992134569
+      ],
+      "sha256": "1a0127ee905d460a57d081ba773d7fa6d3510d780ebd0e5f5cd9e5d7a553ab49"
+    },
+    "source/vendor/pldm/source/pldm/planning/utils.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/planning/utils.py",
+      "bytes": 2908,
+      "source_stat": [
+        2908,
+        1792467976841766800,
+        13992134570
+      ],
+      "sha256": "c375e0921e7963655c133d09c8d4ec8f6cc2908e3454fb0c7e297ab2a0787415"
+    },
+    "source/vendor/pldm/source/pldm/planning/wall/__init__.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/planning/wall/__init__.py",
+      "bytes": 0,
+      "source_stat": [
+        0,
+        1792467977477782000,
+        17185846455
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "source/vendor/pldm/source/pldm/planning/wall/enums.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/planning/wall/enums.py",
+      "bytes": 1108,
+      "source_stat": [
+        1108,
+        1792467977041771700,
+        17185846456
+      ],
+      "sha256": "2641f52ac015df0fc1b01d9e73e59f53e1c4dda1a1c540d358dce8533f315fdc"
+    },
+    "source/vendor/pldm/source/pldm/planning/wall/mpc.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/planning/wall/mpc.py",
+      "bytes": 4252,
+      "source_stat": [
+        4252,
+        1792467977201775300,
+        17185846457
+      ],
+      "sha256": "3270d693b75bb2659f18ae19189a9bda397010ff07bd0ceaffff9be3f925c732"
+    },
+    "source/vendor/pldm/source/pldm/planning/wall/utils.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/planning/wall/utils.py",
+      "bytes": 8177,
+      "source_stat": [
+        8177,
+        1792467977361779200,
+        17185846458
+      ],
+      "sha256": "d55337be415a7b41675e1e458b9b4efd9f63119062a52864172970bdf2a58c95"
+    },
+    "source/vendor/pldm/source/pldm/plotting/__init__.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/plotting/__init__.py",
+      "bytes": 0,
+      "source_stat": [
+        0,
+        1792467977997794200,
+        18269120410
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "source/vendor/pldm/source/pldm/plotting/utils.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/plotting/utils.py",
+      "bytes": 8484,
+      "source_stat": [
+        8484,
+        1792467977873791200,
+        18269120411
+      ],
+      "sha256": "512f897927b553366181b97bb835c1a626ad6be7b2caca28b7f6b958f9867166"
+    },
+    "source/vendor/pldm/source/pldm/probing/__init__.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/probing/__init__.py",
+      "bytes": 0,
+      "source_stat": [
+        0,
+        1792467978457805000,
+        19375494801
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "source/vendor/pldm/source/pldm/probing/evaluator.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/probing/evaluator.py",
+      "bytes": 26003,
+      "source_stat": [
+        26003,
+        1792467978237800000,
+        19375494802
+      ],
+      "sha256": "e5eca2e42ede681be5d0076c1d990beddf16c6c6f291cb42d937e92eb48231a5"
+    },
+    "source/vendor/pldm/source/pldm/train.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/train.py",
+      "bytes": 19375,
+      "source_stat": [
+        19375,
+        1792467978657809700,
+        1137295785
+      ],
+      "sha256": "db00847bdaaf89230ad24b5da4f26d8d2f815e30b68294bf1766a2265eac1add"
+    },
+    "source/vendor/pldm/source/pldm/utils.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm/utils.py",
+      "bytes": 1988,
+      "source_stat": [
+        1988,
+        1792467978817813400,
+        1137295787
+      ],
+      "sha256": "e54221a4c9929f0b64aa9aa3967a67ac55e6d66a8378c1615686eb02de93ac19"
+    },
+    "source/vendor/pldm/source/pldm_envs/__init__.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/__init__.py",
+      "bytes": 0,
+      "source_stat": [
+        0,
+        1792467989534065700,
+        20427826789
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "source/vendor/pldm/source/pldm_envs/diverse_maze/__init__.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/diverse_maze/__init__.py",
+      "bytes": 0,
+      "source_stat": [
+        0,
+        1792467984493947300,
+        21492646861
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "source/vendor/pldm/source/pldm_envs/diverse_maze/ant_draw.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/diverse_maze/ant_draw.py",
+      "bytes": 12846,
+      "source_stat": [
+        12846,
+        1792467979253823800,
+        21492646862
+      ],
+      "sha256": "3b93274277f31981f3c18039323a2a02bbddca00f97a6ce0f2778faba85d0828"
+    },
+    "source/vendor/pldm/source/pldm_envs/diverse_maze/configs/10maps.yaml": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/diverse_maze/configs/10maps.yaml",
+      "bytes": 338,
+      "source_stat": [
+        338,
+        1792467979449828400,
+        22573208954
+      ],
+      "sha256": "71811c9f8af53f9368b8b3849af37a15fd3c5dc83f0849f56e9e0c91751ccbd4"
+    },
+    "source/vendor/pldm/source/pldm_envs/diverse_maze/configs/10maps_test.yaml": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/diverse_maze/configs/10maps_test.yaml",
+      "bytes": 331,
+      "source_stat": [
+        331,
+        1792467979609832000,
+        22573208955
+      ],
+      "sha256": "d1bc88c26187bd86a00e9249ee704263702a34c16f769f17408b6ffc345c45e4"
+    },
+    "source/vendor/pldm/source/pldm_envs/diverse_maze/configs/20maps.yaml": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/diverse_maze/configs/20maps.yaml",
+      "bytes": 337,
+      "source_stat": [
+        337,
+        1792467979769836000,
+        22573208956
+      ],
+      "sha256": "0f099c8141395d46e4a5d1cbecfc5c69ad728667ee8e865760e3d3504bc48292"
+    },
+    "source/vendor/pldm/source/pldm_envs/diverse_maze/configs/20maps_test.yaml": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/diverse_maze/configs/20maps_test.yaml",
+      "bytes": 331,
+      "source_stat": [
+        331,
+        1792467979925839700,
+        22573208959
+      ],
+      "sha256": "c9bf821d46417506bb52857648db97e98f5a4068b8e78bd0872f1a7dd44079b3"
+    },
+    "source/vendor/pldm/source/pldm_envs/diverse_maze/configs/40maps.yaml": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/diverse_maze/configs/40maps.yaml",
+      "bytes": 336,
+      "source_stat": [
+        336,
+        1792467980085843300,
+        22573209088
+      ],
+      "sha256": "7b160a216edd278d3e4cb68955e178e1e02d4aa1ecbc4303715e95dda5321aef"
+    },
+    "source/vendor/pldm/source/pldm_envs/diverse_maze/configs/40maps_eval_test.yaml": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/diverse_maze/configs/40maps_eval_test.yaml",
+      "bytes": 331,
+      "source_stat": [
+        331,
+        1792467980245847200,
+        22573209089
+      ],
+      "sha256": "d1bc88c26187bd86a00e9249ee704263702a34c16f769f17408b6ffc345c45e4"
+    },
+    "source/vendor/pldm/source/pldm_envs/diverse_maze/configs/40maps_test.yaml": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/diverse_maze/configs/40maps_test.yaml",
+      "bytes": 331,
+      "source_stat": [
+        331,
+        1792467980409851000,
+        22573209090
+      ],
+      "sha256": "d1bc88c26187bd86a00e9249ee704263702a34c16f769f17408b6ffc345c45e4"
+    },
+    "source/vendor/pldm/source/pldm_envs/diverse_maze/configs/5maps.yaml": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/diverse_maze/configs/5maps.yaml",
+      "bytes": 337,
+      "source_stat": [
+        337,
+        1792467980573855000,
+        22573209091
+      ],
+      "sha256": "57169c460371a1909901f1e897f364cd60164d47f792dba26ce09e1da3e0f83a"
+    },
+    "source/vendor/pldm/source/pldm_envs/diverse_maze/configs/5maps_test.yaml": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/diverse_maze/configs/5maps_test.yaml",
+      "bytes": 331,
+      "source_stat": [
+        331,
+        1792467980733858600,
+        22573209092
+      ],
+      "sha256": "9a60ef1ac4cf893f67341cc79a2237bb8f5a750b6d72ea5332de1c6bbc5bec07"
+    },
+    "source/vendor/pldm/source/pldm_envs/diverse_maze/d4rl.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/diverse_maze/d4rl.py",
+      "bytes": 9063,
+      "source_stat": [
+        9063,
+        1792467980937863300,
+        21492646863
+      ],
+      "sha256": "6f7ccd4f5c63c36414b938e803eb013bf38db22fac61a977dbb692a92f8845b7"
+    },
+    "source/vendor/pldm/source/pldm_envs/diverse_maze/data_generation/__init__.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/diverse_maze/data_generation/__init__.py",
+      "bytes": 0,
+      "source_stat": [
+        0,
+        1792467983017912400,
+        23632807453
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "source/vendor/pldm/source/pldm_envs/diverse_maze/data_generation/generate_data.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/diverse_maze/data_generation/generate_data.py",
+      "bytes": 18511,
+      "source_stat": [
+        18511,
+        1792467981133868000,
+        23632807454
+      ],
+      "sha256": "8c2f6460b77c7e37883418545fdab33b7e2911ccdeb918b70d50465df72a4479"
+    },
+    "source/vendor/pldm/source/pldm_envs/diverse_maze/data_generation/generate_ood_trials.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/diverse_maze/data_generation/generate_ood_trials.py",
+      "bytes": 5120,
+      "source_stat": [
+        5120,
+        1792467981293871900,
+        23632807455
+      ],
+      "sha256": "349f1ebc3137bfa314d4040fe0f8577cf83bf18f1d78f9a018f810420eb66092"
+    },
+    "source/vendor/pldm/source/pldm_envs/diverse_maze/data_generation/generate_shorest_path_test_maps.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/diverse_maze/data_generation/generate_shorest_path_test_maps.py",
+      "bytes": 3036,
+      "source_stat": [
+        3036,
+        1792467981457875700,
+        23632807456
+      ],
+      "sha256": "2970cb72113ebb0aa84292f677ac53df9e0230dca5c4353697da03151137c973"
+    },
+    "source/vendor/pldm/source/pldm_envs/diverse_maze/data_generation/get_expert_paths.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/diverse_maze/data_generation/get_expert_paths.py",
+      "bytes": 1399,
+      "source_stat": [
+        1399,
+        1792467981617879400,
+        23632807457
+      ],
+      "sha256": "bbfff61ed753490155e827d58a60b46285da50dbe68090b8b41f432cb03464e9"
+    },
+    "source/vendor/pldm/source/pldm_envs/diverse_maze/data_generation/map_generator.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/diverse_maze/data_generation/map_generator.py",
+      "bytes": 11852,
+      "source_stat": [
+        11852,
+        1792467981777883300,
+        23632807458
+      ],
+      "sha256": "9a22f4dd79bdd7b19909434c7818a94d1261efc74d54588d56535cd0e2eee0f2"
+    },
+    "source/vendor/pldm/source/pldm_envs/diverse_maze/data_generation/maze_stats.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/diverse_maze/data_generation/maze_stats.py",
+      "bytes": 4437,
+      "source_stat": [
+        4437,
+        1792467981941887100,
+        23632807459
+      ],
+      "sha256": "30c175ba02a2bff7d83385842e3f437ad829ef9bd73025ae33f55e35bb5a4e08"
+    },
+    "source/vendor/pldm/source/pldm_envs/diverse_maze/data_generation/postprocess_images.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/diverse_maze/data_generation/postprocess_images.py",
+      "bytes": 4705,
+      "source_stat": [
+        4705,
+        1792467982097890900,
+        23632807460
+      ],
+      "sha256": "6252543da2ff153bc6c62bb109f190eff3e5d20f8c8935dd3e84880a03b44e4b"
+    },
+    "source/vendor/pldm/source/pldm_envs/diverse_maze/data_generation/prepare_npz.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/diverse_maze/data_generation/prepare_npz.py",
+      "bytes": 1566,
+      "source_stat": [
+        1566,
+        1792467982257894500,
+        23632807461
+      ],
+      "sha256": "61588e8f84b108f88fbe7af36d4c2dcc3af5fdfd01bd84ad5602709e1182a880"
+    },
+    "source/vendor/pldm/source/pldm_envs/diverse_maze/data_generation/remove_bad_episodes.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/diverse_maze/data_generation/remove_bad_episodes.py",
+      "bytes": 447,
+      "source_stat": [
+        447,
+        1792467982417898400,
+        23632807462
+      ],
+      "sha256": "e5e6fb75335e1251510e551ae8c6390466a3ae3e8261036470eb892adbb1278a"
+    },
+    "source/vendor/pldm/source/pldm_envs/diverse_maze/data_generation/render_data.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/diverse_maze/data_generation/render_data.py",
+      "bytes": 3240,
+      "source_stat": [
+        3240,
+        1792467982577902000,
+        23632807463
+      ],
+      "sha256": "87cc733f477114bd4f39f28d024a6d42ab3c4c06d3f75301a4f426444ac2d859"
+    },
+    "source/vendor/pldm/source/pldm_envs/diverse_maze/data_generation/subsample_data.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/diverse_maze/data_generation/subsample_data.py",
+      "bytes": 1817,
+      "source_stat": [
+        1817,
+        1792467982737905700,
+        23632807464
+      ],
+      "sha256": "a78df33c7a596feb82d1c1ebc0ed2816a64ffc8732328b2cad6b0db0bccf97ad"
+    },
+    "source/vendor/pldm/source/pldm_envs/diverse_maze/data_generation/wrappers.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/diverse_maze/data_generation/wrappers.py",
+      "bytes": 1887,
+      "source_stat": [
+        1887,
+        1792467982901909800,
+        23632807465
+      ],
+      "sha256": "292d23bb6f03562b05da86ec90bd1140ba356d4ba9db0b93f4eab502b03bdf9c"
+    },
+    "source/vendor/pldm/source/pldm_envs/diverse_maze/enums.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/diverse_maze/enums.py",
+      "bytes": 1387,
+      "source_stat": [
+        1387,
+        1792467983213917000,
+        21492646864
+      ],
+      "sha256": "dbebe7afbb84c58ab5106f369b581a5e83313a03de171c664a228eb0330ac316"
+    },
+    "source/vendor/pldm/source/pldm_envs/diverse_maze/evaluation/__init__.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/diverse_maze/evaluation/__init__.py",
+      "bytes": 0,
+      "source_stat": [
+        0,
+        1792467983529924400,
+        24708941076
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "source/vendor/pldm/source/pldm_envs/diverse_maze/evaluation/envs_generator.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/diverse_maze/evaluation/envs_generator.py",
+      "bytes": 6990,
+      "source_stat": [
+        6990,
+        1792467983409921600,
+        24708941078
+      ],
+      "sha256": "cb75829f33045bcd60e3854148bb3bde967bf97431b7d3af67e6e315d9c56494"
+    },
+    "source/vendor/pldm/source/pldm_envs/diverse_maze/maze_draw.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/diverse_maze/maze_draw.py",
+      "bytes": 5446,
+      "source_stat": [
+        5446,
+        1792467983729929200,
+        21492646865
+      ],
+      "sha256": "493d76674072193fae55df4d4353639d6faef3bd23ab7c67847d27ea99294808"
+    },
+    "source/vendor/pldm/source/pldm_envs/diverse_maze/remove_images.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/diverse_maze/remove_images.py",
+      "bytes": 3283,
+      "source_stat": [
+        3283,
+        1792467983893933000,
+        21492646866
+      ],
+      "sha256": "1d1e1f6a47e23c835489610c9e57898941b1515f5a437ba972bad6faaa58e998"
+    },
+    "source/vendor/pldm/source/pldm_envs/diverse_maze/transforms.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/diverse_maze/transforms.py",
+      "bytes": 2006,
+      "source_stat": [
+        2006,
+        1792467984057937000,
+        21492646867
+      ],
+      "sha256": "80c9b7c9242ff4a0d9cfdf2c226e9df773a3a4ce4ae930b80de7d79fe71e5e71"
+    },
+    "source/vendor/pldm/source/pldm_envs/diverse_maze/utils.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/diverse_maze/utils.py",
+      "bytes": 16248,
+      "source_stat": [
+        16248,
+        1792467984217940800,
+        21492646868
+      ],
+      "sha256": "bddedd810ad87cbdf023c96985b77d85b103a0ba2f1f73503273e74babc98aba"
+    },
+    "source/vendor/pldm/source/pldm_envs/diverse_maze/wrappers.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/diverse_maze/wrappers.py",
+      "bytes": 10437,
+      "source_stat": [
+        10437,
+        1792467984377944500,
+        21492646869
+      ],
+      "sha256": "5377427bab43de2bbec4b3d3219bb98ff68e3019df1bd9c562f854e9442d4122"
+    },
+    "source/vendor/pldm/source/pldm_envs/utils/__init__.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/utils/__init__.py",
+      "bytes": 0,
+      "source_stat": [
+        0,
+        1792467985169963100,
+        25777471444
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "source/vendor/pldm/source/pldm_envs/utils/distributions.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/utils/distributions.py",
+      "bytes": 1104,
+      "source_stat": [
+        1104,
+        1792467984737953000,
+        25777471445
+      ],
+      "sha256": "14f3e406bf096497bc27dd6e7d7efe0bb9077bdd62c6993656564b59f01ff01a"
+    },
+    "source/vendor/pldm/source/pldm_envs/utils/normalizer.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/utils/normalizer.py",
+      "bytes": 15250,
+      "source_stat": [
+        15250,
+        1792467984897956600,
+        25777471446
+      ],
+      "sha256": "aefad2153d6bb8492f11d13f52d9fefa4a4ca54d4edb93eb0ce6faf8746231ed"
+    },
+    "source/vendor/pldm/source/pldm_envs/utils/utils.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/utils/utils.py",
+      "bytes": 344,
+      "source_stat": [
+        344,
+        1792467985053960300,
+        25777471447
+      ],
+      "sha256": "6574ddf4bd4e69fc71260ff66af835082715bfc2762922dca00aae0e7903b8c7"
+    },
+    "source/vendor/pldm/source/pldm_envs/wall/__init__.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/wall/__init__.py",
+      "bytes": 0,
+      "source_stat": [
+        0,
+        1792467989374062000,
+        26850963254
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "source/vendor/pldm/source/pldm_envs/wall/combine_two_datasets.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/wall/combine_two_datasets.py",
+      "bytes": 4197,
+      "source_stat": [
+        4197,
+        1792467985413968800,
+        26850963255
+      ],
+      "sha256": "56834a3568811ff0524bc7b20716f5b37a1793d0f57829765048ae882319fded"
+    },
+    "source/vendor/pldm/source/pldm_envs/wall/configs/good_quality_data.yaml": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/wall/configs/good_quality_data.yaml",
+      "bytes": 648,
+      "source_stat": [
+        648,
+        1792467985617973600,
+        27942927309
+      ],
+      "sha256": "c47e624641bbfd5389d1022a6a2b24948f8351aa3daea7f3087c8a1fbec518e0"
+    },
+    "source/vendor/pldm/source/pldm_envs/wall/configs/len=17.yaml": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/wall/configs/len=17.yaml",
+      "bytes": 757,
+      "source_stat": [
+        757,
+        1792467985777977500,
+        27942927310
+      ],
+      "sha256": "052e5845ead587a483719b084702a4a3478651df6a327bbcb0e27f64c8687d8c"
+    },
+    "source/vendor/pldm/source/pldm_envs/wall/configs/len=33.yaml": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/wall/configs/len=33.yaml",
+      "bytes": 757,
+      "source_stat": [
+        757,
+        1792467985937981100,
+        27942927311
+      ],
+      "sha256": "a37d83202fd27099cfc4719b58594f61210fb6e1e10b485d16f134e335cf5c8c"
+    },
+    "source/vendor/pldm/source/pldm_envs/wall/configs/len=65.yaml": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/wall/configs/len=65.yaml",
+      "bytes": 757,
+      "source_stat": [
+        757,
+        1792467986097985000,
+        27942927312
+      ],
+      "sha256": "0ade782c6efa8abb47ae35c348b571489b3e26d9a50135a122acf2cc0df61691"
+    },
+    "source/vendor/pldm/source/pldm_envs/wall/configs/random_trajectories.yaml": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/wall/configs/random_trajectories.yaml",
+      "bytes": 654,
+      "source_stat": [
+        654,
+        1792467986257988700,
+        27942927313
+      ],
+      "sha256": "128192a94aa73c8e78c3f1ecd390e3fbe2ff712758f47d737a0236d153eca678"
+    },
+    "source/vendor/pldm/source/pldm_envs/wall/data/__init__.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/wall/data/__init__.py",
+      "bytes": 0,
+      "source_stat": [
+        0,
+        1792467987730023400,
+        29007028484
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "source/vendor/pldm/source/pldm_envs/wall/data/border_passing_test.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/wall/data/border_passing_test.py",
+      "bytes": 3308,
+      "source_stat": [
+        3308,
+        1792467986501994400,
+        29007028485
+      ],
+      "sha256": "efdedf8c7ec14d88560f622f01d175941dc78db0a23307a70a0cec25b864fd8e"
+    },
+    "source/vendor/pldm/source/pldm_envs/wall/data/dump_offline_data.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/wall/data/dump_offline_data.py",
+      "bytes": 3312,
+      "source_stat": [
+        3312,
+        1792467986661998300,
+        29007028486
+      ],
+      "sha256": "0462ad5f8ac65c6c1be97be04523790726b49ca69fcca0574fc19f2ccf2bc52e"
+    },
+    "source/vendor/pldm/source/pldm_envs/wall/data/offline_wall.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/wall/data/offline_wall.py",
+      "bytes": 4370,
+      "source_stat": [
+        4370,
+        1792467986818002000,
+        29007028487
+      ],
+      "sha256": "6c389993e4333d7a86c55fc8d8988f2438e6238de9d2468ea1f4941ebad29291"
+    },
+    "source/vendor/pldm/source/pldm_envs/wall/data/single.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/wall/data/single.py",
+      "bytes": 10675,
+      "source_stat": [
+        10675,
+        1792467986978005600,
+        29007028488
+      ],
+      "sha256": "215649cc9f2801fd060f4e393fbaed675679b05631ece02ef3d60ba5cd64e593"
+    },
+    "source/vendor/pldm/source/pldm_envs/wall/data/wall.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/wall/data/wall.py",
+      "bytes": 32155,
+      "source_stat": [
+        32155,
+        1792467987134009400,
+        29007028489
+      ],
+      "sha256": "c8549cafa83c900d4d7773852be47e790d3066f77a7eaae0643ab9565f6e33c2"
+    },
+    "source/vendor/pldm/source/pldm_envs/wall/data/wall_expert.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/wall/data/wall_expert.py",
+      "bytes": 11068,
+      "source_stat": [
+        11068,
+        1792467987294013000,
+        29007028490
+      ],
+      "sha256": "1f9157218a9f26791c144a1498fcfd0bf9e1050abeedc73211732df920258735"
+    },
+    "source/vendor/pldm/source/pldm_envs/wall/data/wall_passing_test.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/wall/data/wall_passing_test.py",
+      "bytes": 3150,
+      "source_stat": [
+        3150,
+        1792467987454017000,
+        29007028491
+      ],
+      "sha256": "3f686e9106f92b979e8a76b1388fe0b394546b8c535e1b3d82edc0915c071a99"
+    },
+    "source/vendor/pldm/source/pldm_envs/wall/data/wall_utils.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/wall/data/wall_utils.py",
+      "bytes": 11509,
+      "source_stat": [
+        11509,
+        1792467987610020600,
+        29007028492
+      ],
+      "sha256": "2b73a1ec3fd2427d9e259cabc13369633626d01718a8f82d1f11bf46564cf1b3"
+    },
+    "source/vendor/pldm/source/pldm_envs/wall/evaluation/__init__.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/wall/evaluation/__init__.py",
+      "bytes": 0,
+      "source_stat": [
+        0,
+        1792467988082031700,
+        30087666734
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "source/vendor/pldm/source/pldm_envs/wall/evaluation/create_envs.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/wall/evaluation/create_envs.py",
+      "bytes": 1353,
+      "source_stat": [
+        1353,
+        1792467987966029000,
+        30087666735
+      ],
+      "sha256": "d8d7af2dd5aefba513965b2eaa31ce5905aa8f942ff2d38288069b3562503754"
+    },
+    "source/vendor/pldm/source/pldm_envs/wall/generate_data.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/wall/generate_data.py",
+      "bytes": 6916,
+      "source_stat": [
+        6916,
+        1792467988282036300,
+        26850963256
+      ],
+      "sha256": "d84ac777d2f50db0852e422effb0875d45213a63f27cf8d086b1c83591d02f92"
+    },
+    "source/vendor/pldm/source/pldm_envs/wall/render_images.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/wall/render_images.py",
+      "bytes": 2162,
+      "source_stat": [
+        2162,
+        1792467988438040000,
+        26850963257
+      ],
+      "sha256": "27ceb122092cd34a322a01e698677a508721197f21b75703e44e02cb66a660d2"
+    },
+    "source/vendor/pldm/source/pldm_envs/wall/save_wall_ds.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/wall/save_wall_ds.py",
+      "bytes": 6923,
+      "source_stat": [
+        6923,
+        1792467988610044000,
+        26850963258
+      ],
+      "sha256": "c7822513ef26418d9560640b315a59b618146aa2d5d98f4b189a6074865aaede"
+    },
+    "source/vendor/pldm/source/pldm_envs/wall/select_wc.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/wall/select_wc.py",
+      "bytes": 4633,
+      "source_stat": [
+        4633,
+        1792467988770048000,
+        26850963259
+      ],
+      "sha256": "fb0508b145d93e4386bf595c059875e5cc077b349ffc8dc8b553f062b6841993"
+    },
+    "source/vendor/pldm/source/pldm_envs/wall/test.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/wall/test.py",
+      "bytes": 2651,
+      "source_stat": [
+        2651,
+        1792467988930051600,
+        26850963260
+      ],
+      "sha256": "38b46535b55fa3fc5ed8cc2182335bf225806274222e816207adecac2d86633f"
+    },
+    "source/vendor/pldm/source/pldm_envs/wall/wall.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/wall/wall.py",
+      "bytes": 10812,
+      "source_stat": [
+        10812,
+        1792467989090055500,
+        26850963261
+      ],
+      "sha256": "0ca94ddf1a5bfb52ac59c4b69a7503e40f5d4597aaff3930f82f9dff70ddb71f"
+    },
+    "source/vendor/pldm/source/pldm_envs/wall/wrappers.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/vendor/pldm/source/pldm_envs/wall/wrappers.py",
+      "bytes": 1251,
+      "source_stat": [
+        1251,
+        1792467989250059100,
+        26850963262
+      ],
+      "sha256": "c2e1c27649e77bace4167f8d1364cd00ea9e8784a8b847c71579fa471760a0b9"
+    },
+    "evidence/run_state/accept_formal/actual_exit_code": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/run_state/accept_formal/actual_exit_code",
+      "bytes": 2,
+      "source_stat": [
+        2,
+        1792649678292233943,
+        15036697642
+      ],
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "evidence/run_state/accept_formal/config.json": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/run_state/accept_formal/config.json",
+      "bytes": 1467,
+      "source_stat": [
+        1467,
+        1792649676176194253,
+        15034837538
+      ],
+      "sha256": "c0d32db4283f901f00ea2b030171863c88eda67a7b06f8038b0330824b2fc02d"
+    },
+    "evidence/run_state/accept_formal/stderr.log": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/run_state/accept_formal/stderr.log",
+      "bytes": 0,
+      "source_stat": [
+        0,
+        1792649676176194253,
+        15036697641
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence/run_state/accept_formal/stdout.log": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/run_state/accept_formal/stdout.log",
+      "bytes": 0,
+      "source_stat": [
+        0,
+        1792649676176194253,
+        15036616742
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence/run_state/accept_gate/actual_exit_code": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/run_state/accept_gate/actual_exit_code",
+      "bytes": 2,
+      "source_stat": [
+        2,
+        1792627557622623701,
+        24709166426
+      ],
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "evidence/run_state/accept_gate/config.json": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/run_state/accept_gate/config.json",
+      "bytes": 1449,
+      "source_stat": [
+        1449,
+        1792627555662677333,
+        24708997303
+      ],
+      "sha256": "88f06da172bf2f47573a36408c7595e6521e4fe4a3d874e176b8f3cbfc87a856"
+    },
+    "evidence/run_state/accept_gate/stderr.log": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/run_state/accept_gate/stderr.log",
+      "bytes": 0,
+      "source_stat": [
+        0,
+        1792627555662677333,
+        24709166425
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence/run_state/accept_gate/stdout.log": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/run_state/accept_gate/stdout.log",
+      "bytes": 0,
+      "source_stat": [
+        0,
+        1792627555662677333,
+        24709044703
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence/run_state/completion_watch/result.json": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/run_state/completion_watch/result.json",
+      "bytes": 14319,
+      "source_stat": [
+        14319,
+        1792649725821102458,
+        12934028597
+      ],
+      "sha256": "f903c5ff802269febbc394a90cb932e2a7d1e0f5d02c675364f61cede07b3a5f"
+    },
+    "evidence/run_state/completion_watch/status.json": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/run_state/completion_watch/status.json",
+      "bytes": 280,
+      "source_stat": [
+        280,
+        1792649725821102458,
+        12934028598
+      ],
+      "sha256": "baf3ce079b2293837d5c48026975775a119ed3e8e49c0e6f3e87dee5f636f664"
+    },
+    "evidence/run_state/formal/actual_exit_code": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/run_state/formal/actual_exit_code",
+      "bytes": 2,
+      "source_stat": [
+        2,
+        1792649676160193952,
+        31172194855
+      ],
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "evidence/run_state/formal/config.json": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/run_state/formal/config.json",
+      "bytes": 2203,
+      "source_stat": [
+        2203,
+        1792627557690621840,
+        31172192494
+      ],
+      "sha256": "4e92f929a7576fe4cbdfe0a36bc616386d4f2d08b7871ddbb6ce3aa64e9b78f7"
+    },
+    "evidence/run_state/formal/resources.jsonl": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/run_state/formal/resources.jsonl",
+      "bytes": 1215166,
+      "source_stat": [
+        1215166,
+        1792649676156193878,
+        31172192498
+      ],
+      "sha256": "e22d41e0a370544dd890216666053574042b6f31d19412935cd2e6f53f65d42b"
+    },
+    "evidence/run_state/formal/status.json": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/run_state/formal/status.json",
+      "bytes": 1560,
+      "source_stat": [
+        1560,
+        1792649676156193878,
+        31172194849
+      ],
+      "sha256": "1edd2a96795925cefa4536d1cee2e6a9cb0830666904f0271c1d678f952d2632"
+    },
+    "evidence/run_state/formal/stdout_stderr.log": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/run_state/formal/stdout_stderr.log",
+      "bytes": 382903,
+      "source_stat": [
+        382903,
+        1792649664823979769,
+        31172192496
+      ],
+      "sha256": "869e42628348a2a8496f3425612c196a3b4c3ddfd742b507d05d2c7c19914298"
+    },
+    "evidence/run_state/gate/actual_exit_code": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/run_state/gate/actual_exit_code",
+      "bytes": 2,
+      "source_stat": [
+        2,
+        1792627555646677771,
+        12934028557
+      ],
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "evidence/run_state/gate/config.json": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/run_state/gate/config.json",
+      "bytes": 2193,
+      "source_stat": [
+        2193,
+        1792627510127927140,
+        12933742233
+      ],
+      "sha256": "695387fdd49a34e80df3701e3771e31f4e91e80bd113f47a992daffe8570bb1b"
+    },
+    "evidence/run_state/gate/resources.jsonl": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/run_state/gate/resources.jsonl",
+      "bytes": 2694,
+      "source_stat": [
+        2694,
+        1792627555642677880,
+        12934028556
+      ],
+      "sha256": "06b82b5388496f2d1397a3f784aa67b0191bd90bf993a86464c7fc2034516e45"
+    },
+    "evidence/run_state/gate/status.json": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/run_state/gate/status.json",
+      "bytes": 1549,
+      "source_stat": [
+        1549,
+        1792627555642677880,
+        12934028553
+      ],
+      "sha256": "e5facb859d6bd2fc22f246f3e5589e24af110281554fb4348c038c47f1d0ee7e"
+    },
+    "evidence/run_state/gate/stdout_stderr.log": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/run_state/gate/stdout_stderr.log",
+      "bytes": 61939,
+      "source_stat": [
+        61939,
+        1792627546346932430,
+        12934028554
+      ],
+      "sha256": "6f03b00786b1f31f46768db6047d978675716e4a10238b5c5c2eea644f56b6bc"
+    },
+    "evidence/run_state/pipeline/formal_supervisor.stderr.log": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/run_state/pipeline/formal_supervisor.stderr.log",
+      "bytes": 0,
+      "source_stat": [
+        0,
+        1792627557622623701,
+        11822254044
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence/run_state/pipeline/formal_supervisor.stdout.log": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/run_state/pipeline/formal_supervisor.stdout.log",
+      "bytes": 0,
+      "source_stat": [
+        0,
+        1792627557622623701,
+        11822254043
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence/run_state/pipeline/gate_supervisor.stderr.log": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/run_state/pipeline/gate_supervisor.stderr.log",
+      "bytes": 0,
+      "source_stat": [
+        0,
+        1792627510067928791,
+        11822254036
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence/run_state/pipeline/gate_supervisor.stdout.log": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/run_state/pipeline/gate_supervisor.stdout.log",
+      "bytes": 0,
+      "source_stat": [
+        0,
+        1792627510067928791,
+        11822254035
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence/run_state/pipeline/status.json": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/run_state/pipeline/status.json",
+      "bytes": 13096,
+      "source_stat": [
+        13096,
+        1792649678304234168,
+        11822254041
+      ],
+      "sha256": "3a7f34a23ea595bc2ebdd49f5bf6d1773d2cd09731da1260fa991bcc5437243b"
+    },
+    "evidence/FINAL_ACCEPT.json": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/FINAL_ACCEPT.json",
+      "bytes": 15485,
+      "source_stat": [
+        15485,
+        1792649678292233943,
+        21492847946
+      ],
+      "sha256": "ae4f008074a31dffd9c7b8572d690bea177c394ee6a79c6f37d2b2eae55daa87"
+    },
+    "evidence/build_views.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/build_views.py",
+      "bytes": 14277,
+      "source_stat": [
+        14277,
+        1792627368071108613,
+        21492646877
+      ],
+      "sha256": "b92afce1d94304c948257051868cc4e7e9b6068a9ecf8655917cd2a46c290d78"
+    },
+    "evidence/freeze_source.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/freeze_source.py",
+      "bytes": 2859,
+      "source_stat": [
+        2859,
+        1792627339385581458,
+        21492646878
+      ],
+      "sha256": "c9b0311d15b05d160e3adda5eb49c92ddcb4b8d73728e21235a1635b69ed59dc"
+    },
+    "evidence/launch_stage.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/launch_stage.py",
+      "bytes": 7343,
+      "source_stat": [
+        7343,
+        1792627339585675801,
+        21492646879
+      ],
+      "sha256": "de3632ecfec4b63ec896575e1f922291cc25200cc08ed8c9f4282e0c7da6d4df"
+    },
+    "evidence/run_pipeline.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/run_pipeline.py",
+      "bytes": 10824,
+      "source_stat": [
+        10824,
+        1792627339785770145,
+        21492646880
+      ],
+      "sha256": "a201ca7780f29e7dfa65fab94ef503ce76d88630751e7112abd6e35d2606b03e"
+    },
+    "evidence/completion_watcher.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/completion_watcher.py",
+      "bytes": 3741,
+      "source_stat": [
+        3741,
+        1792627734456552358,
+        21492828946
+      ],
+      "sha256": "f0e83baac09f80934b24152b6f7681361cf5d36a608c81a6d6b3eccb8eeb00b6"
+    },
+    "evidence/run_state_cpu_contract_status.json": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/run_state_cpu_contract_status.json",
+      "bytes": 593,
+      "source_stat": [
+        593,
+        1792627487536550036,
+        21492684097
+      ],
+      "sha256": "bb7ba98ca559cd9e0dd08be1d7849d1160030a4924105b6ac1ea7a9311b4eb4f"
+    },
+    "evidence/run_state_cpu_tests.exit": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/run_state_cpu_tests.exit",
+      "bytes": 2,
+      "source_stat": [
+        2,
+        1792627487512550699,
+        21492684096
+      ],
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "evidence/run_state_cpu_tests.log": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/run_state_cpu_tests.log",
+      "bytes": 704,
+      "source_stat": [
+        704,
+        1792627486452579972,
+        21492676426
+      ],
+      "sha256": "388b83dd41846d9103a0fc0f9f4a6f40e813bb5aedf261be70ea1d3683a84240"
+    },
+    "evidence/data_views/training_view_index.json": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/data_views/training_view_index.json",
+      "bytes": 15084,
+      "source_stat": [
+        15084,
+        1792627373241547258,
+        2171084304
+      ],
+      "sha256": "5c00c0b1cf311bd433a0800e2822877fbf1e2adec7b0e7e0ac34b6a0047c9175"
+    },
+    "evidence/own_run/hparams.yaml": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/outputs/checkpoints/_spt_cache/runs/20261022/080609/5c3b4bbcec5b/hparams.yaml",
+      "bytes": 161,
+      "source_stat": [
+        161,
+        1792627569638295186,
+        15060009556
+      ],
+      "sha256": "38719915d7a778d5e1317b600a16e8ee22412740ebefe68d6e8a6745376c8e16"
+    },
+    "evidence/own_run/metrics.csv": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/outputs/checkpoints/_spt_cache/runs/20261022/080609/5c3b4bbcec5b/metrics.csv",
+      "bytes": 4072516,
+      "source_stat": [
+        4072516,
+        1792649664495973531,
+        15060009561
+      ],
+      "sha256": "fa3e233b7d1f7d50a42a4b35d24e6e37d14591f6c7a4b3eabaeff89bf091b749"
+    },
+    "evidence/own_run/run_meta.json": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/outputs/checkpoints/_spt_cache/runs/20261022/080609/5c3b4bbcec5b/run_meta.json",
+      "bytes": 209,
+      "source_stat": [
+        209,
+        1792627569290304693,
+        15060009555
+      ],
+      "sha256": "3e817b5d098bcb779ac01a5645c20d3f9aca7fe711f00c7621b555727d13f9cd"
+    },
+    "evidence/own_run/sidecar.json": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/outputs/checkpoints/_spt_cache/runs/20261022/080609/5c3b4bbcec5b/sidecar.json",
+      "bytes": 3226,
+      "source_stat": [
+        3226,
+        1792649664819979693,
+        15060009681
+      ],
+      "sha256": "8cd64c336f536c9be0da3a0443f066402482336719d14b071a5a44b94a252f51"
+    },
+    "evidence/own_run/summary.json": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/outputs/checkpoints/_spt_cache/runs/20261022/080609/5c3b4bbcec5b/summary.json",
+      "bytes": 7953,
+      "source_stat": [
+        7953,
+        1792649664823979769,
+        15060009682
+      ],
+      "sha256": "7481ab85790cd281f4b97a1a251082d8ffe178e1705e602eacbf83226211f2d0"
+    },
+    "capture_source/scripts/data/collect_cube_pcd.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/scripts/data/collect_cube_pcd.py",
+      "bytes": 13395,
+      "source_stat": [
+        13395,
+        1790979955717531678,
+        22572303126
+      ],
+      "sha256": "6a74de095a2984d928fc74874afa7c83914674ded1fae99560b6827d9b2ef005"
+    },
+    "capture_source/scripts/data/collection_protocol.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/scripts/data/collection_protocol.py",
+      "bytes": 13662,
+      "source_stat": [
+        13662,
+        1790980002985833531,
+        22572303130
+      ],
+      "sha256": "1f95fa2d7d7ea87afc2fcf45333858eefccd78f77184b9b0536f49da715502a8"
+    },
+    "capture_source/envs/pcd_wrapper.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/envs/pcd_wrapper.py",
+      "bytes": 13964,
+      "source_stat": [
+        13964,
+        1791303383400056826,
+        18267889620
+      ],
+      "sha256": "821d056ecf41ea69e116c0d37ac99be30dfd9ec3bda4d8e7531d03f67f9beb8e"
+    },
+    "capture_source/envs/cube_pcd_env.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/envs/cube_pcd_env.py",
+      "bytes": 1434,
+      "source_stat": [
+        1434,
+        1790944123175908892,
+        18267889616
+      ],
+      "sha256": "fc8be1866de1d07b2bf1c0677c9182a1b760a280e4d07a1002d7477e1984c7ab"
+    },
+    "capture_source/third_party/stable-worldmodel/stable_worldmodel/envs/ogbench/cube_env.py": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/ogbench/cube_env.py",
+      "bytes": 69156,
+      "source_stat": [
+        69156,
+        1788385672000000000,
+        23632092961
+      ],
+      "sha256": "143e5e81f424ff7a4d7fdde287dee88b722c09082a6fc9e68721839788e94c19"
+    },
+    "capture_source/formal_state.json": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/ogbench-fixed-single-recollect-20261003/formal_state.json",
+      "bytes": 45373,
+      "source_stat": [
+        45373,
+        1791003903225674741,
+        16153221065
+      ],
+      "sha256": "a33d242f583d46f11668245879134d0a1d5afe3113f7370b9657a5e45d35013f"
+    },
+    "capture_source/global_paired_qc.json": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/ogbench-fixed-single-recollect-20261003/global_paired_qc.json",
+      "bytes": 16573,
+      "source_stat": [
+        16573,
+        1791005749525648890,
+        16153221066
+      ],
+      "sha256": "1b86fc0fb4cdbf5a65c000b89b530e5a386e45991abe8991985523ddd372ee8b"
+    },
+    "capture_source/fixed5_mixed_split_manifest.json": {
+      "source": "/root/autodl-tmp/workspace/users/lewm/ogbench-train-20261003/datasets/ogbench/fixed5_mixed_split_manifest.json",
+      "bytes": 6765,
+      "source_stat": [
+        6765,
+        1791011925473137362,
+        31172073361
+      ],
+      "sha256": "676dd2e7d31f246f38eda541abd60f06a6d742852538d85b68c71492b1ed3bd4"
+    },
+    "encoder.py": {
+      "bytes": 1967,
+      "sha256": "ce519035b06caf514c76baa69cb6ec279b7e1e69ff805a55ab439ea6e6b987ae",
+      "reused_from": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/baselines/cube4/cube4_pldm_impala512_epoch10_20261023_v1/encoder.py",
+      "reference_sha256": "7794c654d7d731782d8acc3e13df4aba0f08bb2b63bf46164db5999a282e4ebe"
+    },
+    "encoder_py312.py": {
+      "bytes": 346,
+      "sha256": "dfab3ca2ce24b00aac182ec604d70433ae43a830275ecc769e1f9efb32003a23",
+      "reused_from": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/baselines/cube4/cube4_pldm_impala512_epoch10_20261023_v1/encoder_py312.py",
+      "reference_sha256": "dfab3ca2ce24b00aac182ec604d70433ae43a830275ecc769e1f9efb32003a23"
+    },
+    "py312_config_compat.py": {
+      "bytes": 3173,
+      "sha256": "4520e28aa724d3f237b604b2bef832154221b238055b583ae0c2535ed1c26b3c",
+      "reused_from": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/baselines/cube4/cube4_pldm_impala512_epoch10_20261023_v1/py312_config_compat.py",
+      "reference_sha256": "4520e28aa724d3f237b604b2bef832154221b238055b583ae0c2535ed1c26b3c"
+    }
+  },
+  "dataset_transferred": false,
+  "target_model_forward_performed": false,
+  "embedding_started": false,
+  "downstream_training_started": false,
+  "SR_started": false,
+  "target_asset_root": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/baselines/cube1/cube1_pldm_impala512_epoch10_20261023_v1",
+  "interface_module": "encoder_py312.FrozenPLDM",
+  "interface_change": "Two Cube identity labels only in encoder.py; other interface bytes unchanged",
+  "source_archive_sha256": "7d6b4f269fcd4f356b5ede2b498e3d4b6b1020d3d45438081dc44c8163faaa1d",
+  "transfer_completed_at": 1792733999.8071394
+}

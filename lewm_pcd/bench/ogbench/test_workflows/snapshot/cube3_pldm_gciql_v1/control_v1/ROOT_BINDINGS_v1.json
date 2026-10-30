@@ -1,0 +1,698 @@
+{
+  "schema_version": 1,
+  "case": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1",
+  "all_component_CLIs_and_sources_frozen": true,
+  "frozen_component_handoffs": [
+    {
+      "local_path": "C:\\Users\\\u6881.LAPTOP-7MN0U0VK\\OneDrive\\\u6587\u6863\\ChatGPT\\\u4ece\u5934\u5230\u5c3e\u7eafog\\coordination\\cube3_pldm_gciql_103032Test_20261021_v1\\cache_v1\\CACHE_HANDOFF_v1.json",
+      "sha256": "44ab32268c93c9f02fd22021b14dd66003604977647f0f591c191952e7f5a3ab"
+    },
+    {
+      "local_path": "C:\\Users\\\u6881.LAPTOP-7MN0U0VK\\OneDrive\\\u6587\u6863\\ChatGPT\\\u4ece\u5934\u5230\u5c3e\u7eafog\\coordination\\cube3_pldm_gciql_103032Test_20261021_v1\\functional_v1\\FUNCTIONAL_HANDOFF_v2.json",
+      "sha256": "774ffbe301931df0b681c822f37c1c0acba432d1d8f0d40d52cf84d550a6beee"
+    },
+    {
+      "local_path": "C:\\Users\\\u6881.LAPTOP-7MN0U0VK\\OneDrive\\\u6587\u6863\\ChatGPT\\\u4ece\u5934\u5230\u5c3e\u7eafog\\coordination\\cube3_pldm_gciql_103032Test_20261021_v1\\control_v1\\HANDOFF_v1.json",
+      "sha256": "a668f340fa336bf762e3c83a3caef01b0459a17feb592a81b63d8634868bbf5e"
+    },
+    {
+      "local_path": "C:\\Users\\\u6881.LAPTOP-7MN0U0VK\\OneDrive\\\u6587\u6863\\ChatGPT\\\u4ece\u5934\u5230\u5c3e\u7eafog\\coordination\\cube3_pldm_gciql_103032Test_20261021_v1\\independent_functional_review_v1\\report.json",
+      "sha256": "af895be845e34e056643eb635d9e143c6e4e738a069d2e3c51dff0bfca54b500"
+    }
+  ],
+  "source_pins": {
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/cache_v1/audit_bridge.py": "d12b9bb010c692f6d8825c1faaef8c9d47ecacf3cf988d98463682cbb4c53fec",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/cache_v1/encoder_adapter.py": "c5b1709817a88a0ed439a4a27f36500aeca67e4e3586c6c68cc24dd03fb7cc81",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/cache_v1/prepare_plan.py": "b57d98e9c307b0e6e96ffa68afd008bed21de39d23bec697c6e3b8c105b4ddf9",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/cache_v1/producer_bridge.py": "f012b4579894a2946884d8de99c7da3c4a56b33b80157f51f79c9d39dce12660",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/cache_v1/test_cache_bridge.py": "c5e704b7482e0f293273bf249ea8c6f6ca2a7d2c57c9c038ac9a9ed84bebee97",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/cache_v1/SOURCE_DELTA_v1.json": "c7d8813ace70bcd779f1a9890d40ac231f197db98e6cd9548a458de24ad8e244",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/cache_v1/SOURCE_FREEZE_v1.json": "1ad6088d41a8c4f8f0eb0ed6494f54d500169f12d51254bab77e93e3e5ebb7eb",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/cache_v1/CACHE_HANDOFF_v1.json": "44ab32268c93c9f02fd22021b14dd66003604977647f0f591c191952e7f5a3ab",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/cache_v1/CPU_final_v1/receipt.json": "14038cf5d49b6edafd1fd7a0bb5542f2b262a9c448cd3f9f81ea27435156dd3c",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/official_state_2d_cache_v1/produce.py": "dbbce2407f11c42ee2c5aca7601c9a055a7ceb08593fb4e99b1b0cd7e5415b18",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/official_state_2d_cache_v1/audit_cache.py": "a97a55ce945c12b16d6fb473c71b289cdf8b2a0164b697ae0f8d4c5d7f9b5006",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/official_state_2d_cache_v1/render_adapter.py": "5df6dc694f7c9d38ccff69385080b1bad814f41ad6c4ae71e9def2e6ac71662f",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/official_state_2d_cache_v1/source_arrays/source_arrays.json": "8e81a6a40662363a83be125a55d8001cc8df4e390c6fbad7277a5f7d74a09199",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/official_state_2d_cache_v1/producer_plan.json": "e969fb9d9c00bba550173c08e4530a620950206ae2bea49e7a82fc225cc40eed",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/functional_v1/pldm_inputs.py": "45229484956cbd467b498b57146057b6f3651f283a6c900f93d27b254923ce01",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/functional_v1/pldm_runtime.py": "9572d0819a44e91012a4c7932ecb1cb5095d2ab301b1cdd30e0e62f56f20779e",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/functional_v1/native_sr.py": "c6ec01222f74f91d4e0263bda153c2b83d65d356ccc59f2ab08887336d4dd5f4",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/functional_v1/audit_native.py": "379598b36ce3cdee007c9f747e01edb47f73dc8579756c34452a21df80f2b9bf",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/functional_v1/prepare.py": "d4a1415be31368ea0bfd6d4910eaae462cc834e8dac496be22b8477e483f037c",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/functional_v1/test_inputs_native.py": "d45584e919f9b636f464f0aa90e2c72e216117acabf4978ad39516a68ee31388",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/functional_v1/test_prepare.py": "ee29f7b6528b7b6946f9a63ef69d4191e79b67400ec008987dafeb0bde359ec1",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/functional_v1/prepare_v2.py": "c26ac069add084cf95e880e40b33d2119cd6121e5bd647de9a3ec03dc2c237e2",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/functional_v1/configs/P3_cube3_pldm_rgb.TEMPLATE_v2.json": "e7cbc9e2f32f710e8be81086333279fdea81b409b8e46ddccb5f44c9b91c7b10",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/functional_v1/RESOURCE_METADATA_v2.json": "2d291a87c396d262899adcd153bb31310dc2edaea906e665f8a3304c6ac126e0",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/functional_v1/SOURCE_FREEZE_v2.json": "16d7028ca0a2f26a1b29299459bbbf383476480da47a7299dcdb02b52f791ba9",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/functional_v1/FUNCTIONAL_HANDOFF_v2.json": "774ffbe301931df0b681c822f37c1c0acba432d1d8f0d40d52cf84d550a6beee",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/functional_v1/SOURCE_FREEZE_v1.json": "7677732cf677e17eec4e6de343150d3738bc6383bd8f45f5f614493af4e316d4",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/functional_v1/FUNCTIONAL_HANDOFF_v1.json": "99ce810c32a1d4170fea7dd17052c82aef9b2b668090669f2c1826e12fc2c31e",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/functional_v1/FINAL_LOCAL_VERIFICATION_v1.json": "6b045a9b5c9eea95afc84b63a757ac5edea1c5d8ca01d24b8a7266fca8f715c6",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube_inputs.py": "36358548ef7a78311730913fccfdfa025d354a18edd4f8197b03b4c0d5ae5d9b",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/trainer_runtime.py": "18acaead938e573f80ec6e87e0cb44822a734decf2e97730861886841a22b82c",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/distance_inputs.py": "b9906dc2f4e7a38826f5ee05031713618a6ce408ee5555302801505452758f90",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/gciql_boundary.py": "a81363583a4826194b90974be2ad62c5895ab6b963e15ba042c9f893a46ba5e6",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/extension_runtime.py": "a9735b9b4f3fec3b01f189e910e12e985cbba3a8ba13e1fafeac878f1222c9c1",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/extension_inputs.py": "de2381f3262a5b088b11d2ac1bbc5ae258ef82a26801f398e72c09f457fd0f5b",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/extension_boundary.py": "9a6a08cfbd988bda6904c7c728ae289b8c1ff801f56754a7c0798fc067a3cb81",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/state_runtime.py": "623fff33b0c836c6268257689216cf78de8694fbab1107dddbd4bdbfc3ee1956",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/native_sr_visual_v1/visual_sr.py": "e40a2ff52bd0915b7953d9011c65e02c75f9e0b2d0e454b613d18c275f6c13f0",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/native_sr_visual_v1/m5_restore_v1/run_group.py": "2af9fc40e19478ddb91519c74f288bac4389ee6f588248b674a8fa6b317db5d6",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/native_sr_visual_v1/m5_restore_v1/audit.py": "ffccacb2f94cfd37f0480419642341e7c966e490e1a97e6056eecfe0033c5285",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/native_sr_visual_v1/cube3_successor_v1/visual_sr_cube3.py": "9ab62959e147fcdbaff270d42102a5f7ef5c2e94724a86b08aa1bef24d8131d1",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/configs/G08_cube3_rgb.json": "6d717c2123217020fec593367f3eecb42e01dfe203e9aae8d5a38733045f55b5",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/utils/datasets.py": "52c373922a87e1ba8ad8b3b96c3474d5e6385e2ea2c7206930f7a8a315816609",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/ogbench/impls/utils/evaluation.py": "4d9a2732bc9ef89ce99fbc0f07a76d3f4d035783af3a658251709140ff9de3d5",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/imports/single_cube_rl3_101632_20261018_v1/source_layout/coordination/cached_lewm_state_gciql_xyz_109_20261012_v1/native_v1/locked_dependencies/native_runtime_helpers.py": "a83bcf181b00d57fe5b41ef4e61c42dded0561b1ec9d4dc2c7a1c64dfdb8bc3a",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/independent_functional_review_v1/report.json": "af895be845e34e056643eb635d9e143c6e4e738a069d2e3c51dff0bfca54b500",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/run_priority.py": "3b2bafcf07cb154bfbc32956375546c26fb387faf33f7d51aa2917e08ca4252a",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/baselines/cube3/cube3_pldm_impala512_epoch10_20261021_v1/MANIFEST.json": "96e2805301373e09cba689358e97673993af6b0a1ee4f3236b7f1ba0aa64d38a",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/baselines/cube3/cube3_pldm_impala512_epoch10_20261021_v1/RUNTIME_ADDENDUM.json": "c15741c0c3969c4e29d0f2cffa3820ee5dc33bb6205b895ef7375fea133f52be"
+  },
+  "phases": [
+    {
+      "name": "00_prepare",
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/cache_v1/prepare_plan.py",
+        "--case",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1"
+      ],
+      "cwd": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1",
+      "environment": {
+        "CUDA_VISIBLE_DEVICES": "",
+        "JAX_PLATFORMS": "cpu",
+        "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+        "JAX_THREEFRY_PARTITIONABLE": "false",
+        "OMP_NUM_THREADS": "4",
+        "MKL_NUM_THREADS": "4",
+        "OPENBLAS_NUM_THREADS": "4",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONUNBUFFERED": "1",
+        "XLA_FLAGS": "--xla_gpu_autotune_level=0",
+        "MUJOCO_GL": "egl"
+      },
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/cache_v1/PREPARED.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "latent_dim": 512,
+            "episodes": 3300,
+            "canonical_rows": 3303300,
+            "arrays_reextracted": false,
+            "old_files_modified": false,
+            "model_or_cache_vectors_read": false,
+            "NN_GPU_started": false
+          }
+        }
+      ],
+      "CLI_source": "CPU_prepare"
+    },
+    {
+      "name": "01_cache_pilot",
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/cache_v1/producer_bridge.py",
+        "--plan",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/cache_v1/producer_plan.json",
+        "--execute",
+        "--pilot"
+      ],
+      "cwd": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1",
+      "environment": {
+        "CUDA_VISIBLE_DEVICES": "0",
+        "JAX_PLATFORMS": "cpu",
+        "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+        "JAX_THREEFRY_PARTITIONABLE": "false",
+        "OMP_NUM_THREADS": "4",
+        "MKL_NUM_THREADS": "4",
+        "OPENBLAS_NUM_THREADS": "4",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONUNBUFFERED": "1",
+        "XLA_FLAGS": "--xla_gpu_autotune_level=0",
+        "MUJOCO_GL": "egl"
+      },
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/cache_v1/cache/pilot_receipt.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "completed_episodes": 2,
+            "completed_rows": 2002,
+            "source_encoder_frozen": true
+          }
+        },
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/cache_v1/cache/batch1_alignment.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "passed": true,
+            "finite": true,
+            "batch32_shape": [
+              32,
+              512
+            ],
+            "batch1_shape": [
+              1,
+              512
+            ],
+            "atol": 1e-05,
+            "rtol": 1e-05
+          }
+        }
+      ],
+      "CLI_source": "GPU_pilot"
+    },
+    {
+      "name": "02_cache_full",
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/cache_v1/producer_bridge.py",
+        "--plan",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/cache_v1/producer_plan.json",
+        "--execute"
+      ],
+      "cwd": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1",
+      "environment": {
+        "CUDA_VISIBLE_DEVICES": "0",
+        "JAX_PLATFORMS": "cpu",
+        "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+        "JAX_THREEFRY_PARTITIONABLE": "false",
+        "OMP_NUM_THREADS": "4",
+        "MKL_NUM_THREADS": "4",
+        "OPENBLAS_NUM_THREADS": "4",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONUNBUFFERED": "1",
+        "XLA_FLAGS": "--xla_gpu_autotune_level=0",
+        "MUJOCO_GL": "egl"
+      },
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/cache_v1/cache/cache_seal.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "train_rows": 3003000,
+            "val_rows": 300300,
+            "full_raw_ID_coverage": true
+          }
+        }
+      ],
+      "CLI_source": "GPU_full_resume"
+    },
+    {
+      "name": "03_cache_audit",
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/cache_v1/audit_bridge.py",
+        "--cache-dir",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/cache_v1/cache",
+        "--plan",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/cache_v1/producer_plan.json",
+        "--output-dir",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/cache_v1/independent_audit"
+      ],
+      "cwd": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1",
+      "environment": {
+        "CUDA_VISIBLE_DEVICES": "",
+        "JAX_PLATFORMS": "cpu",
+        "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+        "JAX_THREEFRY_PARTITIONABLE": "false",
+        "OMP_NUM_THREADS": "4",
+        "MKL_NUM_THREADS": "4",
+        "OPENBLAS_NUM_THREADS": "4",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONUNBUFFERED": "1",
+        "XLA_FLAGS": "--xla_gpu_autotune_level=0"
+      },
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/cache_v1/independent_audit/report.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "episodes_verified": 3300,
+            "raw_rows_verified": 3303300,
+            "main_rows_verified": 3300000,
+            "latent_dim": 512,
+            "dtype": "float32",
+            "all_new_latent_SHA_shape_dtype_finite": true,
+            "all_raw_ID_and_true_terminal_next_contracts": true,
+            "tracked_stats_stable": true,
+            "encoder_family": "pldm",
+            "batch1_alignment_passed": true
+          }
+        }
+      ],
+      "CLI_source": "CPU_audit"
+    },
+    {
+      "name": "04_prepare_train",
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/functional_v1/prepare_v2.py",
+        "train",
+        "--case",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1"
+      ],
+      "cwd": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1",
+      "environment": {
+        "CUDA_VISIBLE_DEVICES": "",
+        "JAX_PLATFORMS": "cpu",
+        "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+        "JAX_THREEFRY_PARTITIONABLE": "false",
+        "OMP_NUM_THREADS": "4",
+        "MKL_NUM_THREADS": "4",
+        "OPENBLAS_NUM_THREADS": "4",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONUNBUFFERED": "1",
+        "XLA_FLAGS": "--xla_gpu_autotune_level=0"
+      },
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/functional_v1/TRAIN_CONFIG_PREPARED_v1.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "current_dim": 531,
+            "goal_dim": 521,
+            "encoder_family": "pldm",
+            "latent_dim": 512,
+            "cache_episodes": 3300,
+            "cache_raw_rows": 3303300
+          }
+        }
+      ],
+      "CLI_source": "CPU_prepare_train"
+    },
+    {
+      "name": "05_GCIQL_gate",
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/functional_v1/pldm_runtime.py",
+        "gate",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/functional_v1/configs/P3_cube3_pldm_rgb.v1.json",
+        "--output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/gates/P3_cube3_pldm_rgb"
+      ],
+      "cwd": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1",
+      "environment": {
+        "CUDA_VISIBLE_DEVICES": "0",
+        "JAX_PLATFORMS": "cuda,cpu",
+        "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+        "JAX_THREEFRY_PARTITIONABLE": "false",
+        "OMP_NUM_THREADS": "4",
+        "MKL_NUM_THREADS": "4",
+        "OPENBLAS_NUM_THREADS": "4",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONUNBUFFERED": "1",
+        "XLA_FLAGS": "--xla_gpu_autotune_level=0"
+      },
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/gates/P3_cube3_pldm_rgb/report.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "updates": 2,
+            "network_step": 3,
+            "adam_count": 2,
+            "batch_size": 1024,
+            "encoder_calls": 0
+          }
+        }
+      ],
+      "CLI_source": "GPU_GCIQL_gate"
+    },
+    {
+      "name": "06_GCIQL_reload",
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/functional_v1/pldm_runtime.py",
+        "reload",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/functional_v1/configs/P3_cube3_pldm_rgb.v1.json",
+        "--output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/gates/P3_cube3_pldm_rgb",
+        "--report",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/acceptance/P3_gate_reload.json"
+      ],
+      "cwd": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1",
+      "environment": {
+        "CUDA_VISIBLE_DEVICES": "",
+        "JAX_PLATFORMS": "cpu",
+        "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+        "JAX_THREEFRY_PARTITIONABLE": "false",
+        "OMP_NUM_THREADS": "4",
+        "MKL_NUM_THREADS": "4",
+        "OPENBLAS_NUM_THREADS": "4",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONUNBUFFERED": "1",
+        "XLA_FLAGS": "--xla_gpu_autotune_level=0"
+      },
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/acceptance/P3_gate_reload.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "full153_state_exact": true,
+            "next_batch_and_rawIDs_exact": true,
+            "finite_actions": true
+          }
+        }
+      ],
+      "CLI_source": "CPU_GCIQL_reload"
+    },
+    {
+      "name": "07_GCIQL_train",
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/functional_v1/pldm_runtime.py",
+        "train",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/functional_v1/configs/P3_cube3_pldm_rgb.v1.json"
+      ],
+      "cwd": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1",
+      "environment": {
+        "CUDA_VISIBLE_DEVICES": "0",
+        "JAX_PLATFORMS": "cuda,cpu",
+        "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+        "JAX_THREEFRY_PARTITIONABLE": "false",
+        "OMP_NUM_THREADS": "4",
+        "MKL_NUM_THREADS": "4",
+        "OPENBLAS_NUM_THREADS": "4",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONUNBUFFERED": "1",
+        "XLA_FLAGS": "--xla_gpu_autotune_level=0"
+      },
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/runs/P3_cube3_pldm_rgb/status.json",
+          "equals": {
+            "exit_code": 0,
+            "completed_updates": 1000000,
+            "network_step": 1000001,
+            "adam_count": 1000000,
+            "validation_count": 200
+          }
+        }
+      ],
+      "CLI_source": "GPU_GCIQL_train"
+    },
+    {
+      "name": "08_GCIQL_accept",
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/functional_v1/pldm_runtime.py",
+        "accept",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/functional_v1/configs/P3_cube3_pldm_rgb.v1.json",
+        "--output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/runs/P3_cube3_pldm_rgb",
+        "--report",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/acceptance/P3_full_acceptance.json"
+      ],
+      "cwd": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1",
+      "environment": {
+        "CUDA_VISIBLE_DEVICES": "",
+        "JAX_PLATFORMS": "cpu",
+        "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+        "JAX_THREEFRY_PARTITIONABLE": "false",
+        "OMP_NUM_THREADS": "4",
+        "MKL_NUM_THREADS": "4",
+        "OPENBLAS_NUM_THREADS": "4",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONUNBUFFERED": "1",
+        "XLA_FLAGS": "--xla_gpu_autotune_level=0"
+      },
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/acceptance/P3_full_acceptance.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "full153_state_exact": true,
+            "Adam_count": 1000000,
+            "network_step": 1000001,
+            "CSV_validation_records": 200,
+            "actual_current_dim": 531,
+            "actual_goal_dim": 521,
+            "synthetic_zero_padding": false
+          }
+        }
+      ],
+      "CLI_source": "CPU_GCIQL_accept"
+    },
+    {
+      "name": "09_prepare_native",
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/functional_v1/prepare_v2.py",
+        "native",
+        "--case",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1"
+      ],
+      "cwd": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1",
+      "environment": {
+        "CUDA_VISIBLE_DEVICES": "",
+        "JAX_PLATFORMS": "cpu",
+        "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+        "JAX_THREEFRY_PARTITIONABLE": "false",
+        "OMP_NUM_THREADS": "4",
+        "MKL_NUM_THREADS": "4",
+        "OPENBLAS_NUM_THREADS": "4",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONUNBUFFERED": "1",
+        "XLA_FLAGS": "--xla_gpu_autotune_level=0"
+      },
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/functional_v1/NATIVE_PREPARED_v1.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "final_counter": 1000000,
+            "current_dim": 531,
+            "goal_dim": 521,
+            "full153_CPU_acceptance": true,
+            "checkpoint_transactions": 11
+          }
+        }
+      ],
+      "CLI_source": "CPU_prepare_Native"
+    },
+    {
+      "name": "10_native_tiny",
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/functional_v1/native_sr.py",
+        "--case",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1",
+        "--mode",
+        "tiny",
+        "--output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/native_sr_v1/tiny"
+      ],
+      "cwd": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1",
+      "environment": {
+        "CUDA_VISIBLE_DEVICES": "0",
+        "JAX_PLATFORMS": "cpu",
+        "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+        "JAX_THREEFRY_PARTITIONABLE": "false",
+        "OMP_NUM_THREADS": "4",
+        "MKL_NUM_THREADS": "4",
+        "OPENBLAS_NUM_THREADS": "4",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONUNBUFFERED": "1",
+        "XLA_FLAGS": "--xla_gpu_autotune_level=0",
+        "MUJOCO_GL": "egl"
+      },
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/native_sr_v1/tiny/report.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "group_id": "P3_cube3_pldm_rgb",
+            "episodes": 1,
+            "unique_seeds": 1,
+            "current_dim": 531,
+            "goal_dim": 521,
+            "max_episode_steps": 4,
+            "encoding_protocol": "fresh_current_and_goal_each_policy_call_2N",
+            "offline_embedding_cache_used_for_policy": false
+          }
+        }
+      ],
+      "CLI_source": "GPU_Native_tiny"
+    },
+    {
+      "name": "11_native_tiny_audit",
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/functional_v1/audit_native.py",
+        "--case",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1",
+        "--mode",
+        "tiny",
+        "--output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/native_sr_v1/tiny"
+      ],
+      "cwd": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1",
+      "environment": {
+        "CUDA_VISIBLE_DEVICES": "",
+        "JAX_PLATFORMS": "cpu",
+        "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+        "JAX_THREEFRY_PARTITIONABLE": "false",
+        "OMP_NUM_THREADS": "4",
+        "MKL_NUM_THREADS": "4",
+        "OPENBLAS_NUM_THREADS": "4",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONUNBUFFERED": "1",
+        "XLA_FLAGS": "--xla_gpu_autotune_level=0"
+      },
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/native_sr_v1/tiny/independent_audit.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "group_id": "P3_cube3_pldm_rgb",
+            "episodes": 1,
+            "unique_seeds": 1,
+            "encoder_family": "pldm",
+            "latent_dim": 512,
+            "current_dim": 531,
+            "goal_dim": 521,
+            "fresh_goal_then_current_encoding_required": true
+          }
+        }
+      ],
+      "CLI_source": "CPU_audit_tiny"
+    },
+    {
+      "name": "12_native_full",
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/functional_v1/native_sr.py",
+        "--case",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1",
+        "--mode",
+        "full",
+        "--output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/native_sr_v1/full"
+      ],
+      "cwd": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1",
+      "environment": {
+        "CUDA_VISIBLE_DEVICES": "0",
+        "JAX_PLATFORMS": "cpu",
+        "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+        "JAX_THREEFRY_PARTITIONABLE": "false",
+        "OMP_NUM_THREADS": "4",
+        "MKL_NUM_THREADS": "4",
+        "OPENBLAS_NUM_THREADS": "4",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONUNBUFFERED": "1",
+        "XLA_FLAGS": "--xla_gpu_autotune_level=0",
+        "MUJOCO_GL": "egl"
+      },
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/native_sr_v1/full/report.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "group_id": "P3_cube3_pldm_rgb",
+            "episodes": 250,
+            "unique_seeds": 250,
+            "current_dim": 531,
+            "goal_dim": 521,
+            "max_episode_steps": 1000,
+            "encoding_protocol": "fresh_current_and_goal_each_policy_call_2N",
+            "offline_embedding_cache_used_for_policy": false
+          }
+        }
+      ],
+      "CLI_source": "GPU_Native_full"
+    },
+    {
+      "name": "13_native_full_audit",
+      "argv": [
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+        "-B",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/functional_v1/audit_native.py",
+        "--case",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1",
+        "--mode",
+        "full",
+        "--output",
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/native_sr_v1/full"
+      ],
+      "cwd": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1",
+      "environment": {
+        "CUDA_VISIBLE_DEVICES": "",
+        "JAX_PLATFORMS": "cpu",
+        "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+        "JAX_THREEFRY_PARTITIONABLE": "false",
+        "OMP_NUM_THREADS": "4",
+        "MKL_NUM_THREADS": "4",
+        "OPENBLAS_NUM_THREADS": "4",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONUNBUFFERED": "1",
+        "XLA_FLAGS": "--xla_gpu_autotune_level=0"
+      },
+      "checks": [
+        {
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube3_pldm_gciql_v1/native_sr_v1/full/independent_audit.json",
+          "equals": {
+            "actual_exit_code": 0,
+            "group_id": "P3_cube3_pldm_rgb",
+            "episodes": 250,
+            "unique_seeds": 250,
+            "encoder_family": "pldm",
+            "latent_dim": 512,
+            "current_dim": 531,
+            "goal_dim": 521,
+            "fresh_goal_then_current_encoding_required": true
+          }
+        }
+      ],
+      "CLI_source": "CPU_audit_full"
+    }
+  ],
+  "environment_provenance": {
+    "source_path": "C:\\Users\\\u6881.LAPTOP-7MN0U0VK\\OneDrive\\\u6587\u6863\\ChatGPT\\\u4ece\u5934\u5230\u5c3e\u7eafog\\coordination\\cube23_gciql_distance_matched_101732Test_20261018_v1\\state_priority_v1\\run_priority.py",
+    "source_sha256": "3b2bafcf07cb154bfbc32956375546c26fb387faf33f7d51aa2917e08ca4252a",
+    "function": "child_environment",
+    "line_range": [
+      57,
+      68
+    ],
+    "executed_original_AST_function_with_empty_parent_environment": true,
+    "no_secret_env_recorded": true,
+    "JAX_default_matmul_precision_unset_None": true,
+    "autotune_level": 0,
+    "GCIQL_GPU_JAX_backend": "cuda,cpu",
+    "Native_and_cache_backend": "TorchGPU0,JAXcpu",
+    "CPU_backend": "CUDAhidden,JAXcpu",
+    "lookup_threads": 4,
+    "metrics": "frozen async100"
+  },
+  "future_products_not_faked": [
+    "cache/producer_plan",
+    "currentstat/sourcearraysview",
+    "actual executable trainingcfg",
+    "actual final1M Nativebinding"
+  ],
+  "dynamic_asset_source_closure": "00prepare reads pinned real MANIFEST+ADDENDUM, verifies original source bytes, then publishes source_pins into actual producerplan; historical localmanifest8bd not used",
+  "Root_GPU_priority": "wait both Quad formal250+audits+outerwrapper0 before dispatch; GPUlease refuses occupation, no new waiter here",
+  "created": 1792519654.7991986
+}

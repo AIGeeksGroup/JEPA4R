@@ -1,0 +1,31 @@
+{
+  "status": "G12_metadata_preparer_frozen_CPU2_actual0_not_executed_on_real_cache",
+  "created": 1792501212.785091,
+  "files": {
+    "prepare_G12.py": "cd76e395ed8ec4fa8020ba06ae43ec684b63f63fe37ad3acb6f48a0f13ea4c15",
+    "test_prepare_G12.py": "0752d33db747ced0be47da7e5d1a163c8bf0ee2a56320add10d768d707dadbf0"
+  },
+  "protected_original_functional_freeze": {
+    "path": "SOURCE_FREEZE_v1.json",
+    "sha256": "954a748fedd31776af01048d5943a7e1c1cc2613ccb91cab216bcd557217d242",
+    "unchanged": true
+  },
+  "protected_source_and_configs": {
+    "quad_visual.py": "a3f735677d83760c53b2d48ff032c03060ed40558cd7fa7dad5671f06b7696f8",
+    "configs/G11_cube4_rgb.json": "57211622e3d426eda0bbbae32c8266d6c1a02a05e500d9e2b83d309fed8c988c",
+    "configs/G12_cube4_pcd.TEMPLATE.json": "d79a152595b553a1f4658f18a7cf52ba9221eb3439a2c3d8f480638ade8a28ea"
+  },
+  "red": {
+    "receipt": "G12_prepare_red_v1/receipt.json",
+    "sha256": "16423d8386bc75e825f10803cd739129470d240a40dd4cc88e7237e9b3fff6d1",
+    "actual_exit_code": 1
+  },
+  "green": {
+    "receipt": "G12_prepare_green_v1/receipt.json",
+    "sha256": "7ad1abc100a3078db143216e85de6f2912a79527e161d64dd58c896d9e2b07db",
+    "actual_exit_code": 0,
+    "fake_metadata_tests": 2
+  },
+  "only_new_helper_files": true,
+  "NN_GPU_models_payload_hash_or_real_G12_config_generation_executed": false
+}

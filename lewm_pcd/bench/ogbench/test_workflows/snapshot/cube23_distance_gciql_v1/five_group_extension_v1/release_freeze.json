@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "groups": [
+    "G10",
+    "G05",
+    "G06",
+    "G08",
+    "G09"
+  ],
+  "independent_review": "independent_review/FINAL_STATIC_REVIEW_v1.json",
+  "local_files": {
+    "DATA_CONFIG_FREEZE_v1.json": "0410b22a872d2fb4bf29c46283d843b79dbdde43b6b7ee3adc9adf6acd2ce32f",
+    "DATA_HANDOFF_v1.json": "33b8120cd5cbe29e2f0a29389377230c91f11d4c2a0f5bb7340b782f768d73e9",
+    "FUNCTION_FREEZE_v2.json": "5cb23ce8cd6ef29b669f16931d7939a70230f9b82b0a5cb51d1fa2bfe6964c1e",
+    "FUNCTION_HANDOFF_v2.json": "cbd4dc6c446241415da99717d965cfbe4947fa906b44d779bf1e5be34b94278e",
+    "configs/G05_cube2_rgb.json": "8c3af1e965e3266965cfac9a1baedbfb081da1c5a15549de1574b3cdfbf8b65b",
+    "configs/G06_cube2_pcd.json": "c782818914cf29b8ed33b1d5119833d0d4990fa59c7221e24680ac23b37d84d8",
+    "configs/G08_cube3_rgb.json": "6d717c2123217020fec593367f3eecb42e01dfe203e9aae8d5a38733045f55b5",
+    "configs/G09_cube3_pcd.json": "16aa74533db3187e581eb3aee6ccf90d6930c37119e29320983c425125216893",
+    "configs/G10_cube4_state.json": "aa19f669ce840cfa52b791d040cbeb34e7701be45cf5fc70f8920616d6afada6",
+    "cpu_checks_v2/receipt.json": "d81ea08cbafb192e66227cd46bbebd65cfd9fcf06bc5cf31d8c27a228ebe163d",
+    "data_plan.json": "3dd17b956bfb5249a876edbd6d14ab41655dbc46ccd74790dc1376eabba5dd88",
+    "data_readiness_v1/quadruple_data_acceptance.json": "db1bb2aacf3916254aaf8d3e3f81b90e1b2de3b2e4ab93407e17a45f54fd9329",
+    "data_readiness_v1/quadruple_stat-freeze.json": "defd3b51d55a5ab2dd13b30e6dd2ad2ebb7dd5c7084a5a6ea965205e14edd1b1",
+    "extension_boundary.py": "9a6a08cfbd988bda6904c7c728ae289b8c1ff801f56754a7c0798fc067a3cb81",
+    "extension_inputs.py": "de2381f3262a5b088b11d2ac1bbc5ae258ef82a26801f398e72c09f457fd0f5b",
+    "extension_runtime.py": "a9735b9b4f3fec3b01f189e910e12e985cbba3a8ba13e1fafeac878f1222c9c1",
+    "independent_review/FINAL_STATIC_REVIEW_v1.json": "9e7430a56b0ff3df9acbe76eba08e1da0ff55e2210791ff40335a2b7c3ac3034",
+    "independent_review/NARROW_SCOPE_REVIEW_v1.json": "cf61e617f830b2f91c41db6df38007eaf0da6f7143f5e37a2476bccfe578e21e",
+    "launch_plan.json": "c8af05e81fdc518aef4019c66a42fa77eb8bf45735fd046a387b02ceac73238d",
+    "publish_start.py": "627abd10b05c2f7f381e6d2f07dc6332c4ee068befc79a383ff5413b0d439007",
+    "run_extension.py": "af4c4526697a49d041db9720a460f06dac1867a94796b32443f564aa99bacd48",
+    "run_extension.sh": "932241ff549bbdb57930b23e28529ab97492fadeee1b48a8a7121bfe26fcc09a",
+    "test_extension_inputs.py": "b39d2a84a2903839e7fc704e42c23289745bd43c127c3edf54aea176bf5f6788"
+  },
+  "reference_pins": {
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/trainer_runtime.py": "18acaead938e573f80ec6e87e0cb44822a734decf2e97730861886841a22b82c",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/distance_inputs.py": "b9906dc2f4e7a38826f5ee05031713618a6ce408ee5555302801505452758f90",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/gciql_boundary.py": "a81363583a4826194b90974be2ad62c5895ab6b963e15ba042c9f893a46ba5e6",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/state_runtime.py": "623fff33b0c836c6268257689216cf78de8694fbab1107dddbd4bdbfc3ee1956",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/state_inputs.py": "ada2bdc73de50753a83ee951cb99849c9bd3282f3e6527c4e8d906f85f7d9fd9",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube_inputs.py": "36358548ef7a78311730913fccfdfa025d354a18edd4f8197b03b4c0d5ae5d9b",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/official_state_workers_v1/ordered_input.py": "4508ce847694976f8af924215d11985ac4d795093b22d62e8424928346fbdda2",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/imports/single_cube_rl3_101632_20261018_v1/source_layout/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/core_v1/gciql.py": "8611cd476d8849ad014ca43304073c3e88fc3d3aa5dab369a343ae425bba7ba7",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/run_priority.py": "3b2bafcf07cb154bfbc32956375546c26fb387faf33f7d51aa2917e08ca4252a",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/release_freeze.json": "1bc9fff9ffe485cd91f5ea69fdbea4e55ae83a367e98b89ba4129fd3c7e4321d"
+  },
+  "user_scope": "fresh1M Cube4state, then DoubleRGB, DoublePCD, TripleRGB, TriplePCD serial; currentdatasetcache only; no SR",
+  "original_GCIQL_math_and_all_completed_assets_unchanged": true
+}

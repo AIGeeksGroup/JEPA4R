@@ -1,0 +1,133 @@
+{
+  "schema_version": 1,
+  "family": "lejepa_tiny512",
+  "cube_count": 4,
+  "group_id": "lejepa_tiny512_cube4",
+  "diagnostic_only": false,
+  "checkpoint": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/baselines/cube4/cube4_lejepa_tiny512_epoch10_20261026_v1/weights/weights_epoch_10.pt",
+  "checkpoint_dir": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/baselines/cube4/cube4_lejepa_tiny512_epoch10_20261026_v1/weights",
+  "checkpoint_sha256": "66269b172e06cfbd3b50be0460604ef3f46dc27e1e283a67cef31813c3ae244b",
+  "checkpoint_bytes": 43663581,
+  "checkpoint_epoch": 10,
+  "original_loader": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/baselines/cube4/cube4_lejepa_tiny512_epoch10_20261026_v1/source/jepa_baselines.py",
+  "original_loader_sha256": "8c46fe85b054a2521842a3fc753f719736ab0ccd4d584f9999ee9306704d06bc",
+  "loader_function": "load_lejepa",
+  "original_config": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/baselines/cube4/cube4_lejepa_tiny512_epoch10_20261026_v1/weights/config.json",
+  "original_config_sha256": "68b252a64def5326c6f11d985acd58fdfc83f50081163ff8c96c179834f55235",
+  "asset_manifest_path": "/autodl-fs/data/lewm/lejepa_cube4_tiny512_epoch10_20261026_v1/MANIFEST.json",
+  "asset_manifest_sha256": "9029c27685172e25978727d1b0079522c7170cbd3914235b2735e8145f4ec3a9",
+  "original_asset_id": "lejepa_cube4_tiny512_epoch10_20261026_v1",
+  "source_root": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/baselines/cube4/cube4_lejepa_tiny512_epoch10_20261026_v1",
+  "source_files_sha256": {
+    "source/jepa_baselines.py": "8c46fe85b054a2521842a3fc753f719736ab0ccd4d584f9999ee9306704d06bc",
+    "weights/config.json": "68b252a64def5326c6f11d985acd58fdfc83f50081163ff8c96c179834f55235"
+  },
+  "output_dim": 512,
+  "native_size": 224,
+  "feature": "cls192_head512",
+  "feature_L2_normalization": false,
+  "training_projector_used": false,
+  "input_layout": "uint8_BHWC224_public_BCHW224_model",
+  "inference_precision": "fp32",
+  "storage_dtype": "float32",
+  "preprocess_device": "cpu",
+  "production_encoder_device": "cuda",
+  "default_dtype": "torch.float32",
+  "matmul_precision": "highest",
+  "cuda_matmul_allow_tf32": false,
+  "preprocessing": {
+    "original_returned_transforms": true,
+    "image_type": "PIL_RGB",
+    "resize": [
+      224,
+      224
+    ],
+    "interpolation": "bicubic",
+    "antialias": true,
+    "uint8_div255": true,
+    "mean": [
+      0.485,
+      0.456,
+      0.406
+    ],
+    "std": [
+      0.229,
+      0.224,
+      0.225
+    ],
+    "crop": null,
+    "applications_per_image": 1
+  },
+  "reference_gates": {
+    "status": "predeclared_not_yet_executed",
+    "CPU_preprocess_original_reference": "bitwise",
+    "samebatch_B1_B32_atol": 1e-05,
+    "samebatch_B1_B32_rtol": 1e-05,
+    "cross_B1_B32_production_atol": 1e-05,
+    "cross_B1_B32_production_rtol": 1e-05,
+    "offline_online_same_raw_B1_required": true,
+    "failure_policy": "preserve_and_stop_no_threshold_change"
+  },
+  "downstream_camera": {
+    "cube_count": 4,
+    "env_id": "cube-quadruple-v0",
+    "source_name": "front",
+    "render_name": "front_pixels",
+    "source_position": [
+      1.287,
+      0.0,
+      0.509
+    ],
+    "position": [
+      1.3835957918490516,
+      1.1102230246251566e-17,
+      0.5348699245660802
+    ],
+    "base_quaternion": [
+      0.5792028135240382,
+      0.4056157058175116,
+      0.4056157058175116,
+      0.5792028135240384
+    ],
+    "actual_quaternion": [
+      0.5609588321928806,
+      0.4304941214288525,
+      0.4304941214288525,
+      0.5609588321928807
+    ],
+    "FOV": 45.0,
+    "width": 224,
+    "height": 224,
+    "offsamples": 4,
+    "aa_samples": 4,
+    "local_x_up_degrees": 5.0,
+    "pullback": 0.1,
+    "ob_type": "states",
+    "visualize_info": false,
+    "pixel_transparent_arm": false,
+    "crop": null,
+    "provenance": "Cube1 unchanged pinned official front_pixels (prior M5 RGB recipe); Cube2/3 approved front+5; Cube4 training_camera_v2"
+  },
+  "original_training_lineage_limits": {
+    "accepted_weight_epoch": 10,
+    "saved_epochs": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "native_10_epochs": true,
+    "all_train_supervisor_outer_exits0": true,
+    "own_process_group_drained": true,
+    "original_216_CPU_threeblock_strict_finite": true,
+    "heldout_validation_executed": false,
+    "forward_executed": false,
+    "all_optimizer_skips_independently_measured": false
+  }
+}

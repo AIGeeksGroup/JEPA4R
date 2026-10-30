@@ -1,0 +1,24 @@
+{
+  "actual_exit_code": 0,
+  "scope": "sole data/config author; no model or trainer source modified",
+  "base_dir": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1",
+  "files": {
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/data_plan.json": "3dd17b956bfb5249a876edbd6d14ab41655dbc46ccd74790dc1376eabba5dd88",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/configs/G10_cube4_state.json": "aa19f669ce840cfa52b791d040cbeb34e7701be45cf5fc70f8920616d6afada6",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/configs/G05_cube2_rgb.json": "8c3af1e965e3266965cfac9a1baedbfb081da1c5a15549de1574b3cdfbf8b65b",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/configs/G06_cube2_pcd.json": "c782818914cf29b8ed33b1d5119833d0d4990fa59c7221e24680ac23b37d84d8",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/configs/G08_cube3_rgb.json": "6d717c2123217020fec593367f3eecb42e01dfe203e9aae8d5a38733045f55b5",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/configs/G09_cube3_pcd.json": "16aa74533db3187e581eb3aee6ccf90d6930c37119e29320983c425125216893",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/data_readiness_v1/quadruple_data_acceptance.json": "db1bb2aacf3916254aaf8d3e3f81b90e1b2de3b2e4ab93407e17a45f54fd9329",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/data_readiness_v1/quadruple_stat-freeze.json": "defd3b51d55a5ab2dd13b30e6dd2ad2ebb7dd5c7084a5a6ea965205e14edd1b1"
+  },
+  "groups": [
+    "G10",
+    "G05",
+    "G06",
+    "G08",
+    "G09"
+  ],
+  "new_NN_GPU_training_download_or_encoding": false,
+  "prepared_at": 1792320965.1224413
+}

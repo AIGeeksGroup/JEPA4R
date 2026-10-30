@@ -1,0 +1,59 @@
+{
+  "actual_exit_code": 0,
+  "status": "local_CPU2_verified_source_frozen_pending_independent_review_Root_target_deploy_profile_and_production",
+  "created_at_unix": 1792505021.767976,
+  "files": {
+    "profile_policy.py": "cc5b54860167d1d7becdac6e4f0f52632b922b501bce18c031dc18a749d0a307",
+    "release_decision.json": "f2d622395ff1c6c197d4d91b3ff872b5fb62a41998add932466c73d6b0235301",
+    "test_profile_policy.py": "5a2cfb63cdc007a860d27e3f5cce908cbedac66fe7f4477d7df7528852712d8d",
+    "original_GPU_report_reference.json": "51da373cc18a6f352e634d48eb0b9844020f050b3536a5422ccdb8214107b5f1",
+    "from_Double_policy_delta.diff": "daac4aa558ae0edba4e1626c6f77058f60b2159b66f587c4857168263c2df1a4",
+    "policy_guard_delta.diff": "118abfaa149191c94090cf7bf46e2dddc3b97fcf871481894eaa6dfc6e37a86c"
+  },
+  "reference_Double_policy": {
+    "path": "coordination\\cube2_official_embeddings_101732Test_20261018_v1\\performance_release_v1\\profile_policy.py",
+    "sha256": "39daf167834e3db3f47736d45a4278673fc902c3846da214dc369270fd7e2125",
+    "check_report_AST_exact": true,
+    "policy_source_AST_exact": true
+  },
+  "actual_Quad_bindings": {
+    "original_report_sha256": "51da373cc18a6f352e634d48eb0b9844020f050b3536a5422ccdb8214107b5f1",
+    "plan_sha256": "46abaa147085f92055a441237bd44aa9513291475589cbae7b2fab9aa5ca91be",
+    "checkpoint_sha256": "95e7980f665a0ad888a0723499f5d0771c8cf797065b1f1b39c3eae39fd951d8",
+    "original_wrapper_sha256": "7d51103b4c078ac158aebfd97acc37970503b933d03fd5493d7e578efbb2714d",
+    "base_producer_sha256": "2dde0d8302061cba76edd384b9f1c825e41629c80ae327c4c962545e817aa43c",
+    "GPU_preprocess_source_sha256": "7929544aab09cb17cd25b269ef0830259456c9fa76fcd62cf07e5d19819e35bf",
+    "benchmark_source_sha256": "d6d2282ba63e4f0d48fff2dccaf89aa352b08b52b85d75086a75b6f401fd0d21"
+  },
+  "in_memory_guard_policy": {
+    "edits": [
+      [
+        "assert accepted['accepted'] is True and accepted['candidate_source_sha256'] == sha(Path(__file__).with_name('gpu_preprocess.py'))",
+        "assert _PERFORMANCE_RELEASE['positive_gain_release'] is True and accepted['accepted'] is False and accepted['candidate_source_sha256'] == sha(Path(__file__).with_name('gpu_preprocess.py'))"
+      ],
+      [
+        "assert accepted['candidate_median_seconds'] <= accepted['baseline_median_seconds'] * .95",
+        "assert 0 < accepted['candidate_median_seconds'] < accepted['baseline_median_seconds'] and _PERFORMANCE_RELEASE['original_5percent_time_reduction_failed'] is True"
+      ]
+    ],
+    "exact_edit_count": 2,
+    "reverse_equals_original": true,
+    "effective_source_sha256": "a16e388387e1840db49414ca67883f6cc0f74ba61cbf74247f261a42d41dfa04",
+    "all_other_resource_wrapper_code_unchanged": true
+  },
+  "CPU_tests": {
+    "receipt": "coordination\\cube4_gciql_103032Test_20261020_v1\\performance_release_v2\\cpu_green_final_v1\\receipt.json",
+    "sha256": "7e6956ebdbace3da19201921fb0d07cd930109e075c757252d5e6009d85640c7",
+    "actual_exit_code": 0,
+    "tests": 2,
+    "scope": "normal exact positive gain keeps original acceptedfalse; same resource keys and all nonmain wrapper function AST; wrong plan/numeric/accepted flags rejected; no NN or renderer"
+  },
+  "protected": "original report acceptedfalse, runtime1 failure, G12 waiter1, oldsource/plan/cache not edited",
+  "not_done": [
+    "remote deployment",
+    "real profile generation",
+    "new pilot/full/audit",
+    "G12 restart or training"
+  ],
+  "no_SSH_GPU_NN_or_gate_rerun": true
+}

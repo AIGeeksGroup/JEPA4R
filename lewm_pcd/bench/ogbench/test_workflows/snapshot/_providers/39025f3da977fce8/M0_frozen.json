@@ -1,0 +1,148 @@
+{
+  "train_root": "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/rl3_m0_gciql_seed0_b1024_1m_w2_20261013_v1",
+  "selected_updates": 1000000,
+  "training_code_root": "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/core_v1",
+  "final_audit": "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/afterhook_v1/M0_final/report.json",
+  "final_probe": "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/afterhook_v1/M0_action/report.json",
+  "wm_source_config": "/root/autodl-tmp/workspace/users/lewm/coordination/gciql_frozen_lewm_109_20261009_v1/bridge_v1/config.json",
+  "agent_sha256": "4c9ec1bdd95705fc3af3f3604dd9d445593f4da5be24e7bdaa4f370de01d18a5",
+  "sidecar_sha256": "f4bcf37dc357391edf78d878cff5c03fe4a513d56715f90efce6c35ea8d6f3c9",
+  "visual_mode": "zero192",
+  "modality": "pcd",
+  "modules": {
+    "state_adapter": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/official_state_gciql_launch_109_20261009_v1/native_eval_prepare/state_replay_adapter.py",
+      "sha256": "ef1a7187ca094ad838a0dc1136b15817116c0533da18d13574cbbca2b0b942ce"
+    },
+    "legacy": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/coordination/cached_lewm_state_gciql_xyz_109_20261012_v1/native_v1/locked_dependencies/official_state_sr.py",
+      "sha256": "5721760f53f8f3c4afb3f85626366022f844861ff3462a46bb5a0365f1e372bb"
+    },
+    "replay": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/coordination/cached_lewm_state_gciql_xyz_109_20261012_v1/native_v1/locked_dependencies/native_single_frame_adapter.py",
+      "sha256": "fcbc9a13cc38b6ad6ad08bc61b8b463dbd35a76d6511c928e3a94a35c1d699f9"
+    },
+    "frame": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/official_lewm_gcbc_20261006/native_sr_v1/native_pcd_frame.py",
+      "sha256": "ffc7cc1436381a84da5690557167f2d7b482711350f2ae4fe8ffe56a99156b98"
+    },
+    "appearance": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/official_lewm_gcbc_20261006/native_appearance_allowlist_v3.py",
+      "sha256": "fd9eeabc9d345f8f36883a156da2b5ecf364e6352f2e414b041f99482f6df3de"
+    },
+    "native_runner": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/coordination/cached_lewm_state_gciql_xyz_109_20261012_v1/native_v1/locked_dependencies/native_runtime_helpers.py",
+      "sha256": "a83bcf181b00d57fe5b41ef4e61c42dded0561b1ec9d4dc2c7a1c64dfdb8bc3a"
+    },
+    "bridge": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/coordination/gciql_frozen_lewm_109_20261009_v1/bridge_v1/bridge.py",
+      "sha256": "7ccbf35c8750d2bf7941a11188ca604ff36bd7123aad06ac2db25f0bc5f3f59b"
+    },
+    "hash_helper": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/official_lewm_gcbc_20261006/trainer.py",
+      "sha256": "0a867ba19e8712e6238efcdc5d34fcde7bbe442507e8a82aba89d2ac72f01a9b"
+    }
+  },
+  "source_sha256": {
+    "/root/autodl-tmp/workspace/users/lewm/JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/encoders/__init__.py": "90e5ab276c362b6a5c1e4cd2c2363335eba8c5c34bf72fa48b4942ffc4ac5788",
+    "/root/autodl-tmp/workspace/users/lewm/JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/encoders/pointnet_dexart.py": "78a545f7f41f42ed9714101d203a1ec14875495cf43fb86e72ff729fb29b184b",
+    "/root/autodl-tmp/workspace/users/lewm/JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/encoders/vit.py": "829efe4f2c11884253d236050a9fd2146732c91393547f92475a862c8fcd669a",
+    "/root/autodl-tmp/workspace/users/lewm/JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/envs/pcd_wrapper.py": "821d056ecf41ea69e116c0d37ac99be30dfd9ec3bda4d8e7531d03f67f9beb8e",
+    "/root/autodl-tmp/workspace/users/lewm/JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/jepa.py": "7e6680f9941268b13526082fa888a46de7dca9385bfc837e77ee649e5c034135",
+    "/root/autodl-tmp/workspace/users/lewm/JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/module.py": "0b258a9e8dc24c29fcb1e8c50a09ec78b8ea85aeb79e21dd8adf712396646620",
+    "/root/autodl-tmp/workspace/users/lewm/JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/data/formats/hdf5.py": "0edde080986c6853a59c5c9ac85fbf055caa7672f2204002e7d7ea3b1a634294",
+    "/root/autodl-tmp/workspace/users/lewm/JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/utils.py": "f203cb4826cec6d4b474900f136fa09d6dbc13a366bf0906b67bbdac4297344c",
+    "/root/autodl-tmp/workspace/users/lewm/JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/utils.py": "a6a386523779ede2ef4453b23198e46e371a0c73200e8f957ae272b5d7b63259",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/gciql_frozen_lewm_109_20261009_v1/bridge_v1/bridge.py": "7ccbf35c8750d2bf7941a11188ca604ff36bd7123aad06ac2db25f0bc5f3f59b",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/gciql_frozen_lewm_109_20261009_v1/bridge_v1/config.json": "76a517056d5b7c3e2b7b6531c965c6f0fc1668cca8ddc21394e6d92c1ed4fd24",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/gciql_frozen_lewm_109_20261009_v1/environment/activate_existing_profile.sh": "e36f92e198ba0e51fce7a9c4806dccd29c9530b8067b983c1d8ecaf841f9eca2",
+    "/root/autodl-tmp/workspace/users/lewm/downstream-smoke-20261005-2133/state/official-source/impls/agents/gciql.py": "05a0b5d9b987d3049df8a1158bbfbaba2ca2611604d24f9e484f8fb6d0cd92bc",
+    "/root/autodl-tmp/workspace/users/lewm/downstream-smoke-20261005-2133/state/official-source/impls/utils/datasets.py": "52c373922a87e1ba8ad8b3b96c3474d5e6385e2ea2c7206930f7a8a315816609",
+    "/root/autodl-tmp/workspace/users/lewm/downstream-smoke-20261005-2133/state/official-source/impls/utils/encoders.py": "6bd7fdd82838b754d26af01f9e84d70fa63fca1e09efee38a09f325884073ecc",
+    "/root/autodl-tmp/workspace/users/lewm/downstream-smoke-20261005-2133/state/official-source/impls/utils/evaluation.py": "4d9a2732bc9ef89ce99fbc0f07a76d3f4d035783af3a658251709140ff9de3d5",
+    "/root/autodl-tmp/workspace/users/lewm/downstream-smoke-20261005-2133/state/official-source/impls/utils/flax_utils.py": "5b6a8e9a919bf57dae0c1454f327ded4235385f9d9dcd1e62263fe4fad9fd484",
+    "/root/autodl-tmp/workspace/users/lewm/downstream-smoke-20261005-2133/state/official-source/impls/utils/networks.py": "e7e4c4a439b691911e5ae6c2653f253c5703e6b5d190d813e28ebc32e7306094",
+    "/root/autodl-tmp/workspace/users/lewm/downstream-smoke-20261005-2133/state/official-source/ogbench/manipspace/envs/cube_env.py": "6f8457ffd634f6620411c788c86e871f44ea5b5b5eecf76cd694fc04d12d678d",
+    "/root/autodl-tmp/workspace/users/lewm/downstream-smoke-20261005-2133/state/official-source/ogbench/manipspace/envs/env.py": "c656f4733a1ad4cb07289bc58ac1ac0f7da378e1f2714dc80a5ed8c0b3028c38",
+    "/root/autodl-tmp/workspace/users/lewm/downstream-smoke-20261005-2133/state/official-source/ogbench/manipspace/envs/manipspace_env.py": "03524eb1c95155bbc2ec3d29e9836fccffe8eb9fce1be15b6f0e7062cc1bb5fd",
+    "/root/autodl-tmp/workspace/users/lewm/downstream-smoke-20261005-2133/state/official-source/ogbench/utils.py": "f503a3a0497f91ce02958abae5770f3e08c9d6a3a740687c828c996fedb24e9b",
+    "/root/autodl-tmp/workspace/users/lewm/lewm-gcbc-smoke-20261006-0002/lewm_gcbc_adapter.py": "702ab5e2ea955c6bd37a97564f0d83129e512720138eb38a2efffaa7a8544798",
+    "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/cube_state_rgb_validation_v1/config.json": "f16da70eafef860761ce8076884f6cbd4320a484012bf67bf1b4aa40727792c4",
+    "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/official_lewm_gcbc_20261006/native_appearance_allowlist_v3.py": "fd9eeabc9d345f8f36883a156da2b5ecf364e6352f2e414b041f99482f6df3de",
+    "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/official_lewm_gcbc_20261006/native_sr_v1/native_pcd_frame.py": "ffc7cc1436381a84da5690557167f2d7b482711350f2ae4fe8ffe56a99156b98",
+    "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/official_state_gciql_launch_109_20261009_v1/native_eval_prepare/official_state_sr.py": "e144c1baa68dc1e8cd827cd4057bddab97181954e78658cdb751418159142da9",
+    "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/official_state_gciql_launch_109_20261009_v1/native_eval_prepare/state_replay_adapter.py": "ef1a7187ca094ad838a0dc1136b15817116c0533da18d13574cbbca2b0b942ce",
+    "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/pcd_full_v1/pcd_geometry.py": "e1b0f13db624d4e579946cfe909dd0acb342ad261c3d190e962260ed47b30bf2",
+    "/root/autodl-tmp/workspace/users/lewm/ogbench-train-20261003/checkpoints/fixed5_mixed_pcd_dexart_10ep/config.json": "2312179814f61cee5501bc38f4b5477fa93aa864de0924989c55a1bf35a600b7",
+    "/root/autodl-tmp/workspace/users/lewm/ogbench-train-20261003/checkpoints/fixed5_mixed_pcd_dexart_10ep/config.yaml": "f93c68a7f9a353135aef638a5efd3013ade0e7f6e1442469d648f7a6bd3ed517",
+    "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/cube_rgb_full_20261006_v1/dataset_index.json": "2b7081891c8fb3228fa6c197a45132e554f45c37706dda744fcf8d783458428d",
+    "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/cube_pcd_main_full_20261007_v2/dataset_index.json": "4c1443c058fd4fa71bdf82e292bc60b14ae894a1c5c4eaa5075fb6fa87c1666b",
+    "/root/autodl-tmp/workspace/users/lewm/ogbench-train-20261003/checkpoints/fixed5_mixed_pix_10ep_chunk5/config.json": "c23f8d59c185b7e8953649eb3e18de94315bfab99e0cfc624032abc08753e536",
+    "/root/autodl-tmp/workspace/users/lewm/ogbench-train-20261003/checkpoints/fixed5_mixed_pix_10ep_chunk5/config.yaml": "40fa58af168bc3bb8d173ae15f1e54d2d1d1956d783220d3fff8f99d09070d57",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/cached_lewm_state_gciql_xyz_109_20261012_v1/native_v1/locked_dependencies/official_state_sr.py": "5721760f53f8f3c4afb3f85626366022f844861ff3462a46bb5a0365f1e372bb",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/cached_lewm_state_gciql_xyz_109_20261012_v1/native_v1/locked_dependencies/native_single_frame_adapter.py": "fcbc9a13cc38b6ad6ad08bc61b8b463dbd35a76d6511c928e3a94a35c1d699f9",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/cached_lewm_state_gciql_xyz_109_20261012_v1/native_v1/locked_dependencies/native_runtime_helpers.py": "a83bcf181b00d57fe5b41ef4e61c42dded0561b1ec9d4dc2c7a1c64dfdb8bc3a",
+    "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/official_lewm_gcbc_20261006/trainer.py": "0a867ba19e8712e6238efcdc5d34fcde7bbe442507e8a82aba89d2ac72f01a9b",
+    "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/official_lewm_gcbc_20261006/dataset.py": "5c922fad193fbd6cffad58992504ce3107fbd4230d99741d15c4a5c77af07181",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/configs/M0_w2_formal_config.json": "6f4bcae114644b4c8029a0f310abf5a1f0dfef353d59fcafde1dea4e2316f9f7",
+    "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/rl3_m0_gciql_seed0_b1024_1m_w2_20261013_v1/resolved.json": "dbfddd23b05df58f1ffe9448d684b03c9ae7c16d61e45e1b0a8e9c5fecca0038",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/afterhook_v1/M0_final/report.json": "8721379c71f25679e7837ecfd0d2ed438646908dbafe902c583fc29c95fdeba3",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/afterhook_v1/M0_action/report.json": "7e357400264bdf468ae3ca92afff341e67d918a3b452d208a9ff11e7b42d2974",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/pcd_frozen_lewm_gciql_100k_sr_109_20261010_v1/pcd_gciql_native.py": "36fa1e22928a4782c6a90328eae49544bfd55b4d6f51b118783ca7b17bfa8968",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/cached_lewm_visual_state_gciql_b1024_1m_109_20261013_v1/runtime_autotune0_v1/activate.sh": "fa1de8fca14a7088f400939b256a5fc92ef2dc06dae6709d20b2446527d31675",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/core_v1/reader.py": "08438efa11157128208385e2a044349e26a50f6a7304535967824ce47881db12",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/core_v1/train.py": "73ba082f730e9000a238c789726c26b075590807968a0016bc75e8e9111231d0",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/core_v1/test_formal.py": "8a2f1ff8df9595dbde6ced4703739c71108e83c2d46d4a7f9039dbe1c4c7f9a3",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/core_v1/launch.py": "241117a0ca493cbb1662e43c1bdfedafd8c1fb9ff97f969b23a0ba9fc88c6df2",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/core_v1/gciql.py": "8611cd476d8849ad014ca43304073c3e88fc3d3aa5dab369a343ae425bba7ba7",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/core_v1/config.json": "08aa645c3a068d9eef495d628cda4a7099371b049d479d594d7405fc9350a356",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/native1m_v1/official_state_sr.py": "a3e1409dcd476ef00746a7e6b6ec38017f37131f7917b109357099ce95905a82",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/native1m_v1/cached_state_xyz_native.py": "9bfba36f36dcaf34b98100f71bcde71b6855b7ad5c9af6d4640035697f4eaad3",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/native1m_v1/test_cached_native.py": "5bbcb19ae4262e434111275a8bd50bf8c954fa83daf8f127bfbd583ccaf4976d",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/native1m_v1/run_stage.sh": "c616a4030b2c4fbd08dd8745cd4f958d09da9768431b85db334cb6d3cbf324af",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/native1m_v1/prepare_binding.py": "ba2994a1fc2707373f4e8c3d0c87a800a08f1d22b8a2e34e708b9a026829d116"
+  },
+  "reference_helper_root": "/root/autodl-tmp/workspace/users/lewm/coordination/cached_lewm_state_gciql_xyz_109_20261012_v1/native_v1/locked_dependencies",
+  "required_zero_exits": [
+    "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/rl3_m0_gciql_seed0_b1024_1m_w2_20261013_v1/trainer_exit_code",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/formal_launches_v1/M0/child_exit_code",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/formal_launches_v1/M0/driver_exit_code",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/formal_dispatch_v1/M0/outer_exit_code",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/relay_v1/runtime/M0_CPU_fullstate/actual_exit_code",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/relay_v1/runtime/M0_CPU_cached_action/actual_exit_code"
+  ],
+  "environment_kwargs": {
+    "ob_type": "states",
+    "width": 224,
+    "height": 224,
+    "mode": "task",
+    "visualize_info": false,
+    "terminate_at_goal": true,
+    "max_episode_steps": 200
+  },
+  "pcd_core": "/root/autodl-tmp/workspace/users/lewm/JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/envs/pcd_wrapper.py",
+  "pcd_provider": "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/pcd_full_v1/pcd_geometry.py",
+  "rgb_recipe": "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/cube_state_rgb_validation_v1/config.json",
+  "runtime_profile": "/root/autodl-tmp/workspace/users/lewm/coordination/cached_lewm_visual_state_gciql_b1024_1m_109_20261013_v1/runtime_autotune0_v1/activate.sh",
+  "runtime_profile_sha256": "fa1de8fca14a7088f400939b256a5fc92ef2dc06dae6709d20b2446527d31675",
+  "native_output": "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/rl3_m0_gciql_1m_b1024_native_20261013_v1",
+  "reference_replay": "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/official_state_final_sr_seed0_v1/metadata_snapshot_v1",
+  "task_order": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "episodes_per_task": 50,
+  "max_policy_steps": 200,
+  "seed_base": 970000000,
+  "extra_warmup": 0,
+  "acceptance": "CPU/source prepared only; actual root-authorized tiny and250 remain pending",
+  "goal_mode": "latent_object_xyz",
+  "policy_kind": "cached-visual-state-xyz",
+  "current_dims": 220,
+  "goal_dims": 195,
+  "goal_encoding": "zeros192 plus true paired goalXYZ3; no goal rendering or encoder",
+  "zero_visual_channels": true
+}

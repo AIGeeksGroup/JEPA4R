@@ -1,0 +1,46 @@
+{
+  "actual_exit_code": 0,
+  "at": 1792987407.7830527,
+  "files": {
+    "prepare.py": {
+      "SHA256": "c2f70e729929ea3b2bab98ca44cdf55d7f098aa73c6d59120ae2db31eedaa4b6",
+      "bytes": 14343
+    },
+    "run.py": {
+      "SHA256": "d5a04ebfe48cb45584578db685cb9796a449f29df8ab8de00f5a35db376a199e",
+      "bytes": 5187
+    },
+    "run.sh": {
+      "SHA256": "55a32ceb43728ed8eefa7f1a5891cd17beb88f5cdb2a6ebefc5fc79f2744f217",
+      "bytes": 550
+    },
+    "test_metadata.py": {
+      "SHA256": "05bc85bf86d7284a99f3789452c6539c4f568a60b8ce8cb5b2519337a9c3fb47",
+      "bytes": 16532
+    },
+    "backup_watch.py": {
+      "SHA256": "3fdcac5b385f26a4d39d8efd020580e88272ca0a1baf0b1d041cc7cb2cda4541",
+      "bytes": 10617
+    },
+    "backup_copy.py": {
+      "SHA256": "0f88ebfe8a909fe68b21cb1f22a2bc4fb598110f1cff7b528a433a031babb571",
+      "bytes": 11423
+    },
+    "backup_gate.py": {
+      "SHA256": "8cbbc47218485b3a0206841f01ea2ea8cfd7fe9ae81dddb9cacd2b3f8f10a016",
+      "bytes": 3603
+    },
+    "tests/test_backup.py": {
+      "SHA256": "fe02cf89eb5aa11b73006c50110ea34382c5ea7cb07e87565076e1644f706f97",
+      "bytes": 16998
+    },
+    "BACKUP_API.md": {
+      "SHA256": "dfa48fd386dd24aa4e1fc500e500dff8d796a18ff28b2d0b9a984e2eafdf95e5",
+      "bytes": 10737
+    }
+  },
+  "protected_sources_before_after_exact": true,
+  "training_updates": 0,
+  "SR_episodes": 0,
+  "NN_started": false
+}

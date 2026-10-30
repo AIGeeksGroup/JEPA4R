@@ -1,0 +1,64 @@
+{
+  "status": "candidate_frozen_local_CPU5_actual0_pending_independent_review_and_target_actual_gate",
+  "owner": "cube2_embedding_pipeline_audit",
+  "new_files": {
+    "extension_inputs.py": "de2381f3262a5b088b11d2ac1bbc5ae258ef82a26801f398e72c09f457fd0f5b",
+    "extension_runtime.py": "a9735b9b4f3fec3b01f189e910e12e985cbba3a8ba13e1fafeac878f1222c9c1",
+    "extension_boundary.py": "9a6a08cfbd988bda6904c7c728ae289b8c1ff801f56754a7c0798fc067a3cb81",
+    "test_extension_inputs.py": "b39d2a84a2903839e7fc704e42c23289745bd43c127c3edf54aea176bf5f6788"
+  },
+  "preserved_references": {
+    "trainer_runtime.py": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/trainer_runtime.py",
+      "sha256": "18acaead938e573f80ec6e87e0cb44822a734decf2e97730861886841a22b82c"
+    },
+    "distance_inputs.py": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/distance_inputs.py",
+      "sha256": "b9906dc2f4e7a38826f5ee05031713618a6ce408ee5555302801505452758f90"
+    },
+    "gciql_boundary.py": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/gciql_boundary.py",
+      "sha256": "a81363583a4826194b90974be2ad62c5895ab6b963e15ba042c9f893a46ba5e6"
+    },
+    "state_priority_v1/state_runtime.py": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/state_runtime.py",
+      "sha256": "623fff33b0c836c6268257689216cf78de8694fbab1107dddbd4bdbfc3ee1956"
+    },
+    "state_priority_v1/state_inputs.py": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/state_inputs.py",
+      "sha256": "ada2bdc73de50753a83ee951cb99849c9bd3282f3e6527c4e8d906f85f7d9fd9"
+    },
+    "cube_inputs.py": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube_inputs.py",
+      "sha256": "36358548ef7a78311730913fccfdfa025d354a18edd4f8197b03b4c0d5ae5d9b"
+    },
+    "ordered_input.py": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/official_state_workers_v1/ordered_input.py",
+      "sha256": "4508ce847694976f8af924215d11985ac4d795093b22d62e8424928346fbdda2"
+    },
+    "original_gciql.py": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/imports/single_cube_rl3_101632_20261018_v1/source_layout/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/core_v1/gciql.py",
+      "sha256": "8611cd476d8849ad014ca43304073c3e88fc3d3aa5dab369a343ae425bba7ba7"
+    }
+  },
+  "CPU_receipt": {
+    "path": "cpu_checks_v2/receipt.json",
+    "sha256": "d81ea08cbafb192e66227cd46bbebd65cfd9fcf06bc5cf31d8c27a228ebe163d",
+    "actual_exit_code": 0
+  },
+  "data_config_freeze": {
+    "path": "DATA_CONFIG_FREEZE_v1.json",
+    "sha256": "0410b22a872d2fb4bf29c46283d843b79dbdde43b6b7ee3adc9adf6acd2ce32f"
+  },
+  "group_order": [
+    "G10",
+    "G05",
+    "G06",
+    "G08",
+    "G09"
+  ],
+  "source_files_modified": false,
+  "GPU_NN_or_training_started": false,
+  "semantics": "Existing state_runtime.install owns get_batch/async100/save; only frozen state guard permits4 and visual wrapper exposes compatible no-lookahead interface; original trainer and boundary funcs reused",
+  "supersedes": "FUNCTION_FREEZE_v1.json only test target path; 3 functional sources same"
+}

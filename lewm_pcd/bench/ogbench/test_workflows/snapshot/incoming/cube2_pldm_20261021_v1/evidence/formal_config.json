@@ -1,0 +1,39 @@
+{
+  "argv": [
+    "/root/autodl-tmp/conda/envs/jepa4r-smoke/bin/python",
+    "-B",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/double_cube_pldm_seed0_20261020_v2/attempt_002/source/train.py",
+    "--root",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/double_cube_pldm_seed0_20261020_v2/attempt_002/source",
+    "--data-root",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/double_cube_lewm_full10ep_109_20261015_v1",
+    "--output",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/double_cube_pldm_seed0_20261020_v2/attempt_002/stages/formal/native_output",
+    "--method",
+    "pldm",
+    "--run-tag",
+    "double_cube_seed0_formal_attempt_002",
+    "--phase",
+    "formal",
+    "--mode",
+    "train"
+  ],
+  "created_at": "2026-10-20T04:27:01.568494+00:00",
+  "cwd": "/root/autodl-tmp/workspace/users/lewm/coordination/double_cube_pldm_seed0_20261020_v2/attempt_002/source",
+  "data_manifest_sha256": "e419b7f6f8e6fb1bc60c77eb2c4d172fb6321fef697f2bee3c4f9f9381cb6097",
+  "data_root": "/root/autodl-tmp/workspace/users/lewm/coordination/double_cube_lewm_full10ep_109_20261015_v1",
+  "environment": {
+    "HYDRA_FULL_ERROR": "1",
+    "MKL_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "PYTHONPATH": "/root/autodl-tmp/workspace/users/lewm/coordination/double_cube_pldm_seed0_20261020_v2/attempt_002/source:/root/autodl-tmp/workspace/users/lewm/coordination/double_cube_pldm_seed0_20261020_v2/attempt_002/source/vendor/pldm/source:/root/autodl-tmp/workspace/users/lewm/coordination/double_cube_lewm_full10ep_109_20261015_v1/core_v1/third_party/stable-worldmodel:"
+  },
+  "formal_uses_gate_checkpoint": false,
+  "native_output": "/root/autodl-tmp/workspace/users/lewm/coordination/double_cube_pldm_seed0_20261020_v2/attempt_002/stages/formal/native_output",
+  "python": "/root/autodl-tmp/conda/envs/jepa4r-smoke/bin/python",
+  "sampling_interval_seconds": 15,
+  "seed": 0,
+  "source_freeze_sha256": "79d723c2f814f2171d60f8c41a6b6b91e692e75f006b646b9bd891c22ba099f1",
+  "stage": "formal"
+}

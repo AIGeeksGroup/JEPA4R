@@ -1,0 +1,185 @@
+{
+  "launcher_sha256": "cc4951b090efb3aeec86b98854de56bf163bbe88d6e32676ee47a51b74120c77",
+  "parent_owner": "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/cube_state_continuous_pilot_v2",
+  "parent_sha": "793a6ddf8b9533b68f47908c4521bdd67757c95cdf1c183c61c38b1301dfbb9f",
+  "parent_config_sha256": "2747802d313c0e294d8cf4c2892b3dbfbfa665824ae1bf27745b63d48ed44439",
+  "source_npz_sha256": "96d07401bdebdc3f0ea6d56ed1333863e0962f441483adc2c43b83105046eb00",
+  "source_split": "val",
+  "old_renderer_sha256": "d5e8a56cd90d1425be3e302be880bd110838d8efdceb877cf34fcdf865a6b5bd",
+  "prefix_rows": 757,
+  "new_rows": 244,
+  "prefix_fields": {
+    "action": {
+      "shape": [
+        1001,
+        5
+      ],
+      "prefix_rows": 757,
+      "dtype": "float32",
+      "sha256": "bb6653dd29494a139063897ae61284375e1d41a1b57307b75beab02f950f5cbf"
+    },
+    "ep_idx": {
+      "shape": [
+        1001
+      ],
+      "prefix_rows": 757,
+      "dtype": "int64",
+      "sha256": "1b8f9fc5feaf83e0b22c7fd2a267bf03881b04d1236a0fa6282d50463ee62294"
+    },
+    "ep_len": {
+      "shape": [
+        1
+      ],
+      "prefix_rows": 1,
+      "dtype": "int32",
+      "sha256": "7fab10fa7e3cd00c4264fde9ee7402cc249e8028eb6f76ff1418941a755eddb9"
+    },
+    "ep_offset": {
+      "shape": [
+        1
+      ],
+      "prefix_rows": 1,
+      "dtype": "int64",
+      "sha256": "af5570f5a1810b7af78caf4bc70a660f0df51e42baf91d4de5b2328de0e83dfc"
+    },
+    "id": {
+      "shape": [
+        1001
+      ],
+      "prefix_rows": 757,
+      "dtype": "int64",
+      "sha256": "3f84d72f19a7bc606d812082a8b682376c07c1a8e4fcb886facdd73d8cd9a19c"
+    },
+    "observation": {
+      "shape": [
+        1001,
+        28
+      ],
+      "prefix_rows": 757,
+      "dtype": "float32",
+      "sha256": "bcae25ad4d01c2ce8a8419e7de76e7e3aba435ef32ca8822fc1458129d82b21e"
+    },
+    "pixels": {
+      "shape": [
+        1001,
+        224,
+        224,
+        3
+      ],
+      "prefix_rows": 757,
+      "dtype": "uint8",
+      "sha256": "336dfe1746a552b22a32f8b2eae22f6d52a49a2ac9ffee7167c3f2c4e0fd6230"
+    },
+    "qpos": {
+      "shape": [
+        1001,
+        21
+      ],
+      "prefix_rows": 757,
+      "dtype": "float32",
+      "sha256": "8500a3577001370a21561e234edf7ecdcdc659c34c2dc7ba6bd89c279ff82776"
+    },
+    "qvel": {
+      "shape": [
+        1001,
+        20
+      ],
+      "prefix_rows": 757,
+      "dtype": "float32",
+      "sha256": "3139777f1e8fc8ccef040f5f984c82a16fdbdcb4fe3c876b777595d6fabb6456"
+    },
+    "source_episode": {
+      "shape": [
+        1001
+      ],
+      "prefix_rows": 757,
+      "dtype": "int64",
+      "sha256": "1b8f9fc5feaf83e0b22c7fd2a267bf03881b04d1236a0fa6282d50463ee62294"
+    },
+    "source_row": {
+      "shape": [
+        1001
+      ],
+      "prefix_rows": 757,
+      "dtype": "int64",
+      "sha256": "3f84d72f19a7bc606d812082a8b682376c07c1a8e4fcb886facdd73d8cd9a19c"
+    },
+    "source_step": {
+      "shape": [
+        1001
+      ],
+      "prefix_rows": 757,
+      "dtype": "int64",
+      "sha256": "3f84d72f19a7bc606d812082a8b682376c07c1a8e4fcb886facdd73d8cd9a19c"
+    },
+    "source_terminal": {
+      "shape": [
+        1001
+      ],
+      "prefix_rows": 757,
+      "dtype": "bool",
+      "sha256": "f1e249e24f0dd6df2ac53dd04cc06570cd6d38afe1e6678219c934ba3fd670ca"
+    },
+    "step_idx": {
+      "shape": [
+        1001
+      ],
+      "prefix_rows": 757,
+      "dtype": "int64",
+      "sha256": "3f84d72f19a7bc606d812082a8b682376c07c1a8e4fcb886facdd73d8cd9a19c"
+    },
+    "terminals": {
+      "shape": [
+        1001
+      ],
+      "prefix_rows": 757,
+      "dtype": "bool",
+      "sha256": "f1e249e24f0dd6df2ac53dd04cc06570cd6d38afe1e6678219c934ba3fd670ca"
+    },
+    "valid_transition": {
+      "shape": [
+        1001
+      ],
+      "prefix_rows": 757,
+      "dtype": "bool",
+      "sha256": "8b6e9315679e811503488e31f8910047ece6c24e0c83e508b50bbc343a76af74"
+    }
+  },
+  "train_owner": "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/cube_state_continuous_pilot_v1/train.h5",
+  "train_sha256": "3726d84fad5418f7a6e54604bb3a70fac82bf5646d9b640966ab6ecf87604489",
+  "RGB_recipe": {
+    "camera": "front_pixels",
+    "width": 224,
+    "height": 224,
+    "ob_type": "states",
+    "visualize_info": false,
+    "offsamples": 4
+  },
+  "provenance_ranges": [
+    {
+      "start": 0,
+      "end_exclusive": 753,
+      "code_version": 1,
+      "owner": "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/cube_state_continuous_pilot_v1",
+      "code_sha256": "d5e8a56cd90d1425be3e302be880bd110838d8efdceb877cf34fcdf865a6b5bd"
+    },
+    {
+      "start": 753,
+      "end_exclusive": 757,
+      "code_version": 2,
+      "owner": "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/cube_state_continuous_pilot_v2",
+      "code_sha256": "af0057b2a1171502e404c0dcd04c8b6e12b49db900092a6e1982bd5f29de3d65"
+    },
+    {
+      "start": 757,
+      "end_exclusive": 1001,
+      "code_version": 3,
+      "owner": "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/cube_state_rgb_validation_v1",
+      "code_sha256": "cc4951b090efb3aeec86b98854de56bf163bbe88d6e32676ee47a51b74120c77"
+    }
+  ],
+  "pcd_produced": false,
+  "depth_seg_new_suffix_produced": false,
+  "no_physics_steps": true,
+  "canonical_label": "Cube-state-derived opaque224 AA4 RGB-only; not official published Visual RGB"
+}

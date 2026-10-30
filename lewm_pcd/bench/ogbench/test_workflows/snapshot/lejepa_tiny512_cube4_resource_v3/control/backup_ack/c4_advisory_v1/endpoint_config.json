@@ -1,0 +1,138 @@
+{
+  "ack_root": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/control/backup_ack/c4_advisory_v1/acks",
+  "advisory_only": true,
+  "case_root": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3",
+  "component_sources": {
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube14_gciql_v1/release_v1/ADAPTER_SOURCE_FREEZE.json": {
+      "bytes": 2794,
+      "sha256": "728a16f7117753a6a6226665519a3f25e06a34283aa0013caf522ae292999dbe"
+    },
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube14_gciql_v1/release_v1/ENCODER_COMPONENT_FREEZE.json": {
+      "bytes": 2168,
+      "sha256": "b8f0900dd4c822d8f044aa93ea6392209496fbd3e675f4a28ee67e4a680c1dae"
+    },
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube14_gciql_v1/release_v1/tiny_bridge.py": {
+      "bytes": 20016,
+      "sha256": "98d684a1065b4c44f026ada58ac9664d026998fd74cdbe3872bd09913bb51c62"
+    },
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube14_gciql_v1/release_v1/tiny_encoder.py": {
+      "bytes": 5571,
+      "sha256": "d32c467fc02fd3680d3c12d737e692dd423a9f1b5d7a0f9f20c5e21584da3b86"
+    }
+  },
+  "config_sources": [
+    {
+      "config_path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/configs/pilot/lejepa_tiny512_cube4.json",
+      "group_id": "lejepa_tiny512_cube4",
+      "stage": "pilot"
+    },
+    {
+      "config_path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/configs/formal/lejepa_tiny512_cube4.json",
+      "group_id": "lejepa_tiny512_cube4",
+      "stage": "formal"
+    }
+  ],
+  "copy_timeout_seconds": 1800,
+  "expected_checkpoint_count": 13,
+  "expected_file_count": 52,
+  "expected_remote_hostname": "autodl-container-1705479f78-1c6b9afc",
+  "failure_root": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/control/backup_ack/c4_advisory_v1/failures",
+  "future_config_SHA_prefilled": false,
+  "groups": {
+    "4": {
+      "checkpoint_sha256": "66269b172e06cfbd3b50be0460604ef3f46dc27e1e283a67cef31813c3ae244b",
+      "encoder_spec_path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube14_gciql_v1/cache/groups/lejepa_tiny512_cube4/encoder_spec.json",
+      "encoder_spec_sha256": "71fc78da02ad2d6b1840491ef98a0dcc5fb228158b943f169566ee34f05151be",
+      "group_id": "lejepa_tiny512_cube4"
+    }
+  },
+  "local_root": "D:/LeWM_Artifacts/coordination/lejepa_tiny512_cube14_gciql_test_20261028_v1/backup_c4_resource_v3",
+  "module_sha256": "b05da66b33808196e247f5177270346ba942abb9a571d9cb727022b82a96635e",
+  "old39_sha256": "d0118500d132448f44f3578193d5957d5d4377a6f712d9952f60a14833aa9c00",
+  "poll_seconds": 180,
+  "remote_config": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/control/backup_ack/c4_advisory_v1/endpoint_config.json",
+  "remote_python": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+  "remote_script": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/backup_advisory_v1/c4_checkpoint_backup.py",
+  "resource_static_files": {
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/cache/groups/lejepa_tiny512_cube4/camera.json": {
+      "bytes": 888,
+      "sha256": "87d3f0675e53b691de6d67210ddf8276d08f45a07a2243df94d0d4b7234ac376"
+    },
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/cache/groups/lejepa_tiny512_cube4/data_binding.json": {
+      "bytes": 2739,
+      "sha256": "5a88823fe3a908c4ac51f117c0bed6d1ada5eebe7d65bd7533528b1750655211"
+    },
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/cache/groups/lejepa_tiny512_cube4/encoder_spec.json": {
+      "bytes": 4694,
+      "sha256": "71fc78da02ad2d6b1840491ef98a0dcc5fb228158b943f169566ee34f05151be"
+    },
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/cache/groups/lejepa_tiny512_cube4/plan.json": {
+      "bytes": 37562,
+      "sha256": "3451d4c2a21fe76adb7cdf3ec6f6fff9d61527203c97170d7a95c8b42d4e2fe5"
+    },
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/control/full/SPACE_BUDGET.json": {
+      "bytes": 889,
+      "sha256": "35a286936302057f18001ceb5d79696474c4d3e6a81a13b30d9623ec5b5105b2"
+    },
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/control/full/launch_plan.json": {
+      "bytes": 75298,
+      "sha256": "4bef3eaa403967ddb9f63d226f102b9a49900d100aed071b16a6a27691665077"
+    },
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/provenance/AGGREGATE_COMPLETION_CONTRACT.json": {
+      "bytes": 418,
+      "sha256": "18f90f7e2daedd7724648be8797cd380fb79ce48cbed9ae6940790f2eeceb9f9"
+    },
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/provenance/UNCOMMITTED_REQUIRING_ROOT_ISOLATION.json": {
+      "bytes": 98,
+      "sha256": "7634285d9e282791ac05f919cf64486fb7c9d7c8d135c912768da45ab5d490b2"
+    },
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/provenance/adoption_ledger.json": {
+      "bytes": 1499742,
+      "sha256": "5c0f5e1600c4c39cdfa7468167e64a1ea169e507290fe0d8c1df97ab69df8fe5"
+    },
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/provenance/effective_original_audit.py": {
+      "bytes": 17774,
+      "sha256": "67ff13ca692940521585b553902a34e811296bea57e95d1f146ec962a677a408"
+    },
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/provenance/effective_original_producer.py": {
+      "bytes": 25109,
+      "sha256": "7d2829026fe2a3d6aa008134637579d7458c4a7799d41bc80e977946fabd3839"
+    },
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/provenance/original_global_plan.json": {
+      "bytes": 145285,
+      "sha256": "ba4ca64b31fb60b8f02b4637d0f56c73d1615bfc8641c0e94bd4a9c6baa9d74b"
+    },
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/provenance/original_group_plan.json": {
+      "bytes": 32150,
+      "sha256": "7c482c4577a4f213e000c6bf45ac99e7e7c48e4e304a14def10337c76d3a3723"
+    },
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/provenance/original_protocol.json": {
+      "bytes": 30729,
+      "sha256": "74ffb3f347d7e35ef8caa6c6fa8220f28458ddf5bfd6434012610799f638a714"
+    },
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/provenance/renderer_repeatability_diagnosis.json": {
+      "bytes": 12052,
+      "sha256": "48ef48499b8f402be367388816d1b7400a0c3317af4e51df4a76d1d0f196abb4"
+    },
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/provenance/resource_policy.json": {
+      "bytes": 14435,
+      "sha256": "6d0ede59a7977f026d3cdae583e8c4014d7cf5feb45ad479ab39a965f50511b6"
+    },
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/release_v1/c4_resource_bridge.py": {
+      "bytes": 32076,
+      "sha256": "229627a4cf09d14af3dd940c769e5c51641135dcc017465bce4d775176dba3b2"
+    },
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/release_v1/prepare_continuation.py": {
+      "bytes": 28434,
+      "sha256": "d60a04d67beae97b48f20651dd6798599a03e453b2886fb664007ec454b24c5f"
+    },
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/release_v1/resource_pool_v2.py": {
+      "bytes": 17714,
+      "sha256": "cea9d5f9d735518450f374d113ea4ecd5516c44f99c62dcbae577f7c101db1a5"
+    }
+  },
+  "ssh_alias_reference": "test",
+  "ssh_host": "root@connect.westc.seetacloud.com",
+  "ssh_port": 16755,
+  "store_root": "/root/autodl-tmp/lejepa_tiny512_cube14_20261029_v1_outputs/resource_c4_v3"
+}

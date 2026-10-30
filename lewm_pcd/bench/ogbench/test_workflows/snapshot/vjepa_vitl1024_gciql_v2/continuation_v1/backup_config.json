@@ -1,0 +1,19 @@
+{
+  "case_root": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/vjepa_vitl1024_gciql_v2/continuation_v1",
+  "config_paths": [
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/vjepa_vitl1024_gciql_v2/configs/pilot/vjepa21_vitl1024_cube1.json",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/vjepa_vitl1024_gciql_v2/configs/pilot/vjepa21_vitl1024_cube2.json",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/vjepa_vitl1024_gciql_v2/configs/pilot/vjepa21_vitl1024_cube3.json",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/vjepa_vitl1024_gciql_v2/configs/pilot/vjepa21_vitl1024_cube4.json",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/vjepa_vitl1024_gciql_v2/configs/formal/vjepa21_vitl1024_cube1.json",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/vjepa_vitl1024_gciql_v2/configs/formal/vjepa21_vitl1024_cube2.json",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/vjepa_vitl1024_gciql_v2/configs/formal/vjepa21_vitl1024_cube3.json",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/vjepa_vitl1024_gciql_v2/configs/formal/vjepa21_vitl1024_cube4.json"
+  ],
+  "local_root": "D:/LeWM_Artifacts/coordination/vjepa_vitl1024_gciql_31435_20261026_v1",
+  "ssh_host": "root@connect.westd.seetacloud.com",
+  "ssh_port": 31435,
+  "remote_python": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+  "remote_script": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/vjepa_vitl1024_gciql_v2/backup_watch.py",
+  "remote_config": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/vjepa_vitl1024_gciql_v2/continuation_v1/backup_config.json"
+}

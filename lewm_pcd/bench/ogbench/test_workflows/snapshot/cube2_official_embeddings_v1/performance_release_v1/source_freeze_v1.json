@@ -1,0 +1,16 @@
+{
+  "stage": "CPU_source_frozen_not_deployed",
+  "files": {
+    "profile_policy.py": "39daf167834e3db3f47736d45a4278673fc902c3846da214dc369270fd7e2125",
+    "release_decision.json": "18d4e89134dfd70211ebb9198f825e8a5daf73dd9516904a91391ca52d73cc68",
+    "test_profile_policy.py": "88d0ad8e35758dcd0519108402d4293e4607e0e7875a574a0daa262ab4cfb72e",
+    "policy_guard_delta.diff": "e109307dea2235750dd60d2e277450eca9c0b587afdee5876dbba4240d4a5d94"
+  },
+  "CPU_tests_actual_exit_code": 0,
+  "CPU_tests": 3,
+  "old_report_remote_byte_SHA256": "ec476835ee5e4dc6901f8a198b2f3e605c18d70f5beefd4e1ab8b20b75c83a5b",
+  "old_5percent_failed_and_runtime2exit1_preserved": true,
+  "original_11effective_sources_modified": false,
+  "new_GPU_or_NN_calls": 0,
+  "numeric_tolerances_changed": false
+}

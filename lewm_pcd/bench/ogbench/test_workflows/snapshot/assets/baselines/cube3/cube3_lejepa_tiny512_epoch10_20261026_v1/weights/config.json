@@ -1,0 +1,15 @@
+{
+ "algo": "lejepa",
+ "encoder": "vit_hf tiny p14 224 + Linear(192,512)",
+ "task": "ogb_triple_front600",
+ "dataset": "/root/autodl-tmp/workspace/users/lewm/triple_cube_portable_20261016_v1/data/views/front600_v1/2d_train_action_rows600.h5",
+ "name": "lejepa_ogb_triple_front600_seed0_w24pf2_10ep",
+ "epochs": 10,
+ "bs": 256,
+ "V": 4,
+ "lr": 0.002,
+ "lamb": 0.02,
+ "proj_dim": 16,
+ "workers": 24,
+ "max_steps": 0
+}

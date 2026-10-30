@@ -1,0 +1,47 @@
+{
+  "status": "executable_final_only_pack_copy_bridge_frozen_two_fake_metadata_CPU0_no_payload_execution",
+  "at": 1792505295.332013,
+  "remote_base": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_visual_gciql_v1/closed_backup_preparation_v2",
+  "files": {
+    "closed_role.py": {
+      "bytes": 12362,
+      "sha256": "bd4a240d9a39d0d7140f873de62ce3f760651ae2223598a68882f680f30e69d4"
+    },
+    "copy_verified.py": {
+      "bytes": 5777,
+      "sha256": "bcb574502929e6c128806c7f714788d0cfe02f991592b9ae1f8024f6bec1e574"
+    },
+    "test_selector_metadata.py": {
+      "bytes": 1706,
+      "sha256": "f3efc4b3db70cf63a6c4515a5e09d0cafbcb233cbaf493d0a11d8d92129fc83d"
+    },
+    "CPU_metadata_actual_exit.json": {
+      "bytes": 474,
+      "sha256": "1ba485fc9f00b94ac029a782978cb24b7db56f340aa0e60caeb428cf51348208"
+    },
+    "CPU_metadata.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "CPU_metadata.stderr.log": {
+      "bytes": 313,
+      "sha256": "829f47d620015a9cdfa8a753eb25990059120fd223acb65d9250920c2aadf9c8"
+    }
+  },
+  "accepted_reference": {
+    "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/state_priority_v1/closed_training_backup_v1/build_closed_remaining.py",
+    "sha256": "61c8c160e03d9b36fc893d7fc74132e1f8e1496858bca915605cce581cf8285c",
+    "direct_imported_generic_functions": [
+      "sha(path)",
+      "read(path)",
+      "stat(path)",
+      "new(name,value)"
+    ],
+    "private_hardcoded_main_not_called": true,
+    "source_not_rewritten_or_reflected": true
+  },
+  "prepare_default_has_no_payload_reads_or_writes": true,
+  "actual_tests": 2,
+  "real_model_hash_pack_transfer_executed": false,
+  "old_GCIQL_loader_math_source_modified": false
+}

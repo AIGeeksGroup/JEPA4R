@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "status": "frozen_local_preparation_not_deployed_or_executed",
+  "scope": "G12 recovery selector only; v2/G11 files unchanged",
+  "files": {
+    "closed_G12.py": {
+      "bytes": 11533,
+      "sha256": "e4200f382b1ecfa89f22ff8887051f9bb780dc66d24160fc77a1e02d43170527"
+    },
+    "test_recovery_selector.py": {
+      "bytes": 2284,
+      "sha256": "b53e8c76f4b3e7ea470fbbe5e8fbb9187c23db7abbc18b9d4fe78e44a6c2da3a"
+    }
+  },
+  "references": {
+    "closed_backup_preparation_v2/closed_role.py": "bd4a240d9a39d0d7140f873de62ce3f760651ae2223598a68882f680f30e69d4",
+    "closed_backup_preparation_v2/copy_verified.py": "bcb574502929e6c128806c7f714788d0cfe02f991592b9ae1f8024f6bec1e574",
+    "closed_backup_preparation_v2/test_selector_metadata.py": "f3efc4b3db70cf63a6c4515a5e09d0cafbcb233cbaf493d0a11d8d92129fc83d",
+    "closed_backup_preparation_v2/SOURCE_FREEZE_v1.json": "f130332d3141bc21e35d80f8a15fef0168dc16e3b9e63cb9649429403b63d796",
+    "functional_v2/recovery.py": "e62099b13b11e5b81d3034a13187e531e7aadd708f69223f81bacc4bcf9f6e30",
+    "functional_v2/RECOVERY_SOURCE_FREEZE_v1.json": "ec569e35cc307d952b8999f859aa6138e8322e800df8579354cacedb574eb210",
+    "functional_v2/RECOVERY_HANDOFF_v1.json": "ed0f2ddabab3ecba24fbcaacf0eab2c568c7e8695fc469e4dbe7dd6b5b9cbbbb",
+    "control_v2/after_cache_G12.py": "39774804bd991b00c084cecda66adc23f92f004f70a54edce938b6b3bf5e66cd",
+    "control_v2/RECOVERY_BINDING_final_v2.json": "bb47c70f0ccb998e786703e6febb4975b6438ba8da57f064c691d712ddcde693",
+    "control_v2/G12_wait_arm_v2/RELEASE_v2.json": "1bc4f98c45de91744b4d8f3645ee87c69e499f98de458ab8fef3bf736a75bccb",
+    "control_v2/G12_wait_arm_v2/dispatch_receipt.json": "1f6d38b26025369db84a7dd913b9f3e677fa45ad2ba4e0985f18b34879810e7c",
+    "control_v2/G12_wait_arm_v2/run.sh": "0a71aaec5de2381570fd757bab4d58c6ecf1b563764adc4dfb7fc6c65621b861",
+    "control_v2/G12_target_CPU_deploy_v2.json": "8665f38ea2eb47f4993d3c7f513e0f579b97dc261c90a752a0f4f7bedc57a4c3"
+  },
+  "frozen_at": 1792506507.183268
+}

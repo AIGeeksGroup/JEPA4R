@@ -1,0 +1,107 @@
+{
+  "actual_exit_code": 0,
+  "group_id": "P2_cube2_pldm_rgb",
+  "config_path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_pldm_gciql_v1/functional_v1/configs/P2_cube2_pldm_rgb.v1.json",
+  "config_sha256": "b31f3df94946b2bfc1e8b37ad3c2c25aa57e7d893e153a07393b97e3b1259b64",
+  "current_dim": 531,
+  "goal_dim": 518,
+  "encoder_family": "pldm",
+  "latent_dim": 512,
+  "cache_episodes": 1100,
+  "cache_raw_rows": 1101100,
+  "selected_preprocess_device": "cpu",
+  "metadata_input_files": {
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_pldm_gciql_v1/functional_v1/configs/P2_cube2_pldm_rgb.TEMPLATE.json": {
+      "sha256": "1cac051710757273c986cb40eaad9c9086a786f1007484471c4ec48d8278118e",
+      "stat": {
+        "size": 9142,
+        "mtime_ns": 1792574376000000000,
+        "ctime_ns": 1792574625171794859,
+        "device": 2304,
+        "inode": 17193268838
+      }
+    },
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_pldm_gciql_v1/cache_v1/producer_plan.json": {
+      "sha256": "9cededadb9be975e1b10e503b60b35143e749fb386b29679228127914a1a5025",
+      "stat": {
+        "size": 35629,
+        "mtime_ns": 1792574811017888646,
+        "ctime_ns": 1792574811017888646,
+        "device": 2304,
+        "inode": 13958998928
+      }
+    },
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_pldm_gciql_v1/cache_v1/cache/cache_manifest.json": {
+      "sha256": "edb1e467ae1a319ef1d4ad363aa52f7c06303897708739824a2e4fc56026e9b2",
+      "stat": {
+        "size": 396541,
+        "mtime_ns": 1792576178788949150,
+        "ctime_ns": 1792576178788949150,
+        "device": 2304,
+        "inode": 25770462553
+      }
+    },
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_pldm_gciql_v1/cache_v1/cache/cache_seal.json": {
+      "sha256": "46f6a2459d0db326f6d8ca48054cfe752c584d83a9f4e1703d83ed757d0868db",
+      "stat": {
+        "size": 534,
+        "mtime_ns": 1792576178788949150,
+        "ctime_ns": 1792576178788949150,
+        "device": 2304,
+        "inode": 25770462554
+      }
+    },
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_pldm_gciql_v1/cache_v1/independent_audit/report.json": {
+      "sha256": "984a71ebb431f7fcd986caba0b9871ff36c987255de17514760d061951224b68",
+      "stat": {
+        "size": 325889,
+        "mtime_ns": 1792576183972782130,
+        "ctime_ns": 1792576183972782130,
+        "device": 2304,
+        "inode": 13959638332
+      }
+    },
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_pldm_gciql_v1/cache_v1/cache/preprocess_selection.json": {
+      "sha256": "35707d0e08f3a7825a56c8531308fe514b33bb5695877620cb929c54ca7b4a5c",
+      "stat": {
+        "size": 2215,
+        "mtime_ns": 1792574874509195879,
+        "ctime_ns": 1792574874509195879,
+        "device": 2304,
+        "inode": 25770200205
+      }
+    },
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_pldm_gciql_v1/cache_v1/cache/protocol.json": {
+      "sha256": "29a5ee974933cff5e1b5bd6a645e09c2ce103a1ef581ef319f4289d413f23b0f",
+      "stat": {
+        "size": 34441,
+        "mtime_ns": 1792574874509195879,
+        "ctime_ns": 1792574874509195879,
+        "device": 2304,
+        "inode": 25770200206
+      }
+    },
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_pldm_gciql_v1/cache_v1/source_arrays/source_arrays.json": {
+      "sha256": "4114502199027dcb8aaa1d294e210d95ed2a04673684f3a633b6d25631757e9e",
+      "stat": {
+        "size": 8447,
+        "mtime_ns": 1792574811009888732,
+        "ctime_ns": 1792574811009888732,
+        "device": 2304,
+        "inode": 24713165635
+      }
+    }
+  },
+  "source_pins": {
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_pldm_gciql_v1/functional_v1/pldm_inputs.py": "3fb2d0c3bae3c192e8416911df631e7e27b36789fd067ba6f62622883da6a9c0",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_pldm_gciql_v1/functional_v1/pldm_runtime.py": "16f98088b89db207a48131152f5ee2c22ab4c3fad56fbcb3a48439ebe253f02e",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_pldm_gciql_v1/functional_v1/native_sr.py": "32057d75f7ff7d08e5ae742adf2f9876c4c91a73020452ed724eb763175e4ed4",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_pldm_gciql_v1/functional_v1/audit_native.py": "cf632fc7881bc14590053ab2d747d53c628a31905a8a5befdcd6367dcb0a3177",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_pldm_gciql_v1/functional_v1/prepare.py": "0dfb93eef6ac3e04ffe7700495f66b20c4991acb1c2dee135172286f8865fe11",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_pldm_gciql_v1/functional_v1/test_inputs_native.py": "ff9889a2f0ff78c6d38f1fc15208d5771c203b2daded36de369337d426528a79",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_pldm_gciql_v1/functional_v1/test_prepare.py": "4ed92e1e400fcd40fb114a52125d093882b77ad7ae12d8367d5f989e1c84ecaa",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_pldm_gciql_v1/functional_v1/configs/P2_cube2_pldm_rgb.TEMPLATE.json": "1cac051710757273c986cb40eaad9c9086a786f1007484471c4ec48d8278118e"
+  },
+  "NN_or_training_started": false,
+  "completed": 1792585485.1542985
+}

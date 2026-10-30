@@ -1,0 +1,118 @@
+{
+  "actual_exit_code": 0,
+  "stage": "checkpoint_and_official_data_binding_ready_no_encoder_or_cache_completion",
+  "cube_count": 4,
+  "data_id": "cube-quadruple-play-v0",
+  "env_id": "cube-quadruple-v0",
+  "checkpoint": {
+    "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/checkpoints/cube4/2d_epoch10/weights_epoch_10.pt",
+    "bytes": 72292862,
+    "sha256": "7d8340c28b23910602f1328e6ce3ed56668ac04015f80ee1725c02131325bc6d"
+  },
+  "checkpoint_config": {
+    "config.json": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/checkpoints/cube4/2d_epoch10/config.json",
+      "sha256": "c23f8d59c185b7e8953649eb3e18de94315bfab99e0cfc624032abc08753e536"
+    },
+    "config.yaml": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/checkpoints/cube4/2d_epoch10/config.yaml",
+      "sha256": "a0812d87ae7227840f722a3200bf235907f48508f89611fde9bba20664db356e"
+    }
+  },
+  "latent_dim": 192,
+  "dtype": "float32",
+  "data_acceptance": {
+    "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/data_readiness_v1/quadruple_data_acceptance.json",
+    "sha256": "db1bb2aacf3916254aaf8d3e3f81b90e1b2de3b2e4ab93407e17a45f54fd9329"
+  },
+  "source_stat_freeze": {
+    "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/data_readiness_v1/quadruple_stat-freeze.json",
+    "sha256": "defd3b51d55a5ab2dd13b30e6dd2ad2ebb7dd5c7084a5a6ea965205e14edd1b1"
+  },
+  "source_datasets": {
+    "train": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-quadruple-play-v0.npz",
+      "raw_sha256": "31053b04f5adbedaf9a5abef467057b2c216b0b3f8664cf3137b9891ee32a6ed",
+      "accepted_stat": {
+        "size": 1861419607,
+        "mtime_ns": 1792241332419440814,
+        "ctime_ns": 1792241354960323486,
+        "device": 2304,
+        "inode": 15085547564
+      }
+    },
+    "validation": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-quadruple-play-v0-val.npz",
+      "raw_sha256": "96ae20f4c7ffe673520c69f2c0339a746f7eac019bb15a92f2898fb8e1785d1d",
+      "accepted_stat": {
+        "size": 185890898,
+        "mtime_ns": 1792241530418905606,
+        "ctime_ns": 1792241532810992243,
+        "device": 2304,
+        "inode": 15085547533
+      }
+    }
+  },
+  "split_episodes": {
+    "train": 5000,
+    "val": 500
+  },
+  "raw_rows_per_episode": 1001,
+  "canonical_total_rows": 5505500,
+  "source_dimensions": {
+    "state": 55,
+    "qpos": 42,
+    "qvel": 38,
+    "action": 5
+  },
+  "camera": {
+    "source_name": "front",
+    "render_name": "front_pixels",
+    "position": [
+      1.287,
+      0.0,
+      0.509
+    ],
+    "FOV": 45.0,
+    "local_x_up_degrees": 5.0,
+    "base_quaternion": [
+      0.5792028135240382,
+      0.4056157058175116,
+      0.4056157058175116,
+      0.5792028135240384
+    ],
+    "actual_quaternion": [
+      0.5609588321928806,
+      0.4304941214288525,
+      0.4304941214288525,
+      0.5609588321928807
+    ],
+    "width": 224,
+    "height": 224,
+    "offsamples": 4,
+    "ob_type": "states",
+    "visualize_info": false,
+    "pixel_transparent_arm": false,
+    "pullback": 0,
+    "crop": null
+  },
+  "WM_training_camera_note": "Checkpoint trained on custom front+5deg/back10cm/crop; official encoding uses front+5deg with no pullback/fullFOV, matching existing Double/Triple official caches. Both are declared separately.",
+  "source_factory_pins": {
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/lewm_pcd/jepa.py": "7e6680f9941268b13526082fa888a46de7dca9385bfc837e77ee649e5c034135",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/lewm_pcd/module.py": "0b258a9e8dc24c29fcb1e8c50a09ec78b8ea85aeb79e21dd8adf712396646620",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/lewm_pcd/utils.py": "a6a386523779ede2ef4453b23198e46e371a0c73200e8f957ae272b5d7b63259",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/lewm_pcd/encoders/vit.py": "829efe4f2c11884253d236050a9fd2146732c91393547f92475a862c8fcd669a",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/lewm_pcd/encoders/__init__.py": "90e5ab276c362b6a5c1e4cd2c2363335eba8c5c34bf72fa48b4942ffc4ac5788",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/source/lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/utils.py": "f203cb4826cec6d4b474900f136fa09d6dbc13a366bf0906b67bbdac4297344c"
+  },
+  "migration_receipt": {
+    "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/checkpoints/cube4/2d_epoch10/MIGRATION_RECEIPT.json",
+    "sha256": "441b5ce8dff3a0d2066ce80899de8f971cb0090920e15b50f232a3c1b1bbe164"
+  },
+  "asset_registry": {
+    "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/registry/cube4_lewm_rgb_epoch10_import_20261018_v1.json",
+    "sha256": "ba402421c726ebeb76e91aa94aa8860ffb3f37d2540abb0289e32db5e15b3383"
+  },
+  "encoder_gate_or_full_cache_started": false,
+  "created": 1792322801.6323678
+}

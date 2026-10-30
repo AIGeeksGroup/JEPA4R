@@ -1,0 +1,47 @@
+{
+  "status": "source_frozen_cameraCPU3_actual0_binding_migration0_pending_target_materialize_and_real_pilot",
+  "files": {
+    "materialize.py": "cbc20a5bad9f158419c0e0a37d08a8ee1df0031d471206401c8ade61a5b1dfc8",
+    "test_materialize.py": "cfed6da43eacf15a92be8bc1009046dcc7eb829a9453b30b69efcce2fa03ede2",
+    "materialization_delta_v2.json": "ffde2359bf4fa998346dd69484c7d683c1ae413f11bce5f57867cd33607cb5b4"
+  },
+  "dependency_v1": {
+    "path": "adapter_v1/materialize.py",
+    "sha256": "f0ec88f369936a319ead35063a87d51935234bceca4ef6714a013b400fbf34c5",
+    "unmodified": true
+  },
+  "effective_files": {
+    "official_state_2d_cache_v1/produce.py": "d8b5bdb45c5840ef58fd845fef858963c804dd4b265d0d6a59d29c5b4fdfb68a",
+    "official_state_2d_cache_v1/render_adapter.py": "f6ad9ffb28513da4091b0963ce87da950ddc2c94d5e2bd0aa5d73d46a53578af",
+    "official_state_2d_cache_v1/audit_cache.py": "209abcbf3ab4e82120638f290a1683b611803a9b3fd04bacbef13b1aa84b5fe4"
+  },
+  "producer_exact_v1_sha256": "d8b5bdb45c5840ef58fd845fef858963c804dd4b265d0d6a59d29c5b4fdfb68a",
+  "source_freeze_v1_preserved": {
+    "path": "adapter_v1/SOURCE_FREEZE_v1.json",
+    "sha256": "ec13dd9bf54ae06f6730427736e6c838dca641cd31aaf50a3d792a93ad92b2cb"
+  },
+  "encoding_binding": {
+    "path": "ENCODING_BINDING_v2.json",
+    "sha256": "382d2655e1fb619b338021f38b64fe66e64ab1e9bbcb8d8adbf5aa3543738ea8",
+    "actual_exit_code": 0
+  },
+  "CPU_receipt": {
+    "path": "cpu_checks_v2/receipt.json",
+    "sha256": "89a220562cf95b641f59ab5896302fe9fc106ce1a5fc0387e4f2469d8cc9b527",
+    "actual_exit_code": 0
+  },
+  "change_scope": "Only new training-camera profile renderer position, source/actual camera metadata/auditor guards, and explicit strict camera plan transfer. No producer/encoder/preprocessor/schema/precision/pool/loop/math changes.",
+  "source_position": [
+    1.287,
+    0.0,
+    0.509
+  ],
+  "training_position": [
+    1.3835957918490516,
+    1.1102230246251566e-17,
+    0.5348699245660802
+  ],
+  "local_Z_pullback_m": 0.1,
+  "full_FOV_no_RGB_crop": true,
+  "remote_execution_or_NN_or_GPU_by_owner": false
+}

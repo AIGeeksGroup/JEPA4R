@@ -1,0 +1,27 @@
+{
+  "stage": "prepared_not_deployed_or_executed",
+  "files": {
+    "bench_render_parallel_v2.py": "732c46ebaefa0a0632adb1bdd0d6b874c826790d6a886b127eeb2782844422a9",
+    "test_bench_render_parallel_v2.py": "9de17eb2f25ce4b3f307187b253b3265d8d05008dcb7ab59f6321bfd706b5865",
+    "bench_v2_CPU_exit.json": "298419ac00bb610366f9b186d9c1263371b9104ffee4fc66d99dce8baac1521d"
+  },
+  "numeric_equivalence_verified": false,
+  "native_color_bitexact_not_guaranteed": true,
+  "scope": "same_source_resource_parallel_throughput_capacity_only",
+  "strict": [
+    "samplingseed",
+    "camera",
+    "qpos/qvel restore allrows originalassert+boundary hashes",
+    "XYZ allrows",
+    "canonical rawIDs",
+    "boundary UV geom RNG shape captureindex sourceSHA"
+  ],
+  "diagnostic_only": [
+    "allRGBhash",
+    "PCDrgbhash",
+    "fulltracehash",
+    "missingctrlmocap"
+  ],
+  "original_sources_changed": false,
+  "old_failed_benchmark_preserved": true
+}

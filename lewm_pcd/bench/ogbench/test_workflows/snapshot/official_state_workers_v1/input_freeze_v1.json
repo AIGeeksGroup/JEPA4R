@@ -1,0 +1,43 @@
+{
+  "created_utc": "2026-10-17T11:08:58.970681+00:00",
+  "phase": "FROZEN_LOCAL_CPU_SOURCE_ONLY_PASS",
+  "python": "3.12.7",
+  "numpy": "1.26.4",
+  "exit_code": 0,
+  "tests_passed": 8,
+  "test_backend": "exact_pinned_source_AST_with_flat_tree_and_FrozenDict_substitute",
+  "review": "independent narrow review has no remaining blocking; source-only8 independently passed",
+  "reviewer": "/root/official_workers_review",
+  "real_jax_flax_integration": "UNVERIFIED",
+  "gpu_numerics": "UNVERIFIED",
+  "full_dataset_throughput": "UNVERIFIED",
+  "official_training_or_SR_started": false,
+  "remote_login_by_adapter_owner": false,
+  "command": "python test_ordered_input.py --source-only -v",
+  "files": {
+    "ordered_input.py": {
+      "bytes": 7200,
+      "sha256": "4508ce847694976f8af924215d11985ac4d795093b22d62e8424928346fbdda2"
+    },
+    "test_ordered_input.py": {
+      "bytes": 11013,
+      "sha256": "c5cc75be96ec1918560414945a01c180b5d24159c0af44f9726e490c1a2c0504"
+    },
+    "README.md": {
+      "bytes": 4373,
+      "sha256": "41e650784ee9412baa7c2a796f81adbfdd50bd368624baf6ce8240493c4f619b"
+    },
+    "local_cpu_test_v2.log": {
+      "bytes": 1298,
+      "sha256": "d4103dbd3aaf149031a4f20a3bbfa3e490b939ba5714dd95346f7bd123756071"
+    },
+    "source_reference/datasets.py": {
+      "bytes": 16774,
+      "sha256": "52c373922a87e1ba8ad8b3b96c3474d5e6385e2ea2c7206930f7a8a315816609"
+    },
+    "source_reference/gciql.py": {
+      "bytes": 12457,
+      "sha256": "05a0b5d9b987d3049df8a1158bbfbaba2ca2611604d24f9e484f8fb6d0cd92bc"
+    }
+  }
+}

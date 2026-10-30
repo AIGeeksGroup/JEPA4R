@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/bin/python",
+    "-B",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/functional/prepare.py",
+    "--delivery",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/cache/w8_groups/visreg_vitb768_cube2/delivery.json",
+    "--output",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/foundation_visual_gciql_v1/configs/visreg_vitb768_cube2.json"
+  ],
+  "cwd": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1",
+  "pid": 35007,
+  "started": 1792793075.4384475
+}

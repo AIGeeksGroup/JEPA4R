@@ -1,0 +1,14 @@
+{
+  "scope": "One exact Double config path membership repair in independent CPU newfeatures audit",
+  "files": {
+    "audit_final_v2.py": "5eabdd9f475ca30868f10f0d66d6beaf6b11ab77f995bc888305c8453fed1b0c",
+    "test_audit_final_v2.py": "a947f75493999529acbf803df9f3e90a9600e0b0d9d02930679959f2bdf08e83"
+  },
+  "original_auditor_sha256": "c230f64373fb6f90f47d73b366688dafcf296fbc9361953070d92c905f8a554a",
+  "plan_sha256": "4010289ec8a4d8996cb656a32a4c0b434880c9ab59b6a12840b816b3641bed67",
+  "old_audit_failed_before_vector_scan": true,
+  "CPU_tests": 2,
+  "CPU_tests_actual_exit_code": 0,
+  "original_source_plan_report_or_data_modified": false,
+  "NN_GPU_encoding_or_rawdata_scan_executed": false
+}

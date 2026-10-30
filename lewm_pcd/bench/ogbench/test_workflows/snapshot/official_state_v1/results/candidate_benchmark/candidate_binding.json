@@ -1,0 +1,8 @@
+{
+  "actual_exit_code": 0,
+  "input_route": "official NumPy sampler and FP32 immutable resident observation/action tables",
+  "resident_source_sha256": "ba1d22d7779b8f1af338b650b92b12cabd696630655bd1028f351f18c281c496",
+  "profile_source_sha256": "5a802ca8d3a81e41797feb89c48af15bbe72ff5eb05689e3a61d1eaf0fa910fc",
+  "default_route_changed": false,
+  "all_results_fixture_only": true
+}

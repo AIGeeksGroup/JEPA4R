@@ -1,0 +1,25 @@
+{
+  "status": "source_frozen_CPU_boundary_passed_GPU_cache_pilot_pending",
+  "exit_code": 0,
+  "files": {
+    "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/official_lewm_gcbc_20261006/goal_xyz_mask_100k_b256_20261011_v1/rgb_latent_cache_20261012_v1/cache_dataset.py": "0a4a73683ff1681eb11156187f096b11403882720db7de2655eaded3c8c5cae1",
+    "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/official_lewm_gcbc_20261006/goal_xyz_mask_100k_b256_20261011_v1/rgb_latent_cache_20261012_v1/cache_producer.py": "f40dea29f18346e538edd15db2d035967245d6841c02a7afba781ed2b1cab745",
+    "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/official_lewm_gcbc_20261006/goal_xyz_mask_100k_b256_20261011_v1/rgb_latent_cache_20261012_v1/test_cache_dataset_cpu.py": "4cc681d9b47fec1358edccf6f9fc4b7009a777eb8e4aa133e586196e456f041a",
+    "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/official_lewm_gcbc_20261006/goal_xyz_mask_100k_b256_20261011_v1/rgb_latent_cache_20261012_v1/cache_dataset_api.json": "af1e1acb8a191750577e957ffe47306a873ab1a9234e45adae6d797f17bbe3e2",
+    "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/official_lewm_gcbc_20261006/goal_xyz_mask_100k_b256_20261011_v1/rgb_latent_cache_20261012_v1/producer_plan.json": "58191da4cf961e17c7370f8b0ee913754f1828d315627b521637580beaec295e",
+    "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/official_lewm_gcbc_20261006/goal_xyz_mask_100k_b256_20261011_v1/rgb_latent_cache_20261012_v1/tail32_CPU_receipt.json": "06f3e519965e75504f432375d036edc181ec25452c53e523338fd23f6f7c1e0b"
+  },
+  "dataset_lines": 60,
+  "producer_lines": 130,
+  "CPU_test_evidence": "3 passed in1.28s; actual toolchunk d9028f; no CUDA calls",
+  "prepare_only_exit_code": 0,
+  "source_pins_actual15_exact": true,
+  "cache_root": "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/official_lewm_gcbc_20261006/goal_xyz_mask_100k_b256_20261011_v1/rgb_latent_cache_20261012_v1/features_v1",
+  "full_cache_not_produced": true,
+  "feature_equivalence_not_yet_verified": true,
+  "tail32_recipe": "Original sampler full100K traversal gives truefinal32pairs; encode current32 andgoal32 separately; override only exact validation pair",
+  "GPU_execution_owner": "root approved serial pilot only after numeric gate",
+  "parent_protocol_file_sha256": "37b8e13ebd6849c6ba66261ea3bb2878a8748148db1bf8fb7e534dc6a60dfdee",
+  "parent_protocol_sha256": "74a938959ae86f129db94fef2a257faa3b54edbd4b3484cbf0ff7630d08aacd8",
+  "change_scope": "New plan protocol hash field labels only; producer/reader source unchanged; noGPU cache has been produced"
+}

@@ -1,0 +1,379 @@
+{
+  "actual_exit_code": 0,
+  "checkpoint": {
+    "adam_count": 800000,
+    "agent_fingerprint": {
+      "leaves": 153,
+      "sha256": "34fc747e00f6adca3fd7da410807b27aa56a32fe6710c019feb72022df8470d6"
+    },
+    "agent_leaf_count": 153,
+    "checkpoint": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/runs/G05_cube2_rgb/checkpoints/update_000800000",
+    "jax_backend": "cpu",
+    "manifest": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/runs/G05_cube2_rgb/checkpoints/update_000800000/manifest.json",
+    "manifest_sha256": "38a636d109af50fa3a64e7069ce5a034f0ca5ae6306c5fcf19a1cc4e53a77219",
+    "network_step": 800001,
+    "params": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/runs/G05_cube2_rgb/checkpoints/update_000800000/params_800000.pkl",
+    "params_sha256": "69ed8db8bd9d82b10b3e27c8a2491d113b4aa6df5b164c0ea0c926253368f76b",
+    "run_state": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/runs/G05_cube2_rgb/checkpoints/update_000800000/run_state.pkl",
+    "run_state_binding_sha256": "168105681250d80d87f07e1233578583e198295e55d6008f36b633695801b704",
+    "run_state_sha256": "1d6e7f196820dafdd4ae8d8eb71ad1ce2f98cf2c47c978504845615a32c670b0",
+    "training_output": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/runs/G05_cube2_rgb",
+    "update": 800000
+  },
+  "common_sha256": "97e0750ebb1db970ea3b9bf32ccaf6ee11329246a47ecdd9bacc38547f843e95",
+  "cube": 2,
+  "evaluator_contract": {
+    "current_dim": 211,
+    "goal_dim": 198,
+    "max_episode_steps": 500,
+    "mode": "rgb"
+  },
+  "extra": {
+    "physics": {
+      "BLAS_threads": 4,
+      "library_sha256": {
+        "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/lib/python3.12/site-packages/numpy.libs/libscipy_openblas64_-56d6093b.so": "0bd815d04b6b54990e3cccc7528fbb696456d09569f533d0390c13f0cdc4dd4a"
+      },
+      "numpy_path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/lib/python3.12/site-packages/numpy/__init__.py",
+      "numpy_version": "2.2.6",
+      "other_threadpools_record_only": [],
+      "reference": "official_state_sr NumPy BLAS4 physics; other BLAS/OpenMP pools are recorded, not constrained to4",
+      "threadpools": [
+        {
+          "architecture": "SkylakeX",
+          "filepath": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/env_runtime/lib/python3.12/site-packages/numpy.libs/libscipy_openblas64_-56d6093b.so",
+          "internal_api": "openblas",
+          "num_threads": 4,
+          "prefix": "libscipy_openblas",
+          "threading_layer": "pthreads",
+          "user_api": "blas",
+          "version": "0.3.29"
+        }
+      ],
+      "torch_num_threads": null
+    }
+  },
+  "family": "lewm",
+  "group_id": "G05",
+  "model": "LeWM2D",
+  "registry_sha256": "1f9e1b4e6ad0ca42aa8a682f799bb4a117b050718d641f75588b872912aaa126",
+  "requested_mode": "tiny",
+  "restore_contract": {
+    "adam_count": 800000,
+    "agent_leaf_count": 153,
+    "all_leaves_finite": true,
+    "checkpoint_counter": 800000,
+    "cpu_jax": true,
+    "network_step": 800001,
+    "one_m_state_exact": false,
+    "strict_agent_restore": true
+  },
+  "runner": "run_one.py",
+  "runner_sha256": "41665ed2d3659a8ea4103a608d840e4d1d2cccfc1a079df6b29192a9aca4bab0",
+  "runtime_environment": {
+    "JAX_PLATFORMS": "cpu",
+    "MKL_NUM_THREADS": "4",
+    "MUJOCO_GL": "egl",
+    "OMP_NUM_THREADS": "4",
+    "OPENBLAS_NUM_THREADS": "4"
+  },
+  "schema_version": 1,
+  "selected_update": 800000,
+  "source_acceptance": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/acceptance/G05_full_acceptance.json",
+  "source_acceptance_ledger_manifest_sha256": {
+    "1": "54996ced9da289b288836d8edf944cc60652045d0ad0041e6a2a300ec5b373a5",
+    "100000": "580c9a81cdc6f870728069391845a0780003b35edd81bd6c8e8f68957884112f",
+    "200000": "37829adb925deb559e20cc0b97bf51790aacfa357f4f404b76516ab6720c64bf",
+    "300000": "adaa8739c857ba72218c096d17f8baa6d22c50cbd5d3e26d4082012f9a9ceffd",
+    "400000": "d71e186bed9ac762e5ee476d65a4ebae552b9e765996ff637ceb6fbf89694359",
+    "500000": "47b092bfd402d4c1810b53d81f6a6c1338d8657d9b797545b28ec3f06d7a3c14",
+    "600000": "4e472d2d8275f01f1180b4024a0a5aec9824bcc76bb628e26968db94a5779d69",
+    "700000": "b522842ad3e3e16e62726e8389ca141f58d8129a1e8c30eca7ac2ca63106c49d",
+    "800000": "38a636d109af50fa3a64e7069ce5a034f0ca5ae6306c5fcf19a1cc4e53a77219",
+    "900000": "4cbe408b93ab213467cf648433980094b27b4c3e5f59a8ee67e98d95bc1185c9",
+    "1000000": "471b285fe717670565611f2594a5925b04a2de2726dd2b571210a02a13abfacd"
+  },
+  "source_acceptance_sha256": "ceea111146c2267b94f98304812b9e7ac24d63af803f554a9e006ae153200a7e",
+  "training_config": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/configs/G05_cube2_rgb.json",
+  "training_config_sha256": "8c3af1e965e3266965cfac9a1baedbfb081da1c5a15549de1574b3cdfbf8b65b",
+  "upstream_identity": {
+    "batch_size": 1024,
+    "cache_binding": {
+      "accepted_audit": {
+        "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_official_embeddings_v1/2d/independent_audit/report.json",
+        "sha256": "a99df51a2fefc5d20c51ccf23f28d56c469d8e2b7503bf1f5459ad52504343ee",
+        "stat": {
+          "bytes": 325729,
+          "device": 2304,
+          "inode": 15039423430,
+          "mtime_ns": 1792292816040908666
+        }
+      },
+      "cache_directory": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_official_embeddings_v1/2d/cache",
+      "canonical_raw_rows_per_episode": 1001,
+      "canonical_total_rows": 1101100,
+      "cube_count": 2,
+      "current_check_scope": "small manifest/receipt SHA and feature size/stat only; prior complete audits preserved",
+      "current_metadata_stat_fingerprint": "99af84cc2726a89821bc68a8d74d1426b9046e83d1ea29cce3cf9667b23d2f8e",
+      "data_id": "cube-double-play-v0",
+      "dtype": "float32",
+      "latent_dim": 192,
+      "layout": "raw1001_rows_per_episode_single_npy",
+      "manifest": {
+        "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_official_embeddings_v1/2d/cache/cache_manifest.json",
+        "sha256": "0dd629c70068989703f881495897e759fc03dc3230f01e53252ece04c344e164",
+        "stat": {
+          "bytes": 338416,
+          "device": 2304,
+          "inode": 31195717058,
+          "mtime_ns": 1792292809340659460
+        }
+      },
+      "modality": "rgb",
+      "new_vector_SHA_scan": false,
+      "original_assets_modified": false,
+      "preprocess_source_sha256": "a6a386523779ede2ef4453b23198e46e371a0c73200e8f957ae272b5d7b63259",
+      "raw_id_mapping": "episode*1001+step, step0..1000 including true terminal",
+      "ready": {
+        "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_official_embeddings_v1/2d/cache/READY.json",
+        "sha256": "a3156c14078bb97e2d217a2150225cc44d4d4505b9031b33ebd72668b1ef1c5a",
+        "stat": {
+          "bytes": 1409,
+          "device": 2304,
+          "inode": 31195641888,
+          "mtime_ns": 1792295504576482874
+        }
+      },
+      "seal": {
+        "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_official_embeddings_v1/2d/cache/cache_seal.json",
+        "sha256": "306a76d15a55c07a7d5092a93fc55388de159a867877875951a60c81fb99c563",
+        "stat": {
+          "bytes": 534,
+          "device": 2304,
+          "inode": 31195717059,
+          "mtime_ns": 1792292809340659460
+        }
+      },
+      "split_episodes": {
+        "train": 1000,
+        "val": 100
+      },
+      "world_model": {
+        "checkpoint": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/checkpoints/cube2/2d_epoch10/weights_epoch_10.pt",
+        "checkpoint_sha256": "995a99f4904d87e71424b2de7910e7e0cf79556de8c2cebd08ac582d70880190",
+        "checkpoint_stat": {
+          "bytes": 72292862,
+          "device": 2304,
+          "inode": 25848544125,
+          "mtime_ns": 1792289505960457258
+        },
+        "configs": {
+          "config.json": {
+            "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/checkpoints/cube2/2d_epoch10/config.json",
+            "sha256": "c23f8d59c185b7e8953649eb3e18de94315bfab99e0cfc624032abc08753e536",
+            "stat": {
+              "bytes": 1013,
+              "device": 2304,
+              "inode": 25848544111,
+              "mtime_ns": 1792289506072461883
+            }
+          },
+          "config.yaml": {
+            "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/checkpoints/cube2/2d_epoch10/config.yaml",
+            "sha256": "d4712f16f99bb53351be98724ea7f775ad96c536637c2028cebbf707fe58364e",
+            "stat": {
+              "bytes": 2758,
+              "device": 2304,
+              "inode": 25848544112,
+              "mtime_ns": 1792289506072461883
+            }
+          }
+        },
+        "epoch": 10
+      }
+    },
+    "cube_count": 2,
+    "data_binding": {
+      "action_dim": 5,
+      "cube_count": 2,
+      "data_acceptance": {
+        "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_official_embeddings_v1/data_acceptance.json",
+        "sha256": "1bcafcafe815298041e42781ec8e6c25b49a9263e81d3eb1a29860e25c837cf0"
+      },
+      "data_id": "cube-double-play-v0",
+      "dataset_dir": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state",
+      "env_id": "cube-double-v0",
+      "goal_XYZ_dim": 6,
+      "loader": {
+        "GCDataset_parent": "official utils.datasets.GCDataset, probabilities unchanged",
+        "dataset_constructor": "official utils.datasets.Dataset.create(**loaded_fields)",
+        "function": "load_dataset",
+        "kwargs": {
+          "action_dtype": "numpy.float32",
+          "add_info": false,
+          "compact_dataset": true,
+          "ob_dtype": "numpy.float32"
+        },
+        "module": "ogbench.utils",
+        "one_call_per_split_per_role": true
+      },
+      "main_rows_per_episode": 1000,
+      "memory_estimate_bytes": {
+        "NPY_file_headers_total": 140800,
+        "scope": "Arithmetic payload floor, not actual peakRSS/PSS or GPU/JIT reserve; loading transients/runtime extra",
+        "steady_host_compact_arrays_breakdown": {
+          "GCDataset_terminal_and_initial_locs_int64": 35200,
+          "actions_FP32": 22022000,
+          "compact_terminals_FP32": 4404400,
+          "compact_valids_FP32": 4404400,
+          "observations_FP32": 162962800,
+          "valid_idxs_int64": 8800000
+        },
+        "steady_host_compact_arrays_sum": 202628800,
+        "visual_readonly_feature_payload_train_plus_val": 845644800,
+        "visual_steady_arrays_plus_features": 1048273600
+      },
+      "object_XYZ_indices": [
+        [
+          19,
+          20,
+          21
+        ],
+        [
+          28,
+          29,
+          30
+        ]
+      ],
+      "raw_rows_per_episode": 1001,
+      "robot_state_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ],
+      "source_arrays_receipt": {
+        "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_official_embeddings_v1/source_arrays/source_arrays.json",
+        "sha256": "28eedab709578fdf874d2261984c7cfc26cd2b7c41b4d191fc3fc2dfd83bb35e",
+        "training_qpos_qvel_loaded": false
+      },
+      "source_stat_freeze": {
+        "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_official_embeddings_v1/stat-freeze.json",
+        "sha256": "53e5bd43e3054287ab9c6ad8a7ac79e954e2e028b984ea8cf0a8a54c1ec59360"
+      },
+      "splits": {
+        "train": {
+          "accepted_raw_sha256": "a73d1a33d029cedb8bc170ef94791ec585fa2d9450096f4f2a02b8cfbcf608c9",
+          "accepted_stat": {
+            "ctime_ns": 1792239634332224443,
+            "device": 2304,
+            "inode": 15076767209,
+            "mtime_ns": 1792239630756155315,
+            "size": 297435656
+          },
+          "action_shape": [
+            1001000,
+            5
+          ],
+          "dtype": "float32",
+          "episodes": 1000,
+          "observation_shape": [
+            1001000,
+            37
+          ],
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-double-play-v0.npz",
+          "raw_rows": 1001000,
+          "valid_current_rows": 1000000
+        },
+        "val": {
+          "accepted_raw_sha256": "b1fcdf4bd40750351a58d0d491d6be198366ce898f0c6a2e4cb5db331966013e",
+          "accepted_stat": {
+            "ctime_ns": 1792239670260923306,
+            "device": 2304,
+            "inode": 15076767205,
+            "mtime_ns": 1792239669888916031,
+            "size": 29726524
+          },
+          "action_shape": [
+            100100,
+            5
+          ],
+          "dtype": "float32",
+          "episodes": 100,
+          "observation_shape": [
+            100100,
+            37
+          ],
+          "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-double-play-v0-val.npz",
+          "raw_rows": 100100,
+          "valid_current_rows": 100000
+        }
+      },
+      "state_dim": 37,
+      "terminal_step": 1000
+    },
+    "encoder_binding": null,
+    "feature_loader_arguments": {
+      "train": {
+        "cache_dir": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_official_embeddings_v1/2d/cache",
+        "checkpoint_sha256": "995a99f4904d87e71424b2de7910e7e0cf79556de8c2cebd08ac582d70880190",
+        "expected_rows": 1001000,
+        "manifest_sha256": "0dd629c70068989703f881495897e759fc03dc3230f01e53252ece04c344e164",
+        "source_npz": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-double-play-v0.npz",
+        "split": "train"
+      },
+      "val": {
+        "cache_dir": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube2_official_embeddings_v1/2d/cache",
+        "checkpoint_sha256": "995a99f4904d87e71424b2de7910e7e0cf79556de8c2cebd08ac582d70880190",
+        "expected_rows": 100100,
+        "manifest_sha256": "0dd629c70068989703f881495897e759fc03dc3230f01e53252ece04c344e164",
+        "source_npz": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-double-play-v0-val.npz",
+        "split": "val"
+      }
+    },
+    "group_id": "G05",
+    "input_contract": {
+      "current_dim": 211,
+      "current_state": "official proprio19 only",
+      "goal_dim": 198,
+      "goal_state": "objectXYZ6 in cube index order; no robotstate",
+      "latent_dim": 192,
+      "next_dim": 211,
+      "object_XYZ_indices": [
+        [
+          19,
+          20,
+          21
+        ],
+        [
+          28,
+          29,
+          30
+        ]
+      ],
+      "state_only_features": "same_raw_id_readonly_FP32_192",
+      "zero_padding": false
+    },
+    "role": "cube2_rgb",
+    "schema_version": 1,
+    "seed": 0,
+    "wm": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/checkpoints/cube2/2d_epoch10/weights_epoch_10.pt",
+    "wm_sha256": "995a99f4904d87e71424b2de7910e7e0cf79556de8c2cebd08ac582d70880190"
+  },
+  "upstream_identity_sha256": "2a6de0835367c1082564c304223da8c13daf292db85b5719b7a52aefe7428aca"
+}

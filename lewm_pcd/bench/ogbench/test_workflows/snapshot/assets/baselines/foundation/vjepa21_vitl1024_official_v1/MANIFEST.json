@@ -1,0 +1,12 @@
+{
+  "url": "https://dl.fbaipublicfiles.com/vjepa2/vjepa2_1_vitl_dist_vitG_384.pt",
+  "bytes": 5151198524,
+  "sha256": "7ea9b7cb4a75d10644a8a8d42cff9e177b10dca8f02173f0eaf2b0bed82838c6",
+  "etag": "\"75aac8d267d11f285683714d390dc0ed-615\"",
+  "status": "download_size_sha_zipcrc_verified_model_load_pending",
+  "exit_code": 0,
+  "at": "2026-10-23T17:09:19.146320+00:00",
+  "checkpoint": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/assets/baselines/foundation/vjepa21_vitl1024_official_v1/vjepa2_1_vitl_dist_vitG_384.pt",
+  "source_commit": "204698b45b3712590f06245fbfba32d3be539812",
+  "not_published_official_sha": true
+}

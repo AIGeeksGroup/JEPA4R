@@ -1,0 +1,320 @@
+{
+  "ready": true,
+  "scope": "fresh three formal1M/B1024 frozen cachedVisual+proprio/oracleGCIQL; static first pair original launchers then M5 after GPUrelease+fullCPUaccepted; Native wait owner ready",
+  "modes": {
+    "M0": {
+      "argv": [
+        "/root/autodl-tmp/conda/envs/jepa4r-smoke/bin/python",
+        "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/core_v1/launch.py",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/configs/M0_w2_formal_config.json",
+        "--output",
+        "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/rl3_m0_gciql_seed0_b1024_1m_w2_20261013_v1",
+        "--launcher-output",
+        "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/formal_launches_v1/M0",
+        "--gate-report",
+        "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/gpu_gates_final_v1/M0/report.json",
+        "--gate-sha256",
+        "0cf28bb4b2e2ad52d53115c7a651d7faf6b925fa851631d5c926c4316b64e487",
+        "--execute"
+      ],
+      "config": {
+        "bridge_path": "/root/autodl-tmp/workspace/users/lewm/coordination/gciql_frozen_lewm_109_20261009_v1/bridge_v1/bridge.py",
+        "bridge_sha256": "7ccbf35c8750d2bf7941a11188ca604ff36bd7123aad06ac2db25f0bc5f3f59b",
+        "source_config": "/root/autodl-tmp/workspace/users/lewm/coordination/gciql_frozen_lewm_109_20261009_v1/bridge_v1/config.json",
+        "source_config_sha256": "76a517056d5b7c3e2b7b6531c965c6f0fc1668cca8ddc21394e6d92c1ed4fd24",
+        "driver_helpers": "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/official_lewm_gcbc_20261006/run_formal.py",
+        "driver_helpers_sha256": "306797e1fa07dee8616adf9cc404af48380a4143d5fb36a6b04b425aae4c6928",
+        "runtime_profile": "/root/autodl-tmp/workspace/users/lewm/coordination/cached_lewm_visual_state_gciql_b1024_1m_109_20261013_v1/runtime_autotune0_v1/activate.sh",
+        "runtime_profile_sha256": "fa1de8fca14a7088f400939b256a5fc92ef2dc06dae6709d20b2446527d31675",
+        "log_utils_sha256": "7bf01cfc6f984ea4b17dfb0224d1400e7a0d475b72b2557487d30378a84c3705",
+        "output": "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/rl3_m0_gciql_seed0_b1024_1m_w2_20261013_v1",
+        "total_updates": 1000000,
+        "batch_size": 1024,
+        "seed": 0,
+        "workers": 2,
+        "encoder_microbatch": 64,
+        "validation_interval": 5000,
+        "save_interval": 100000,
+        "heartbeat_interval": 10,
+        "evaluation_episodes": 0,
+        "precision": {
+          "dtype": "float32",
+          "matmul_precision": "highest",
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_policy": "unchanged"
+        },
+        "chunk_gate": {
+          "reference_batch": 64,
+          "microbatch": 32,
+          "atol": 1e-05,
+          "rtol": 1e-05
+        },
+        "protocol_label": "RL3 M0 freshseed0/B1024/1M; zero192+officialfullstate28 current220 and zero192+XYZ3 goal195; readonlyRAM 2 role-map threads; parent original sampler; current_object4cm reward0/-1; no runtimeencoder/no WMdynamics; original GCIQL",
+        "rng_deviation": "All training online evaluations omitted without synthetic RNG consumption, identical to completed cached visual195 1M streams; not original-main evaluation RNG stream",
+        "input_profile": "cached",
+        "algorithm": "gciql",
+        "kind": "pcd",
+        "goal_mode": "latent_object_xyz",
+        "reward_mode": "current_object_xyz",
+        "visual_mode": "zero192",
+        "gciql_template_sha256": "8611cd476d8849ad014ca43304073c3e88fc3d3aa5dab369a343ae425bba7ba7",
+        "cache": {
+          "modality": "pcd",
+          "manifest": "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/official_lewm_gcbc_20261006/goal_xyz_mask_100k_b256_20261011_v1/pcd_latent_cache_20261012_v1/features_v1/cache_manifest.json",
+          "manifest_sha256": "7e05afd39bd163b3738776ac803d5caf812dfec8afe42a0ade10f73e13daf3aa",
+          "seal": "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/official_lewm_gcbc_20261006/goal_xyz_mask_100k_b256_20261011_v1/pcd_latent_cache_20261012_v1/features_v1/cache_seal.json",
+          "seal_sha256": "1b37c2700e0f5da387fd39ae5e939e3c9f6b3bfe16a80c4fdb8c097384fbcef6",
+          "terminal_manifest": "/root/autodl-tmp/workspace/users/lewm/coordination/cached_lewm_state_gciql_xyz_109_20261012_v1/terminal_v1/data_v2/pcd/terminal_manifest.json",
+          "terminal_manifest_sha256": "41941bd7837e73aaa20c9d5f194a67a1aed86fc8b29b45a44f1e80753fe9b257"
+        },
+        "user_confirmed_contract": {
+          "stage": "formal_training_pending_Root_performance_and_final_GPU_gate_acceptance",
+          "current": "zero192+fullstate28",
+          "goal": "zero192+XYZ3",
+          "reward": "current_object_distance4cm_0minus1",
+          "total_updates": 1000000,
+          "batch_size": 1024,
+          "fresh_seed": 0,
+          "workers": 2,
+          "sampler_parent_only": true
+        },
+        "state_profile": "full28"
+      },
+      "config_path": "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/configs/M0_w2_formal_config.json",
+      "config_sha256": "6f4bcae114644b4c8029a0f310abf5a1f0dfef353d59fcafde1dea4e2316f9f7",
+      "core_root": "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/core_v1",
+      "output": "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/rl3_m0_gciql_seed0_b1024_1m_w2_20261013_v1",
+      "launcher_output": "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/formal_launches_v1/M0",
+      "outer_exit": "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/formal_dispatch_v1/M0/outer_exit_code",
+      "gate_report": "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/gpu_gates_final_v1/M0/report.json",
+      "gate_sha256": "0cf28bb4b2e2ad52d53115c7a651d7faf6b925fa851631d5c926c4316b64e487",
+      "current_dims": 220,
+      "goal_dims": 195
+    },
+    "M6": {
+      "argv": [
+        "/root/autodl-tmp/conda/envs/jepa4r-smoke/bin/python",
+        "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/core_v1/launch.py",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/configs/M6_w4_formal_config.json",
+        "--output",
+        "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/rl3_m6_gciql_seed0_b1024_1m_w4_20261013_v1",
+        "--launcher-output",
+        "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/formal_launches_v1/M6",
+        "--gate-report",
+        "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/gpu_gates_final_v1/M6/report.json",
+        "--gate-sha256",
+        "adffc452a4f145ae7ed02e87aca830bbbdea7886741b6a68c4a346c33fcc1d1e",
+        "--execute"
+      ],
+      "config": {
+        "bridge_path": "/root/autodl-tmp/workspace/users/lewm/coordination/gciql_frozen_lewm_109_20261009_v1/bridge_v1/bridge.py",
+        "bridge_sha256": "7ccbf35c8750d2bf7941a11188ca604ff36bd7123aad06ac2db25f0bc5f3f59b",
+        "source_config": "/root/autodl-tmp/workspace/users/lewm/coordination/gciql_frozen_lewm_109_20261009_v1/bridge_v1/config.json",
+        "source_config_sha256": "76a517056d5b7c3e2b7b6531c965c6f0fc1668cca8ddc21394e6d92c1ed4fd24",
+        "driver_helpers": "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/official_lewm_gcbc_20261006/run_formal.py",
+        "driver_helpers_sha256": "306797e1fa07dee8616adf9cc404af48380a4143d5fb36a6b04b425aae4c6928",
+        "runtime_profile": "/root/autodl-tmp/workspace/users/lewm/coordination/cached_lewm_visual_state_gciql_b1024_1m_109_20261013_v1/runtime_autotune0_v1/activate.sh",
+        "runtime_profile_sha256": "fa1de8fca14a7088f400939b256a5fc92ef2dc06dae6709d20b2446527d31675",
+        "log_utils_sha256": "7bf01cfc6f984ea4b17dfb0224d1400e7a0d475b72b2557487d30378a84c3705",
+        "output": "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/rl3_m6_gciql_seed0_b1024_1m_w4_20261013_v1",
+        "total_updates": 1000000,
+        "batch_size": 1024,
+        "seed": 0,
+        "workers": 4,
+        "encoder_microbatch": 64,
+        "validation_interval": 5000,
+        "save_interval": 100000,
+        "heartbeat_interval": 10,
+        "evaluation_episodes": 0,
+        "precision": {
+          "dtype": "float32",
+          "matmul_precision": "highest",
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_policy": "unchanged"
+        },
+        "chunk_gate": {
+          "reference_batch": 64,
+          "microbatch": 32,
+          "atol": 1e-05,
+          "rtol": 1e-05
+        },
+        "protocol_label": "RL3 M6 freshseed0/B1024/1M; cachedvisual192+robotproprio19 current211 and same-IDcachedvisual192+XYZ3 goal195; readonlyRAM 4 role-map threads; parent original sampler; current_object4cm reward0/-1; no runtimeencoder/no WMdynamics; original GCIQL",
+        "rng_deviation": "Online evaluations at step1 and100K are omitted without synthetic RNG consumption; this is not the original-main training RNG stream",
+        "input_profile": "cached",
+        "algorithm": "gciql",
+        "kind": "pcd",
+        "goal_mode": "latent_object_xyz",
+        "reward_mode": "current_object_xyz",
+        "visual_mode": "cache",
+        "gciql_template_sha256": "8611cd476d8849ad014ca43304073c3e88fc3d3aa5dab369a343ae425bba7ba7",
+        "cache": {
+          "modality": "pcd",
+          "manifest": "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/official_lewm_gcbc_20261006/goal_xyz_mask_100k_b256_20261011_v1/pcd_latent_cache_20261012_v1/features_v1/cache_manifest.json",
+          "manifest_sha256": "7e05afd39bd163b3738776ac803d5caf812dfec8afe42a0ade10f73e13daf3aa",
+          "seal": "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/official_lewm_gcbc_20261006/goal_xyz_mask_100k_b256_20261011_v1/pcd_latent_cache_20261012_v1/features_v1/cache_seal.json",
+          "seal_sha256": "1b37c2700e0f5da387fd39ae5e939e3c9f6b3bfe16a80c4fdb8c097384fbcef6",
+          "terminal_manifest": "/root/autodl-tmp/workspace/users/lewm/coordination/cached_lewm_state_gciql_xyz_109_20261012_v1/terminal_v1/data_v2/pcd/terminal_manifest.json",
+          "terminal_manifest_sha256": "41941bd7837e73aaa20c9d5f194a67a1aed86fc8b29b45a44f1e80753fe9b257"
+        },
+        "user_confirmed_contract": {
+          "stage": "formal_training_pending_Root_performance_and_final_GPU_gate_acceptance",
+          "current": "cachedvisual192+robotproprio19",
+          "goal": "cachedvisual192+XYZ3",
+          "reward": "current_object_distance4cm_0minus1",
+          "total_updates": 1000000,
+          "batch_size": 1024,
+          "fresh_seed": 0,
+          "workers": 4,
+          "sampler_parent_only": true
+        },
+        "state_profile": "robot_proprio"
+      },
+      "config_path": "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/configs/M6_w4_formal_config.json",
+      "config_sha256": "af52e975ea6c3e7d2350158c3c9802075b4e8701080ec891f1755fb2c0a33f51",
+      "core_root": "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/core_v1",
+      "output": "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/rl3_m6_gciql_seed0_b1024_1m_w4_20261013_v1",
+      "launcher_output": "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/formal_launches_v1/M6",
+      "outer_exit": "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/formal_dispatch_v1/M6/outer_exit_code",
+      "gate_report": "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/gpu_gates_final_v1/M6/report.json",
+      "gate_sha256": "adffc452a4f145ae7ed02e87aca830bbbdea7886741b6a68c4a346c33fcc1d1e",
+      "current_dims": 211,
+      "goal_dims": 195
+    },
+    "M5": {
+      "argv": [
+        "/root/autodl-tmp/conda/envs/jepa4r-smoke/bin/python",
+        "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/core_v1/launch.py",
+        "--config",
+        "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/configs/M5_w4_formal_config.json",
+        "--output",
+        "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/rl3_m5_gciql_seed0_b1024_1m_w4_20261013_v1",
+        "--launcher-output",
+        "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/formal_launches_v1/M5",
+        "--gate-report",
+        "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/gpu_gates_final_v1/M5/report.json",
+        "--gate-sha256",
+        "aa935d6da5e4ab3a6a1413449fa0ad134d67a415c41d3b828315bbb6356a235d",
+        "--execute"
+      ],
+      "config": {
+        "bridge_path": "/root/autodl-tmp/workspace/users/lewm/coordination/gciql_frozen_lewm_109_20261009_v1/bridge_v1/bridge.py",
+        "bridge_sha256": "7ccbf35c8750d2bf7941a11188ca604ff36bd7123aad06ac2db25f0bc5f3f59b",
+        "source_config": "/root/autodl-tmp/workspace/users/lewm/coordination/gciql_frozen_lewm_109_20261009_v1/bridge_v1/config.json",
+        "source_config_sha256": "76a517056d5b7c3e2b7b6531c965c6f0fc1668cca8ddc21394e6d92c1ed4fd24",
+        "driver_helpers": "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/official_lewm_gcbc_20261006/run_formal.py",
+        "driver_helpers_sha256": "306797e1fa07dee8616adf9cc404af48380a4143d5fb36a6b04b425aae4c6928",
+        "runtime_profile": "/root/autodl-tmp/workspace/users/lewm/coordination/cached_lewm_visual_state_gciql_b1024_1m_109_20261013_v1/runtime_autotune0_v1/activate.sh",
+        "runtime_profile_sha256": "fa1de8fca14a7088f400939b256a5fc92ef2dc06dae6709d20b2446527d31675",
+        "log_utils_sha256": "7bf01cfc6f984ea4b17dfb0224d1400e7a0d475b72b2557487d30378a84c3705",
+        "output": "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/rl3_m5_gciql_seed0_b1024_1m_w4_20261013_v1",
+        "total_updates": 1000000,
+        "batch_size": 1024,
+        "seed": 0,
+        "workers": 4,
+        "encoder_microbatch": 64,
+        "validation_interval": 5000,
+        "save_interval": 100000,
+        "heartbeat_interval": 10,
+        "evaluation_episodes": 0,
+        "precision": {
+          "dtype": "float32",
+          "matmul_precision": "highest",
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_policy": "unchanged"
+        },
+        "chunk_gate": {
+          "reference_batch": 64,
+          "microbatch": 32,
+          "atol": 1e-05,
+          "rtol": 1e-05
+        },
+        "protocol_label": "RL3 M5 freshseed0/B1024/1M; cachedvisual192+robotproprio19 current211 and same-IDcachedvisual192+XYZ3 goal195; readonlyRAM 4 role-map threads; parent original sampler; current_object4cm reward0/-1; no runtimeencoder/no WMdynamics; original GCIQL",
+        "rng_deviation": "Online evaluations at step1 and100K are omitted without synthetic RNG consumption; this is not the original-main training RNG stream",
+        "input_profile": "cached",
+        "algorithm": "gciql",
+        "kind": "rgb",
+        "goal_mode": "latent_object_xyz",
+        "reward_mode": "current_object_xyz",
+        "visual_mode": "cache",
+        "gciql_template_sha256": "8611cd476d8849ad014ca43304073c3e88fc3d3aa5dab369a343ae425bba7ba7",
+        "cache": {
+          "modality": "rgb",
+          "manifest": "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/official_lewm_gcbc_20261006/goal_xyz_mask_100k_b256_20261011_v1/rgb_latent_cache_20261012_v1/features_v1/cache_manifest.json",
+          "manifest_sha256": "f42e4388750df90869e66a4f0a25c44f64b8074a8dc82ab0b2ec65e6deb84afe",
+          "seal": "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/official_lewm_gcbc_20261006/goal_xyz_mask_100k_b256_20261011_v1/rgb_latent_cache_20261012_v1/features_v1/cache_seal.json",
+          "seal_sha256": "c980135b0901843b71f995f0ea8a6ff8bb2453342b776ea771b9c40025d7abe3",
+          "terminal_manifest": "/root/autodl-tmp/workspace/users/lewm/coordination/cached_lewm_state_gciql_xyz_109_20261012_v1/terminal_v1/data_v2/rgb/terminal_manifest.json",
+          "terminal_manifest_sha256": "7724d254892915e94fb483142e61850d024c2c63edbaf1eebf838269a1ee80a3"
+        },
+        "user_confirmed_contract": {
+          "stage": "formal_training_pending_Root_performance_and_final_GPU_gate_acceptance",
+          "current": "cachedvisual192+robotproprio19",
+          "goal": "cachedvisual192+XYZ3",
+          "reward": "current_object_distance4cm_0minus1",
+          "total_updates": 1000000,
+          "batch_size": 1024,
+          "fresh_seed": 0,
+          "workers": 4,
+          "sampler_parent_only": true
+        },
+        "state_profile": "robot_proprio"
+      },
+      "config_path": "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/configs/M5_w4_formal_config.json",
+      "config_sha256": "37e06651cbfffa3b558ea4ab80c90e6bcb51c29db88c9ba16cf05ed987e36bc8",
+      "core_root": "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/core_v1",
+      "output": "/root/autodl-tmp/workspace/users/lewm/ogbench-official-single-play-20261006/rl3_m5_gciql_seed0_b1024_1m_w4_20261013_v1",
+      "launcher_output": "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/formal_launches_v1/M5",
+      "outer_exit": "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/formal_dispatch_v1/M5/outer_exit_code",
+      "gate_report": "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/gpu_gates_final_v1/M5/report.json",
+      "gate_sha256": "aa935d6da5e4ab3a6a1413449fa0ad134d67a415c41d3b828315bbb6356a235d",
+      "current_dims": 211,
+      "goal_dims": 195
+    }
+  },
+  "training_blocks": [
+    {
+      "stage": "M0_M6_original_launches",
+      "groups": [
+        "M0",
+        "M6"
+      ],
+      "argv": [
+        "bash",
+        "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/relay_v1/launch_M0_M6_pair.sh"
+      ]
+    },
+    {
+      "stage": "M5_original_launch",
+      "groups": [
+        "M5"
+      ],
+      "argv": [
+        "bash",
+        "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/relay_v1/launch_M5_after_pair.sh"
+      ]
+    }
+  ],
+  "core_freeze_path": "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/adapter_v1/freeze_v1/manifest.json",
+  "core_freeze_sha256": "03f3c3551a46c80bc1f82f4472781369d806d1cdb3f773c7b8da6c53b9dbe75e",
+  "afterhook_handoff": "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/relay_v1/rendered_afterhook_handoff.json",
+  "afterhook_handoff_sha256": "7125dd2541be43c96abcb8f583676116042329566896b5617c4b26d847d5a23e",
+  "original_afterhook_handoff": "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/afterhook_v1/relay_handoff_v1.json",
+  "original_afterhook_handoff_sha256": "1dffdca578c1b50e6b0826b8177b5f111cfb14278d566bc31e7752ba4205681f",
+  "native_ready_file": "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/relay_v1/native_ready.json",
+  "source_sha256": {
+    "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/relay_v1/relay.py": "5c5117a069373b52bbb09bea90966191cd91624706e8cef9159894c439e456f5",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/relay_v1/launch_M0_M6_pair.sh": "20338102a711163bd69cdb16d75f1a792350cb79e323ebe0e1f65f9bf345c690",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/relay_v1/launch_M5_after_pair.sh": "5e4177f643f1991008806f40ffa40ae70bb21f5d23db54ea1fc5135b67d9f52b",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/rl3_m0_m5_m6_visual_proprio_smoke_109_20261013_v1/formal_start_v1/relay_v1/relay_v2.py": "01630d69c8210d32de9b9ae3a721bd69c8a9c650c6001de761f11c52c776ec48"
+  },
+  "selection": {
+    "M0_workers": 2,
+    "M6_workers": 4,
+    "M5_workers": 4,
+    "M0_M6_parallel_shortwindow_speedup": 1.6372549415970816,
+    "workers8_probe_rejected": true,
+    "never_resume_diagnostic2_or_old1M": true
+  }
+}

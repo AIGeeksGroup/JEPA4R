@@ -1,0 +1,383 @@
+{
+  "agent_config": {
+    "actor_geom_sample": false,
+    "actor_hidden_dims": [
+      512,
+      512,
+      512
+    ],
+    "actor_loss": "ddpgbc",
+    "actor_p_curgoal": 0.0,
+    "actor_p_randomgoal": 0.0,
+    "actor_p_trajgoal": 1.0,
+    "agent_name": "gciql",
+    "alpha": 1.0,
+    "batch_size": 1024,
+    "const_std": true,
+    "dataset_class": "GCDataset",
+    "discount": 0.99,
+    "discrete": false,
+    "encoder": null,
+    "expectile": 0.9,
+    "frame_stack": null,
+    "gc_negative": true,
+    "layer_norm": true,
+    "lr": 0.0003,
+    "p_aug": 0.0,
+    "tau": 0.005,
+    "value_geom_sample": true,
+    "value_hidden_dims": [
+      512,
+      512,
+      512
+    ],
+    "value_p_curgoal": 0.2,
+    "value_p_randomgoal": 0.3,
+    "value_p_trajgoal": 0.5
+  },
+  "schema_version": 1,
+  "executable": true,
+  "group_id": "lejepa_tiny512_cube4",
+  "role": "lejepa_tiny512_cube4",
+  "cube_count": 4,
+  "modality": "rgb",
+  "seed": 0,
+  "batch_size": 1024,
+  "total_updates": 1000000,
+  "resume_from": null,
+  "fresh": true,
+  "validation_interval": 5000,
+  "save_interval": 100000,
+  "save_step1": true,
+  "checkpoint_steps": [
+    1,
+    100000,
+    200000,
+    300000,
+    400000,
+    500000,
+    600000,
+    700000,
+    800000,
+    900000,
+    1000000
+  ],
+  "heartbeat_interval": 100,
+  "feature_lookup_workers": 4,
+  "evaluation_episodes_during_training": 0,
+  "runtime_encoder_forwards": 0,
+  "WM_dynamics_calls": 0,
+  "output": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/outputs/formal/runs/lejepa_tiny512_cube4",
+  "purpose": "formal",
+  "execution_root": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/outputs/formal",
+  "native_max_episode_steps": 1000,
+  "input_contract": {
+    "current_dim": 531,
+    "goal_dim": 524,
+    "latent_dim": 512,
+    "zero_padding": false
+  },
+  "reward": {
+    "rule": "ALL(each cube L2<=0.4 scaled=4cm)",
+    "values": [
+      -1,
+      0
+    ],
+    "mask": "1-success"
+  },
+  "data_binding": {
+    "cube_count": 4,
+    "data_id": "cube-quadruple-play-v0",
+    "splits": {
+      "train": {
+        "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-quadruple-play-v0.npz",
+        "accepted_stat": {
+          "size": 1861419607,
+          "mtime_ns": 1792241332419440814,
+          "ctime_ns": 1793203225691451861,
+          "inode": 4356349947,
+          "device": 2304
+        },
+        "accepted_raw_sha256": "31053b04f5adbedaf9a5abef467057b2c216b0b3f8664cf3137b9891ee32a6ed",
+        "observation_shape": [
+          5005000,
+          55
+        ],
+        "action_shape": [
+          5005000,
+          5
+        ],
+        "episodes": 5000,
+        "raw_rows": 5005000,
+        "headers": {
+          "observations": {
+            "shape": [
+              5005000,
+              55
+            ],
+            "dtype": "float32"
+          },
+          "actions": {
+            "shape": [
+              5005000,
+              5
+            ],
+            "dtype": "float32"
+          },
+          "terminals": {
+            "shape": [
+              5005000
+            ],
+            "dtype": "bool"
+          },
+          "qpos": {
+            "shape": [
+              5005000,
+              42
+            ],
+            "dtype": "float32"
+          },
+          "qvel": {
+            "shape": [
+              5005000,
+              38
+            ],
+            "dtype": "float32"
+          }
+        },
+        "terminal_indices_verified_this_run": true
+      },
+      "val": {
+        "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-quadruple-play-v0-val.npz",
+        "accepted_stat": {
+          "size": 185890898,
+          "mtime_ns": 1792241530418905606,
+          "ctime_ns": 1793203215278115022,
+          "inode": 4356349946,
+          "device": 2304
+        },
+        "accepted_raw_sha256": "96ae20f4c7ffe673520c69f2c0339a746f7eac019bb15a92f2898fb8e1785d1d",
+        "observation_shape": [
+          500500,
+          55
+        ],
+        "action_shape": [
+          500500,
+          5
+        ],
+        "episodes": 500,
+        "raw_rows": 500500,
+        "headers": {
+          "observations": {
+            "shape": [
+              500500,
+              55
+            ],
+            "dtype": "float32"
+          },
+          "actions": {
+            "shape": [
+              500500,
+              5
+            ],
+            "dtype": "float32"
+          },
+          "terminals": {
+            "shape": [
+              500500
+            ],
+            "dtype": "bool"
+          },
+          "qpos": {
+            "shape": [
+              500500,
+              42
+            ],
+            "dtype": "float32"
+          },
+          "qvel": {
+            "shape": [
+              500500,
+              38
+            ],
+            "dtype": "float32"
+          }
+        },
+        "terminal_indices_verified_this_run": true
+      }
+    }
+  },
+  "feature_loader_arguments": {
+    "train": {
+      "cache_dir": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube14_gciql_v1/outputs/cache/lejepa_tiny512_cube4/cache",
+      "split": "train",
+      "manifest_sha256": "c9627d15e8611988d11eef2b360167576f8335990b1b73b96dbb61dc07d5dbc2",
+      "checkpoint_sha256": "66269b172e06cfbd3b50be0460604ef3f46dc27e1e283a67cef31813c3ae244b",
+      "source_npz": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-quadruple-play-v0.npz",
+      "expected_rows": 5005000
+    },
+    "val": {
+      "cache_dir": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube14_gciql_v1/outputs/cache/lejepa_tiny512_cube4/cache",
+      "split": "val",
+      "manifest_sha256": "c9627d15e8611988d11eef2b360167576f8335990b1b73b96dbb61dc07d5dbc2",
+      "checkpoint_sha256": "66269b172e06cfbd3b50be0460604ef3f46dc27e1e283a67cef31813c3ae244b",
+      "source_npz": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/data/official_state/cube-quadruple-play-v0-val.npz",
+      "expected_rows": 500500
+    }
+  },
+  "encoder_binding": {
+    "family": "lejepa_tiny512",
+    "latent_dim": 512,
+    "checkpoint_sha256": "66269b172e06cfbd3b50be0460604ef3f46dc27e1e283a67cef31813c3ae244b",
+    "spec_path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube14_gciql_v1/cache/groups/lejepa_tiny512_cube4/encoder_spec.json",
+    "spec_sha256": "71fc78da02ad2d6b1840491ef98a0dcc5fb228158b943f169566ee34f05151be",
+    "adapter": {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube14_gciql_v1/release_v1/tiny_encoder.py",
+      "sha256": "d32c467fc02fd3680d3c12d737e692dd423a9f1b5d7a0f9f20c5e21584da3b86"
+    }
+  },
+  "camera": {
+    "FOV": 45.0,
+    "aa_samples": 4,
+    "actual_quaternion": [
+      0.5609588321928806,
+      0.4304941214288525,
+      0.4304941214288525,
+      0.5609588321928807
+    ],
+    "base_quaternion": [
+      0.5792028135240382,
+      0.4056157058175116,
+      0.4056157058175116,
+      0.5792028135240384
+    ],
+    "crop": null,
+    "cube_count": 4,
+    "env_id": "cube-quadruple-v0",
+    "height": 224,
+    "local_x_up_degrees": 5.0,
+    "ob_type": "states",
+    "offsamples": 4,
+    "pixel_transparent_arm": false,
+    "position": [
+      1.3835957918490516,
+      1.1102230246251566e-17,
+      0.5348699245660802
+    ],
+    "provenance": "Cube1 unchanged pinned official front_pixels (prior M5 RGB recipe); Cube2/3 approved front+5; Cube4 training_camera_v2",
+    "pullback": 0.1,
+    "render_name": "front_pixels",
+    "source_name": "front",
+    "source_position": [
+      1.287,
+      0.0,
+      0.509
+    ],
+    "visualize_info": false,
+    "width": 224
+  },
+  "cache_audit": {
+    "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/cache/groups/lejepa_tiny512_cube4/full_audit_v1/report.json",
+    "sha256": "66982d13c256747369972756a1a1879ce849147f9303248571cb13c2e3f09caf"
+  },
+  "dataset_id": "cube-quadruple-play-v0",
+  "delivery_binding": {
+    "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/cache/groups/lejepa_tiny512_cube4/delivery.json",
+    "sha256": "963bd26b399587aeeac565907bd8677deb49c66e044477f29de3203d36b97ddb"
+  },
+  "cache_plan_binding": {
+    "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/cache/groups/lejepa_tiny512_cube4/plan.json",
+    "sha256": "3451d4c2a21fe76adb7cdf3ec6f6fff9d61527203c97170d7a95c8b42d4e2fe5"
+  },
+  "cache_control_binding": [
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/control/full/runtime/lejepa_tiny512_cube4_01_encode_full_exit.json",
+      "sha256": "620fbada261c8449ef5a8cf5c2476ef3a14bbd991f7c41b05256cfe9ae0e0301"
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/control/full/runtime/lejepa_tiny512_cube4_02_cache_audit_exit.json",
+      "sha256": "8acb908a4a8a5276cd2737ac71d44115ab5f0eed5ba3bd13b78575fcf6221688"
+    },
+    {
+      "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/control/full/runtime/lejepa_tiny512_cube4_03_deliver_exit.json",
+      "sha256": "4878c87d62240e92da83ceb65e9bc03e5cb1ae1ae745b61ac6d82af05897dbd4"
+    }
+  ],
+  "parent_template": {
+    "path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/five_group_extension_v1/configs/G08_cube3_rgb.json",
+    "sha256": "6d717c2123217020fec593367f3eecb42e01dfe203e9aae8d5a38733045f55b5"
+  },
+  "config_seal_path": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/configs/seals/lejepa_tiny512_cube4.json",
+  "commands": {
+    "gate": [
+      "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/release_v1/c4_resource_bridge.py",
+      "--resource-plan",
+      "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/cache/groups/lejepa_tiny512_cube4/plan.json",
+      "runtime",
+      "gate",
+      "--config",
+      "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/configs/formal/lejepa_tiny512_cube4.json",
+      "--output",
+      "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/outputs/formal/gates/lejepa_tiny512_cube4"
+    ],
+    "reload": [
+      "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/release_v1/c4_resource_bridge.py",
+      "--resource-plan",
+      "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/cache/groups/lejepa_tiny512_cube4/plan.json",
+      "runtime",
+      "reload",
+      "--config",
+      "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/configs/formal/lejepa_tiny512_cube4.json",
+      "--output",
+      "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/outputs/formal/gates/lejepa_tiny512_cube4",
+      "--report",
+      "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/outputs/formal/gates/lejepa_tiny512_cube4_reload.json"
+    ],
+    "train": [
+      "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/release_v1/c4_resource_bridge.py",
+      "--resource-plan",
+      "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/cache/groups/lejepa_tiny512_cube4/plan.json",
+      "runtime",
+      "train",
+      "--config",
+      "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/configs/formal/lejepa_tiny512_cube4.json"
+    ],
+    "accept": [
+      "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/release_v1/c4_resource_bridge.py",
+      "--resource-plan",
+      "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/cache/groups/lejepa_tiny512_cube4/plan.json",
+      "runtime",
+      "accept",
+      "--config",
+      "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/configs/formal/lejepa_tiny512_cube4.json",
+      "--output",
+      "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/outputs/formal/runs/lejepa_tiny512_cube4",
+      "--report",
+      "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/outputs/formal/acceptance/lejepa_tiny512_cube4.json"
+    ],
+    "native": [
+      "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/release_v1/c4_resource_bridge.py",
+      "--resource-plan",
+      "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/cache/groups/lejepa_tiny512_cube4/plan.json",
+      "native",
+      "--config",
+      "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/configs/formal/lejepa_tiny512_cube4.json",
+      "--mode",
+      "full",
+      "--output",
+      "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/outputs/formal/native_sr/lejepa_tiny512_cube4"
+    ],
+    "native_audit": [
+      "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/release_v1/c4_resource_bridge.py",
+      "--resource-plan",
+      "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/cache/groups/lejepa_tiny512_cube4/plan.json",
+      "audit-native",
+      "--config",
+      "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/configs/formal/lejepa_tiny512_cube4.json",
+      "--mode",
+      "full",
+      "--output",
+      "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/lejepa_tiny512_cube4_resource_v3/outputs/formal/native_sr/lejepa_tiny512_cube4"
+    ]
+  }
+}

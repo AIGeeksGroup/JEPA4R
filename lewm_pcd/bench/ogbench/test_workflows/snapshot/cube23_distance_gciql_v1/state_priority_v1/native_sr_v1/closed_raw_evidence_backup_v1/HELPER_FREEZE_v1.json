@@ -1,0 +1,23 @@
+{
+  "stage": "collector_prepared_frozen_not_deployed_or_executed",
+  "prepared_at": 1792319019.4141743,
+  "files": {
+    "build_closed_sr.py": {
+      "bytes": 9447,
+      "sha256": "5e6760a8f0817a79ce18f71b8a9b905b9491553bae903bd2c83dbc6a59ae62e0"
+    },
+    "TRAINING_EXTERNAL_REFERENCES_v1.json": {
+      "bytes": 1630,
+      "sha256": "eeef23c91eae377c9104f700aa4dc0eeb381ae6d494c6e0c966bd5454cb0afbf"
+    }
+  },
+  "source_release_sha256": "4011e4fbda6ee680ae23819b615e67d7fd7b5c3584014676028e5df18ee662de",
+  "launch_plan_sha256": "aad96b495d32f2a6444dc2cfce38595f2e35e9873fcc557d6f32378bf8f563be",
+  "source_handoff_sha256": "c4e03e5d24c9e22448248b9cf5dad5347dbe54b593c388da7ba16c9d9c204ca2",
+  "auditor_handoff_sha256": "6b4117b4dcdf7430a94c96b597c7eabc29eb6d361aa835898028a5a807c53545",
+  "compile_passed": true,
+  "default_plan_only_actual_exit_code": 0,
+  "default_stdout": "{\"prepare_only\": true, \"expected_formal_episodes\": 750, \"no_remote_reads\": true}",
+  "package_or_remote_actions_executed": false,
+  "execution_requires_Root_confirmed_three_SR_audit_controller_wrapper_closed": true
+}

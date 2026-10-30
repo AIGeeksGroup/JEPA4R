@@ -1,0 +1,55 @@
+{
+  "workspace": "/root/autodl-tmp/workspace/users/lewm",
+  "official": "downstream-smoke-20261005-2133/state/official-source",
+  "repo": "JEPA4R-ogbench-native-sr-df0496d",
+  "helper": "lewm-gcbc-smoke-20261006-0002/lewm_gcbc_adapter.py",
+  "raw": "ogbench-official-single-play-20261006/raw",
+  "seed": 0,
+  "batch_size": 2,
+  "updates": 2,
+  "continuation_updates": 1,
+  "agent_overrides": {"alpha": 1.0, "encoder": null, "frame_stack": null, "p_aug": 0.0, "batch_size": 2},
+  "schedule": {"initial_sample": 1, "validation_samples": 0, "evaluation_episodes": 0},
+  "routes": {
+    "rgb": {
+      "index": "ogbench-official-single-play-20261006/cube_rgb_full_20261006_v1/dataset_index.json",
+      "checkpoint": "ogbench-train-20261003/checkpoints/fixed5_mixed_pix_10ep_chunk5/weights_epoch_10.pt"
+    },
+    "pcd": {
+      "index": "ogbench-official-single-play-20261006/cube_pcd_main_full_20261007_v2/dataset_index.json",
+      "checkpoint": "ogbench-train-20261003/checkpoints/fixed5_mixed_pcd_dexart_10ep/weights_epoch_10.pt"
+    }
+  },
+  "heads": {
+    "downstream-smoke-20261005-2133/state/official-source": "572788d97c2a6225b8edb7c420e304c04d1b3459",
+    "JEPA4R-ogbench-native-sr-df0496d": "df0496d86aeb619bcd700a29526e141a8e4b5ab6",
+    "JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/third_party/stable-worldmodel": "5841424ab0fd9623f6bf72f57f77a046a15af8aa"
+  },
+  "locked_sha256": {
+    "coordination/gciql_frozen_lewm_109_20261009_v1/environment/activate_existing_profile.sh": "e36f92e198ba0e51fce7a9c4806dccd29c9530b8067b983c1d8ecaf841f9eca2",
+    "downstream-smoke-20261005-2133/state/official-source/impls/agents/gciql.py": "05a0b5d9b987d3049df8a1158bbfbaba2ca2611604d24f9e484f8fb6d0cd92bc",
+    "downstream-smoke-20261005-2133/state/official-source/impls/utils/datasets.py": "52c373922a87e1ba8ad8b3b96c3474d5e6385e2ea2c7206930f7a8a315816609",
+    "downstream-smoke-20261005-2133/state/official-source/impls/utils/networks.py": "e7e4c4a439b691911e5ae6c2653f253c5703e6b5d190d813e28ebc32e7306094",
+    "downstream-smoke-20261005-2133/state/official-source/impls/utils/flax_utils.py": "5b6a8e9a919bf57dae0c1454f327ded4235385f9d9dcd1e62263fe4fad9fd484",
+    "downstream-smoke-20261005-2133/state/official-source/ogbench/utils.py": "f503a3a0497f91ce02958abae5770f3e08c9d6a3a740687c828c996fedb24e9b",
+    "lewm-gcbc-smoke-20261006-0002/lewm_gcbc_adapter.py": "702ab5e2ea955c6bd37a97564f0d83129e512720138eb38a2efffaa7a8544798",
+    "JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/utils.py": "a6a386523779ede2ef4453b23198e46e371a0c73200e8f957ae272b5d7b63259",
+    "JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/jepa.py": "7e6680f9941268b13526082fa888a46de7dca9385bfc837e77ee649e5c034135",
+    "JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/module.py": "0b258a9e8dc24c29fcb1e8c50a09ec78b8ea85aeb79e21dd8adf712396646620",
+    "JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/encoders/__init__.py": "90e5ab276c362b6a5c1e4cd2c2363335eba8c5c34bf72fa48b4942ffc4ac5788",
+    "JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/encoders/vit.py": "829efe4f2c11884253d236050a9fd2146732c91393547f92475a862c8fcd669a",
+    "JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/encoders/pointnet_dexart.py": "78a545f7f41f42ed9714101d203a1ec14875495cf43fb86e72ff729fb29b184b",
+    "JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/utils.py": "f203cb4826cec6d4b474900f136fa09d6dbc13a366bf0906b67bbdac4297344c",
+    "JEPA4R-ogbench-native-sr-df0496d/lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/data/formats/hdf5.py": "0edde080986c6853a59c5c9ac85fbf055caa7672f2204002e7d7ea3b1a634294",
+    "ogbench-official-single-play-20261006/raw/cube-single-play-v0.npz": "80f3b6fd27f4f9d9e9eb6f0d07d6951559012f45b1e15ea4046ef8ecd8d3684e",
+    "ogbench-official-single-play-20261006/raw/cube-single-play-v0-val.npz": "96d07401bdebdc3f0ea6d56ed1333863e0962f441483adc2c43b83105046eb00",
+    "ogbench-official-single-play-20261006/cube_rgb_full_20261006_v1/dataset_index.json": "2b7081891c8fb3228fa6c197a45132e554f45c37706dda744fcf8d783458428d",
+    "ogbench-official-single-play-20261006/cube_pcd_main_full_20261007_v2/dataset_index.json": "4c1443c058fd4fa71bdf82e292bc60b14ae894a1c5c4eaa5075fb6fa87c1666b",
+    "ogbench-train-20261003/checkpoints/fixed5_mixed_pix_10ep_chunk5/config.json": "c23f8d59c185b7e8953649eb3e18de94315bfab99e0cfc624032abc08753e536",
+    "ogbench-train-20261003/checkpoints/fixed5_mixed_pix_10ep_chunk5/config.yaml": "40fa58af168bc3bb8d173ae15f1e54d2d1d1956d783220d3fff8f99d09070d57",
+    "ogbench-train-20261003/checkpoints/fixed5_mixed_pix_10ep_chunk5/weights_epoch_10.pt": "88abffcda76ce55408639aa2c1ebeb2879f38d00dad6798cbb60bf30a03fe60d",
+    "ogbench-train-20261003/checkpoints/fixed5_mixed_pcd_dexart_10ep/config.json": "2312179814f61cee5501bc38f4b5477fa93aa864de0924989c55a1bf35a600b7",
+    "ogbench-train-20261003/checkpoints/fixed5_mixed_pcd_dexart_10ep/config.yaml": "f93c68a7f9a353135aef638a5efd3013ade0e7f6e1442469d648f7a6bd3ed517",
+    "ogbench-train-20261003/checkpoints/fixed5_mixed_pcd_dexart_10ep/weights_epoch_10.pt": "ab9f2e69d58eea4f4d8f469a7dd259c5944f45d0d54ec20061cf63c7a9630d03"
+  }
+}

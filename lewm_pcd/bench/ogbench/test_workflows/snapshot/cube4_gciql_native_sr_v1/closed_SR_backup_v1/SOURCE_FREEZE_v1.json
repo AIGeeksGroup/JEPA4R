@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "created": 1792548442.9004982,
+  "scope": "Only Quad G11/G12 closed Native SR evidence selector plus exact accepted IO bridge; no producer/model/math changes",
+  "files": {
+    "reuse.py": {
+      "bytes": 3283,
+      "sha256": "2bf37e658ef55621ab3c327b5f7a6984352c7bc0101294af5f364bd0b4b6b877",
+      "target": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_gciql_native_sr_v1/closed_SR_backup_v1/reuse.py"
+    },
+    "build_backup.py": {
+      "bytes": 8965,
+      "sha256": "2f0f0ab1436fb9dd4c850c21f26d590a4ae9a338e277077e983932e2508e0e6d",
+      "target": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_gciql_native_sr_v1/closed_SR_backup_v1/build_backup.py"
+    },
+    "copy_backup.py": {
+      "bytes": 344,
+      "sha256": "b3299737324f73fa471425005bdb64e1c796d3f09904dba922cd0fe7e1644cad",
+      "target": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_gciql_native_sr_v1/closed_SR_backup_v1/copy_backup.py"
+    },
+    "test_backup.py": {
+      "bytes": 1740,
+      "sha256": "8ec19cc2431046dfda11646b2af01f742e757a0711240f5b398969eef1ef97a8",
+      "target": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_gciql_native_sr_v1/closed_SR_backup_v1/test_backup.py"
+    },
+    "CPU_FINAL_RECEIPT_v1.json": {
+      "bytes": 2993,
+      "sha256": "33803ef7b35540fcce547b84e6ec6ebe55cb8aafc518e2605bcbdb9f8f672baa",
+      "target": "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_gciql_native_sr_v1/closed_SR_backup_v1/CPU_FINAL_RECEIPT_v1.json"
+    }
+  },
+  "external_source_pins": {
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube23_distance_gciql_v1/native_sr_visual_v1/m5_restore_v1/closed_sr_backup_v1/build_closed_v2.py": "0e32e8e9e743fa53af7bd6687cab88ff1353c85c322538588cf66796d7b91571",
+    "/root/autodl-tmp/workspace/users/lewm/cube_downstream_20261017_v1/cube4_visual_gciql_v1/closed_backup_preparation_v2/copy_verified.py": "bcb574502929e6c128806c7f714788d0cfe02f991592b9ae1f8024f6bec1e574"
+  },
+  "closure_source_pins": {
+    "ROOT_RELEASE_v1.json": "cbaff3f63ec67ad3caebc0c6bc428c775146c3bcdfd05fafc860f109da73a601",
+    "launch_plan.json": "acdb58486db6bd8499f7f34823b950232c52e2d82c553c8defd6996847a595a2",
+    "SOURCE_FREEZE_v1.json": "9039664bdc756aeab85f35b8df5571258493793bb85fec99e30bac2a902b2d6f"
+  },
+  "prepared_only": true,
+  "remote_deployment_or_pack_or_copy_performed": false
+}

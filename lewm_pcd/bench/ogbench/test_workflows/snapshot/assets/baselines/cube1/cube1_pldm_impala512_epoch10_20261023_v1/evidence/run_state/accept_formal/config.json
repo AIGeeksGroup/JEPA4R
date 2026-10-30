@@ -1,0 +1,29 @@
+{
+  "argv": [
+    "/root/autodl-tmp/conda/envs/jepa4r-smoke/bin/python",
+    "-B",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source/train.py",
+    "--root",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source",
+    "--data-root",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1",
+    "--output",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/stages/accept_formal/native_output",
+    "--method",
+    "pldm",
+    "--run-tag",
+    "single_cube_seed0_formal_v1_accept",
+    "--phase",
+    "formal",
+    "--mode",
+    "accept",
+    "--training-output",
+    "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/stages/accept_formal/formal_view"
+  ],
+  "created_at": "2026-10-22T06:14:36.179255+00:00",
+  "cwd": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/source",
+  "native_output": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/stages/accept_formal/native_output",
+  "phase": "formal",
+  "schema": "single_cube_pldm_rgb_accept_config_v1",
+  "training_output": "/root/autodl-tmp/workspace/users/lewm/coordination/single_cube_pldm_rgb10ep_10225090_20261022_v1/stages/accept_formal/formal_view"
+}
