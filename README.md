@@ -4,7 +4,9 @@
 
 ## Adroit BC 参考矩阵
 
-SR与均值单位为%。[Table 8](https://arxiv.org/html/2303.18240v2#A1.T8)为原论文公开结果参照，本项目未正式提交官方榜。官方任务列取Table 8，官方均值沿用Table 2／4。新增四条RGB baseline在单元格中分别列 **Best／Final** 的三seed均值±样本SD（`ddof=1`）；Adroit列分别对两个任务的Best均值、Final均值取算术平均。既有LeWM 2D／JEPA4R两行仍为Best-of-20及总体std（`ddof=0`），保留历史口径。输入列为视觉模态，BC另用proprio。
+SR与均值单位为%。[Table 8](https://arxiv.org/html/2303.18240v2#A1.T8)为原论文公开结果参照，本项目未正式提交官方榜。官方任务列取Table 8，官方均值沿用Table 2／4。新增四条RGB baseline列出 **Best-of-20** 的三seed均值±样本SD（`ddof=1`）；Adroit列对两个任务的Best均值取算术平均。既有LeWM 2D／JEPA4R两行仍为Best-of-20及总体std（`ddof=0`），保留历史口径。输入列为视觉模态，BC另用proprio。
+
+**本项目BC的Best计算方法：** 每个方法、任务和seed训练100epochs，在0-based索引 `5、10、…、95、99` 共20次评测中，每次运行25条在线轨迹；先取该seed的20个 `eval/success` 最大值作为Best-of-20，再对seeds100、200、300的三个Best取算术平均。`±`只跨这三个Best计算，并沿用各表注明的样本SD（`ddof=1`）或总体std（`ddof=0`）；不把各seed的全部轨迹合并计算SR。Adroit均值再对Pen与Relocate的任务均值取算术平均。
 
 | 模型／版本 | 输入 | 来源 | Pen SR | Relocate SR | Adroit 均值 |
 |---|---|---|---:|---:|---:|
@@ -17,7 +19,7 @@ SR与均值单位为%。[Table 8](https://arxiv.org/html/2303.18240v2#A1.T8)为�
 | MVP (ViT-L) | RGB | 官方论文 | 76.0 | 30.7 | 53.3 |
 | MAE Ego4D+MN (ViT-L) | RGB | 官方论文 | 78.7 | 26.7 | 52.7 |
 | MAE Ego4D+M (ViT-L) | RGB | 官方论文 | 74.7 | 29.3 | 52.0 |
-| V-JEPA 2.1／ViT-B/16，384 | RGB | Meta发布权重，冻结 | Best **66.67±4.62**<br>Final **48.00±4.00** | Best **36.00±4.00**<br>Final **18.67±2.31** | Best **51.33**<br>Final **33.33** |
+| V-JEPA 2.1／ViT-B/16，384 | RGB | Meta发布权重，冻结 | **66.67±4.62** | **36.00±4.00** | **51.33** |
 | MAE Ego4D+M (ViT-B) | RGB | 官方论文 | 77.3 | 25.3 | 51.3 |
 | MAE Ego4D (ViT-L) | RGB | 官方论文 | 76.0 | 24.0 | 50.0 |
 | MAE Ego4D+N (ViT-B) | RGB | 官方论文 | 77.3 | 22.7 | 50.0 |
@@ -25,10 +27,10 @@ SR与均值单位为%。[Table 8](https://arxiv.org/html/2303.18240v2#A1.T8)为�
 | MAE Ego4D+MN (ViT-B) | RGB | 官方论文 | 73.3 | 24.0 | 48.7 |
 | MVP (ViT-B) | RGB | 官方论文 | 69.3 | 26.7 | 48.0 |
 | CLIP (ViT-B) | RGB | 官方论文 | 72.0 | 22.7 | 47.3 |
-| VISReg／ViT-B/16，224 | RGB | 作者发布权重，冻结 | Best **52.00±0.00**<br>Final **25.33±18.04** | Best **40.00±10.58**<br>Final **30.67±8.33** | Best **46.00**<br>Final **28.00** |
+| VISReg／ViT-B/16，224 | RGB | 作者发布权重，冻结 | **52.00±0.00** | **40.00±10.58** | **46.00** |
 | Random Fine-tuned (ViT-B) | RGB | 官方论文 | 73.3 | 14.7 | 44.0 |
-| LeJEPA／ViT-Tiny/14＋512D head | RGB | 各任务原生10轮预训练，冻结 | Best **66.67±2.31**<br>Final **57.33±6.11** | Best **16.00±0.00**<br>Final **6.67±2.31** | Best **41.33**<br>Final **32.00** |
-| PLDM／ViT-Tiny/14 | RGB | 各任务原生10轮预训练，冻结 | Best **70.67±6.11**<br>Final **64.00±12.00** | Best **10.67±2.31**<br>Final **1.33±2.31** | Best **40.67**<br>Final **32.67** |
+| LeJEPA／ViT-Tiny/14＋512D head | RGB | 各任务原生10轮预训练，冻结 | **66.67±2.31** | **16.00±0.00** | **41.33** |
+| PLDM／ViT-Tiny/14 | RGB | 各任务原生10轮预训练，冻结 | **70.67±6.11** | **10.67±2.31** | **40.67** |
 | **LeWM：RGB（Pen最新／Relocate v6）** | RGB | 本项目当前 | **37.33±4.99** | **8.00±0.00** | **22.67** |
 | Random Frozen (ViT-L) | RGB | 官方论文 | 5.3 | 0.0 | 2.7 |
 | Random Frozen (ViT-B) | RGB | 官方论文 | 4.0 | 0.0 | 2.0 |
@@ -39,18 +41,18 @@ LeWM RGB的Relocate **8.00%** 沿用原v6 checkpoint的BC结果，本轮没有�
 
 ## Pen：LeWM 2D／JEPA4R 与四条 baseline
 
-下表集中展示既有LeWM 2D／JEPA4R与2026-10-26新增的四条baseline。BC预算均为 **100条官方示范／每轮25条在线轨迹／100epochs／seeds100、200、300**，评测索引 `5、10、…、95、99` 共20轮。每seed为 **Best-of-20／Final（epoch99）**；本表全部按三seed原值统一计算样本标准差（`ddof=1`，单位百分点），下方历史表保留原总体标准差（`ddof=0`）。
+下表集中展示既有LeWM 2D／JEPA4R与2026-10-26新增的四条baseline。BC预算均为 **100条官方示范／每轮25条在线轨迹／100epochs／seeds100、200、300**，评测索引 `5、10、…、95、99` 共20轮。每seed为 **Best-of-20**；本表全部按三seed原值统一计算样本标准差（`ddof=1`，单位百分点），下方历史表保留原总体标准差（`ddof=0`）。
 
-| 方法／编码器 | 表征来源 | Seed100 best／final | Seed200 best／final | Seed300 best／final | Best均值±样本SD | Final均值±样本SD |
-|---|---|---:|---:|---:|---:|---:|
-| LeWM 2D／RGB | 2026-10-06 Pen epoch10，任务内预训练 | 36／24 | 44／32 | 32／24 | **37.33±6.11** | **26.67±4.62** |
-| JEPA4R／可见表面PCD† | 2026-10-06 Pen epoch10，任务内预训练 | 80／76 | 76／76 | 88／68 | **81.33±6.11** | **73.33±4.62** |
-| PLDM／ViT-Tiny/14 | Pen任务内原PLDM，10epochs | 72／52 | 76／76 | 64／64 | **70.67±6.11** | **64.00±12.00** |
-| LeJEPA／ViT-Tiny/14＋512D head | Pen任务内仓库四视图配方，10epochs | 68／56 | 68／52 | 64／64 | **66.67±2.31** | **57.33±6.11** |
-| V-JEPA 2.1／ViT-B/16，384 | Meta发布的distilled ViT-G权重，冻结 | 64／52 | 64／44 | 72／48 | **66.67±4.62** | **48.00±4.00** |
-| VISReg／ViT-B/16，224 | 作者提供的ImageNet-1K权重，冻结 | 52／8 | 52／24 | 52／44 | **52.00±0.00** | **25.33±18.04** |
+| 方法／编码器 | 表征来源 | Seed100 Best | Seed200 Best | Seed300 Best | Best均值±样本SD |
+|---|---|---:|---:|---:|---:|
+| LeWM 2D／RGB | 2026-10-06 Pen epoch10，任务内预训练 | 36 | 44 | 32 | **37.33±6.11** |
+| JEPA4R／可见表面PCD† | 2026-10-06 Pen epoch10，任务内预训练 | 80 | 76 | 88 | **81.33±6.11** |
+| PLDM／ViT-Tiny/14 | Pen任务内原PLDM，10epochs | 72 | 76 | 64 | **70.67±6.11** |
+| LeJEPA／ViT-Tiny/14＋512D head | Pen任务内仓库四视图配方，10epochs | 68 | 68 | 64 | **66.67±2.31** |
+| V-JEPA 2.1／ViT-B/16，384 | Meta发布的distilled ViT-G权重，冻结 | 64 | 64 | 72 | **66.67±4.62** |
+| VISReg／ViT-B/16，224 | 作者提供的ImageNet-1K权重，冻结 | 52 | 52 | 52 | **52.00±0.00** |
 
-新增四条baseline的12组BC均有100轮有限loss、20次完整在线评测及实际退出0；保存的reward-selected policy通过CPU重载检查。LeWM 2D／JEPA4R两行引用[既有逐seed记录](docs/results/adroit_pen_20261006_paired_bc.json)，其中RGB seed300评分完整，但原保存条件未导出policy。Best-of-20与Final来自评测曲线，不能直接赋给按reward选择的保存policy。`train/*`日志复用评测轨迹，不代表独立的训练初态评测。
+新增四条baseline的12组BC均有100轮有限loss、20次完整在线评测及实际退出0；保存的reward-selected policy通过CPU重载检查。LeWM 2D／JEPA4R两行引用[既有逐seed记录](docs/results/adroit_pen_20261006_paired_bc.json)，其中RGB seed300评分完整，但原保存条件未导出policy。Best-of-20来自评测曲线，不能直接赋给按reward选择的保存policy。`train/*`日志复用评测轨迹，不代表独立的训练初态评测。
 
 † JEPA4R为PCD模态扩展，输入及目标信息接口与RGB不同；集中展示用于查看已有结果，不将其视为同模态、同信息预算的官方RGB排名。
 
@@ -62,31 +64,31 @@ PLDM／LeJEPA保留各自原方法；VISReg／V-JEPA 2.1直接使用发布权重
 
 ## Relocate：四条 RGB baseline（2026-10-28）
 
-原生 `relocate-v0` 使用 **100条官方示范／每轮25条在线轨迹／100epochs／seeds100、200、300**；Best-of-20、Final（eval99）和样本SD口径同上。PLDM／LeJEPA在已验收的Relocate RGB数据上各完成原生10轮预训练后冻结；VISReg／V-JEPA 2.1复用发布权重冻结读出。本轮不重训LeWM 2D，不混入RH56、PCD或CEM结果。
+原生 `relocate-v0` 使用 **100条官方示范／每轮25条在线轨迹／100epochs／seeds100、200、300**；Best-of-20和样本SD口径同上。PLDM／LeJEPA在已验收的Relocate RGB数据上各完成原生10轮预训练后冻结；VISReg／V-JEPA 2.1复用发布权重冻结读出。本轮不重训LeWM 2D，不混入RH56、PCD或CEM结果。
 
-| 方法／编码器 | Seed100 best／final | Seed200 best／final | Seed300 best／final | Best均值±样本SD | Final均值±样本SD |
-|---|---:|---:|---:|---:|---:|
-| PLDM／ViT-Tiny/14 | 12／0 | 8／0 | 12／4 | **10.67±2.31** | **1.33±2.31** |
-| LeJEPA／ViT-Tiny/14＋512D head | 16／8 | 16／8 | 16／4 | **16.00±0.00** | **6.67±2.31** |
-| VISReg／ViT-B/16，224 | 48／40 | 44／28 | 28／24 | **40.00±10.58** | **30.67±8.33** |
-| V-JEPA 2.1／ViT-B/16，384 | 40／16 | 32／20 | 36／20 | **36.00±4.00** | **18.67±2.31** |
+| 方法／编码器 | Seed100 Best | Seed200 Best | Seed300 Best | Best均值±样本SD |
+|---|---:|---:|---:|---:|
+| PLDM／ViT-Tiny/14 | 12 | 8 | 12 | **10.67±2.31** |
+| LeJEPA／ViT-Tiny/14＋512D head | 16 | 16 | 16 | **16.00±0.00** |
+| VISReg／ViT-B/16，224 | 48 | 44 | 28 | **40.00±10.58** |
+| V-JEPA 2.1／ViT-B/16，384 | 40 | 32 | 36 | **36.00±4.00** |
 
-12组BC均完成100条有限loss、20轮完整评测并实际退出0，保存的reward-selected policy通过两次CPU重载；曲线Best／Final不自动等于该保存文件的SR。官方100条示范的RGB由保留的官方初态与动作配对重渲，非视觉字段一致；没有声称与已缺失的历史RGB逐像素相同。动作／proprio保留30D，原192／512／768／768D读出对应606／1566／2334／2334D策略输入，未统一宽度或重写BC。
+12组BC均完成100条有限loss、20轮完整评测并实际退出0，保存的reward-selected policy通过两次CPU重载；曲线Best-of-20不自动等于该保存文件的SR。官方100条示范的RGB由保留的官方初态与动作配对重渲，非视觉字段一致；没有声称与已缺失的历史RGB逐像素相同。动作／proprio保留30D，原192／512／768／768D读出对应606／1566／2334／2334D策略输入，未统一宽度或重写BC。
 
 仅在现有薄入口显式增加 `--task adroit_relocate`，BC沿用 `embedding=pldm_relocate|lejepa_relocate|visreg_vitb|vjepa21_vitb`；数据、权重、运行环境和许可证继续外置。[接口与复现条件](docs/experiments/adroit_relocate_baselines_20261028.md) · [逐seed曲线、真实生产版本与SHA](docs/results/adroit_relocate_baselines_20261028.json)
 
 ## BC 三 seed 明细
 
-协议为 **100 demos／每轮25条在线轨迹／100 epochs**，评测 `5、10、…、95、99` 共20轮。单元格为 **Best-of-20／Final（epoch99）**；最后两列均为均值±总体std，单位%。[官方协议 Appendix A.2](https://arxiv.org/html/2303.18240v2#A1.SS2)
+协议为 **100 demos／每轮25条在线轨迹／100 epochs**，评测 `5、10、…、95、99` 共20轮。单元格为 **Best-of-20**；最后一列为均值±总体std，单位%。[官方协议 Appendix A.2](https://arxiv.org/html/2303.18240v2#A1.SS2)
 
-| 任务／视觉输入 | WM版本与来源 | Seed100 best／final | Seed200 best／final | Seed300 best／final | Best均值±std | Final均值±std |
-|---|---|---:|---:|---:|---:|---:|
-| Relocate／RGB | [原v6 epoch10](docs/results/adroit_relocate_100demo_20261004.json) | 8／0 | 8／0 | 8／4 | **8.00±0.00** | 1.33±1.89 |
-| Pen／RGB | [2026-10-06 epoch10](docs/results/adroit_pen_20261006_paired_bc.json) | 36／24 | 44／32 | 32／24 | **37.33±4.99** | 26.67±3.77 |
-| Pen／PCD扩展 | [2026-10-06 epoch10](docs/results/adroit_pen_20261006_paired_bc.json) | 80／76 | 76／76 | 88／68 | **81.33±4.99** | 73.33±3.77 |
-| Relocate／PCD扩展 | [2026-10-07 epoch10](docs/results/adroit_relocate_20261007.json) | 84／84 | 96／92 | 84／68 | **88.00±5.66** | 81.33±9.98 |
+| 任务／视觉输入 | WM版本与来源 | Seed100 Best | Seed200 Best | Seed300 Best | Best均值±std |
+|---|---|---:|---:|---:|---:|
+| Relocate／RGB | [原v6 epoch10](docs/results/adroit_relocate_100demo_20261004.json) | 8 | 8 | 8 | **8.00±0.00** |
+| Pen／RGB | [2026-10-06 epoch10](docs/results/adroit_pen_20261006_paired_bc.json) | 36 | 44 | 32 | **37.33±4.99** |
+| Pen／PCD扩展 | [2026-10-06 epoch10](docs/results/adroit_pen_20261006_paired_bc.json) | 80 | 76 | 88 | **81.33±4.99** |
+| Relocate／PCD扩展 | [2026-10-07 epoch10](docs/results/adroit_relocate_20261007.json) | 84 | 96 | 84 | **88.00±5.66** |
 
-Relocate RGB v6权重记录SHA：`4ea58e8e…5519b`。Relocate新版PCD的最高reward保存策略SR为84／96／84%；单seed54321的best88%／final68%独立记录，不纳入三seed均值。Pen新RGB seed300有完整评分，但没有保存策略文件。
+Relocate RGB v6权重记录SHA：`4ea58e8e…5519b`。Relocate新版PCD的最高reward保存策略SR为84／96／84%；单seed54321的Best88%独立记录，不纳入三seed均值。Pen新RGB seed300有完整评分，但没有保存策略文件。
 
 ## CEM 配对50片段（不纳入BC矩阵）
 
@@ -124,12 +126,12 @@ MuJoCo200／license、外部运行时、数据与checkpoint需另行提供。合
 
 以下为 **2026-10-25完成的自定义RH56仿真结果**，不并入上方官方Adroit本体矩阵。BC使用100条新采RH56示范，仅迁移官方Relocate示范的物体／目标初始位置；RH56本体初态、专家、控制与实际12D动作保持原生。
 
-两路使用各自的WM epoch10冻结encoder＋projector，BC预算为 **100 demos／每轮25条在线轨迹／100 epochs／seeds100、200、300**，评测索引 `5、10、…、95、99` 共20轮。单元格为 **Best-of-20／Final（epoch99）**；均值取三seed算术平均，样本SD按 `ddof=1` 计算、单位为百分点。
+两路使用各自的WM epoch10冻结encoder＋projector，BC预算为 **100 demos／每轮25条在线轨迹／100 epochs／seeds100、200、300**，评测索引 `5、10、…、95、99` 共20轮。单元格为 **Best-of-20**；均值取三seed算术平均，样本SD按 `ddof=1` 计算、单位为百分点。
 
-| 视觉输入 | Seed100 best／final | Seed200 best／final | Seed300 best／final | Best均值±样本SD | Final均值±样本SD |
-|---|---:|---:|---:|---:|---:|
-| LeWM 2D／RGB | 4／0 | 8／0 | 4／0 | **5.33±2.31** | **0.00±0.00** |
-| JEPA4R／PCD | 60／60 | 44／24 | 36／20 | **46.67±12.22** | **34.67±22.03** |
+| 视觉输入 | Seed100 Best | Seed200 Best | Seed300 Best | Best均值±样本SD |
+|---|---:|---:|---:|---:|
+| LeWM 2D／RGB | 4 | 8 | 4 | **5.33±2.31** |
+| JEPA4R／PCD | 60 | 44 | 36 | **46.67±12.22** |
 
 两路WM均完成10轮、125,480次优化器更新及13,950个验证batch；六组BC均完成100轮、20次评测、7,900次Adam更新与有限梯度检查，冻结表征未变，策略重载通过，实际退出码为0。完整证据见[原生产结果与版本绑定](docs/results/rh56_relocate_20261025.json)；这些是训练完整性和重载验收，不代表真机效果或本次文档更新重跑了实验。
 
@@ -139,6 +141,6 @@ MuJoCo200／license、外部运行时、数据与checkpoint需另行提供。合
 
 原训练入口及依赖源码快照、[训练说明](https://huggingface.co/AIGeeksGroup/JEPA4R/blob/11d2802382e0aa5a66897676d7754d58d8f6c65f/docs/TRAINING.md)和[仿真依赖清单](https://huggingface.co/AIGeeksGroup/JEPA4R/blob/11d2802382e0aa5a66897676d7754d58d8f6c65f/docs/SIMULATION_DEPENDENCIES.md)已随包提供。原生仿真控制源码可供接入参考，训练数据、机器人资产／mesh、专家actor及完整legacy BC运行时仍需另行准备；包内没有一键新数据微调CLI。
 
-保存的 `best_policy` 按**最高平均reward**选择，PCD三个种子对应保存轮次的SR为 **48／40／32%**，主推seed100；这些数值与上表的曲线Best-of-20及Final分别记录。RGB权重不在本次PCD发布包中。
+保存的 `best_policy` 按**最高平均reward**选择，PCD三个种子对应保存轮次的SR为 **48／40／32%**，主推seed100；这些数值与上表的曲线Best-of-20分别记录。RGB权重不在本次PCD发布包中。
 
 两路保留各自预处理；RGB完整模型CPU／GPU数值等价门槛仍未通过，集成入口的uint8/GPU开关默认关闭。配对抽样未见明显整体表征坍缩，但不能据此保证控制效果，或将两路SR差异归因于模态本身。**真机传感器、坐标标定和控制接口尚未验证**；下载权重可用于后续微调初始化与BC接口测试。
