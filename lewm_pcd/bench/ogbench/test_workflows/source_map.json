@@ -9704,20 +9704,6 @@
       "native_mtime_ns": 1792832060797109041,
       "reuses_v3": false
     },
-    "groups_all_20261021_v1/GROUP_INDEX.json": {
-      "repository_path": "lewm_pcd/bench/ogbench/test_workflows/snapshot/groups_all_20261021_v1/GROUP_INDEX.json",
-      "sha256": "67c9cd5bc6074f3a1ecc6d8196cabad15d796db2275d05e03df2354b711d5abe",
-      "size": 8891,
-      "native_mtime_ns": 1792804876223968163,
-      "reuses_v3": false
-    },
-    "groups_all_20261021_v1/README.md": {
-      "repository_path": "lewm_pcd/bench/ogbench/test_workflows/snapshot/groups_all_20261021_v1/README.md",
-      "sha256": "af212b6aed355dde819719cf7a051b85693d0d33608100a8ea5543003eb392d5",
-      "size": 1154,
-      "native_mtime_ns": 1792804876223968163,
-      "reuses_v3": false
-    },
     "incoming/cube2_epoch10_101632_20261018_v1/target_accept_publish_v2.py": {
       "repository_path": "lewm_pcd/bench/ogbench/test_workflows/snapshot/incoming/cube2_epoch10_101632_20261018_v1/target_accept_publish_v2.py",
       "sha256": "be6e1698962548e38787971b42a613b6426dfaae7e20b0ccbc1c763adb214ec7",

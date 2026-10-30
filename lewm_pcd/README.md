@@ -115,7 +115,22 @@ bin-picking 和 drawer-open 的 CortexBench 明显低于 Sawyer。bin-picking �
 
 CortexBench TriFinger 的对照（VC-1 论文表 8，reach / move）：R3M 86.5 / 51.9，VC-1 ViT-B 83.9 / 60.6，随机初始化的 ViT-B（冻结）74.3 / 41.3。
 
-### OGBench puzzle（3x3、4x4、4x5）与 scene
+### OGBench cube、puzzle（3x3、4x4、4x5）与 scene
+
+cube，冻结编码器 + GCIQL 的 Native 成功率 %，Cube1–4 分别对应 single、double、triple、quadruple：
+
+下游使用官方 Play 数据，GCIQL 训练 100 万次更新、seed 0；只评最终 checkpoint，每个 Cube 的 5 个任务各 50 回合，共 250 回合。四个环境的每回合步数上限依次为 200 / 500 / 1000 / 1000。这里与前文单 Cube 的 CEM 规划结果分别报告。
+
+| 编码器 | Cube1 | Cube2 | Cube3 | Cube4 |
+|---|---|---|---|---|
+| LeWM 2D | 24.4 | 1.2 | 0.0 | 0.0 |
+| LeWM 3D / JEPA4R | 78.4 | 41.6 | 18.4 | 0.0 |
+| V-JEPA 2.1（ViT-L，冻结） | 6.0 | 0.4 | 0.0 | 0.0 |
+| VISReg（ViT-B，冻结） | 1.2 | 0.0 | 0.0 | 0.0 |
+| LeJEPA（Tiny，head512） | 0.0 | 0.0 | 0.0 | 0.0 |
+| PLDM | 46.8 | 3.6 | 4.8 | 0.0 |
+
+Cube 的 LeJEPA 四组均使用 Tiny 的 head512；V-JEPA 为 ViT-L1024。PLDM Cube2 采用已独立重跑并验收的结果。每格只有一个训练种子，编码器容量与预训练预算不同；本表、下方 puzzle 的 DQC 统计和 scene 的模仿学习统计分别阅读，不合算均值。成功数、来源记录哈希和口径见 [`results_ogbench_cube.json`](results_ogbench_cube.json)，代码与实际配置入口见[统一流程说明](../README_TEST_WORKFLOWS.md)。
 
 用 OGBench 原版的 puzzle 和 scene 环境（`envs/ogb_puzzle_env.py`、`envs/ogb_scene_env.py`）采游玩数据，训练 2D 和 3D：puzzle 照官方 noisy 数据的采法（3x3、4x4 各 1000 回合，4x5 3000 回合）；scene 逐个物体任务按 MetaWorld 的三部分计划采（1 万回合），一个模型训练整个场景。冻结编码器后，puzzle 用离线 RL 评测（DQC，`bench/dqc/`：OGBench 官方 play 数据按我们的相机重画、过冻结编码器，输入是潜变量加灯的真值；3x3 用它自己那组超参，4x4、4x5 用 DQC 论文给 puzzle-4x5 的超参；100 万步，每 10 万步在官方 5 个任务上各评 50 回合），scene 用 CortexBench 的模仿学习（`bench/cortexbench/run_bc_scene.py`，OGBench scene 的 5 个评测任务，策略另给 6 维本体感受）。JEPA 类基线按同样的方式评测：V-JEPA 2.1、VISReg 冻结原版，LeJEPA、PLDM 用同一份数据按各自官方配方训练 10 个 epoch（`scripts/run_puzzle_baselines.sh`、`scripts/run_scene_baselines.sh`；VISReg 用 `scripts/run_visreg_baselines.sh`）。做法、逐任务结果、小规模那次和各项核对见 [`results_ogbench.md`](results_ogbench.md)。
 

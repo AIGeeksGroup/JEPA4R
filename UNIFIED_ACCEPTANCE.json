@@ -1,44 +1,32 @@
 {
-  "schema": "cube_unified_code_acceptance_v5_tiny_only",
+  "schema": "ogbench_current_results_documentation_acceptance_v1",
   "actual_exit_code": 0,
-  "at": "2026-10-30T11:43:14.064345+00:00",
-  "base_commit": "fd65faeee94ee9638f99c9a52eb63bf327f348c7",
-  "comparison_groups": 24,
-  "state_baseline_groups": 4,
-  "lejepa_variant": "Tiny replacement only",
-  "source_manifest_sha256": "e44da36dc43c63c9b5c06e1e55c2d9e98417b84d2c4ed743423b3d55e5ef097c",
-  "file_count": 2302,
-  "native_source_verification": {
-    "native_files": 2526,
-    "unique_repository_files": 1752,
-    "reused_v3_files": 1024,
-    "hash_mismatches": [],
-    "executed": false
-  },
-  "checks": {
-    "schema": "tiny_replacement_code_checks_v1",
-    "current_tests": {
-      "run": 10,
-      "passed": 10,
-      "actual_exit_code": 0
+  "at": "2026-10-30T12:33:17.674121+00:00",
+  "scope": "documentation-only update",
+  "inherited_functional_code_commit": "a6867933f719e8ec93bf170dd6299b1afc4ae28d",
+  "inherited_code_acceptance_sha256": "f55a2add78cb9b638cd4e7b49889f4443be6ad0772eddcd6e74ca3493807b922",
+  "source_manifest_sha256": "4f9633b316232673e97f95a48e36b5fad5f2523a3651ff86d7f9844c621a027d",
+  "verification": {
+    "actual_exit_code": 0,
+    "scope": "documentation and current result transcription only",
+    "table_rows": 6,
+    "table_cells": 24,
+    "all_table_values_match_bound_source_records": true,
+    "previous_puzzle_scene_and_other_results_byte_unchanged": true,
+    "selected_current_PLDM_Cube2_successes": 9,
+    "obsolete_result_catalogs_excluded": 2,
+    "surviving_native_source_records_unchanged": true,
+    "native_source_verification": {
+      "native_files": 2524,
+      "unique_repository_files": 1750,
+      "reused_v3_files": 1024,
+      "hash_mismatches": [],
+      "executed": false
     },
-    "comparison_groups": 24,
-    "state_baseline_groups": 4,
-    "lejepa_variant": "Tiny only",
-    "deprecated_lejepa_source_paths_removed": 126,
-    "prior_v3_test_evidence_reused_because_code_unchanged": true,
-    "baseline_v3_checks": {
-      "local_passed": 83,
-      "linux_hdf5_supplement_passed": 2,
-      "dependency_skips": 9
-    },
-    "code_acceptance_only": true,
-    "GPU_or_formal_result_acceptance": false,
-    "formal_training_started": false,
-    "evaluation_started": false
+    "new_experiments_or_NN_or_rollouts": false,
+    "inherited_code_commit": "a6867933f719e8ec93bf170dd6299b1afc4ae28d"
   },
-  "original_model_and_training_code_modified": false,
+  "functional_code_revalidation_required": false,
   "formal_training_started": false,
-  "evaluation_started": false,
-  "pushed": false
+  "evaluation_started": false
 }
