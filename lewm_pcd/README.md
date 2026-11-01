@@ -141,6 +141,21 @@ scene，CortexBench 模仿学习，种子 100 / 200 / 300 平均，20 次评测�
 | VISReg（冻结） | 40.5 |
 | V-JEPA 2.1（冻结） | 38.4 |
 
+scene 消融（LeWM 3D，每组只改一项，其余同上；种子 100 / 200 / 300 平均，20 次评测里最高的那次，5 个任务平均，%；逐任务见 [`results_ogbench.md`](results_ogbench.md)）：
+
+| 3D 编码器 | 5 个任务平均 |
+|---|---|
+| DexArt PointNet（默认） | 64.8 |
+| DGCNN | 62.4 |
+| ManiSkill PointNet | 62.1 |
+| PointPatchTransformer | 57.1 |
+
+| 历史帧数 | 5 个任务平均 |
+|---|---|
+| 3（默认） | 64.8 |
+| 2 | 63.2 |
+| 4 | 64.8 |
+
 ## 与 LeWM 的对应
 
 | 环节 | LeWM 原件 | 本仓库 |

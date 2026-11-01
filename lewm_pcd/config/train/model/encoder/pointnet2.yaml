@@ -1,0 +1,10 @@
+# encoder 4: PointNet++ single-scale-grouping classifier (charlesq34/pointnet2 pointnet2_cls_ssg); the MLP widths x 2.5
+# of the original ([64,64,128], [128,128,256], [256,512,1024]) match ViT-tiny's 5.50M parameters (5.51M)
+_target_: encoders.PointNet2
+in_dim: ${pcd_in_dim}
+npoints: [512, 128]
+radii: [0.2, 0.4]
+nsamples: [32, 64]
+mlps: [[160, 160, 320], [320, 320, 640], [640, 1280, 2560]]
+out_dim: ${embed_dim}
+bn_group: 32

@@ -1,0 +1,9 @@
+# LeWM 3D (DexArt PointNet + projector) trained with learning rate 2.5e-5 (scripts/run_scene_ablations.sh; run
+# scene_pcd_dexart_lr2p5e5, epoch 10), otherwise as lewm_scene_pcd.yaml. Input (N, 6) point clouds; center / scale /
+# use_rgb = the training preprocessing (checked against the checkpoint's config.yaml)
+_target_: lewm_cortex.load_lewm_pcd
+checkpoint_dir: ${oc.env:STABLEWM_HOME}/checkpoints/scene_pcd_dexart_lr2p5e5
+epoch: 10
+center: [0.425, 0.0, 0.2]
+scale: 4.0
+use_rgb: true

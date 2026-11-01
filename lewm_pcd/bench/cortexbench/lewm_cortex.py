@@ -118,8 +118,8 @@ class PcdTransform:
         return torch.cat([xyz, x[:, 3:6] / 255.0], dim=-1) if self.use_rgb else xyz
 
 
-# the 3D LeWM encoders (lewm_pcd/encoders, config/train/model/encoder/{dexart,ms2,ppt}.yaml): the _target_ in a
-# checkpoint's config.json -> (file in lewm_pcd/encoders, class, name for the metadata)
+# the 3D LeWM encoders (lewm_pcd/encoders, config/train/model/encoder/{dexart,ms2,ppt,pointnet2,dgcnn}.yaml):
+# the _target_ in a checkpoint's config.json -> (file in lewm_pcd/encoders, class, name for the metadata)
 PCD_ENCODERS = {
     'encoders.DexArtPointNet': ('pointnet_dexart.py', 'DexArtPointNet', 'DexArt PointNet'),
     'encoders.pointnet_dexart.DexArtPointNet': ('pointnet_dexart.py', 'DexArtPointNet', 'DexArt PointNet'),
@@ -127,6 +127,10 @@ PCD_ENCODERS = {
     'encoders.pointnet_ms2.ManiSkillPointNet': ('pointnet_ms2.py', 'ManiSkillPointNet', 'ManiSkill PointNet'),
     'encoders.PointPatchTransformer': ('ppt.py', 'PointPatchTransformer', 'PointPatchTransformer'),
     'encoders.ppt.PointPatchTransformer': ('ppt.py', 'PointPatchTransformer', 'PointPatchTransformer'),
+    'encoders.PointNet2': ('pointnet2.py', 'PointNet2', 'PointNet++'),
+    'encoders.pointnet2.PointNet2': ('pointnet2.py', 'PointNet2', 'PointNet++'),
+    'encoders.DGCNN': ('dgcnn.py', 'DGCNN', 'DGCNN'),
+    'encoders.dgcnn.DGCNN': ('dgcnn.py', 'DGCNN', 'DGCNN'),
 }
 
 
@@ -148,8 +152,8 @@ def _dexart_pointnet_class():
 
 
 def load_lewm_pcd(checkpoint_dir: str, epoch: int = 10, center=(0.0, 0.65, 0.2), scale: float = 4.0, use_rgb: bool = True):
-    """The 3D LeWM's encoder (the one its config.json names: DexArt PointNet, ManiSkill PointNet or
-    PointPatchTransformer) + projector: one (N, 6) point cloud -> the 192-d LeWM latent.
+    """The 3D LeWM's encoder (the one its config.json names: DexArt PointNet, ManiSkill PointNet,
+    PointPatchTransformer, PointNet++ or DGCNN) + projector: one (N, 6) point cloud -> the 192-d LeWM latent.
     center / scale / use_rgb must be the checkpoint's data.preprocessor (checked against its config.yaml if present).
     CortexBench's load_pretrained_model wraps transforms for images (PIL); run_bc3d.py replaces that wrapper for
     models whose metadata says input 'pcd'."""

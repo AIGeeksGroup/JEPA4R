@@ -1,0 +1,8 @@
+# encoder 5: DGCNN (WangYueFt/dgcnn pytorch DGCNN, k 20); the widths x 43/16 of the original ([64,64,128,256],
+# emb 1024) match ViT-tiny's 5.50M parameters (5.50M)
+_target_: encoders.DGCNN
+in_dim: ${pcd_in_dim}
+k: 20
+widths: [172, 172, 344, 688]
+emb_dim: 2752
+out_dim: ${embed_dim}
