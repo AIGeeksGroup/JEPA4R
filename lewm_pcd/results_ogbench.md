@@ -112,11 +112,12 @@ LeWM 2D / 3D 和 V-JEPA 2.1、LeJEPA、PLDM 的运行都是第 10 万步最高�
 | ManiSkill PointNet | 41.3（25.3） | 88.0（62.7） | 52.0（34.7） | 77.3（61.3） | 52.0（29.3） | 62.1（42.7） |
 | PointPatchTransformer | 53.3（29.3） | 85.3（78.7） | 48.0（36.0） | 66.7（54.7） | 32.0（17.3） | 57.1（43.2） |
 | DGCNN | 58.7（40.0） | 92.0（65.3） | 56.0（42.7） | 64.0（45.3） | 41.3（21.3） | 62.4（42.9） |
+| PointNet++ | 58.7（33.3） | 93.3（76.0） | 36.0（26.7） | 70.7（40.0） | 44.0（6.7） | 60.5（36.5） |
 
 论文里用的行和名字：
 - DexArt PointNet（默认）：用，写作 PointNet。
 - PointPatchTransformer：用，写作 PointPatchTransformer。
-- PointNet++、DGCNN：用，名字不变（结果出来后加进本表）。
+- PointNet++、DGCNN：用，名字不变。
 - ManiSkill PointNet：不进论文的编码器对比（和 PointNet 是同一结构，多一层、每层加 LayerNorm）；要用就放补充材料，写作 PointNet + LayerNorm。
 
 ### scene：学习率与 batch 消融（3D）

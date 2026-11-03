@@ -148,6 +148,7 @@ scene 消融（LeWM 3D，每组只改一项，其余同上；种子 100 / 200 / 
 | DexArt PointNet（默认） | 64.8 |
 | DGCNN | 62.4 |
 | ManiSkill PointNet | 62.1 |
+| PointNet++ | 60.5 |
 | PointPatchTransformer | 57.1 |
 
 | 训练超参 | 5 个任务平均 |
