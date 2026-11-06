@@ -1,0 +1,301 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JEPA4R: Embodied JEPA World Models with 4D Point Planning</title><style>
+:root{--bg:#fff;--fg:#253446;--mute:#657487;--line:#e0e8f0;--blue:#2d608e;--blue-soft:#f3f7fb;--page-width:80%}
+*{box-sizing:border-box}
+html{scroll-padding-top:86px}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+header,nav,main{width:var(--page-width);margin-left:auto;margin-right:auto}
+header{padding:68px 0 22px;text-align:center}
+h1{position:relative;left:50%;transform:translateX(-50%);width:min(1100px,calc(100vw - 48px));margin:0 0 26px;font-size:clamp(30px,3.5vw,46px);line-height:1.18;letter-spacing:-.025em;font-weight:700;font-family:-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;color:#21344b}
+h1 .title-ending{display:inline-block}
+header p{margin:0;color:var(--mute)}
+.authors{display:grid;gap:8px;margin:0 auto 19px}
+.author-row{display:flex;justify-content:center;align-items:baseline;flex-wrap:wrap;gap:8px 27px}
+.author{white-space:nowrap;font-size:18px}
+.author a{color:#303c4c;text-decoration:none;text-decoration-thickness:1px;text-underline-offset:4px}
+.author a:hover{text-decoration:underline}
+header sup{font-size:.68em;vertical-align:super;line-height:0;margin-left:2px;color:#657487}
+header .affiliations{display:flex;justify-content:center;flex-wrap:wrap;gap:6px 22px;margin:0 auto 13px;color:#536175;font-size:15px}
+.affiliations span{white-space:nowrap}
+.contributions{display:flex;justify-content:center;flex-wrap:wrap;gap:4px 18px;font-size:13px}
+.contributions span{white-space:nowrap}
+.resource-links{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;margin:27px 0 0}
+.resource-link{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:43px;padding:9px 19px;border:1px solid #b9cde0;border-radius:7px;background:var(--blue-soft);color:var(--blue);text-decoration:none;font-size:14px;font-weight:600;line-height:1.4}
+.resource-link:hover{background:#e8f0f8;border-color:#a7bfd5}
+.resource-link svg{display:block;width:19px;height:19px;flex:none;fill:currentColor}
+.gallery-intro{margin-top:44px;padding:29px 0 0;border-top:1px solid var(--line)}
+.gallery-intro h2{margin:0 0 7px;color:#2c4b69;font-size:22px;font-weight:600;letter-spacing:-.01em}
+.gallery-intro p{max-width:760px;margin:0 auto;font-size:14px;color:var(--mute);text-wrap:balance}
+nav{position:sticky;top:0;z-index:2;display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:5px 10px;min-height:56px;padding:9px 14px;background:var(--blue-soft);border:1px solid var(--line);border-radius:7px}
+nav a{padding:6px 13px;border:1px solid #b9cde0;border-radius:5px;background:#fff;color:#3d5872;text-decoration:none;font-size:13px;font-weight:500;line-height:1.5}
+nav a:hover{background:#e4edf6;border-color:#8eacc8;color:#214d78}
+a:focus-visible,video:focus-visible{outline:2px solid var(--blue);outline-offset:4px}
+main{padding:0 0 76px}
+section{padding:42px 0 0;scroll-margin-top:83px}
+section+section{margin-top:48px;padding-top:42px;border-top:1px solid var(--line)}
+h2{margin:0;color:#2d5276;font-size:26px;font-weight:600;line-height:1.3;letter-spacing:-.015em}
+.robot{margin:7px 0 0;color:#44586d;font-size:14px;font-weight:500}
+.how{max-width:960px;margin:4px 0 0;color:var(--mute);font-size:14px;line-height:1.6}
+h3{margin:27px 0 12px;color:#34465b;font-size:16px;font-weight:600;line-height:1.4}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+figure{min-width:0;margin:0;padding:5px;overflow:hidden;border:1px solid var(--line);border-radius:8px;background:#fff}
+video{display:block;width:100%;height:auto;border:0;border-radius:4px;background:#f4f7fa}
+@media(min-width:1800px){.grid{gap:24px}}
+@media(max-width:1000px) and (min-width:761px){.grid{gap:12px}nav{gap:3px}nav a{padding:5px 7px;font-size:12px}}
+@media(max-width:760px){:root{--page-width:calc(100% - 32px)}header{padding-top:38px}h1{width:100%;margin-bottom:22px;font-size:clamp(30px,3.5vw,46px)}.author{font-size:16px}.author-row{gap:8px 18px}header .affiliations{font-size:14px;gap:5px 16px}.contributions{font-size:12px;gap:4px 12px}.resource-links{gap:10px;margin-top:23px}.resource-link{padding:9px 16px}.gallery-intro{margin-top:33px;padding-top:25px}.gallery-intro h2{font-size:20px}nav{gap:4px;padding:8px 6px}nav a{font-size:12px;padding:6px 7px}.grid{grid-template-columns:minmax(0,1fr);gap:16px}section{padding-top:32px;scroll-margin-top:130px}section+section{margin-top:36px;padding-top:32px}h2{font-size:23px}h3{margin-top:23px}}
+@media(max-width:480px){header .affiliations{flex-direction:column;align-items:center}.gallery-intro p{font-size:13px}}
+
+.task-tabs{display:flex;align-items:center;flex-wrap:wrap;gap:9px;margin:24px 0 16px}
+.task-tabs button{appearance:none;padding:8px 13px;border:1px solid #b9cde0;border-radius:5px;background:#fff;color:#3d5872;font:500 13px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;cursor:pointer}
+.task-tabs button:hover{background:#edf3f9;border-color:#8eacc8}
+.task-tabs button[aria-selected="true"]{background:var(--blue);border-color:var(--blue);color:#fff}
+.task-tabs button:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+.task-panel[hidden]{display:none}
+.task-panel video{aspect-ratio:2/1;object-fit:contain}
+.task-cycle-note{margin:12px 0 0;color:var(--mute);font-size:12px;line-height:1.5}
+@media(max-width:760px){.task-tabs{gap:7px;margin-top:20px}.task-tabs button{padding:7px 10px;font-size:12px}}
+</style></head><body>
+<header>
+  <h1>JEPA4R: Embodied JEPA World Models <span class="title-ending">with 4D Point Planning</span></h1>
+  <div class="authors" aria-label="Authors">
+    <div class="author-row">
+      <span class="author"><a href="https://github.com/gktdgktd" target="_blank" rel="noopener noreferrer">Jiarui Dong</a><sup>1*</sup></span>
+      <span class="author"><a href="https://github.com/zhihengfun" target="_blank" rel="noopener noreferrer">Zhiheng Liang</a><sup>1*</sup></span>
+      <span class="author"><a href="https://github.com/yanjun711" target="_blank" rel="noopener noreferrer">Yanjun Li</a><sup>1*</sup></span>
+      <span class="author"><a href="https://steve-zeyu-zhang.github.io/" target="_blank" rel="noopener noreferrer">Zeyu Zhang</a><sup>2*†</sup></span>
+    </div>
+    <div class="author-row">
+      <span class="author"><a href="https://hazel-heejeong-nam.github.io/" target="_blank" rel="noopener noreferrer">Heejeong Nam</a><sup>3</sup></span>
+      <span class="author"><a href="https://mikecheninoulu.github.io/" target="_blank" rel="noopener noreferrer">Haoyu Chen</a><sup>4</sup></span>
+      <span class="author"><a href="https://ha0tang.github.io/" target="_blank" rel="noopener noreferrer">Hao Tang</a><sup>1‡</sup></span>
+    </div>
+  </div>
+  <p class="affiliations"><span><sup>1</sup> Peking University</span><span><sup>2</sup> UC Berkeley BAIR</span><span><sup>3</sup> Brown University</span><span><sup>4</sup> University of Oulu</span></p>
+  <p class="contributions"><span><sup>*</sup> Equal contribution.</span><span><sup>†</sup> Project lead.</span><span><sup>‡</sup> Corresponding author.</span></p>
+  <!-- Monochrome brand marks: Simple Icons (CC0), https://github.com/simple-icons/simple-icons -->
+  <div class="resource-links" role="group" aria-label="Project resources">
+    <a class="resource-link" href="https://arxiv.org/" target="_blank" rel="noopener noreferrer" aria-label="Paper on arXiv (placeholder)" title="Paper on arXiv (placeholder)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3.8423 0a1.0037 1.0037 0 0 0-.922.6078c-.1536.3687-.0438.6275.2938 1.1113l6.9185 8.3597-1.0223 1.1058a1.0393 1.0393 0 0 0 .003 1.4229l1.2292 1.3135-5.4391 6.4444c-.2803.299-.4538.823-.2971 1.1986a1.0253 1.0253 0 0 0 .9585.635.9133.9133 0 0 0 .6891-.3405l5.783-6.126 7.4902 8.0051a.8527.8527 0 0 0 .6835.2597.9575.9575 0 0 0 .8777-.6138c.1577-.377-.017-.7502-.306-1.1407l-7.0518-8.3418 1.0632-1.13a.9626.9626 0 0 0 .0089-1.3165L4.6336.4639s-.3733-.4535-.768-.463zm0 .272h.0166c.2179.0052.4874.2715.5644.3639l.005.006.0052.0055 10.169 10.9905a.6915.6915 0 0 1-.0072.945l-1.0666 1.133-1.4982-1.7724-8.5994-10.39c-.3286-.472-.352-.6183-.2592-.841a.7307.7307 0 0 1 .6704-.4401Zm14.341 1.5701a.877.877 0 0 0-.6554.2418l-5.6962 6.1584 1.6944 1.8319 5.3089-6.5138c.3251-.4335.479-.6603.3247-1.0292a1.1205 1.1205 0 0 0-.9763-.689zm-7.6557 12.2823 1.3186 1.4135-5.7864 6.1295a.6494.6494 0 0 1-.4959.26.7516.7516 0 0 1-.706-.4669c-.1119-.2682.0359-.6864.2442-.9083l.0051-.0055.0047-.0055z"/></svg><span>Paper</span></a>
+    <a class="resource-link" href="https://github.com/AIGeeksGroup/JEPA4R" target="_blank" rel="noopener noreferrer" aria-label="JEPA4R code on GitHub" title="JEPA4R code on GitHub"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg><span>Code</span></a>
+    <a class="resource-link" href="https://huggingface.co/AIGeeksGroup/JEPA4R" target="_blank" rel="noopener noreferrer" aria-label="JEPA4R model on Hugging Face" title="JEPA4R model on Hugging Face"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.025 1.13c-5.77 0-10.449 4.647-10.449 10.378 0 1.112.178 2.181.503 3.185.064-.222.203-.444.416-.577a.96.96 0 0 1 .524-.15c.293 0 .584.124.84.284.278.173.48.408.71.694.226.282.458.611.684.951v-.014c.017-.324.106-.622.264-.874s.403-.487.762-.543c.3-.047.596.06.787.203s.31.313.4.467c.15.257.212.468.233.542.01.026.653 1.552 1.657 2.54.616.605 1.01 1.223 1.082 1.912.055.537-.096 1.059-.38 1.572.637.121 1.294.187 1.967.187.657 0 1.298-.063 1.921-.178-.287-.517-.44-1.041-.384-1.581.07-.69.465-1.307 1.081-1.913 1.004-.987 1.647-2.513 1.657-2.539.021-.074.083-.285.233-.542.09-.154.208-.323.4-.467a1.08 1.08 0 0 1 .787-.203c.359.056.604.29.762.543s.247.55.265.874v.015c.225-.34.457-.67.683-.952.23-.286.432-.52.71-.694.257-.16.547-.284.84-.285a.97.97 0 0 1 .524.151c.228.143.373.388.43.625l.006.04a10.3 10.3 0 0 0 .534-3.273c0-5.731-4.678-10.378-10.449-10.378M8.327 6.583a1.5 1.5 0 0 1 .713.174 1.487 1.487 0 0 1 .617 2.013c-.183.343-.762-.214-1.102-.094-.38.134-.532.914-.917.71a1.487 1.487 0 0 1 .69-2.803m7.486 0a1.487 1.487 0 0 1 .689 2.803c-.385.204-.536-.576-.916-.71-.34-.12-.92.437-1.103.094a1.487 1.487 0 0 1 .617-2.013 1.5 1.5 0 0 1 .713-.174m-10.68 1.55a.96.96 0 1 1 0 1.921.96.96 0 0 1 0-1.92m13.838 0a.96.96 0 1 1 0 1.92.96.96 0 0 1 0-1.92M8.489 11.458c.588.01 1.965 1.157 3.572 1.164 1.607-.007 2.984-1.155 3.572-1.164.196-.003.305.12.305.454 0 .886-.424 2.328-1.563 3.202-.22-.756-1.396-1.366-1.63-1.32q-.011.001-.02.006l-.044.026-.01.008-.03.024q-.018.017-.035.036l-.032.04a1 1 0 0 0-.058.09l-.014.025q-.049.088-.11.19a1 1 0 0 1-.083.116 1.2 1.2 0 0 1-.173.18q-.035.029-.075.058a1.3 1.3 0 0 1-.251-.243 1 1 0 0 1-.076-.107c-.124-.193-.177-.363-.337-.444-.034-.016-.104-.008-.2.022q-.094.03-.216.087-.06.028-.125.063l-.13.074q-.067.04-.136.086a3 3 0 0 0-.135.096 3 3 0 0 0-.26.219 2 2 0 0 0-.12.121 2 2 0 0 0-.106.128l-.002.002a2 2 0 0 0-.09.132l-.001.001a1.2 1.2 0 0 0-.105.212q-.013.036-.024.073c-1.139-.875-1.563-2.317-1.563-3.203 0-.334.109-.457.305-.454m.836 10.354c.824-1.19.766-2.082-.365-3.194-1.13-1.112-1.789-2.738-1.789-2.738s-.246-.945-.806-.858-.97 1.499.202 2.362c1.173.864-.233 1.45-.685.64-.45-.812-1.683-2.896-2.322-3.295s-1.089-.175-.938.647 2.822 2.813 2.562 3.244-1.176-.506-1.176-.506-2.866-2.567-3.49-1.898.473 1.23 2.037 2.16c1.564.932 1.686 1.178 1.464 1.53s-3.675-2.511-4-1.297c-.323 1.214 3.524 1.567 3.287 2.405-.238.839-2.71-1.587-3.216-.642-.506.946 3.49 2.056 3.522 2.064 1.29.33 4.568 1.028 5.713-.624m5.349 0c-.824-1.19-.766-2.082.365-3.194 1.13-1.112 1.789-2.738 1.789-2.738s.246-.945.806-.858.97 1.499-.202 2.362c-1.173.864.233 1.45.685.64.451-.812 1.683-2.896 2.322-3.295s1.089-.175.938.647-2.822 2.813-2.562 3.244 1.176-.506 1.176-.506 2.866-2.567 3.49-1.898-.473 1.23-2.037 2.16c-1.564.932-1.686 1.178-1.464 1.53s3.675-2.511 4-1.297c.323 1.214-3.524 1.567-3.287 2.405.238.839 2.71-1.587 3.216-.642.506.946-3.49 2.056-3.522 2.064-1.29.33-4.568 1.028-5.713-.624"/></svg><span>Model</span></a>
+  </div>
+  <div class="gallery-intro"><h2>Simulation Videos</h2><p>Left: the simulator's rendering. Right: the 1,200-point cloud from the same single depth camera.</p></div>
+</header>
+<nav aria-label="Video environments"><a href="#cube">OGBench Cube</a><a href="#rm75_cube">OGBench Cube (RM75)</a><a href="#scene">OGBench Scene</a><a href="#puzzle">OGBench Puzzle</a><a href="#metaworld">MetaWorld</a><a href="#adroit">Adroit</a></nav>
+<main>
+<section id="cube" data-video-carousel>
+  <h2>OGBench Cube</h2>
+  <p class="robot">Cube Manipulation</p>
+  <p class="how">Successful episodes from the JEPA4R + GCIQL final checkpoint, shown as synchronized RGB and point-cloud views.</p>
+  <div class="task-tabs" role="tablist" aria-label="OGBench Cube tasks">
+    <button type="button" id="cube-tab-1" role="tab" aria-controls="cube-panel-1" aria-selected="true" tabindex="0">1Cube</button>
+    <button type="button" id="cube-tab-2" role="tab" aria-controls="cube-panel-2" aria-selected="false" tabindex="-1">2Cube · Subtask 01</button>
+    <button type="button" id="cube-tab-3" role="tab" aria-controls="cube-panel-3" aria-selected="false" tabindex="-1">2Cube · Subtask 02</button>
+    <button type="button" id="cube-tab-4" role="tab" aria-controls="cube-panel-4" aria-selected="false" tabindex="-1">2Cube · Subtask 03</button>
+    <button type="button" id="cube-tab-5" role="tab" aria-controls="cube-panel-5" aria-selected="false" tabindex="-1">2Cube · Subtask 04</button>
+    <button type="button" id="cube-tab-6" role="tab" aria-controls="cube-panel-6" aria-selected="false" tabindex="-1">2Cube · Subtask 05</button>
+    <button type="button" id="cube-tab-7" role="tab" aria-controls="cube-panel-7" aria-selected="false" tabindex="-1">3Cube</button>
+  </div>
+  <div class="task-carousel">
+    <div class="task-panel" id="cube-panel-1" role="tabpanel" aria-labelledby="cube-tab-1"><div class="grid">
+      <figure><video src="videos/cube/cube1_task1_seed970100012.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure>
+      <figure><video src="videos/cube/cube1_task3_seed970300011.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure>
+      <figure><video src="videos/cube/cube1_task5_seed970500027.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure>
+    </div></div>
+    <div class="task-panel" id="cube-panel-2" role="tabpanel" aria-labelledby="cube-tab-2" hidden><div class="grid">
+      <figure><video src="videos/cube/cube2_task1_seed970100008.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure>
+      <figure><video src="videos/cube/cube2_task1_seed970100024.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure>
+      <figure><video src="videos/cube/cube2_task1_seed970100032.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure>
+    </div></div>
+    <div class="task-panel" id="cube-panel-3" role="tabpanel" aria-labelledby="cube-tab-3" hidden><div class="grid">
+      <figure><video src="videos/cube/cube2_task2_seed970200004.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure>
+      <figure><video src="videos/cube/cube2_task2_seed970200021.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure>
+      <figure><video src="videos/cube/cube2_task2_seed970200028.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure>
+    </div></div>
+    <div class="task-panel" id="cube-panel-4" role="tabpanel" aria-labelledby="cube-tab-4" hidden><div class="grid">
+      <figure><video src="videos/cube/cube2_task3_seed970300004.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure>
+      <figure><video src="videos/cube/cube2_task3_seed970300017.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure>
+      <figure><video src="videos/cube/cube2_task3_seed970300026.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure>
+    </div></div>
+    <div class="task-panel" id="cube-panel-5" role="tabpanel" aria-labelledby="cube-tab-5" hidden><div class="grid">
+      <figure><video src="videos/cube/cube2_task4_seed970400010.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure>
+      <figure><video src="videos/cube/cube2_task4_seed970400042.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure>
+      <figure><video src="videos/cube/cube2_task4_seed970400045.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure>
+    </div></div>
+    <div class="task-panel" id="cube-panel-6" role="tabpanel" aria-labelledby="cube-tab-6" hidden><div class="grid">
+      <figure><video src="videos/cube/cube2_task5_seed970500006.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure>
+      <figure><video src="videos/cube/cube2_task5_seed970500031.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure>
+      <figure><video src="videos/cube/cube2_task5_seed970500039.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure>
+    </div></div>
+    <div class="task-panel" id="cube-panel-7" role="tabpanel" aria-labelledby="cube-tab-7" hidden><div class="grid">
+      <figure><video src="videos/cube/cube3_task1_seed970100001.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure>
+      <figure><video src="videos/cube/cube3_task1_seed970100011.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure>
+      <figure><video src="videos/cube/cube3_task1_seed970100020.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure>
+    </div></div>
+  </div>
+  <p class="task-cycle-note">Tasks cycle automatically after the longest video finishes. Select a task to switch manually.</p>
+</section>
+<section id="rm75_cube"><h2>OGBench Cube (RM75): Cross-Embodiment</h2><p class="robot">RealMan RM75-B + Inspire EG2-4C2</p><p class="how">Expert test episodes, cube carried to its target (not the JEPA4R policy).</p><h3>Cube pick-and-place</h3><div class="grid"><figure><video src="videos/rm75_cube/cube_1.mp4" muted loop playsinline controls preload="metadata"></video></figure><figure><video src="videos/rm75_cube/cube_2.mp4" muted loop playsinline controls preload="metadata"></video></figure><figure><video src="videos/rm75_cube/cube_3.mp4" muted loop playsinline controls preload="metadata"></video></figure></div></section><section id="scene" data-video-carousel><h2>OGBench Scene</h2><p class="robot">UR5e + Robotiq 2F-85</p><p class="how">Successful episodes of the JEPA4R policy (CortexBench imitation protocol on the OGBench evaluation tasks).</p>
+  <div class="task-tabs" role="tablist" aria-label="OGBench Scene tasks">
+    <button type="button" id="scene-tab-1" role="tab" aria-controls="task-panel-1" aria-selected="true" tabindex="0">1. Open</button>
+    <button type="button" id="scene-tab-2" role="tab" aria-controls="task-panel-2" aria-selected="false" tabindex="-1">2. Unlock and lock</button>
+    <button type="button" id="scene-tab-3" role="tab" aria-controls="task-panel-3" aria-selected="false" tabindex="-1">3. Rearrange (medium)</button>
+    <button type="button" id="scene-tab-4" role="tab" aria-controls="task-panel-4" aria-selected="false" tabindex="-1">4. Put in drawer</button>
+    <button type="button" id="scene-tab-5" role="tab" aria-controls="task-panel-5" aria-selected="false" tabindex="-1">5. Rearrange (hard)</button>
+  </div>
+  <div class="task-carousel">
+    <div class="task-panel" id="task-panel-1" role="tabpanel" aria-labelledby="scene-tab-1"><div class="grid"><figure><video src="videos/scene/task1_1.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure><figure><video src="videos/scene/task1_2.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure><figure><video src="videos/scene/task1_3.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure></div></div>
+    <div class="task-panel" id="task-panel-2" role="tabpanel" aria-labelledby="scene-tab-2" hidden><div class="grid"><figure><video src="videos/scene/task2_1.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure><figure><video src="videos/scene/task2_2.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure><figure><video src="videos/scene/task2_3.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure></div></div>
+    <div class="task-panel" id="task-panel-3" role="tabpanel" aria-labelledby="scene-tab-3" hidden><div class="grid"><figure><video src="videos/scene/task3_1.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure><figure><video src="videos/scene/task3_2.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure><figure><video src="videos/scene/task3_3.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure></div></div>
+    <div class="task-panel" id="task-panel-4" role="tabpanel" aria-labelledby="scene-tab-4" hidden><div class="grid"><figure><video src="videos/scene/task4_1.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure><figure><video src="videos/scene/task4_2.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure><figure><video src="videos/scene/task4_3.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure></div></div>
+    <div class="task-panel" id="task-panel-5" role="tabpanel" aria-labelledby="scene-tab-5" hidden><div class="grid"><figure><video src="videos/scene/task5_1.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure><figure><video src="videos/scene/task5_2.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure><figure><video src="videos/scene/task5_3.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure></div></div>
+  </div>
+  <p class="task-cycle-note">Tasks cycle automatically after the longest video finishes. Select a task to switch manually.</p>
+</section><section id="puzzle" data-video-carousel><h2>OGBench Puzzle</h2><p class="robot">UR5e + Robotiq 2F-85</p><p class="how">Solved OGBench evaluation tasks, JEPA4R policy (DQC on the frozen latents and the lights).</p>
+  <div class="task-tabs" role="tablist" aria-label="OGBench Puzzle tasks">
+    <button type="button" id="puzzle-tab-1" role="tab" aria-controls="puzzle-panel-1" aria-selected="true" tabindex="0">3×3</button>
+    <button type="button" id="puzzle-tab-2" role="tab" aria-controls="puzzle-panel-2" aria-selected="false" tabindex="-1">4×4</button>
+    <button type="button" id="puzzle-tab-3" role="tab" aria-controls="puzzle-panel-3" aria-selected="false" tabindex="-1">4×5</button>
+  </div>
+  <div class="task-carousel">
+    <div class="task-panel" id="puzzle-panel-1" role="tabpanel" aria-labelledby="puzzle-tab-1"><div class="grid"><figure><video src="videos/puzzle/3x3_1.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure><figure><video src="videos/puzzle/3x3_2.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure><figure><video src="videos/puzzle/3x3_3.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure></div></div>
+    <div class="task-panel" id="puzzle-panel-2" role="tabpanel" aria-labelledby="puzzle-tab-2" hidden><div class="grid"><figure><video src="videos/puzzle/4x4_1.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure><figure><video src="videos/puzzle/4x4_2.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure><figure><video src="videos/puzzle/4x4_3.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure></div></div>
+    <div class="task-panel" id="puzzle-panel-3" role="tabpanel" aria-labelledby="puzzle-tab-3" hidden><div class="grid"><figure><video src="videos/puzzle/4x5_1.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure><figure><video src="videos/puzzle/4x5_2.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure><figure><video src="videos/puzzle/4x5_3.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure></div></div>
+  </div>
+  <p class="task-cycle-note">Tasks cycle automatically after the longest video finishes. Select a task to switch manually.</p>
+</section><section id="metaworld" data-video-carousel><h2>MetaWorld</h2><p class="robot">Sawyer</p><p class="how">Successful episodes of the JEPA4R policy (CortexBench evaluation).</p>
+  <div class="task-tabs" role="tablist" aria-label="MetaWorld tasks">
+    <button type="button" id="metaworld-tab-1" role="tab" aria-controls="metaworld-panel-1" aria-selected="true" tabindex="0">Assembly</button>
+    <button type="button" id="metaworld-tab-2" role="tab" aria-controls="metaworld-panel-2" aria-selected="false" tabindex="-1">Bin-pick</button>
+    <button type="button" id="metaworld-tab-3" role="tab" aria-controls="metaworld-panel-3" aria-selected="false" tabindex="-1">Button</button>
+    <button type="button" id="metaworld-tab-4" role="tab" aria-controls="metaworld-panel-4" aria-selected="false" tabindex="-1">Drawer</button>
+    <button type="button" id="metaworld-tab-5" role="tab" aria-controls="metaworld-panel-5" aria-selected="false" tabindex="-1">Hammer</button>
+  </div>
+  <div class="task-carousel">
+    <div class="task-panel" id="metaworld-panel-1" role="tabpanel" aria-labelledby="metaworld-tab-1"><div class="grid"><figure><video src="videos/metaworld/assembly_1.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure><figure><video src="videos/metaworld/assembly_2.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure><figure><video src="videos/metaworld/assembly_3.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure></div></div>
+    <div class="task-panel" id="metaworld-panel-2" role="tabpanel" aria-labelledby="metaworld-tab-2" hidden><div class="grid"><figure><video src="videos/metaworld/binpick_1.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure><figure><video src="videos/metaworld/binpick_2.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure><figure><video src="videos/metaworld/binpick_3.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure></div></div>
+    <div class="task-panel" id="metaworld-panel-3" role="tabpanel" aria-labelledby="metaworld-tab-3" hidden><div class="grid"><figure><video src="videos/metaworld/button_1.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure><figure><video src="videos/metaworld/button_2.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure><figure><video src="videos/metaworld/button_3.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure></div></div>
+    <div class="task-panel" id="metaworld-panel-4" role="tabpanel" aria-labelledby="metaworld-tab-4" hidden><div class="grid"><figure><video src="videos/metaworld/drawer_1.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure><figure><video src="videos/metaworld/drawer_2.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure><figure><video src="videos/metaworld/drawer_3.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure></div></div>
+    <div class="task-panel" id="metaworld-panel-5" role="tabpanel" aria-labelledby="metaworld-tab-5" hidden><div class="grid"><figure><video src="videos/metaworld/hammer_1.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure><figure><video src="videos/metaworld/hammer_2.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure><figure><video src="videos/metaworld/hammer_3.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure></div></div>
+  </div>
+  <p class="task-cycle-note">Tasks cycle automatically after the longest video finishes. Select a task to switch manually.</p>
+</section>
+<section id="adroit" data-video-carousel>
+  <h2>Adroit</h2>
+  <p class="robot">Anthropomorphic Hand Manipulation</p>
+  <p class="how">Successful JEPA4D + BC episodes from the saved reward-selected policy, shown as synchronized RGB and point-cloud views at 4× slow motion.</p>
+  <div class="task-tabs" role="tablist" aria-label="Adroit tasks">
+    <button type="button" id="adroit-tab-1" role="tab" aria-controls="adroit-panel-1" aria-selected="true" tabindex="0">Pen</button>
+    <button type="button" id="adroit-tab-2" role="tab" aria-controls="adroit-panel-2" aria-selected="false" tabindex="-1">Relocate</button>
+  </div>
+  <div class="task-carousel">
+    <div class="task-panel" id="adroit-panel-1" role="tabpanel" aria-labelledby="adroit-tab-1"><div class="grid">
+      <figure><video src="videos/adroit/pen_s200_e76110001_rgb_pcd_slow4x.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure>
+      <figure><video src="videos/adroit/pen_s300_e76110002_rgb_pcd_slow4x.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure>
+      <figure><video src="videos/adroit/pen_s100_e76110003_rgb_pcd_slow4x.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure>
+    </div></div>
+    <div class="task-panel" id="adroit-panel-2" role="tabpanel" aria-labelledby="adroit-tab-2" hidden><div class="grid">
+      <figure><video src="videos/adroit/relocate_s100_e76120000_rgb_pcd_slow4x.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure>
+      <figure><video src="videos/adroit/relocate_s200_e76120003_rgb_pcd_slow4x.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure>
+      <figure><video src="videos/adroit/relocate_s300_e76120002_rgb_pcd_slow4x.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure>
+    </div></div>
+  </div>
+  <p class="task-cycle-note">Tasks cycle automatically after the longest video finishes. Select a task to switch manually.</p>
+</section>
+</main>
+<script>
+// Keep the original viewport playback behavior for the other environments.
+const io = new IntersectionObserver(entries => {
+  entries.forEach(({isIntersecting, target}) => {
+    if (isIntersecting) target.play().catch(() => {});
+    else target.pause();
+  });
+}, {threshold: .25});
+document.querySelectorAll('video:not([data-task-video])').forEach(video => io.observe(video));
+
+document.querySelectorAll('[data-video-carousel]').forEach(section => {
+  const carousel = section.querySelector('.task-carousel');
+  const tabs = [...section.querySelectorAll('[role="tab"]')];
+  const panels = [...section.querySelectorAll('[role="tabpanel"]')];
+  const clips = panels.map(panel => [...panel.querySelectorAll('video')]);
+  let active = 0;
+  let inView = false;
+
+  const pauseAll = () => clips.flat().forEach(video => video.pause());
+  const finished = video => video.ended && video.currentTime >= video.duration - .05;
+  const longestVideo = () => {
+    const current = clips[active];
+    if (!current.every(video => Number.isFinite(video.duration) && video.duration > 0)) return null;
+    return current.reduce((longest, video) => video.duration > longest.duration ? video : longest);
+  };
+
+  function playCurrent() {
+    if (!inView || document.hidden) return;
+    const longest = longestVideo();
+    if (longest && finished(longest)) {
+      selectTask((active + 1) % panels.length);
+      return;
+    }
+    clips[active].forEach(video => {
+      if (finished(video)) video.currentTime = 0;
+      video.play().catch(() => {});
+    });
+  }
+
+  function selectTask(index, focusTab = false) {
+    const focusWasInPanel = panels[active].contains(document.activeElement);
+    pauseAll();
+    active = index;
+    panels.forEach((panel, i) => {
+      panel.hidden = i !== active;
+      tabs[i].setAttribute('aria-selected', String(i === active));
+      tabs[i].tabIndex = i === active ? 0 : -1;
+    });
+    clips[active].forEach(video => { video.currentTime = 0; });
+    if (focusTab || focusWasInPanel) tabs[active].focus({preventScroll: true});
+    playCurrent();
+  }
+
+  tabs.forEach((tab, index) => {
+    tab.addEventListener('click', () => selectTask(index));
+    tab.addEventListener('keydown', event => {
+      let next;
+      if (event.key === 'ArrowRight') next = (index + 1) % tabs.length;
+      else if (event.key === 'ArrowLeft') next = (index + tabs.length - 1) % tabs.length;
+      else if (event.key === 'Home') next = 0;
+      else if (event.key === 'End') next = tabs.length - 1;
+      else return;
+      event.preventDefault();
+      selectTask(next, true);
+    });
+  });
+
+  clips.forEach((group, index) => group.forEach(video => {
+    video.addEventListener('ended', () => {
+      if (index !== active || !inView || document.hidden) return;
+      const longest = longestVideo();
+      if (video === longest) {
+        selectTask((active + 1) % panels.length);
+      } else {
+        video.currentTime = 0;
+        video.play().catch(() => {});
+      }
+    });
+    // Metadata can arrive after a shorter clip has already finished.
+    video.addEventListener('loadedmetadata', () => {
+      if (index === active) playCurrent();
+    });
+  }));
+
+  const carouselObserver = new IntersectionObserver(entries => {
+    const entry = entries[entries.length - 1];
+    inView = entry.isIntersecting && entry.intersectionRatio >= .25;
+    if (inView) playCurrent();
+    else pauseAll();
+  }, {threshold: [0, .25]});
+  carouselObserver.observe(carousel);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) pauseAll();
+    else playCurrent();
+  });
+});
+</script></body></html>
