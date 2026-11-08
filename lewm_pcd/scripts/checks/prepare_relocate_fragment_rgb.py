@@ -2,6 +2,7 @@
 import argparse
 import hashlib
 import json
+import importlib.util
 from pathlib import Path
 import time
 
@@ -9,10 +10,29 @@ import h5py
 import numpy as np
 
 
-def selected_rows(lengths, steps):
+def file_sha(path):
+    digest = hashlib.sha256()
+    with Path(path).open('rb') as stream:
+        for block in iter(lambda: stream.read(4 << 20), b''):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def hdf_dependencies(path):
+    helper = Path(__file__).resolve().parents[2] / 'envs/adroit/hdf_binding.py'
+    specification = importlib.util.spec_from_file_location('_relocate_hdf_binding', helper)
+    module = importlib.util.module_from_spec(specification)
+    specification.loader.exec_module(module)
+    return module.hdf_dependencies(path)
+
+
+def selected_rows(lengths, steps, mode='full'):
+    if mode not in ('full', 'smoke'):
+        raise ValueError('RGB window mode must be full or smoke')
     maximum = np.repeat(np.asarray(lengths) - 25 - 1, lengths)
     valid = np.flatnonzero(np.asarray(steps) <= maximum)
-    return np.sort(valid[np.random.default_rng(42).choice(len(valid) - 1, size=50, replace=False)])
+    return np.sort(valid[np.random.default_rng(42).choice(len(valid) - 1,
+                   size=50 if mode == 'full' else 1, replace=False)])
 
 
 def main():
@@ -20,9 +40,12 @@ def main():
     parser.add_argument('--test', type=Path, required=True)
     parser.add_argument('--initials', type=Path, required=True)
     parser.add_argument('--out', type=Path, required=True)
+    parser.add_argument('--mode', choices=('full', 'smoke'), default='full',
+                        help='Match the independent CEM full or one-fragment diagnostic mode')
     args = parser.parse_args()
     args.out.mkdir(parents=True, exist_ok=False)
     report = dict(status='STARTED', started_at=time.time(), completed_frames=0,
+                  mode=args.mode, diagnostic=args.mode == 'smoke',
                   camera='vil_camera', width=256, height=256, seed=42)
     def save():
         report['updated_at'] = time.time()
@@ -30,6 +53,8 @@ def main():
     save()
     env = None
     try:
+        source_binding = hdf_dependencies(args.test)
+        initial_sha = file_sha(args.initials)
         from mj_envs.envs.hand_manipulation_suite.relocate_v0 import RelocateEnvV0
         env = RelocateEnvV0()
         assert not env.sim.render_contexts and env.sim._render_context_offscreen is None
@@ -37,7 +62,7 @@ def main():
         report['offsamples'] = int(env.model.vis.quality.offsamples)
         with h5py.File(args.test, 'r') as source, np.load(args.initials, allow_pickle=False) as initial:
             lengths, offsets = source['ep_len'][:], source['ep_offset'][:]
-            starts = selected_rows(lengths, source['step_idx'][:])
+            starts = selected_rows(lengths, source['step_idx'][:], args.mode)
             rows = np.unique((starts[:, None] + np.arange(26)[None]).ravel())
             episodes = np.repeat(np.arange(len(lengths)), lengths)
             report.update(sampled_start_rows=starts.tolist(), cached_rows=len(rows))
@@ -79,11 +104,15 @@ def main():
                     output.flush(); save()
             assert report['completed_frames'] == len(rows)
             report.update(status='COMPLETE', exit_code=0,
-                          inputs={str(p.resolve()):hashlib.sha256(p.read_bytes()).hexdigest()
-                                  for p in (args.test,args.initials,Path(__file__))},
-                          cache_sha256=hashlib.sha256(cache.read_bytes()).hexdigest())
+                          inputs={str(args.test.resolve()):source_binding['root_sha256'],
+                                  str(args.initials.resolve()):initial_sha,
+                                  str(Path(__file__).resolve()):file_sha(__file__)},
+                          input_dependencies={'test':source_binding},
+                          dependency_binding_source_sha256=file_sha(Path(__file__).resolve().parents[2] / 'envs/adroit/hdf_binding.py'),
+                          cache_sha256=file_sha(cache))
     except BaseException as error:
-        report.update(status='FAILED', exit_code=1, error=repr(error))
+        report.update(status='FAILED', exit_code=130 if isinstance(error, KeyboardInterrupt) else 1,
+                      error=repr(error))
         raise
     finally:
         if env is not None:

@@ -10,53 +10,9 @@ def vector(value, size, name):
     return out.copy()
 
 
-def native_state_from_row(row):
-    return {key: vector(row[key], size, key)
-            for key, size in (('qpos', 30), ('qvel', 30), ('desired_orien', 4))}
 
-
-def pen_pose(obs):
-    obs = vector(obs, 45, 'native_observation')
-    # Pinned PenEnvV0.get_obs: hand24, object position3, velocity6, axis3.
-    return obs[24:27].copy(), obs[33:36].copy()
-
-
-def fragment_status(obs, goal_position, goal_axis, native_done=False):
-    position, axis = pen_pose(obs)
-    goal_position, goal_axis = vector(goal_position, 3, 'goal position'), vector(goal_axis, 3, 'goal axis')
-    if not np.isclose(np.linalg.norm(goal_axis), 1., atol=1e-3, rtol=0):
-        raise ValueError('goal axis must be unit length')
-    distance, dot = float(np.linalg.norm(position - goal_position)), float(np.dot(axis, goal_axis))
-    dropped = bool(native_done or position[2] < .075)
-    return dict(fragment_distance=np.float64(distance), fragment_axis_dot=np.float64(dot),
-                fragment_dropped=np.int64(dropped),
-                fragment_success=np.int64(not dropped and distance < .075 and dot > .95))
-
-
-class PenFragment:
-    """Native transition/reset contract; Gymnasium subclass adds registration/spaces."""
-    task = 'pen-v0'
-    action_dim, observation_dim, qpos_dim = 24, 45, 30
-
-    def _state(self, row):
-        return native_state_from_row(row)
-
-    def _goal_from_row(self, goal_row, initial_state):
-        return pen_pose(goal_row['goal_native_observation'] if 'goal_native_observation' in goal_row
-                        else goal_row['native_observation'])
-
-    def _restore_initial(self, state):
-        self.set_env_state(state)
-
-    def _status(self, obs, native_done=False):
-        return fragment_status(obs, *self._goal, native_done=native_done)
-
-    def _goal_info(self):
-        return dict(fragment_goal_position=self._goal[0].copy(), fragment_goal_axis=self._goal[1].copy())
-
-    def _failure(self, obs, native_done):
-        return bool(native_done or obs[26] < .075)
-
+class NativeFragment:
+    """Shared exact-reset and transition boundary; task-specific methods live below."""
     def __init__(self, native_env, width=256, height=256, camera='vil_camera'):
         self.native_env = native_env
         self.width, self.height, self.camera = int(width), int(height), camera
@@ -75,12 +31,6 @@ class PenFragment:
     @property
     def proprio(self):
         return self.get_obs()[:self.action_dim].copy()
-
-    def set_goal_state(self, position, axis):
-        # Validate the target without moving native task geometry or changing physics.
-        position, axis = vector(position, 3, 'goal position'), vector(axis, 3, 'goal axis')
-        fragment_status(self.get_obs(), position, axis)
-        self._goal = (position, axis)
 
     def reset_options_from_dataset(self, init_row, goal_row):
         if 'native_replay_trace' not in init_row:
@@ -160,7 +110,7 @@ RELOCATE_STATE_FIELDS = (('qpos', 36), ('qvel', 36), ('hand_qpos', 30),
                          ('obj_pos', 3), ('palm_pos', 3), ('target_pos', 3))
 
 
-class RelocateFragment(PenFragment):
+class RelocateFragment(NativeFragment):
     """Future-object-position fragment; single-frame <.1 is separate from native >25-frame success."""
     task = 'relocate-v0'
     action_dim, observation_dim, qpos_dim = 30, 39, 36
@@ -197,9 +147,9 @@ class RelocateFragment(PenFragment):
 
 class EpisodeAliases:
     """Read-only view of the frozen HF columns; values/actions remain untouched."""
-    def __init__(self, dataset, pixel_shape=(224, 224), task='pen-v0', initial_states=None, rgb_frames=None):
+    def __init__(self, dataset, pixel_shape=(224, 224), task='relocate-v0', initial_states=None, rgb_frames=None):
         self.dataset = dataset
-        if task not in ('pen-v0', 'relocate-v0'):
+        if task != 'relocate-v0':
             raise ValueError('unsupported Adroit fragment task: ' + task)
         self.task, self.rgb_frames = task, rgb_frames
         self.pixel_shape = tuple(int(v) for v in pixel_shape)
@@ -240,7 +190,7 @@ class EpisodeAliases:
 
     @property
     def column_names(self):
-        extra = ['native_observation', 'native_step_idx', 'obj_pos', 'palm_pos', 'target_pos', 'hand_qpos'] if self.task == 'relocate-v0' else []
+        extra = ['native_observation', 'native_step_idx', 'obj_pos', 'palm_pos', 'target_pos', 'hand_qpos']
         if self.rgb_frames is not None:
             extra.append('pixels')
         return list(dict.fromkeys([*self.dataset.column_names, 'ep_idx', 'seed', *extra]))
@@ -257,32 +207,24 @@ class EpisodeAliases:
         traces = []
         for episode in episodes:
             offset, length = int(self.dataset.offsets[episode]), int(self.dataset.lengths[episode])
-            if self.task == 'relocate-v0':
-                actions = np.array(h5['action'][offset:offset+length], copy=True)
-                if actions.shape != (length, 30) or not np.isfinite(actions).all() or np.any(np.abs(actions) > 1.):
-                    raise RuntimeError('HOLD: Relocate replay controls must be actual finite bounded actions')
-                traces.append(dict(initial_state={key: self._initial_states[key][episode].copy() for key, _ in RELOCATE_STATE_FIELDS},
-                                   initial_observation=self._initial_states['reset_observation'][episode].copy(),
-                                   actions=actions, valid=np.ones(length, np.int64)))
-                continue
-            traces.append(dict(initial_state={key: np.array(h5['initial_' + key][offset], copy=True)
-                                              for key in ('qpos', 'qvel', 'desired_orien')},
-                               initial_observation=np.array(h5['initial_native_observation'][offset], copy=True),
-                               actions=np.array(h5['executed_action'][offset+1:offset+length], copy=True),
-                               valid=np.array(h5['executed_action_valid'][offset+1:offset+length], copy=True)))
+            actions = np.array(h5['action'][offset:offset+length], copy=True)
+            if actions.shape != (length, 30) or not np.isfinite(actions).all() or np.any(np.abs(actions) > 1.):
+                raise RuntimeError('HOLD: Relocate replay controls must be actual finite bounded actions')
+            traces.append(dict(initial_state={key: self._initial_states[key][episode].copy() for key, _ in RELOCATE_STATE_FIELDS},
+                               initial_observation=self._initial_states['reset_observation'][episode].copy(),
+                               actions=actions, valid=np.ones(length, np.int64)))
         out['native_replay_trace'] = traces
         return out
 
     def get_col_data(self, key):
         if key == 'ep_idx':
             return self._episode_idx.copy()
-        return self.dataset.get_col_data('episode_seed' if key == 'seed' and self.task == 'pen-v0' else key)
+        return self.dataset.get_col_data(key)
 
     def get_row_data(self, rows):
         out = dict(self.dataset.get_row_data(rows))
-        out.update(ep_idx=self._episode_idx[rows], seed=np.array(out['episode_seed' if self.task == 'pen-v0' else 'seed'], copy=True))
-        if self.task == 'relocate-v0':
-            self._relocate_columns(out, out['ep_idx'])
+        out.update(ep_idx=self._episode_idx[rows], seed=np.array(out['seed'], copy=True))
+        self._relocate_columns(out, out['ep_idx'])
         if self.rgb_frames is not None:
             out['pixels'] = self._rgb(rows)
         if 'pixels' in out:
@@ -335,9 +277,8 @@ class EpisodeAliases:
                 row['pixels'] = torch.from_numpy(self._rgb(np.arange(offset+first, offset+last)).transpose(0, 3, 1, 2).copy())
             if 'pixels' in row:
                 row['pixels'] = self._pixel_view(row['pixels'])
-            row['seed'] = np.array(row['episode_seed' if self.task == 'pen-v0' else 'seed'], copy=True)
+            row['seed'] = np.array(row['seed'], copy=True)
             row['ep_idx'] = np.full(len(row['seed']), int(episode), np.int64)
-            if self.task == 'relocate-v0':
-                self._relocate_columns(row, row['ep_idx'])
+            self._relocate_columns(row, row['ep_idx'])
             out.append(row)
         return out

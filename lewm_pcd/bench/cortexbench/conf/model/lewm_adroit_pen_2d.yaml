@@ -1,7 +1,0 @@
-# Official CortexBench Adroit Pen 2D LeWM encoder.
-# This checkpoint is kept separate from the MetaWorld and 3D PCD runs.
-_target_: lewm_cortex.load_lewm
-checkpoint_dir: /root/autodl-tmp/workspace/users/lewm/adroit_full/pen_official_10000_150_20260927/training_full_2d_v1/home/checkpoints/adroit_pen_full_2d_v1
-epoch: 10
-use_projector: true
-random_init: false

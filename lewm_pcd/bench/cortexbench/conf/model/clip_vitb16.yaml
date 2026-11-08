@@ -1,4 +1,0 @@
-# CLIP ViT-B/16 vision tower (openai/clip-vit-base-patch16), CLS (pooler output, 768-d). See ../../baselines.py
-_target_: baselines.load_clip
-model_id: openai/clip-vit-base-patch16
-cache_dir: ${oc.env:STABLEWM_HOME}/checkpoints/cortexbench_baselines/hf

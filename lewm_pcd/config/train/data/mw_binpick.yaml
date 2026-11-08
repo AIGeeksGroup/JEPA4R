@@ -1,8 +1,0 @@
-# dmc.yaml (pixels, frameskip 5; pixels / action / observation) on the MetaWorld bin-picking three-part dataset
-# (scripts/data/collect_mw.py, config mw_binpick)
-defaults:
-  - dmc
-  - _self_
-
-dataset:
-  name: metaworld/mw_binpick.h5

@@ -82,7 +82,7 @@ def main(argv=None):
             from . import camera_preview as camera_module
             factory=camera_module.OppositeCameraBridge
         sys.path.insert(0,str(BASELINE))
-        from bench.cortexbench.adroit.smoke import AdroitPairedWriter
+        from bench.relocate.paired_writer import AdroitPairedWriter
         legacy_env=load_file('_rh56_original_plan',BASELINE/'envs/adroit/env.py')
         legacy_policy=load_file('_rh56_original_feedback',BASELINE/'envs/adroit/policy.py')
         config=dict(camera=args.camera,episodes=[dict(split=s,seed=seed,coverage=c) for s,seed,c in plan],
@@ -98,7 +98,7 @@ def main(argv=None):
                         camera_adapter_sha256=sha(camera_module.__file__) if camera_module else None,
                         baseline_plan_sha256=sha(BASELINE/'envs/adroit/env.py'),
                         baseline_policy_sha256=sha(BASELINE/'envs/adroit/policy.py'),
-                        paired_writer_sha256=sha(BASELINE/'bench/cortexbench/adroit/smoke.py'),
+                        paired_writer_sha256=sha(BASELINE/'bench/relocate/paired_writer.py'),
                         plan_sha256=sha(args.plan) if args.plan else None,config_sha256=config_hash)
         atomic_json(out/'config.json',dict(config=config,provenance=provenance))
         manifest=dict(scope='frozen externally planned collection' if args.plan else 'bounded coverage smoke',

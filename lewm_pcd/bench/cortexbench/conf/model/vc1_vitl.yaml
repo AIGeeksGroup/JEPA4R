@@ -1,4 +1,0 @@
-# Official VC-1 ViT-L; the checkpoint is managed outside the Git checkout.
-_target_: baselines.load_vc1
-name: vc1_vitl
-checkpoint: ${oc.env:STABLEWM_HOME}/checkpoints/cortexbench_baselines/vc1_vitl.pth

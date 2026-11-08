@@ -3,6 +3,11 @@ import importlib.util
 from pathlib import Path
 import sys
 from types import SimpleNamespace
+import copy
+import hashlib
+import json
+import shutil
+import types
 
 import h5py
 import numpy as np
@@ -171,7 +176,7 @@ def test_readonly_pre_action_trace_aliases_and_initial_npz(tmp_path):
 
 
 class PixelTensor:
-    """Layout-only CPU double, as in existing Pen tests; native Torch remains a smoke gate."""
+    """Layout-only CPU double; native Torch remains a separate runtime gate."""
     def __init__(self, value):
         self.value = np.asarray(value)
         self.shape = self.value.shape
@@ -222,3 +227,188 @@ def test_initial_dataset_identity_and_action_bounds_are_checked():
     view = m.EpisodeAliases(reader, task='relocate-v0', initial_states=packed)
     with pytest.raises(RuntimeError, match='HOLD.*controls'):
         view.get_episode_data([0])
+
+
+def load_check(name):
+    path = ROOT / 'scripts/checks' / (name + '.py')
+    spec = importlib.util.spec_from_file_location('relocate_' + name, path)
+    loaded = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(loaded)
+    return loaded
+
+
+def test_fragment_product_is_relocate_only_and_has_generic_shared_transition():
+    m = module()
+    assert hasattr(m, 'NativeFragment')
+    assert not hasattr(m, 'PenFragment')
+    with pytest.raises(ValueError, match='Relocate|unsupported'):
+        m.EpisodeAliases(Reader(), task='pen-v0')
+
+
+def test_only_final_relocate_collection_and_fragment_are_registered(monkeypatch):
+    calls = []
+    registration = types.ModuleType('gymnasium.envs.registration')
+    registration.registry = {}
+    registration.register = lambda **kw: calls.append(kw)
+    monkeypatch.setitem(sys.modules, registration.__name__, registration)
+    spec = importlib.util.spec_from_file_location('final_adroit_registrations', ROOT / 'envs/adroit/__init__.py')
+    loaded = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(loaded)
+    assert [call['id'] for call in calls] == ['swm/AdroitRelocate-v0', 'swm/AdroitRelocateFragment-v0']
+    assert 'PenFragmentEnv' not in loaded.__all__
+
+
+def test_cem_cli_rejects_pen_and_full_budget_is_unchanged():
+    entry = load_check('run_adroit_fragment_cem')
+    parser = entry.make_parser()
+    supplied = ['--code-root', '/code', '--route', 'pcd', '--initials', '/initial.npz',
+                '--train', '/train.h5', '--test', '/test.h5', '--checkpoint', '/weights.pt', '--out', '/fresh']
+    args = parser.parse_args(supplied)
+    assert args.task == 'relocate-v0' and args.mode == 'full'
+    with pytest.raises(SystemExit):
+        parser.parse_args(supplied + ['--task', 'pen-v0'])
+    assert entry.budget('full') == dict(num_eval=50, eval_budget=50, num_samples=300,
+                                      topk=30, n_steps=10, train_episodes=10000, test_episodes=150)
+    assert entry.budget('smoke')['num_eval'] == 1
+    assert entry.budget('smoke')['eval_budget'] >= 25
+    with pytest.raises(ValueError):
+        entry.budget('unknown')
+
+
+def test_relocate_config_validation_distinguishes_diagnostic_from_full_protocol(tmp_path):
+    entry = load_check('run_adroit_fragment_cem')
+    cfg = dict(seed=42, policy=str(tmp_path/'weights.pt'), dataset=dict(stats=str(tmp_path/'train.h5')),
+               eval=dict(goal_offset_steps=25, eval_budget=50, num_eval=50, img_size=224, dataset_name=str(tmp_path/'test.h5')),
+               plan_config=dict(horizon=5, receding_horizon=5, action_block=5),
+               solver=dict(num_samples=300, topk=30, n_steps=10),
+               world=dict(env_name='envs.adroit:swm/AdroitRelocateFragment-v0', width=256, height=256))
+    entry.validate_config(cfg)
+    diagnostic = copy.deepcopy(cfg)
+    entry.apply_budget(diagnostic, 'smoke')
+    entry.validate_config(diagnostic, 'smoke')
+    with pytest.raises(ValueError):
+        entry.validate_config(diagnostic, 'full')
+    cfg['world']['env_name'] = 'envs.adroit:swm/AdroitPenFragment-v0'
+    with pytest.raises(ValueError):
+        entry.validate_config(cfg)
+
+
+def test_rgb_windows_use_the_same_full_sampling_and_explicit_one_fragment_smoke():
+    helper = load_check('prepare_relocate_fragment_rgb')
+    lengths = np.full(150, 200)
+    steps = np.tile(np.arange(200), 150)
+    maximum = np.repeat(lengths - 26, lengths)
+    valid = np.flatnonzero(steps <= maximum)
+    expected = np.sort(valid[np.random.default_rng(42).choice(len(valid)-1, size=50, replace=False)])
+    np.testing.assert_array_equal(helper.selected_rows(lengths, steps), expected)
+    smoke = helper.selected_rows(lengths[:1], steps[:200], mode='smoke')
+    assert smoke.shape == (1,) and 0 <= smoke[0] <= 174
+    with pytest.raises(ValueError):
+        helper.selected_rows(lengths, steps, mode='invalid')
+
+
+def test_rgb_cache_producer_binds_current_dataset_initials_mode_and_payload(tmp_path):
+    entry = load_check('run_adroit_fragment_cem')
+    data,initials = tmp_path/'current_test.h5',tmp_path/'current_initials.npz'
+    with h5py.File(data,'w') as handle:handle['value']=np.arange(3)
+    initials.write_bytes(b'initial state content')
+    cache_dir = tmp_path/'moved-cache';cache_dir.mkdir()
+    cache=cache_dir/'renamed_cache.h5';cache.write_bytes(b'cache content fixture')
+    digest=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+    report=dict(status='COMPLETE',exit_code=0,mode='smoke',cache_sha256=digest(cache),
+                inputs={'/former/location/test.h5':digest(data),'/former/location/init.npz':digest(initials)},
+                input_dependencies={'test':entry.hdf_dependencies(data)})
+    (cache_dir/'report.json').write_text(json.dumps(report))
+    # Old absolute paths and cache filename are contextual; equal bytes travel.
+    assert entry.validate_rgb_cache(cache,data,initials,'smoke')['passed']
+    for key,value in (('status','RUNNING'),('exit_code',1)):
+        invalid=dict(report);invalid[key]=value
+        (cache_dir/'report.json').write_text(json.dumps(invalid))
+        with pytest.raises(ValueError,match='producer'):
+            entry.validate_rgb_cache(cache,data,initials,'smoke')
+    (cache_dir/'report.json').write_text(json.dumps(dict(report,input_dependencies={})))
+    with pytest.raises(ValueError,match='dependencies'):
+        entry.validate_rgb_cache(cache,data,initials,'smoke')
+    (cache_dir/'report.json').write_text(json.dumps(report))
+    with pytest.raises(ValueError,match='mode'):
+        entry.validate_rgb_cache(cache,data,initials,'full')
+    old=data.read_bytes()
+    with h5py.File(data,'r+') as handle:handle['value'][0]=99
+    with pytest.raises(ValueError,match='test|dataset'):
+        entry.validate_rgb_cache(cache,data,initials,'smoke')
+    data.write_bytes(old)
+    old=initials.read_bytes();initials.write_bytes(b'other initial states')
+    with pytest.raises(ValueError,match='initial'):
+        entry.validate_rgb_cache(cache,data,initials,'smoke')
+    initials.write_bytes(old);cache.write_bytes(b'tampered cache')
+    with pytest.raises(ValueError,match='cache'):
+        entry.validate_rgb_cache(cache,data,initials,'smoke')
+
+
+def test_rgb_cache_rejects_changed_external_backing_with_identical_header(tmp_path):
+    entry=load_check('run_adroit_fragment_cem')
+    backing=tmp_path/'test_pcd.h5';header=tmp_path/'test_nonvisual.h5'
+    with h5py.File(backing,'w') as handle:handle['action']=np.zeros((2,30))
+    with h5py.File(header,'w') as handle:handle['action']=h5py.ExternalLink(backing.name,'/action')
+    initials=tmp_path/'initials.npz';initials.write_bytes(b'initial state fixture')
+    cache_dir=tmp_path/'cache';cache_dir.mkdir();cache=cache_dir/'rgb_windows.h5';cache.write_bytes(b'RGB fixture')
+    digest=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+    report=dict(status='COMPLETE',exit_code=0,mode='smoke',cache_sha256=digest(cache),
+        inputs={str(header):digest(header),str(initials):digest(initials)},
+        input_dependencies={'test':entry.hdf_dependencies(header)})
+    (cache_dir/'report.json').write_text(json.dumps(report))
+    assert entry.validate_rgb_cache(cache,header,initials,'smoke')['passed']
+    original_header=header.read_bytes()
+    with h5py.File(backing,'r+') as handle:handle['action'][0,0]=.5
+    assert header.read_bytes()==original_header
+    with pytest.raises(ValueError,match='dependencies|backing'):
+        entry.validate_rgb_cache(cache,header,initials,'smoke')
+
+
+def test_hdf_binding_handles_visible_vds_and_rejects_dependency_cycles(tmp_path):
+    entry=load_check('run_adroit_fragment_cem')
+    backing=tmp_path/'backing.h5';virtual=tmp_path/'virtual.h5'
+    with h5py.File(backing,'w') as handle:handle['x']=np.arange(3)
+    layout=h5py.VirtualLayout(shape=(3,),dtype='int64')
+    layout[:]=h5py.VirtualSource(backing.name,'x',shape=(3,))
+    with h5py.File(virtual,'w',libver='latest') as handle:handle.create_virtual_dataset('x',layout)
+    first=entry.hdf_dependencies(virtual)
+    assert first['file_count']==2
+    with h5py.File(backing,'r+') as handle:handle['x'][1]=99
+    assert entry.hdf_dependencies(virtual)['content_sha256']!=first['content_sha256']
+    a,b=tmp_path/'a.h5',tmp_path/'b.h5'
+    with h5py.File(a,'w') as handle:handle['loop']=h5py.ExternalLink(b.name,'/')
+    with h5py.File(b,'w') as handle:handle['loop']=h5py.ExternalLink(a.name,'/')
+    with pytest.raises(ValueError,match='cycle'):
+        entry.hdf_dependencies(a)
+
+
+def test_hdf_binding_is_portable_but_does_not_confuse_swapped_backing_roles(tmp_path):
+    entry=load_check('run_adroit_fragment_cem')
+    original=tmp_path/'original';original.mkdir()
+    a,b=original/'a.h5',original/'b.h5';header=original/'header.h5'
+    for path,value in ((a,1),(b,2)):
+        with h5py.File(path,'w') as handle:handle['x']=[value]
+    with h5py.File(header,'w') as handle:
+        handle['left']=h5py.ExternalLink(a.name,'/x')
+        handle['right']=h5py.ExternalLink(b.name,'/x')
+    bound=entry.hdf_dependencies(header)
+    moved=tmp_path/'moved';shutil.copytree(original,moved)
+    assert entry.hdf_dependencies(moved/'header.h5')['content_sha256']==bound['content_sha256']
+    first,second=a.read_bytes(),b.read_bytes();a.write_bytes(second);b.write_bytes(first)
+    changed=entry.hdf_dependencies(header)
+    assert {row['sha256'] for row in changed['files']}=={row['sha256'] for row in bound['files']}
+    assert changed['content_sha256']!=bound['content_sha256']
+
+
+def test_hdf_binding_deduplicates_files_and_fails_closed_on_soft_links(tmp_path):
+    entry=load_check('run_adroit_fragment_cem')
+    backing,header=tmp_path/'backing.h5',tmp_path/'header.h5'
+    with h5py.File(backing,'w') as handle:handle['x']=[1]
+    with h5py.File(header,'w') as handle:
+        handle['one']=h5py.ExternalLink(backing.name,'/x')
+        handle['two']=h5py.ExternalLink(backing.name,'/x')
+    assert entry.hdf_dependencies(header)['file_count']==2
+    with h5py.File(header,'r+') as handle:handle['alias']=h5py.SoftLink('/one')
+    with pytest.raises(ValueError,match='unsupported'):
+        entry.hdf_dependencies(header)

@@ -1,6 +1,8 @@
 defaults:
-  - adroit_pen_pcd_fragment
+  - adroit_relocate_pix_fragment
   - _self_
+obs: pcd
+video: false
 world:
   env_name: envs.adroit:swm/AdroitRelocateFragment-v0
   pre_wrappers:

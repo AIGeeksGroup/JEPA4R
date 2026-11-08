@@ -1,7 +1,7 @@
 defaults:
   - _self_
   - launcher: local
-  - data: pusht
+  - data: adroit_relocate
   - model: lewm
 
 output_model_name: lewm

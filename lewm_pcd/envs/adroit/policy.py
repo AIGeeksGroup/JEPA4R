@@ -18,8 +18,8 @@ import numpy as np
 
 
 class SavedStateExpert:
-    def __init__(self, policy, *, env_name='pen-v0', provenance=None):
-        dimensions = {'pen-v0': (45, 24), 'relocate-v0': (39, 30)}
+    def __init__(self, policy, *, env_name='relocate-v0', provenance=None):
+        dimensions = {'relocate-v0': (39, 30)}
         if env_name not in dimensions:
             raise ValueError(f'unsupported Adroit task: {env_name}')
         self.observation_dim, self.action_dim = dimensions[env_name]
@@ -44,7 +44,7 @@ class SavedStateExpert:
         self.provenance = dict(provenance or {})
 
     @classmethod
-    def load(cls, expert_path, expert_sha256, *, env_name='pen-v0'):
+    def load(cls, expert_path, expert_sha256, *, env_name='relocate-v0'):
         path = Path(expert_path).expanduser().resolve()
         expected = str(expert_sha256).lower()
         if len(expected) != 64 or any(char not in '0123456789abcdef' for char in expected):
@@ -80,7 +80,7 @@ class SavedStateExpert:
 class AdroitFeedbackPolicy:
     """World policy: current native obs -> MJRL mean -> plan noise -> clip."""
 
-    def __init__(self, expert_path, expert_sha256, env_name='pen-v0', seed=None):
+    def __init__(self, expert_path, expert_sha256, env_name='relocate-v0', seed=None):
         self.expert = SavedStateExpert.load(expert_path, expert_sha256, env_name=env_name)
         self.type, self.seed, self.env = 'adroit_feedback', seed, None
         self.rng = np.random.default_rng(seed)  # independent from the PCD wrapper RNG

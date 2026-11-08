@@ -1,21 +1,20 @@
-"""Gymnasium registration bridge for the independent Pen fragment extension."""
+"""Gymnasium registration bridge for the final Relocate fragment extension."""
 import gymnasium as gym
 import numpy as np
 from gymnasium.spaces import Box
-from .fragment import PenFragment, RelocateFragment
+from .fragment import NativeFragment, RelocateFragment
 
 
-class PenFragmentEnv(PenFragment, gym.Env):
+class NativeFragmentEnv(NativeFragment, gym.Env):
     metadata = {'render_modes': ['rgb_array'], 'render_fps': 100}
 
     def _make_native(self):
-        from mj_envs.envs.hand_manipulation_suite.pen_v0 import PenEnvV0
-        return PenEnvV0()
+        raise NotImplementedError('select the final RelocateFragmentEnv')
 
     def __init__(self, width=256, height=256, camera='vil_camera', render_mode='rgb_array', offsamples=None):
         # No native import during module import/registration.
         native = self._make_native()
-        PenFragment.__init__(self, native, width, height, camera)
+        NativeFragment.__init__(self, native, width, height, camera)
         self.sim, self.render_mode = native.sim, render_mode
         if native.action_space.shape != (self.action_dim,) or native.observation_space.shape != (self.observation_dim,):
             raise ValueError('native %s dimensions must be action%d/observation%d' % (self.task, self.action_dim, self.observation_dim))
@@ -42,7 +41,7 @@ class PenFragmentEnv(PenFragment, gym.Env):
             close()
 
 
-class RelocateFragmentEnv(RelocateFragment, PenFragmentEnv):
+class RelocateFragmentEnv(RelocateFragment, NativeFragmentEnv):
     def _make_native(self):
         from mj_envs.envs.hand_manipulation_suite.relocate_v0 import RelocateEnvV0
         return RelocateEnvV0()

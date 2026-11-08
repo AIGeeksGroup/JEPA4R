@@ -1,4 +1,0 @@
-# VIP ResNet-50 (official weights, pytorch.s3), 2048-d avg-pooled features (fc head not used). See ../../baselines.py
-_target_: baselines.load_resnet_baseline
-name: vip
-checkpoint: ${oc.env:STABLEWM_HOME}/checkpoints/cortexbench_baselines/vip_rn50.pt

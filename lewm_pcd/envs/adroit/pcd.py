@@ -5,8 +5,6 @@ Images are flipped once from OpenGL bottom-up rows. Camera coordinates use
 x right, y up, -z forward; cam_xmat/cam_xpos map these to world metres.
 Relocate target is rendered as an opaque site surface in the SAME RGB/depth/
 segmentation pass, restoring alpha in finally; occlusion may yield zero points.
-Pen uses joint segmentation/depth for surface ownership, ordinary RGB for colour,
-and includes only visible native target-body geoms without changing their alpha.
 Relocate opt-in uses that same pass and pools its visible target site with Object.
 Optional separate instance caps keep private physical/site labels distinct;
 labels remain sampling/audit metadata and are not a model input channel.
@@ -18,17 +16,16 @@ import numpy as np
 
 _spec = importlib.util.spec_from_file_location(
     '_adroit_same_checkout_pcd_fork',
-    Path(__file__).resolve().parents[2] / 'bench/cortexbench/pcd_fork.py')
+    Path(__file__).resolve().parents[2] / 'bench/cortexbench/surface_geometry.py')
 _PCD_FORK = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(_PCD_FORK)
 DEFAULT_CROP_BOX = ((-.6, -.6, -.05), (.6, .6, 1.1))
 TASK_SETTINGS = {
-    'pen': {'camera': 'vil_camera', 'object_body': 'Object', 'target_site': None, 'crop_box': DEFAULT_CROP_BOX},
     'relocate': {'camera': 'vil_camera', 'object_body': 'Object', 'target_site': 'target', 'crop_box': DEFAULT_CROP_BOX},
 }
 
 class AdroitPointClouds:
-    _sample = _PCD_FORK.MWPointClouds._sample
+    _sample = _PCD_FORK.SurfaceSampler._sample
 
     def __init__(self, sim, task, num_points=1200, size=224, camera='vil_camera',
                  voxel_size=.005, obj_fraction=.25, crop_box=DEFAULT_CROP_BOX,
@@ -81,10 +78,8 @@ class AdroitPointClouds:
 
     def __call__(self):
         self._check_render_context()
-        if self.task == 'pen':
-            return self._pen_point_cloud()
         if self.relocate_target_as_object:
-            return self._pen_point_cloud(site_as_object=True)
+            return self._visible_point_cloud(site_as_object=True)
         m = self.sim.model
         old_alpha = None
         try:
@@ -113,7 +108,7 @@ class AdroitPointClouds:
         return self._sample(xyz.reshape(-1,3)[valid], rgb.reshape(-1,3)[valid],
                             (self.obj[safe] & geom)[valid])
 
-    def _pen_point_cloud(self, site_as_object=False):
+    def _visible_point_cloud(self, site_as_object=False):
         if not self.foreground_only:
             raise ValueError('Pen target sampling requires foreground_only=True')
         m = self.sim.model

@@ -38,7 +38,7 @@ def load_sources(source, expected_sha256):
 def convert_demo(demo, env, capture, atol=1e-6, rtol=1e-5):
     actions, states = np.asarray(demo['actions']), np.asarray(demo['state_obs'])
     assert actions.ndim == states.ndim == 2 and len(actions) == len(states) > 0
-    assert actions.shape[1] in (24,30) and states.shape[1] == (45 if actions.shape[1] == 24 else 39)
+    assert actions.shape[1] == 30 and states.shape[1] == 39
     assert np.isfinite(actions).all() and np.isfinite(states).all()
     env.set_env_state(deepcopy(demo['init_state_dict']))
     frames = []
@@ -67,7 +67,7 @@ def convert_demo(demo, env, capture, atol=1e-6, rtol=1e-5):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('task', choices=['pen-v0','relocate-v0'])
+    parser.add_argument('task', choices=['relocate-v0'])
     parser.add_argument('--input', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--source-sha256', required=True)
@@ -78,10 +78,7 @@ def main():
         raise FileExistsError('use a fresh output shard')
     count, read_demo, digest = load_sources(args.input,args.source_sha256)
     from run_adroit_bc3d import build_point_clouds
-    if args.task == 'pen-v0':
-        from mj_envs.envs.hand_manipulation_suite.pen_v0 import PenEnvV0 as Native
-    else:
-        from mj_envs.envs.hand_manipulation_suite.relocate_v0 import RelocateEnvV0 as Native
+    from mj_envs.envs.hand_manipulation_suite.relocate_v0 import RelocateEnvV0 as Native
     assert args.start_demo >= 0 and args.max_demos > 0 and args.start_demo + args.max_demos <= count
     args.output.parent.mkdir(parents=True, exist_ok=True)
     state = dict(stage='converting', started_at=datetime.now(timezone.utc).isoformat(),

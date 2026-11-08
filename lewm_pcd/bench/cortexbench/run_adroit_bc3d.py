@@ -15,8 +15,7 @@ HERE = Path(__file__).resolve().parent
 def task_from_env_id(env_id):
     # Match a whole suffix component, including the registered collection IDs.
     suffix = env_id.rsplit(':', 1)[-1].rsplit('/', 1)[-1]
-    tasks = {'pen-v0': 'pen-v0', 'relocate-v0': 'relocate-v0',
-             'AdroitPen-v0': 'pen-v0', 'AdroitRelocate-v0': 'relocate-v0'}
+    tasks = {'relocate-v0': 'relocate-v0', 'AdroitRelocate-v0': 'relocate-v0'}
     if suffix not in tasks:
         raise ValueError(f'unsupported Adroit environment ID: {env_id}')
     return tasks[suffix]

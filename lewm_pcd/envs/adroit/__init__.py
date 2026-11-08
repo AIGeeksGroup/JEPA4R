@@ -2,17 +2,14 @@
 from importlib import import_module
 from gymnasium.envs.registration import register, registry
 
-for task, env_id in [('pen-v0', 'swm/AdroitPen-v0'), ('relocate-v0', 'swm/AdroitRelocate-v0')]:
-    if env_id not in registry:
-        register(id=env_id, entry_point='envs.adroit.env:AdroitEnv', kwargs={'env_name': task})
-if 'swm/AdroitPenFragment-v0' not in registry:
-    register(id='swm/AdroitPenFragment-v0', entry_point='envs.adroit.fragment_env:PenFragmentEnv')
+if 'swm/AdroitRelocate-v0' not in registry:
+    register(id='swm/AdroitRelocate-v0', entry_point='envs.adroit.env:AdroitEnv', kwargs={'env_name': 'relocate-v0'})
 if 'swm/AdroitRelocateFragment-v0' not in registry:
     register(id='swm/AdroitRelocateFragment-v0', entry_point='envs.adroit.fragment_env:RelocateFragmentEnv')
 
 _EXPORTS = {'AdroitEnv': 'env', 'AdroitFeedbackPolicy': 'policy',
             'SavedStateExpert': 'policy', 'AdroitPointCloudWrapper': 'pcd',
-            'PenFragmentEnv': 'fragment_env', 'RelocateFragmentEnv': 'fragment_env'}
+            'RelocateFragmentEnv': 'fragment_env'}
 __all__ = list(_EXPORTS)
 
 def __getattr__(name):

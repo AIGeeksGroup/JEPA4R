@@ -1,0 +1,9 @@
+# Separate MPC overlay on the WM numerical stack; do not use the BC timm overlay.
+numpy==1.26.4
+timm==1.0.29
+gym==0.23.1
+Cython==0.29.37
+fasteners==0.20
+transforms3d==0.4.2
+termcolor==2.4.0
+# Install the pinned mujoco-py, mjrl and mj_envs sources with --no-deps.

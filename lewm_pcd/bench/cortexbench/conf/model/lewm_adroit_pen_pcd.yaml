@@ -1,6 +1,0 @@
-_target_: lewm_cortex.load_lewm_pcd
-checkpoint_dir: /root/autodl-tmp/workspace/users/lewm/adroit_full/pen_official_10000_150_20260927/training_full_v1/home/checkpoints/adroit_pen_full_v1
-epoch: 10
-center: [0.075, -0.02, 0.225]
-scale: 4.0
-use_rgb: true

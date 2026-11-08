@@ -50,7 +50,7 @@ class NativeBridge:
         self.render_enabled=render
         self.renderers={};self.render_models={};self.render_data={}
         self.sampler_module=load_file('_rh56_original_adroit_sampler',BASELINE/'envs/adroit/pcd.py')
-        self.geometry=load_file('_rh56_original_depth_projection',BASELINE/'bench/cortexbench/adroit/pcd.py')
+        self.geometry=load_file('_rh56_original_depth_projection',BASELINE/'bench/cortexbench/surface_geometry.py')
         self.sampler=self.sampler_module.AdroitPointClouds.__new__(self.sampler_module.AdroitPointClouds)
         s=self.sampler
         s.task='relocate';s.relocate_target_as_object=True;s.separate_object_instances=True

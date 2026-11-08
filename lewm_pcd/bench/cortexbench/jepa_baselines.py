@@ -1,11 +1,11 @@
 """CortexBench loaders for the JEPA-family baselines, same interface as lewm_cortex.load_lewm: each returns
 (model, embedding_dim, transforms, metadata); model takes [B, 3, H, W] and returns [B, D], frozen, in eval mode.
 
-* load_pldm: a PLDM checkpoint of the framework (config.json + weights_epoch_N.pt; scripts/run_mw_baselines.sh trains
-  one per MetaWorld task on the same data as LeWM). Taken where PLDM's own encode() takes it: the ViT encoder's CLS
+* load_pldm: a PLDM checkpoint of the framework (config.json + weights_epoch_N.pt; the final Relocate adapter trains
+  it on the same mixed RGB data as LeWM). Taken where PLDM's own encode() takes it: the ViT encoder's CLS
   (interpolate_pos_encoding=True) through the projector, 192-d, the space its predictor works in, i.e. the same place
   LeWM is read in CortexBench. Preprocessing as LeWM's: bicubic resize to 224 + ImageNet normalisation.
-* load_lejepa: a LeJEPA trained by scripts/baselines/train_lejepa_mw.py (same data as LeWM): the backbone CLS through the
+* load_lejepa: a LeJEPA trained by scripts/baselines/train_lejepa_relocate.py (same data as LeWM): the backbone CLS through the
   512-d head, the feature the official recipe probes linearly (not the projector). Preprocessing as LeWM's.
 * load_vjepa21: Meta's V-JEPA 2.1 ViT-B (general video JEPA, frozen as released).
 * load_visreg: VISReg ViT-B/16 (arXiv 2606.02572; ImageNet-1K, 400 epochs; the authors' visreg-vit-b-inet1k.pth, shared

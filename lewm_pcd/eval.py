@@ -47,7 +47,7 @@ def get_dataset(cfg, dataset_name):
     )
     return dataset
 
-@hydra.main(version_base=None, config_path="./config/eval", config_name="pusht")
+@hydra.main(version_base=None, config_path="./config/eval", config_name="adroit_relocate_pcd_fragment")
 def run(cfg: DictConfig):
     """Run evaluation of dinowm vs random policy."""
     assert (
@@ -73,8 +73,7 @@ def run(cfg: DictConfig):
     # Only the explicit Adroit fragment adapters require held-out normalization.
     # Preserve this branch's existing behavior for every other environment.
     stats_dataset = (get_dataset(cfg, cfg.dataset.stats)
-                     if cfg.world.env_name in ('envs.adroit:swm/AdroitPenFragment-v0',
-                                               'envs.adroit:swm/AdroitRelocateFragment-v0')
+                     if cfg.world.env_name == 'envs.adroit:swm/AdroitRelocateFragment-v0'
                      else dataset)
     col_name = "episode_idx" if "episode_idx" in dataset.column_names else "ep_idx"
     ep_indices, _ = np.unique(dataset.get_col_data(col_name), return_index=True)
@@ -142,7 +141,7 @@ def run(cfg: DictConfig):
     episode_len = get_episodes_length(dataset, ep_indices)
     max_start_idx = episode_len - cfg.eval.goal_offset_steps - 1
     max_start_idx_dict = {ep_id: max_start_idx[i] for i, ep_id in enumerate(ep_indices)}
-    # Map each dataset row’s episode_idx to its max_start_idx
+    # Map each dataset row閳ユ獨 episode_idx to its max_start_idx
     col_name = "episode_idx" if "episode_idx" in dataset.column_names else "ep_idx"
     max_start_per_row = np.array(
         [max_start_idx_dict[ep_id] for ep_id in dataset.get_col_data(col_name)]

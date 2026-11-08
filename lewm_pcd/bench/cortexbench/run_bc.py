@@ -1,19 +1,8 @@
-"""One CortexBench MuJoCo imitation run: eai-vc's cortexbench/mujoco_vc/visual_imitation/hydra_launcher.py + train_loop.py
-(commit 76fe35e, third_party/eai-vc), unchanged on disk, with three runtime patches that do not change the reported numbers:
+"""Final Relocate adapter around the original EAI-VC BC loop.
 
-1. Embedding configs: an embedding named NAME is read from conf/model/NAME.yaml next to this file when that file exists
-   (the LeWM encoders and the extra baselines), otherwise from vc_models' own conf/model (VC-1). The official
-   load_pretrained_model does the loading either way.
-2. Logging: `setup_wandb` returns a logger that appends every `wandb_run.log(...)` record to metrics.jsonl in the
-   hydra run dir (wandb is disabled here). The records are the ones the official loop logs, e.g. eval/highest_success.
-3. The "train/*" rollouts: after every evaluation the official loop rolls the policy out a second time from the
-   training demos' initial states (Adroit, DMC) or from seed 54321 (MetaWorld) and logs them as train/* only. They are
-   replaced by the evaluation paths just computed. The evaluation rollouts are untouched: mjrl's do_rollout reseeds the
-   env and numpy with base_seed + episode before every episode, and nothing in BC training draws from numpy or from the
-   policy rollouts, so the evaluation episodes, the trained policy and eval/* are the same; only the logging-only
-   train/* values change (they repeat eval/*). This halves the rollout time.
-
-    source env.sh && $PY run_bc.py --config-name Metaworld_BC_config env=... embedding=... seed=100 data_dir=... hydra.run.dir=...
+Local model configurations select the paper encoders. Metrics are logged as
+JSONL; the existing train/* bookkeeping repeats evaluator paths. The native
+eval/* rollouts and optimization use the recorded CortexBench protocol.
 """
 
 import json

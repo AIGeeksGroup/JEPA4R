@@ -1,8 +1,8 @@
-"""Gymnasium bridge to pinned mj_envs Pen/Relocate; no normalized-action rescaling.
+"""Gymnasium bridge to pinned mj_envs Relocate; no normalized-action rescaling.
 
 Native state dictionaries are flattened into numeric info columns, including
 every initial value, for the existing stable-worldmodel World.collect writer.
-The collection-plan formula is the MetaWorld mainline formula. Adroit keeps
+The collection-plan formula retains the final feedback mixture. Adroit keeps
 the native reset distribution, horizon and success definition.
 """
 
@@ -17,7 +17,7 @@ from gymnasium.spaces import Box
 
 SAMPLE_TYPES = ('backbone', 'branch', 'random')
 # action, native observation, qpos/qvel, native horizon
-TASKS = {'pen-v0': (24, 45, 30, 100), 'relocate-v0': (30, 39, 36, 200)}
+TASKS = {'relocate-v0': (30, 39, 36, 200)}
 
 
 def legacy_state_sha256(state):
@@ -29,7 +29,7 @@ def legacy_state_sha256(state):
 class AdroitEnv(gym.Env):
     metadata = {'render_modes': ['rgb_array'], 'render_fps': 100}
 
-    def __init__(self, env_name='pen-v0', width=224, height=224, episode_len=None,
+    def __init__(self, env_name='relocate-v0', width=224, height=224, episode_len=None,
                  mix=(.5, .3, .2), force_type=None, noise_max=.2,
                  branch_tail_prob=.5, burst_len=(10, 30), render_mode='rgb_array', camera='vil_camera'):
         if env_name not in TASKS:
@@ -49,7 +49,7 @@ class AdroitEnv(gym.Env):
         if force_type is not None and force_type not in (0, 1, 2):
             raise ValueError('force_type must be 0, 1, 2 or None')
         if self.episode_len <= 55 and (force_type == 1 or (force_type is None and self.mix[1] > 0)):
-            raise ValueError('branch sampling requires horizon >55 for the unchanged MetaWorld formula')
+            raise ValueError('branch sampling requires horizon >55 for the unchanged branch formula')
         self.force_type, self.noise_max = force_type, float(noise_max)
         self.branch_tail_prob, self.burst_len = float(branch_tail_prob), tuple(int(x) for x in burst_len)
         if not np.isfinite(self.noise_max) or self.noise_max < 0 or not 0 <= self.branch_tail_prob <= 1:
@@ -69,9 +69,6 @@ class AdroitEnv(gym.Env):
     def _make_native_env(env_name):
         # Direct native classes avoid importing a legacy Gym TimeLimit into the
         # Gymnasium wrapper stack. This adapter supplies the native horizon.
-        if env_name == 'pen-v0':
-            from mj_envs.envs.hand_manipulation_suite.pen_v0 import PenEnvV0
-            return PenEnvV0()
         from mj_envs.envs.hand_manipulation_suite.relocate_v0 import RelocateEnvV0
         return RelocateEnvV0()
 
@@ -93,7 +90,7 @@ class AdroitEnv(gym.Env):
 
     def _checked_state(self, state):
         sizes = {'qpos': self.qpos_dim, 'qvel': self.qpos_dim}
-        sizes.update({'desired_orien': 4} if self.env_name == 'pen-v0' else {'obj_pos': 3, 'target_pos': 3})
+        sizes.update({'obj_pos': 3, 'target_pos': 3})
         for key, size in sizes.items():
             if key not in state:
                 raise ValueError(f'native state is missing {key}')
@@ -114,8 +111,7 @@ class AdroitEnv(gym.Env):
         noise = float(rng.uniform(0., self.noise_max)) if kind < 2 else 0.
         branch_t, branch_len = -1, 0
         if kind == 1:
-            # Identical exclusive upper bound to MetaWorld. Native horizons
-            # imply Pen starts in [15,60), Relocate in [15,160).
+            # Retain the exclusive Relocate branch start range [15,160).
             branch_t = int(rng.integers(15, self.episode_len - 40))
             branch_len = self.episode_len if rng.uniform() < self.branch_tail_prob else int(rng.integers(self.burst_len[0], self.burst_len[1] + 1))
         return kind, noise, branch_t, branch_len

@@ -1,7 +1,0 @@
-# Completed 2026-10-06 Pen visible-target PCD representation.
-_target_: lewm_adroit_20261006.load_lewm_pcd
-checkpoint_dir: ${oc.env:PEN_20261006_PCD_CHECKPOINT}
-epoch: 10
-center: [0.075, -0.02, 0.225]
-scale: 4.0
-use_rgb: true

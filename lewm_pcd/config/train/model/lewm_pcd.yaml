@@ -1,13 +1,12 @@
 defaults:
-  - encoder: ms2
+  - encoder: dexart
   - _self_
 
 _target_: jepa.JEPA
 
 obs_key: pcd
 
-# encoder comes from the `encoder` config group (config/train/model/encoder/*.yaml):
-#   python train.py ... model=lewm_pcd model/encoder=ms2|dexart|ppt
+# Final Relocate uses the DexArt PointNet encoder.
 
 predictor:
   _target_: module.ARPredictor
