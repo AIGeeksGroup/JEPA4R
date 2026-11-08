@@ -80,7 +80,7 @@ video{display:block;width:100%;height:auto;border:0;border-radius:4px;background
   </div>
   <div class="gallery-intro"><h2>Simulation Videos</h2><p>Left: the simulator's rendering. Right: the 1,200-point cloud from the same single depth camera.</p></div>
 </header>
-<nav aria-label="Video environments"><a href="#cube">OGBench Cube</a><a href="#rm75_cube">OGBench Cube (RM75)</a><a href="#scene">OGBench Scene</a><a href="#puzzle">OGBench Puzzle</a><a href="#metaworld">MetaWorld</a><a href="#adroit">Adroit</a></nav>
+<nav aria-label="Video environments"><a href="#cube">OGBench Cube</a><a href="#rm75_cube">OGBench Cube (RM75)</a><a href="#scene">OGBench Scene</a><a href="#puzzle">OGBench Puzzle</a><a href="#metaworld">MetaWorld</a><a href="#adroit">Adroit</a><a href="#adroit_rh56">Adroit (RH56)</a></nav>
 <main>
 <section id="cube" data-video-carousel>
   <h2>OGBench Cube</h2>
@@ -182,7 +182,7 @@ video{display:block;width:100%;height:auto;border:0;border-radius:4px;background
 <section id="adroit" data-video-carousel>
   <h2>Adroit</h2>
   <p class="robot">Anthropomorphic Hand Manipulation</p>
-  <p class="how">Successful JEPA4D + BC episodes from the saved reward-selected policy, shown as synchronized RGB and point-cloud views at 4× slow motion.</p>
+  <p class="how">Successful JEPA4R + BC episodes from the saved reward-selected policy, shown as synchronized RGB and point-cloud views at 4× slow motion.</p>
   <div class="task-tabs" role="tablist" aria-label="Adroit tasks">
     <button type="button" id="adroit-tab-1" role="tab" aria-controls="adroit-panel-1" aria-selected="true" tabindex="0">Pen</button>
     <button type="button" id="adroit-tab-2" role="tab" aria-controls="adroit-panel-2" aria-selected="false" tabindex="-1">Relocate</button>
@@ -200,6 +200,22 @@ video{display:block;width:100%;height:auto;border:0;border-radius:4px;background
     </div></div>
   </div>
   <p class="task-cycle-note">Tasks cycle automatically after the longest video finishes. Select a task to switch manually.</p>
+</section>
+<section id="adroit_rh56" data-video-carousel>
+  <h2>Adroit (RH56): Cross-Embodiment</h2>
+  <p class="robot">RealMan RM75 arm + Inspire RH56 dexterous hand</p>
+  <p class="how">Successful JEPA4R + BC episodes from the final policy (epoch 99, training seeds 100/200/300), each clip ending at the first native success step. Synchronized RGB and point-cloud views at 4× slow motion. Selected successes only, not an overall success rate.</p>
+  <div class="task-tabs" role="tablist" aria-label="Adroit (RH56) tasks">
+    <button type="button" id="adroit_rh56-tab-1" role="tab" aria-controls="adroit_rh56-panel-1" aria-selected="true" tabindex="0">Relocate</button>
+  </div>
+  <div class="task-carousel">
+    <div class="task-panel" id="adroit_rh56-panel-1" role="tabpanel" aria-labelledby="adroit_rh56-tab-1"><div class="grid">
+      <figure><video src="videos/adroit_rh56/seed100_eval002_rgb_pcd_first_success_slow4x.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure>
+      <figure><video src="videos/adroit_rh56/seed200_eval001_rgb_pcd_first_success_slow4x.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure>
+      <figure><video src="videos/adroit_rh56/seed300_eval009_rgb_pcd_first_success_slow4x.mp4" data-task-video muted playsinline controls preload="metadata"></video></figure>
+    </div></div>
+  </div>
+  <p class="task-cycle-note">Clips replay automatically after the longest video finishes.</p>
 </section>
 </main>
 <script>
