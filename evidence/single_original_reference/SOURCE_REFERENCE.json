@@ -1,9 +1,0 @@
-{
-  "path": "/root/autodl-tmp/conda/envs/jepa4r-smoke/lib/python3.10/site-packages/stable_pretraining/data/utils.py",
-  "sha256": "739da42fab8ce07e3fcedcf869548c32f89877077874ae0c8461764d4d65d526",
-  "bytes": 10720,
-  "source_before_after_exact": true,
-  "actual_exit_code": 0,
-  "archive_sha256": "192509d920885957d537689d92910051a67cc8681310874b18a659ccb20da4f7",
-  "reference_only_not_imported_by_runtime": true
-}

@@ -40,7 +40,8 @@ def load_cached_features(cache_dir,split,manifest_sha256,checkpoint_sha256,sourc
     root=Path(cache_dir).resolve()
     manifest=read_json(root/'cache_manifest.json',manifest_sha256)
     assert manifest['actual_exit_code']==0 and manifest['checkpoint_sha256']==checkpoint_sha256
-    if (encoder_family,feature_dim) not in (('lewm',192),('pldm',512),('lejepa',512)):
+    if (encoder_family,feature_dim) not in (('lewm',192),('pldm',512),('lejepa',512),
+                                          ('visreg',768),('vjepa',1024)):
         raise ValueError('Unsupported encoder family/output width')
     if encoder_family!='lewm':
         protocol=manifest['protocol']

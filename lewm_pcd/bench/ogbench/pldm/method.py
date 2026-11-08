@@ -1,19 +1,10 @@
-"""RGB extension of the pinned author wall PLDM; no training on import.
-
-Domain seams: RGB3/full-field65 instead of navigation2/65; normalized 5D
-robot actions; 16 consecutive observations and 15 actions from the 600-row
-view. The shared bridge owns uint8/255, Resize65 and train-only action stats.
-IDM registration/optimization/saving corrects an upstream ownership omission.
-"""
+"""Current RGB Impala512 PLDM model, objective and optimizer factory."""
 import importlib
 from pathlib import Path
 import sys
 
 AUTHOR_COMMIT = "1bd7e564ecd961205bc18b23067b19e9ca24ac90"
 OBSERVATIONS, ACTIONS, ACTION_DIM, IMAGE_SIZE, LATENT_DIM = 16, 15, 5, 65, 512
-COUNTS = {"windows_per_episode": 585, "train_windows": 5850000,
-    "validation_windows": 585000, "train_batches": 45703,
-    "validation_batches": 4571, "validation_tail": 40, "total_updates": 457030}
 
 
 def check_batch(pixels, actions):

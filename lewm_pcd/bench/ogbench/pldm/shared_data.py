@@ -1,15 +1,21 @@
-"""Profile counts around the original RGB16/A15 PLDM data path."""
+"""Current manifest counts around the RGB16/A15 PLDM data path."""
 import operator
 from pathlib import Path
 
-from ..contracts import get_profile, validate_manifest
-from ..reader import make_reader
 
 
-def contract(profile_name):
-    profile = get_profile(profile_name)
-    if profile['source'] != 'self_collected':
-        raise ValueError('PLDM requires a sealed self-collected Cube profile')
+def data_profile(cube_name, data_binding=None):
+    if data_binding is None:
+        raise ValueError('current training requires an explicit data manifest')
+    from ..fresh_data import profile
+    value = profile(data_binding)
+    if cube_name != 'cube' + str(value['cube_count']):
+        raise ValueError('Cube selector differs from its actual data manifest')
+    return value
+
+
+def contract(profile_name, data_binding=None):
+    profile = data_profile(profile_name, data_binding)
     frames = 16
     per = profile['view_rows'] - frames + 1
     train = profile['train_episodes'] * per
@@ -20,22 +26,11 @@ def contract(profile_name):
                 total_updates=10 * (train // 128))
 
 
-def location(index, profile_name, episodes):
-    per = contract(profile_name)['per_episode']
-    index = operator.index(index)
-    size = episodes * per
-    if index < 0:
-        index += size
-    if not 0 <= index < size:
-        raise IndexError(index)
-    return divmod(index, per)
-
-
-def action_statistics(train_reader, profile_name):
+def action_statistics(train_reader, profile_name, data_binding=None):
     """Exactly one train-only normalization; no image statistics or clipping."""
     import numpy as np
     import torch
-    profile = get_profile(profile_name)
+    profile = data_profile(profile_name, data_binding)
     values = torch.from_numpy(np.asarray(train_reader.get_col_data('action')))
     expected = (profile['train_episodes'] * profile['view_rows'], 5)
     if tuple(values.shape) != expected or not bool(torch.isfinite(values).all()):
@@ -96,22 +91,23 @@ class VisualDataset:
         self.reader.close()
 
 
-def loaders(profile_name, data_root, method_module=None, workers=20, prefetch=2):
+def loaders(profile_name, data_root, method_module=None, workers=20, prefetch=2, data_binding=None):
     import torch
-    profile = get_profile(profile_name)
-    validate_manifest(data_root, profile_name)
-    root = Path(data_root) / profile['view_directory']
-    train = VisualDataset(make_reader(root / profile['train_view'], profile_name, 'train', num_steps=16))
-    stats = action_statistics(train.reader, profile_name)
+    data_profile(profile_name, data_binding)
+    from ..fresh_data import make_reader
+    open_reader = lambda split: make_reader(data_binding, split + '_rgb', num_steps=16,
+                                            keys_to_load=['pixels', 'action'], keys_to_cache=['action'])
+    train = VisualDataset(open_reader('train'))
+    stats = action_statistics(train.reader, profile_name, data_binding)
     train.action_stats = stats
-    val = VisualDataset(make_reader(root / profile['validation_view'], profile_name, 'validation', num_steps=16), stats)
+    val = VisualDataset(open_reader('validation'), stats)
     kwargs = dict(batch_size=128, num_workers=workers, pin_memory=True, persistent_workers=False)
     if workers > 0:
         kwargs['prefetch_factor'] = prefetch
     generator = torch.Generator().manual_seed(0)
     a = torch.utils.data.DataLoader(train, shuffle=True, drop_last=True, generator=generator, **kwargs)
     b = torch.utils.data.DataLoader(val, shuffle=False, drop_last=False, **kwargs)
-    c = contract(profile_name)
+    c = contract(profile_name, data_binding)
     if (len(train), len(val), len(a), len(b)) != (c['train_samples'], c['validation_samples'],
                                                 c['train_batches'], c['validation_batches']):
         raise ValueError('actual complete epoch counts differ')

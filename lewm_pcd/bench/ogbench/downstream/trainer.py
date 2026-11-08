@@ -15,8 +15,8 @@ ROOT = Path(__file__).resolve().parent/'vendor'
 HERE = Path(__file__).resolve().parent
 SOURCE = ROOT
 CORE = ROOT
-IMPL = ROOT/'source/ogbench/impls'
-HELPER = ROOT/'run_formal.py'
+IMPL = Path(__file__).resolve().parents[3]/'third_party/ogbench/impls'
+HELPER = ROOT/'io.py'
 os.environ.setdefault('XLA_PYTHON_CLIENT_PREALLOCATE', 'false')
 os.environ.setdefault('JAX_THREEFRY_PARTITIONABLE', 'false')
 sys.path[:0] = [str(HERE), str(IMPL), str(ROOT), str(CORE)]
@@ -40,12 +40,11 @@ def load_module(name, path):
     return module
 
 
-utility = load_module('single_preserved_io_helpers', HELPER)
-core = load_module('single_preserved_train_helpers', CORE/'train.py')
-model = load_module('single_preserved_gciql', CORE/'gciql.py')
-assert utility.sha(CORE/'train.py') == '73ba082f730e9000a238c789726c26b075590807968a0016bc75e8e9111231d0'
-assert utility.sha(CORE/'gciql.py') == '8611cd476d8849ad014ca43304073c3e88fc3d3aa5dab369a343ae425bba7ba7'
-assert utility.sha(HELPER) == '306797e1fa07dee8616adf9cc404af48380a4143d5fb36a6b04b425aae4c6928'
+utility = load_module('cube_policy_io', HELPER)
+core = load_module('cube_policy_core', CORE/'core.py')
+model = load_module('cube_policy_gciql', CORE/'gciql.py')
+from ._source import verify_sources
+verify_sources()
 
 
 class InputResources:
@@ -124,7 +123,7 @@ def prepare(config, shared_datasets=None):
             sampler=core.sampler_binding(samplers), frozen_full_state=resources.binding_hash,
             frozen_full_state_semantics='readonly data/cache binding; no runtime WM',
             code={str(p):utility.sha(p) for p in [Path(__file__), HERE/'sampler.py', ROOT/'cube_inputs.py',
-                CORE/'train.py', CORE/'gciql.py', HELPER, IMPL/'utils/datasets.py',
+                CORE/'core.py', CORE/'gciql.py', HELPER, IMPL/'utils/datasets.py',
                 IMPL/'utils/flax_utils.py', IMPL/'utils/networks.py', IMPL/'utils/encoders.py']},
             versions={name:importlib.metadata.version(name) for name in ('jax','jaxlib','flax','optax','numpy','torch')},
             runtime=dict(JAX_backend=jax.default_backend(), JAX_threefry_partitionable=jax.config.jax_threefry_partitionable,

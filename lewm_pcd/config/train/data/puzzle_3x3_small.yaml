@@ -1,8 +1,0 @@
-# puzzle_3x3.yaml on the small run's 200 episodes (seeds 1000000..1000199: the full dataset's first 200 seeds; the random
-# actions are not reproducible from the seeds, so the rows differ)
-defaults:
-  - puzzle_3x3
-  - _self_
-
-dataset:
-  name: ogbench/puzzle_3x3_noisy.h5

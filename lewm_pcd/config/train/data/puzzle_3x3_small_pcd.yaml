@@ -1,7 +1,0 @@
-# puzzle_3x3_pcd.yaml on the small run's 200 episodes (row for row with puzzle_3x3_small.yaml)
-defaults:
-  - puzzle_3x3_pcd
-  - _self_
-
-dataset:
-  name: ogbench/puzzle_3x3_noisy_pcd.h5

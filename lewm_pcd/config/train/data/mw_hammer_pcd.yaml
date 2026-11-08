@@ -1,8 +1,0 @@
-# mw_binpick_pcd.yaml (point cloud, the same MetaWorld affine) on the MetaWorld hammer three-part dataset (same rollouts
-# as mw_hammer.yaml, row for row)
-defaults:
-  - mw_binpick_pcd
-  - _self_
-
-dataset:
-  name: metaworld/mw_hammer_pcd.h5

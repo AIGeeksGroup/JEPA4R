@@ -1,6 +1,0 @@
-# LeJEPA (HF ViT-tiny/14 + 512-d head, LeWM's backbone) trained on the OGBench scene world-model data that LeWM uses
-# (config/train/data/scene.yaml's dataset, 4 x 2500 episodes; scripts/baselines/train_lejepa_mw.py via
-# scripts/run_ogb_baselines.sh, 10 epochs, epoch 10). See ../../jepa_baselines.py
-_target_: jepa_baselines.load_lejepa
-checkpoint_dir: ${oc.env:STABLEWM_HOME}/checkpoints/lejepa_scene
-epoch: 10

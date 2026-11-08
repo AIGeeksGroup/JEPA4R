@@ -1,9 +1,0 @@
-# dmc.yaml (pixels / action / observation, frameskip 5) on the OGBench puzzle-4x4 dataset collected with the official
-# noisy recipe as puzzle_3x3.yaml (envs/ogb_puzzle_env.py env_type '4x4', scripts/data/run_puzzle_collection.sh:
-# front_pixels 224x224, opaque arm), 1000 episodes (seeds 1000000..; puzzle-4x4-noisy-v0's size)
-defaults:
-  - dmc
-  - _self_
-
-dataset:
-  name: ogbench/puzzle_4x4_noisy1000.h5

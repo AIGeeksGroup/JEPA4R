@@ -1,8 +1,0 @@
-# mw_drawer_pcd.yaml (3D, the same affine) on the RM75-B + EG2-4C2 drawer-open dataset (same rollouts as
-# mw_drawer_rm75.yaml, row for row)
-defaults:
-  - mw_drawer_pcd
-  - _self_
-
-dataset:
-  name: metaworld/mw_drawer_rm75_pcd.h5

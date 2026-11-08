@@ -1,4 +1,4 @@
-"""Isolated method switch; native SPT training, logging and checkpoint paths reused."""
+"""Current Cube PLDM training/strict acceptance, mandatory current manifest."""
 import argparse
 from contextlib import redirect_stderr, redirect_stdout
 from datetime import datetime, timezone
@@ -10,26 +10,35 @@ import os
 from pathlib import Path
 import sys
 import traceback
-from .shared_data import contract, loaders
-from ..contracts import get_profile, validate_manifest
-from ..training import build_environment
+from .shared_data import contract, data_profile, loaders
+from ..training_runtime import build_environment, code_root
 
 SOURCE_FREEZE = 'source_manifest.json'
 
 
 def read(p):return json.loads(Path(p).read_text(encoding='utf8'))
+
+
 def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
+
+
 def write(p,value):
     p=Path(p);p.parent.mkdir(parents=True,exist_ok=True);tmp=p.with_suffix(p.suffix+'.tmp');tmp.write_text(json.dumps(value,indent=2)+'\n');tmp.replace(p)
+
+
 def now():return datetime.now(timezone.utc).isoformat()
 
 
-def method_module(method):return importlib.import_module('bench.ogbench.pldm.method')
+def method_module(method):return importlib.import_module('.method', __package__)
+
+
+def counts(args):return contract(args.profile,getattr(args,'data_binding',None))
 
 
 def binding(args,stats=None):
+    profile=data_profile(args.profile,getattr(args,'data_binding',None))
     return dict(method=args.method,method_sha256=sha(args.root/'method.py'),
-        profile=get_profile(args.profile),manifest_sha256=get_profile(args.profile)['manifest_sha256'],contract=contract(args.profile),batch_size=128,
+        profile=profile,manifest_sha256=profile['manifest_sha256'],contract=counts(args),batch_size=128,
         precision='bf16-mixed',epochs=10,seed=0,train_workers=args.workers,validation_workers=args.workers,
         prefetch_factor=args.prefetch if args.workers else None,pin_memory=True,persistent_workers=False,gradient_clip_val=None,
         action_statistics=stats,source_freeze_sha256=sha(args.root/SOURCE_FREEZE),
@@ -37,11 +46,11 @@ def binding(args,stats=None):
 
 
 def factory_config(args):
-    return dict(_target_='bench.ogbench.pldm.method.build_model',
+    return dict(_target_=__package__+'.method.build_model',
                 official_source=str(args.root/'vendor/source'),pretrained=False)
 
 
-def native_module(method,module,model,profile_name):
+def native_module(method,module,model,profile_name,data_binding=None):
     """Only optimizer construction is specialized; SPT training_step stays native."""
     import stable_pretraining as spt
     class MethodModule(spt.Module):
@@ -49,7 +58,7 @@ def native_module(method,module,model,profile_name):
             if method=='pldm':
                 opt=module.build_optimizer(self.model)
                 self.native_author_schedule=module.build_scheduler(opt,epochs=10,
-                    batch_steps=contract(profile_name)['train_batches'],batch_size=128)
+                    batch_steps=contract(profile_name,data_binding)['train_batches'],batch_size=128)
                 return opt
             opt,scheduler=module.make_optimizer_and_scheduler(self.model.parameters())
             return [opt],[dict(scheduler=scheduler,interval='step')]
@@ -81,13 +90,14 @@ def run(args):
     from omegaconf import OmegaConf
     if spt.__version__!='0.1.8':raise ValueError('existing SPT0.1.8 runtime required; do not upgrade live env')
     pl.seed_everything(0,workers=True)
-    module=method_module(args.method);train,val,stats=loaders(args.profile,args.data_root,module,args.workers,args.prefetch)
-    code=args.root.parents[2]
+    module=method_module(args.method);train,val,stats=loaders(args.profile,args.data_root,module,args.workers,args.prefetch,
+        **({'data_binding':args.data_binding} if getattr(args,'data_binding',None) is not None else {}))
+    code=code_root()
     spec=importlib.util.spec_from_file_location('baseline_original_exports',code/'utils.py')
     exports=importlib.util.module_from_spec(spec);spec.loader.exec_module(exports)
     expected=binding(args,stats);cfg=factory_config(args)
     model=module.build_model(cfg['official_source'],pretrained=False)
-    world=native_module(args.method,module,model,args.profile)
+    world=native_module(args.method,module,model,args.profile,getattr(args,'data_binding',None))
     label=args.profile+'_'+args.method+'_'+args.phase+'_seed0_'+args.run_tag
     export_root=args.output/'checkpoints'/label
     export_root.mkdir(parents=True,exist_ok=False)
@@ -114,13 +124,13 @@ def run(args):
         def on_save_checkpoint(self,trainer,pl_module,checkpoint):
             checkpoint['baseline_binding']=expected
             checkpoint['native_method_schedule']=dict(method=args.method,last_before_optimizer_step=self.last_schedule_index,
-                total_updates=contract(args.profile)['total_updates'],warmup_updates=contract(args.profile)['total_updates']//10)
+                total_updates=counts(args)['total_updates'],warmup_updates=counts(args)['total_updates']//10)
         def state_dict(self):return dict(last_schedule_index=self.last_schedule_index)
         def load_state_dict(self,state):self.last_schedule_index=state.get('last_schedule_index')
     callbacks=[exports.SaveCkptCallback(label,OmegaConf.create(cfg),epoch_interval=1),Evidence()]
     options=trainer_options(args.phase,callbacks)
     trainer=pl.Trainer(**options);data=spt.data.DataModule(train=train,val=val)
-    write(args.output/'result/actual_protocol.json',dict(binding=expected,loader_counts=contract(args.profile),
+    write(args.output/'result/actual_protocol.json',dict(binding=expected,loader_counts=counts(args),
          actual_train_batches=len(train),actual_validation_batches=len(val),export_root=str(export_root),
          model_config=cfg,trainer_options={k:v for k,v in options.items() if k!='callbacks'},
          optimizer='native method builder',scheduler='native PLDM before optimizer; native LeJEPA step after optimizer'))
@@ -136,7 +146,7 @@ def validate_protocol(args,protocol):
     recorded=protocol.get('binding',{})
     if (recorded!=binding(args,recorded.get('action_statistics'))
             or protocol.get('model_config')!=factory_config(args)
-            or protocol.get('loader_counts')!=contract(args.profile)):
+            or protocol.get('loader_counts')!=counts(args)):
         raise ValueError('training protocol differs from current profile/method/source binding')
 
 
@@ -145,7 +155,7 @@ def accept(args):
     protocol=read(args.training_output/'result/actual_protocol.json')
     validate_protocol(args,protocol)
     import torch
-    expected=2 if args.phase=='gate' else contract(args.profile)['total_updates']
+    expected=2 if args.phase=='gate' else counts(args)['total_updates']
     if (args.training_output/'actual_exit_code').read_text().strip()!='0':raise ValueError('own trainer actual0 required')
     log=(args.training_output/'stdout.log').read_text(errors='replace')
     import re
@@ -182,7 +192,7 @@ def accept(args):
     else:
         val=full['loops']['fit_loop']['epoch_loop.val_loop.batch_progress']
         summary=read(run/'summary.json')
-        if full['epoch'] not in (9,10) or val['total']['completed']!=contract(args.profile)['validation_batches'] or summary['metrics']['validate/loss_epoch']['count']<10:
+        if full['epoch'] not in (9,10) or val['total']['completed']!=counts(args)['validation_batches'] or summary['metrics']['validate/loss_epoch']['count']<10:
             raise ValueError('ten complete native train/validation epochs required')
     return dict(stage='baseline_'+args.phase+'_accepted',global_step=expected,Adam_steps=sorted(set(steps)),
                 own_run=str(run),full_checkpoint=dict(path=str(fullpath),sha256=sha(fullpath)),
@@ -190,44 +200,52 @@ def accept(args):
                 strict_factory_reload=True,full_bare_exact=True,binding=protocol['binding'],extra_optimizer_updates=0)
 
 
-def require_sources(root,data_root,profile_name):
-    frozen=read(root/SOURCE_FREEZE)
-    for name,digest in frozen['files'].items():
-        path=(root/name).resolve()
-        if not path.is_relative_to(root) or sha(path)!=digest:
-            raise ValueError('frozen PLDM source differs: '+name)
-    validate_manifest(data_root,profile_name)
+def require_sources(root, data_binding):
+    for name, digest in read(root / SOURCE_FREEZE)['files'].items():
+        path = (root / name).resolve()
+        if not path.is_relative_to(root) or sha(path) != digest:
+            raise ValueError('current PLDM source mismatch: ' + name)
+    from ..fresh_data import load_binding
+    load_binding(data_binding)
 
 
 def main():
-    parser=argparse.ArgumentParser(description=__doc__)
-    for key in ('data-root','output'):parser.add_argument('--'+key,type=Path,required=True)
-    parser.add_argument('--profile',required=True)
-    parser.add_argument('--run-tag',default='unified')
-    parser.add_argument('--phase',choices=('gate','formal'),required=True)
-    parser.add_argument('--mode',choices=('train','accept'),required=True)
-    parser.add_argument('--training-output',type=Path)
-    parser.add_argument('--workers',type=int,default=20)
-    parser.add_argument('--prefetch',type=int,default=2)
-    args=parser.parse_args()
-    if args.workers<0 or args.prefetch<1:parser.error('workers must be nonnegative and prefetch positive')
-    args.method='pldm';args.root=Path(__file__).resolve().parent
-    args.data_root=args.data_root.resolve();args.output=args.output.resolve()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--cube-count', type=int, choices=(1,2,3,4), required=True)
+    parser.add_argument('--data-manifest', type=Path, required=True)
+    parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--phase', choices=('gate','formal'), required=True)
+    parser.add_argument('--mode', choices=('train','accept'), required=True)
+    parser.add_argument('--training-output', type=Path)
+    parser.add_argument('--run-tag', default='current')
+    parser.add_argument('--workers', type=int, default=20)
+    parser.add_argument('--prefetch', type=int, default=2)
+    args = parser.parse_args()
+    if args.workers < 0 or args.prefetch < 1:
+        parser.error('workers must be nonnegative and prefetch positive')
+    args.root=Path(__file__).resolve().parent
+    args.profile='cube'+str(args.cube_count)
+    args.data_binding=args.data_manifest.resolve()
+    args.data_root=args.data_binding.parent
+    args.method='pldm'
+    args.output=args.output.resolve()
+    require_sources(args.root,args.data_binding)
+    data_profile(args.profile,args.data_binding)
     args.output.mkdir(parents=True,exist_ok=False)
     os.environ.update(build_environment(args.data_root,args.output))
-    state=dict(stage='baseline_'+args.mode+'_running',started_at=now(),updated_at=now(),actual_exit_code=None,argv=sys.argv)
+    state=dict(stage='pldm_'+args.mode+'_running',started_at=now(),updated_at=now(),actual_exit_code=None,argv=sys.argv)
     write(args.output/'status.json',state)
     with (args.output/'stdout.log').open('x',encoding='utf8',buffering=1) as log:
         with redirect_stdout(log),redirect_stderr(log):
             try:
-                require_sources(args.root,args.data_root,args.profile)
-                if args.mode=='accept' and args.training_output is None:raise ValueError('explicit own training output required')
-                state.update(run(args) if args.mode=='train' else accept(args));state['actual_exit_code']=0
-            except Exception:
-                state.update(stage='baseline_phase_failed',actual_exit_code=1,error=traceback.format_exc())
+                if args.mode=='accept' and args.training_output is None:
+                    raise ValueError('explicit own training output required')
+                state.update(run(args) if args.mode=='train' else accept(args))
+                state['actual_exit_code']=0
+            except BaseException:
+                state.update(stage='pldm_failed',actual_exit_code=1,error=traceback.format_exc())
                 traceback.print_exc()
-    state['finished_at']=now();state['updated_at']=state['finished_at'];write(args.output/'status.json',state)
-    (args.output/'actual_exit_code').write_text(str(state['actual_exit_code'])+'\n');return state['actual_exit_code']
-
-
-if __name__=='__main__':raise SystemExit(main())
+    state['finished_at']=state['updated_at']=now()
+    write(args.output/'status.json',state)
+    (args.output/'actual_exit_code').write_text(str(state['actual_exit_code'])+'\n')
+    return state['actual_exit_code']

@@ -1,9 +1,0 @@
-# ogb_pcd.yaml (point cloud, frameskip 5) on the same scene rollouts as scene.yaml, row for row (the single front_pixels
-# depth camera, 25 % of the points split over the cube, the two button caps, the drawer and the window). scene shares
-# OGBench cube's ManipSpace workspace, so ogb_pcd.yaml's affine stays ([0.425, 0, 0.2], 4.0)
-defaults:
-  - ogb_pcd
-  - _self_
-
-dataset:
-  name: ogbench/scene_wm10000_pcd.h5

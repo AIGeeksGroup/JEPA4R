@@ -1,7 +1,0 @@
-# ogb_pix.yaml (the official pixel collection) on the RM75-B + EG2-4C2: same settings, RM-75 env and dataset name.
-defaults:
-  - ogb_pix
-  - _self_
-
-env_id: swm/OGBCubeRM75-v0
-dataset_name: ogbench/cube_rm75_single_expert.h5

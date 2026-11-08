@@ -1,7 +1,0 @@
-# ogb_pcd.yaml on the RM-75 point-cloud dataset (same preprocessing: the workspace centre did not move)
-defaults:
-  - ogb_pcd
-  - _self_
-
-dataset:
-  name: ogbench/cube_rm75_single_expert_pcd.h5

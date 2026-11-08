@@ -1,1 +1,1 @@
-"""Explicit Cube contracts and thin adapters over preserved training code."""
+"""Current paper Cube workflow."""

@@ -1,6 +1,0 @@
-# encoder 1: ManiSkill2-Learn PointNet; [512,1024,4096] keeps the 1:2:8 ratio of the original [64,128,512]
-# and matches the pixel ViT-tiny encoder's 5.50M parameters (5.52M)
-_target_: encoders.ManiSkillPointNet
-in_dim: ${pcd_in_dim}
-mlp_spec: [512, 1024, 4096]
-out_dim: ${embed_dim}
