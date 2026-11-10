@@ -1,4 +1,2 @@
-* text eol=lf
-# Preserve the pinned upstream bytes used by SOURCE.json verification.
-lewm_pcd/third_party/** -text
-lewm_pcd/LICENSE-le-wm -text
+# Source manifests identify raw bytes; preserve each frozen producer's line endings.
+* -text
