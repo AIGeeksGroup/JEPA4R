@@ -11,7 +11,7 @@
     ".gitignore": "bafeb479d59ed0e1cdb5b6347c076f12fc966ba7eed79e4474dce045546cd982",
     "assets.example.json": "63eb51bdabbf88abcd12a9e3d2087e845cca5518f605e4eedabf16d39c14845d",
     "DEPENDENCIES.json": "717103dede06ee0d750399f9a0b9edf6ef57c499ace83bea110787062bd7d85f",
-    "lewm_pcd/.gitignore": "3f45443c4ce75c57d35574e37d2ef1a24216dc4866741e5f12b24f5cfd2da10c",
+    "lewm_pcd/.gitignore": "5c4a7f56807707d60680adfd2c6206dc4e16f4340e53f3b581db749466df21cf",
     "lewm_pcd/aggregators/__init__.py": "8387c4cacce3d8524e6386007f77e1e8180e4233de4d4555e382aa6f59888f31",
     "lewm_pcd/aggregators/mean.py": "8e0c68d98464bfeda62571fca855287fe714ead248fd7aeae24a6b6b6bbdc2f9",
     "lewm_pcd/aggregators/mlp.py": "ecd1c9962c6c0020e6d7d90efb764d2fbd4e30b4ccf8dbbd1b11de0bb2d28271",
@@ -548,6 +548,7 @@
     "tests/test_integration_entry.py": "d5267e32b62bf283ca9b075fdd83c2c9c218794f12dadb0d3f3a59465d9de6d5",
     "tests/test_official_assets.py": "5d6edcae6323a959c3de458d3f6c85ffaeece6f1e3d86bc8bdc044f89442a09a",
     "tests/test_paired_writer.py": "4ba94fd405f33008fd6fafb3d9d0075d82cc73150f3be6b04f1b4e9b30a50452",
-    "tests/test_workflow.py": "55f34c25248cde629ac6fa0575d5ca5cad6fc022fafe278ee1f60790e1f2de44"
+    "tests/test_workflow.py": "55f34c25248cde629ac6fa0575d5ca5cad6fc022fafe278ee1f60790e1f2de44",
+    "tests/test_source_package.py": "2a6e8e1c1e32b007a3d8e71c327f41f441eae0a86a66aa5c1b62f61f38e4df6a"
   }
 }

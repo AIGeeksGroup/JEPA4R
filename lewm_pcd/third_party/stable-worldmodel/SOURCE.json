@@ -1,0 +1,632 @@
+{
+  "repository": "https://github.com/galilai-group/stable-worldmodel",
+  "commit": "6f1e499e9cc0c898d326112f485c1062c3d20f24",
+  "scope": "Library package and license only; used by the final Relocate RGB baselines",
+  "files": [
+    {
+      "path": "stable_worldmodel/__init__.py",
+      "sha256": "f804b575fbedf8833f1ad7a518aa816b64781a6853af7d956711333a2181e40a",
+      "bytes": 1948
+    },
+    {
+      "path": "stable_worldmodel/buffer.py",
+      "sha256": "f2883368a872ba035068ba37373700848c614187de4b4863d1f33543cd215b15",
+      "bytes": 10532
+    },
+    {
+      "path": "stable_worldmodel/cli.py",
+      "sha256": "b12e4ec3171fa3e6982a9d6f9921f3e50f537180611e6bdf89faed2795b5f31d",
+      "bytes": 35500
+    },
+    {
+      "path": "stable_worldmodel/data/__init__.py",
+      "sha256": "1a85fb903f8396c4938550437ab787d3a27334c80c623d25078bd57d040547f3",
+      "bytes": 2470
+    },
+    {
+      "path": "stable_worldmodel/data/buffer.py",
+      "sha256": "fe5b098629dba76a807f6165804cd59be69530888c6e977ac6e587fa61164f64",
+      "bytes": 19150
+    },
+    {
+      "path": "stable_worldmodel/data/dataset.py",
+      "sha256": "9b607197069a5e8d6cf13e35981acb93af83fa80ebd4b8dbc85bfef520c04a26",
+      "bytes": 24168
+    },
+    {
+      "path": "stable_worldmodel/data/format.py",
+      "sha256": "8206cfe8751ebbc1a02df72ff18f97e2dab717fff78e691c6233e3a30dfa5952",
+      "bytes": 6937
+    },
+    {
+      "path": "stable_worldmodel/data/formats/__init__.py",
+      "sha256": "39c01f30e954d075efd13d9ac8a2e56860be4f7fbde6055377057616f69d6ad6",
+      "bytes": 1385
+    },
+    {
+      "path": "stable_worldmodel/data/formats/folder.py",
+      "sha256": "0050e9d868d31be4d1ccc0144c8a0471fd8758edbba63f8d5114b7e7bfb1029b",
+      "bytes": 12075
+    },
+    {
+      "path": "stable_worldmodel/data/formats/hdf5.py",
+      "sha256": "4ee1e5957612e1cb623b33b85b241a30325e802533e071e9f9522b9721ee1ef5",
+      "bytes": 13325
+    },
+    {
+      "path": "stable_worldmodel/data/formats/lance.py",
+      "sha256": "1215b8fc032c8f65c2ea65b6345b375340d99421b18b123bd338f0134946d8ca",
+      "bytes": 55822
+    },
+    {
+      "path": "stable_worldmodel/data/formats/lance_video.py",
+      "sha256": "66a8a31a83ff3ecde198a38b6a5f2ac168945a5a330e9b37d255c3c0131cfd6c",
+      "bytes": 29909
+    },
+    {
+      "path": "stable_worldmodel/data/formats/lerobot.py",
+      "sha256": "d02f405703a111405d444d99395a80010e2190da6ea3e92b80b26e79bca03271",
+      "bytes": 13373
+    },
+    {
+      "path": "stable_worldmodel/data/formats/utils.py",
+      "sha256": "deaf2fe1ca4e6cf4e483c1f4b20f3f20180733e291688e05bc4cb853dd45e5e8",
+      "bytes": 423
+    },
+    {
+      "path": "stable_worldmodel/data/formats/video.py",
+      "sha256": "5f9d7eaf83e77640d6fdecda6cede1f2502eecaf06c238b9666087a82d96d895",
+      "bytes": 10506
+    },
+    {
+      "path": "stable_worldmodel/data/normalization.py",
+      "sha256": "0d742cf402b85978dd686e1f6869e5b7ee02e39b974bfb50a8ca39d10bb8ed9e",
+      "bytes": 5898
+    },
+    {
+      "path": "stable_worldmodel/data/utils.py",
+      "sha256": "a103b73aebb06fb1212daba9e46178a0cef2d2b3ae9d6ac1c313398c97ee9af1",
+      "bytes": 19121
+    },
+    {
+      "path": "stable_worldmodel/envs/__init__.py",
+      "sha256": "c0ef386133451e6b81db3e00ea088fbcba25a2fe698a11cf0deebdbbbb07e37e",
+      "bytes": 6078
+    },
+    {
+      "path": "stable_worldmodel/envs/ale/__init__.py",
+      "sha256": "454bb7de85e078f3ec7d6d1f303b47d2eb884e1b476d8d50e7f195599748c3d4",
+      "bytes": 550
+    },
+    {
+      "path": "stable_worldmodel/envs/craftax/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "stable_worldmodel/envs/craftax/craftax.py",
+      "sha256": "bf36047045bb90e245fa4b6424d9466a2ed70566caf190136573410a729fa9f8",
+      "bytes": 4931
+    },
+    {
+      "path": "stable_worldmodel/envs/dmcontrol/__init__.py",
+      "sha256": "303505162d99922dff775bcdbd1b4e5c7c60e557744d3d0d01a04f6b1d5b71f3",
+      "bytes": 71
+    },
+    {
+      "path": "stable_worldmodel/envs/dmcontrol/acrobot.py",
+      "sha256": "ef4002d61bcc45d9afb0deae549094fba6b7180d3d68c7b929d8fd5dec823d12",
+      "bytes": 12255
+    },
+    {
+      "path": "stable_worldmodel/envs/dmcontrol/ball_in_cup.py",
+      "sha256": "a8479affa7a1580ddf530eb65789331c06f5ad2577dad8e00f26d058dcf6498d",
+      "bytes": 14011
+    },
+    {
+      "path": "stable_worldmodel/envs/dmcontrol/cartpole.py",
+      "sha256": "6775026c8a88fc8b3ace22b98e567a02f1766c1abd72568764c03584b617f273",
+      "bytes": 10082
+    },
+    {
+      "path": "stable_worldmodel/envs/dmcontrol/cheetah.py",
+      "sha256": "f0e514031706514dd1728a5ea6b8f2f3c67f04a7ee719054e98362ad68a8735b",
+      "bytes": 12652
+    },
+    {
+      "path": "stable_worldmodel/envs/dmcontrol/custom_tasks/cheetah.py",
+      "sha256": "ea990fdf60687bdbc75091cc86cc9c6b58d0e072f336f0509b1cf0583fd75b89",
+      "bytes": 6706
+    },
+    {
+      "path": "stable_worldmodel/envs/dmcontrol/custom_tasks/hopper.py",
+      "sha256": "84f7fbad427f746a1ffb719040191c0db3e9f953236612f6b88777c77745912a",
+      "bytes": 2087
+    },
+    {
+      "path": "stable_worldmodel/envs/dmcontrol/custom_tasks/reacher.py",
+      "sha256": "3ce3f8d49c878276b56d7fb487735790cae5ea60674347e6aaa82a4c937fa813",
+      "bytes": 1163
+    },
+    {
+      "path": "stable_worldmodel/envs/dmcontrol/custom_tasks/walker.py",
+      "sha256": "0246f3c96f9476592cd7dd592e0cfe031ebc4f96255e074ebdbb12e682d66896",
+      "bytes": 5959
+    },
+    {
+      "path": "stable_worldmodel/envs/dmcontrol/dmcontrol.py",
+      "sha256": "4c000912be10018327c77b33b3d85e908cd07e24188a11c9e5ab9c094ca92a52",
+      "bytes": 5869
+    },
+    {
+      "path": "stable_worldmodel/envs/dmcontrol/expert_policy.py",
+      "sha256": "eb4491c96696dfbbd88086699497c589ea39dd30bdded6633f79166defb1681f",
+      "bytes": 3190
+    },
+    {
+      "path": "stable_worldmodel/envs/dmcontrol/finger.py",
+      "sha256": "88d8608cdc0bb81fbee008ebb3486510b37909c566b904dd384d6aca691fca2c",
+      "bytes": 14913
+    },
+    {
+      "path": "stable_worldmodel/envs/dmcontrol/hopper.py",
+      "sha256": "0f674f5d881f043e47ad5e89ab7610d0ee1e4cf94b01a2e9032ba5cfbe11bbb8",
+      "bytes": 11904
+    },
+    {
+      "path": "stable_worldmodel/envs/dmcontrol/humanoid.py",
+      "sha256": "ecb87915e962f67af7e3db4ff79ba68e2ad855987d3e0bb3b3d5c1a0c0211792",
+      "bytes": 12202
+    },
+    {
+      "path": "stable_worldmodel/envs/dmcontrol/manipulator.py",
+      "sha256": "d31113f35167eea244eafe77c157b0c8ec43f0aac6a10cc7db8c658e007bb332",
+      "bytes": 11139
+    },
+    {
+      "path": "stable_worldmodel/envs/dmcontrol/pendulum.py",
+      "sha256": "a9973ba538fdf4eecf8aadbb1c552a387278df7dd44a5727a7e619b384771dc2",
+      "bytes": 10026
+    },
+    {
+      "path": "stable_worldmodel/envs/dmcontrol/quadruped.py",
+      "sha256": "407272c750a8725b5e1acad5821469de5607123a9a769cf82374efa17b4403ea",
+      "bytes": 12061
+    },
+    {
+      "path": "stable_worldmodel/envs/dmcontrol/reacher.py",
+      "sha256": "96e5f6ca767efa3c66bd1cf4956acf6b937f4bccf9f0637ab35260619ca45913",
+      "bytes": 12899
+    },
+    {
+      "path": "stable_worldmodel/envs/dmcontrol/walker.py",
+      "sha256": "2fada6d7bce6a23472fae86836ffe0e67fa0124b06c766f1bc98090c9de7e4ef",
+      "bytes": 13736
+    },
+    {
+      "path": "stable_worldmodel/envs/gymnasium_control/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "stable_worldmodel/envs/gymnasium_control/acrobot.py",
+      "sha256": "c2fa66e5bd1eac3ae6f181e6e0a668f431529583fbe6e39be23f2af85e13b62a",
+      "bytes": 5497
+    },
+    {
+      "path": "stable_worldmodel/envs/gymnasium_control/base.py",
+      "sha256": "556d37bf33273257250e39ed8c0ece00027cd1fae98361a404ece08330bd62ac",
+      "bytes": 3188
+    },
+    {
+      "path": "stable_worldmodel/envs/gymnasium_control/cartpole.py",
+      "sha256": "685f5ddc675f4c1f4e57f5d4f8202fed93fec301ef2c7e486caa9cd769373d83",
+      "bytes": 5555
+    },
+    {
+      "path": "stable_worldmodel/envs/gymnasium_control/mountain_car.py",
+      "sha256": "aefbb3771a9779a379683e596734ee45cea69d7223c8dd7d9bda0326455eadfc",
+      "bytes": 4494
+    },
+    {
+      "path": "stable_worldmodel/envs/gymnasium_control/pendulum.py",
+      "sha256": "cee6530c7baf6e1d44d7e19833b0d6446d2771aa8694c20a032ffcd7cbe62cad",
+      "bytes": 4481
+    },
+    {
+      "path": "stable_worldmodel/envs/gymnasium_robotics/__init__.py",
+      "sha256": "82436d2661a3e1f45e7a9e3f8c1a71aad56853fb4c52b86fa826ce110d872edd",
+      "bytes": 160
+    },
+    {
+      "path": "stable_worldmodel/envs/gymnasium_robotics/fetch.py",
+      "sha256": "527f48510ac2c3e7dad6d7b8963cee8be609394af2804279a0d0e19815fbe3a2",
+      "bytes": 17760
+    },
+    {
+      "path": "stable_worldmodel/envs/image_positioning.py",
+      "sha256": "913201da5ed83947127f2c0e127dfd4a7bec59e223d7d9d6984e025fe46ae74b",
+      "bytes": 17002
+    },
+    {
+      "path": "stable_worldmodel/envs/ogbench/__init__.py",
+      "sha256": "6ad356733b157a70c5a135c5cd8f3c6feb500a3887ee806b909a561e584dbfe4",
+      "bytes": 202
+    },
+    {
+      "path": "stable_worldmodel/envs/ogbench/cube_env.py",
+      "sha256": "0683a96698f6ead4ee19845eaab694659f2b68d5646dca9bc4fb6c672598b427",
+      "bytes": 70826
+    },
+    {
+      "path": "stable_worldmodel/envs/ogbench/expert_policy.py",
+      "sha256": "be080014502621da6ff7d52f9c731ffd004db6dd6bcb4d13ceb0765ecd9dbe08",
+      "bytes": 11415
+    },
+    {
+      "path": "stable_worldmodel/envs/ogbench/maze_env.py",
+      "sha256": "e092c06f2d147963515f9bf626beacdf80a9f2460f7085fe5c9347948d31bca3",
+      "bytes": 21172
+    },
+    {
+      "path": "stable_worldmodel/envs/ogbench/scene_env.py",
+      "sha256": "2f5cbb5f20df6154dc0f09eb49386dd7305ae92187ba83eaedd41249b78c9adc",
+      "bytes": 56455
+    },
+    {
+      "path": "stable_worldmodel/envs/piecewise/expert_policy.py",
+      "sha256": "f606def0c1ee511b6132ae1afdd2d7e3a39722d484787bef60033da1d4107af8",
+      "bytes": 4302
+    },
+    {
+      "path": "stable_worldmodel/envs/piecewise/piecewise_env.py",
+      "sha256": "92e57f36c986bb9a58dbb80497a727cc1e1f04c478e5823cf756290c9c8f4b3f",
+      "bytes": 19125
+    },
+    {
+      "path": "stable_worldmodel/envs/pusht/__init__.py",
+      "sha256": "3b6f808368b967a28e5d9bd8c416f8d0046da32e75facd43ba78cc16000cfaea",
+      "bytes": 160
+    },
+    {
+      "path": "stable_worldmodel/envs/pusht/env.py",
+      "sha256": "8520e27e057df5296601b97421dfeeb533e35a8ae14dceaceb69260a731bbfc5",
+      "bytes": 32533
+    },
+    {
+      "path": "stable_worldmodel/envs/pusht/env_discrete.py",
+      "sha256": "fc5831f4fbaaa0193204a4870122b6c11eede404fb9fd8300e13408a4371be58",
+      "bytes": 1442
+    },
+    {
+      "path": "stable_worldmodel/envs/pusht/expert_policy.py",
+      "sha256": "71d4e16e7a991d531fbcc7e9d5eea57ebd3d0e013fa29bfed7fa2d736386e869",
+      "bytes": 3186
+    },
+    {
+      "path": "stable_worldmodel/envs/quantizer.py",
+      "sha256": "5b319a202963e4216b4a19613c28b9948aa339d32bc3f03278fed4d5c15e2ed1",
+      "bytes": 1946
+    },
+    {
+      "path": "stable_worldmodel/envs/robocasa.py",
+      "sha256": "65c7816a106bb62774d2bf89ab703c7991a3265a564b0fc60dabf087f9231deb",
+      "bytes": 37050
+    },
+    {
+      "path": "stable_worldmodel/envs/rocket_landing/__init__.py",
+      "sha256": "ac019989e18159843671e608c31b41b0587d903a6b4e628044a904cab8aeaf25",
+      "bytes": 159
+    },
+    {
+      "path": "stable_worldmodel/envs/rocket_landing/expert_policy.py",
+      "sha256": "cde97bef3dd5981886613d1fc4c1d4c4195a5ec51e9bab798755abcb71e406a2",
+      "bytes": 20853
+    },
+    {
+      "path": "stable_worldmodel/envs/rocket_landing/pyflyt_rocketlanding.py",
+      "sha256": "14200c0e90f1f9b21d28d036060e836a46927bdc7ba2e87a8b06b715b6935805",
+      "bytes": 25365
+    },
+    {
+      "path": "stable_worldmodel/envs/simple_point_maze.py",
+      "sha256": "f889b7b2f9fc21532bc7eb27aab1c6911e010df61dc961874b47b2ef2d5895ac",
+      "bytes": 14479
+    },
+    {
+      "path": "stable_worldmodel/envs/two_room/__init__.py",
+      "sha256": "9ad70713e24ef889b5c773be7a941b0df8716410f1f4453eaaec1367b580fe2c",
+      "bytes": 114
+    },
+    {
+      "path": "stable_worldmodel/envs/two_room/env.py",
+      "sha256": "761e70901840acacc7a74676a3ed128715bfe3941241c8d56403ae5f7c9a2124",
+      "bytes": 28467
+    },
+    {
+      "path": "stable_worldmodel/envs/two_room/expert_policy.py",
+      "sha256": "b52ae3d8d0d1123f2c8eda9d92fe4a159e7a2fd50f31c39a1cb6f884ea5d4c21",
+      "bytes": 7593
+    },
+    {
+      "path": "stable_worldmodel/envs/two_room/legacy_env.py",
+      "sha256": "21f6a69e0b9f6065c4d9de9089e9a8b32f75cb84349210fc9a33f06d29c4f58f",
+      "bytes": 28269
+    },
+    {
+      "path": "stable_worldmodel/envs/utils.py",
+      "sha256": "63ace97eb47c37c0e18c34c45a3f222dcf8517b013a637218338b0e9ff081a94",
+      "bytes": 8262
+    },
+    {
+      "path": "stable_worldmodel/planning/__init__.py",
+      "sha256": "3ead53eacecf2a4a4d668073d4c95a0d73797f0fabdc400f5e06c579422f254e",
+      "bytes": 1767
+    },
+    {
+      "path": "stable_worldmodel/planning/evaluator.py",
+      "sha256": "5020aa96f31fe328d0cfc4a1e8150dcf93cbadbe32d7417d9d451c0528a25de2",
+      "bytes": 8014
+    },
+    {
+      "path": "stable_worldmodel/planning/objective.py",
+      "sha256": "91f046a6a266969f51f9502b02c3012a775506787c317645c36454faea1bc648",
+      "bytes": 5025
+    },
+    {
+      "path": "stable_worldmodel/planning/solver/__init__.py",
+      "sha256": "1e12000b87d331fb0c0652576caae80a3e7441095bd8c306c79a09fec2483b23",
+      "bytes": 545
+    },
+    {
+      "path": "stable_worldmodel/planning/solver/callbacks/__init__.py",
+      "sha256": "64965a899fc241eafc7286879ed1e36e4dd891bed6f89530e038a9b4ee1c0cf8",
+      "bytes": 571
+    },
+    {
+      "path": "stable_worldmodel/planning/solver/callbacks/cem.py",
+      "sha256": "e48c82ba96edb85dc6a3a0b92bdda5ae53e4ce2a9d4d7f2992a89d6f16fe4588",
+      "bytes": 1681
+    },
+    {
+      "path": "stable_worldmodel/planning/solver/callbacks/common.py",
+      "sha256": "2439ad05b50ef60573df606779a7e7f254952cdd954b6023fb4c444ae3fc4b67",
+      "bytes": 2344
+    },
+    {
+      "path": "stable_worldmodel/planning/solver/callbacks/gd.py",
+      "sha256": "8a909d8a16a162dc53000a3198bb01cd3e4f618c35e6c26fb4e38690990aeb3e",
+      "bytes": 1559
+    },
+    {
+      "path": "stable_worldmodel/planning/solver/categorical_cem.py",
+      "sha256": "5fc442047763b3b107a1e395816eabf7b6d5faae95653768ae0c31ffed9daedc",
+      "bytes": 10385
+    },
+    {
+      "path": "stable_worldmodel/planning/solver/cem.py",
+      "sha256": "4d6d878541990eb7d0d1794e6763112f87ed12abd15d676c3a9ab9a599b90f7f",
+      "bytes": 10700
+    },
+    {
+      "path": "stable_worldmodel/planning/solver/gd.py",
+      "sha256": "5b3edafce7fe0d59b9f2fe8474bb891dc36b5c2027c2864e64a394fdac2def80",
+      "bytes": 11609
+    },
+    {
+      "path": "stable_worldmodel/planning/solver/icem.py",
+      "sha256": "54730d365027573373ff46d0898a38a3fb98895c766471bbbcaf44983545c43f",
+      "bytes": 13593
+    },
+    {
+      "path": "stable_worldmodel/planning/solver/lagrangian.py",
+      "sha256": "a58a96e86f44f1ed7ef1d15e9bc7239da6830aa78ac43fea25092ce2f5f810f9",
+      "bytes": 16530
+    },
+    {
+      "path": "stable_worldmodel/planning/solver/mppi.py",
+      "sha256": "1fdaa0712cc0774ddc93ab19769d844f686e9104da623218ddeb4be98489d395",
+      "bytes": 9941
+    },
+    {
+      "path": "stable_worldmodel/planning/solver/pgd.py",
+      "sha256": "c3a1019a035e56232ffa6d2e21820621a9e081b3606786151546d42b773c4fb3",
+      "bytes": 11559
+    },
+    {
+      "path": "stable_worldmodel/planning/solver/predictive_sampling.py",
+      "sha256": "65e8e4eda21df18de8a80be955748f8b0ffe31012532ece194260f1df93d4e08",
+      "bytes": 6839
+    },
+    {
+      "path": "stable_worldmodel/planning/solver/solver.py",
+      "sha256": "b0ddc4ddb93309c0519fc36e25e5228cc2dd948d17e39109e150bafe86e93515",
+      "bytes": 1548
+    },
+    {
+      "path": "stable_worldmodel/planning/solver/utils.py",
+      "sha256": "48433c78f094c623fc4a8c4cf34f0d6381b11574f3441bf8c0635f1d2e30db90",
+      "bytes": 2928
+    },
+    {
+      "path": "stable_worldmodel/plot/__init__.py",
+      "sha256": "80ea414db6564866890f047bcd775a2a5c93e47cbdcaa3a05065721ef9f7dafc",
+      "bytes": 107
+    },
+    {
+      "path": "stable_worldmodel/plot/video_utils.py",
+      "sha256": "a217a25472b98ffdac428c65316d0f48e674fe8df75b8d90143a5fd706fe0c9d",
+      "bytes": 2400
+    },
+    {
+      "path": "stable_worldmodel/policy.py",
+      "sha256": "4a175d707b0cf8593c045379df44e354f72823622be0232bf6dea01858637329",
+      "bytes": 20113
+    },
+    {
+      "path": "stable_worldmodel/protocols.py",
+      "sha256": "eb4df6a0f17e276a8964b57425b912ec619dec7a5e2fd111e701f7c54e16cb44",
+      "bytes": 6719
+    },
+    {
+      "path": "stable_worldmodel/spaces.py",
+      "sha256": "05e99873032a27e08d17fa3b75078ac69dc383c24f98dfc7c01a0a8e859cb5b5",
+      "bytes": 27715
+    },
+    {
+      "path": "stable_worldmodel/utils.py",
+      "sha256": "3eb0775d94fe2ba552dcf9b24a0ba43e4d484515c15a3281a91abc02617202c9",
+      "bytes": 4815
+    },
+    {
+      "path": "stable_worldmodel/wm/__init__.py",
+      "sha256": "c5ba0b885f62dd54bc83ece0f60ce211790b43c977fe9f20b8920979a6bec69b",
+      "bytes": 194
+    },
+    {
+      "path": "stable_worldmodel/wm/gcrl/__init__.py",
+      "sha256": "a8bdda76ba219cf2d4a9acfe95bebc2b0f6450dfa5f009e879418db86d01e23a",
+      "bytes": 225
+    },
+    {
+      "path": "stable_worldmodel/wm/gcrl/gcrl.py",
+      "sha256": "43b287ce1603c5b720d9318d238d0592d8f76fc2cdfc87c604995c370eb84878",
+      "bytes": 7131
+    },
+    {
+      "path": "stable_worldmodel/wm/gcrl/module.py",
+      "sha256": "b385acd4a66320f276171f108fcd5c5dc2ff16f8f3090b2e197825f5a662de9c",
+      "bytes": 20043
+    },
+    {
+      "path": "stable_worldmodel/wm/lewm/__init__.py",
+      "sha256": "9a2e5b0fda39ec4e3d51010d3147d539370a011f7d5181865ce8c578199bad4f",
+      "bytes": 35
+    },
+    {
+      "path": "stable_worldmodel/wm/lewm/lewm.py",
+      "sha256": "08a43d4aef15e889bde5a0431b49d8889257cab1678aaf70bfd6a0bffc1c12a3",
+      "bytes": 4898
+    },
+    {
+      "path": "stable_worldmodel/wm/lewm/module.py",
+      "sha256": "704dfb4dce79e429803341af05754bba342764601527199c5ea306262a8ce27a",
+      "bytes": 8356
+    },
+    {
+      "path": "stable_worldmodel/wm/loss.py",
+      "sha256": "2d28febbb6a45efb853d8d86309afe5786f3cc240b8c32a3a804ce191b411647",
+      "bytes": 3955
+    },
+    {
+      "path": "stable_worldmodel/wm/pldm/__init__.py",
+      "sha256": "498926e25c3aa4cdd3103860a4620ee4dafb12ce15590a4c1c23818a679edfbc",
+      "bytes": 35
+    },
+    {
+      "path": "stable_worldmodel/wm/pldm/module.py",
+      "sha256": "704dfb4dce79e429803341af05754bba342764601527199c5ea306262a8ce27a",
+      "bytes": 8356
+    },
+    {
+      "path": "stable_worldmodel/wm/pldm/pldm.py",
+      "sha256": "c2301148ffbe33189458b9b340d77d89fb8795865597a8949c766bf3a5bf351f",
+      "bytes": 5102
+    },
+    {
+      "path": "stable_worldmodel/wm/prejepa/__init__.py",
+      "sha256": "935c6adaf875042150108847323c9af21be2503751695e3a818ad1eac41c4001",
+      "bytes": 38
+    },
+    {
+      "path": "stable_worldmodel/wm/prejepa/module.py",
+      "sha256": "4f29e54580b327f776edc5ee2cd400f8de67cfc738d113a6b9d2446af5037e60",
+      "bytes": 8023
+    },
+    {
+      "path": "stable_worldmodel/wm/prejepa/prejepa.py",
+      "sha256": "05989727a7cf2a8aa02f1e16641e93f124761cff39ce8079f1817a1febdccdae",
+      "bytes": 13697
+    },
+    {
+      "path": "stable_worldmodel/wm/probes.py",
+      "sha256": "8748be46c7281777500cfff05a36c78a60962f3659dd245b1dc6e5191f95c8f4",
+      "bytes": 1129
+    },
+    {
+      "path": "stable_worldmodel/wm/tdmpc2/__init__.py",
+      "sha256": "dcc4ebc1470f6e3df4c8d75bcfdf0ca0e495cb64e8ebb76dbab43f1bcafa7952",
+      "bytes": 150
+    },
+    {
+      "path": "stable_worldmodel/wm/tdmpc2/module.py",
+      "sha256": "0be6c5ec0764f0317e5ad9ce0c68cd9cd2445f05dd47df9aac3481c14ca7d8cf",
+      "bytes": 4517
+    },
+    {
+      "path": "stable_worldmodel/wm/tdmpc2/tdmpc2.py",
+      "sha256": "284fce01eb609fc99e8dfc863b0c2e2e31e837c956732c2bdb4b33f66611b51d",
+      "bytes": 17925
+    },
+    {
+      "path": "stable_worldmodel/wm/utils.py",
+      "sha256": "a001e26359f1fcb774687b9fc25231119539057d4d459cc8f651dee7406f3eaa",
+      "bytes": 6112
+    },
+    {
+      "path": "stable_worldmodel/world/__init__.py",
+      "sha256": "19059692dfab0b101ffc5366f16f8534b38345b506d3339f5c4a54e606fd6108",
+      "bytes": 91
+    },
+    {
+      "path": "stable_worldmodel/world/env_pool.py",
+      "sha256": "19fb5d22602d1c17dcf040de5f7a2032e5c3f40b8773d13fc63d41b0c537e892",
+      "bytes": 7370
+    },
+    {
+      "path": "stable_worldmodel/world/world.py",
+      "sha256": "9c6426a37db6fa66c8adff6ce9676af463f439bc90874a9d5158bb7a775917ac",
+      "bytes": 27997
+    },
+    {
+      "path": "stable_worldmodel/wrapper/__init__.py",
+      "sha256": "39833926ebbfc13e482880220bd8477a801df275bbe2b559c9caa554c1ee01e9",
+      "bytes": 3088
+    },
+    {
+      "path": "stable_worldmodel/wrapper/default.py",
+      "sha256": "0703d1dc726bcfe5823fee27b756edf9051a262f20abe8cfafee99426b84c1fa",
+      "bytes": 22342
+    },
+    {
+      "path": "stable_worldmodel/wrapper/visual.py",
+      "sha256": "02369abfe6464562c4c5544181f296c32e4838f4ac0264985246baac391f9d41",
+      "bytes": 15827
+    },
+    {
+      "path": "scripts/train/pldm.py",
+      "bytes": 8113,
+      "sha256": "6cbfba129d8356da4dfdaa3b8091116d40d0cfd5cea7995be7b77e0d58213f4a"
+    },
+    {
+      "path": "scripts/train/config/pldm.yaml",
+      "bytes": 2436,
+      "sha256": "4d49680a9f3629ed5c5b5a02673659c24328cebe804ca78ec6415e966edbb8c6"
+    },
+    {
+      "path": "scripts/train/config/data/pusht.yaml",
+      "bytes": 254,
+      "sha256": "1713de73a55d7c177b3de72b8f4221dfa2feae546ee07d681f210c4e231f7756"
+    },
+    {
+      "path": "scripts/train/config/launcher/local.yaml",
+      "bytes": 376,
+      "sha256": "6a17d34722f775863feffdd038f6aaea76a38de8b9d63f3c412577dcdcb6de93"
+    },
+    {
+      "path": "scripts/train/config/data/ogb.yaml",
+      "bytes": 281,
+      "sha256": "c5b7bf93bf23533d750941d135df882ef3f92b5f674aeb629739c5ba1f0a8a52"
+    }
+  ]
+}

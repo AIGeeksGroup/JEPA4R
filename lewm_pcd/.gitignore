@@ -6,8 +6,6 @@ multirun/
 wandb/
 TMP/*
 !TMP/.gitignore
-# 固定到 6f1e499 的本地 clone，见 README
-third_party/stable-worldmodel/
 *.h5
 *.lance
 *.ckpt
