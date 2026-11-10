@@ -12,11 +12,22 @@ Anything satisfying this can be dropped in through ``model.encoder._target_``
 in the Hydra config; nothing else in the model or training loop changes.
 """
 
-from .pointnet import PointNet
-from .pointnet_dexart import DexArtPointNet
-from .pointnet_ms2 import ManiSkillPointNet
-from .ppt import PointPatchTransformer
-from .sonata_cls import SonataCLSEncoder
-from .vit import ViTCLS
+from importlib import import_module
 
-__all__ = ['DexArtPointNet', 'ManiSkillPointNet', 'PointNet', 'PointPatchTransformer', 'SonataCLSEncoder', 'ViTCLS']
+_ENCODERS = {
+    'DexArtPointNet': 'pointnet_dexart',
+    'ManiSkillPointNet': 'pointnet_ms2',
+    'PointNet': 'pointnet',
+    'PointPatchTransformer': 'ppt',
+    'SonataCLSEncoder': 'sonata_cls',
+    'ViTCLS': 'vit',
+}
+__all__ = list(_ENCODERS)
+
+
+def __getattr__(name):
+    if name not in _ENCODERS:
+        raise AttributeError(name)
+    value = getattr(import_module('.' + _ENCODERS[name], __name__), name)
+    globals()[name] = value
+    return value

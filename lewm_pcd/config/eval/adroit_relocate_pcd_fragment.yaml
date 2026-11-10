@@ -1,0 +1,25 @@
+defaults:
+  - adroit_relocate_pix_fragment
+  - _self_
+obs: pcd
+video: false
+world:
+  env_name: envs.adroit:swm/AdroitRelocateFragment-v0
+  pre_wrappers:
+    - _target_: envs.adroit.pcd.AdroitPointCloudWrapper
+      num_points: 1200
+      cameras: [vil_camera]
+      size: 256
+      cube_fraction: .25
+      voxel_size: .005
+      crop_box: [[-0.6, -0.8, -0.25], [0.6, 0.6, 1.1]]
+      foreground_only: true
+      keep_rgb: false
+      relocate_target_as_object: true
+      separate_object_instances: true
+      green_object_cap: 300
+      empty_robot_background_fill: true
+pcd_process:
+  center: [0., -0.2, 0.25]
+  scale: 4.0
+  use_rgb: true

@@ -1,0 +1,10 @@
+{
+  "schema": "jepa4r_integrated_smoke_verification_v1",
+  "status": "not_run",
+  "integration_regression_passed": false,
+  "scope": "Original independent branch smoke records are retained as baseline evidence; they do not assert acceptance of this composed source tree.",
+  "baselines": {
+    "cube": "provenance/baselines/cube/SMOKE_VERIFICATION.json",
+    "adroit": "provenance/baselines/adroit/SMOKE_VERIFICATION.json"
+  }
+}

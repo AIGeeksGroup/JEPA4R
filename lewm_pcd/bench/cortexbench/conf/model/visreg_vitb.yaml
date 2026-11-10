@@ -1,0 +1,5 @@
+# VISReg ViT-B/16 (arXiv 2606.02572; ImageNet-1K, 400 epochs; general image SSL, frozen as released): timm's
+# vit_base_patch16_224, the CLS after the final norm, 768-d; input 224, ImageNet normalisation. Weights: the authors'
+# visreg-vit-b-inet1k.pth (shared by them on request; not public). See ../../jepa_baselines.py
+_target_: jepa_baselines.load_visreg
+checkpoint: ${oc.env:STABLEWM_HOME}/checkpoints/visreg/visreg-vit-b-inet1k.pth

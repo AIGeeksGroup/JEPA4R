@@ -1,0 +1,90 @@
+{
+  "algorithm_function_AST_preserved": true,
+  "files": {
+    "boundary.py": {
+      "path": "bench/ogbench/downstream/vendor/boundary.py",
+      "sha256": "6c5557b04336bac6be3c0563dad1aa332f8c18afb10224de023277a6ff61c73e"
+    },
+    "core.py": {
+      "path": "bench/ogbench/downstream/vendor/core.py",
+      "sha256": "1e53e2c13a72ef8e027bd4b4c7c692f7adbf1637705d6ecf209585e17ad51fd7"
+    },
+    "cube_inputs.py": {
+      "path": "bench/ogbench/downstream/vendor/cube_inputs.py",
+      "sha256": "36358548ef7a78311730913fccfdfa025d354a18edd4f8197b03b4c0d5ae5d9b"
+    },
+    "gciql.py": {
+      "path": "bench/ogbench/downstream/vendor/gciql.py",
+      "sha256": "8611cd476d8849ad014ca43304073c3e88fc3d3aa5dab369a343ae425bba7ba7"
+    },
+    "io.py": {
+      "path": "bench/ogbench/downstream/vendor/io.py",
+      "sha256": "7ee78f8bc727a6f4f77773d6c34d363dc144cc854e94eb83018473112f6cb7c1"
+    },
+    "ogbench/impls/utils/__init__.py": {
+      "path": "third_party/ogbench/impls/utils/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "ogbench/impls/utils/datasets.py": {
+      "path": "third_party/ogbench/impls/utils/datasets.py",
+      "sha256": "52c373922a87e1ba8ad8b3b96c3474d5e6385e2ea2c7206930f7a8a315816609"
+    },
+    "ogbench/impls/utils/encoders.py": {
+      "path": "third_party/ogbench/impls/utils/encoders.py",
+      "sha256": "6bd7fdd82838b754d26af01f9e84d70fa63fca1e09efee38a09f325884073ecc"
+    },
+    "ogbench/impls/utils/env_utils.py": {
+      "path": "third_party/ogbench/impls/utils/env_utils.py",
+      "sha256": "a92d391a3d95e26717b80ea783f487f0639c956f23ef603bfa8b7bb098f763d7"
+    },
+    "ogbench/impls/utils/evaluation.py": {
+      "path": "third_party/ogbench/impls/utils/evaluation.py",
+      "sha256": "4d9a2732bc9ef89ce99fbc0f07a76d3f4d035783af3a658251709140ff9de3d5"
+    },
+    "ogbench/impls/utils/flax_utils.py": {
+      "path": "third_party/ogbench/impls/utils/flax_utils.py",
+      "sha256": "5b6a8e9a919bf57dae0c1454f327ded4235385f9d9dcd1e62263fe4fad9fd484"
+    },
+    "ogbench/impls/utils/log_utils.py": {
+      "path": "third_party/ogbench/impls/utils/log_utils.py",
+      "sha256": "ba5ad408d91ee35d92bf06ec7846846c5a75af4ae7cc62c329ec43d074bfaeb6"
+    },
+    "ogbench/impls/utils/networks.py": {
+      "path": "third_party/ogbench/impls/utils/networks.py",
+      "sha256": "e7e4c4a439b691911e5ae6c2653f253c5703e6b5d190d813e28ebc32e7306094"
+    },
+    "pcd/cube_pcd_env.py": {
+      "path": "bench/ogbench/collection/vendor/pcd/cube_pcd_env.py",
+      "sha256": "fc8be1866de1d07b2bf1c0677c9182a1b760a280e4d07a1002d7477e1984c7ab"
+    },
+    "pcd/native_pcd_frame.py": {
+      "path": "bench/ogbench/collection/vendor/pcd/native_pcd_frame.py",
+      "sha256": "ffc7cc1436381a84da5690557167f2d7b482711350f2ae4fe8ffe56a99156b98"
+    },
+    "pcd/pcd_geometry.py": {
+      "path": "bench/ogbench/collection/vendor/pcd/pcd_geometry.py",
+      "sha256": "e1b0f13db624d4e579946cfe909dd0acb342ad261c3d190e962260ed47b30bf2"
+    },
+    "pcd/pcd_wrapper.py": {
+      "path": "bench/ogbench/collection/vendor/pcd/pcd_wrapper.py",
+      "sha256": "821d056ecf41ea69e116c0d37ac99be30dfd9ec3bda4d8e7531d03f67f9beb8e"
+    },
+    "physics.py": {
+      "path": "bench/ogbench/downstream/vendor/physics.py",
+      "sha256": "ecda44226abe105651cf26437eb3f36d4f9d9622aa277eda929111a5ae1c3da8"
+    }
+  },
+  "original_component_sha256": {
+    "atomic_io_helpers": "306797e1fa07dee8616adf9cc404af48380a4143d5fb36a6b04b425aae4c6928",
+    "numpy_physics_thread_binding": "a83bcf181b00d57fe5b41ef4e61c42dded0561b1ec9d4dc2c7a1c64dfdb8bc3a",
+    "policy_core_helpers": "73ba082f730e9000a238c789726c26b075590807968a0016bc75e8e9111231d0",
+    "policy_gate_reload_accept": "a81363583a4826194b90974be2ad62c5895ab6b963e15ba042c9f893a46ba5e6"
+  },
+  "schema": "cube_current_policy_sources_v1",
+  "upstream_attribution": {
+    "jepa4r": "https://github.com/AIGeeksGroup/JEPA4R",
+    "ogbench": "https://github.com/seohongpark/ogbench",
+    "ogbench_commit": "a977253ce5b88434f4e4f531c50047cc95993a51",
+    "policy": "original GCIQL actor/critic/value/update and Cube distance sampling"
+  }
+}
