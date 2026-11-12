@@ -15,7 +15,8 @@ jepa4r/
   report.py     jepa4r-report
   methods.py    dispatch over the encoder rows of Tab. 1 / Tab. 2
   stages/       the seven pipeline stages
-  envs/         OGBench, MetaWorld and Adroit wrappers with paired rgb / depth / segmentation
+  envs/         OGBench, MetaWorld and Adroit wrappers with paired rgb / depth / segmentation;
+                twins/ RM75-B digital twin and its hand
   data/         point-cloud pipeline, collection behaviors, storage, clips, policy data
   models/       encoders, projector and action encoder, predictor, SIGReg, JEPA world model
   baselines/    PLDM, LeJEPA, VISReg, V-JEPA 2.1, random ViT-B
@@ -36,6 +37,7 @@ override with `JEPA4R_DATA`, `JEPA4R_OUTPUTS` and `JEPA4R_CHECKPOINTS`.
 collect_wm_data ------> train_wm ------> train_policy ---------------> Tab. 1, Tab. 2, Tab. 4b-d
 prepare_policy_data ---------------------^
 train_wm (cube_single, jepa4r, epoch 10) --> train_decoder --> eval_recon --> Tab. 3, Tab. 4a
+verify_twin + twin-trained train_wm / train_policy / train_decoder --> eval_preview --> Sec. 5.6 (twin)
 count_params ---------------------------------------------------------> Sec. 4.2 / 4.4 parameter counts
                                      jepa4r-report <-- outputs/**/metrics.json + paper/expected/*.yaml
 ```
@@ -48,6 +50,8 @@ count_params ---------------------------------------------------------> Sec. 4.2
 | `train_policy` | env, method | frozen encoder, `data/policy/<env>/` | `outputs/train_policy/<env>/<method>/<tag>/metrics.json` |
 | `train_decoder` | env, decoder | `data/wm/<env>/`, JEPA4R epoch 10 | `outputs/train_decoder/<env>/<decoder>/<tag>/` |
 | `eval_recon` | env, decoder | decoder, world model, validation data | `outputs/eval_recon/<env>/<decoder>/<tag>/` |
+| `verify_twin` | env | twin, vendor URDF | `outputs/verify_twin/<env>/<tag>/metrics.json` |
+| `eval_preview` | env, decoder | twin-trained world model, policy head, decoder | `outputs/eval_preview/<env>/<decoder>/<tag>/metrics.json` |
 | `count_params` | method or decoder | configurations only | `outputs/count_params/<method or decoder>/<tag>/` |
 
 Each stage is `jepa4r/stages/<stage>.py: run(cfg, out_dir) -> dict | None`. `jepa4r-run` composes the configuration,
@@ -59,6 +63,7 @@ key `{stage, env, method, decoder, tag}`, and finally writes `DONE`. `jepa4r-rep
 | `train_policy` | `success` (%, the table entry), `success_per_task`, `evals` |
 | `train_decoder` | `val_nn_stage_a`, `val_nn_stage_b` (cm) |
 | `eval_recon` | `nn_mean`, `nn_median`, `nn_p90`, `outlier_pct`, `cube_err`, `shuffled_nn`; `imag_nn@S`, `true_nn@S`, `other_actions_nn@S`, `imag_cube@S` for S in 15 / 100 / 200; `imag_nn_max` (cm; `outlier_pct` in %) |
+| `eval_preview` | `preview_nn`, `preview_cube`, `cube_to_target_success`, `cube_to_target_failure` (cm) |
 | `count_params` | `encoder_params_M`, `total_params_M` (method); `new_params_M`, `lora_params_M`, `backbone_params_B` (decoder) |
 
 ## Configurations
@@ -86,6 +91,7 @@ produced by some job.
 |---|---|---|
 | depth → point cloud | `jepa4r/data/pointcloud.py`, `jepa4r/envs/camera.py` | — |
 | simulator wrappers, cameras, experts | `jepa4r/envs/{ogbench,metaworld,adroit}.py` | OGBench, CortexBench |
+| RM75-B twin, hand twin, URDF check, look-ahead preview | `jepa4r/envs/twins/*`, `configs/env/rm75b_cube.yaml`, `jepa4r/stages/{verify_twin,eval_preview}.py` | vendor URDF |
 | data collection with mixtures | `jepa4r/stages/collect_wm_data.py`, `jepa4r/data/{behaviors,storage}.py` | — |
 | official play data, demonstrations | `jepa4r/data/{official_play,demos}.py` | OGBench, CortexBench |
 | LeWM recipe and PointNet | `jepa4r/models/*` | stable-worldmodel, LeWM, DexArt |

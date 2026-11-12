@@ -7,5 +7,6 @@ Run one with ``jepa4r-run <stage> key=value ...``: the CLI composes the config, 
     collect_wm_data ----------> train_wm ----------> train_policy      Tab. 1, Tab. 2, Tab. 4b-d
     prepare_policy_data ---------------------------------^
     train_wm (cube_single, jepa4r, epoch 10) --> train_decoder --> eval_recon   Tab. 3, Tab. 4a
+    verify_twin (rm75b_cube); twin-trained train_wm / train_policy / train_decoder --> eval_preview   Sec. 5.6
     count_params                                                        Sec. 4.2 / 4.4 parameter counts
 """

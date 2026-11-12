@@ -38,6 +38,8 @@ RUN_KEYS = {
     "train_policy": ("env", "method"),
     "train_decoder": ("env", "decoder"),
     "eval_recon": ("env", "decoder"),
+    "verify_twin": ("env",),                              # digital twin vs. vendor URDF
+    "eval_preview": ("env", "decoder"),                   # decoded look-ahead of the policy in the twin
     "count_params": ("method", "decoder"),                # exactly one of them
 }
 STAGES = tuple(RUN_KEYS)
@@ -104,7 +106,7 @@ def compose(args: Iterable[str] = ()) -> DictConfig:
     for group in ("env", "method", "decoder"):
         if group in groups:
             cfg[group] = load_group(group, groups[group])
-    policy = groups.get("policy") or (cfg.env.policy if "env" in cfg else None)
+    policy = groups.get("policy") or OmegaConf.select(cfg, "env.policy", default=None, throw_on_missing=False)
     if policy:
         cfg.policy = load_group("policy", policy)
     if "method" in cfg:

@@ -122,6 +122,7 @@ Each table of the paper has an experiment specification that expands into all of
 | Tab. 3: latent-space reconstruction | `experiments/tab3_recon.yaml` |
 | Tab. 4: ablations | `experiments/tab4_ablations.yaml` |
 | Parameter counts (Sec. 4.2, 4.4) | `experiments/params.yaml` |
+| RM75-B digital twin (Sec. 5.6) | `experiments/twin.yaml` |
 
 ```bash
 jepa4r-reproduce experiments/tab1_ogbench.yaml          # list the runs and their status
@@ -130,7 +131,7 @@ jepa4r-report                                           # outputs/report.md: pap
 bash scripts/reproduce_all.sh                           # every table, then the report
 ```
 
-The paper's numbers are stored in `paper/expected/`, and `paper/figures/` regenerates the figures into `outputs/figures/`. See [docs/reproduce.md](docs/reproduce.md) for the scope and settings, and [docs/architecture.md](docs/architecture.md) for the code layout. The real-robot experiments are not part of this repository.
+The paper's numbers are stored in `paper/expected/`, and `paper/figures/` regenerates the figures into `outputs/figures/`. See [docs/reproduce.md](docs/reproduce.md) for the scope and settings, and [docs/architecture.md](docs/architecture.md) for the code layout. The RM75-B digital twin and everything trained in it are included; runs on the real arm are not.
 
 This repository is under construction: the pipeline, configurations, experiment specifications and reporting are in place, and the components marked `TODO(integrate)` are being filled in. No result has been reproduced with this code yet.
 
