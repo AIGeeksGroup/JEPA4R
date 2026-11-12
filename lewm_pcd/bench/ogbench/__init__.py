@@ -1,0 +1,1 @@
+"""Current paper Cube workflow."""

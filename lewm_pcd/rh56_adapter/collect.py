@@ -95,6 +95,7 @@ def main(argv=None):
                         native_adapter_sha256=sha(native_module.__file__),
                         expert_artifacts={name:dict(path=str(path),sha256=sha(path))
                                           for name,path in native_module.expert_files().items()},
+                        trusted_native_bundle=getattr(native_module,'LAST_BUNDLE_IDENTITY',None),
                         camera_adapter_sha256=sha(camera_module.__file__) if camera_module else None,
                         baseline_plan_sha256=sha(BASELINE/'envs/adroit/env.py'),
                         baseline_policy_sha256=sha(BASELINE/'envs/adroit/policy.py'),

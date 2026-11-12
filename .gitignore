@@ -13,3 +13,11 @@ assets.runtime.json
 *.pickle
 *.npz
 *.log
+*.npy
+*.tar.gz
+*.zip
+/runs/
+/data/
+/checkpoints/
+/logs/
+.env*

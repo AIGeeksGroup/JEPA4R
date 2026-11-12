@@ -1,601 +1,122 @@
 {
-  "schema": "jepa4r-relocate-smoke-verification-v1",
-  "verified_at_utc": "2026-11-08T12:01:37.206075+00:00",
-  "scope": "Real CUDA bounded interface/compatibility diagnostics; full paper budgets were not executed",
-  "source": {
-    "base_commit": "335bd20946f0255eb41d18456256a34e888fb93e",
-    "tested_source_snapshot_manifest_sha256": "58dc51c57855ddae15903320a4e905b6dc8e68379e33c3648ceaca88d75576dd",
-    "runtime_code_tree_sha256": "c27717bd32cafda1e6385673b252b80d29e569032106ae6024e53a5a29007587",
-    "source_files_verified": 231,
-    "pinned_vendor_files_verified": 125,
-    "packaged_source_manifest_sha256": "1f8338ab713ec281a38427ad948354108a6f50b80cda4a4cd0ae2cee482400f6",
-    "packaging_only_changes": {
-      "scope": "Git checkout byte preservation for unchanged upstream MIT license; no executable, data, model or configuration bytes changed",
-      "files": [
-        {
-          "path": ".gitattributes",
-          "before_sha256": "ffcd14f929a6a02b71e0db3e6aa4e7e3e4a35ad24ae28e4d8bae05c4e028f322",
-          "after_sha256": "c4eec33a427357a9043e2fa55be32cfd3fb747808f2a304d90871c841cf770d9"
-        }
-      ]
-    },
-    "all_staged_source_blob_hashes_verified": true
+  "schema": "jepa4r_integrated_smoke_verification_v2",
+  "status": "bounded_checks_completed_with_explicit_historical_qualifications",
+  "integration_regression_passed": false,
+  "strict_whole_guide_passed": false,
+  "verdict_reason": "No unconditional whole-guide certificate: exact historical config identity and original-production-protocol limitations remain. This is not a new full reproduction.",
+  "baselines": {
+    "cube": "provenance/baselines/cube/SMOKE_VERIFICATION.json",
+    "adroit": "provenance/baselines/adroit/SMOKE_VERIFICATION.json"
   },
-  "runtime": {
-    "python": "3.10.22",
-    "torch": "2.8.0+cu128",
-    "torchvision": "0.23.0+cu128",
-    "cuda_runtime": "12.8",
-    "wm_numpy": "1.26.4",
-    "native_bc_numpy": "1.23.5",
-    "rh56_numpy": "1.26.4",
-    "native_mujoco": "2.0/mujoco-py2.0.2.13",
-    "rh56_mujoco": "3.12.0",
-    "gpu": "NVIDIA vGPU-32GB, 32760 MiB, 580.76.05",
-    "cgroup_limits": {
-      "cpu.max": "1200000 100000",
-      "memory.max": "96636764160"
-    }
+  "source_scope": {
+    "scientific_producers": "Immutable C3 and their recorded original R0 snapshots; never relabelled.",
+    "C3_freeze_sha256": "264343f331d1534e8608729e967e106428ea43459f6bfcb75d3840668c4e8143",
+    "C4_delta": "Two validation/recovery guard fixes and their tests only.",
+    "unchanged_C3_files": 614,
+    "new_model_GPU_or_physics_calls_for_C4": 0
   },
-  "tests": {
-    "frozen_remote_pytest_passed": 175,
-    "actual_exit_code": 0
-  },
-  "matrix": {
-    "passed_combinations": 8,
-    "total_combinations": 8,
-    "accepted_stage_processes": 52,
-    "rows": [
-      {
-        "environment": "adroit-relocate",
-        "model": "pldm",
-        "actual_exit_code": 0,
-        "accepted_stage_count": 7,
-        "all_artifacts_independently_rechecked": true,
-        "stage_names": [
-          "collect",
-          "data-audit",
-          "wm-train",
-          "wm-reload",
-          "official-demos",
-          "bc-seed100",
-          "policy-reload-seed100"
-        ],
-        "data": {
-          "train_episodes": 2,
-          "test_episodes": 1,
-          "train_observation_rows": 400,
-          "test_observation_rows": 200,
-          "observation_action_alignment": "pre-action/outgoing action",
-          "official_source_count_validated": 100,
-          "bc_demos": 1,
-          "official_policy_content_sha256": "4ebf8f93e59668e9660bc09d72188f7bf118b0d3b83e79bb286454d8913bab47"
-        },
-        "bc": {
-          "epochs": 1,
-          "optimizer_steps": 2,
-          "positive_lr_steps": [
-            2
-          ],
-          "frozen_encoder_unchanged": true,
-          "online_episodes": 1,
-          "configured_episode_horizon": 200,
-          "diagnostic_success_percent": 0.0,
-          "policy_reload_strict": true,
-          "input_dim": 606,
-          "action_dim": 30
-        },
-        "world_model": {
-          "representation_optimizer_steps": 2,
-          "auxiliary_optimizer_steps": {
-            "1": 2
-          },
-          "pre_step_learning_rates": {
-            "0": [
-              [
-                0.0
-              ],
-              [
-                5e-05
-              ]
-            ],
-            "1": [
-              [
-                0.0
-              ],
-              [
-                5e-05
-              ]
-            ]
-          },
-          "parameter_changes_verified": true,
-          "strict_reload": true,
-          "reload_max_abs": 0.0,
-          "saved_epoch_label": 1,
-          "partial_epoch_smoke_export": true
-        }
+  "verified_bounded_checks": {
+    "G1": "Actual CUDA/BF16/JAX/EGL and imports verified in separate pinned environments.",
+    "D_M_T_E": "Existing bounded per-gate producer/consumer records retained outside source. No full training or new formal SR.",
+    "Cube24_formal_fixed_input_cells": 24,
+    "Cube24_main_encoder_calls": 192,
+    "Cube24_policy_actions": 144,
+    "Cube24_complete_numeric_elements_exact": 75237796,
+    "Cube24_full_policy_numeric_leaves_per_role": 3672,
+    "independent_formal_success_replays": {
+      "Cube1": {
+        "old_steps": 38,
+        "new_steps": 38,
+        "success": true,
+        "RGB_exception": "Only the specifically user-approved four auxiliary channels; actual PCD/NN/actions/physics/key arrays exact."
       },
-      {
-        "environment": "adroit-relocate",
-        "model": "jepa4r",
-        "actual_exit_code": 0,
-        "accepted_stage_count": 7,
-        "all_artifacts_independently_rechecked": true,
-        "stage_names": [
-          "collect",
-          "data-audit",
-          "wm-train",
-          "wm-reload",
-          "official-demos",
-          "bc-seed100",
-          "policy-reload-seed100"
-        ],
-        "data": {
-          "train_episodes": 2,
-          "test_episodes": 1,
-          "train_observation_rows": 400,
-          "test_observation_rows": 200,
-          "observation_action_alignment": "pre-action/outgoing action",
-          "official_source_count_validated": 100,
-          "bc_demos": 1,
-          "official_policy_content_sha256": "4ebf8f93e59668e9660bc09d72188f7bf118b0d3b83e79bb286454d8913bab47"
-        },
-        "bc": {
-          "epochs": 1,
-          "optimizer_steps": 2,
-          "positive_lr_steps": [
-            2
-          ],
-          "frozen_encoder_unchanged": true,
-          "online_episodes": 1,
-          "configured_episode_horizon": 200,
-          "diagnostic_success_percent": 0.0,
-          "policy_reload_strict": true,
-          "input_dim": 606,
-          "action_dim": 30
-        },
-        "world_model": {
-          "representation_optimizer_steps": 2,
-          "auxiliary_optimizer_steps": {},
-          "pre_step_learning_rates": {
-            "0": [
-              [
-                0.0
-              ],
-              [
-                5e-05
-              ]
-            ]
-          },
-          "parameter_changes_verified": true,
-          "strict_reload": true,
-          "reload_max_abs": 0.0,
-          "saved_epoch_label": 1,
-          "partial_epoch_smoke_export": true
-        }
+      "Native_LeWM": {
+        "old_steps": 200,
+        "new_steps": 200,
+        "goal_steps_each": 35,
+        "all_trace_arrays_exact": true
       },
-      {
-        "environment": "adroit-relocate",
-        "model": "lewm",
-        "actual_exit_code": 0,
-        "accepted_stage_count": 7,
-        "all_artifacts_independently_rechecked": true,
-        "stage_names": [
-          "collect",
-          "data-audit",
-          "wm-train",
-          "wm-reload",
-          "official-demos",
-          "bc-seed100",
-          "policy-reload-seed100"
-        ],
-        "data": {
-          "train_episodes": 2,
-          "test_episodes": 1,
-          "train_observation_rows": 400,
-          "test_observation_rows": 200,
-          "observation_action_alignment": "pre-action/outgoing action",
-          "official_source_count_validated": 100,
-          "bc_demos": 1,
-          "official_policy_content_sha256": "4ebf8f93e59668e9660bc09d72188f7bf118b0d3b83e79bb286454d8913bab47"
-        },
-        "bc": {
-          "epochs": 1,
-          "optimizer_steps": 2,
-          "positive_lr_steps": [
-            2
-          ],
-          "frozen_encoder_unchanged": true,
-          "online_episodes": 1,
-          "configured_episode_horizon": 200,
-          "diagnostic_success_percent": 0.0,
-          "policy_reload_strict": true,
-          "input_dim": 606,
-          "action_dim": 30
-        },
-        "world_model": {
-          "representation_optimizer_steps": 2,
-          "auxiliary_optimizer_steps": {},
-          "pre_step_learning_rates": {
-            "0": [
-              [
-                0.0
-              ],
-              [
-                5e-05
-              ]
-            ]
-          },
-          "parameter_changes_verified": true,
-          "strict_reload": true,
-          "reload_max_abs": 0.0,
-          "saved_epoch_label": 1,
-          "partial_epoch_smoke_export": true
-        }
-      },
-      {
-        "environment": "adroit-relocate",
-        "model": "lejepa",
-        "actual_exit_code": 0,
-        "accepted_stage_count": 7,
-        "all_artifacts_independently_rechecked": true,
-        "stage_names": [
-          "collect",
-          "data-audit",
-          "wm-train",
-          "wm-reload",
-          "official-demos",
-          "bc-seed100",
-          "policy-reload-seed100"
-        ],
-        "data": {
-          "train_episodes": 2,
-          "test_episodes": 1,
-          "train_observation_rows": 400,
-          "test_observation_rows": 200,
-          "observation_action_alignment": "pre-action/outgoing action",
-          "official_source_count_validated": 100,
-          "bc_demos": 1,
-          "official_policy_content_sha256": "4ebf8f93e59668e9660bc09d72188f7bf118b0d3b83e79bb286454d8913bab47"
-        },
-        "bc": {
-          "epochs": 1,
-          "optimizer_steps": 2,
-          "positive_lr_steps": [
-            2
-          ],
-          "frozen_encoder_unchanged": true,
-          "online_episodes": 1,
-          "configured_episode_horizon": 200,
-          "diagnostic_success_percent": 0.0,
-          "policy_reload_strict": true,
-          "input_dim": 1566,
-          "action_dim": 30
-        },
-        "world_model": {
-          "representation_optimizer_steps": 2,
-          "auxiliary_optimizer_steps": {},
-          "pre_step_learning_rates": {
-            "0": [
-              [
-                2e-05
-              ],
-              [
-                0.00068
-              ]
-            ]
-          },
-          "parameter_changes_verified": true,
-          "strict_reload": true,
-          "reload_max_abs": 0.0,
-          "saved_epoch_label": 1,
-          "partial_epoch_smoke_export": true
-        }
-      },
-      {
-        "environment": "adroit-relocate",
-        "model": "visreg",
-        "actual_exit_code": 0,
-        "accepted_stage_count": 5,
-        "all_artifacts_independently_rechecked": true,
-        "stage_names": [
-          "collect",
-          "data-audit",
-          "official-demos",
-          "bc-seed100",
-          "policy-reload-seed100"
-        ],
-        "data": {
-          "train_episodes": 2,
-          "test_episodes": 1,
-          "train_observation_rows": 400,
-          "test_observation_rows": 200,
-          "observation_action_alignment": "pre-action/outgoing action",
-          "official_source_count_validated": 100,
-          "bc_demos": 1,
-          "official_policy_content_sha256": "4ebf8f93e59668e9660bc09d72188f7bf118b0d3b83e79bb286454d8913bab47"
-        },
-        "bc": {
-          "epochs": 1,
-          "optimizer_steps": 2,
-          "positive_lr_steps": [
-            2
-          ],
-          "frozen_encoder_unchanged": true,
-          "online_episodes": 1,
-          "configured_episode_horizon": 200,
-          "diagnostic_success_percent": 0.0,
-          "policy_reload_strict": true,
-          "input_dim": 2334,
-          "action_dim": 30
-        },
-        "world_model": {
-          "pretrained_frozen": true,
-          "weight_sha256": "23e6aa5fe93cc61b3d9ab13e35cb4966580612d39bae39b1991f35c19c8087b8",
-          "weight_bytes": 368495235,
-          "world_model_training_executed": false
-        }
-      },
-      {
-        "environment": "adroit-relocate",
-        "model": "vjepa",
-        "actual_exit_code": 0,
-        "accepted_stage_count": 5,
-        "all_artifacts_independently_rechecked": true,
-        "stage_names": [
-          "collect",
-          "data-audit",
-          "official-demos",
-          "bc-seed100",
-          "policy-reload-seed100"
-        ],
-        "data": {
-          "train_episodes": 2,
-          "test_episodes": 1,
-          "train_observation_rows": 400,
-          "test_observation_rows": 200,
-          "observation_action_alignment": "pre-action/outgoing action",
-          "official_source_count_validated": 100,
-          "bc_demos": 1,
-          "official_policy_content_sha256": "4ebf8f93e59668e9660bc09d72188f7bf118b0d3b83e79bb286454d8913bab47"
-        },
-        "bc": {
-          "epochs": 1,
-          "optimizer_steps": 2,
-          "positive_lr_steps": [
-            2
-          ],
-          "frozen_encoder_unchanged": true,
-          "online_episodes": 1,
-          "configured_episode_horizon": 200,
-          "diagnostic_success_percent": 0.0,
-          "policy_reload_strict": true,
-          "input_dim": 2334,
-          "action_dim": 30
-        },
-        "world_model": {
-          "pretrained_frozen": true,
-          "weight_sha256": "848a77c33cc9e6649ed2119c9bea1e2c569bcdab9539ff3e7c02ccc2959ddf4d",
-          "weight_bytes": 1664223428,
-          "world_model_training_executed": false
-        }
-      },
-      {
-        "environment": "rh56-relocate",
-        "model": "jepa4r",
-        "actual_exit_code": 0,
-        "accepted_stage_count": 7,
-        "all_artifacts_independently_rechecked": true,
-        "stage_names": [
-          "rh56_prepare",
-          "rh56_collect_000",
-          "rh56_validate_000",
-          "rh56_publish",
-          "rh56_wm",
-          "rh56_official_demo",
-          "rh56_bc_100"
-        ],
-        "data": {
-          "train_episodes": 2,
-          "validation_episodes": 1,
-          "observation_rows": 581,
-          "executed_actions": 578,
-          "retained_unsuccessful_episodes": 2,
-          "observation_action_alignment": "T actions/T+1 observations; NaN terminal action",
-          "camera": "opposite",
-          "whole_episode_split": true,
-          "train_only_normalization": true,
-          "bc_demos": 1
-        },
-        "world_model": {
-          "optimizer_state_steps": [
-            2
-          ],
-          "gradient_checks": 2,
-          "train_batches": 2,
-          "pre_step_learning_rates": [
-            {
-              "step": 0,
-              "lrs": [
-                0.0
-              ]
-            },
-            {
-              "step": 1,
-              "lrs": [
-                5e-05
-              ]
-            }
-          ],
-          "strict_reload_max_abs": {
-            "emb": 0.0,
-            "act_emb": 0.0,
-            "pred_loss": 0.0,
-            "sigreg_loss": 0.0,
-            "loss": 0.0,
-            "pred": 0.0
-          },
-          "saved_epoch_label": 1
-        },
-        "bc": {
-          "backend_mode": "profile",
-          "epochs": 1,
-          "optimizer_steps": 1,
-          "actual_optimizer_evidence": {
-            "steps": 1,
-            "finite_gradient_checks": 1
-          },
-          "frozen_encoder_unchanged": true,
-          "head_changed": true,
-          "online_episodes": 1,
-          "online_steps": 200,
-          "diagnostic_success_percent": 0.0,
-          "policy_reload_max_abs": 0.0,
-          "input_dim": 589,
-          "action_dim": 12
-        }
-      },
-      {
-        "environment": "rh56-relocate",
-        "model": "lewm",
-        "actual_exit_code": 0,
-        "accepted_stage_count": 7,
-        "all_artifacts_independently_rechecked": true,
-        "stage_names": [
-          "rh56_prepare",
-          "rh56_collect_000",
-          "rh56_validate_000",
-          "rh56_publish",
-          "rh56_wm",
-          "rh56_official_demo",
-          "rh56_bc_100"
-        ],
-        "data": {
-          "train_episodes": 2,
-          "validation_episodes": 1,
-          "observation_rows": 581,
-          "executed_actions": 578,
-          "retained_unsuccessful_episodes": 2,
-          "observation_action_alignment": "T actions/T+1 observations; NaN terminal action",
-          "camera": "opposite",
-          "whole_episode_split": true,
-          "train_only_normalization": true,
-          "bc_demos": 1
-        },
-        "world_model": {
-          "optimizer_state_steps": [
-            2
-          ],
-          "gradient_checks": 2,
-          "train_batches": 2,
-          "pre_step_learning_rates": [
-            {
-              "step": 0,
-              "lrs": [
-                0.0
-              ]
-            },
-            {
-              "step": 1,
-              "lrs": [
-                5e-05
-              ]
-            }
-          ],
-          "strict_reload_max_abs": {
-            "emb": 0.0,
-            "act_emb": 0.0,
-            "pred_loss": 0.0,
-            "sigreg_loss": 0.0,
-            "loss": 0.0,
-            "pred": 0.0
-          },
-          "saved_epoch_label": 1
-        },
-        "bc": {
-          "backend_mode": "profile",
-          "epochs": 1,
-          "optimizer_steps": 1,
-          "actual_optimizer_evidence": {
-            "steps": 1,
-            "finite_gradient_checks": 1
-          },
-          "frozen_encoder_unchanged": true,
-          "head_changed": true,
-          "online_episodes": 1,
-          "online_steps": 200,
-          "diagnostic_success_percent": 0.0,
-          "policy_reload_max_abs": 0.0,
-          "input_dim": 589,
-          "action_dim": 12
-        }
+      "RH56_JEPA4R": {
+        "old_steps": 200,
+        "new_steps": 200,
+        "goal_steps_each": 140,
+        "overload": false,
+        "all_trace_arrays_and_scalars_exact": true
       }
-    ]
-  },
-  "cem": [
-    {
-      "route": "pcd",
-      "actual_exit_code": 0,
-      "diagnostic": true,
-      "fragment_count": 1,
-      "budget": {
-        "eval_budget": 25,
-        "n_steps": 1,
-        "num_eval": 1,
-        "num_samples": 30,
-        "test_episodes": 1,
-        "topk": 5,
-        "train_episodes": 2
-      },
-      "metrics": {
-        "episode_successes": [
-          false
-        ],
-        "seeds": [
-          2000042
-        ],
-        "success_rate": 0.0
-      },
-      "criterion": {
-        "distance_lt": 0.1,
-        "scope": "future-object-position fragment; not native >25-step task success"
-      },
-      "input_and_source_hashes_rechecked": true
     },
-    {
-      "route": "rgb",
-      "actual_exit_code": 0,
-      "diagnostic": true,
-      "fragment_count": 1,
-      "budget": {
-        "eval_budget": 25,
-        "n_steps": 1,
-        "num_eval": 1,
-        "num_samples": 30,
-        "test_episodes": 1,
-        "topk": 5,
-        "train_episodes": 2
-      },
-      "metrics": {
-        "episode_successes": [
-          false
-        ],
-        "seeds": [
-          2000042
-        ],
-        "success_rate": 0.0
-      },
-      "criterion": {
-        "distance_lt": 0.1,
-        "scope": "future-object-position fragment; not native >25-step task success"
-      },
-      "input_and_source_hashes_rechecked": true
-    }
+    "original_R6_Cube_events_reaggregated": 6000,
+    "original_R6_BC_rounds_reaggregated": 480,
+    "reference_model_policy_asset_cells_available": 32,
+    "C4_guard_tests_passed": 52,
+    "independent_implementation_findings_found": 2,
+    "independent_implementation_findings_fixed": 2,
+    "known_unfixed_implementation_findings": 0
+  },
+  "qualifications": [
+    "Cube2 JEPA4R/G06 and LeWM/G05 original full argv/exit, WM and 1M manifest-policy bindings are verified; exact historical training config byte-SHA lacks an independent frozen pin.",
+    "Native Oct4 JEPA4R formal target-site point protocol is not certified as the current FinalVil visible-point online protocol. Formal weights/three heads were compared on shared current real history only.",
+    "Formal Cube24 fixed inputs compare f437 and C3 on each original formal WM/1M policy. The historical encoder_py312.FrozenPLDM production path was not independently rerun; derived invocation descriptors are labelled.",
+    "Formal fixed-input histories are shared true histories, not each saved policy own historical online trajectory. The three independent controller implementations have separate selected success replays.",
+    "Old VISReg Cube1 and old JEPA Cube2 first-segment after-state observations remain absent where originally unrecorded. Conditional unchanged-implementation/frozen-buffer reuse is separate from observed boundaries.",
+    "Full-data future runtime-derived statistics and a new complete paper training/SR reproduction were not executed under the smoke-only budget.",
+    "Original saved BC policy identity and logged highest-return event are separate; a historical save-event-to-file epoch binding is not invented."
   ],
-  "formal_training_executed": false,
-  "formal_success_rate_evaluation_executed": false,
-  "metric_boundaries": {
-    "bc": "One-epoch smoke online trajectories; not the paper Best-of-20",
-    "cem": "One future-position fragment per route; not full-task BC success"
+  "user_exceptions": "Only the already approved frozen RGB trajectories are accepted separately; original strict failures, default tolerances, and generic comparators remain unchanged.",
+  "full_training_or_new_Native250_performed": false,
+  "GitHub_push_performed": false,
+  "main_merge_performed": false,
+  "evidence": {
+    "C3_source_freeze": {
+      "external_artifact_id": "source_candidate_v3/SOURCE_FREEZE.json",
+      "sha256": "264343f331d1534e8608729e967e106428ea43459f6bfcb75d3840668c4e8143"
+    },
+    "C4_guard_scope_and_scientific_reuse": {
+      "external_artifact_id": "C4_GUARD_SCOPE_AND_C3_SCIENTIFIC_REUSE_v1.json",
+      "sha256": "be6b6ad896fc1cb92a4582d32db272b2582794ed1c1e208416b0b2093443f814"
+    },
+    "C4_guard_RED_GREEN": {
+      "external_artifact_id": "C4_collection_input_guard_v1/WORKFLOW_FULL_CONTROL.stdout.json",
+      "sha256": "19f7fddf9032fe01a034097f8f65bb82033a998eb73d40dfc4c2463d9071c466"
+    },
+    "independent_review_and_fix_handoff": {
+      "external_artifact_id": "reviews/FINAL_FRESH_SOURCE_REVIEW_v1/HANDOFF_C4.md",
+      "sha256": "f5253f882f06dd8940aacdd1d4c99e2c074aefb24792da4addf56167168dd1e7"
+    },
+    "formal_Cube24_fixed_input": {
+      "external_artifact_id": "CUBE24_FORMAL_FIXED_INPUT_E4_v2/FINAL_CLOSED_EVIDENCE_v1/FORMAL24_FIXED_INPUT_ACCEPTANCE_v1.json",
+      "sha256": "5b1d4ae272b08dc73571f8a5df9f0223fa9af95ac91fedcf7b586678ee018b4e"
+    },
+    "formal_Cube24_final_pin_check": {
+      "external_artifact_id": "CUBE24_FORMAL_FIXED_INPUT_E4_v2/FINAL_CLOSED_EVIDENCE_v1/D_FINAL_PIN_BINDING_RECHECK_v1.json",
+      "sha256": "514fbd8426e4591c5b0533c1fd964e0090ee2316aaa4e65ceea0c8216cf6bce2"
+    },
+    "formal_Cube1_user_scoped_acceptance": {
+      "external_artifact_id": "reviews/CUBE1_E4_SCOPED_ACCEPTANCE_OLD_FALSE_NEW_FALSE_v1.json",
+      "sha256": "fe75c2af4edb9597dc0ea80ae2ff7eca41283f01df34bfa50c794845ebe0e3ca"
+    },
+    "formal_Native_LeWM_exact_success": {
+      "external_artifact_id": "D_NATIVE_FORMAL_CAS_VERIFIED_v1.json",
+      "sha256": "23e4feb6909e45f6c0bd7ca565e47a22e279c973b6d532d07748b198a9c159b5"
+    },
+    "formal_RH56_exact_success": {
+      "external_artifact_id": "RH_FORMAL_E4_NEW_CPU_PREP_v3/FINAL_HANDOFF_RECEIPT_v1.json",
+      "sha256": "164e0dbd91a293ee9a8da7e32ff30863745f4163d22bd9c293e6d6f043727a13"
+    },
+    "original_R6_all32": {
+      "external_artifact_id": "FINAL_R6_32CELL_RECOMPUTATION_v2/R6_ALL32_ORIGINAL_RESULTS_v2.json",
+      "sha256": "6764f0ec9d767a7e9780d9ca78e90f6a5bc5e77357840ecb9c51492d7455e4f2"
+    },
+    "R6_original_raw_preservation": {
+      "external_artifact_id": "R6_CUBE22_ORIGINAL_EVENTS_v1/raw_backup_v1/RAW_BACKUP_FINAL_ACCEPTANCE_v1.json",
+      "sha256": "55ffb9c18d030816455289114889bdb00fc4db64a4902d144366911fa7e84882"
+    },
+    "reference_asset_availability32": {
+      "external_artifact_id": "reference_availability_32_and_R6_CPU_v1/ORIGINAL_REFERENCE_32_AVAILABILITY_OVERLAY_v1.json",
+      "sha256": "abd481ebcc4313b09d461e818fc7c24cc4ba7aa30bd6b01129d4e7e83500a304"
+    },
+    "RGB_D3_segmented_handoff": {
+      "external_artifact_id": "RGB_D3_FINAL_HANDOFF_v1/RGB_D3_FINAL_SCOPE_RECEIPT_v1.json",
+      "sha256": "9c8888a9d657d6332e8a64d960ef56a07aa6f020ab0ec675cf18d8aff62981d1"
+    }
   }
 }

@@ -1,1180 +1,630 @@
 {
-  "schema": "jepa4r-relocate-source-v1",
-  "base_commit": "335bd20946f0255eb41d18456256a34e888fb93e",
-  "frozen_at": "2026-11-08T11:39:34.541702+00:00",
-  "code_tree_sha256": "238d3c832c63fa98c04a81976b5d4442a494e19243879f72183c175819bfbf23",
-  "scope": "All executable source, dependency/configuration/asset contracts, tests, documentation and licenses; generated verification evidence and this manifest excluded to prevent self-reference",
-  "excluded_release_metadata": [
-    "SOURCE_MANIFEST.json",
-    "SMOKE_VERIFICATION.json"
-  ],
-  "files": [
-    {
-      "path": ".gitattributes",
-      "bytes": 144,
-      "sha256": "c4eec33a427357a9043e2fa55be32cfd3fb747808f2a304d90871c841cf770d9"
-    },
-    {
-      "path": ".gitignore",
-      "bytes": 136,
-      "sha256": "d8372bf74fcd9b1d5a83557c85bf16ab59247b6af071a6835cdd50ad513e5554"
-    },
-    {
-      "path": "assets.example.json",
-      "bytes": 1699,
-      "sha256": "63eb51bdabbf88abcd12a9e3d2087e845cca5518f605e4eedabf16d39c14845d"
-    },
-    {
-      "path": "DEPENDENCIES.json",
-      "bytes": 3569,
-      "sha256": "717103dede06ee0d750399f9a0b9edf6ef57c499ace83bea110787062bd7d85f"
-    },
-    {
-      "path": "lewm_pcd/bench/cortexbench/__init__.py",
-      "bytes": 73,
-      "sha256": "3718de4b9b92927fbb19db5dd1cc989e8ec1391dc4cfc8f486ee0c1145b76f0e"
-    },
-    {
-      "path": "lewm_pcd/bench/cortexbench/conf/model/lejepa_relocate.yaml",
-      "bytes": 184,
-      "sha256": "c80876a51ce81e57b9362c07ff123914ba2b825e4c190854bc54ecf732e9dd14"
-    },
-    {
-      "path": "lewm_pcd/bench/cortexbench/conf/model/lewm_adroit_relocate_2d.yaml",
-      "bytes": 139,
-      "sha256": "b0eb01ae2fb57616efddbcee2e67a07195fc4d2260640835983141ccfb0eb88d"
-    },
-    {
-      "path": "lewm_pcd/bench/cortexbench/conf/model/lewm_adroit_relocate_pcd.yaml",
-      "bytes": 147,
-      "sha256": "9044fbe6fc700e43ad7442e91a4ea26de9a0e7466a61b383c1a180794bd28010"
-    },
-    {
-      "path": "lewm_pcd/bench/cortexbench/conf/model/pldm_relocate.yaml",
-      "bytes": 185,
-      "sha256": "b4e15e65e5b24a3e17ffe6222403c28e5a602bd4b9218394640b3ea2ad83adee"
-    },
-    {
-      "path": "lewm_pcd/bench/cortexbench/conf/model/visreg_vitb.yaml",
-      "bytes": 438,
-      "sha256": "287fa766a9af624bd47f034110bbfd51c6c554dadfd9908f7c70026e9e60e2c9"
-    },
-    {
-      "path": "lewm_pcd/bench/cortexbench/conf/model/vjepa21_vitb.yaml",
-      "bytes": 492,
-      "sha256": "995d457d78a62dab2f55ab802732c965bb18bbdc21b9c1659b0eb7e843d867a3"
-    },
-    {
-      "path": "lewm_pcd/bench/cortexbench/convert_adroit_demos_3d.py",
-      "bytes": 5825,
-      "sha256": "50b912fa6db701ed16cba6a63e18659190b6f621ad95641c7951d3bdc8498f72"
-    },
-    {
-      "path": "lewm_pcd/bench/cortexbench/jepa_baselines.py",
-      "bytes": 8648,
-      "sha256": "77c3163b3aaa7ee7a93495a850484bad0d7c59634c8e6e660c470e32ca759692"
-    },
-    {
-      "path": "lewm_pcd/bench/cortexbench/lewm_cortex.py",
-      "bytes": 10526,
-      "sha256": "9a716af1adc7d1f93f87eee77dc87b9c2d66829c1a4b6c5d3807379282f70350"
-    },
-    {
-      "path": "lewm_pcd/bench/cortexbench/run_adroit_bc3d.py",
-      "bytes": 5538,
-      "sha256": "4621ad84674d07f39aebd80786f05f49ce93fa08a4b45ff673201f4425a44426"
-    },
-    {
-      "path": "lewm_pcd/bench/cortexbench/run_bc.py",
-      "bytes": 2960,
-      "sha256": "4779a7c6f7cfbe05849cdb23747a1ddf480dc9221e8ca842adcb6189f4531632"
-    },
-    {
-      "path": "lewm_pcd/bench/cortexbench/surface_geometry.py",
-      "bytes": 3419,
-      "sha256": "94b50c60e897d636e88bc82f9756b80f8bf42a22909276db1bc0f7b341d7a65e"
-    },
-    {
-      "path": "lewm_pcd/bench/relocate/__init__.py",
-      "bytes": 99,
-      "sha256": "5451662c22f04e91eb39beb3de9689f38f6730b9494558751e4c6299c5751853"
-    },
-    {
-      "path": "lewm_pcd/bench/relocate/adroit_collect.py",
-      "bytes": 9020,
-      "sha256": "f94de0cf89e51b913b3a9b814e2743d1eab1dc1d109f69fe164cd0ab3c716e49"
-    },
-    {
-      "path": "lewm_pcd/bench/relocate/adroit_data.py",
-      "bytes": 13683,
-      "sha256": "0a1f0be11dbf66eb2f92994792fb508cc4353935036d7b16f6e9289d9986b1f2"
-    },
-    {
-      "path": "lewm_pcd/bench/relocate/adroit_learning.py",
-      "bytes": 28594,
-      "sha256": "79846867fb58081f0e6f6244d3321b017105273e99461bfc0f3316e80055b4ea"
-    },
-    {
-      "path": "lewm_pcd/bench/relocate/adroit_workflow.py",
-      "bytes": 9951,
-      "sha256": "4d432199959040ce73eb72eb222ef271d6fea172ed3332488ed18c72fdad217d"
-    },
-    {
-      "path": "lewm_pcd/bench/relocate/official_contract.py",
-      "bytes": 5727,
-      "sha256": "ed988eda818698637708bcf423aec5139725b641e905cca7ae901af3d0842708"
-    },
-    {
-      "path": "lewm_pcd/bench/relocate/paired_writer.py",
-      "bytes": 3370,
-      "sha256": "f77a3420cdb29da6fc7b78b3962be42a927a86e6ea1f92ca5290e5c691d860b7"
-    },
-    {
-      "path": "lewm_pcd/bench/relocate/rh56_workflow.py",
-      "bytes": 19919,
-      "sha256": "d9bf08fbadd714623e3ee50e9d2edd74189cafad82a6e896b0d058edc9aad8df"
-    },
-    {
-      "path": "lewm_pcd/bench/relocate/workflow.py",
-      "bytes": 13798,
-      "sha256": "d717a59daf1bb5355b60782e0b3195cd70acac464c49e41fb4af5452ca76927b"
-    },
-    {
-      "path": "lewm_pcd/config/adroit_relocate_sampling.json",
-      "bytes": 359,
-      "sha256": "85f3bc980ff1f05bbb66cd872b87c01f24e27c9ec0cdd09560a502e3b42873f8"
-    },
-    {
-      "path": "lewm_pcd/config/eval/adroit_relocate_pcd_fragment.yaml",
-      "bytes": 642,
-      "sha256": "a45341b83370b81fbc1d94d2d1c061c3bfff76705d172a51a852a9352d4868c7"
-    },
-    {
-      "path": "lewm_pcd/config/eval/adroit_relocate_pix_fragment.yaml",
-      "bytes": 641,
-      "sha256": "aff3797f3acf3cc0aebbf50a72c23a87e2533b4b99be7ee36e956c25609bbfc2"
-    },
-    {
-      "path": "lewm_pcd/config/eval/launcher/local.yaml",
-      "bytes": 347,
-      "sha256": "f97e5816c483da3103bbb00d8d1ff3ee98660b77b13d923d3ddfe1e7087f2d1b"
-    },
-    {
-      "path": "lewm_pcd/config/eval/solver/cem.yaml",
-      "bytes": 224,
-      "sha256": "7eca98723bccdb79670ed228d6a5c4b3deb43f76b71d36fa03cf7888c6a548d8"
-    },
-    {
-      "path": "lewm_pcd/config/train/adroit_relocate_pcd.yaml",
-      "bytes": 221,
-      "sha256": "60a6af267210e7d761e196a9ba8c25d0dab8bc3d7bc8ecb04981ed37dff02374"
-    },
-    {
-      "path": "lewm_pcd/config/train/data/adroit_relocate.yaml",
-      "bytes": 335,
-      "sha256": "75ed2d5691b49ca87f1228ecee12dd4dad954b3ae4fbe6930fc7e7205f005d49"
-    },
-    {
-      "path": "lewm_pcd/config/train/data/adroit_relocate_pcd.yaml",
-      "bytes": 406,
-      "sha256": "df038922f5ec2192f0b2445ad52c55d97a9e4dfa305b868c732599083b15628a"
-    },
-    {
-      "path": "lewm_pcd/config/train/launcher/local.yaml",
-      "bytes": 609,
-      "sha256": "c2fa9f45aec54cc823d8437fee8977933431174a372af7c8eb3c346e768df8f9"
-    },
-    {
-      "path": "lewm_pcd/config/train/lewm.yaml",
-      "bytes": 788,
-      "sha256": "fc4e9a93799a6c4ca8a75f1c021cf8e20d0547295db22ba58d9d972eb90b228d"
-    },
-    {
-      "path": "lewm_pcd/config/train/model/encoder/dexart.yaml",
-      "bytes": 307,
-      "sha256": "53ffc78907997899ecf5aa5b8c97e0a63e899e77a792dd0f265b08bc3f94c979"
-    },
-    {
-      "path": "lewm_pcd/config/train/model/encoder/vit.yaml",
-      "bytes": 323,
-      "sha256": "d5ed104c29eab2d21bd20a044287c7d5f3e16b08e5f4932c0012d8fd6f8086a8"
-    },
-    {
-      "path": "lewm_pcd/config/train/model/lewm.yaml",
-      "bytes": 918,
-      "sha256": "a7a0ac13af527f8b3c7a3572dbda394e1ac613d5f2b1f73732ddf9eb62a994f2"
-    },
-    {
-      "path": "lewm_pcd/config/train/model/lewm_pcd.yaml",
-      "bytes": 801,
-      "sha256": "a8cae992a20fcd428d4f790ea394e5c4e4cafad338a39076241e9c8621842fa6"
-    },
-    {
-      "path": "lewm_pcd/config/train/model/lewm_pcd_dexart.yaml",
-      "bytes": 150,
-      "sha256": "fd08230db089ff03f105c74669e35842a59be7c5209294d4c3554ff22c6bde3c"
-    },
-    {
-      "path": "lewm_pcd/encoders/__init__.py",
-      "bytes": 793,
-      "sha256": "8546c34efa0d2a73484899b760dbde0ac7c8402fbefe086960be60bef8d307fd"
-    },
-    {
-      "path": "lewm_pcd/encoders/pointnet_dexart.py",
-      "bytes": 3112,
-      "sha256": "5e2f0ad6f590a7f91fb7bc91d9e80ba941fa87614392678466d1defc5f7f2c66"
-    },
-    {
-      "path": "lewm_pcd/encoders/vit.py",
-      "bytes": 1066,
-      "sha256": "829efe4f2c11884253d236050a9fd2146732c91393547f92475a862c8fcd669a"
-    },
-    {
-      "path": "lewm_pcd/envs/__init__.py",
-      "bytes": 398,
-      "sha256": "cbb18bf568af0de1cc083d59cb8d26f04ec1a59ac91ff2dd0831b741207c0143"
-    },
-    {
-      "path": "lewm_pcd/envs/adroit/__init__.py",
-      "bytes": 913,
-      "sha256": "6695123c9305c5f540ae8abcf9d858d24756be41578b6ac57aec80eef38117de"
-    },
-    {
-      "path": "lewm_pcd/envs/adroit/env.py",
-      "bytes": 9806,
-      "sha256": "a4d8b10975135a149a714096866c94dc94731332cd989f4ca5323fc7b4e3798a"
-    },
-    {
-      "path": "lewm_pcd/envs/adroit/fragment.py",
-      "bytes": 15218,
-      "sha256": "5b2ff2f1eae1ccf6af92910c056bc9b0ddcd79f30c4e5d0c3831c7183f9b8b06"
-    },
-    {
-      "path": "lewm_pcd/envs/adroit/fragment_env.py",
-      "bytes": 2362,
-      "sha256": "773af1c1bdeb6e89c6396a390efd6211d84a889168ba7d63579ef48ad79be434"
-    },
-    {
-      "path": "lewm_pcd/envs/adroit/hdf_binding.py",
-      "bytes": 4408,
-      "sha256": "3c20b7be56a7a52035d6b5e94a8ef55d079652665b82decea0fb8c6008655dc8"
-    },
-    {
-      "path": "lewm_pcd/envs/adroit/pcd.py",
-      "bytes": 18190,
-      "sha256": "c312d1204068aeec7918c380c7c0537ec6d3efd7af24d2cd13b3c51f34bb7e6e"
-    },
-    {
-      "path": "lewm_pcd/envs/adroit/policy.py",
-      "bytes": 5691,
-      "sha256": "79eb26a8d8ea1e3cf3c51ee1a75c8c39b6daedb3819f74809b6a6acb4b0ce3d5"
-    },
-    {
-      "path": "lewm_pcd/envs/eval_policy.py",
-      "bytes": 5912,
-      "sha256": "da8085a812aa58df73c168a2ab2ccb6cf154b8105354d2be3c0116fbe95660f4"
-    },
-    {
-      "path": "lewm_pcd/eval.py",
-      "bytes": 11960,
-      "sha256": "acf52b1df8ef5c10edb93723b1467aca4f84956307e78dd3c960bbc0129e3378"
-    },
-    {
-      "path": "lewm_pcd/jepa.py",
-      "bytes": 5492,
-      "sha256": "7e6680f9941268b13526082fa888a46de7dca9385bfc837e77ee649e5c034135"
-    },
-    {
-      "path": "lewm_pcd/LICENSE-le-wm",
-      "bytes": 1088,
-      "sha256": "0e66685ed351839b0baf614c4207aa2c5e6ab9dbe419aac9c38d0998a000200c"
-    },
-    {
-      "path": "lewm_pcd/module.py",
-      "bytes": 8433,
-      "sha256": "0b258a9e8dc24c29fcb1e8c50a09ec78b8ea85aeb79e21dd8adf712396646620"
-    },
-    {
-      "path": "lewm_pcd/rh56_adapter/__init__.py",
-      "bytes": 234,
-      "sha256": "d74149db59bd939d1f2c1c9f3d6ca5b99e7088d09fbb6182cad9d48e4bda153a"
-    },
-    {
-      "path": "lewm_pcd/rh56_adapter/_runtime.py",
-      "bytes": 1778,
-      "sha256": "ceaada1900c8f2cea2a795700725f777236428af155f84b17e1e34c2d3e9812a"
-    },
-    {
-      "path": "lewm_pcd/rh56_adapter/bc_bridge.py",
-      "bytes": 38172,
-      "sha256": "daa5d9f8b31af00c80e0b9cef500392628760b74873df5d5250e9ea56e0c9c18"
-    },
-    {
-      "path": "lewm_pcd/rh56_adapter/camera_preview.py",
-      "bytes": 884,
-      "sha256": "ae5027f69649d42903873b0568d418f317c328eba0e73761acf150e8f0ea1b13"
-    },
-    {
-      "path": "lewm_pcd/rh56_adapter/collect.py",
-      "bytes": 18180,
-      "sha256": "13e9668aef41e43a7d0d4b9e6ac1fb1a434990834377e90ca4d0f6d261a0fddf"
-    },
-    {
-      "path": "lewm_pcd/rh56_adapter/data_tools.py",
-      "bytes": 15443,
-      "sha256": "9366763c45cd6109cf68dcf2b535a88c7392462652b777f3ac45bf628abf0fc5"
-    },
-    {
-      "path": "lewm_pcd/rh56_adapter/native.py",
-      "bytes": 9655,
-      "sha256": "66c12b6cf40af147ca3a14088128cf6bfc18bf08e8262daa5f428e117c1ad9ea"
-    },
-    {
-      "path": "lewm_pcd/rh56_adapter/official_init.py",
-      "bytes": 10998,
-      "sha256": "b106c8e7e048eb4cd3d0328cf304876ae8c726bcb7ddb886f0c959db42091b85"
-    },
-    {
-      "path": "lewm_pcd/rh56_adapter/uint8_gpu.py",
-      "bytes": 3393,
-      "sha256": "ea4617c1cdb08e35c4ba3e2c236ab3c345c808df0bcfaeb3b2deb2689186f82e"
-    },
-    {
-      "path": "lewm_pcd/rh56_adapter/wm_bridge.py",
-      "bytes": 36328,
-      "sha256": "ed34df11521fed519c7c19847f3447a297efe4bc15a401441a0fdbe368631b75"
-    },
-    {
-      "path": "lewm_pcd/scripts/baselines/adroit/__init__.py",
-      "bytes": 40,
-      "sha256": "744b46a92148d12a351a4b914b7550ded7b024fbd558b8004169eb549cfbc420"
-    },
-    {
-      "path": "lewm_pcd/scripts/baselines/adroit/data.py",
-      "bytes": 2487,
-      "sha256": "f8a1f4471d16cfecd0c32bc09b2a97bf677c54d401360d07f1c0d7c7fb8e0a86"
-    },
-    {
-      "path": "lewm_pcd/scripts/baselines/adroit/train_lejepa.py",
-      "bytes": 7760,
-      "sha256": "1c9aea05d586523dce65943c34ded94b2b44672bd432826909572d094bd1ab7e"
-    },
-    {
-      "path": "lewm_pcd/scripts/baselines/adroit/train_pldm.py",
-      "bytes": 12956,
-      "sha256": "096412c2aefeb2eb39646a5efb4fcb387ee4d08ea536d2eb43162fc2dc642df8"
-    },
-    {
-      "path": "lewm_pcd/scripts/baselines/train_lejepa_relocate.py",
-      "bytes": 6908,
-      "sha256": "54b7cc8e388db988e02e2653f56a32b921c529524cde560fe0aa2083f78e96a6"
-    },
-    {
-      "path": "lewm_pcd/scripts/checks/prepare_relocate_fragment_rgb.py",
-      "bytes": 6815,
-      "sha256": "f4186a9b3da1b0ccfccea997f7df0983bf35ea89089c4e2f9214381e491b891d"
-    },
-    {
-      "path": "lewm_pcd/scripts/checks/run_adroit_fragment_cem.py",
-      "bytes": 13365,
-      "sha256": "8598174f53f21ef3ba0785192e488e3e52704d78f39313e55ce9680208f30a8d"
-    },
-    {
-      "path": "lewm_pcd/scripts/checks/test_adroit_public_workflow.py",
-      "bytes": 26236,
-      "sha256": "55ed69f3739b73eef1dd490dba7304c85db17630ecec154cc5b7943c40167be3"
-    },
-    {
-      "path": "lewm_pcd/scripts/checks/test_lewm_cortex.py",
-      "bytes": 1252,
-      "sha256": "6be50523d15bfae0bf65e809ac961704609e6611c50bbf6a86b58c33b37a4edf"
-    },
-    {
-      "path": "lewm_pcd/scripts/checks/test_relocate_fragment.py",
-      "bytes": 19375,
-      "sha256": "25baa10939304bc8eae760cd966949dee851079e214870d26f521e10ad29096c"
-    },
-    {
-      "path": "lewm_pcd/scripts/checks/test_rh56_data_adapter.py",
-      "bytes": 18664,
-      "sha256": "668694bf267275303272e38047769d6ac2b356b97ba8eee9f1fbe269a0140e15"
-    },
-    {
-      "path": "lewm_pcd/scripts/checks/test_rh56_entry.py",
-      "bytes": 4834,
-      "sha256": "b6198dee1f5ae6548bae971c4798fdb027ca900030db16ecd33424820a7508eb"
-    },
-    {
-      "path": "lewm_pcd/scripts/checks/test_rh56_training_bridge.py",
-      "bytes": 16262,
-      "sha256": "477ef32719430c71b2964ffefff002d085326ee2d07a5e1b0e1e80ec5c8f3d9b"
-    },
-    {
-      "path": "lewm_pcd/scripts/checks/test_rh56_workflow.py",
-      "bytes": 17775,
-      "sha256": "8f69e14e470b313e568ff982f6d6c2a736c4f47f35580d106bd87c8c9845525e"
-    },
-    {
-      "path": "lewm_pcd/scripts/data/merge_h5_shards.py",
-      "bytes": 4522,
-      "sha256": "d7fcd9c6df2698adeef21249ad279c512ce73ad30652a917471573ab5453f068"
-    },
-    {
-      "path": "lewm_pcd/scripts/data/replay_adroit_relocate_pcd.py",
-      "bytes": 7375,
-      "sha256": "28c45ecf4c4616fa3242180f15a13f21e7554f62a2f89c2f91ff7568bde1cbcc"
-    },
-    {
-      "path": "lewm_pcd/scripts/run_rh56.py",
-      "bytes": 5376,
-      "sha256": "2fedd45447cbc2c8dbb10e09e8ff364b7f66deb041be6594bc72fb0d0797134e"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/LICENSE",
-      "bytes": 1091,
-      "sha256": "33669e852fb0368b2b150b08798c996d076596f5da0e60f07d5c5180e7636630"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/pyproject.toml",
-      "bytes": 2579,
-      "sha256": "789530daca627f576fd06b24b034e9a14a281f755097d3a416515082f0cb7a89"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/README.md",
-      "bytes": 16799,
-      "sha256": "e13b9e0c79dc6857ec45c23e80e6d5d64bc21e383bb601aed4f763342e8e691d"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/scripts/train/config/data/ogb.yaml",
-      "bytes": 281,
-      "sha256": "c5b7bf93bf23533d750941d135df882ef3f92b5f674aeb629739c5ba1f0a8a52"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/scripts/train/config/data/pusht.yaml",
-      "bytes": 254,
-      "sha256": "1713de73a55d7c177b3de72b8f4221dfa2feae546ee07d681f210c4e231f7756"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/scripts/train/config/launcher/local.yaml",
-      "bytes": 376,
-      "sha256": "6a17d34722f775863feffdd038f6aaea76a38de8b9d63f3c412577dcdcb6de93"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/scripts/train/config/pldm.yaml",
-      "bytes": 2436,
-      "sha256": "4d49680a9f3629ed5c5b5a02673659c24328cebe804ca78ec6415e966edbb8c6"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/scripts/train/pldm.py",
-      "bytes": 8113,
-      "sha256": "6cbfba129d8356da4dfdaa3b8091116d40d0cfd5cea7995be7b77e0d58213f4a"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/SOURCE.json",
-      "bytes": 22847,
-      "sha256": "6129d069f237bf25cd266754752b92d33f4b093c98b132debc4e4413bcd5d4d6"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/__init__.py",
-      "bytes": 1948,
-      "sha256": "f804b575fbedf8833f1ad7a518aa816b64781a6853af7d956711333a2181e40a"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/buffer.py",
-      "bytes": 10532,
-      "sha256": "f2883368a872ba035068ba37373700848c614187de4b4863d1f33543cd215b15"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/cli.py",
-      "bytes": 35500,
-      "sha256": "b12e4ec3171fa3e6982a9d6f9921f3e50f537180611e6bdf89faed2795b5f31d"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/data/__init__.py",
-      "bytes": 2470,
-      "sha256": "1a85fb903f8396c4938550437ab787d3a27334c80c623d25078bd57d040547f3"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/data/buffer.py",
-      "bytes": 19150,
-      "sha256": "fe5b098629dba76a807f6165804cd59be69530888c6e977ac6e587fa61164f64"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/data/dataset.py",
-      "bytes": 24168,
-      "sha256": "9b607197069a5e8d6cf13e35981acb93af83fa80ebd4b8dbc85bfef520c04a26"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/data/format.py",
-      "bytes": 6937,
-      "sha256": "8206cfe8751ebbc1a02df72ff18f97e2dab717fff78e691c6233e3a30dfa5952"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/data/formats/__init__.py",
-      "bytes": 1385,
-      "sha256": "39c01f30e954d075efd13d9ac8a2e56860be4f7fbde6055377057616f69d6ad6"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/data/formats/folder.py",
-      "bytes": 12075,
-      "sha256": "0050e9d868d31be4d1ccc0144c8a0471fd8758edbba63f8d5114b7e7bfb1029b"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/data/formats/hdf5.py",
-      "bytes": 13325,
-      "sha256": "4ee1e5957612e1cb623b33b85b241a30325e802533e071e9f9522b9721ee1ef5"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/data/formats/lance.py",
-      "bytes": 55822,
-      "sha256": "1215b8fc032c8f65c2ea65b6345b375340d99421b18b123bd338f0134946d8ca"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/data/formats/lance_video.py",
-      "bytes": 29909,
-      "sha256": "66a8a31a83ff3ecde198a38b6a5f2ac168945a5a330e9b37d255c3c0131cfd6c"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/data/formats/lerobot.py",
-      "bytes": 13373,
-      "sha256": "d02f405703a111405d444d99395a80010e2190da6ea3e92b80b26e79bca03271"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/data/formats/utils.py",
-      "bytes": 423,
-      "sha256": "deaf2fe1ca4e6cf4e483c1f4b20f3f20180733e291688e05bc4cb853dd45e5e8"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/data/formats/video.py",
-      "bytes": 10506,
-      "sha256": "5f9d7eaf83e77640d6fdecda6cede1f2502eecaf06c238b9666087a82d96d895"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/data/normalization.py",
-      "bytes": 5898,
-      "sha256": "0d742cf402b85978dd686e1f6869e5b7ee02e39b974bfb50a8ca39d10bb8ed9e"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/data/utils.py",
-      "bytes": 19121,
-      "sha256": "a103b73aebb06fb1212daba9e46178a0cef2d2b3ae9d6ac1c313398c97ee9af1"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/__init__.py",
-      "bytes": 6078,
-      "sha256": "c0ef386133451e6b81db3e00ea088fbcba25a2fe698a11cf0deebdbbbb07e37e"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/ale/__init__.py",
-      "bytes": 550,
-      "sha256": "454bb7de85e078f3ec7d6d1f303b47d2eb884e1b476d8d50e7f195599748c3d4"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/craftax/__init__.py",
-      "bytes": 0,
-      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/craftax/craftax.py",
-      "bytes": 4931,
-      "sha256": "bf36047045bb90e245fa4b6424d9466a2ed70566caf190136573410a729fa9f8"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/dmcontrol/__init__.py",
-      "bytes": 71,
-      "sha256": "303505162d99922dff775bcdbd1b4e5c7c60e557744d3d0d01a04f6b1d5b71f3"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/dmcontrol/acrobot.py",
-      "bytes": 12255,
-      "sha256": "ef4002d61bcc45d9afb0deae549094fba6b7180d3d68c7b929d8fd5dec823d12"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/dmcontrol/ball_in_cup.py",
-      "bytes": 14011,
-      "sha256": "a8479affa7a1580ddf530eb65789331c06f5ad2577dad8e00f26d058dcf6498d"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/dmcontrol/cartpole.py",
-      "bytes": 10082,
-      "sha256": "6775026c8a88fc8b3ace22b98e567a02f1766c1abd72568764c03584b617f273"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/dmcontrol/cheetah.py",
-      "bytes": 12652,
-      "sha256": "f0e514031706514dd1728a5ea6b8f2f3c67f04a7ee719054e98362ad68a8735b"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/dmcontrol/custom_tasks/cheetah.py",
-      "bytes": 6706,
-      "sha256": "ea990fdf60687bdbc75091cc86cc9c6b58d0e072f336f0509b1cf0583fd75b89"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/dmcontrol/custom_tasks/hopper.py",
-      "bytes": 2087,
-      "sha256": "84f7fbad427f746a1ffb719040191c0db3e9f953236612f6b88777c77745912a"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/dmcontrol/custom_tasks/reacher.py",
-      "bytes": 1163,
-      "sha256": "3ce3f8d49c878276b56d7fb487735790cae5ea60674347e6aaa82a4c937fa813"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/dmcontrol/custom_tasks/walker.py",
-      "bytes": 5959,
-      "sha256": "0246f3c96f9476592cd7dd592e0cfe031ebc4f96255e074ebdbb12e682d66896"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/dmcontrol/dmcontrol.py",
-      "bytes": 5869,
-      "sha256": "4c000912be10018327c77b33b3d85e908cd07e24188a11c9e5ab9c094ca92a52"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/dmcontrol/expert_policy.py",
-      "bytes": 3190,
-      "sha256": "eb4491c96696dfbbd88086699497c589ea39dd30bdded6633f79166defb1681f"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/dmcontrol/finger.py",
-      "bytes": 14913,
-      "sha256": "88d8608cdc0bb81fbee008ebb3486510b37909c566b904dd384d6aca691fca2c"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/dmcontrol/hopper.py",
-      "bytes": 11904,
-      "sha256": "0f674f5d881f043e47ad5e89ab7610d0ee1e4cf94b01a2e9032ba5cfbe11bbb8"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/dmcontrol/humanoid.py",
-      "bytes": 12202,
-      "sha256": "ecb87915e962f67af7e3db4ff79ba68e2ad855987d3e0bb3b3d5c1a0c0211792"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/dmcontrol/manipulator.py",
-      "bytes": 11139,
-      "sha256": "d31113f35167eea244eafe77c157b0c8ec43f0aac6a10cc7db8c658e007bb332"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/dmcontrol/pendulum.py",
-      "bytes": 10026,
-      "sha256": "a9973ba538fdf4eecf8aadbb1c552a387278df7dd44a5727a7e619b384771dc2"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/dmcontrol/quadruped.py",
-      "bytes": 12061,
-      "sha256": "407272c750a8725b5e1acad5821469de5607123a9a769cf82374efa17b4403ea"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/dmcontrol/reacher.py",
-      "bytes": 12899,
-      "sha256": "96e5f6ca767efa3c66bd1cf4956acf6b937f4bccf9f0637ab35260619ca45913"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/dmcontrol/walker.py",
-      "bytes": 13736,
-      "sha256": "2fada6d7bce6a23472fae86836ffe0e67fa0124b06c766f1bc98090c9de7e4ef"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/gymnasium_control/__init__.py",
-      "bytes": 0,
-      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/gymnasium_control/acrobot.py",
-      "bytes": 5497,
-      "sha256": "c2fa66e5bd1eac3ae6f181e6e0a668f431529583fbe6e39be23f2af85e13b62a"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/gymnasium_control/base.py",
-      "bytes": 3188,
-      "sha256": "556d37bf33273257250e39ed8c0ece00027cd1fae98361a404ece08330bd62ac"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/gymnasium_control/cartpole.py",
-      "bytes": 5555,
-      "sha256": "685f5ddc675f4c1f4e57f5d4f8202fed93fec301ef2c7e486caa9cd769373d83"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/gymnasium_control/mountain_car.py",
-      "bytes": 4494,
-      "sha256": "aefbb3771a9779a379683e596734ee45cea69d7223c8dd7d9bda0326455eadfc"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/gymnasium_control/pendulum.py",
-      "bytes": 4481,
-      "sha256": "cee6530c7baf6e1d44d7e19833b0d6446d2771aa8694c20a032ffcd7cbe62cad"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/gymnasium_robotics/__init__.py",
-      "bytes": 160,
-      "sha256": "82436d2661a3e1f45e7a9e3f8c1a71aad56853fb4c52b86fa826ce110d872edd"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/gymnasium_robotics/fetch.py",
-      "bytes": 17760,
-      "sha256": "527f48510ac2c3e7dad6d7b8963cee8be609394af2804279a0d0e19815fbe3a2"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/image_positioning.py",
-      "bytes": 17002,
-      "sha256": "913201da5ed83947127f2c0e127dfd4a7bec59e223d7d9d6984e025fe46ae74b"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/ogbench/__init__.py",
-      "bytes": 202,
-      "sha256": "6ad356733b157a70c5a135c5cd8f3c6feb500a3887ee806b909a561e584dbfe4"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/ogbench/cube_env.py",
-      "bytes": 70826,
-      "sha256": "0683a96698f6ead4ee19845eaab694659f2b68d5646dca9bc4fb6c672598b427"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/ogbench/expert_policy.py",
-      "bytes": 11415,
-      "sha256": "be080014502621da6ff7d52f9c731ffd004db6dd6bcb4d13ceb0765ecd9dbe08"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/ogbench/maze_env.py",
-      "bytes": 21172,
-      "sha256": "e092c06f2d147963515f9bf626beacdf80a9f2460f7085fe5c9347948d31bca3"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/ogbench/scene_env.py",
-      "bytes": 56455,
-      "sha256": "2f5cbb5f20df6154dc0f09eb49386dd7305ae92187ba83eaedd41249b78c9adc"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/piecewise/expert_policy.py",
-      "bytes": 4302,
-      "sha256": "f606def0c1ee511b6132ae1afdd2d7e3a39722d484787bef60033da1d4107af8"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/piecewise/piecewise_env.py",
-      "bytes": 19125,
-      "sha256": "92e57f36c986bb9a58dbb80497a727cc1e1f04c478e5823cf756290c9c8f4b3f"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/pusht/__init__.py",
-      "bytes": 160,
-      "sha256": "3b6f808368b967a28e5d9bd8c416f8d0046da32e75facd43ba78cc16000cfaea"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/pusht/env.py",
-      "bytes": 32533,
-      "sha256": "8520e27e057df5296601b97421dfeeb533e35a8ae14dceaceb69260a731bbfc5"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/pusht/env_discrete.py",
-      "bytes": 1442,
-      "sha256": "fc5831f4fbaaa0193204a4870122b6c11eede404fb9fd8300e13408a4371be58"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/pusht/expert_policy.py",
-      "bytes": 3186,
-      "sha256": "71d4e16e7a991d531fbcc7e9d5eea57ebd3d0e013fa29bfed7fa2d736386e869"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/quantizer.py",
-      "bytes": 1946,
-      "sha256": "5b319a202963e4216b4a19613c28b9948aa339d32bc3f03278fed4d5c15e2ed1"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/robocasa.py",
-      "bytes": 37050,
-      "sha256": "65c7816a106bb62774d2bf89ab703c7991a3265a564b0fc60dabf087f9231deb"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/rocket_landing/__init__.py",
-      "bytes": 159,
-      "sha256": "ac019989e18159843671e608c31b41b0587d903a6b4e628044a904cab8aeaf25"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/rocket_landing/expert_policy.py",
-      "bytes": 20853,
-      "sha256": "cde97bef3dd5981886613d1fc4c1d4c4195a5ec51e9bab798755abcb71e406a2"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/rocket_landing/pyflyt_rocketlanding.py",
-      "bytes": 25365,
-      "sha256": "14200c0e90f1f9b21d28d036060e836a46927bdc7ba2e87a8b06b715b6935805"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/simple_point_maze.py",
-      "bytes": 14479,
-      "sha256": "f889b7b2f9fc21532bc7eb27aab1c6911e010df61dc961874b47b2ef2d5895ac"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/two_room/__init__.py",
-      "bytes": 114,
-      "sha256": "9ad70713e24ef889b5c773be7a941b0df8716410f1f4453eaaec1367b580fe2c"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/two_room/env.py",
-      "bytes": 28467,
-      "sha256": "761e70901840acacc7a74676a3ed128715bfe3941241c8d56403ae5f7c9a2124"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/two_room/expert_policy.py",
-      "bytes": 7593,
-      "sha256": "b52ae3d8d0d1123f2c8eda9d92fe4a159e7a2fd50f31c39a1cb6f884ea5d4c21"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/two_room/legacy_env.py",
-      "bytes": 28269,
-      "sha256": "21f6a69e0b9f6065c4d9de9089e9a8b32f75cb84349210fc9a33f06d29c4f58f"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/utils.py",
-      "bytes": 8262,
-      "sha256": "63ace97eb47c37c0e18c34c45a3f222dcf8517b013a637218338b0e9ff081a94"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/planning/__init__.py",
-      "bytes": 1767,
-      "sha256": "3ead53eacecf2a4a4d668073d4c95a0d73797f0fabdc400f5e06c579422f254e"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/planning/evaluator.py",
-      "bytes": 8014,
-      "sha256": "5020aa96f31fe328d0cfc4a1e8150dcf93cbadbe32d7417d9d451c0528a25de2"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/planning/objective.py",
-      "bytes": 5025,
-      "sha256": "91f046a6a266969f51f9502b02c3012a775506787c317645c36454faea1bc648"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/planning/solver/__init__.py",
-      "bytes": 545,
-      "sha256": "1e12000b87d331fb0c0652576caae80a3e7441095bd8c306c79a09fec2483b23"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/planning/solver/callbacks/__init__.py",
-      "bytes": 571,
-      "sha256": "64965a899fc241eafc7286879ed1e36e4dd891bed6f89530e038a9b4ee1c0cf8"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/planning/solver/callbacks/cem.py",
-      "bytes": 1681,
-      "sha256": "e48c82ba96edb85dc6a3a0b92bdda5ae53e4ce2a9d4d7f2992a89d6f16fe4588"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/planning/solver/callbacks/common.py",
-      "bytes": 2344,
-      "sha256": "2439ad05b50ef60573df606779a7e7f254952cdd954b6023fb4c444ae3fc4b67"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/planning/solver/callbacks/gd.py",
-      "bytes": 1559,
-      "sha256": "8a909d8a16a162dc53000a3198bb01cd3e4f618c35e6c26fb4e38690990aeb3e"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/planning/solver/categorical_cem.py",
-      "bytes": 10385,
-      "sha256": "5fc442047763b3b107a1e395816eabf7b6d5faae95653768ae0c31ffed9daedc"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/planning/solver/cem.py",
-      "bytes": 10700,
-      "sha256": "4d6d878541990eb7d0d1794e6763112f87ed12abd15d676c3a9ab9a599b90f7f"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/planning/solver/gd.py",
-      "bytes": 11609,
-      "sha256": "5b3edafce7fe0d59b9f2fe8474bb891dc36b5c2027c2864e64a394fdac2def80"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/planning/solver/icem.py",
-      "bytes": 13593,
-      "sha256": "54730d365027573373ff46d0898a38a3fb98895c766471bbbcaf44983545c43f"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/planning/solver/lagrangian.py",
-      "bytes": 16530,
-      "sha256": "a58a96e86f44f1ed7ef1d15e9bc7239da6830aa78ac43fea25092ce2f5f810f9"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/planning/solver/mppi.py",
-      "bytes": 9941,
-      "sha256": "1fdaa0712cc0774ddc93ab19769d844f686e9104da623218ddeb4be98489d395"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/planning/solver/pgd.py",
-      "bytes": 11559,
-      "sha256": "c3a1019a035e56232ffa6d2e21820621a9e081b3606786151546d42b773c4fb3"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/planning/solver/predictive_sampling.py",
-      "bytes": 6839,
-      "sha256": "65e8e4eda21df18de8a80be955748f8b0ffe31012532ece194260f1df93d4e08"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/planning/solver/solver.py",
-      "bytes": 1548,
-      "sha256": "b0ddc4ddb93309c0519fc36e25e5228cc2dd948d17e39109e150bafe86e93515"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/planning/solver/utils.py",
-      "bytes": 2928,
-      "sha256": "48433c78f094c623fc4a8c4cf34f0d6381b11574f3441bf8c0635f1d2e30db90"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/plot/__init__.py",
-      "bytes": 107,
-      "sha256": "80ea414db6564866890f047bcd775a2a5c93e47cbdcaa3a05065721ef9f7dafc"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/plot/video_utils.py",
-      "bytes": 2400,
-      "sha256": "a217a25472b98ffdac428c65316d0f48e674fe8df75b8d90143a5fd706fe0c9d"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/policy.py",
-      "bytes": 20113,
-      "sha256": "4a175d707b0cf8593c045379df44e354f72823622be0232bf6dea01858637329"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/protocols.py",
-      "bytes": 6719,
-      "sha256": "eb4df6a0f17e276a8964b57425b912ec619dec7a5e2fd111e701f7c54e16cb44"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/spaces.py",
-      "bytes": 27715,
-      "sha256": "05e99873032a27e08d17fa3b75078ac69dc383c24f98dfc7c01a0a8e859cb5b5"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/utils.py",
-      "bytes": 4815,
-      "sha256": "3eb0775d94fe2ba552dcf9b24a0ba43e4d484515c15a3281a91abc02617202c9"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/__init__.py",
-      "bytes": 194,
-      "sha256": "c5ba0b885f62dd54bc83ece0f60ce211790b43c977fe9f20b8920979a6bec69b"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/gcrl/__init__.py",
-      "bytes": 225,
-      "sha256": "a8bdda76ba219cf2d4a9acfe95bebc2b0f6450dfa5f009e879418db86d01e23a"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/gcrl/gcrl.py",
-      "bytes": 7131,
-      "sha256": "43b287ce1603c5b720d9318d238d0592d8f76fc2cdfc87c604995c370eb84878"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/gcrl/module.py",
-      "bytes": 20043,
-      "sha256": "b385acd4a66320f276171f108fcd5c5dc2ff16f8f3090b2e197825f5a662de9c"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/lewm/__init__.py",
-      "bytes": 35,
-      "sha256": "9a2e5b0fda39ec4e3d51010d3147d539370a011f7d5181865ce8c578199bad4f"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/lewm/lewm.py",
-      "bytes": 4898,
-      "sha256": "08a43d4aef15e889bde5a0431b49d8889257cab1678aaf70bfd6a0bffc1c12a3"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/lewm/module.py",
-      "bytes": 8356,
-      "sha256": "704dfb4dce79e429803341af05754bba342764601527199c5ea306262a8ce27a"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/loss.py",
-      "bytes": 3955,
-      "sha256": "2d28febbb6a45efb853d8d86309afe5786f3cc240b8c32a3a804ce191b411647"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/pldm/__init__.py",
-      "bytes": 35,
-      "sha256": "498926e25c3aa4cdd3103860a4620ee4dafb12ce15590a4c1c23818a679edfbc"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/pldm/module.py",
-      "bytes": 8356,
-      "sha256": "704dfb4dce79e429803341af05754bba342764601527199c5ea306262a8ce27a"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/pldm/pldm.py",
-      "bytes": 5102,
-      "sha256": "c2301148ffbe33189458b9b340d77d89fb8795865597a8949c766bf3a5bf351f"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/prejepa/__init__.py",
-      "bytes": 38,
-      "sha256": "935c6adaf875042150108847323c9af21be2503751695e3a818ad1eac41c4001"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/prejepa/module.py",
-      "bytes": 8023,
-      "sha256": "4f29e54580b327f776edc5ee2cd400f8de67cfc738d113a6b9d2446af5037e60"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/prejepa/prejepa.py",
-      "bytes": 13697,
-      "sha256": "05989727a7cf2a8aa02f1e16641e93f124761cff39ce8079f1817a1febdccdae"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/probes.py",
-      "bytes": 1129,
-      "sha256": "8748be46c7281777500cfff05a36c78a60962f3659dd245b1dc6e5191f95c8f4"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/tdmpc2/__init__.py",
-      "bytes": 150,
-      "sha256": "dcc4ebc1470f6e3df4c8d75bcfdf0ca0e495cb64e8ebb76dbab43f1bcafa7952"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/tdmpc2/module.py",
-      "bytes": 4517,
-      "sha256": "0be6c5ec0764f0317e5ad9ce0c68cd9cd2445f05dd47df9aac3481c14ca7d8cf"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/tdmpc2/tdmpc2.py",
-      "bytes": 17925,
-      "sha256": "284fce01eb609fc99e8dfc863b0c2e2e31e837c956732c2bdb4b33f66611b51d"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/utils.py",
-      "bytes": 6112,
-      "sha256": "a001e26359f1fcb774687b9fc25231119539057d4d459cc8f651dee7406f3eaa"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/world/__init__.py",
-      "bytes": 91,
-      "sha256": "19059692dfab0b101ffc5366f16f8534b38345b506d3339f5c4a54e606fd6108"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/world/env_pool.py",
-      "bytes": 7370,
-      "sha256": "19fb5d22602d1c17dcf040de5f7a2032e5c3f40b8773d13fc63d41b0c537e892"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/world/world.py",
-      "bytes": 27997,
-      "sha256": "9c6426a37db6fa66c8adff6ce9676af463f439bc90874a9d5158bb7a775917ac"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wrapper/__init__.py",
-      "bytes": 3088,
-      "sha256": "39833926ebbfc13e482880220bd8477a801df275bbe2b559c9caa554c1ee01e9"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wrapper/default.py",
-      "bytes": 22342,
-      "sha256": "0703d1dc726bcfe5823fee27b756edf9051a262f20abe8cfafee99426b84c1fa"
-    },
-    {
-      "path": "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wrapper/visual.py",
-      "bytes": 15827,
-      "sha256": "02369abfe6464562c4c5544181f296c32e4838f4ac0264985246baac391f9d41"
-    },
-    {
-      "path": "lewm_pcd/train.py",
-      "bytes": 4739,
-      "sha256": "733564c824ce4023abdcdcf0a65ad72f5b71efe9d21d7958a466f87c7cdfe6e5"
-    },
-    {
-      "path": "lewm_pcd/utils.py",
-      "bytes": 3784,
-      "sha256": "a6a386523779ede2ef4453b23198e46e371a0c73200e8f957ae272b5d7b63259"
-    },
-    {
-      "path": "LICENSE",
-      "bytes": 1067,
-      "sha256": "4882021920cbd61e050e4dc2e02440e9bd36ea4cbc5803e738a2ee3d63502e07"
-    },
-    {
-      "path": "patches/eai-vc-train-loop.patch",
-      "bytes": 5429,
-      "sha256": "6792ffcecee0d3685d9b9c143f03a2d4707ce7579698bfb14974611584cbae69"
-    },
-    {
-      "path": "patches/LICENSE-eai-vc",
-      "bytes": 19333,
-      "sha256": "bc8f60ee50544b2dd70b4bc90e22de503aa23b317d284046a479811f2e06f396"
-    },
-    {
-      "path": "pyproject.toml",
-      "bytes": 492,
-      "sha256": "c4361d69583288d97dd6c892ad8e42bfc6096dfb472f472c8577f39ad56efb1c"
-    },
-    {
-      "path": "README.md",
-      "bytes": 6367,
-      "sha256": "ad875b69c6c20f2c1bd99d0042283395e0d17500180d4c846a50c6c420d48b69"
-    },
-    {
-      "path": "requirements/adroit.txt",
-      "bytes": 285,
-      "sha256": "36a3c22e13941f3dfbbc622b6fc239ac0fa0b566266b94dfb9dd76b05c0be0eb"
-    },
-    {
-      "path": "requirements/mpc.txt",
-      "bytes": 263,
-      "sha256": "b73078a3a52fd022fc0aa5d06fc65ca2b92e328ae673cbf5b177ffd2f1f7d045"
-    },
-    {
-      "path": "requirements/rh56.txt",
-      "bytes": 211,
-      "sha256": "5e481359419106d65064f12eabe5b45edfa3be33e06eaeacd89183badfe560e0"
-    },
-    {
-      "path": "requirements/wm.txt",
-      "bytes": 436,
-      "sha256": "8b223867698eb7d142da64b1b089b4d74c57b847704bc23f809b03521ff2660b"
-    },
-    {
-      "path": "requirements.txt",
-      "bytes": 23,
-      "sha256": "ecc19632e3fb38345af2a8f4a366ff2099e4a6cb182600a4138e73677afb1110"
-    },
-    {
-      "path": "run.py",
-      "bytes": 169,
-      "sha256": "d31d02f00c2b8ca6b8ec58f6ed34ce84f3fe6d3c7e588cc2b8e739465086aba5"
-    },
-    {
-      "path": "scripts/prepare_official_assets.py",
-      "bytes": 13101,
-      "sha256": "68e71c90a524d998683b8e872d2a853a4c3eaf9647ef30851632504f9cad2efa"
-    },
-    {
-      "path": "tests/test_framework_source.py",
-      "bytes": 1944,
-      "sha256": "60b2984093cf600ad08321f2fa482358536f452165cb4dc58b21868858c5a37f"
-    },
-    {
-      "path": "tests/test_official_assets.py",
-      "bytes": 20549,
-      "sha256": "5d6edcae6323a959c3de458d3f6c85ffaeece6f1e3d86bc8bdc044f89442a09a"
-    },
-    {
-      "path": "tests/test_paired_writer.py",
-      "bytes": 2361,
-      "sha256": "4ba94fd405f33008fd6fafb3d9d0075d82cc73150f3be6b04f1b4e9b30a50452"
-    },
-    {
-      "path": "tests/test_workflow.py",
-      "bytes": 8713,
-      "sha256": "55f34c25248cde629ac6fa0575d5ca5cad6fc022fafe278ee1f60790e1f2de44"
-    }
-  ],
-  "runtime_code_tree_sha256": "c27717bd32cafda1e6385673b252b80d29e569032106ae6024e53a5a29007587",
-  "tested_source_manifest_sha256": "58dc51c57855ddae15903320a4e905b6dc8e68379e33c3648ceaca88d75576dd",
-  "packaging_only_changes": {
-    "scope": "Git checkout byte preservation for unchanged upstream MIT license; no executable, data, model or configuration bytes changed",
-    "files": [
-      {
-        "path": ".gitattributes",
-        "before_sha256": "ffcd14f929a6a02b71e0db3e6aa4e7e3e4a35ad24ae28e4d8bae05c4e028f322",
-        "after_sha256": "c4eec33a427357a9043e2fa55be32cfd3fb747808f2a304d90871c841cf770d9"
-      }
-    ]
+  "schema": "jepa4r_integrated_sources_v1",
+  "status": "source_freeze_with_qualified_bounded_runtime_evidence_not_unconditional_guide_PASS",
+  "baselines": {
+    "cube": "f437d1a3f27c3cb1f9dc1d7adfbf0afb68dbaa16",
+    "adroit": "cee6ae430ee942aa0ef8675f62027508fff80415",
+    "main": "d1159979ac017b554ed310284128d379f718802a"
+  },
+  "files": {
+    ".gitattributes": "5056d26311f340e946fbc66e2a718f912bdc0eae629f18d45d898c3d9833e3be",
+    ".gitignore": "bafeb479d59ed0e1cdb5b6347c076f12fc966ba7eed79e4474dce045546cd982",
+    "DEPENDENCIES.json": "065bdc3e66ee8184606a26892af1f1aafb33f7ee4726587819d6d21931fa3f69",
+    "LICENSE": "4882021920cbd61e050e4dc2e02440e9bd36ea4cbc5803e738a2ee3d63502e07",
+    "README.md": "ea8ae2f59304c41ef9ad5dc6b2c9af39ac9f32f7150c2ab667489bde0d0477f4",
+    "SMOKE_VERIFICATION.json": "08c23acb8d70972c560025a299e56971be3ed119d18d1eac6baaacde4fa7fb3e",
+    "assets.example.json": "63eb51bdabbf88abcd12a9e3d2087e845cca5518f605e4eedabf16d39c14845d",
+    "lewm_pcd/.gitignore": "5c4a7f56807707d60680adfd2c6206dc4e16f4340e53f3b581db749466df21cf",
+    "lewm_pcd/LICENSE-le-wm": "0e66685ed351839b0baf614c4207aa2c5e6ab9dbe419aac9c38d0998a000200c",
+    "lewm_pcd/README.md": "b8f7c64e073a72dc407a40a1d3cb2a9c16f47044fa6995b182368816cdb43cba",
+    "lewm_pcd/TMP/.gitignore": "240a3e0d37d2e86b614063f5347eb02d4f99ca6c254de6b82871ff8d95532a7d",
+    "lewm_pcd/aggregators/__init__.py": "8387c4cacce3d8524e6386007f77e1e8180e4233de4d4555e382aa6f59888f31",
+    "lewm_pcd/aggregators/mean.py": "8e0c68d98464bfeda62571fca855287fe714ead248fd7aeae24a6b6b6bbdc2f9",
+    "lewm_pcd/aggregators/mlp.py": "ecd1c9962c6c0020e6d7d90efb764d2fbd4e30b4ccf8dbbd1b11de0bb2d28271",
+    "lewm_pcd/aggregators/temporal.py": "61cc71e22e5e1597cf01b9eabe343b1cf8d625b979a6619e103af3cdcd194bf0",
+    "lewm_pcd/bench/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "lewm_pcd/bench/cortexbench/__init__.py": "3718de4b9b92927fbb19db5dd1cc989e8ec1391dc4cfc8f486ee0c1145b76f0e",
+    "lewm_pcd/bench/cortexbench/conf/model/lejepa_relocate.yaml": "c80876a51ce81e57b9362c07ff123914ba2b825e4c190854bc54ecf732e9dd14",
+    "lewm_pcd/bench/cortexbench/conf/model/lewm_adroit_relocate_2d.yaml": "b0eb01ae2fb57616efddbcee2e67a07195fc4d2260640835983141ccfb0eb88d",
+    "lewm_pcd/bench/cortexbench/conf/model/lewm_adroit_relocate_pcd.yaml": "9044fbe6fc700e43ad7442e91a4ea26de9a0e7466a61b383c1a180794bd28010",
+    "lewm_pcd/bench/cortexbench/conf/model/pldm_relocate.yaml": "b4e15e65e5b24a3e17ffe6222403c28e5a602bd4b9218394640b3ea2ad83adee",
+    "lewm_pcd/bench/cortexbench/conf/model/visreg_vitb.yaml": "287fa766a9af624bd47f034110bbfd51c6c554dadfd9908f7c70026e9e60e2c9",
+    "lewm_pcd/bench/cortexbench/conf/model/vjepa21_vitb.yaml": "995d457d78a62dab2f55ab802732c965bb18bbdc21b9c1659b0eb7e843d867a3",
+    "lewm_pcd/bench/cortexbench/convert_adroit_demos_3d.py": "50b912fa6db701ed16cba6a63e18659190b6f621ad95641c7951d3bdc8498f72",
+    "lewm_pcd/bench/cortexbench/jepa_baselines.py": "77c3163b3aaa7ee7a93495a850484bad0d7c59634c8e6e660c470e32ca759692",
+    "lewm_pcd/bench/cortexbench/lewm_cortex.py": "9a716af1adc7d1f93f87eee77dc87b9c2d66829c1a4b6c5d3807379282f70350",
+    "lewm_pcd/bench/cortexbench/run_adroit_bc3d.py": "4621ad84674d07f39aebd80786f05f49ce93fa08a4b45ff673201f4425a44426",
+    "lewm_pcd/bench/cortexbench/run_bc.py": "4779a7c6f7cfbe05849cdb23747a1ddf480dc9221e8ca842adcb6189f4531632",
+    "lewm_pcd/bench/cortexbench/surface_geometry.py": "94b50c60e897d636e88bc82f9756b80f8bf42a22909276db1bc0f7b341d7a65e",
+    "lewm_pcd/bench/gates/__init__.py": "03c543c80d7f2274fdfd8ff5c85dda543d07aa45f98da86bc35dd2c4b2660de5",
+    "lewm_pcd/bench/gates/aggregation.py": "5178d8c6041b7cd20a883ab095dd85d2038b5ca8634659f1524a0de2a951ba6b",
+    "lewm_pcd/bench/gates/arrays.py": "b8372b242207dd9dde97cc275131036d762c965240d606a875c1b50fc8f6d007",
+    "lewm_pcd/bench/gates/physics_checks.py": "338b23b4be6449be56b7e702dbd524a7479be47e5a366995db0693c717da5f69",
+    "lewm_pcd/bench/gates/records.py": "c5baaf8d5050bbc2f8b25a9bd70b341ddbd617823d55ed3102d0ec9e038063b9",
+    "lewm_pcd/bench/ogbench/ALGORITHM_SIGNATURES.json": "c9746991f75a04d7fdadd796e4fc62f962991759839d336118d1e341bb5d5f5c",
+    "lewm_pcd/bench/ogbench/GATE_INTERFACE.md": "6eb1a06043112b2f7643ed05cf7103b740619e15e1e7f03e7116e509fc5ed7f6",
+    "lewm_pcd/bench/ogbench/SOURCE_MANIFEST.json": "953e7b69bd8dc872f60dac89d922fcfa8b97e1f7d8aef1f184b153f377ea5dfc",
+    "lewm_pcd/bench/ogbench/__init__.py": "e0585b727bcb5a656f90937c187bf15db0eaae48a78ccce78672dac1c2445855",
+    "lewm_pcd/bench/ogbench/collection/__init__.py": "a5bfaa9e903bac9b661a74d06820f30ad0b2f829b5486fc7140657df9d6d4393",
+    "lewm_pcd/bench/ogbench/collection/__main__.py": "eba16b845dd5dc52ec4d7116dec55af51e5b757708b16103085b5c69cdd31901",
+    "lewm_pcd/bench/ogbench/collection/camera.py": "bb37b35a95166da6ed41ae63bb17233c373dc537f50bd6cebe76a1125732c32c",
+    "lewm_pcd/bench/ogbench/collection/config/launcher/local.yaml": "39c78c057ea44669ca7c6c0cfa3dcd9f4510956eddd613e34bb79cf9af193b5e",
+    "lewm_pcd/bench/ogbench/collection/config/paper_cube.yaml": "63ff546404006bcd3cb072e5b6233c6bf3ebe5a7738961d3c2e7275b6942ef79",
+    "lewm_pcd/bench/ogbench/collection/sources.json": "224d0845072b5d0b08f83836eeed8dc350df9003aaa91cce14e739efd71139d8",
+    "lewm_pcd/bench/ogbench/collection/vendor/fixed/camera_pullback.py": "74aeb58772f3c19b50ede140ca37e84426060d3f9d795ce6e1ae412bbad692b7",
+    "lewm_pcd/bench/ogbench/collection/vendor/fixed/collect_cube_pcd.py": "acc9c93a38ffedd5242f397a7892f9ce093c2c95bb0b19e53e1103596c1cd3db",
+    "lewm_pcd/bench/ogbench/collection/vendor/fixed/collection_protocol.py": "ba5b3ede25ca4fac96108179b0b931d2503e5f746b442151c53d493fed11ed24",
+    "lewm_pcd/bench/ogbench/collection/vendor/fixed/double_collection.py": "3f13538f0c951959eef1e3b28ac58a70f9e987cb9a677def698b447cd31e8749",
+    "lewm_pcd/bench/ogbench/collection/vendor/fixed/quad_h600.py": "7590aaf82296e50546ca5cafc40d66b94931f4ec3603ddddd5896dd0bdf04177",
+    "lewm_pcd/bench/ogbench/collection/vendor/fixed/quadruple_collection.py": "c261be16f265e26e59a89268512b04adefbf210dd239df9441d59f9dc6b3efee",
+    "lewm_pcd/bench/ogbench/collection/vendor/fixed/triple_collection.py": "f6714e0f4c68d48e2a040f409203f9a75b8a3fe6858519dcc669138eab15be29",
+    "lewm_pcd/bench/ogbench/collection/vendor/fixed/writers.py": "9f76563fa3ac67aabb5a8fab9d6bdfbf7f787d1f16e9bb20c9ce250f71d47443",
+    "lewm_pcd/bench/ogbench/collection/vendor/pcd/cube_pcd_env.py": "fc8be1866de1d07b2bf1c0677c9182a1b760a280e4d07a1002d7477e1984c7ab",
+    "lewm_pcd/bench/ogbench/collection/vendor/pcd/envs_init.py": "fa4c6eec3b283e304c2dc5e976c409f09fd99c0e6ee73b6f8dfb7b1635137f4a",
+    "lewm_pcd/bench/ogbench/collection/vendor/pcd/native_pcd_frame.py": "ffc7cc1436381a84da5690557167f2d7b482711350f2ae4fe8ffe56a99156b98",
+    "lewm_pcd/bench/ogbench/collection/vendor/pcd/pcd_geometry.py": "e1b0f13db624d4e579946cfe909dd0acb342ad261c3d190e962260ed47b30bf2",
+    "lewm_pcd/bench/ogbench/collection/vendor/pcd/pcd_wrapper.py": "821d056ecf41ea69e116c0d37ac99be30dfd9ec3bda4d8e7531d03f67f9beb8e",
+    "lewm_pcd/bench/ogbench/cube_recovery.py": "bdd00bb2d7353c46a95b2adf8c4a534f806d6d6c89574673bcea85fffe64ffd2",
+    "lewm_pcd/bench/ogbench/d3_mapping.py": "8a0d01c6830353fe54f07244d6cb0efa8a4c496926fc805b356ae2fe2c889d43",
+    "lewm_pcd/bench/ogbench/downstream/__init__.py": "06e28ec56c8f74ae5309d5b4568c5f137c6962911dd61af7bbead36142d6d750",
+    "lewm_pcd/bench/ogbench/downstream/_source.py": "7fcbd4be7759b8b5b91befdf6b433b98a1af311108b230a4f4372bedffad72e3",
+    "lewm_pcd/bench/ogbench/downstream/native.py": "4b1046dfd27c159f11fa3f1f9ea745e175867de59e085154df779acab0e6fa70",
+    "lewm_pcd/bench/ogbench/downstream/native_core.py": "37988cacfcf44e1ebd803740e7d886c7b63abe1a4326072a5c6909e873d78711",
+    "lewm_pcd/bench/ogbench/downstream/runtime.py": "8bf20d36dc3cdf2ac83de37f4844699cda5b23bfaa3f9857ab007372667da3bf",
+    "lewm_pcd/bench/ogbench/downstream/sampler.py": "ed3de793f21bd7929840e67a5ca343c3cfda59c5c8618910076364ab181b182c",
+    "lewm_pcd/bench/ogbench/downstream/trainer.py": "54b55be1c7091e4ab85092852f04638bda8137c88cc861b5c44de8a0957c2477",
+    "lewm_pcd/bench/ogbench/downstream/vendor/boundary.py": "336b054f5081e00714637aabb14bbbeebfdf93f1220335a044be3f0894633313",
+    "lewm_pcd/bench/ogbench/downstream/vendor/core.py": "1e53e2c13a72ef8e027bd4b4c7c692f7adbf1637705d6ecf209585e17ad51fd7",
+    "lewm_pcd/bench/ogbench/downstream/vendor/cube_inputs.py": "36358548ef7a78311730913fccfdfa025d354a18edd4f8197b03b4c0d5ae5d9b",
+    "lewm_pcd/bench/ogbench/downstream/vendor/gciql.py": "8611cd476d8849ad014ca43304073c3e88fc3d3aa5dab369a343ae425bba7ba7",
+    "lewm_pcd/bench/ogbench/downstream/vendor/io.py": "7ee78f8bc727a6f4f77773d6c34d363dc144cc854e94eb83018473112f6cb7c1",
+    "lewm_pcd/bench/ogbench/downstream/vendor/physics.py": "ecda44226abe105651cf26437eb3f36d4f9d9622aa277eda929111a5ae1c3da8",
+    "lewm_pcd/bench/ogbench/downstream/vendor/source_manifest.json": "461f259af9b319e55a6c74e700859ef5a987c2f80cb629034b62588d4336f5c4",
+    "lewm_pcd/bench/ogbench/foundation_assets.py": "d8eff72e8fbe49e7ea64c084bcf8a3bf03335cef171645a437a474c0bc34d37d",
+    "lewm_pcd/bench/ogbench/fresh_data.py": "8a97680a34302b3ab0226ed0ca273b09ee84e21841c1aab2f4a4d5b0f4c9b521",
+    "lewm_pcd/bench/ogbench/fresh_train.py": "c6c8bced696b1182918bf0d749272be47bbfbfe8962b455c4e40bea9c3ab0037",
+    "lewm_pcd/bench/ogbench/gate_checks.py": "9fa8ce0274c661894699439b1bd558af406b21d4415dd188488df0d4aed53d7d",
+    "lewm_pcd/bench/ogbench/lightning_compare.py": "284170708b69fd447dc0d1e5baec7cb8744e92b89ee0a3e686b16f16c5f444b1",
+    "lewm_pcd/bench/ogbench/matrix_source.py": "5e94759b72001d6a01565b24efd99ca5cc57f692253667a784153b1e6228e8a1",
+    "lewm_pcd/bench/ogbench/native/__init__.py": "e0585b727bcb5a656f90937c187bf15db0eaae48a78ccce78672dac1c2445855",
+    "lewm_pcd/bench/ogbench/native/lewm_train.py": "a930db27778b2a821f0aad4a09e691290a769db364dcb0adf4fcdfaff1a97a22",
+    "lewm_pcd/bench/ogbench/native/tiny_train.py": "96a192a4fb8cc00678f79060d130bb39f3cf976bb95801b17c220aa3486a16cd",
+    "lewm_pcd/bench/ogbench/native_trace.py": "c9ac6fbf88ceb34e2044362ee6b8aa9089cd436d647f7042309df036b1da4aac",
+    "lewm_pcd/bench/ogbench/official_data.py": "0a3c84458ec43139129527b6a041a29a1d3cc21a1c3e8d0b15610681fa157530",
+    "lewm_pcd/bench/ogbench/official_sources.json": "101e95f396a5ae637acbe672bfbd0bf72958a03dd2a361b66a0e17ad844384e5",
+    "lewm_pcd/bench/ogbench/pldm/__init__.py": "e0585b727bcb5a656f90937c187bf15db0eaae48a78ccce78672dac1c2445855",
+    "lewm_pcd/bench/ogbench/pldm/method.py": "bd9373313ee534e37d245c270e73c3a42efb58486f361729404862a44fb0db3f",
+    "lewm_pcd/bench/ogbench/pldm/shared_data.py": "4c4983309e000ee8b1e0d139289f3c947e2b53134d298fd9e489afafe98dfb4c",
+    "lewm_pcd/bench/ogbench/pldm/source_manifest.json": "f589a2f5513a5be6500c5d0e518b5d057056897fe56405fe00be80e1dd043210",
+    "lewm_pcd/bench/ogbench/pldm/train.py": "96abdf834ecab8e4c8055044f7b01bd36b5a48ac83b7fd36aadabce1a4371296",
+    "lewm_pcd/bench/ogbench/pldm/vendor/source/ATTRIBUTION.md": "52450fe6117eabafcfef8b868114701dc2eed72a629f79bdc2e6485b5b3685fe",
+    "lewm_pcd/bench/ogbench/pldm/vendor/source/LICENSE": "49f81b32a86d9de3d3f73af42d0b5fe5c8584d405311a658806d8a22d5862a3b",
+    "lewm_pcd/bench/ogbench/pldm/vendor/source/pldm/__init__.py": "85f2fe05a7e1ae079b8262f057e8c9281afad55112755509a80291036c4d9fc1",
+    "lewm_pcd/bench/ogbench/pldm/vendor/source/pldm/configs.py": "9a7b753185384dcd543ccb088946dfd034ee72adbf75ebeae0f553a253e41f37",
+    "lewm_pcd/bench/ogbench/pldm/vendor/source/pldm/models/__init__.py": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+    "lewm_pcd/bench/ogbench/pldm/vendor/source/pldm/models/encoders/__init__.py": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+    "lewm_pcd/bench/ogbench/pldm/vendor/source/pldm/models/encoders/base_class.py": "c58f7ab70bcbc37438739460fc341f3636339953404051aed27fde41a3c3068a",
+    "lewm_pcd/bench/ogbench/pldm/vendor/source/pldm/models/encoders/encoders.py": "2c5baef603ac03329d0b502a9dad55e3c621934a579e08c6be25132e87bbb917",
+    "lewm_pcd/bench/ogbench/pldm/vendor/source/pldm/models/encoders/enums.py": "e95fd8dc158757bac357eb1bbc2d22b4915dccb081722e8b71cd564fe2d94fbe",
+    "lewm_pcd/bench/ogbench/pldm/vendor/source/pldm/models/encoders/impala.py": "fb06a24994b2d865d14550584a1b31370e2634e37ebffacf7cc1452a4062a655",
+    "lewm_pcd/bench/ogbench/pldm/vendor/source/pldm/models/encoders/resnet.py": "fdebdb55db39ce269db103047af97370293349ca06f4c516db3c7a67d53419bc",
+    "lewm_pcd/bench/ogbench/pldm/vendor/source/pldm/models/enums.py": "91107cc2c498de82fc4b9c9d45697f3dcef66739aa4dda2c861c8ed631c8d486",
+    "lewm_pcd/bench/ogbench/pldm/vendor/source/pldm/models/jepa.py": "1e49ec08ae873953436246d4e1c207b95fdee1a4fb1a82c7208b7a5c19c3ff45",
+    "lewm_pcd/bench/ogbench/pldm/vendor/source/pldm/models/misc.py": "5b7dd23278204b5c10e4fbe475870deb2c619965e92a114a4a5127dbf1786ef1",
+    "lewm_pcd/bench/ogbench/pldm/vendor/source/pldm/models/predictors.py": "62c230252e9b8c66ff486ef8a5e641091123e6b5a36046b3aa8314f79e6b21d1",
+    "lewm_pcd/bench/ogbench/pldm/vendor/source/pldm/models/utils.py": "3b856edd77afeadb345f6d2c8cda7b372bae84de8ea03e53246edd4c23b0a9b4",
+    "lewm_pcd/bench/ogbench/pldm/vendor/source/pldm/objectives/__init__.py": "3f294f827335e03e5275398542b29c42d2b5905d6e74e5204f7219f07846f31e",
+    "lewm_pcd/bench/ogbench/pldm/vendor/source/pldm/objectives/idm.py": "f2d2b7cd6325331e53202c42fd4e28a06f5ca8262ed9c56f444d731bc9203fb6",
+    "lewm_pcd/bench/ogbench/pldm/vendor/source/pldm/objectives/prediction.py": "e66ef887fe8b2abf8635b52e2d8cc63f9bf9fd15c842939b069be25e71189f8c",
+    "lewm_pcd/bench/ogbench/pldm/vendor/source/pldm/objectives/vicreg.py": "ac448250142d3414bdfe48a9bef3887ba361ea26d8e672a52abc64200547ccdd",
+    "lewm_pcd/bench/ogbench/pldm/vendor/source/pldm/optimizers/__init__.py": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+    "lewm_pcd/bench/ogbench/pldm/vendor/source/pldm/optimizers/schedulers.py": "cabe26c6acf099391b3442fa7a00cd1c56523eb1a427fe1a510af1f6ca1e7fca",
+    "lewm_pcd/bench/ogbench/policy_reference.py": "ce478c0739f39c2f36b613b1bc7964c0bf7211d0879858d25d4e86d7349bcb2d",
+    "lewm_pcd/bench/ogbench/recipes/lewm_pcd.json": "9202942f72cf24d8cc5e59e0e7b1f0b1e978756a690ca6f9d2c6d6665ab1a6fd",
+    "lewm_pcd/bench/ogbench/recipes/lewm_rgb.json": "7dcec16473e6a0faf279f9cdfb6bfc894c1b0bfd5f08e52aa323b860cdd9bf05",
+    "lewm_pcd/bench/ogbench/released_encoders.py": "ae10ecb256a9e97a5396a723bfc8ca866a7efbfa52ff17fef0dc6f14f7de1eff",
+    "lewm_pcd/bench/ogbench/released_models.json": "e580911a91bae016c023bfedb3e559663047fb10f40f428ea4f2df4a2c983fb8",
+    "lewm_pcd/bench/ogbench/retained_encoder.py": "4c1e1d198d201598a5214d1f741588bfc14507f336f00b26901e00b51de926f9",
+    "lewm_pcd/bench/ogbench/retained_training.py": "7c445769fdb848855373efa3f6ff40a9bf44c52f9f0f579972ef1dc06e128c5f",
+    "lewm_pcd/bench/ogbench/state_replay.py": "20d3254ebff2ab108668e6981d32134b3d41424cba37d01135df146dfd6ce1b3",
+    "lewm_pcd/bench/ogbench/tests/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "lewm_pcd/bench/ogbench/tests/test_collection_hdf_resume.py": "e6c6083fdcb70829b3b208007a8aaad5607e9d98d5eb3e8cfe54529e7c150a39",
+    "lewm_pcd/bench/ogbench/tests/test_collection_resume.py": "ef9274c8988681e06476811b66be7277010ceeef01b931fcf9dcfa2ae0a1ad81",
+    "lewm_pcd/bench/ogbench/tests/test_cube_recovery.py": "2011c551ad01a8767f7743afe33c6e188ef6a11846a3e6b9be848264fc73a6ed",
+    "lewm_pcd/bench/ogbench/tests/test_cube_recovery_cpu.py": "79af2fcd3f4e92eb9d5d86f93ad761af16d9046836b895ecb50874b791be23aa",
+    "lewm_pcd/bench/ogbench/tests/test_current_training.py": "23871f4b0e7c6c62dd6848363ffc5d53f34af94a48d9c32c5dc040eaacf30102",
+    "lewm_pcd/bench/ogbench/tests/test_d3_mapping.py": "30d1170d6e567a7d8c7c8117ef9469986d7e4faaa98aad69e307601c0e8d5174",
+    "lewm_pcd/bench/ogbench/tests/test_gate_checks.py": "c5d2e8c85958444f14d372990cf2b793871cb2b0735d24562435bf217ecb19e2",
+    "lewm_pcd/bench/ogbench/tests/test_gciql_reload_actions.py": "16e558b1aec249dd7357e98c9662a08309077fbb1ccd53c2ae61e39e27bbd098",
+    "lewm_pcd/bench/ogbench/tests/test_gciql_resume_compare.py": "76fbbf92d92e77373f48786147f318934b3e2488af499e44f7c2ddc567eb3a87",
+    "lewm_pcd/bench/ogbench/tests/test_lightning_compare.py": "1ac6002919e2df14b6af6422bd026f778931a778bbeeacecb5bb71a40b5fced8",
+    "lewm_pcd/bench/ogbench/tests/test_matrix_forward_inputs.py": "e7c0dc686aac98324d77e07a93d709b8d0f35f4dd12f3a06274235019a46e453",
+    "lewm_pcd/bench/ogbench/tests/test_matrix_policy.py": "549edf1ef20d07b4047db74a53e15be283b3b76a3a936cc2b748220336678f21",
+    "lewm_pcd/bench/ogbench/tests/test_matrix_policy_source.py": "ed1ab6aeab1925367d50a83ffed17038ad4e3b64bfd37b2378517b14b982b929",
+    "lewm_pcd/bench/ogbench/tests/test_matrix_source.py": "a7578aa6033feed0ce3d0a99085e65df7ef2847c64801ed104dbf781916847fb",
+    "lewm_pcd/bench/ogbench/tests/test_native_trace.py": "3c00c8b4ac4f8c40735945f19611820fb3f6c11914a160c231a0b0b6eeaabfcd",
+    "lewm_pcd/bench/ogbench/tests/test_official_data.py": "86aca4bed132ea3b3921a8b03ae369aa07e761f1fdd0b5bd85a40f078a26d696",
+    "lewm_pcd/bench/ogbench/tests/test_paper_contracts.py": "ab0bb75d2bfb420412431b6f6152b3ec069b4af6024d1d1f049386b820770066",
+    "lewm_pcd/bench/ogbench/tests/test_pldm_encoder_manifest.py": "91d78b0e22850c825c696aee6c382f3797a129b55b7b2a20d9c3f7cbed2171b2",
+    "lewm_pcd/bench/ogbench/tests/test_pldm_gate_capture.py": "17e93f3660114085caedccfa7db5b4bc3c9d55fafa6d5bdca6b37eee56e7c7b8",
+    "lewm_pcd/bench/ogbench/tests/test_policy_reference.py": "4cec31dad962248e6329a8477e1034acf8ff36655e923c98e5e9fe6e715e990a",
+    "lewm_pcd/bench/ogbench/tests/test_retained_encoder.py": "b9c7eb91ea9b02412984f34658c358032616e55d716f96d95f1fccd6b81fdcbc",
+    "lewm_pcd/bench/ogbench/tests/test_retained_training.py": "5993e949fe2d79dfd1e2f72d16a6fe1b66aa42923f63cfce966627328b437e63",
+    "lewm_pcd/bench/ogbench/tests/test_retained_training_hdf.py": "65d74c4656316ea4170e5e8e3583911a4b32aa1682a870f55c2c29164fb4fac7",
+    "lewm_pcd/bench/ogbench/tests/test_runtime_edges.py": "ae4f4f3a79de302f846c5e1bd308c66b78c7a9008737c7f802825162885be2a3",
+    "lewm_pcd/bench/ogbench/tests/test_state_replay.py": "d6be68708eb6dace0ad85a10e45440a71087fc7839fc8e8a109b3233bbec16e1",
+    "lewm_pcd/bench/ogbench/tests/test_tiny_cpu_fixture.py": "68e2ebfe3438cb246fd3c0324bbd5013391f034d27e4da566186d813248adbb3",
+    "lewm_pcd/bench/ogbench/tests/test_tiny_reference.py": "f0ff2170d3d83bdb62222c84d2e1fc14407f54924247d52bc8560ad9cbbe05a4",
+    "lewm_pcd/bench/ogbench/tests/test_tiny_resume_budget.py": "17fe11c5b66d7f84be734664a0184f2f5226e21fc446328f9f1b6656456d68f1",
+    "lewm_pcd/bench/ogbench/tests/test_training_state.py": "2347930a57e84d5dacb53ec107b8d25973f65c860fe1d01f6bceafd73d13e4ec",
+    "lewm_pcd/bench/ogbench/tests/test_workflow_controller.py": "d5b3a4ecaf9c99d98f12805fcab2320d4d2aa2f784d2766e4b7483a24852a1ff",
+    "lewm_pcd/bench/ogbench/tiny_cpu_fixture.py": "89a4a1c4c638861d60633a11d907c8ea3c7efaaafb6b65a467e392b381830376",
+    "lewm_pcd/bench/ogbench/tiny_inputs.py": "db8dbd351ac99b0a5215b8aa486de901ceaaab8a943969ac60866788dedc90e3",
+    "lewm_pcd/bench/ogbench/tiny_reference.py": "a0ea274c69dcb88e15db791c5e51b615587459387f21c986ae54c15ac82fb06e",
+    "lewm_pcd/bench/ogbench/training_runtime.py": "73b5c192ddf308dcbbb21f5e68c56a13d6747f166bbd8c86223a18dee06260aa",
+    "lewm_pcd/bench/ogbench/training_state.py": "d5e5a1d71c540cf7e2ff77094feeb3d294069d4f5e517050f048289dd787e866",
+    "lewm_pcd/bench/ogbench/workflow.py": "f5b3112bc7dfc8095caf4d7b859cc5669c1679191237091d6b98063e1c7c7f3a",
+    "lewm_pcd/bench/ogbench/workflow_agent.json": "f57d62727fc3d8c8cf8adab7e88b0a061ebaa9135a20629472839be57fc8a8d5",
+    "lewm_pcd/bench/ogbench/workflow_downstream.py": "e760b3a67839409510ad2c8d83dae2785de3c1437029e29fdcd9e16b016457e4",
+    "lewm_pcd/bench/ogbench/workflow_lewm_encoder.py": "5aeea81d727dab61f93cbc7b2ca28ddc74ff975bd88e1780d678463d5675c4cf",
+    "lewm_pcd/bench/ogbench/workflow_pldm_encoder.py": "8ec83276462d2bd35027adcd7661be48eef08ed403bdfddff5bc02854a72ad71",
+    "lewm_pcd/bench/relocate/__init__.py": "5451662c22f04e91eb39beb3de9689f38f6730b9494558751e4c6299c5751853",
+    "lewm_pcd/bench/relocate/adroit_collect.py": "f94de0cf89e51b913b3a9b814e2743d1eab1dc1d109f69fe164cd0ab3c716e49",
+    "lewm_pcd/bench/relocate/adroit_data.py": "f955b032f8ac640e6543b4a07493445525e099a98d2f0a65fb2005a69405a64b",
+    "lewm_pcd/bench/relocate/adroit_learning.py": "b625eac7b82d47b30b64702f98dd8cca4ad910d5a297dd5c3cf0825d4ccb255f",
+    "lewm_pcd/bench/relocate/adroit_workflow.py": "c740127851e53725bc024a69971850cfd7ae04ec1af26762c6eecd79e8e42d67",
+    "lewm_pcd/bench/relocate/asset_identity.py": "38373c2016c9ca318c34cb83eef42f46ba4731257be48e94154cc50bb172c217",
+    "lewm_pcd/bench/relocate/bc_caller_state.py": "4296f11d578c4cae751005119006146d66461b07884126a8f1349c395638d6a5",
+    "lewm_pcd/bench/relocate/bc_recovery.py": "699f8ffb5841c9644291d28ec9ec9e783817009f18da5126a28efe2124b6c52e",
+    "lewm_pcd/bench/relocate/clip_evidence.py": "409a2c59728242d5318735185b8c6a7e2813d692ee7b34429582375cd1f68ce2",
+    "lewm_pcd/bench/relocate/encoder_identity.py": "49bbd03180efc7070961d774b83a3d38db387a1cf6ef791248dfd4ba5c8c7052",
+    "lewm_pcd/bench/relocate/lejepa_recovery.py": "4657ab1951f1b1f86782a68e09ecc1ff53df39d8756f13c84001f928634e0669",
+    "lewm_pcd/bench/relocate/official_contract.py": "ed988eda818698637708bcf423aec5139725b641e905cca7ae901af3d0842708",
+    "lewm_pcd/bench/relocate/paired_writer.py": "f77a3420cdb29da6fc7b78b3962be42a927a86e6ea1f92ca5290e5c691d860b7",
+    "lewm_pcd/bench/relocate/policy_evidence.py": "ea2cd7817490db13f712d2c8a7cde8d06211ab3651dbdccc3b6daba529cb33d3",
+    "lewm_pcd/bench/relocate/recovery.py": "3b41bbe9377288c27b83745dc60ee4fb558d5432f16fd85ceb92fd1b488ae30f",
+    "lewm_pcd/bench/relocate/rh56_workflow.py": "28b1db1990b8d9f09a3c3dfff50ec8be795c843aad49be56009d1e074cfc0324",
+    "lewm_pcd/bench/relocate/wm_recovery.py": "a9dc0c5d4cb6fe4cc9a747bbf0edd0efe82853fd0ef4464d066b7d0e07fa4e08",
+    "lewm_pcd/bench/relocate/workflow.py": "d717a59daf1bb5355b60782e0b3195cd70acac464c49e41fb4af5452ca76927b",
+    "lewm_pcd/config/adroit_relocate_sampling.json": "85f3bc980ff1f05bbb66cd872b87c01f24e27c9ec0cdd09560a502e3b42873f8",
+    "lewm_pcd/config/eval/adroit_relocate_pcd_fragment.yaml": "a45341b83370b81fbc1d94d2d1c061c3bfff76705d172a51a852a9352d4868c7",
+    "lewm_pcd/config/eval/adroit_relocate_pix_fragment.yaml": "aff3797f3acf3cc0aebbf50a72c23a87e2533b4b99be7ee36e956c25609bbfc2",
+    "lewm_pcd/config/eval/cube.yaml": "9d75b9740a13d4e80538010cbd20cb3bf3fa6185bef48814412e1cb3189308e0",
+    "lewm_pcd/config/eval/cube_pcd.yaml": "9a3884993e0eab43245d26385dc742ccff365986ac5853325847960f42f02b4a",
+    "lewm_pcd/config/eval/cube_pcd_agg.yaml": "d107e2e639e1dd236f67caedabe94f2e9dd44d4bb56419443334cb9e3de837a9",
+    "lewm_pcd/config/eval/cube_pcd_agg_sonata.yaml": "d447e26fa9bf8d8c53bccbc3ad87565b6801e7430c0f5a3959ffc5d4641eaa7a",
+    "lewm_pcd/config/eval/cube_pcd_sonata.yaml": "0ebed3907dd8fa6d74a16d1b23cf5f870b8b7f93165267abf43887c8d073e69a",
+    "lewm_pcd/config/eval/cube_pix.yaml": "6379a44f02d2fab20d5452f55e77a70b587eb987fa5a9a86a393f7f6db75c858",
+    "lewm_pcd/config/eval/cube_pix_agg.yaml": "c6b341be7a219b72ac12a45a683990ff1d0ea1d56d911fc107d7e0bf768d0902",
+    "lewm_pcd/config/eval/cube_rm75_pcd.yaml": "d927f46f397dd2cee77cb56571b8b448986b7d0f3c32a6524855d6176117a398",
+    "lewm_pcd/config/eval/cube_rm75_pcd_agg.yaml": "28dec171b77c532e4b86001fe62de67d60afcc950ca99065cc1b8bfe416fc1b4",
+    "lewm_pcd/config/eval/cube_rm75_pix.yaml": "b88a3a858e7eeb96460da7a828760e787488cd07b32f947d4cc429990a351407",
+    "lewm_pcd/config/eval/cube_rm75_pix_agg.yaml": "76b95c535d1a38d58684c9299dae381fe0e1923f8df6664dcf9d7a44833d3feb",
+    "lewm_pcd/config/eval/launcher/local.yaml": "f97e5816c483da3103bbb00d8d1ff3ee98660b77b13d923d3ddfe1e7087f2d1b",
+    "lewm_pcd/config/eval/pusht.yaml": "a98551ac20a7fdf336a9c2178bb96e26e769995dc5266b09cc82e2246377c7a8",
+    "lewm_pcd/config/eval/reacher.yaml": "fcc0ea2f41c1ec078740f428575c68c3d73388ddb700897229590604d3e81647",
+    "lewm_pcd/config/eval/solver/adam.yaml": "3ccd135b3cfad39b32a18f24f8efe708acdee328686e578dfecb2c3e44cf9014",
+    "lewm_pcd/config/eval/solver/cem.yaml": "7eca98723bccdb79670ed228d6a5c4b3deb43f76b71d36fa03cf7888c6a548d8",
+    "lewm_pcd/config/eval/tworoom.yaml": "26caaf95bd99b0caaca198dab19c910566f99b52516c12381fd8e78e0040d9ad",
+    "lewm_pcd/config/train/adroit_relocate_pcd.yaml": "60a6af267210e7d761e196a9ba8c25d0dab8bc3d7bc8ecb04981ed37dff02374",
+    "lewm_pcd/config/train/data/adroit_relocate.yaml": "75ed2d5691b49ca87f1228ecee12dd4dad954b3ae4fbe6930fc7e7205f005d49",
+    "lewm_pcd/config/train/data/adroit_relocate_pcd.yaml": "df038922f5ec2192f0b2445ad52c55d97a9e4dfa305b868c732599083b15628a",
+    "lewm_pcd/config/train/data/dmc.yaml": "ba33b7ec624c0fca7dc533d8829bd5c409ededa339469ca82a82e64f1423e088",
+    "lewm_pcd/config/train/data/ogb.yaml": "ea65ec65f237f6bfbd013967fb4e45abd7adda0bfc65f4621fcfdf66b547ccb2",
+    "lewm_pcd/config/train/data/ogb_pcd.yaml": "2ef5b3f0ddb0a8a5a3c3c488839d8164fb2c8ccf04dae113598f794066500969",
+    "lewm_pcd/config/train/data/ogb_pcd_sonata.yaml": "a8440c51908ef65667bbf512f3ba6a7c54221e4076b9c4137a3587d5ebf70037",
+    "lewm_pcd/config/train/data/ogb_rm75.yaml": "0525e71be23bb74127cd07f0a4bcdb25bd0f92ad1dd5bf50a96c127f5f4918c2",
+    "lewm_pcd/config/train/data/ogb_rm75_pcd.yaml": "290a6393ce0b32779754293df07489dedb01c5c3851342fa0dd525db7c640084",
+    "lewm_pcd/config/train/data/pusht.yaml": "6c443e0d04a1d71c0537d6e56d0ad72298a618a6c4ae4ac6ee95cee83b7e6442",
+    "lewm_pcd/config/train/data/tworoom.yaml": "05b2d0e429f832f9eda03c5bf5d5165b64a23e7813a122ed689a218d58ee47fd",
+    "lewm_pcd/config/train/launcher/local.yaml": "c2fa9f45aec54cc823d8437fee8977933431174a372af7c8eb3c346e768df8f9",
+    "lewm_pcd/config/train/lewm.yaml": "fc4e9a93799a6c4ca8a75f1c021cf8e20d0547295db22ba58d9d972eb90b228d",
+    "lewm_pcd/config/train/lewm_agg.yaml": "e08bf399a515bf0af8129b1f8b7d898bb2e1bfd1bb614d9d113561de9f12a779",
+    "lewm_pcd/config/train/model/encoder/dexart.yaml": "53ffc78907997899ecf5aa5b8c97e0a63e899e77a792dd0f265b08bc3f94c979",
+    "lewm_pcd/config/train/model/encoder/ms2.yaml": "37949daf96da96b018d8c4bb0d93d572271fd84ff6f5913a14c34b9907a48430",
+    "lewm_pcd/config/train/model/encoder/ppt.yaml": "395bfb8c829aa740570dd4859806771b74a4c30e716b4cdee0cf67e76b0551be",
+    "lewm_pcd/config/train/model/encoder/sonata_cls.yaml": "12b67e0311f502b4fd8a2ee9d66f72abb9b050710c1744051fc9ed63d65d0a0e",
+    "lewm_pcd/config/train/model/encoder/vit.yaml": "d5ed104c29eab2d21bd20a044287c7d5f3e16b08e5f4932c0012d8fd6f8086a8",
+    "lewm_pcd/config/train/model/lewm.yaml": "a7a0ac13af527f8b3c7a3572dbda394e1ac613d5f2b1f73732ddf9eb62a994f2",
+    "lewm_pcd/config/train/model/lewm_pcd.yaml": "a8cae992a20fcd428d4f790ea394e5c4e4cafad338a39076241e9c8621842fa6",
+    "lewm_pcd/config/train/model/lewm_pcd_agg.yaml": "fff412b7a651f327cfc3ddc7f7f20315a4a3beaffe32fd3104c7cbb60180735f",
+    "lewm_pcd/config/train/model/lewm_pcd_dexart.yaml": "fd08230db089ff03f105c74669e35842a59be7c5209294d4c3554ff22c6bde3c",
+    "lewm_pcd/config/train/model/lewm_pcd_ppt.yaml": "d87a92005007c422d32fc620a809a6f39e08b848c538a6b58b9a84418e29fb65",
+    "lewm_pcd/config/train/model/lewm_pix_agg.yaml": "fa7959ed1dae38c5ddc76f25b0d132737c5da6c618482bc33cf638ad9f88a5bc",
+    "lewm_pcd/encoders/__init__.py": "800a9cd99577d60b86c0d77351b83d586a01ae286e6eae07522cfddf71698f18",
+    "lewm_pcd/encoders/pointnet.py": "0a4a1d049ec4ff10219b4dc1825d75243bbe74ad0099d4dff63660be3d5625ba",
+    "lewm_pcd/encoders/pointnet_dexart.py": "78a545f7f41f42ed9714101d203a1ec14875495cf43fb86e72ff729fb29b184b",
+    "lewm_pcd/encoders/pointnet_ms2.py": "91d58e12c4ba0ad8be96bf44930e61498817f90180dd32d6d6077ecb47bc90d2",
+    "lewm_pcd/encoders/ppt.py": "b3ead0403dc7dc41a9bb0c6eb779f7865ac5aacd691e2d30a6525ace8bbff1ee",
+    "lewm_pcd/encoders/sonata_cls.py": "26a60d8b86405748858c5038d3f6ef6eee06adb51d86dd8d9c972905b313acad",
+    "lewm_pcd/encoders/vit.py": "829efe4f2c11884253d236050a9fd2146732c91393547f92475a862c8fcd669a",
+    "lewm_pcd/env.sh": "c91a99f39538394ea6f418f36969663526031a85bd377d1735a92b34e0686ffb",
+    "lewm_pcd/envs/__init__.py": "b41524d78aa5810bef03e1ce6a35c0067931b8db1c62a40deb4cc2a593595b10",
+    "lewm_pcd/envs/adroit/__init__.py": "6695123c9305c5f540ae8abcf9d858d24756be41578b6ac57aec80eef38117de",
+    "lewm_pcd/envs/adroit/env.py": "a4d8b10975135a149a714096866c94dc94731332cd989f4ca5323fc7b4e3798a",
+    "lewm_pcd/envs/adroit/fragment.py": "5b2ff2f1eae1ccf6af92910c056bc9b0ddcd79f30c4e5d0c3831c7183f9b8b06",
+    "lewm_pcd/envs/adroit/fragment_env.py": "773af1c1bdeb6e89c6396a390efd6211d84a889168ba7d63579ef48ad79be434",
+    "lewm_pcd/envs/adroit/hdf_binding.py": "3c20b7be56a7a52035d6b5e94a8ef55d079652665b82decea0fb8c6008655dc8",
+    "lewm_pcd/envs/adroit/pcd.py": "c312d1204068aeec7918c380c7c0537ec6d3efd7af24d2cd13b3c51f34bb7e6e",
+    "lewm_pcd/envs/adroit/policy.py": "79eb26a8d8ea1e3cf3c51ee1a75c8c39b6daedb3819f74809b6a6acb4b0ce3d5",
+    "lewm_pcd/envs/cube_pcd_env.py": "0212f27c43c9bc0366f6c9b4398b4f90950b64b5ea0aaae8122a40a83c10cb1a",
+    "lewm_pcd/envs/cube_rm75_env.py": "4f02be391808ef6ea6ad76ff9ebadd1e13ecefd5d3303489cb6271b24d6fdbef",
+    "lewm_pcd/envs/descriptions/inspire_eg2_4c2/assets/baselink.stl": "7043a98a1c6bc26c43329427b7e20231fd8da27a20a1e939a6f206f869c93a61",
+    "lewm_pcd/envs/descriptions/inspire_eg2_4c2/assets/link1.stl": "d626d57cad00ce45637fc770c24659c10e1697c68869229fa3427802bc83fa56",
+    "lewm_pcd/envs/descriptions/inspire_eg2_4c2/assets/link2.stl": "a908071c33672578474038897eb8268a8ca534858a6b2e9fd682e22e40cbd6d4",
+    "lewm_pcd/envs/descriptions/inspire_eg2_4c2/assets/link3.stl": "7fc3d839c23b4f845d4edf5d5704d81b4052b01805e70b3b11676c16a05a65ef",
+    "lewm_pcd/envs/descriptions/inspire_eg2_4c2/assets/link4.stl": "e9248937221d905666ffd4cd5e8df97c9e1e96e5fcc10d438a427c1c06974c41",
+    "lewm_pcd/envs/descriptions/inspire_eg2_4c2/assets/link5.stl": "dc32d21cceffdd18eba238a6be09c89649eef3efc9e18ab4ba0b0ccdfdce6fb5",
+    "lewm_pcd/envs/descriptions/inspire_eg2_4c2/assets/link6.stl": "f41c4aab68f158b8574766f0a111473e162259deff0cea2958c43664dea3bc1e",
+    "lewm_pcd/envs/descriptions/inspire_eg2_4c2/eg2_4c2.xml": "8d65741a15ac5cc05ac72066df88d39fceed9abc639b4f8bb7d08eac1b08a402",
+    "lewm_pcd/envs/descriptions/realman_rm75b/assets/base_link.stl": "1518ff4c95ec501172756540cc40f6a072a47ad84249259cb4c98c35d12cc37e",
+    "lewm_pcd/envs/descriptions/realman_rm75b/assets/link_1.stl": "cde9bb9c6755ed79ab6b85476f3c9e1cda3176268ba7c96c14d65e07e7bac171",
+    "lewm_pcd/envs/descriptions/realman_rm75b/assets/link_2.stl": "ad12b9f2fc80edbfbba9e12049c58a36aedddb78d58694f558b6b5ef7331faba",
+    "lewm_pcd/envs/descriptions/realman_rm75b/assets/link_3.stl": "4a0b2f1193c05a2846fdd9b6c2333070b6b90957134bb3f22b3e3a67e305e227",
+    "lewm_pcd/envs/descriptions/realman_rm75b/assets/link_4.stl": "5d903745e9369009ac064bc24c080d03f503b3386b8e14325a318cf8fde0959d",
+    "lewm_pcd/envs/descriptions/realman_rm75b/assets/link_5.stl": "2fc93b2bc970eadca950afa3120129766e2bead60234c6d8752d3b223e407046",
+    "lewm_pcd/envs/descriptions/realman_rm75b/assets/link_6.stl": "f9d0216056f7e1512858033163b0415973e1db573a1fee5af1609171967c043f",
+    "lewm_pcd/envs/descriptions/realman_rm75b/assets/link_7.stl": "a491f4471cf587b0a64c9c25424fd2b096b14f0028b67d0909233bf6f6a947df",
+    "lewm_pcd/envs/descriptions/realman_rm75b/rm75b.xml": "ea0c83a8b0295951106276833efff2ae9e04a3ff4b3411068895bf716080dd59",
+    "lewm_pcd/envs/eval_policy.py": "da8085a812aa58df73c168a2ab2ccb6cf154b8105354d2be3c0116fbe95660f4",
+    "lewm_pcd/envs/expert_policy.py": "6158b20f2395a7446d21682e017e5c81705c37da527399ace65f9d8d7b08eb32",
+    "lewm_pcd/envs/pcd_wrapper.py": "c38412da7ff935be56fb33e39f810346dd151d85baa7ba44aef741ba786e7933",
+    "lewm_pcd/eval.py": "acf52b1df8ef5c10edb93723b1467aca4f84956307e78dd3c960bbc0129e3378",
+    "lewm_pcd/jepa.py": "7e6680f9941268b13526082fa888a46de7dca9385bfc837e77ee649e5c034135",
+    "lewm_pcd/jepa_agg.py": "39265e60b3ddb50fb2555ff5e40e7ea0c8b0c6fc530618788e166ee3ea2aae8e",
+    "lewm_pcd/module.py": "0b258a9e8dc24c29fcb1e8c50a09ec78b8ea85aeb79e21dd8adf712396646620",
+    "lewm_pcd/results_success_rates_cem10.csv": "6b7145bab4e3130f81457a58ef96411234e054ae9179217b355d854f2ab9d7d1",
+    "lewm_pcd/rh56_adapter/__init__.py": "d74149db59bd939d1f2c1c9f3d6ca5b99e7088d09fbb6182cad9d48e4bda153a",
+    "lewm_pcd/rh56_adapter/_runtime.py": "ceaada1900c8f2cea2a795700725f777236428af155f84b17e1e34c2d3e9812a",
+    "lewm_pcd/rh56_adapter/bc_bridge.py": "5de353e222a12cd0862cfc3a3ef28facff07c33a95cf85ceff6f33169d63c3e4",
+    "lewm_pcd/rh56_adapter/camera_preview.py": "ae5027f69649d42903873b0568d418f317c328eba0e73761acf150e8f0ea1b13",
+    "lewm_pcd/rh56_adapter/collect.py": "f2ff57aab32df1b10b76d646d3ebd4b8ac035e8bfa248f8db0144313e8be35f6",
+    "lewm_pcd/rh56_adapter/data_tools.py": "9366763c45cd6109cf68dcf2b535a88c7392462652b777f3ac45bf628abf0fc5",
+    "lewm_pcd/rh56_adapter/input_identity.py": "0d3993467017e1a3e6c55eb528bbb04a757d0c137142d2977d4d5232811df360",
+    "lewm_pcd/rh56_adapter/native.py": "ecc6ab3f5483ae23fc98b7d82d96a401586526d1393f6bbb5aef8820d4b60c41",
+    "lewm_pcd/rh56_adapter/official_init.py": "b106c8e7e048eb4cd3d0328cf304876ae8c726bcb7ddb886f0c959db42091b85",
+    "lewm_pcd/rh56_adapter/uint8_gpu.py": "ea4617c1cdb08e35c4ba3e2c236ab3c345c808df0bcfaeb3b2deb2689186f82e",
+    "lewm_pcd/rh56_adapter/wm_bridge.py": "0a74eca02f71314ce6ed222e008a756ee883772ce06936e037b8e3b983392cbf",
+    "lewm_pcd/rh56_adapter/wm_recovery.py": "752a38d6d6673b333a0705ac7562203c085fdb834054db6d9e486764f64dd517",
+    "lewm_pcd/scripts/baselines/adroit/__init__.py": "744b46a92148d12a351a4b914b7550ded7b024fbd558b8004169eb549cfbc420",
+    "lewm_pcd/scripts/baselines/adroit/data.py": "f8a1f4471d16cfecd0c32bc09b2a97bf677c54d401360d07f1c0d7c7fb8e0a86",
+    "lewm_pcd/scripts/baselines/adroit/train_lejepa.py": "8e80a5428778be10efa935a0948906c8799ddbc99e14b84ec3adab5c46d14e73",
+    "lewm_pcd/scripts/baselines/adroit/train_pldm.py": "e73d6813b7b5802d2444cd86ff045b88c5fd90accef9afa5ded63c947c2071c3",
+    "lewm_pcd/scripts/baselines/eval_ff_api_fix.patch": "3ce7dd8907e81de57bd15bdc668e96d7fa77b2410b19b88b70a40a16936d9d80",
+    "lewm_pcd/scripts/baselines/gcbc_ckpt_path_fix.patch": "27f0292fee25378d0686cf34916e99c4fadc1d6edcb02b638efe981fa77c6873",
+    "lewm_pcd/scripts/baselines/gcrl_interpolate_fix.patch": "022cda6d3bfbca900ef558389c6415d6dc624ef252c7cfe25000bc6bc45b49d0",
+    "lewm_pcd/scripts/baselines/pldm_logger_fix.patch": "84b710fda7c283b4b16973a1c358676d2da3469e9f5d8907cfb685ccd0a80851",
+    "lewm_pcd/scripts/baselines/train_lejepa_relocate.py": "4b188835ae3efd97a27af96bd3a7fdb15b596d29f9119cd7d6f77f06aa34ed9e",
+    "lewm_pcd/scripts/checks/check_equivalence.py": "56e33b827d72e4bd870baf99529bf5de3c7975c9ef3954436c479bc0dcca5dc2",
+    "lewm_pcd/scripts/checks/check_history_order.py": "8527cc0f66c9809440fe54ed652dc2f5d2289d9166d8133e4c1a23f8784adce9",
+    "lewm_pcd/scripts/checks/check_model_equivalence.py": "3a350245e0976529fedae75e311d80e833cb618ba8fa581a0445c2f7a047989e",
+    "lewm_pcd/scripts/checks/check_pilot.py": "ba8c7d6dd11e9111cd30e5473f6c805a7f47950f6b225a4d86e80fbc0fd43768",
+    "lewm_pcd/scripts/checks/prepare_relocate_fragment_rgb.py": "f4186a9b3da1b0ccfccea997f7df0983bf35ea89089c4e2f9214381e491b891d",
+    "lewm_pcd/scripts/checks/probe_pcd.py": "b3468c0403e326533c061d5fa2318c6fd27e2caa70fbb9995ba5d5a1700acd5f",
+    "lewm_pcd/scripts/checks/render_pcd_multiview.py": "a3d2b706e832817bb7ac118dca53daf125343593b390a13668a50d8bf851d391",
+    "lewm_pcd/scripts/checks/rollout_cube_video.py": "047ef29d02b8309a83b3cfac3a26c6b55067b09bd4cf4ae4a35df86a20235c5c",
+    "lewm_pcd/scripts/checks/run_adroit_fragment_cem.py": "0cf1456b64a21a18f6fba02b6942cb329563fd98b2c94de614372871380e0724",
+    "lewm_pcd/scripts/checks/test_adroit_public_workflow.py": "55ed69f3739b73eef1dd490dba7304c85db17630ecec154cc5b7943c40167be3",
+    "lewm_pcd/scripts/checks/test_agg_rollout.py": "6f587225c7b2de393e21fc4029f0e43236d885ef629ff2eb052e20f9ae41c808",
+    "lewm_pcd/scripts/checks/test_asset_identity.py": "a53fe5e8110539de14cba6b0f89ca3a64b9186c888f43b9789d18a06e58fc06a",
+    "lewm_pcd/scripts/checks/test_bc_adapter_wiring.py": "8ad9fe487724c257fea15c13a5e6f0d626f4623298ccb1120189e34e8fd0c692",
+    "lewm_pcd/scripts/checks/test_bc_caller_state.py": "d1040e957546bcc3ef7357efdd8e2fe8f1592115559c1820418910551d144f78",
+    "lewm_pcd/scripts/checks/test_bc_recovery.py": "fdc4f87df5086932a10f859196f9452c9807cb5dc382386d6879b8f80a28eea9",
+    "lewm_pcd/scripts/checks/test_clip_evidence.py": "389f5f595c4441ae5dbed95cd469e3006cd0d2f234f0aa092348ac0e9a7d139e",
+    "lewm_pcd/scripts/checks/test_encoder_freeze_identity.py": "b969474a07c41f6d26259e3a3cd12ba161972ba9aab51a6344b89180899ecb53",
+    "lewm_pcd/scripts/checks/test_lejepa_recovery.py": "12e71a59b06a12aa3e58480fa5cbb0cbfa274500b7b2337389b6bd8f6b152486",
+    "lewm_pcd/scripts/checks/test_lewm_cortex.py": "6be50523d15bfae0bf65e809ac961704609e6611c50bbf6a86b58c33b37a4edf",
+    "lewm_pcd/scripts/checks/test_official_rgb_preservation.py": "b2d14b5f1a8dd95d4e60b1c15d147237c8feb132530f82f6ed927d8dc7126d70",
+    "lewm_pcd/scripts/checks/test_policy_evidence.py": "e4dc93e2a535ba0a9f1fd4790e08c7a18660ccdc29aaa2a15fb05de05fcb7f37",
+    "lewm_pcd/scripts/checks/test_recovery.py": "fcbefdc97212d4a75efab8e5b243d2dd3ea3b70ae490f2dc807a49c72faa712f",
+    "lewm_pcd/scripts/checks/test_relocate_fragment.py": "25baa10939304bc8eae760cd966949dee851079e214870d26f521e10ad29096c",
+    "lewm_pcd/scripts/checks/test_rh56_data_adapter.py": "668694bf267275303272e38047769d6ac2b356b97ba8eee9f1fbe269a0140e15",
+    "lewm_pcd/scripts/checks/test_rh56_entry.py": "b6198dee1f5ae6548bae971c4798fdb027ca900030db16ecd33424820a7508eb",
+    "lewm_pcd/scripts/checks/test_rh56_input_identity.py": "568de07d49cb241815198d56dfce106f18921e1ea766478a8bcaffffef41bde5",
+    "lewm_pcd/scripts/checks/test_rh56_recovery.py": "6b89c38ccbdcd8e2dc3920e383f2ae6bbc2a6fef2ba9f9ad9c6c40eb045bc199",
+    "lewm_pcd/scripts/checks/test_rh56_training_bridge.py": "00c34134502baa4539f230cf1aeeb15af58e942ceabe287788684db89a221a3f",
+    "lewm_pcd/scripts/checks/test_rh56_workflow.py": "8f69e14e470b313e568ff982f6d6c2a736c4f47f35580d106bd87c8c9845525e",
+    "lewm_pcd/scripts/checks/test_seed_contract.py": "04831e5d348914f68997011f4180695b7940fb7212565fb6e861fda920377040",
+    "lewm_pcd/scripts/checks/test_sonata_cls_encoder.py": "5b1d1285340e051762ae8743b15c400c44d6ccf1a071f7321855cd57336d07f2",
+    "lewm_pcd/scripts/checks/verify_rm75.py": "d18411129bf8a6bfb5e74d02108ee0ddb0f60e7e6011b4f2520acaf4904a5ef1",
+    "lewm_pcd/scripts/data/add_eval_columns.py": "d431780f16ace29e33feecf04a653b82c83daeccc7ac448ecf64dbd339621a6d",
+    "lewm_pcd/scripts/data/collect_cube_pcd.py": "a13c3a358af80db667d6afeec3cc83af5f2116cda0eb2fc6c9e2382f558f00ba",
+    "lewm_pcd/scripts/data/collect_cube_pcd_sharded.py": "3d6769e1dbc74aa5db47964f1a497650e0a88886cfb549b90ddc7ddcf71cec93",
+    "lewm_pcd/scripts/data/collect_cube_pix.py": "f526b1ebf87c6fa430b0f00945a07e101d715cd7213bba69ae4b1c55131644dd",
+    "lewm_pcd/scripts/data/config/launcher/local.yaml": "39c78c057ea44669ca7c6c0cfa3dcd9f4510956eddd613e34bb79cf9af193b5e",
+    "lewm_pcd/scripts/data/config/ogb_pcd.yaml": "780496387bba56ee0fcd10b73b9bd673ca25eec04bca148875571eaa64f53ee6",
+    "lewm_pcd/scripts/data/config/ogb_pix.yaml": "56a5b00270c7c3895165d3072b669336f2f4d80e1f27ce1430d9520497ed9eda",
+    "lewm_pcd/scripts/data/config/ogb_rm75_pcd.yaml": "3744cd3ae2e852e54b3440553fb46e50c644d9d41d6cfe9f79d7eede50979fc6",
+    "lewm_pcd/scripts/data/config/ogb_rm75_pix.yaml": "b0c39d8c3f5dac601ac8c0b3e80081907c9e7f9cc7d80794283e11e72e3c3a8b",
+    "lewm_pcd/scripts/data/merge_h5_shards.py": "d7fcd9c6df2698adeef21249ad279c512ce73ad30652a917471573ab5453f068",
+    "lewm_pcd/scripts/data/rechunk_h5.py": "7ef271069298364c21af2df1bb8d195814bac3fa12eac76c0fc30f2b252cd1a7",
+    "lewm_pcd/scripts/data/replay_adroit_relocate_pcd.py": "28c45ecf4c4616fa3242180f15a13f21e7554f62a2f89c2f91ff7568bde1cbcc",
+    "lewm_pcd/scripts/data/run_collection_detached.sh": "5a2a9f99d723cfea9c46735ab8e09ede52ee75cb665733a85c7900116e10b560",
+    "lewm_pcd/scripts/eval/auto_eval_checkpoints.sh": "3d13287f180c6183581c26e1fba710ccc5950ace5582cd93f4ea224c68a3ab16",
+    "lewm_pcd/scripts/run_baselines.sh": "da33f6b2f86fccb9d708302b82109eb226e6bdbb891b2e80c9f4cef15b556f22",
+    "lewm_pcd/scripts/run_pix_agg_followup.sh": "9ec31b00db2748c96630b2b62195e88af13132b6357a90d0c0ec36d677e86735",
+    "lewm_pcd/scripts/run_pix_pipeline.sh": "275bb6080c6abd742514ea6787889f266d87f9bb9aa531bea06152a8fa88b2e8",
+    "lewm_pcd/scripts/run_rh56.py": "2fedd45447cbc2c8dbb10e09e8ff364b7f66deb041be6594bc72fb0d0797134e",
+    "lewm_pcd/scripts/run_rm75_pipeline.sh": "188d2f7616b30e1728aa99143b8675a7225747b708235c28f1805e9a8a80adff",
+    "lewm_pcd/scripts/setup_train_env.sh": "b8f87aeaba1b295d73cad0dff3c19e5808ee287211f8338e0f4a46b54df15562",
+    "lewm_pcd/scripts/train/resume_train_detached.sh": "be1046f07129455a256137c1ebd2f0d7d2670f828d260109032f6abfb930ea50",
+    "lewm_pcd/scripts/train/run_train_detached.sh": "b088ff1b01c09af3de8a6e9f7e5567aca0cf9fa67d25ec735d4e5d623e6ecf1d",
+    "lewm_pcd/third_party/ogbench/LICENSE": "715578d1f9e969ec0e99b730b443a4a3b7d07dbc0da462e47b50c36782b1812b",
+    "lewm_pcd/third_party/ogbench/impls/utils/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "lewm_pcd/third_party/ogbench/impls/utils/datasets.py": "52c373922a87e1ba8ad8b3b96c3474d5e6385e2ea2c7206930f7a8a315816609",
+    "lewm_pcd/third_party/ogbench/impls/utils/encoders.py": "6bd7fdd82838b754d26af01f9e84d70fa63fca1e09efee38a09f325884073ecc",
+    "lewm_pcd/third_party/ogbench/impls/utils/env_utils.py": "a92d391a3d95e26717b80ea783f487f0639c956f23ef603bfa8b7bb098f763d7",
+    "lewm_pcd/third_party/ogbench/impls/utils/evaluation.py": "4d9a2732bc9ef89ce99fbc0f07a76d3f4d035783af3a658251709140ff9de3d5",
+    "lewm_pcd/third_party/ogbench/impls/utils/flax_utils.py": "5b6a8e9a919bf57dae0c1454f327ded4235385f9d9dcd1e62263fe4fad9fd484",
+    "lewm_pcd/third_party/ogbench/impls/utils/log_utils.py": "ba5ad408d91ee35d92bf06ec7846846c5a75af4ae7cc62c329ec43d074bfaeb6",
+    "lewm_pcd/third_party/ogbench/impls/utils/networks.py": "e7e4c4a439b691911e5ae6c2653f253c5703e6b5d190d813e28ebc32e7306094",
+    "lewm_pcd/third_party/ogbench/ogbench/__init__.py": "b692dba53ffff6152a9e117447dde62f164ec640f967a174807ff2faff0925f1",
+    "lewm_pcd/third_party/ogbench/ogbench/locomaze/__init__.py": "f17bf3484a5d552cfbce72b9f3c9aff481bb51b180b809681057f39200c07b60",
+    "lewm_pcd/third_party/ogbench/ogbench/locomaze/ant.py": "ebe45ff724ecf5e35e643e339cd7c1d6315e49f8f0f8f96d516fd1130fd1e363",
+    "lewm_pcd/third_party/ogbench/ogbench/locomaze/humanoid.py": "656643255db15062d629e9708695d55d77bce7418b9b9e14399938e50fcd17e8",
+    "lewm_pcd/third_party/ogbench/ogbench/locomaze/maze.py": "2dc9c19fd6d0e0e2d27eae97430eaa0e816c6bc2221463bbde051ee9dc328714",
+    "lewm_pcd/third_party/ogbench/ogbench/locomaze/point.py": "eb9125a4b0f0cbeeb4a6a5a1e45bfd8b938a8bad9352a3e5d72dc2ac8f1987f6",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/__init__.py": "ac48a0d31ca62826114297539748dca26aa5fb72a6079abeb00729e2dcf8e69a",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/controllers/__init__.py": "f92c1be658e56af29c17598605f3383027b1141d17b1024e8c6371395dc6b4e2",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/controllers/diff_ik.py": "4914ea5fbf6428daa4f475a0490a8786514fafd15072c5e18c5d4a5213b8f1be",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/descriptions/cube_inner.xml": "03ae5a10aa56c08f46cb0152767e8d835e2a55f23267d718b825a336886e6b52",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/descriptions/cube_outer.xml": "94d484308fa9d7468a84a0b5b00c53d8801d0c1cb5c80805ea9d101ecd26c86a",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/descriptions/floor_wall.xml": "07130a20409c9629e187b303662ae26eb614ae5ec9e8ba9f78bad8e5e079603b",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/2f85.xml": "b8dbdad1a805ed3e2ab67c60fdaec4ca04fc2ea7ae06eb55cd14ab7f957cf953",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/LICENSE": "3d5edd18d1e22a17666e9bb84270171ed5ac90b192d24e0177fd171708ea2316",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/assets/base.stl": "1c7b9f2bd92d705fc4e897c94e905973a3c05f406845e942229433deb7041453",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/assets/base_mount.stl": "87971dfdd6e5311b5a723e7b73c4701ebf5c2364df671500f30dfc1c53c8e61a",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/assets/coupler.stl": "d5ee95e62f8415bf5b6e503c831a958f5fc1990bf9b2865329ec38a28932727c",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/assets/driver.stl": "bbd6e868b1778bead60d2516c7ede581d7ad4e431744b1828757d6ea5129c112",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/assets/follower.stl": "633793332c081641ce200df27a40643cc293b29956e3cb5cb29cb811c33ef1c7",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/assets/pad.stl": "4af1fa8d9bb285abecbf5dfc88e74cb30f059a7a074c2030dc35e9ee4316019d",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/assets/silicone_pad.stl": "ca20c0fa61e6d3ce7b04bed25360e048e31dfd88ace04187aa6d9e8f4ca3fd0f",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/assets/spring_link.stl": "4fb74a8a0d76c0e471cf19fd48bc676fd5b19123798e7a39eb6aa56869354283",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/LICENSE": "5ec71ccf66c8d03261448f2441a586765b97f2248c860a1ae19689fb1c45cee6",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/base_0.obj": "9a3b21f1524baef6af8a52d7af90b6e94b79f7e3c2b04a0f6581f74d22291b0b",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/base_1.obj": "cf7d54691a2c1eeda280955ebd6bd83c2dbecfc46fb53c10198f05d107511b50",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/forearm_0.obj": "64c049a55149c2ab355594d52302b53d3e34da3677ceaa1917c427cde7743146",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/forearm_1.obj": "a96fe203015cf532b193f414cd01268c7c36795e51a837dd33afd122334f81f2",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/forearm_2.obj": "05b436505fc595aeab26675590c2b56b88a65b2d52d6352096fed9f07cb4c4ca",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/forearm_3.obj": "fa31af19cfad7a765b62e8a2d5931cb014b88de84195a7850b4e5ee902112e9a",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/shoulder_0.obj": "477387a7e7312782a6040484a3c2c2fcee33f40109f419076e31b6f6e1692c68",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/shoulder_1.obj": "8537bba02804640ddf6e260f79fe66e895b3229ed3d44298a95e8e027eb5d435",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/shoulder_2.obj": "291714518416bb8f0bafbf123867db011ecbf5146a05245ca5893ee8c57d4e21",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/upperarm_0.obj": "14143d4f1175a7dbacc8e2f2f98f1cac5a2b2e238cd46cd03654d31f2610eb53",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/upperarm_1.obj": "272899e927f4a32b7c25e34560ec70654c0346cc8ed1c616c0555f3f53b32d14",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/upperarm_2.obj": "86c05350d60eb0e7e28a81b544267478b7db997baba41cef19088ebbeffecfa1",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/upperarm_3.obj": "b257dab441e6fab64ea03b4b87029d8a96554ad1a513cce944d56acba0ad948a",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist1_0.obj": "7ef0c59b5c5d56a9902435c9a058b27d2a38c85fe2bae02d00a9284dd1f4d519",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist1_1.obj": "ee6d5c562e6becef94109b0543329080d285d1aef521a01ed98e18a5bf1e8684",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist1_2.obj": "88c66dc64f15391287147d50add37729a3f41dadd80b1f859cf2cb6d45daf32a",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist2_0.obj": "2ac2e2e39d8f7005bc3b3ab26cd61634be2e14930074615da5318b9ee7c569a8",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist2_1.obj": "a721d06dc61d3b3a8ec58c035c9e3358ed30d6991a72e077d8abf3c3c203b633",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist2_2.obj": "6df4335c8bd5e881fda2c224f770115ffe9ddd0cd321ebe3c0a4a310796f0987",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist3.obj": "0e51748f9c93bd66604360a5cf7e2e8a6e754550be64076333ff4fc19ec90c61",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/ur5e.xml": "e7d805a7a03c3194ad5992d47661aca34675c93275043aaa66045968043f5a6a",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/envs/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/envs/cube_env.py": "6f8457ffd634f6620411c788c86e871f44ea5b5b5eecf76cd694fc04d12d678d",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/envs/env.py": "c656f4733a1ad4cb07289bc58ac1ac0f7da378e1f2714dc80a5ed8c0b3028c38",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/envs/manipspace_env.py": "03524eb1c95155bbc2ec3d29e9836fccffe8eb9fce1be15b6f0e7062cc1bb5fd",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/envs/puzzle_env.py": "712a4c1ac459f9cd1c90732eb6deb37f0fa0fecb98df4d4afb17e1d2a8f353b9",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/envs/scene_env.py": "b03395bc50d7a65fcd45a3141fe6cca419f07cbe7422d397003d824fdfcb7c54",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/lie/__init__.py": "6ae00df58e42c3d2812449831cc8b6bb54ec621aa2d537c532f76df25660ecb2",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/lie/se3.py": "a918b8ecdbc676bd0ddcfd64a312e5074d48892db2074748a6c979e308fb1b92",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/lie/so3.py": "35d1ffbd6d93e9466e49ecb2d914843cd379a302914c5ea9f79af69a7392105f",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/lie/utils.py": "71796041701c863eb91ccdb81e3f482f29735d0ad29c021052a8b7f67d79d147",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/mjcf_utils.py": "52bc5dfd77c4d82c8556ef553feaf6a357585bdb2e27fa381c25c99ddfb07b5d",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/oracles/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/oracles/markov/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/oracles/markov/button_markov.py": "2d302ef7b2b1c6cd5202dfcafca07ee9c50601d50f8d33ca38e8bf1cecf6abc8",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/oracles/markov/cube_markov.py": "67943a0eb3d4a22cf4191dbe2a2ae70c92847fb6b81fb5ce198c86ca94ed2f6f",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/oracles/markov/drawer_markov.py": "d828b1898a0cb5fcdfa4c8ecab495ed194fec1433591dff204527447091a9325",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/oracles/markov/markov_oracle.py": "409537d2c12136a5d3d1b15e30ac6754cc66bbe4d01fd459c98247b0c1a9913b",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/oracles/markov/window_markov.py": "b1a504c9fb0ee2ec3af46300c01efc005e158d47322c2d721e9bc50f2667a7f6",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/oracles/plan/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/oracles/plan/button_plan.py": "f2c31ee54b70843b8be3f7a7b368a37568aa7a644514884cba3188dab19c1157",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/oracles/plan/cube_plan.py": "4b31900946c682ba8fb57a38d3e08714d2aaeca186745bc7c8cf88d4ae102b28",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/oracles/plan/drawer_plan.py": "f4dd776c45d1680dc574673d0e1196d77a7a4e5e312f0442774eef4c551db87f",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/oracles/plan/plan_oracle.py": "cd977fe1fd107911a1d50c1eb1bd0b2f25586d6e861638b36103322de3559329",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/oracles/plan/window_plan.py": "96894697e2af9b9f50372369eb14d166d925ee7a34fd93b6d82c4ce5db47b841",
+    "lewm_pcd/third_party/ogbench/ogbench/manipspace/viewer_utils.py": "c1ac0e1f4efc6f70e9bc49f024757d2c08c02b6648e33deb980c1e8d8d110502",
+    "lewm_pcd/third_party/ogbench/ogbench/online_locomotion/__init__.py": "627897cdb0c18cd6cb204d31b1850efc6fa75a2fb5f474648812b837855f9bce",
+    "lewm_pcd/third_party/ogbench/ogbench/online_locomotion/ant.py": "4ec264966f2cdbab29831b0d1f8d3ee312188944fe6127ed0bb5753009753456",
+    "lewm_pcd/third_party/ogbench/ogbench/online_locomotion/ant_ball.py": "7bbc95c72fcc19e12c156bbd2e8fa4edcd685c33035799a526b9e2bd6bd54604",
+    "lewm_pcd/third_party/ogbench/ogbench/online_locomotion/humanoid.py": "06c73978134cca3cbc9c20ca4feb5a167931f765b5c6973211dc717780243add",
+    "lewm_pcd/third_party/ogbench/ogbench/online_locomotion/wrappers.py": "d7320339affc656e9d183f6dc739dadaad090015f1af11339ad3d52ba2711625",
+    "lewm_pcd/third_party/ogbench/ogbench/powderworld/__init__.py": "a191bab9a6bbcae799b26c59222b24182a10fd4ae9b6c912a643c6d4e6e2cd57",
+    "lewm_pcd/third_party/ogbench/ogbench/powderworld/behaviors.py": "18dad54d747dff6d024cfe2d9e71cbd09cba1c02989801c04c7be5209122b681",
+    "lewm_pcd/third_party/ogbench/ogbench/powderworld/powderworld_env.py": "d2bb936ce28d98c46de45e2cfd3729fa2f983f3456f7a2c67f3304d395852c40",
+    "lewm_pcd/third_party/ogbench/ogbench/powderworld/sim.py": "96a595104fceebe50b848bedaa830e4676859489cff05846f1a616d6f48e59dd",
+    "lewm_pcd/third_party/ogbench/ogbench/relabel_utils.py": "7b7ff7ea20fb81301ef251fc41b591de8c5f859dc96de2b4ba4a3a9bebfaa1a7",
+    "lewm_pcd/third_party/ogbench/ogbench/utils.py": "f503a3a0497f91ce02958abae5770f3e08c9d6a3a740687c828c996fedb24e9b",
+    "lewm_pcd/third_party/stable-worldmodel/LICENSE": "ff0b00150aa5d2ad4e4658a5f7b90d9316f9baa2199429255e61e3a47ee54252",
+    "lewm_pcd/third_party/stable-worldmodel/README.md": "e13b9e0c79dc6857ec45c23e80e6d5d64bc21e383bb601aed4f763342e8e691d",
+    "lewm_pcd/third_party/stable-worldmodel/SOURCE.json": "6129d069f237bf25cd266754752b92d33f4b093c98b132debc4e4413bcd5d4d6",
+    "lewm_pcd/third_party/stable-worldmodel/pyproject.toml": "e69329cff17f0090e411f79f45053f2289c9d01c9d6efc0d120525cbee0d9f20",
+    "lewm_pcd/third_party/stable-worldmodel/scripts/train/config/data/ogb.yaml": "c5b7bf93bf23533d750941d135df882ef3f92b5f674aeb629739c5ba1f0a8a52",
+    "lewm_pcd/third_party/stable-worldmodel/scripts/train/config/data/pusht.yaml": "1713de73a55d7c177b3de72b8f4221dfa2feae546ee07d681f210c4e231f7756",
+    "lewm_pcd/third_party/stable-worldmodel/scripts/train/config/launcher/local.yaml": "6a17d34722f775863feffdd038f6aaea76a38de8b9d63f3c412577dcdcb6de93",
+    "lewm_pcd/third_party/stable-worldmodel/scripts/train/config/pldm.yaml": "4d49680a9f3629ed5c5b5a02673659c24328cebe804ca78ec6415e966edbb8c6",
+    "lewm_pcd/third_party/stable-worldmodel/scripts/train/pldm.py": "6cbfba129d8356da4dfdaa3b8091116d40d0cfd5cea7995be7b77e0d58213f4a",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/__init__.py": "0f2271b24fe8e6795719abde70a5df2541a6d007cca0a9cb2cbd4994679cc46f",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/buffer.py": "0fc0c4e7ae216c8ba31596f19779d10e74b765a1e9ca0523ca7e7b1ddbb2aa51",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/cli.py": "27e0afa20fe0ac9d82c9c85d57ef2b8faf8c799ed8c997f0c3cca817c8e317d5",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/data/__init__.py": "807e697614bd8ef67eb22d753ef7822b04a0ccc464690908f9900130bd57566c",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/data/buffer.py": "720b0a353b952e34d34481e0e3594d8dbab2bf2592503cdee633a0d233fe4f5a",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/data/dataset.py": "1b91ed58dfad9729dd618b15573358794d698af7deca8f643f17a33326a80ff4",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/data/format.py": "666c3613c63faf06a77f4b24a6c0b87802590473b155925841a9ac47de776b66",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/data/formats/__init__.py": "f7bca3e0a9ce7d8873d52cacb90be6f5794d06c57a9ec1dc24f5a559db2ffc09",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/data/formats/folder.py": "136282cef79bb2f8bcc11ef929ab32b20f19b29ef6acdea6cd5b380e9612abdc",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/data/formats/hdf5.py": "0edde080986c6853a59c5c9ac85fbf055caa7672f2204002e7d7ea3b1a634294",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/data/formats/lance.py": "9d947ab9de17c929898e03e5fb6e3ce553fe4dd782cc5f55301be230fd33495b",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/data/formats/lance_video.py": "0aa8282153578f299a89dadd353fe82a3b818b9e61f056f2da87acfb2a3d00b5",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/data/formats/lerobot.py": "165fcd979570c46e2885131a6860123b80a9de6ab56283e82edec727be2e272b",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/data/formats/utils.py": "13846e1b8e027c8e108243b346e4cae0afb8ebe4942c64ad76dd7e8bc6a808bf",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/data/formats/video.py": "719c5c90910065ce428f46b0d3fef03aabc86d69158c7bf58f94848e93313a46",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/data/normalization.py": "19234f8abaf19e8ac16dcc9de8abbd13dbc4ef6cf83db5585752301c999c27a8",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/data/utils.py": "cc23a1852319ac8b60d027d96cb300c27da2a72e051998a6ad86e86a828bd5d3",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/__init__.py": "118a262677a647c6d6ef8889443b096abe082db4e365fc0a5b1249715e7e3c1a",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/ale/__init__.py": "f02b92d4fde0b1b02d02c053a2d80252b9f5886d95a04dd1b6a2d6ab2250dd79",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/craftax/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/craftax/craftax.py": "9a98a16f166086531be32c593216cd181b988b2d9493803cf9c074e961e9e2d4",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/dmcontrol/__init__.py": "a1644dcf113801b8769920f5ed231e29934ab6f453923f4eeb71040fc92799c8",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/dmcontrol/acrobot.py": "f29fcf63bc501fb892c964e50c49bfc4277524af33f4f9f8b4f2e5eabf2fdab9",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/dmcontrol/ball_in_cup.py": "da16e73ba3d40b06a18c0880380f35665f9571515edd8a1269d4984341afa6df",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/dmcontrol/cartpole.py": "93d7234d33cc7a1bdb5bf30928af5aa48f46c58f3dcafa51abec23367947695b",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/dmcontrol/cheetah.py": "7fe782b07f02a49af53d4f79ec6c3b3379fed8bca2809325763e24c7fd145062",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/dmcontrol/custom_tasks/cheetah.py": "da7ddaad68f96afbfe48be3e5871b48663e2078f5cb5850075a06cbd5ffa59c5",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/dmcontrol/custom_tasks/hopper.py": "b2cf01138b07a0c94a8ad3f45928e647bb9891d5a115b5b04e9e22ed4589ba30",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/dmcontrol/custom_tasks/reacher.py": "e5e2e82c0621efca7b4c3c194f422c946db59edb12db7735fbe8bdcf12e37e7c",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/dmcontrol/custom_tasks/walker.py": "7b33d2ac7efabb1e1b897600953d2b2cdf55d39237bd319a5bdbc432d66c4f6e",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/dmcontrol/dmcontrol.py": "13d55bf73f9b7f8a9b5a2b380e12750e253a391716e64e65f795b1c9fff8bc08",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/dmcontrol/expert_policy.py": "1c4cf6833aa817027094be27dfdd7841b0531b9c4c1d5b1480c791056b604251",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/dmcontrol/finger.py": "a84a7d5a6ac60a0e49ee088309b4d9b19d5ccb91bdd22befd0573b7c4ca02b5e",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/dmcontrol/hopper.py": "d6637058041c1412ba17da3c0762d523e7cae904a0e2f5ed92dc4c34fb5c63d8",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/dmcontrol/humanoid.py": "a8d1bd8a5640e7ed40aabac4258a54d1e24e9eea2f6c236a3efa1fc16014c151",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/dmcontrol/manipulator.py": "2aa65317fa7296ae5574657a8f5eed5b330a789d6f34a400a6d58bd5db07aafd",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/dmcontrol/pendulum.py": "c8a8c4a710b407b54d9edc57c283fbc3a743c4beea31cefe166c1e4e45d4eae9",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/dmcontrol/quadruped.py": "78f6e09cafef755e495e48fc1a90456a55eccd295c847f8a6fa88bbe32bac781",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/dmcontrol/reacher.py": "7d58845f0a3412a1f8d52c0e2305fd8ca2889745ea38429ff08ccf2a8b561f65",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/dmcontrol/walker.py": "2761f5c29cf9653ebf352db346299e2fda7d6b2274a449853e711cfacb5e61eb",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/gymnasium_control/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/gymnasium_control/acrobot.py": "00ee7912d10e057ae5f34290fb0b609422101b0d8ee4070ea4bf99d3c6bac1c5",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/gymnasium_control/base.py": "0354779da90bb8348241e5bd046a97f915cf979d94732931f1a121a933298599",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/gymnasium_control/cartpole.py": "3421c8afa2ae1d453c23d8e815b5418adc1f77f46aa758e4fd32cccdb9e45087",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/gymnasium_control/mountain_car.py": "3e7d379f1297dfb5e179f87e8627d6af9a3194b83e0b0a61d5dd27eb737b9ce4",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/gymnasium_control/pendulum.py": "81140706a0b0c1f52f066ae76a02b906a29d69348c1ef5af4e4831db1461a124",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/gymnasium_robotics/__init__.py": "c3a36c2ecd3832116795d7a15f4eafa647161f4901dbb955ab6565358b02e14c",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/gymnasium_robotics/fetch.py": "fd2b1cd2ce79f83498736ea1f92a33f64795ff8010703a8edf2ee43829355fd5",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/image_positioning.py": "4f32696cd3f5619f0f036c512d6d810956ba3c391d16e899c1dea3f267b58e6a",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/ogbench/__init__.py": "987c7016720862580f73b3540b456a8e8ee76b2a345579840a106d5ada4a7aac",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/ogbench/cube_env.py": "143e5e81f424ff7a4d7fdde287dee88b722c09082a6fc9e68721839788e94c19",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/ogbench/expert_policy.py": "437b131da4065ba0adec6b08947a53d41bcc6dfc87324ad9c088778460cdb51f",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/ogbench/maze_env.py": "7457eb82644f537dd763fe2f7ab4d2718b7f72c8439a25312f32596853906bc9",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/ogbench/scene_env.py": "d0eebdce0131f86e3247736c601f97c2b11d0dbfad56fca998df3192f08a7b9f",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/piecewise/expert_policy.py": "74209996b239c13ae23c876a2c2b94eb4787c8deda0df2575ab47b1e7cda91ff",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/piecewise/piecewise_env.py": "e4de33b87adb1ce90f65515d69412c7af3a259e4396ba1470dfb675cee72118b",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/pusht/__init__.py": "c768c825b639f73e5b99ba5b3ec46d08b299cb5748b92693ac3fd9205eda48f1",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/pusht/env.py": "6b71f441a72ae94e631fc80c756717e8c5b229b964a9b197e2962675fae6f864",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/pusht/env_discrete.py": "eb4d93c4d6471a33684ff2f98c7c18521894f5c90863125d77ce12908f218586",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/pusht/expert_policy.py": "c3e8e99dab72ee0cb981cddda66ff5434a51a7c146d586174fb2b4e9d2082729",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/quantizer.py": "7167a833c4a1603e9912533d19a2fa1c8279eb12f235fd8e27cde9ff0a44bec7",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/robocasa.py": "065f3ac9194a06da802bff29328839d07dc06aa1e8cdc98807b2ca96e4055065",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/rocket_landing/__init__.py": "3ae38e645cb9bb40cdd87377b186d9e548772978572d7a8fc101ac362b8128e7",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/rocket_landing/expert_policy.py": "477c6770bf95fbcc6b9154cb9e902f012989172d80ced29ef14f96f12cc4cf90",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/rocket_landing/pyflyt_rocketlanding.py": "5ede3640ce1e2add32b6b0a6c36e190bb1130e38bb258ab182af12a6fbedee23",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/simple_point_maze.py": "b69891f8571b032530dcf154d1d80fcbdfe5ae3635d74a10db67cf50811c7a65",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/two_room/__init__.py": "a2ee00ccaf03e7bd7d10c980b7d9fef55cf7edb43fd9f80b503d3d187d8f0801",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/two_room/env.py": "5e1d392de5b02472062dbe872aded67fd465fcc8f7eaa1c02a753b2fc31c61f0",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/two_room/expert_policy.py": "5939318d2a671ce00abf46be74ae22cf2452ea48426eb9dc651d04514849e4f4",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/two_room/legacy_env.py": "10bfb438a4304308318ad0deb000c1bba12a5b60cf40f78045fbaa712d818ee7",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/envs/utils.py": "2e5d98a5c13227cba6f5574bf72b6eab149ee5b3783df0481b8d240f34047f56",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/planning/__init__.py": "7fa3c41cfb0f179e048943925816a1201858f46a8ac225434217d2ef9db45fe1",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/planning/evaluator.py": "054838d85850510de6f9ccdce531bfb2cc7d8ca1a4dc2a7ee319c7801080c69c",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/planning/objective.py": "b959f83c94a7543df113e474b3fec77882a7ef259c6cc42fe6a16a124877fdcf",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/planning/solver/__init__.py": "0d0b18cd5de509202210620bb7e3b063adab5f6ab1352c4c3fb7c8568abef4b1",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/planning/solver/callbacks/__init__.py": "bfbeaab14335013057ce236d359ddb3a1eeb342d25cd3c270365fb241481503b",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/planning/solver/callbacks/cem.py": "9631f12f5cc42b7722bd1dab88e5433ae2f13098b63e2a62a17be2d8cbd79c75",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/planning/solver/callbacks/common.py": "29b2defb6982095134ec4c2adf5bb60ce94689e2642e9c1e784f58cf0e07df72",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/planning/solver/callbacks/gd.py": "c614a261164edf027719209cbcd6648efe8930b7760e3f57a0fc525eb1813454",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/planning/solver/categorical_cem.py": "9505742057b322687ab139251a3e342cc1c8091b781c473e17b8250ff252e989",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/planning/solver/cem.py": "c66625d42cf02f912fc4c99d5874c57aba686d899e510d91630df210ece2ee89",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/planning/solver/gd.py": "70d8063b587d3a48dab04d77386cedba44d197c7ede3200fbb7f6faee621ed9d",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/planning/solver/icem.py": "3036049e0cd33eadb833960b8c787572a24d3503921023eaf5e46b3ab3822ed7",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/planning/solver/lagrangian.py": "7ef7b060e35e2d98235e9626c64959c833ffba45b3412e678c9c20a561c84939",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/planning/solver/mppi.py": "a6f11fee006a8156db71a441b23c5ca0d2e3bf65059cd5152297f799e8cbf552",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/planning/solver/pgd.py": "7fb39bc67ff2c4c04fcf2b591df7d943eceeec387eb903fba7efbd79b21bc4d3",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/planning/solver/predictive_sampling.py": "020c7d0a57fe21bb8c65684d0e30da3b5e1600bcec00b6dd53bb0c3ab47e22b0",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/planning/solver/solver.py": "1ce07636fb6ceb5eea40f9ecc333f9ed6d11c100b2ee7a7e5d1a138128531056",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/planning/solver/utils.py": "c11e0e8e8cf4f133a394f0cc1e197f7b962fd86e017bead33fc580046d0745f0",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/plot/__init__.py": "81baebfe4e1ffd613da881587753d0f4f759e569dee959f7f5202cfdd4286b3c",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/plot/video_utils.py": "526df08db479ccc326abc9d2c402c7af7104bc803e2bab2f237001c6aca4a810",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/policy.py": "a32f763026a57d5bf8ef5a3298d003c9a4d85c218865463cc4ca43c03b9a1f59",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/protocols.py": "5d1be0690d4df0da2b83cc25dae621792c2cb8a3835bdbea611ee98ca2bb08da",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/spaces.py": "69e583dd06fa754e226f2430d4ff459e2dc8d7534fdb27cf7f9f5921bdec8018",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/utils.py": "f284af1448ae5dab67b6afb1da13c8a6897fe90d7f7e7a4a6f17d8dc7ad0c28d",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/__init__.py": "84cd992dc27ead462e6c94f95168a038692c884ac5a49762678049f85be8b04a",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/gcrl/__init__.py": "03f61c7631453c23c64d14c215be5db493c3b79140a879f2af32ef7e62f5f9bd",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/gcrl/gcrl.py": "db3936de12cbea497a4435f473478bfb6663e33c56a8ef123cee8221f19c9f6d",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/gcrl/module.py": "3cab908a9a1d089c2f82572b4bbf565bdcfe30435260ac2c0ba57d16eadbabb4",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/lewm/__init__.py": "b7cb06042d883448c8967ab8e951c6f3c9a1e97867c3a7ce8f8dd713d4f8a798",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/lewm/lewm.py": "10ad1c2365b569ad3f9cbda17c8154d799c3b0c4fc5d707a44dca600b5ca8315",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/lewm/module.py": "3a6209baf30c11f77a5f6637282a1821fc62cea827438a97b23933caab51d8c7",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/loss.py": "55b8e65b6c1231f232e40f46891aa5e37f851ea5f49f8e33826639fd3686b510",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/pldm/__init__.py": "5741a80e350cbc56c595c78021f3bcf7719884a2ae4444fb2a6307db10caff8a",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/pldm/module.py": "3a6209baf30c11f77a5f6637282a1821fc62cea827438a97b23933caab51d8c7",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/pldm/pldm.py": "512d94ca366ad0574c76c9195afa4fca869fb8c53d9755615601922c8b86d4e0",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/prejepa/__init__.py": "79889484a3f514964fb2e247c0c63b7ba327a2c5a43d3f61c88497d5d56512cd",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/prejepa/module.py": "b541791ce0b4ef974d79da4ddfc06b09d94f3184be7973345afb79066c4d0098",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/prejepa/prejepa.py": "424192d3e6100313d47c6e589ad78ba916c8494fb9cd8db76a5ee9af1df34bf9",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/probes.py": "7234ffaac539a4c1f857a8e620f21d29ed23183d48ba36982e629d81d0b94c25",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/tdmpc2/__init__.py": "3db111628d662482460f4db767297994c4fc0db8621d73e1d8d8822dbce4f29a",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/tdmpc2/module.py": "97230be39aab92f08bb117710f1fa53807173cc682f4e6aaf99296f8c915130e",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/tdmpc2/tdmpc2.py": "87c28bf3af5ffed9e04e4da92443d74108dd7fca0d490fbd81fc79deef8e5e95",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wm/utils.py": "f203cb4826cec6d4b474900f136fa09d6dbc13a366bf0906b67bbdac4297344c",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/world/__init__.py": "8dd9797a487bba62663d9d4d2b499d4a7323a1f45ae572cacf93239df37e427c",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/world/env_pool.py": "b6e73253199e1a39f0fcadfad7dbea09270cbd559e366d1bc9bf09c9e7da0606",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/world/world.py": "3392bd31159daab859f2d73e5a52e59ac898259f829c9d1363e64eef151b91b3",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wrapper/__init__.py": "4da272472c455226ae275036f4b143166cde7fbb3be04f54b0da6fc84ec63a51",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wrapper/default.py": "9df8b9bfbdf6f1081d17769ff30cba9b45424b946d418a73e6b213a3b0e9499f",
+    "lewm_pcd/third_party/stable-worldmodel/stable_worldmodel/wrapper/visual.py": "91850c961ff49112193d0c084fd4364a9ff0895dd74a57e6893fd7f582fbcd33",
+    "lewm_pcd/third_party/vjepa2/APACHE-LICENSE": "a41e2fae9915ae56028f8dbd0bf27995f1907613cbcd2d81a61b010ad34e9fe9",
+    "lewm_pcd/third_party/vjepa2/LICENSE": "cf9b17822d1fcd4ff32ccbe14183386fb3adf6f2ff92dc184130823f7fc28173",
+    "lewm_pcd/third_party/vjepa2/README.md": "55f8485d734a08d23170322cd13ad5ac2f4d63b3d1fd542b10ec0907042c5bb6",
+    "lewm_pcd/third_party/vjepa2/app/vjepa_2_1/models/utils/masks_dist.py": "71c46e536b5db248de08ab3e40d32b71f2b67d148adec3dda88d92b98ca27c85",
+    "lewm_pcd/third_party/vjepa2/app/vjepa_2_1/models/utils/modules.py": "64be6a87bd9f18d385f4e44186db3347d1665e18a1f0511d51d3b305531562e2",
+    "lewm_pcd/third_party/vjepa2/app/vjepa_2_1/models/utils/patch_embed.py": "29e11ab97ab3ccdef107d6a7d0d7b374b58e712076cc3561f07b7e603c9b5165",
+    "lewm_pcd/third_party/vjepa2/app/vjepa_2_1/models/utils/pos_embs.py": "bc0c2f1ef55a7b8511efa4c4724249eccdbb850d7c26bf6082bd780cb15a8bd3",
+    "lewm_pcd/third_party/vjepa2/app/vjepa_2_1/models/vision_transformer.py": "d2932eabeba684d8f558302a13cfd4be70a0170ee5112f5a794652d0a29089b9",
+    "lewm_pcd/third_party/vjepa2/hubconf.py": "6a61c46a80c82ed10331a19822d58e9a19f062e52845e1787fc810979ff03c7b",
+    "lewm_pcd/third_party/vjepa2/requirements.txt": "86df4afafef209576d308aee6a6a2d13523805c1885f3e294f3a9541e6b2be23",
+    "lewm_pcd/third_party/vjepa2/src/hub/backbones.py": "391cdde1e9a1da47cb8094bbea5fbbe8acac0135b27e82f1a6ab19c0b39cc692",
+    "lewm_pcd/third_party/vjepa2/src/masks/utils.py": "833f111a0fa5ffdbd3a6412e2dace2517c3c178f49c14f8bb631d9f6a070dfd0",
+    "lewm_pcd/third_party/vjepa2/src/models/ac_predictor.py": "5a520ad92b3f78b231aa153a5bbd9f800f880024974109a04d19aed6a0900643",
+    "lewm_pcd/third_party/vjepa2/src/models/predictor.py": "3d8481bf2544b85ed92b3feb418e3b6d85ca1f81034c931b8c860f2d3d9aac2b",
+    "lewm_pcd/third_party/vjepa2/src/models/utils/modules.py": "b93f6c7e0747deb216419c000c2878f11a9189024a9adeacfd437e172396dff0",
+    "lewm_pcd/third_party/vjepa2/src/models/utils/patch_embed.py": "1823c40b34410e70eb313360e21678e18a0ee5465b5d47de9f3d967c074f5a9d",
+    "lewm_pcd/third_party/vjepa2/src/models/utils/pos_embs.py": "e6d3b3863ade47b3734a3b443f1bcc93eab02e39bf596ea199517f68ccab443e",
+    "lewm_pcd/third_party/vjepa2/src/models/vision_transformer.py": "9d4fd4e3603311803c105cc5114e2bc12ff28bc11870637dd3969511d9dead74",
+    "lewm_pcd/third_party/vjepa2/src/utils/distributed.py": "52342428ee4eafaf685471afd91912462057bed59267faec42cf7640d8c08861",
+    "lewm_pcd/third_party/vjepa2/src/utils/logging.py": "0bf5298ecce7e59d90fcb3e4cc68eba988e3e8af4d4a08c91e94bdcd29f76b2e",
+    "lewm_pcd/third_party/vjepa2/src/utils/tensors.py": "782b58bd2af456e184750e5318ab773105108383f61b280fe4c7a90f46add2c8",
+    "lewm_pcd/train.py": "ffa92d0449c33426b6be72dd9556a8c76edf0a74a1ec280c249b81a9b3358366",
+    "lewm_pcd/utils.py": "a6a386523779ede2ef4453b23198e46e371a0c73200e8f957ae272b5d7b63259",
+    "patches/LICENSE-eai-vc": "bc8f60ee50544b2dd70b4bc90e22de503aa23b317d284046a479811f2e06f396",
+    "patches/eai-vc-train-loop.patch": "6792ffcecee0d3685d9b9c143f03a2d4707ce7579698bfb14974611584cbae69",
+    "provenance/assets/rh56_native_bundle_v1.json": "4f8036bba2d72ea1e6e895a4a45f6fb2c664ef2530ca6c1c0c799e6460a81372",
+    "provenance/baselines/adroit/BASELINE.json": "e9437df73bdbe3d8a3967b4e4733ce1f023506f7ffffdd4c9c51f34bbcb94fae",
+    "provenance/baselines/adroit/DEPENDENCIES.json": "717103dede06ee0d750399f9a0b9edf6ef57c499ace83bea110787062bd7d85f",
+    "provenance/baselines/adroit/README.md": "ad875b69c6c20f2c1bd99d0042283395e0d17500180d4c846a50c6c420d48b69",
+    "provenance/baselines/adroit/SMOKE_VERIFICATION.json": "a1c4c362c8ca9b217cd93e46fed1c524de5da149602525328d1fa46a921dcf08",
+    "provenance/baselines/adroit/SOURCE_MANIFEST.json": "1f8338ab713ec281a38427ad948354108a6f50b80cda4a4cd0ae2cee482400f6",
+    "provenance/baselines/adroit/run.py": "d31d02f00c2b8ca6b8ec58f6ed34ce84f3fe6d3c7e588cc2b8e739465086aba5",
+    "provenance/baselines/cube/BASELINE.json": "bfb59c29c17c9440be2f749d3a142ca64225b4cae382e2eb834c3627e3879507",
+    "provenance/baselines/cube/README.md": "1967fe20166ea7d8eee9778225d644ac1b3c23f760c58333ba48c7a0fb0f514b",
+    "provenance/baselines/cube/SMOKE_VERIFICATION.json": "470e3bc72a087a876986c6e0c6a5e4e7098a1d2b2ca774d1272bff174a56d6b9",
+    "provenance/baselines/cube/SOURCE_MANIFEST.json": "2d93733da5e3412b8449f7b4f56c6f10a7da6de237c70c1bc40b2b72a20e334c",
+    "provenance/baselines/cube/VALIDATION_MANIFEST.json": "d2eef26d2ddf91eb0907024f71a811a75e7ce92c7d32d9fef4408aa0f2d38692",
+    "provenance/baselines/cube/run.py": "e955125b174f3c2b0662929bfb0e43afe56cb1402378c415ec505a7157616e20",
+    "pyproject.toml": "c4361d69583288d97dd6c892ad8e42bfc6096dfb472f472c8577f39ad56efb1c",
+    "requirements.txt": "ecc19632e3fb38345af2a8f4a366ff2099e4a6cb182600a4138e73677afb1110",
+    "requirements/adroit.txt": "36a3c22e13941f3dfbbc622b6fc239ac0fa0b566266b94dfb9dd76b05c0be0eb",
+    "requirements/mpc.txt": "b73078a3a52fd022fc0aa5d06fc65ca2b92e328ae673cbf5b177ffd2f1f7d045",
+    "requirements/policy.txt": "7c99eead627034afbbc7494eee5d9bf4aabc7c9d9e5f73cc6ac0b0f1a1fc0f04",
+    "requirements/rh56.txt": "5e481359419106d65064f12eabe5b45edfa3be33e06eaeacd89183badfe560e0",
+    "requirements/wm.txt": "8b223867698eb7d142da64b1b089b4d74c57b847704bc23f809b03521ff2660b",
+    "requirements/worldmodel.txt": "b9dba3cf051a9600e37621f23321f56ce91aa8f19a72b1385164e4a841f678f4",
+    "run.py": "289d8db94d14590f95466045b3b891a134f09de234f23685c87307a6c8296d17",
+    "scripts/prepare_official_assets.py": "68e71c90a524d998683b8e872d2a853a4c3eaf9647ef30851632504f9cad2efa",
+    "tests/gates/test_aggregation.py": "455280d0ba9bcd06e2665a799427cc231d6882ae2f747e3eafdd66988726a76f",
+    "tests/gates/test_arrays.py": "f4baaf5dd6e0d2f7ce278c172068f0283a2bee9d1fbba43222d4edb7815e2343",
+    "tests/gates/test_records.py": "c91dbd64906a3e23c09e6abeaad3e203703ed8a7b4f60166faed13c6fd276e07",
+    "tests/test_adroit_cem_binding.py": "e349e644a202859a034f4ee85d3a2620f920cc1d7f06df5cde130abe3dece644",
+    "tests/test_framework_source.py": "60b2984093cf600ad08321f2fa482358536f452165cb4dc58b21868858c5a37f",
+    "tests/test_integration_entry.py": "d5267e32b62bf283ca9b075fdd83c2c9c218794f12dadb0d3f3a59465d9de6d5",
+    "tests/test_official_assets.py": "5d6edcae6323a959c3de458d3f6c85ffaeece6f1e3d86bc8bdc044f89442a09a",
+    "tests/test_paired_writer.py": "4ba94fd405f33008fd6fafb3d9d0075d82cc73150f3be6b04f1b4e9b30a50452",
+    "tests/test_runtime_source_identity.py": "82fa058bc8a6811400061c64dca1cf36e440d7c78abbf4c80a463e0afe42a093",
+    "tests/test_source_package.py": "2a6e8e1c1e32b007a3d8e71c327f41f441eae0a86a66aa5c1b62f61f38e4df6a",
+    "tests/test_workflow.py": "55f34c25248cde629ac6fa0575d5ca5cad6fc022fafe278ee1f60790e1f2de44"
   }
 }

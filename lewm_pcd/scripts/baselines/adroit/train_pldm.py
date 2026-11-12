@@ -4,6 +4,7 @@ An explicit smoke/formal mode is required to execute; preparation is read-only.
 """
 import argparse
 import ast
+from contextlib import contextmanager
 import hashlib
 import importlib
 import json
@@ -19,6 +20,7 @@ import types
 LEWM_ROOT = Path(__file__).resolve().parents[3]
 FRAMEWORK_COMMIT = '6f1e499e9cc0c898d326112f485c1062c3d20f24'
 RECIPE = {'backbone': 'vit_hf_tiny_patch14', 'image_size': 224,
+          'seed': 3072,
           'selected_frames': 4, 'frameskip': 5, 'raw_span': 20,
           'raw_action_dim': 30, 'action_block_dim': 150, 'latent_dim': 192,
           'history_size': 3, 'prediction_steps': 1, 'batch_size': 128,
@@ -71,7 +73,7 @@ def build_plan(args, parser):
     if not script.is_file() or not config.is_file():
         parser.error('--framework-root must contain the original PLDM script and configuration')
     dataset, output = args.dataset.expanduser().resolve(), args.output.expanduser().resolve()
-    overrides = ['data=ogb', f'data.dataset.name={json.dumps(str(dataset))}',
+    overrides = ['data=ogb', 'seed=3072', f'data.dataset.name={json.dumps(str(dataset))}',
                  'data.dataset.keys_to_load=[pixels,action]', 'data.dataset.keys_to_cache=[action]',
                  '~data.dataset.keys_to_merge', f'subdir={json.dumps(args.name)}',
                  f'output_model_name={json.dumps(args.name)}',
@@ -164,6 +166,20 @@ def _write(path, payload):
     temporary.replace(path)
 
 
+@contextmanager
+def explicit_training_seed(native, seed):
+    import lightning as pl
+    seed=int(seed)
+    pl.seed_everything(seed,workers=True)
+    original=native.spt.Manager
+    def manager(*args,**kwargs):
+        kwargs['seed']=seed
+        return original(*args,**kwargs)
+    native.spt.Manager=manager
+    try:yield
+    finally:native.spt.Manager=original
+
+
 def execute(plan):
     if plan['mode'] not in ('smoke', 'formal'):
         raise ValueError('an explicit smoke/formal mode is required for execution')
@@ -204,7 +220,7 @@ def execute(plan):
             def record(receipt):
                 state['data_receipts'].append(receipt)
                 _write(output / 'state.json', state)
-            with helpers.dataset_handle_hook(native.swm, dataset, recorder=record):
+            with helpers.dataset_handle_hook(native.swm, dataset, recorder=record), explicit_training_seed(native,int(cfg.seed)):
                 native.run.__wrapped__(cfg)
             state.update(phase='native_returned_acceptance_pending', exit_code=0, updated=time.time())
             _write(output / 'state.json', state)

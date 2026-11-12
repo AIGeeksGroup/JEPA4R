@@ -16,6 +16,7 @@ import traceback
 LEWM_ROOT = Path(__file__).resolve().parents[3]
 NATIVE_SCRIPT = LEWM_ROOT / 'scripts/baselines/train_lejepa_relocate.py'
 RECIPE = {'backbone': 'vit_hf_tiny_patch14', 'image_size': 224, 'views': 4,
+          'seed': 3072,
           'batch_size': 256, 'epochs': 10, 'lr': 0.002, 'weight_decay': 0.05,
           'lamb': 0.02, 'training_projector_dim': 16, 'downstream_dim': 512,
           'precision': 'bf16', 'augmentation': 'unchanged native CPU transforms'}
@@ -53,7 +54,7 @@ def build_plan(args, parser):
     dataset, output = args.dataset.expanduser().resolve(), args.output.expanduser().resolve()
     native = ['--task', args.task, '--dataset', str(dataset), '--name', args.name,
               '--epochs', '10', '--bs', '256', '--V', '4', '--lr', '0.002',
-              '--lamb', '0.02', '--proj-dim', '16', '--workers', str(args.workers)]
+              '--lamb', '0.02', '--proj-dim', '16', '--workers', str(args.workers), '--seed', '3072']
     if args.mode == 'smoke':
         native += ['--max-steps', str(steps)]
     return {'execution': 'PREPARED_ONLY', 'method': 'repository_Tiny_LeJEPA',
@@ -104,7 +105,7 @@ def _write(path, payload):
     temporary.replace(path)
 
 
-def execute(plan):
+def execute(plan, *, gate=None):
     dataset, output = Path(plan['dataset']), Path(plan['output'])
     if output.exists():
         raise FileExistsError(f'fresh output required: {output}')
@@ -128,14 +129,21 @@ def execute(plan):
         native.DataLoader = loader_factory(old_loader, plan['workers'], plan['prefetch_factor'],
                                           helpers.close_parent_hdf)
         with helpers.dataset_handle_hook(native.swm, dataset):
-            native.main()
+            if gate is None:
+                native.main()
+            else:
+                native.main(gate=gate)
         state.update(phase='native_returned_acceptance_pending', exit_code=0, updated=time.time())
         _write(output / 'state.json', state)
         (output / 'actual_exit_code').write_text('0\n')
     except BaseException as error:
         code = (error.code or 0) if isinstance(error, SystemExit) else 130 if isinstance(error, KeyboardInterrupt) else 1
+        if gate is not None:
+            from bench.relocate.recovery import RecoveryPause
+            if isinstance(error, RecoveryPause):
+                code = 75
         code = code if isinstance(code, int) else 1
-        state.update(phase='failed' if code else 'native_returned_acceptance_pending',
+        state.update(phase='paused_for_recovery' if code == 75 else 'failed' if code else 'native_returned_acceptance_pending',
                      exit_code=code, updated=time.time(), error=traceback.format_exc())
         _write(output / 'state.json', state)
         (output / 'actual_exit_code').write_text(str(code) + '\n')

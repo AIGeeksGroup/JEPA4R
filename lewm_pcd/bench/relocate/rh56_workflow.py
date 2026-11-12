@@ -124,7 +124,7 @@ def plan(args, assets: dict) -> list[dict]:
           '--output', base / 'data', '--expected-counts', json.dumps(counts)])
     wm_mode = 'smoke' if args.mode == 'smoke' else 'formal'
     wm_arguments = ['wm', *common, '--route', route, '--mode', wm_mode, '--device', 'cuda',
-                    '--seed', str(args.seed if args.mode == 'smoke' else 3072),
+                    '--seed', '3072',
                     '--manifest', base / 'data/manifest.json',
                     '--dataset', base / f'data/paired_{route}.h5', '--output', base / 'wm']
     if args.mode == 'smoke':
@@ -150,6 +150,8 @@ def plan(args, assets: dict) -> list[dict]:
               '--checkpoint', checkpoint, '--epoch', str(epoch),
               '--demos-manifest', base / 'demos/bc_demos_manifest.json',
               '--train-seed', str(seed), '--out', base / f'bc_seed{seed}'])
+        if assets.get('policy_evidence', False):
+            stages[-1]['command'].append('--policy-evidence')
     return stages
 
 
