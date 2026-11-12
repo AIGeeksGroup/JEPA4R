@@ -1,0 +1,27 @@
+# Paper numbers: parameter counts, Sec. 4.2 and Sec. 4.4 (millions unless noted).
+tables:
+  - name: params_world_models
+    title: "Sec. 4.2 -- parameters (M)"
+    stage: count_params
+    rows: method
+    cols: metric
+    tol: 0.01
+    decimals: 2
+    values:
+      jepa4r:           {encoder_params_M: 5.51, total_params_M: 18.0}
+      lewm:             {encoder_params_M: 5.50}
+      # Tab. 4b: "other point-cloud encoders of the same parameter count"
+      jepa4r_pointnet2: {encoder_params_M: 5.51}
+      jepa4r_dgcnn:     {encoder_params_M: 5.51}
+      jepa4r_ppt:       {encoder_params_M: 5.51}
+
+  - name: params_decoder
+    title: "Sec. 4.4 -- decoder parameters (new / LoRA in M, backbone in B)"
+    stage: count_params
+    fixed: {decoder: page4d}
+    tol: 0.01
+    decimals: 2
+    values:
+      new_params_M: 5.75
+      lora_params_M: 0.88
+      backbone_params_B: 0.94

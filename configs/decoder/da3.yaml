@@ -1,0 +1,8 @@
+# Tab. 4a: Depth Anything 3 [lin2026da3] backbone; set generator, affine map, data and both stages unchanged.
+_base_: _base
+name: da3
+display: Depth Anything 3
+backbone:
+  name: da3
+  impl: jepa4r.decoder.backbones.depth_anything3
+  weights: ???                # which DA3 model size: ???

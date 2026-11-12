@@ -1,0 +1,6 @@
+# ViT-L/16: V-JEPA 2.1 on OGBench Cube (supp. sec:supp-baselines).
+name: vit_l16
+arch: vit
+impl: jepa4r.models.encoders.vit
+variant: large
+patch_size: 16

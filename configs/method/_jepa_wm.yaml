@@ -1,0 +1,28 @@
+# LeWM recipe shared by JEPA4R and the LeWM baseline (Sec. 3, Eq. 1; Sec. 4.2; supp. sec:supp-wm).
+# The two are identical except for the encoder (and therefore the observation).
+kind: jepa_wm
+impl: jepa4r.models.world_model
+latent_dim: 192               # z_t = f_theta(o_t) in R^192
+frameskip: 5                  # clip frames are 5 env steps apart; action block a_t = the 5 actions in between
+history: 3                    # context frames the predictor attends over (Tab. 4c: 2 / 3 / 4)
+num_frames: 4                 # clip length = history + 1 (teacher forcing on o_{1:4})
+projector: ???                # inherited from LeWM
+action_encoder: ???           # inherited from LeWM
+predictor:
+  depth: 6                    # six-block transformer
+  conditioning: adaln_zero    # action embeddings enter through AdaLN-zero
+  causal: true
+loss:
+  pred: mse                   # 1/(3d) * sum_t ||z_hat_{t+1} - z_{t+1}||^2
+  sigreg_weight: 0.09         # lambda
+  sigreg_projections: 1024    # random 1-D projections per time step vs a standard Gaussian
+  stop_grad: false            # no stop-gradient, no EMA target encoder
+train:
+  framework: stable-worldmodel
+  epochs: 10
+  batch_size: 128             # Tab. 4d: 64 / 256
+  optimizer: adamw
+  lr: 5.0e-5                  # Tab. 4d: 2.5e-5 / 1e-4
+  weight_decay: ???
+  precision: bf16
+  checkpoint_every_epoch: true  # the decoder uses the epoch-10 checkpoint (Sec. 4.4)

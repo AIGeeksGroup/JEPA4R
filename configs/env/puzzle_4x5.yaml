@@ -1,0 +1,12 @@
+_base_: _ogbench
+name: puzzle_4x5
+display: Puzzle 4x5
+policy: dqc
+wm_data:
+  recipe: ogbench_noisy       # Puzzle follows OGBench's noisy recipe and official scale
+  num_episodes: 3000
+  episode_len: 1001
+  mixture: null
+policy_data:
+  source: official_play       # OGBench's official play data (supp. sec:supp-policy)
+  dataset: ???

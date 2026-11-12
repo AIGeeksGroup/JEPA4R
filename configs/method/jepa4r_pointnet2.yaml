@@ -1,0 +1,5 @@
+# Tab. 4b: same world model, data and policy head as JEPA4R; only the point-cloud encoder changes.
+_base_: jepa4r
+name: jepa4r_pointnet2
+display: PointNet++
+encoder: pointnet2

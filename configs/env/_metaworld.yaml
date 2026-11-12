@@ -1,0 +1,14 @@
+# CortexBench MetaWorld [majumdar2023vc1, yu2019metaworld]: five tasks, imitation protocol.
+_base_: _base
+suite: metaworld
+impl: jepa4r.envs.metaworld
+camera:
+  name: ???                   # the CortexBench MetaWorld camera
+policy: bc
+wm_data:                      # supp. sec:supp-data (per task)
+  num_episodes: 10000
+  episode_len: 200
+  mixture: {noisy_expert: 0.5, expert_interrupted_by_random: 0.3, random: 0.2}
+policy_data:
+  source: demos
+  demos_per_task: 25          # CortexBench imitation protocol

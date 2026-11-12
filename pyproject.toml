@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jepa4r"
+version = "0.1.0"
+description = "JEPA4R: Embodied JEPA World Models with 4D Point Planning"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+# PyTorch 2.8 as in the paper. Simulator and policy-learning dependencies are added with the integrated code.
+dependencies = ["torch>=2.8,<2.9", "numpy", "PyYAML>=6", "omegaconf>=2.3"]
+
+[project.optional-dependencies]
+dev = ["build>=1.2", "ruff>=0.11", "pip-audit>=2.9"]
+
+[project.scripts]
+jepa4r-run = "jepa4r.cli:run_main"
+jepa4r-reproduce = "jepa4r.orchestrate:main"
+jepa4r-report = "jepa4r.report:main"
+
+[tool.setuptools.packages.find]
+include = ["jepa4r*"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E9", "F"]

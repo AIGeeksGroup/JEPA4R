@@ -1,0 +1,12 @@
+# Sec. 5.3: every encoder, JEPA4R included, reaches 0.0 here, so it is left out of Tab. 1.
+_base_: _ogbench
+name: cube_quadruple
+display: Cube-Quadruple
+policy: gciql
+wm_data:                      # supp. sec:supp-data
+  num_episodes: 10000
+  episode_len: 600
+  mixture: {expert_low_noise: 0.2, expert_high_noise: 0.4, expert_then_random: 0.2, random: 0.2}
+policy_data:
+  source: official_play       # OGBench's official play data (supp. sec:supp-policy)
+  dataset: ???

@@ -1,0 +1,10 @@
+# V-JEPA 2.1 [murlabadia2026vjepa21]: the authors' released weights, frozen and evaluated by us.
+name: vjepa21
+display: V-JEPA 2.1
+kind: pretrained
+impl: jepa4r.baselines.vjepa21
+obs: image
+encoder: vit_b16
+weights: ???                  # ViT-B/16 checkpoint under checkpoints/
+per_env:
+  "cube_*": {encoder: vit_l16, weights: "???"}   # on Cube, V-JEPA 2.1 uses ViT-L/16 (its own checkpoint)

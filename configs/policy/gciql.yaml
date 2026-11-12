@@ -1,0 +1,12 @@
+# OGBench Cube: GCIQL [park2025ogbench], offline goal-conditioned RL (supp. sec:supp-policy).
+name: gciql
+impl: jepa4r.policy.gciql
+data: official_play           # env.policy_data
+train_steps: 1000000
+inputs: [latent, proprio]     # frozen latent + robot state
+goal: object_state            # target state of the objects
+frame_stack: ???              # "the head reads the latents of recent frames" (Sec. 4.3)
+hparams: ???
+eval:
+  every: ???
+  report: ???                 # the paper states "best of ten evaluations" only for Puzzle

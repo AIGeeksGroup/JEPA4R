@@ -1,0 +1,49 @@
+# Paper numbers: Tab. 3 (tab:recon), Sec. 5.4, Sec. 4.4 (stage A -> B), OGBench Cube, cm (Outl. in %).
+tables:
+  - name: tab3a_per_frame
+    title: "Tab. 3a -- per-frame reconstruction (cm; outlier_pct in %), 4,096 validation frames"
+    stage: eval_recon
+    decimals: 2
+    fixed: {env: cube_single, decoder: page4d}
+    values:
+      nn_mean: 0.79
+      nn_median: 0.78
+      nn_p90: 0.94
+      outlier_pct: 2.89
+      cube_err: 1.05
+      shuffled_nn: 12.31        # "decoding the latent of another frame instead gives 12.31 cm"
+
+  - name: tab3b_open_loop
+    title: "Tab. 3b -- open-loop imagination, NN distance (cm) at env step"
+    stage: eval_recon
+    decimals: 2
+    fixed: {env: cube_single, decoder: page4d}
+    rows: series
+    cols: env_step
+    metric_format: "{row}@{col}"
+    labels:
+      imag_nn: Decoded imagination
+      true_nn: Decoded true latents
+      other_actions_nn: Another episode's actions
+      imag_cube: Cube position, imagination
+    values:
+      imag_nn:          {15: 0.75, 100: 0.85,  200: 0.89}
+      true_nn:          {15: 0.75, 100: 0.80,  200: 0.74}
+      other_actions_nn: {15: 1.86, 100: 13.23, 200: 11.46}
+      imag_cube:        {15: 0.92, 100: 1.10,  200: 1.39}
+
+  - name: claim_open_loop
+    title: "Abstract / Sec. 5.4 -- mean point error of imagined rollouts within 1.1 cm over 200 env steps"
+    stage: eval_recon
+    fixed: {env: cube_single, decoder: page4d}
+    values:
+      imag_nn_max: {value: 1.1, op: "<="}
+
+  - name: decoder_stages
+    title: "Sec. 4.4 -- validation NN error (cm) after decoder stage A / stage B"
+    stage: train_decoder
+    decimals: 2
+    fixed: {env: cube_single, decoder: page4d}
+    values:
+      val_nn_stage_a: 0.87
+      val_nn_stage_b: 0.79

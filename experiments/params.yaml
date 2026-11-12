@@ -1,0 +1,11 @@
+# Parameter counts quoted in the main text: Sec. 4.2 (PointNet 5.51M vs ViT-tiny 5.50M, JEPA4R ~18.0M;
+# Tab. 4b encoders "of the same parameter count") and Sec. 4.4 (5.75M new decoder parameters,
+# 0.88M LoRA, PAGE-4D ~0.94B).
+name: params
+expected: [paper/expected/params.yaml]
+
+jobs:
+  - stage: count_params
+    grid: {method: [jepa4r, lewm, jepa4r_pointnet2, jepa4r_dgcnn, jepa4r_ppt]}
+  - stage: count_params
+    grid: {decoder: [page4d]}

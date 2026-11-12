@@ -1,0 +1,8 @@
+# Tab. 2 "Random (ViT-B), frozen": a randomly initialised ViT-B that is never trained.
+# Open: is this row our run or taken from the VC-1 study? experiments/tab2_cortexbench.yaml marks it optional.
+name: random_vitb
+display: Random (ViT-B), frozen
+kind: random
+impl: jepa4r.baselines.random_vit
+obs: image
+encoder: vit_b16

@@ -1,0 +1,5 @@
+# Impala CNN: PLDM's encoder on OGBench Cube (supp. sec:supp-baselines).
+name: impala
+arch: impala
+impl: jepa4r.models.encoders.impala
+hparams: ???                  # as in PLDM's recipe

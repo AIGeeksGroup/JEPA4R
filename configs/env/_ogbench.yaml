@@ -1,0 +1,9 @@
+# OGBench manipulation [park2025ogbench]: Cube (1-4 cubes), Scene, Puzzle.
+_base_: _base
+suite: ogbench
+impl: jepa4r.envs.ogbench
+camera:
+  name: ???                   # the camera behind OGBench's pixel observations
+eval:                         # supp. sec:supp-policy: 50 episodes on each of the five official tasks
+  num_tasks: 5
+  episodes_per_task: 50

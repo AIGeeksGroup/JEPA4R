@@ -1,0 +1,8 @@
+# Tab. 4a: VGGT [wang2025vggt] backbone; set generator, affine map, data and both stages unchanged.
+_base_: _base
+name: vggt
+display: VGGT
+backbone:
+  name: vggt
+  impl: jepa4r.decoder.backbones.vggt
+  weights: ???

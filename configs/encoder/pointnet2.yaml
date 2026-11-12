@@ -1,0 +1,7 @@
+# Tab. 4b ablation: PointNet++ [qi2017pointnetpp], same parameter count as the default PointNet.
+name: pointnet2
+arch: pointnet2
+impl: jepa4r.models.encoders.pointnet2
+in_dim: 6
+out_dim: 192
+hparams: ???                  # widths / radii chosen to match ~5.51M parameters

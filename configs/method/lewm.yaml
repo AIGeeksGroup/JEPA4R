@@ -1,0 +1,6 @@
+# LeWM [maes2026lewm] on the paired images, trained by us with the same recipe as JEPA4R.
+_base_: _jepa_wm
+name: lewm
+display: LeWM
+obs: image
+encoder: vit_tiny14

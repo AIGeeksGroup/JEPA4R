@@ -1,0 +1,6 @@
+# JEPA4R: LeWM recipe on single-depth-camera point clouds through a parameter-matched PointNet.
+_base_: _jepa_wm
+name: jepa4r
+display: JEPA4R (Ours)
+obs: pointcloud
+encoder: pointnet             # configs/encoder/pointnet.yaml

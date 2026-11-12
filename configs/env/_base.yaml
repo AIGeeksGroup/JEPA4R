@@ -1,0 +1,25 @@
+# Shared by every simulated task.
+# Paper: Sec. 4.1 "Point clouds from one depth camera", Sec. 5.2, supp. sec:supp-data.
+# ??? = value still to be filled from the existing implementation (OmegaConf raises if it is read).
+impl: ???                     # module with make(env_cfg) -> env; set by the suite base file
+env_id: ???                   # simulator task id in the benchmark package (not given in the paper)
+image_size: [224, 224]        # 2D JEPAs read 224x224 images (Sec. 3)
+camera:
+  name: ???                   # the fixed eye-to-hand camera that renders the benchmark's pixels
+  depth: true                 # its depth image, treated as a time-of-flight sensor
+pointcloud:
+  num_points: 1200            # N
+  features: xyzrgb            # o_t = P_t in R^{N x 6}
+  voxel_size: 0.005           # merge points within 5 mm voxels (m)
+  sampler: ???                # how the N points are drawn after voxel merging
+  crop_box: ???               # workspace box, world frame (m): [[xmin, ymin, zmin], [xmax, ymax, zmax]]
+  drop: [table, floor, static_fixtures, invisible_goal_markers]   # renderer-segmentation classes removed
+  keep_extra: []              # extra segments kept as task objects
+  affine: ???                 # fixed normalisation map (on Cube shared with the real arm)
+wm_data:                      # world-model training data (stage collect_wm_data)
+  recipe: mixture             # mixture | ogbench_noisy
+  num_episodes: 10000
+  episode_len: 200
+  mixture: ???                # {behaviour: proportion}, see jepa4r/data/behaviors.py
+policy_data: ???              # data for the policy head (stage prepare_policy_data)
+policy: ???                   # default policy learner, a file in configs/policy

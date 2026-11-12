@@ -1,0 +1,3 @@
+_base_: _metaworld
+name: mw_bin_pick
+display: Bin-pick

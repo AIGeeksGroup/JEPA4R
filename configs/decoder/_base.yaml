@@ -1,0 +1,44 @@
+# Latent-space reconstruction D_psi (Sec. 4.4, Eq. 2), trained post hoc on the frozen world model.
+# Tab. 4a keeps everything here fixed and swaps only `backbone`.
+impl: jepa4r.decoder.train
+wm:                           # the frozen world model whose latents are decoded
+  method: jepa4r
+  tag: default
+  epoch: 10
+latent_dim: 192
+set_generator:                # new: replaces the image input of the backbone
+  num_queries: 256            # learnable queries -> 16 x 16 token grid
+  token_dim: 1024
+  num_blocks: 3               # residual MLP blocks, modulated by z_t through FiLM
+head:
+  point_map_size: [224, 224]
+  affine: learnable           # moves the point map into the target frame
+  rgb_branch: true
+  num_points: 1200            # pixels that form P_hat_t
+  pixel_selection: ???
+loss:                         # Eq. 2: CD + SW_2^2 (both on xyz) + 0.1 * L1 colour of NN-matched points
+  chamfer: 1.0
+  sliced_w2: 1.0
+  sw_projections: ???
+  rgb_l1: 0.1
+train:                        # linear-probe-then-fine-tune order [kumar2022lpft]
+  split: ???                  # train / validation split of data/wm/<env>
+  stage_a:                    # new parameters only (5.75M), backbone frozen
+    epochs: ???
+    lr: ???
+    batch_size: ???
+  stage_b:                    # + LoRA on the q / v projections of all attention blocks
+    lora_rank: 4
+    lora_targets: [q, v]
+    epochs: ???
+    lr: ???
+eval:
+  per_frame:
+    num_frames: 4096          # validation frames
+    outlier_cm: 3.0           # Outl.: share of points with NN distance above 3 cm
+  open_loop:
+    num_episodes: 64
+    context_env_steps: [0, 5, 10]
+    horizon_env_steps: 200
+    report_env_steps: [15, 100, 200]
+  cube_position: ???          # how the cube position is read from a point cloud (not given in the paper)

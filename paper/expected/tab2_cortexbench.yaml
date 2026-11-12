@@ -1,0 +1,57 @@
+# Paper numbers: Tab. 2 (tab:metaworld / tab:adroit), CortexBench success (%), best of 20 evaluations.
+# `values` are our runs; `published` rows are copied from other papers and only shown for reference.
+tables:
+  - name: tab2_cortexbench
+    title: "Tab. 2 -- CortexBench, success (%) of policies on frozen latents"
+    stage: train_policy
+    rows: method
+    cols: env
+    metric: success
+    col_order: [mw_assembly, mw_bin_pick, mw_button, mw_drawer, mw_hammer, mw_mean, adroit_relocate]
+    derived:
+      mw_mean: {mean_of: [mw_assembly, mw_bin_pick, mw_button, mw_drawer, mw_hammer]}
+    labels:
+      mw_mean: Mean
+      pldm: PLDM (ViT-Tiny)
+      lejepa: LeJEPA (ViT-Tiny)
+      visreg: VISReg (ViT-B)
+      vjepa21: V-JEPA 2.1 (ViT-B)
+      lewm: LeWM (ViT-Tiny)
+    values:
+      pldm:        {mw_assembly: 54.7, mw_bin_pick: 53.3,  mw_button: 64.0, mw_drawer: 100.0, mw_hammer: 100.0, mw_mean: 74.4, adroit_relocate: 10.7}
+      lejepa:      {mw_assembly: 34.7, mw_bin_pick: 61.3,  mw_button: 78.7, mw_drawer: 100.0, mw_hammer: 100.0, mw_mean: 74.9, adroit_relocate: 16.0}
+      visreg:      {mw_assembly: 89.3, mw_bin_pick: 74.7,  mw_button: 77.3, mw_drawer: 100.0, mw_hammer: 100.0, mw_mean: 88.3, adroit_relocate: 40.0}
+      vjepa21:     {mw_assembly: 90.7, mw_bin_pick: 82.7,  mw_button: 77.3, mw_drawer: 100.0, mw_hammer: 100.0, mw_mean: 90.1, adroit_relocate: 36.0}
+      lewm:        {mw_assembly: 72.0, mw_bin_pick: 77.3,  mw_button: 29.3, mw_drawer: 52.0,  mw_hammer: 89.3,  mw_mean: 64.0, adroit_relocate: 8.0}
+      jepa4r:      {mw_assembly: 96.0, mw_bin_pick: 100.0, mw_button: 98.7, mw_drawer: 100.0, mw_hammer: 97.3,  mw_mean: 98.4, adroit_relocate: 88.0}
+      # optional row (experiments/tab2_cortexbench.yaml): ours or the VC-1 study's -- to confirm
+      random_vitb: {mw_assembly: 0.0,  mw_bin_pick: 0.0,   mw_button: 2.7,  mw_drawer: 0.0,   mw_hammer: 0.0,   mw_mean: 0.5,  adroit_relocate: 0.0}
+    published:
+      r3m:
+        label: R3M (RN-50)
+        source: VC-1 study [majumdar2023vc1]
+        values: {mw_assembly: 97.3, mw_bin_pick: 93.3, mw_button: 89.3, mw_drawer: 100.0, mw_hammer: 100.0, mw_mean: 96.0, adroit_relocate: 65.3}
+      mvp:
+        label: MVP (ViT-B)
+        source: VC-1 study [majumdar2023vc1]
+        values: {mw_assembly: 92.0, mw_bin_pick: 73.3, mw_button: 92.0, mw_drawer: 100.0, mw_hammer: 98.7, mw_mean: 91.2, adroit_relocate: 26.7}
+      vc1_b:
+        label: VC-1 (ViT-B)
+        source: VC-1 study [majumdar2023vc1]
+        values: {mw_assembly: 88.0, mw_bin_pick: 78.7, mw_button: 82.7, mw_drawer: 100.0, mw_hammer: 98.7, mw_mean: 89.6, adroit_relocate: 32.0}
+      vc1_l:
+        label: VC-1 (ViT-L)
+        source: VC-1 study [majumdar2023vc1]
+        values: {mw_assembly: 88.0, mw_bin_pick: 84.0, mw_button: 80.0, mw_drawer: 100.0, mw_hammer: 92.0, mw_mean: 88.8, adroit_relocate: 38.7}
+      clip:
+        label: CLIP (ViT-B)
+        source: VC-1 study [majumdar2023vc1]
+        values: {mw_assembly: 70.7, mw_bin_pick: 68.0, mw_button: 48.0, mw_drawer: 100.0, mw_hammer: 90.7, mw_mean: 75.5, adroit_relocate: 22.7}
+      stp:
+        label: STP (ViT-B)
+        source: as reported by SPA [zhu2025spa]
+        values: {mw_assembly: 90.7, mw_bin_pick: 80.0, mw_button: 89.3, mw_drawer: 100.0, mw_hammer: 100.0, mw_mean: 92.0, adroit_relocate: 26.7}
+      vjepa2:
+        label: V-JEPA 2 (ViT-L)
+        source: as reported by JEPA-VLA [miao2026jepavla]; no Adroit result
+        values: {mw_assembly: 96.0, mw_bin_pick: 80.0, mw_button: 84.0, mw_drawer: 100.0, mw_hammer: 92.0, mw_mean: 90.4, adroit_relocate: null}

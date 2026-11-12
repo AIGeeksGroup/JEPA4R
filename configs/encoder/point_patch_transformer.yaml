@@ -1,0 +1,7 @@
+# Tab. 4b ablation: PointPatchTransformer of PPRL [gyenes2024pprl], same parameter count as PointNet.
+name: point_patch_transformer
+arch: point_patch_transformer
+impl: jepa4r.models.encoders.point_patch_transformer
+in_dim: 6
+out_dim: 192
+hparams: ???                  # patches, depth, width chosen to match ~5.51M parameters
