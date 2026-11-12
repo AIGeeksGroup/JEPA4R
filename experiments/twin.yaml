@@ -1,0 +1,20 @@
+# Sec. 5.6 in the RM75-B digital twin: twin check against the vendor URDF, twin-trained world model, policy head
+# and decoder, and the decoded look-ahead preview over 50 twin episodes. Real-arm runs are not included.
+name: twin
+expected: [paper/expected/twin.yaml]
+
+jobs:
+  - stage: verify_twin
+    grid: {env: [rm75b_cube]}
+  - stage: collect_wm_data
+    grid: {env: [rm75b_cube]}
+  - stage: prepare_policy_data
+    grid: {env: [rm75b_cube]}
+  - stage: train_wm
+    grid: {env: [rm75b_cube], method: [jepa4r]}
+  - stage: train_policy
+    grid: {env: [rm75b_cube], method: [jepa4r]}
+  - stage: train_decoder
+    grid: {env: [rm75b_cube], decoder: [page4d]}
+  - stage: eval_preview
+    grid: {env: [rm75b_cube], decoder: [page4d]}

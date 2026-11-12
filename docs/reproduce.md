@@ -4,8 +4,8 @@
 
 This repository reproduces every number in the main text of the paper, except:
 
-- the real-robot experiments (Sec. 5.6, Fig. 1c and the real-arm key frames); the RM75-B digital twin is used only
-  there and in the supplementary material, so it is not included;
+- runs on the real RM75-B arm (Sec. 5.6 real trials, Fig. 1c, the real-arm key frames); the RM75-B digital twin
+  and its hand, and everything trained in them, are included (`experiments/twin.yaml`);
 - results that appear only in the supplementary material (Tab. S1, planning with CEM under LeWM's setting);
 - numbers quoted from other papers (the published rows of Tab. 2; LeWM vs. DINO-WM in Sec. 1).
 
@@ -21,6 +21,7 @@ baseline recipes) are implemented, because the main-text numbers depend on them.
 | Tab. 3a/b; 12.31 cm shuffled control; decoder stage A → B (0.87 → 0.79 cm); within 1.1 cm over 200 steps | `tab3_recon` | collect_wm_data, train_wm, train_decoder, eval_recon | `paper/expected/tab3_recon.yaml` |
 | Tab. 4a decoder backbone (Cube); 4b encoder, 4c temporal window, 4d hyper-parameters (Scene) | `tab4_ablations` | all of the above | `paper/expected/tab4_ablations.yaml` |
 | 5.51M PointNet vs. 5.50M ViT-tiny, ~18.0M JEPA4R, 5.75M decoder, 0.88M LoRA, ~0.94B PAGE-4D | `params` | count_params | `paper/expected/params.yaml` |
+| Sec. 5.6 in the RM75-B twin: twin vs. vendor URDF (2,000 joint configurations, limits, masses, gripper); twin-trained world model, policy head and decoder; preview 0.58 cm (cube 0.79 cm), cube-to-target 1.3 vs. 5.6 cm over 50 episodes (estimates in the paper) | `twin` | verify_twin, collect_wm_data, prepare_policy_data, train_wm, train_policy, train_decoder, eval_preview | `paper/expected/twin.yaml` |
 | Fig. 1a, Fig. 1b, observations, success plots, CortexBench scatter, simulation key frames, open-loop errors | — | outputs of the stages above | `paper/figures/*.py` |
 
 ```bash
@@ -72,3 +73,6 @@ Values marked `???` in `configs/` are not given in the paper and are taken from 
 10. Metric definitions: how the bidirectional nearest-neighbor distances are aggregated; how the cube position is
     read from a point cloud.
 11. Hyper-parameters of the Tab. 4b encoders at ~5.51M parameters; checkpoint files.
+12. RM75-B twin (`configs/env/rm75b_cube.yaml`): twin model files, the hand / end-effector twin (the paper names an
+    Inspire EG2-4C2 gripper), the Cube task, the twin's data recipe and policy learner, the tolerances of the URDF
+    check, and how the preview metrics are computed.

@@ -1,0 +1,28 @@
+# OGBench Cube in the RM75-B digital twin (Sec. 5.6 "Robot Setup"): a MuJoCo twin of the RealMan RM75-B arm,
+# built from its vendor URDF, replaces the UR5e in a workspace scaled by 0.5 about its center to fit the arm's
+# 610 mm reach. The world model, policy head and decoder used on the real arm are trained only here.
+# The real-arm deployment itself is not part of this repository.
+_base_: _ogbench
+name: rm75b_cube
+display: Cube (RM75-B twin)
+impl: jepa4r.envs.twins.rm75b
+cube_task: ???                # which OGBench Cube task (the real task is cube pick-and-place)
+robot:
+  name: rm75b
+  model: ???                  # MuJoCo twin built from the vendor URDF
+  end_effector: ???           # paper: Inspire EG2-4C2 gripper; twin of the hand from the integrated code
+  reach_mm: 610
+workspace_scale: 0.5          # OGBench Cube workspace scaled about its center
+twin_check:                   # stage verify_twin: twin vs. vendor URDF
+  fk_configurations: 2000     # forward kinematics compared on 2,000 joint configurations
+  compare: [forward_kinematics, joint_limits, masses, gripper_mechanics]
+policy: ???                   # learner of the cube pick-and-place policy head
+wm_data:
+  recipe: ???
+  num_episodes: ???
+  episode_len: ???
+  mixture: ???
+policy_data: ???
+preview:                      # stage eval_preview (Sec. 4.3 look-ahead, Sec. 5.6 results)
+  segment_steps: 25           # each executed 25-step segment is previewed by the decoded imagination
+  num_episodes: 50            # twin evaluation episodes
