@@ -1,0 +1,10 @@
+# Overlay in a simulator/BC environment that shares the WM Torch installation.
+numpy==1.23.5
+timm==0.6.11
+gym==0.23.1
+Cython==0.29.37
+fasteners==0.20
+transforms3d==0.4.2
+termcolor==2.4.0
+dill==0.3.8
+# Install the pinned mujoco-py, mjrl, mj_envs, dmc2gym and EAI-VC sources separately.

@@ -1,0 +1,6 @@
+_target_: lewm_cortex.load_lewm_pcd
+checkpoint_dir: ${oc.env:RELOCATE_PCD_CHECKPOINT}
+epoch: 10
+center: [0.0, -0.2, 0.25]
+scale: 4.0
+use_rgb: true

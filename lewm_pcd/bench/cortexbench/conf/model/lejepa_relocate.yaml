@@ -1,0 +1,4 @@
+# Native Adroit Relocate checkpoint; retain the existing 512-D LeJEPA head readout.
+_target_: jepa_baselines.load_lejepa
+checkpoint_dir: ${oc.env:RELOCATE_LEJEPA_CHECKPOINT}
+epoch: 10

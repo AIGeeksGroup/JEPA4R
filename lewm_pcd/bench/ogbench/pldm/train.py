@@ -83,7 +83,7 @@ def trainer_options(phase,callbacks):
     return options
 
 
-def run(args):
+def run(args, *, resume_checkpoint=None, state_callback=None):
     import torch
     import lightning as pl
     import stable_pretraining as spt
@@ -128,13 +128,15 @@ def run(args):
         def state_dict(self):return dict(last_schedule_index=self.last_schedule_index)
         def load_state_dict(self,state):self.last_schedule_index=state.get('last_schedule_index')
     callbacks=[exports.SaveCkptCallback(label,OmegaConf.create(cfg),epoch_interval=1),Evidence()]
+    if state_callback is not None:
+        callbacks.append(state_callback)
     options=trainer_options(args.phase,callbacks)
     trainer=pl.Trainer(**options);data=spt.data.DataModule(train=train,val=val)
     write(args.output/'result/actual_protocol.json',dict(binding=expected,loader_counts=counts(args),
          actual_train_batches=len(train),actual_validation_batches=len(val),export_root=str(export_root),
          model_config=cfg,trainer_options={k:v for k,v in options.items() if k!='callbacks'},
          optimizer='native method builder',scheduler='native PLDM before optimizer; native LeJEPA step after optimizer'))
-    spt.Manager(trainer=trainer,module=world,data=data,ckpt_path=None,seed=0)()
+    spt.Manager(trainer=trainer,module=world,data=data,ckpt_path=resume_checkpoint,seed=0)()
     preprocessing=train.dataset.gpu_transform.last_contract
     if preprocessing is None:raise ValueError('RGB preprocessing was not applied before the model')
     return dict(stage='baseline_train_completed',export_root=str(export_root),training_returned=True,

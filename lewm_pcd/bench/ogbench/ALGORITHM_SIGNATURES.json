@@ -56,5 +56,16 @@
       "sha256": "3c591c0af39eea77cddc79c79129ddd06b1345a7e8c3a92ec33ae5275a7f790a"
     }
   ],
-  "tiny_optimization_block_sha256": "dd090438bdd7bc85837611d84593fb17da7868beca43dcd786843b3fa4fb7881"
+  "tiny_optimization_block_sha256": "dd090438bdd7bc85837611d84593fb17da7868beca43dcd786843b3fa4fb7881",
+  "tiny_default_off_main_ast_v1": {
+    "source": {
+      "revision": "f437d1a3f27c3cb1f9dc1d7adfbf0afb68dbaa16",
+      "file": "lewm_pcd/bench/ogbench/native/tiny_train.py",
+      "file_sha256": "7d6e15821eb2d5aa976b5cc5f86b2e258c7212dc36d3fcad9c8febf177ab8ff1"
+    },
+    "original_optimization_block_sha256": "dd090438bdd7bc85837611d84593fb17da7868beca43dcd786843b3fa4fb7881",
+    "scope": "Entire original main body: arguments/seed/data/model/AdamW/AMP/loss/updates/scheduler/checkpoint; only statically unreachable gate branches and explicit gate-conditional zero loop starts are normalized.",
+    "canonicalization": "AST fields via ast.iter_fields, without locations, encoded as [node_type, [[field,value],...]]; JSON separators comma/colon; SHA256 UTF8.",
+    "sha256": "70c47101cab82736bac12e66fc80da3493e64dd9b83f98a0af38ec3532c216c3"
+  }
 }

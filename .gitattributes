@@ -1,1 +1,2 @@
+# Source manifests identify raw bytes; preserve each frozen producer's line endings.
 * -text

@@ -1,0 +1,10 @@
+defaults:
+  - lewm
+  - override data: adroit_relocate_pcd
+  - override model: lewm_pcd_dexart
+  - _self_
+output_model_name: relocate_pcd_dexart_v1
+subdir: ${output_model_name}
+num_workers: 16
+loader:
+  prefetch_factor: 2

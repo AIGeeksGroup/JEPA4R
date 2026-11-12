@@ -190,6 +190,99 @@ def _reuse_input(row, config):
     return record
 
 
+def _verify_artifacts(path, checked=None, verified=None):
+    """Recheck existing receipt pins and GCIQL transactions without loading models."""
+    path=Path(path).resolve()
+    checked=set() if checked is None else checked
+    verified={} if verified is None else verified
+    if path in checked:
+        return
+    checked.add(path)
+    value=read(path)
+    if value.get('schema')=='cube_current_training_v1':
+        # The existing loader verifies retained same-byte aliases while keeping
+        # original producer paths intact as historical provenance.
+        from .fresh_data import load_binding
+        load_binding(path)
+        return
+    def pin(record):
+        target=Path(record['path']).resolve()
+        expected=record['sha256']
+        if target in verified and verified[target]!=expected:
+            raise ValueError('completed artifact has conflicting checksums: '+str(target))
+        if target not in verified and sha(target)!=expected:
+            raise ValueError('completed artifact checksum changed: '+str(target))
+        verified[target]=expected
+        if target.suffix=='.json':
+            _verify_artifacts(target,checked,verified)
+        return target
+    def visit(item):
+        if isinstance(item,dict):
+            if 'path' in item and 'sha256' in item:
+                pin(item)
+            if 'receipt_path' in item and 'receipt_sha256' in item:
+                pin(dict(path=item['receipt_path'],sha256=item['receipt_sha256']))
+            for child in item.values():
+                visit(child)
+        elif isinstance(item,list):
+            for child in item:
+                visit(child)
+    visit(value)
+    # Gate reports bind a checkpoint directory through its existing transaction.
+    # Reload reports retain the original gate action hash as a diagnostic;
+    # that reference is not a sibling of reload.json.
+    for field in ('checkpoint','final_checkpoint'):
+        checkpoint=value.get(field)
+        if not isinstance(checkpoint,str):
+            continue
+        checkpoint=Path(checkpoint)
+        if field=='checkpoint' and 'updates' not in value:
+            continue
+        if field=='checkpoint':
+            for key,name in (('full_state_sha256','full_state.npz'),
+                             ('action_reference_sha256','next_actions.npy')):
+                if key in value:
+                    pin(dict(path=path.parent/name,sha256=value[key]))
+        manifest=checkpoint/'manifest.json'
+        if field=='final_checkpoint' and 'final_manifest_sha256' in value:
+            pin(dict(path=manifest,sha256=value['final_manifest_sha256']))
+        transaction=read(manifest)
+        counter=transaction['counter']
+        if type(counter) is not int or counter!=value.get('updates',counter):
+            raise ValueError('completed checkpoint counter differs')
+        pin(dict(path=checkpoint/f'params_{counter}.pkl',sha256=transaction['agent_sha256']))
+        pin(dict(path=checkpoint/'run_state.pkl',sha256=transaction['sidecar_sha256']))
+
+
+def _verify_completed(row, config, previous, root):
+    if Path(previous['path']).resolve()!=Path(row['receipt']).resolve():
+        raise ValueError('completed receipt differs from the canonical stage path')
+    if _receipt(row['receipt'],config,row['stage'])!=previous:
+        raise ValueError('completed output changed: '+row['stage'])
+    driver=root/'dispatch'/row['stage']
+    candidates=[driver,*sorted((driver/'attempts').glob('attempt_*'))]
+    accepted=[]
+    for candidate in candidates:
+        if not (candidate/'COMPLETED.json').is_file():
+            continue
+        completion=read(candidate/'COMPLETED.json')
+        if completion.get('receipt')==previous:
+            if (type(completion.get('actual_exit_code')) is not int or completion['actual_exit_code']!=0
+                    or type(completion.get('reused_input')) is not bool):
+                raise ValueError('completed dispatch acceptance identity differs')
+            accepted.append(candidate)
+    if len(accepted)!=1 or (accepted[0]/'actual_exit_code').read_text().strip()!='0':
+        raise ValueError('completed dispatch has no unique successful actual exit')
+    dispatched=read(accepted[0]/'plan.json')
+    commands=[row['command']]
+    if row['stage']=='collect':
+        commands.append([*row['command'],'--resume'])
+    if dispatched.get('command') not in commands or any(dispatched.get(k)!=v for k,v in row.items() if k!='command'):
+        raise ValueError('completed dispatch differs from the canonical stage plan')
+    if _reuse_input(row,config) is None:
+        _verify_artifacts(row['receipt'])
+
+
 def child_environment(cache, *, platform=None):
     cache=Path(cache)
     env=dict(os.environ,PYTHONPATH=os.pathsep.join((str(LEWM),str(LEWM/'third_party/stable-worldmodel'),str(LEWM/'third_party/ogbench'))),
@@ -235,14 +328,32 @@ def execute(plan, *, resume=False):
             previous=state['completed'][name]
             if not resume:
                 raise FileExistsError('stage already completed; explicit --resume is required: '+name)
-            if sha(previous['path']) != previous['sha256']:
-                raise ValueError('completed output changed: '+name)
+            try:
+                _verify_completed(row,config,previous,root)
+            except BaseException:
+                state.update(stage='failed',failed_count=state['failed_count']+1,actual_exit_code=1,
+                    updated_at=datetime.now(timezone.utc).isoformat(),error=traceback.format_exc())
+                save(state_path,state)
+                return 1
             continue
         driver=root/'dispatch'/name
+        command=list(row['command'])
+        if name == 'collect' and resume:
+            command.append('--resume')
         if driver.exists():
-            raise FileExistsError('prior stage attempt exists; inspect its exit before any recovery: '+str(driver))
+            exit_path=driver/'actual_exit_code'
+            if not (resume and name == 'collect' and exit_path.is_file()):
+                raise FileExistsError('prior stage attempt exists; inspect its exit before any recovery: '+str(driver))
+            attempts=driver/'attempts'
+            attempts.mkdir(exist_ok=True)
+            index=1
+            while (attempts/f'attempt_{index:03d}').exists():
+                if not (attempts/f'attempt_{index:03d}'/'actual_exit_code').is_file():
+                    raise FileExistsError('prior collection retry has no exit receipt; inspect it before recovery')
+                index+=1
+            driver=attempts/f'attempt_{index:03d}'
         driver.mkdir(parents=True,exist_ok=False)
-        save(driver/'plan.json',row,new=True)
+        save(driver/'plan.json',dict(row,command=command),new=True)
         state.update(stage=name,updated_at=datetime.now(timezone.utc).isoformat(),actual_exit_code=None)
         save(state_path,state)
         code=1
@@ -251,7 +362,7 @@ def execute(plan, *, resume=False):
             if reused is None:
                 env=child_environment(root.parent/'.runtime_cache')
                 with (driver/'stdout_stderr.log').open('xb') as log:
-                    child=subprocess.run(row['command'],env=env,stdout=log,stderr=subprocess.STDOUT,check=False)
+                    child=subprocess.run(command,env=env,stdout=log,stderr=subprocess.STDOUT,check=False)
                 code=child.returncode
                 if code != 0:
                     raise RuntimeError('child exited '+str(code))

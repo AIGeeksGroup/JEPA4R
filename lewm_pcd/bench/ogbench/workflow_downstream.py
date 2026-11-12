@@ -170,24 +170,28 @@ def _assets(config):
         pinned(record)
     receipt_path = pinned(config['encoder_receipt'])
     receipt = read(receipt_path)
-    if (receipt.get('schema') not in ('cube_workflow_encoder_v1', 'cube_fresh_wm_acceptance_v1') or
+    imported = 'encoder_import' in config
+    if imported:
+        from .retained_encoder import validate_import
+        validate_import(config['encoder_import'], config)
+    if not imported and (receipt.get('schema') not in ('cube_workflow_encoder_v1', 'cube_fresh_wm_acceptance_v1') or
             receipt.get('actual_exit_code') != 0 or
             receipt.get('model') != config['model'] or
             receipt.get('cube_count') != config['cube_count'] or
             receipt.get('mode') != config['mode'] or
             receipt.get('checkpoint') != dict(path=encoder['checkpoint'], sha256=encoder['checkpoint_sha256'])):
         raise ValueError('Encoder receipt does not bind this actual model/Cube/checkpoint/mode')
-    if not (receipt.get('strict_reload_verified') is True or
+    if not imported and not (receipt.get('strict_reload_verified') is True or
             contract['family'] in ('visreg', 'vjepa') and receipt.get('released_weights_verified') is True):
         raise ValueError('Encoder receipt must verify strict reload or official released weights')
-    if config['model'] not in ('visreg','vjepa'):
+    if not imported and config['model'] not in ('visreg','vjepa'):
         _current_training_data(receipt,config['cube_count'],config['mode'])
     if config['mode']=='formal' and contract['family'] not in ('visreg','vjepa') and (
             receipt.get('actual_epochs') != 10 or receipt.get('formal_acceptance_verified') is not True):
         raise ValueError('Formal paper WM requires its actual ten-epoch formal acceptance')
-    for path, digest in receipt.get('source_binding', {}).items():
+    for path, digest in ({} if imported else receipt.get('source_binding', {})).items():
         pinned(dict(path=path, sha256=digest))
-    if receipt.get('schema') == 'cube_fresh_wm_acceptance_v1':
+    if not imported and receipt.get('schema') == 'cube_fresh_wm_acceptance_v1':
         if receipt.get('config') != encoder.get('factory_config') or receipt.get('actual_epochs') != encoder.get('epoch'):
             raise ValueError('Fresh WM receipt and actual factory/epoch binding differ')
         if 'data_manifest' in receipt:
@@ -230,6 +234,9 @@ def prepare_recipe(run_config, encoder_receipt_path, output_path):
     receipt_path = Path(encoder_receipt_path).resolve()
     receipt = read(receipt_path)
     config['encoder_receipt'] = dict(path=str(receipt_path), sha256=sha(receipt_path))
+    imported = read(pinned(run_config['encoder_import'])) if 'encoder_import' in run_config else None
+    if imported is not None:
+        config['encoder_import'] = copy.deepcopy(run_config['encoder_import'])
     model = config['model']
     contract = group_contract(model, config['cube_count'])
     if model in ('visreg', 'vjepa'):
@@ -237,8 +244,9 @@ def prepare_recipe(run_config, encoder_receipt_path, output_path):
             raise ValueError('Official foundation weights/spec/adapter must be explicitly supplied')
         config['encoder_binding'] = copy.deepcopy(run_config['encoder_binding'])
     else:
-        _current_training_data(receipt,config['cube_count'],config['mode'])
-        checkpoint, factory = receipt.get('checkpoint'), receipt.get('config')
+        if imported is None:
+            _current_training_data(receipt,config['cube_count'],config['mode'])
+        checkpoint, factory = (imported['checkpoint'], imported['factory_config']) if imported is not None else (receipt.get('checkpoint'), receipt.get('config'))
         if not checkpoint or not factory:
             raise ValueError('Accepted WM receipt needs actual checkpoint and factory config')
         checkpoint_path, factory_path = pinned(checkpoint), pinned(factory)
@@ -281,10 +289,19 @@ def prepare_recipe(run_config, encoder_receipt_path, output_path):
         config['encoder_binding'] = binding
     if 'cuda_visible_devices' in run_config:
         config['cuda_visible_devices'] = run_config['cuda_visible_devices']
+    for flag in ('retain_raw_inputs','r4_mapping'):
+        if flag in run_config:
+            if type(run_config[flag]) is not bool or config['mode']!='smoke':
+                raise ValueError('raw-input/R4 capture must be explicit bounded smoke')
+            config[flag]=run_config[flag]
     sources = [Path(__file__), PACKAGE/'workflow_lewm_encoder.py', PACKAGE/'workflow_pldm_encoder.py', PACKAGE/'downstream/sampler.py',
                PACKAGE/'downstream/trainer.py', PACKAGE/'downstream/runtime.py',
                PACKAGE/'downstream/native.py', PACKAGE/'downstream/native_core.py', PACKAGE/'workflow_agent.json']
     config['implementation_sources'] = {str(path):sha(path) for path in sources}
+    if imported is not None:
+        config['implementation_sources'][str(PACKAGE/'retained_encoder.py')] = sha(PACKAGE/'retained_encoder.py')
+    if config.get('r4_mapping'):
+        config['implementation_sources'][str(PACKAGE/'d3_mapping.py')] = sha(PACKAGE/'d3_mapping.py')
     if model == 'pldm':
         config['implementation_sources'].update(encoder_source_bindings(read(factory_path)['official_source']))
     _assets(config)
@@ -492,6 +509,7 @@ def encode(config, root):
     data,arrays = _extract_official(config, root)
     core, group = _core(config)
     encoder = _encoder(config)
+    encoder_calls_before=encoder.calls
     contract = group_contract(config['model'], config['cube_count'])
     cache = root/'cache'
     cache.mkdir(exist_ok=False)
@@ -512,6 +530,8 @@ def encode(config, root):
             for episode in range(source['episodes']):
                 start=episode*1001
                 features = np.empty((1001, contract['input_contract']['latent_dim']), dtype=np.float32)
+                raw_rgb=np.empty((1001,224,224,3),np.uint8) if config.get('retain_raw_inputs') else None
+                raw_pcd=np.empty((1001,1200,6),np.float32) if raw_rgb is not None and wrapper else None
                 capture_hash=hashlib.sha256()
                 for local_id,raw_id in enumerate(range(start,start+1001)):
                     base.set_state(tables['qpos'][raw_id], tables['qvel'][raw_id])
@@ -523,6 +543,10 @@ def encode(config, root):
                         wrapper.frame.seed=current_seed
                         wrapper.frame.cores['current']._rng=np.random.default_rng(current_seed)
                     value = wrapper.capture(image, 'current') if wrapper else image
+                    if raw_rgb is not None:
+                        raw_rgb[local_id]=image
+                        if raw_pcd is not None:
+                            raw_pcd[local_id]=value
                     features[local_id] = encoder.encode(value)
                     if wrapper:
                         capture_hash.update(json.dumps(wrapper.frame.last_receipts['current'],sort_keys=True).encode())
@@ -545,6 +569,25 @@ def encode(config, root):
                     cache_sampling_seed=dict(rule='base+canonical_raw_id; current private RNG reset per raw frame',
                         base=config['cache_sampling_seed_base'][split], first=cache_sampling_seed(config,split,start),
                         last=cache_sampling_seed(config,split,start+1000)),pcd_capture_receipt_stream_sha256=capture_hash.hexdigest() if wrapper else None)
+                if raw_rgb is not None:
+                    raw_path=directory/'raw_inputs.npz'
+                    raw_arrays=dict(rgb=raw_rgb)
+                    if raw_pcd is not None:raw_arrays['pcd']=raw_pcd
+                    with raw_path.open('xb') as stream:np.savez_compressed(stream,**raw_arrays)
+                    record['raw_inputs']=dict(path=str(raw_path),sha256=sha(raw_path),
+                        semantics='actual same-row encoder input and RGB; no feature reuse',rows=1001)
+                if config.get('r4_mapping'):
+                    from .d3_mapping import build_episode
+                    with np.load(source['path'],allow_pickle=False) as source_data:
+                        mapping,metadata=build_episode(features,source_data['observations'][start:start+1001],
+                            source_data['actions'][start:start+1001],source_data['terminals'][start:start+1001],
+                            split=split,cube_count=config['cube_count'],episode=episode,raw_start=start,
+                            source_sha256=source['original_official_source']['sha256'])
+                    map_path,meta_path=directory/'row_mapping.npz',directory/'row_mapping.json'
+                    with map_path.open('xb')as stream:np.savez(stream,**mapping)
+                    save_new(meta_path,metadata)
+                    record['row_mapping']=dict(arrays=dict(path=str(map_path),sha256=sha(map_path)),
+                                               metadata=dict(path=str(meta_path),sha256=sha(meta_path)))
                 receipt = directory/'receipt.json'
                 save_new(receipt, record)
                 entries[split].append(dict(episode=episode, receipt_path=str(receipt), receipt_sha256=sha(receipt)))
@@ -559,6 +602,10 @@ def encode(config, root):
             else:
                 env.close()
     pre = config['encoder_binding']['preprocessing']
+    actual_encoder_calls=encoder.calls-encoder_calls_before
+    expected_encoder_calls=sum(s['raw_rows']for s in data['splits'].values())
+    if actual_encoder_calls!=expected_encoder_calls:
+        raise ValueError('actual encoder calls differ from complete official raw rows')
     protocol = dict(encoder_family=contract['family'], latent_dim=contract['input_contract']['latent_dim'],
         camera=config['camera'], pixel_preprocess_device=pre['device'],
         source_pins={pre['source_path']: pre['source_sha256'], str(Path(__file__)): sha(__file__)})
@@ -572,6 +619,7 @@ def encode(config, root):
                                cache_manifest=dict(path=str(manifest),sha256=sha(manifest)),
                                source_arrays=dict(path=str(root/'source_arrays.json'),sha256=sha(root/'source_arrays.json'))),
                 raw_rows_encoded=sum(s['raw_rows'] for s in data['splits'].values()),
+                actual_encoder_calls=actual_encoder_calls,
                 real_complete_episodes=sum(s['episodes'] for s in data['splits'].values()), encoder_calls=encoder.calls)
 
 
@@ -608,6 +656,7 @@ def _native(config, root):
         core.OnlineEncoder=lambda _group:_encoder(config)
         counter=1000000
     else:
+        core.GROUPS[group]['record_state_trace'] = True
         gate, expected = root/'gate', read(root/'gate/report.json')
         reload = read(root/'reload.json')
         def load_gate(_group):
@@ -641,14 +690,43 @@ def run_stage(config, root, stage):
     if stage == 'encode':
         return encode(config, root)
     if stage == 'cache-audit':
+        import numpy as np
         from .downstream.sampler import load_cached_features
         cfg = read(root/'runtime_recipe.json')
-        for arguments in cfg['feature_loader_arguments'].values():
+        mapping_rows=raw_rows=0
+        for split,arguments in cfg['feature_loader_arguments'].items():
             features, _ = load_cached_features(**arguments)
+            if config.get('r4_mapping') or config.get('retain_raw_inputs'):
+                manifest=read(Path(arguments['cache_dir'])/'cache_manifest.json')
+                for entry in manifest['splits'][split]:
+                    receipt=read(pinned(dict(path=entry['receipt_path'],sha256=entry['receipt_sha256'])))
+                    count,start=receipt['raw_row_count'],receipt['raw_row_start']
+                    if config.get('r4_mapping'):
+                        from .d3_mapping import validate_episode
+                        bound=receipt['row_mapping']
+                        metadata=read(pinned(bound['metadata']))
+                        with np.load(pinned(bound['arrays']),allow_pickle=False)as mapped, \
+                                np.load(cfg['data_binding']['splits'][split]['path'],allow_pickle=False)as source:
+                            arrays=dict(mapped)
+                            validate_episode(features[start:start+count],arrays,metadata)
+                            for name,key in [('states','observations'),('actions','actions'),('terminals','terminals')]:
+                                np.testing.assert_array_equal(arrays[name],source[key][start:start+count],err_msg=name)
+                        if metadata['source_sha256']!=config['official_data'][split]['sha256'] or metadata['split']!=split:
+                            raise ValueError('R4 row mapping belongs to another source/split')
+                        mapping_rows+=count
+                    if config.get('retain_raw_inputs'):
+                        with np.load(pinned(receipt['raw_inputs']),allow_pickle=False)as raw:
+                            if raw['rgb'].shape!=(count,224,224,3)or raw['rgb'].dtype!=np.uint8:
+                                raise ValueError('retained real RGB shape/dtype differs')
+                            if config['model']=='lewm_pcd' and (raw['pcd'].shape!=(count,1200,6)or
+                                    raw['pcd'].dtype!=np.float32 or not np.isfinite(raw['pcd']).all()):
+                                raise ValueError('retained real PCD shape/dtype/finite differs')
+                        raw_rows+=count
             del features
         budget=protocol_budget(config)
         return dict(real_complete_episodes=sum(budget['split_episodes'].values()),
-                    raw_rows_verified=sum(budget['split_episodes'].values())*1001)
+                    raw_rows_verified=sum(budget['split_episodes'].values())*1001,
+                    r4_mapping_rows_verified=mapping_rows,retained_input_rows_verified=raw_rows)
     if stage in ('gate', 'reload'):
         cfg, trainer, boundary = _install_runtime(root)
         if stage == 'gate':
@@ -696,6 +774,19 @@ def run_stage(config, root, stage):
             identities.add(identity);seeds.add(result['seed']);successes+=result['success']
             if result['seed']!=seed_for(*identity):
                 raise ValueError('Native actual seed differs from original seed_for')
+            if config['mode']=='smoke':
+                trace_path=path.parent/'trajectory.npz'
+                if sha(trace_path)!=result.get('state_trace_sha256'):
+                    raise ValueError('Native state trace checksum differs')
+                with np.load(trace_path, allow_pickle=False) as trace:
+                    count=result['steps']
+                    if (trace['qpos'].shape[0]!=count+1 or trace['qvel'].shape[0]!=count+1 or
+                            trace['observations'].shape[0]!=count+1 or
+                            trace['executed_actions'].shape!=(count,5) or
+                            trace['policy_current'].shape!=(count,report['current_dim']) or
+                            trace['policy_goal'].shape!=(count,report['goal_dim']) or
+                            not all(np.isfinite(trace[k]).all() for k in trace.files)):
+                        raise ValueError('Native full state/action/input trace alignment differs')
             with np.load(path.parent/'steps.npz', allow_pickle=False) as values:
                 actions=values['actions']
                 if (actions.shape!=(result['steps'],5) or not 1<=len(actions)<=horizon or

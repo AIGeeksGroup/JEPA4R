@@ -13,6 +13,10 @@ transformers==5.17.0
 datasets==5.0.1
 mujoco==3.3.7
 ogbench==1.2.1
+dm-control==1.0.34
+dm-env==1.6
+dm-tree==0.1.10
+labmaze==1.0.6
 gymnasium==1.2.1
 einops==0.8.2
 wandb==0.22.2

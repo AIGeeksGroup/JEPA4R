@@ -79,7 +79,7 @@ def lejepa_forward(self, batch, stage, cfg):
     return output
 
 
-def run(cfg):
+def run(cfg, *, resume_checkpoint=None, state_callback=None):
     fresh_seed = _prepare_fresh_run(cfg)
     #########################
     ##       dataset       ##
@@ -156,7 +156,7 @@ def run(cfg):
 
     trainer = pl.Trainer(
         **cfg.trainer,
-        callbacks=[object_dump_callback],
+        callbacks=[object_dump_callback] + ([] if state_callback is None else [state_callback]),
         num_sanity_val_steps=1,
         logger=logger,
         enable_checkpointing=True,
@@ -167,7 +167,7 @@ def run(cfg):
         trainer=trainer,
         module=world_model,
         data=data_module,
-        ckpt_path=ckpt_path if ckpt_path.exists() else None,
+        ckpt_path=resume_checkpoint if resume_checkpoint is not None else ckpt_path if ckpt_path.exists() else None,
         seed=fresh_seed,
     )
 

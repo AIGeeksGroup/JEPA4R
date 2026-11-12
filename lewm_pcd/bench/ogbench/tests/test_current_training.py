@@ -117,8 +117,98 @@ def test_binding_rejects_noncurrent_collection_contract(tmp_path, field, value):
 
 
 
+def _gate_none_condition(node):
+    if (isinstance(node, ast.Compare) and isinstance(node.left, ast.Name)
+            and node.left.id == 'gate' and len(node.ops) == len(node.comparators) == 1
+            and isinstance(node.comparators[0], ast.Constant) and node.comparators[0].value is None):
+        if isinstance(node.ops[0], ast.Is):
+            return True
+        if isinstance(node.ops[0], ast.IsNot):
+            return False
+    # Only a false first operand may discard an otherwise unknown call: Python short-circuits it.
+    if isinstance(node, ast.BoolOp) and isinstance(node.op, ast.And):
+        if _gate_none_condition(node.values[0]) is False:
+            return False
+    return None
+
+
+class _TinyGateNone(ast.NodeTransformer):
+    """Select only statically unreachable gate branches; retain every ordinary computation."""
+    def __init__(self):
+        self.zero_starts = set()
+
+    def visit_If(self, node):
+        condition = _gate_none_condition(node.test)
+        if condition is None:
+            return self.generic_visit(node)
+        branch = ast.Module(body=node.body if condition else node.orelse, type_ignores=[])
+        return self.visit(branch).body
+
+    def visit_IfExp(self, node):
+        condition = _gate_none_condition(node.test)
+        return self.generic_visit(node) if condition is None else self.visit(node.body if condition else node.orelse)
+
+    def visit_Assign(self, node):
+        zero_start = (len(node.targets) == 1 and isinstance(node.targets[0], ast.Name)
+                      and node.targets[0].id in ('start_epoch', 'start_batch')
+                      and isinstance(node.value, ast.IfExp) and _gate_none_condition(node.value.test) is True
+                      and isinstance(node.value.body, ast.Constant) and type(node.value.body.value) is int
+                      and node.value.body.value == 0)
+        node = self.generic_visit(node)
+        if zero_start:
+            self.zero_starts.add(node.targets[0].id)
+            return None
+        return node
+
+    def visit_For(self, node):
+        # Capture bindings before visiting the body: a later assignment cannot justify the loop's start.
+        zero_starts = self.zero_starts.copy()
+        node = self.generic_visit(node)
+        call = node.iter
+        if isinstance(call, ast.Call) and isinstance(call.func, ast.Name):
+            if (call.func.id == 'range' and len(call.args) == 2 and not call.keywords
+                    and isinstance(call.args[0], ast.Name) and call.args[0].id == 'start_epoch'
+                    and 'start_epoch' in zero_starts):
+                call.args = call.args[1:]
+            if (call.func.id == 'enumerate' and len(call.args) == len(call.keywords) == 1
+                    and call.keywords[0].arg == 'start' and isinstance(call.keywords[0].value, ast.Name)
+                    and call.keywords[0].value.id == 'start_batch' and 'start_batch' in zero_starts):
+                call.keywords = []
+        return node
+
+
+def _tiny_default_off_ast_sha256(text):
+    main = next(node for node in ast.parse(text).body if isinstance(node, ast.FunctionDef) and node.name == 'main')
+    args = main.args
+    if (args.posonlyargs or args.args or args.vararg or args.kwarg or args.defaults
+            or main.decorator_list or main.returns is not None):
+        raise ValueError('Tiny main must retain its original zero-positional-argument contract')
+    if args.kwonlyargs:
+        if ([arg.arg for arg in args.kwonlyargs] != ['gate'] or len(args.kw_defaults) != 1
+                or args.kwonlyargs[0].annotation is not None or not isinstance(args.kw_defaults[0], ast.Constant)
+                or args.kw_defaults[0].value is not None):
+            raise ValueError('Tiny instrumentation must default to gate=None')
+        if any(isinstance(node, ast.Name) and node.id == 'gate' and not isinstance(node.ctx, ast.Load)
+               for node in ast.walk(main)):
+            raise ValueError('Tiny gate cannot be rebound')
+        body = _TinyGateNone().visit(ast.Module(body=main.body, type_ignores=[]))
+    else:
+        body = ast.Module(body=main.body, type_ignores=[])
+    if any(isinstance(node, ast.Name) and node.id == 'gate' for node in ast.walk(body)):
+        raise ValueError('unhandled gate-dependent computation remains')
+
+    def shape(value):
+        if isinstance(value, ast.AST):
+            return [type(value).__name__, [[name, shape(child)] for name, child in ast.iter_fields(value)]]
+        if isinstance(value, list):
+            return [shape(child) for child in value]
+        return value
+    # Explicit fields avoid Python-version-dependent ast.dump omission of empty fields.
+    return hashlib.sha256(json.dumps(shape(body), separators=(',', ':')).encode()).hexdigest()
+
+
 def test_projected_algorithms_match_original_function_bytes():
-    package = Path(api('fresh_train').__file__).parent
+    package = LEWM / 'bench/ogbench'
     signatures = json.loads((package / 'ALGORITHM_SIGNATURES.json').read_text())
     for record in signatures['functions']:
         text = (package / record['file']).read_text(encoding='utf8')
@@ -126,9 +216,46 @@ def test_projected_algorithms_match_original_function_bytes():
         node = next(node for node in tree.body if isinstance(node, (ast.FunctionDef, ast.ClassDef)) and node.name == record['name'])
         actual = hashlib.sha256(ast.get_source_segment(text, node).encode()).hexdigest()
         assert actual == record['sha256'], (record['file'], record['name'])
+    reference = signatures['tiny_default_off_main_ast_v1']
+    assert reference['original_optimization_block_sha256'] == signatures['tiny_optimization_block_sha256']
+    original_sources = json.loads((LEWM.parent / 'provenance/baselines/cube/SOURCE_MANIFEST.json').read_text())
+    assert reference['source']['file_sha256'] == original_sources['files'][reference['source']['file']]
     text = (package / 'native/tiny_train.py').read_text()
-    block = text[text.index('    warmup_steps, total_steps ='):].rstrip()
-    assert hashlib.sha256(block.encode()).hexdigest() == signatures['tiny_optimization_block_sha256']
+    assert _tiny_default_off_ast_sha256(text) == reference['sha256']
+
+
+@pytest.mark.parametrize('before,after', [
+    ('torch.manual_seed(0)', 'torch.manual_seed(1)'),
+    ('drop_last=True', 'drop_last=False'),
+    ("'weight_decay': 5e-2", "'weight_decay': 5e-3"),
+    ('start_factor=0.01', 'start_factor=0.02'),
+    ('eta_min=1e-3', 'eta_min=1e-2'),
+    ('GradScaler(enabled=True)', 'GradScaler(enabled=False)'),
+    ('dtype=torch.bfloat16', 'dtype=torch.float32'),
+    ('sigreg_loss * args.lamb + inv_loss', 'sigreg_loss * args.lamb - inv_loss'),
+    ('            scaler.update()\n            scheduler.step()', '            scheduler.step()\n            scaler.update()'),
+    ('start_epoch = 0 if gate is None', 'start_epoch = 1 if gate is None'),
+    ('start_batch = 0 if gate is None', 'start_batch = 1 if gate is None'),
+])
+def test_tiny_default_off_signature_rejects_real_training_changes(before, after):
+    package = LEWM / 'bench/ogbench'
+    text = (package / 'native/tiny_train.py').read_text()
+    assert text.count(before) == 1
+    expected = json.loads((package / 'ALGORITHM_SIGNATURES.json').read_text())['tiny_default_off_main_ast_v1']['sha256']
+    assert _tiny_default_off_ast_sha256(text.replace(before, after)) != expected
+
+
+@pytest.mark.parametrize('before,after', [
+    ('def main(*, gate=None)', 'def main(*, gate=True)'),
+    ('    torch.manual_seed(0)', '    gate = object()\n    torch.manual_seed(0)'),
+    ('gate is not None and gate.after_step', 'gate is not None or gate.after_step'),
+    ('            if gate is not None:\n                gate.before_step(net)', '            gate.before_step(net)'),
+])
+def test_tiny_default_off_signature_rejects_live_or_unguarded_hooks(before, after):
+    text = (LEWM / 'bench/ogbench/native/tiny_train.py').read_text()
+    assert text.count(before) == 1
+    with pytest.raises(ValueError, match='gate'):
+        _tiny_default_off_ast_sha256(text.replace(before, after))
 
 
 def test_current_runtime_source_manifest_matches_exact_files():

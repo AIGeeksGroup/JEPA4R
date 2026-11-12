@@ -243,6 +243,9 @@ def load_binding(path, *, verify=True):
         for name, digest in value['producer_binding']['files'].items():
             if sha256(name) != digest:
                 raise ValueError('producer source checksum differs')
+        if value.get('retained_import') is not None:
+            from .retained_training import validate_manifest
+            validate_manifest(value,path)
     return value
 
 

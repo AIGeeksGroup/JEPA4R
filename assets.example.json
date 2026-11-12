@@ -1,0 +1,34 @@
+{
+  "wm_python": "/absolute/envs/wm/bin/python",
+  "adroit_sim_python": "/absolute/envs/adroit/bin/python",
+  "rh56_sim_python": "/absolute/envs/rh56/bin/python",
+  "rh56_bc_python": "/absolute/envs/rh56/bin/python",
+  "stable_worldmodel_root": "/absolute/repository/lewm_pcd/third_party/stable-worldmodel",
+  "eai_vc_root": "/absolute/dependencies/eai-vc",
+  "mjrl_root": "/absolute/dependencies/mjrl",
+  "mj_envs_root": "/absolute/dependencies/mj_envs",
+  "mujoco_path": "/absolute/runtime/mujoco200",
+  "mujoco_key": "/absolute/runtime_secrets/mjkey.txt",
+  "adroit_expert": "/absolute/assets/relocate-state-expert.pickle",
+  "adroit_official_demos": "/absolute/assets/official_light/demos",
+  "adroit_official_sha256": "SHA256_OF_OFFICIAL_LIGHT_MANIFEST",
+  "rh56_expert_root": "/absolute/assets/adroit_rm75_rh56",
+  "rh56_official_task_init": "/absolute/assets/official_task_init.json",
+  "rh56_official_source_manifest": "/absolute/assets/official_light/manifest.json",
+  "visreg_checkpoint": "/absolute/assets/visreg-vit-b-inet1k.pth",
+  "vjepa_checkpoint": "/absolute/assets/vjepa2_1_vit_base.pth",
+  "vjepa_root": "/absolute/dependencies/vjepa2",
+  "pythonpath": [
+    "/absolute/repository/lewm_pcd/third_party/stable-worldmodel",
+    "/absolute/dependencies/eai-vc/cortexbench/mujoco_vc/src",
+    "/absolute/dependencies/eai-vc/vc_models/src",
+    "/absolute/dependencies/dmc-import-overlay"
+  ],
+  "environment": {
+    "MUJOCO_PY_MUJOCO_PATH": "/absolute/runtime/mujoco200",
+    "MUJOCO_PY_MJKEY_PATH": "/absolute/runtime_secrets/mjkey.txt",
+    "LD_LIBRARY_PATH": "/absolute/runtime/mujoco200/bin:/usr/lib/x86_64-linux-gnu",
+    "MUJOCO_GL": "egl",
+    "PYOPENGL_PLATFORM": "egl"
+  }
+}

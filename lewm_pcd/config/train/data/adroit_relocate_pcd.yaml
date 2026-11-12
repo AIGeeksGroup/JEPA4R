@@ -1,0 +1,20 @@
+dataset:
+  name: ${oc.env:RELOCATE_PCD_TRAIN}
+  num_steps: ${eval:'${num_preds} + ${history_size}'}
+  frameskip: 5
+  keys_to_load:
+    - pcd_xyz
+    - pcd_rgb
+    - action
+    - observation
+  keys_to_cache:
+    - action
+    - observation
+preprocessor:
+  _target_: utils.get_pcd_preprocessor
+  source_xyz: pcd_xyz
+  source_rgb: pcd_rgb
+  target: pcd
+  center: [0.0, -0.2, 0.25]
+  scale: 4.0
+  use_rgb: true
