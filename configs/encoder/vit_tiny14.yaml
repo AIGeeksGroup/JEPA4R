@@ -1,0 +1,9 @@
+# LeWM pixel encoder (Sec. 3): ViT-tiny/14 on 224x224 images, trained from scratch, 5.50M parameters.
+# Also the encoder of PLDM and LeJEPA (supp. sec:supp-baselines), except PLDM on Cube.
+name: vit_tiny14
+arch: vit
+impl: jepa4r.models.encoders.vit
+variant: tiny
+patch_size: 14
+image_size: 224
+pretrained: false

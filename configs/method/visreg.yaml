@@ -1,0 +1,8 @@
+# VISReg [wu2026visreg]: the authors' released weights, frozen and evaluated by us.
+name: visreg
+display: VISReg
+kind: pretrained
+impl: jepa4r.baselines.visreg
+obs: image
+encoder: vit_b16
+weights: ???                  # checkpoint under checkpoints/

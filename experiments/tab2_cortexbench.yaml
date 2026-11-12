@@ -1,0 +1,19 @@
+# Tab. 2 (tab:metaworld / tab:adroit) and Sec. 5.3 "CortexBench"; plotted in Fig. 4 and Fig. 5 (fig:cortex).
+# Published rows (R3M, MVP, VC-1, CLIP, STP, V-JEPA 2) are copied, not run: see paper/expected/tab2_cortexbench.yaml.
+name: tab2_cortexbench
+expected: [paper/expected/tab2_cortexbench.yaml]
+
+envs: &envs [mw_assembly, mw_bin_pick, mw_button, mw_drawer, mw_hammer, adroit_relocate]
+
+jobs:
+  - stage: collect_wm_data
+    grid: {env: *envs}
+  - stage: prepare_policy_data
+    grid: {env: *envs}
+  - stage: train_wm
+    grid: {env: *envs, method: [pldm, lejepa, lewm, jepa4r]}
+  - stage: train_policy
+    grid: {env: *envs, method: [pldm, lejepa, visreg, vjepa21, lewm, jepa4r]}
+  - stage: train_policy             # run only if the Random (ViT-B) row is ours rather than the VC-1 study's
+    optional: true
+    grid: {env: *envs, method: [random_vitb]}

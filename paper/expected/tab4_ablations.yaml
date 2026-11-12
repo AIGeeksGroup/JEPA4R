@@ -1,0 +1,53 @@
+# Paper numbers: Tab. 4 (tab:ablations), Sec. 5.5.
+tables:
+  - name: tab4a_decoder_backbone
+    title: "Tab. 4a -- decoder backbone, OGBench Cube (cm)"
+    stage: eval_recon
+    fixed: {env: cube_single}
+    rows: decoder
+    cols: metric
+    decimals: 2
+    labels: {nn_mean: NN, cube_err: Cube, "imag_nn@200": Step 200}
+    values:
+      page4d: {nn_mean: 0.79, cube_err: 1.05, "imag_nn@200": 0.89}
+      vggt:   {nn_mean: 0.79, cube_err: 1.01, "imag_nn@200": 0.88}
+      da3:    {nn_mean: 0.75, cube_err: 0.94, "imag_nn@200": 0.85}
+
+  - name: tab4b_encoder
+    title: "Tab. 4b -- point-cloud encoder, OGBench Scene, success (%)"
+    stage: train_policy
+    fixed: {env: scene}
+    rows: method
+    cols: metric
+    labels: {jepa4r: PointNet (default)}
+    values:
+      jepa4r:           {success: 64.8}
+      jepa4r_pointnet2: {success: 60.5}
+      jepa4r_dgcnn:     {success: 62.4}
+      jepa4r_ppt:       {success: 57.1}
+
+  - name: tab4c_temporal_window
+    title: "Tab. 4c -- context frames, OGBench Scene, success (%)"
+    stage: train_policy
+    fixed: {env: scene, method: jepa4r}
+    rows: tag
+    cols: metric
+    labels: {ctx2: "2", default: "3 (default)", ctx4: "4"}
+    values:
+      ctx2:    {success: 63.2}
+      default: {success: 64.8}
+      ctx4:    {success: 64.8}
+
+  - name: tab4d_hyperparams
+    title: "Tab. 4d -- training hyper-parameters, OGBench Scene, success (%)"
+    stage: train_policy
+    fixed: {env: scene, method: jepa4r}
+    rows: tag
+    cols: metric
+    labels: {default: "Default (LR 5e-5, batch 128)", lr2.5e-5: LR 2.5e-5, lr1e-4: LR 1e-4, bs64: Batch 64, bs256: Batch 256}
+    values:
+      default:  {success: 64.8}
+      lr2.5e-5: {success: 61.9}
+      lr1e-4:   {success: 62.9}
+      bs64:     {success: 57.6}
+      bs256:    {success: 68.5}

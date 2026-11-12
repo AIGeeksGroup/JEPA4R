@@ -1,0 +1,44 @@
+# Tab. 4 (tab:ablations) and Sec. 5.5 (sec:exp-analysis).
+#   (a) decoder backbone, OGBench Cube        (b) point-cloud encoder, OGBench Scene
+#   (c) temporal window, OGBench Scene        (d) training hyper-parameters, OGBench Scene
+name: tab4_ablations
+expected: [paper/expected/tab4_ablations.yaml]
+
+decoders: &decoders [page4d, vggt, da3]
+encoders: &encoders [jepa4r, jepa4r_pointnet2, jepa4r_dgcnn, jepa4r_ppt]
+
+# (c) + (d): one tag per row; the default row (tag `default`) is the jepa4r run of (b).
+cd_variants: &cd_variants
+  ctx2: {method.history: 2, method.num_frames: 3}
+  ctx4: {method.history: 4, method.num_frames: 5}
+  lr2.5e-5: {method.train.lr: 2.5e-5}
+  lr1e-4: {method.train.lr: 1.0e-4}
+  bs64: {method.train.batch_size: 64}
+  bs256: {method.train.batch_size: 256}
+
+jobs:
+  # (a) needs the cube_single data / JEPA4R world model of experiments/tab3_recon.yaml
+  - stage: collect_wm_data
+    grid: {env: [cube_single]}
+  - stage: train_wm
+    grid: {env: [cube_single], method: [jepa4r]}
+  - stage: train_decoder
+    grid: {env: [cube_single], decoder: *decoders}
+  - stage: eval_recon
+    grid: {env: [cube_single], decoder: *decoders}
+  # (b)
+  - stage: collect_wm_data
+    grid: {env: [scene]}
+  - stage: prepare_policy_data
+    grid: {env: [scene]}
+  - stage: train_wm
+    grid: {env: [scene], method: *encoders}
+  - stage: train_policy
+    grid: {env: [scene], method: *encoders}
+  # (c) + (d)
+  - stage: train_wm
+    grid: {env: [scene], method: [jepa4r]}
+    variants: *cd_variants
+  - stage: train_policy
+    grid: {env: [scene], method: [jepa4r]}
+    variants: *cd_variants

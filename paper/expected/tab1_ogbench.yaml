@@ -1,0 +1,17 @@
+# Paper numbers: Tab. 1 (tab:ogbench_il) + Sec. 5.3 (Cube-Quadruple: every encoder 0.0, not in the table).
+# Success (%) of a policy trained on each encoder's frozen latents. Format: jepa4r/report.py.
+tables:
+  - name: tab1_ogbench
+    title: "Tab. 1 -- OGBench, success (%) of policies on frozen latents"
+    stage: train_policy
+    rows: method
+    cols: env
+    metric: success
+    col_order: [cube_single, cube_double, cube_triple, scene, puzzle_3x3, puzzle_4x4, puzzle_4x5, cube_quadruple]
+    values:
+      pldm:    {cube_single: 46.8, cube_double: 3.6,  cube_triple: 4.8,  scene: 46.1, puzzle_3x3: 100.0, puzzle_4x4: 95.6, puzzle_4x5: 21.6, cube_quadruple: 0.0}
+      lejepa:  {cube_single: 0.0,  cube_double: 0.0,  cube_triple: 0.0,  scene: 41.1, puzzle_3x3: 96.8,  puzzle_4x4: 99.2, puzzle_4x5: 96.4, cube_quadruple: 0.0}
+      visreg:  {cube_single: 1.2,  cube_double: 0.0,  cube_triple: 0.0,  scene: 40.5, puzzle_3x3: 1.2,   puzzle_4x4: 0.4,  puzzle_4x5: 0.0,  cube_quadruple: 0.0}
+      vjepa21: {cube_single: 6.0,  cube_double: 0.4,  cube_triple: 0.0,  scene: 38.4, puzzle_3x3: 100.0, puzzle_4x4: 99.6, puzzle_4x5: 32.8, cube_quadruple: 0.0}
+      lewm:    {cube_single: 24.4, cube_double: 1.2,  cube_triple: 0.0,  scene: 40.8, puzzle_3x3: 100.0, puzzle_4x4: 99.6, puzzle_4x5: 26.4, cube_quadruple: 0.0}
+      jepa4r:  {cube_single: 78.4, cube_double: 41.6, cube_triple: 18.4, scene: 64.8, puzzle_3x3: 100.0, puzzle_4x4: 95.6, puzzle_4x5: 68.0, cube_quadruple: 0.0}

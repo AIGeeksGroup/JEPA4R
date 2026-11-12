@@ -1,0 +1,11 @@
+# LeJEPA [balestriero2025lejepa]: trained by us on the paired images for 10 epochs with its own recipe
+# (supp. sec:supp-baselines).
+name: lejepa
+display: LeJEPA
+kind: lejepa
+impl: jepa4r.baselines.lejepa
+obs: image
+encoder: vit_tiny14
+train:
+  epochs: 10
+  recipe: ???                 # LeJEPA's own hyper-parameters

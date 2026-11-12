@@ -1,0 +1,7 @@
+# Tab. 4b ablation: DGCNN [wang2019dgcnn], same parameter count as the default PointNet.
+name: dgcnn
+arch: dgcnn
+impl: jepa4r.models.encoders.dgcnn
+in_dim: 6
+out_dim: 192
+hparams: ???                  # k, widths chosen to match ~5.51M parameters

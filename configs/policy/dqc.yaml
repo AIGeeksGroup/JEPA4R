@@ -1,0 +1,12 @@
+# OGBench Puzzle: decoupled Q-chunking (DQC) [li2025dqc], offline goal-conditioned RL (supp. sec:supp-policy).
+name: dqc
+impl: jepa4r.policy.dqc
+data: official_play           # env.policy_data
+train_steps: 1000000
+inputs: [latent, button_lights]
+goal: button_lights           # target state of the lights
+frame_stack: ???
+hparams: ???                  # DQC settings for puzzle
+eval:
+  num_evals: 10               # ten evaluations during training
+  report: best                # Puzzle reports the best of the ten

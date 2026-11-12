@@ -1,0 +1,3 @@
+_base_: _metaworld
+name: mw_hammer
+display: Hammer

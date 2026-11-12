@@ -1,0 +1,13 @@
+# PLDM [sobal2025pldm]: trained by us on the paired images for 10 epochs with its own recipe
+# (supp. sec:supp-baselines).
+name: pldm
+display: PLDM
+kind: pldm
+impl: jepa4r.baselines.pldm
+obs: image
+encoder: vit_tiny14
+per_env:
+  "cube_*": {encoder: impala}   # on Cube, PLDM uses an Impala encoder
+train:
+  epochs: 10
+  recipe: ???                 # PLDM's own hyper-parameters

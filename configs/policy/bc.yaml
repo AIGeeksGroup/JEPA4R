@@ -1,0 +1,14 @@
+# CortexBench imitation protocol [majumdar2023vc1] (MetaWorld, Adroit Relocate), reused on OGBench Scene
+# (supp. sec:supp-policy). Demonstrations per task: env.policy_data.demos_per_task (25; 100 on Relocate).
+name: bc
+impl: jepa4r.policy.bc
+data: demos
+epochs: 100
+proprio: ???                  # proprioception "where the task provides it" (Sec. 4.3)
+frame_stack: ???
+hparams: ???
+eval:
+  num_evals: 20
+  report: best                # success = best of 20 evaluations
+  episodes: ???
+  seeds: ???

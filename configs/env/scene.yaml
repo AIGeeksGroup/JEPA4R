@@ -1,0 +1,12 @@
+# Also the task of every Tab. 4b-d ablation.
+_base_: _ogbench
+name: scene
+display: Scene
+policy: bc                    # Scene reuses the CortexBench imitation code on its five evaluation tasks
+wm_data:                      # supp. sec:supp-data
+  num_episodes: 10000
+  episode_len: 200
+  mixture: {noisy_expert: 0.5, expert_interrupted_by_random: 0.3, random: 0.2}
+policy_data:
+  source: demos
+  demos_per_task: 25

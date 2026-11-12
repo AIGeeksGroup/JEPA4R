@@ -1,0 +1,10 @@
+# Default decoder backbone: PAGE-4D [zhou2026page4d] = DINOv2 ViT-L, 24 alternating frame / global
+# attention layers and a DPT point-map head (~0.94B, frozen). Tokens enter after its patch embedding.
+_base_: _base
+name: page4d
+display: PAGE-4D
+backbone:
+  name: page4d
+  impl: jepa4r.decoder.backbones.page4d
+  weights: ???
+  attention_blocks: 72        # all of them receive LoRA in stage B (0.88M parameters)

@@ -1,0 +1,18 @@
+# CortexBench Adroit Relocate [rajeswaran2018dapg], the dexterous-hand task.
+_base_: _base
+suite: adroit
+impl: jepa4r.envs.adroit
+name: adroit_relocate
+display: Relocate
+camera:
+  name: ???                   # the CortexBench Adroit camera
+pointcloud:
+  keep_extra: [visible_goal_marker]   # Sec. 4.1: on Relocate the visible goal marker is a task object
+policy: bc
+wm_data:                      # supp. sec:supp-data
+  num_episodes: 10000
+  episode_len: 200
+  mixture: {noisy_expert: 0.5, expert_interrupted_by_random: 0.3, random: 0.2}
+policy_data:
+  source: demos
+  demos_per_task: 100         # 100 demonstrations on Relocate (supp. sec:supp-policy)

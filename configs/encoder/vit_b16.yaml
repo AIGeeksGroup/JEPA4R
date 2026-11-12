@@ -1,0 +1,7 @@
+# ViT-B/16 (supp. sec:supp-baselines): VISReg and V-JEPA 2.1 (released weights, loaded by their baseline modules);
+# Random (ViT-B) in Tab. 2.
+name: vit_b16
+arch: vit
+impl: jepa4r.models.encoders.vit
+variant: base
+patch_size: 16

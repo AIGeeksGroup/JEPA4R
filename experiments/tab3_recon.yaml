@@ -1,0 +1,15 @@
+# Tab. 3 (tab:recon), Sec. 5.4 (sec:exp-recon), the open-loop figure (fig:recon, fig_openloop.pdf),
+# Fig. 1a (fig1a_rollout.pdf), Sec. 4.4 decoder stage A -> B (0.87 -> 0.79 cm) and the
+# "within 1.1 cm over 200 environment steps" claim (abstract, Sec. 1, Sec. 5.4).
+name: tab3_recon
+expected: [paper/expected/tab3_recon.yaml]
+
+jobs:
+  - stage: collect_wm_data
+    grid: {env: [cube_single]}
+  - stage: train_wm                 # the decoder reads the frozen epoch-10 JEPA4R latents
+    grid: {env: [cube_single], method: [jepa4r]}
+  - stage: train_decoder
+    grid: {env: [cube_single], decoder: [page4d]}
+  - stage: eval_recon
+    grid: {env: [cube_single], decoder: [page4d]}
