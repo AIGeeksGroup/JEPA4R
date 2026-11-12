@@ -45,7 +45,10 @@ def lejepa_forward(self, batch, stage, cfg):
     return output
 
 @hydra.main(version_base=None, config_path="./config/train", config_name="lewm")
-def run(cfg):
+def run(cfg, *, manager_seed=None):
+    if manager_seed is not None:
+        manager_seed = int(manager_seed)
+        pl.seed_everything(manager_seed, workers=True)
     #########################
     ##       dataset       ##
     #########################
@@ -130,11 +133,13 @@ def run(cfg):
     )
 
     ckpt_path = run_dir / f"{cfg.output_model_name}_weights.ckpt"
+    manager_seed_kwargs = {} if manager_seed is None else {"seed": manager_seed}
     manager = spt.Manager(
         trainer=trainer,
         module=world_model,
         data=data_module,
         ckpt_path=ckpt_path if ckpt_path.exists() else None,
+        **manager_seed_kwargs,
     )
 
     manager()

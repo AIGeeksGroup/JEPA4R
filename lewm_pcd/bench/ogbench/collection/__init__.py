@@ -128,6 +128,8 @@ def validate_pair(rgb, pcd, *, episodes, horizon, cube_count, world_seed):
             state = np.concatenate([np.asarray(a[key][start], dtype='<f8').reshape(-1) for key in ('qpos', 'qvel')])
             seeds.append(seed)
             initial.append(hashlib.sha256(state.tobytes()).hexdigest())
+        if len(set(initial)) != episodes:
+            raise ValueError('duplicate physical initial state within collection shard')
         for (handle, names) in ((a, ('observation', 'qpos', 'qvel')), (b, ('pcd_xyz',))):
             for name in names:
                 for start in range(0, rows, 256):
@@ -182,33 +184,171 @@ def _file_record(path):
         raise ValueError('file changed during hash: ' + str(path))
     return dict(sha256=digest, bytes=after.st_size, mtime_ns=after.st_mtime_ns)
 
-def run(plan):
+def _part_acceptance(plan, part, runtime):
+    """The same producer/QC checks apply to a fresh part and a resumed part."""
+    code = runtime / 'code/lewm_pcd'
+    directory = Path(part['directory'])
+    configs = {str(directory / 'config.json'): sha(directory / 'config.json')}
+    if plan['cube_count'] == 4:
+        configs.update(_validate_adapter_binding(runtime, directory))
+    manifests = []
+    for name in ('rgb', 'pcd'):
+        path = Path(part[name] + '.manifest.json')
+        value = json.loads(path.read_text(encoding='utf8'))
+        if (value.get('stage') != 'complete' or value.get('exit_code') != 0 or
+                value.get('completed') != part['episodes'] or
+                value.get('pix_episodes_written') != part['episodes'] or
+                value.get('pcd_episodes_written') != part['episodes']):
+            raise ValueError('native producer manifest did not close successfully')
+        cfg = value['config']
+        for key, wanted in (('task_id', part['task']), ('strategy', part['strategy']),
+                            ('split', part['split']), ('world_seed', part['world_seed']),
+                            ('policy_seed', part['policy_seed']),
+                            ('horizon_actions', plan['raw_horizon']),
+                            ('requested_episodes', part['episodes'])):
+            if cfg.get(key) != wanted:
+                raise ValueError('native producer config differs: ' + key)
+        if (cfg.get('collector_sha256') != sha(code / 'scripts/data/collect_cube_pcd.py') or
+                cfg.get('protocol_sha256') != sha(code / 'scripts/data/collection_protocol.py')):
+            raise ValueError('actual native producer source binding differs')
+        if plan['cube_count'] == 4:
+            override, camera = cfg.get('horizon_override', {}), cfg.get('camera_override', {})
+            if (override.get('actions') != 600 or override.get('observations') != 601 or
+                    override.get('effective_TimeLimit') != 600 or override.get('terminal_source_enum') != 2 or
+                    override.get('adapter_SHA256') != sha(runtime / 'collection_adapters/quad_h600.py') or
+                    camera.get('local_Z_pullback_m') != 0.1 or
+                    camera.get('adapter_sha256') != sha(runtime / 'collection_adapters/camera_pullback.py')):
+                raise ValueError('actual Quad H600/camera overlay binding differs')
+        manifests.append(value)
+        configs[str(path)] = sha(path)
+    if manifests[0] != manifests[1]:
+        raise ValueError('paired producer manifests differ')
+    qc = validate_pair(part['rgb'], part['pcd'], episodes=part['episodes'],
+                       horizon=plan['raw_horizon'], cube_count=plan['cube_count'],
+                       world_seed=part['world_seed'])
+    return dict(part=part, qc=qc, producer_manifest=manifests[0], configs=configs,
+                data_files={part[name]: _file_record(part[name]) for name in ('rgb', 'pcd')})
+
+
+def _accepted_parts(plan):
+    records = {}
+    for canonical in plan['parts']:
+        marker = Path(canonical['directory']) / 'ACCEPTED.json'
+        if not marker.exists():
+            continue
+        value = json.loads(marker.read_text(encoding='utf8'))
+        if value.get('canonical_part') != canonical or value.get('actual_exit_code') != 0:
+            raise ValueError('completed part identity changed: ' + str(marker))
+        actual = value['part']
+        if any(actual.get(k) != v for k, v in canonical.items()
+               if k not in ('directory', 'rgb', 'pcd')):
+            raise ValueError('completed part seed/task/split identity changed')
+        root = Path(canonical['directory']).resolve()
+        if not Path(actual['directory']).resolve().is_relative_to(root):
+            raise ValueError('completed part directory escapes its canonical shard')
+        wanted_paths = {
+            'rgb': str(Path(actual['directory']) / 'datasets/pair_pix.h5'),
+            'pcd': str(Path(actual['directory']) / 'datasets/pair_pcd.h5'),
+        }
+        if any(actual.get(key) != path for key, path in wanted_paths.items()):
+            raise ValueError('completed part raw paths differ from its actual directory')
+        if set(value['data_files']) != set(wanted_paths.values()):
+            raise ValueError('completed part hashed data files differ from merge paths')
+        for name, expected in value['configs'].items():
+            if sha(name) != expected:
+                raise ValueError('completed producer/config checksum changed: ' + name)
+        for name, expected in value['data_files'].items():
+            if sha(name) != expected['sha256']:
+                raise ValueError('completed raw data checksum changed: ' + name)
+        if (Path(actual['directory']) / 'actual_exit_code').read_text().strip() != '0':
+            raise ValueError('completed child exit changed')
+        records[canonical['index']] = value
+    return records
+
+
+def _attempt_part(canonical):
+    """Keep failed output bytes; retry the same seeded part in a new directory."""
+    directory = Path(canonical['directory'])
+    if directory.exists():
+        attempts = [directory]
+        attempts.extend(sorted((directory / 'attempts').glob('attempt_*')))
+        for previous in attempts:
+            exit_path = previous / 'actual_exit_code'
+            if not exit_path.is_file():
+                raise FileExistsError('prior collection attempt has no exit evidence; inspect it before recovery: ' + str(previous))
+            try:
+                int(exit_path.read_text().strip())
+            except ValueError as error:
+                raise ValueError('prior collection attempt exit evidence is malformed') from error
+        parent = directory / 'attempts'
+        parent.mkdir(exist_ok=True)
+        index = 1
+        while (parent / f'attempt_{index:03d}').exists():
+            index += 1
+        directory = parent / f'attempt_{index:03d}'
+    directory.mkdir(parents=True, exist_ok=False)
+    return dict(canonical, directory=str(directory),
+                rgb=str(directory / 'datasets/pair_pix.h5'),
+                pcd=str(directory / 'datasets/pair_pcd.h5'))
+
+
+def run(plan, *, resume=False, part_ids=None):
     """Explicit execution. Completion requires actual child exits and data QC."""
     expected = build_plan(plan['cube_count'], plan['output_root'], plan['mode'], plan['python'], collection_seed=plan['collection_seed'])
     if plan != expected:
         raise ValueError('collection plan differs from fixed protocol')
     root = Path(plan['output_root'])
+    if part_ids is not None:
+        if len(part_ids) != len(set(part_ids)):
+            raise ValueError('duplicate requested part IDs')
+        if any(type(i) is not int or i not in range(len(plan['parts'])) for i in part_ids):
+            raise ValueError('requested part ID is outside the canonical plan')
     if root.exists():
-        raise FileExistsError(root)
-    root.mkdir(parents=True, exist_ok=False)
-    started = datetime.now(timezone.utc).isoformat()
-    state = dict(stage='materializing', started_at=started, updated_at=started, actual_exit_code=None, completed_count=0, failed_count=0, plan=plan)
-    _save(root / 'plan.json', plan)
-    _save(root / 'status.json', state)
+        if not resume:
+            raise FileExistsError(root)
+        if json.loads((root / 'plan.json').read_text(encoding='utf8')) != plan:
+            raise ValueError('resume plan differs from the original canonical plan')
+        state = json.loads((root / 'status.json').read_text(encoding='utf8'))
+        if state.get('driver_sha256') != sha(__file__):
+            raise ValueError('collection driver source changed; preserve the frozen producer')
+        with (root / 'status_history.jsonl').open('a', encoding='utf8') as stream:
+            stream.write(json.dumps(state) + '\n')
+    else:
+        root.mkdir(parents=True, exist_ok=False)
+        started = datetime.now(timezone.utc).isoformat()
+        state = dict(stage='materializing', started_at=started, updated_at=started,
+                     actual_exit_code=None, completed_count=0, failed_count=0, plan=plan,
+                     driver_sha256=sha(__file__))
+        _save(root / 'plan.json', plan)
+        _save(root / 'status.json', state)
+    started = state['started_at']
     try:
         runtime = root / 'runtime'
-        binding = materialize(runtime)
+        binding_path = root / 'runtime_binding.json'
+        if binding_path.exists():
+            binding = json.loads(binding_path.read_text(encoding='utf8'))
+            for name, expected_sha in {**binding['files'], **binding['reused_files']}.items():
+                if sha(name) != expected_sha:
+                    raise ValueError('collection runtime source changed: ' + name)
+        else:
+            binding = materialize(runtime)
+            _save(binding_path, binding)
         code = runtime / 'code/lewm_pcd'
         env = dict(os.environ, CUBE_COLLECTION_RUNTIME_ROOT=str(runtime), MUJOCO_GL='egl', PYOPENGL_PLATFORM='egl', EGL_PLATFORM='surfaceless', STABLEWM_HOME=str(root / 'native_outputs'), OMP_NUM_THREADS='1', MKL_NUM_THREADS='1', OPENBLAS_NUM_THREADS='1')
         env['PYTHONPATH'] = os.pathsep.join((str(code), str(code / 'scripts/data'), str(LEWM / 'third_party/stable-worldmodel'), str(runtime / 'third_party/ogbench')))
-        (records, data_files, configs, seen_seeds, seen_initial) = ([], {}, {}, set(), set())
-        for part in plan['parts']:
+        accepted = _accepted_parts(plan)
+        if part_ids is not None and set(part_ids).intersection(accepted):
+            raise ValueError('explicit retry of a completed part is refused')
+        selected = list(range(len(plan['parts']))) if part_ids is None else part_ids
+        for part_index in selected:
+            if part_index in accepted:
+                continue
+            canonical = plan['parts'][part_index]
+            part = _attempt_part(canonical)
             directory = Path(part['directory'])
-            directory.mkdir(parents=True, exist_ok=False)
             command = child_command(plan, part, runtime)
             config = dict(part=part, command=command, raw_horizon=plan['raw_horizon'], env_type=plan['env_type'], mode=plan['mode'])
             _save(directory / 'config.json', config)
-            configs[str(directory / 'config.json')] = sha(directory / 'config.json')
             state.update(stage='collecting', active_part=part['index'], updated_at=datetime.now(timezone.utc).isoformat())
             _save(root / 'status.json', state)
             with (directory / 'stdout_stderr.log').open('xb') as log:
@@ -216,49 +356,75 @@ def run(plan):
             (directory / 'actual_exit_code').write_text(str(result.returncode) + '\n')
             if result.returncode != 0:
                 raise RuntimeError(f"collection child {part['index']} exited {result.returncode}")
-            if plan['cube_count'] == 4:
-                configs.update(_validate_adapter_binding(runtime, directory))
-            manifests = []
-            for name in ('rgb', 'pcd'):
-                path = Path(part[name] + '.manifest.json')
-                value = json.loads(path.read_text(encoding='utf8'))
-                if value.get('stage') != 'complete' or value.get('exit_code') != 0 or value.get('completed') != part['episodes'] or (value.get('pix_episodes_written') != part['episodes']) or (value.get('pcd_episodes_written') != part['episodes']):
-                    raise ValueError('native producer manifest did not close successfully')
-                cfg = value['config']
-                for (key, wanted) in (('task_id', part['task']), ('strategy', part['strategy']), ('split', part['split']), ('world_seed', part['world_seed']), ('policy_seed', part['policy_seed']), ('horizon_actions', plan['raw_horizon']), ('requested_episodes', part['episodes'])):
-                    if cfg.get(key) != wanted:
-                        raise ValueError('native producer config differs: ' + key)
-                if cfg.get('collector_sha256') != sha(code / 'scripts/data/collect_cube_pcd.py') or cfg.get('protocol_sha256') != sha(code / 'scripts/data/collection_protocol.py'):
-                    raise ValueError('actual native producer source binding differs')
-                if plan['cube_count'] == 4:
-                    override = cfg.get('horizon_override', {})
-                    camera = cfg.get('camera_override', {})
-                    if override.get('actions') != 600 or override.get('observations') != 601 or override.get('effective_TimeLimit') != 600 or (override.get('terminal_source_enum') != 2) or (override.get('adapter_SHA256') != sha(runtime / 'collection_adapters/quad_h600.py')) or (camera.get('local_Z_pullback_m') != 0.1) or (camera.get('adapter_sha256') != sha(runtime / 'collection_adapters/camera_pullback.py')):
-                        raise ValueError('actual Quad H600/camera overlay binding differs')
-                manifests.append(value)
-                configs[str(path)] = sha(path)
-            if manifests[0] != manifests[1]:
-                raise ValueError('paired producer manifests differ')
-            qc = validate_pair(part['rgb'], part['pcd'], episodes=part['episodes'], horizon=plan['raw_horizon'], cube_count=plan['cube_count'], world_seed=part['world_seed'])
+            record = _part_acceptance(plan, part, runtime)
+            for previous in accepted.values():
+                if (set(record['qc']['reset_seeds']).intersection(previous['qc']['reset_seeds']) or
+                        set(record['qc']['initial_state_sha256']).intersection(previous['qc']['initial_state_sha256'])):
+                    raise ValueError('duplicate reset seed or full initial state across shards')
+            record.update(canonical_part=canonical, actual_exit_code=0)
+            _save(directory / 'QC.json', record['qc'])
+            marker = Path(canonical['directory']) / 'ACCEPTED.json'
+            with marker.open('x', encoding='utf8') as stream:
+                json.dump(record, stream, indent=2)
+            accepted[part_index] = record
+            state['completed_count'] = len(accepted)
+            _save(root / 'status.json', state)
+        if len(accepted) != len(plan['parts']):
+            state.update(stage='parts_completed', actual_exit_code=0,
+                         completed_count=len(accepted), updated_at=datetime.now(timezone.utc).isoformat())
+            _save(root / 'status.json', state)
+            (root / 'actual_exit_code').write_text('0\n')
+            return dict(schema='cube_collection_partial_v1', actual_exit_code=0, complete=False,
+                        completed_count=len(accepted), required_count=len(plan['parts']))
+        (records, data_files, configs, seen_seeds, seen_initial) = ([], {}, {}, set(), set())
+        actual_parts = []
+        for canonical in plan['parts']:
+            record = accepted[canonical['index']]
+            part, qc = record['part'], record['qc']
             if seen_seeds.intersection(qc['reset_seeds']) or seen_initial.intersection(qc['initial_state_sha256']):
                 raise ValueError('duplicate reset seed or full initial state across shards')
             seen_seeds.update(qc['reset_seeds'])
             seen_initial.update(qc['initial_state_sha256'])
-            for name in ('rgb', 'pcd'):
-                data_files[part[name]] = _file_record(part[name])
-            _save(directory / 'QC.json', qc)
-            records.append(dict(part=part, qc=qc, producer_manifest=manifests[0]))
-            state['completed_count'] += 1
+            data_files.update(record['data_files'])
+            configs.update(record['configs'])
+            records.append(dict(part=part, qc=qc, producer_manifest=record['producer_manifest']))
+            actual_parts.append(part)
+        if (root / 'COLLECTION.json').exists():
+            completed = json.loads((root / 'COLLECTION.json').read_text(encoding='utf8'))
+            if state.get('collection_manifest_sha256') != sha(root / 'COLLECTION.json'):
+                raise ValueError('completed collection manifest checksum changed or is unaccepted')
+            expected_header = dict(schema='cube_fixed_collection_v1', actual_exit_code=0,
+                cube_count=plan['cube_count'], mode=plan['mode'], raw_horizon=plan['raw_horizon'],
+                protocol=plan['protocol'], collection_seed=plan['collection_seed'],
+                split_counts=plan['split_counts'], train_episodes=plan['split_counts']['train'],
+                validation_episodes=plan['split_counts']['validation'])
+            if any(completed.get(k) != v for k, v in expected_header.items()):
+                raise ValueError('completed collection receipt protocol/count binding differs')
+            paths = completed.get('paths', {})
+            if (set(paths) != {'train_rgb', 'train_pcd', 'validation_rgb', 'validation_pcd'} or
+                    len(set(paths.values())) != 4 or completed.get('records') != records or
+                    set(completed['data_files']) != set(data_files).union(paths.values())):
+                raise ValueError('completed collection receipt paths/producer binding differs')
+            for name, expected_file in completed['data_files'].items():
+                if sha(name) != expected_file['sha256']:
+                    raise ValueError('completed collection data checksum changed: ' + name)
+            return completed
         paths = {}
         state.update(stage='merging_raw_vds', updated_at=datetime.now(timezone.utc).isoformat())
         _save(root / 'status.json', state)
+        merge_root = root / 'datasets'
+        if merge_root.exists():
+            index = 1
+            while (root / 'merge_attempts' / f'attempt_{index:03d}').exists():
+                index += 1
+            merge_root = root / 'merge_attempts' / f'attempt_{index:03d}' / 'datasets'
         for split in ('train', 'validation'):
             for modality in ('rgb', 'pcd'):
                 key = split + '_' + modality
-                paths[key] = merge_raw([p[modality] for p in plan['parts'] if p['split'] == split], root / 'datasets' / (key + '.h5'))
+                paths[key] = merge_raw([p[modality] for p in actual_parts if p['split'] == split], merge_root / (key + '.h5'))
                 data_files[paths[key]] = _file_record(paths[key])
         for split in ('train', 'validation'):
-            selected = [p for p in plan['parts'] if p['split'] == split]
+            selected = [p for p in actual_parts if p['split'] == split]
             import h5py
             import numpy as np
             with h5py.File(paths[split + '_rgb'], 'r') as file:
@@ -278,7 +444,8 @@ def run(plan):
             raise ValueError('collection source/config changed during execution')
         manifest = dict(schema='cube_fixed_collection_v1', cube_count=plan['cube_count'], mode=plan['mode'], raw_horizon=plan['raw_horizon'], paths=paths, collection_seed=plan['collection_seed'], train_episodes=plan['split_counts']['train'], validation_episodes=plan['split_counts']['validation'], split_counts=plan['split_counts'], collection_protocol=plan['collection_protocol'], producer_binding=dict(files=files, config_sha256=files[str(root / 'plan.json')], source_manifest_sha256=binding['source_manifest_sha256']), records=records, data_files=data_files, actual_exit_code=0, started_at=started, finished_at=datetime.now(timezone.utc).isoformat(), validation_limitations=['bounded smoke is not formal numerical reproduction' if plan['mode'] == 'smoke' else 'collection acceptance does not establish trained or evaluated policy quality', 'no training or downstream result established by collection'], shards_retained=True, protocol=plan['protocol'], seed_schedule=plan['seed_schedule'])
         _save(root / 'COLLECTION.json', manifest)
-        state.update(stage='complete', actual_exit_code=0, updated_at=manifest['finished_at'])
+        state.update(stage='complete', actual_exit_code=0, updated_at=manifest['finished_at'],
+                     collection_manifest_sha256=sha(root / 'COLLECTION.json'))
         _save(root / 'status.json', state)
         (root / 'actual_exit_code').write_text('0\n')
         return manifest

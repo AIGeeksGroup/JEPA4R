@@ -3,7 +3,7 @@
   "files": {
     "boundary.py": {
       "path": "bench/ogbench/downstream/vendor/boundary.py",
-      "sha256": "6c5557b04336bac6be3c0563dad1aa332f8c18afb10224de023277a6ff61c73e"
+      "sha256": "336b054f5081e00714637aabb14bbbeebfdf93f1220335a044be3f0894633313"
     },
     "core.py": {
       "path": "bench/ogbench/downstream/vendor/core.py",

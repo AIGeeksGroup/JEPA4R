@@ -80,7 +80,7 @@ class Frames(Dataset):
         return torch.stack([self.aug(img) for _ in range(self.V)])
 
 
-def main():
+def main(*, gate=None):
     ap = argparse.ArgumentParser()
     ap.add_argument('--task', required=True, help='current Cube training label')
     ap.add_argument('--dataset', required=True, help='explicit paired Cube RGB training view')
@@ -100,9 +100,13 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
     (out / 'config.json').write_text(json.dumps({'algo': 'lejepa', 'encoder': 'vit_hf tiny p14 224 + Linear(192,512)',
                                                  **vars(args)}, indent=1))
-    ds = Frames(args.dataset, args.V)
-    train = DataLoader(ds, batch_size=args.bs, shuffle=True, drop_last=True, num_workers=args.workers,
-                       persistent_workers=True, prefetch_factor=4)
+    if gate is None:
+        ds = Frames(args.dataset, args.V)
+        train = DataLoader(ds, batch_size=args.bs, shuffle=True, drop_last=True, num_workers=args.workers,
+                           persistent_workers=True, prefetch_factor=4)
+    else:
+        train = gate.loader(args)
+        ds = train.dataset
     net = Encoder(proj_dim=args.proj_dim).to('cuda')
     sigreg = SIGReg().to('cuda')
     opt = torch.optim.AdamW([{'params': net.parameters(), 'lr': args.lr, 'weight_decay': 5e-2}])
@@ -111,12 +115,16 @@ def main():
     s2 = CosineAnnealingLR(opt, T_max=total_steps - warmup_steps, eta_min=1e-3)
     scheduler = SequentialLR(opt, schedulers=[s1, s2], milestones=[warmup_steps])
     scaler = GradScaler(enabled=True)
+    start_epoch = 0 if gate is None else gate.attach(net, sigreg, opt, scheduler, scaler)
     print(f'{args.task}: {len(ds)} frames, {len(train)} steps per epoch, {args.epochs} epochs', flush=True)
     t0 = time.time()
-    for epoch in range(args.epochs):
+    for epoch in range(start_epoch, args.epochs):
         net.train()
-        for step, vs in enumerate(train):
-            with autocast('cuda', dtype=torch.bfloat16):
+        start_batch = 0 if gate is None else gate.next_batch_index(epoch)
+        for step, vs in enumerate(train, start=start_batch):
+            if gate is not None:
+                gate.before_step(net)
+            with autocast('cuda', dtype=torch.bfloat16) if gate is None else gate.autocast():
                 vs = vs.to('cuda', non_blocking=True)
                 emb, proj = net(vs)
                 inv_loss = (proj.mean(0) - proj).square().mean()
@@ -127,6 +135,9 @@ def main():
             scaler.step(opt)
             scaler.update()
             scheduler.step()
+            if gate is not None and gate.after_step(epoch, step, emb=emb, proj=proj,
+                    inv_loss=inv_loss, sigreg_loss=sigreg_loss, loss=loss):
+                return
             if args.max_steps and step + 1 >= args.max_steps:
                 print(f'smoke test: {step + 1} steps, {time.time() - t0:.1f}s, loss {loss.item():.4f}, peak GPU memory {torch.cuda.max_memory_allocated() / 2**30:.1f} GiB', flush=True)
                 return

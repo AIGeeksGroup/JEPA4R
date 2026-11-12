@@ -1,5 +1,7 @@
 """Observers around the original learners; no alternative loss or control policy."""
 import argparse
+import copy
+from contextlib import nullcontext
 from functools import partial
 import hashlib
 import importlib
@@ -93,6 +95,20 @@ class OptimizerObserver:
     def remove(self):
         for handle in self.handles:handle.remove()
 
+    def history_state_dict(self):
+        names=('before','count','gradient_steps','nonzero_gradient_steps','zero_gradient_steps',
+            'positive_lr_steps','learning_rates','role','require_nonzero_gradient','auxiliary_loss_weight','parameter_names')
+        return copy.deepcopy({name:getattr(self,name) for name in names})
+
+    def load_history_state_dict(self,state):
+        for name in ('role','require_nonzero_gradient','auxiliary_loss_weight','parameter_names'):
+            if state[name]!=getattr(self,name):raise ValueError('optimizer observer ownership differs on resume')
+        count=state['count']
+        if (type(count) is not int or count<0 or state['gradient_steps']!=count
+                or state['nonzero_gradient_steps']+state['zero_gradient_steps']!=count
+                or len(state['learning_rates'])!=count):raise ValueError('restored optimizer observer counters differ')
+        for name,value in state.items():setattr(self,name,copy.deepcopy(value))
+
 
 def observed_trainer_type(original_trainer,observer_factory):
     """Preserve Trainer's type contract used by the unchanged SPT Manager."""
@@ -169,12 +185,15 @@ def train(args):
     if args.output.exists():raise FileExistsError(args.output)
     if not torch.cuda.is_available():raise RuntimeError('WM training requires CUDA')
     if not OmegaConf.has_resolver('eval'):OmegaConf.register_new_resolver('eval',eval)
-    smoke=args.mode=='smoke'; counts={}; observed={'optimizer_observers':{}}; handles=[]
+    smoke=args.mode=='smoke'; counts={}; observed={'optimizer_observers':{}}; handles=[];restored_counts={};clip_records=[]
     original_trainer=pl.Trainer
     class Observer(pl.Callback):
         def __init__(self,model_config):self.model_config=model_config
         def on_fit_start(self,trainer,module):
             observed['model']=module.model
+            observed['seed_scopes']=dict(configured_seed=3072,explicit_manager_seed=3072,
+                actual_torch_initial_seed_at_fit_start=int(torch.initial_seed()))
+            if torch.initial_seed()!=3072:raise ValueError('guide WM training seed was not applied before fit')
             idm_enabled=idm_weight=None
             if args.model=='pldm':
                 saved=OmegaConf.load(args.output/'checkpoints/relocate/config.yaml')
@@ -197,50 +216,78 @@ def train(args):
     pl.Trainer=observed_trainer_type(original_trainer,Observer)
     os.environ.update(STABLEWM_HOME=str(args.output),SPT_CACHE_DIR=str(args.output/'_cache'))
     try:
-        if args.model in ('jepa4r','lewm'):
-            import hydra
-            native=importlib.import_module('train')
-            overrides=['data='+('adroit_relocate_pcd' if args.model=='jepa4r' else 'adroit_relocate'),
-                'model='+('lewm_pcd_dexart' if args.model=='jepa4r' else 'lewm'),
-                'subdir=relocate','output_model_name=relocate','wandb.enabled=false',
-                'num_workers='+str(0 if smoke else 16),'loader.persistent_workers='+str(not smoke).lower(),
-                'loader.prefetch_factor='+('null' if smoke else '2')]
-            if smoke:overrides+=['loader.batch_size=2','trainer.max_epochs=1','+trainer.limit_train_batches=2','+trainer.limit_val_batches=1']
-            os.environ['RELOCATE_'+('PCD' if args.model=='jepa4r' else 'RGB')+'_TRAIN']=str(args.data_root/('train_'+('pcd' if args.model=='jepa4r' else 'rgb')+'.h5'))
-            with hydra.initialize_config_dir(version_base=None,config_dir=str(ROOT/'config/train')):
-                cfg=hydra.compose(config_name='lewm',overrides=overrides)
-            spt.set(cache_dir=str(args.output/'_cache'),cleanup={'checkpoints':False,'logs':False,'callback_artifacts':False})
-            native.run.__wrapped__(cfg)
-        elif args.model=='pldm':
-            native=importlib.import_module('scripts.baselines.adroit.train_pldm')
-            native.execute(pldm_training_plan(args))
-        else:
-            native=importlib.import_module('scripts.baselines.adroit.train_lejepa')
-            learner=importlib.import_module('scripts.baselines.train_lejepa_relocate')
-            original_encoder=learner.Encoder;original_adamw=torch.optim.AdamW;original_loader=learner.DataLoader
-            def loader(*a,**kw):
-                result=original_loader(*a,**kw);observed['expected_updates']=len(result)*10;return result
-            def encoder(*a,**kw):
-                result=original_encoder(*a,**kw);observed['model']=result;return result
-            class AdamW(original_adamw):
-                def __init__(self,*a,**kw):
-                    super().__init__(*a,**kw);counts['0']=0
-                    def count(opt,argv,kwargs):
-                        counts['0']+=1
-                    handles.append(self.register_step_post_hook(count))
-                    observer=OptimizerObserver(self);observed['optimizer_observers']['0']=observer;handles.append(observer)
-            learner.Encoder=encoder;learner.DataLoader=loader;torch.optim.AdamW=AdamW
-            try:
-                parser=native.make_parser();parsed=parser.parse_args(['--task','adroit_relocate',
-                    '--dataset',str(args.data_root/'train_rgb.h5'),'--output',str(args.output),
-                    '--name','relocate','--mode','smoke' if smoke else 'formal','--workers','0' if smoke else '16'])
-                plan=native.build_plan(parsed,parser)
-                if smoke:plan['native_argv'][plan['native_argv'].index('--bs')+1]='128'
-                native.execute(plan)
-                if smoke:
-                    net=observed['model'];dest=args.output/'checkpoints/relocate'
-                    torch.save({name:getattr(net,name).state_dict() for name in ('backbone','head','proj')},dest/'weights_epoch_1.pt')
-            finally:learner.Encoder=original_encoder;learner.DataLoader=original_loader;torch.optim.AdamW=original_adamw
+        if getattr(args,'recovery',False) and args.model in ('jepa4r','lewm','pldm'):
+            from bench.relocate.wm_recovery import training_recovery
+            context=training_recovery(args,observed,counts,restored_counts)
+        else:context=nullcontext()
+        if getattr(args,'clip_evidence',False):
+            from bench.relocate.clip_evidence import observe_gradient_clipping
+            clip_context=observe_gradient_clipping(clip_records,model_provider=lambda:observed.get('model'))
+        else:clip_context=nullcontext()
+        with context,clip_context:
+            if args.model in ('jepa4r','lewm'):
+                import hydra
+                native=importlib.import_module('train')
+                overrides=['data='+('adroit_relocate_pcd' if args.model=='jepa4r' else 'adroit_relocate'),
+                    'model='+('lewm_pcd_dexart' if args.model=='jepa4r' else 'lewm'),
+                    'subdir=relocate','output_model_name=relocate','wandb.enabled=false',
+                    'num_workers='+str(0 if smoke else 16),'loader.persistent_workers='+str(not smoke).lower(),
+                    'loader.prefetch_factor='+('null' if smoke else '2')]
+                if smoke:overrides+=['loader.batch_size=2','trainer.max_epochs=1','+trainer.limit_train_batches=2','+trainer.limit_val_batches=1']
+                os.environ['RELOCATE_'+('PCD' if args.model=='jepa4r' else 'RGB')+'_TRAIN']=str(args.data_root/('train_'+('pcd' if args.model=='jepa4r' else 'rgb')+'.h5'))
+                with hydra.initialize_config_dir(version_base=None,config_dir=str(ROOT/'config/train')):
+                    cfg=hydra.compose(config_name='lewm',overrides=overrides)
+                spt.set(cache_dir=str(args.output/'_cache'),cleanup={'checkpoints':False,'logs':False,'callback_artifacts':False})
+                native.run.__wrapped__(cfg,manager_seed=int(cfg.seed))
+            elif args.model=='pldm':
+                native=importlib.import_module('scripts.baselines.adroit.train_pldm')
+                native.execute(pldm_training_plan(args))
+            else:
+                native=importlib.import_module('scripts.baselines.adroit.train_lejepa')
+                learner=importlib.import_module('scripts.baselines.train_lejepa_relocate')
+                original_encoder=learner.Encoder;original_adamw=torch.optim.AdamW;original_loader=learner.DataLoader
+                effective_loader=original_loader
+                gate=None
+                if getattr(args,'recovery',False):
+                    from bench.relocate.recovery import stateful_loader_class
+                    from bench.relocate.lejepa_recovery import LejepaRecovery
+                    effective_loader=stateful_loader_class(original_loader)
+                    def saved_observers():return {name:o.history_state_dict() for name,o in observed['optimizer_observers'].items()}
+                    def restore_observers(saved):
+                        if set(saved)!=set(observed['optimizer_observers']):raise ValueError('LeJEPA optimizer observer identity differs')
+                        for name,value in saved.items():
+                            observed['optimizer_observers'][name].load_history_state_dict(value)
+                            restored_counts[name]=int(value['count']);counts[name]=int(value['count'])
+                    gate=LejepaRecovery(args.output/'recovery',resume_from=args.resume_checkpoint,
+                        pause_after_updates=args.pause_after_batches,evidence_provider=saved_observers,evidence_restorer=restore_observers)
+                def loader(*a,**kw):
+                    result=effective_loader(*a,**kw);observed['expected_updates']=len(result)*10;return result
+                def encoder(*a,**kw):
+                    result=original_encoder(*a,**kw);observed['model']=result
+                    observed['seed_scopes']=dict(configured_seed=3072,
+                        actual_torch_initial_seed_after_model_construction=int(torch.initial_seed()))
+                    if torch.initial_seed()!=3072:raise ValueError('guide LeJEPA construction seed was not applied')
+                    return result
+                class AdamW(original_adamw):
+                    def __init__(self,*a,**kw):
+                        super().__init__(*a,**kw);counts['0']=0
+                        def count(opt,argv,kwargs):
+                            counts['0']+=1
+                        handles.append(self.register_step_post_hook(count))
+                        observer=OptimizerObserver(self);observed['optimizer_observers']['0']=observer;handles.append(observer)
+                learner.Encoder=encoder;learner.DataLoader=loader;torch.optim.AdamW=AdamW
+                try:
+                    parser=native.make_parser();parsed=parser.parse_args(['--task','adroit_relocate',
+                        '--dataset',str(args.data_root/'train_rgb.h5'),'--output',str(args.output),
+                        '--name','relocate','--mode','smoke' if smoke else 'formal','--workers','0' if smoke else '16'])
+                    plan=native.build_plan(parsed,parser)
+                    if smoke:plan['native_argv'][plan['native_argv'].index('--bs')+1]='128'
+                    if gate is None:native.execute(plan)
+                    else:native.execute(plan,gate=gate)
+                    if smoke:
+                        net=observed['model'];dest=args.output/'checkpoints/relocate'
+                        torch.save({name:getattr(net,name).state_dict() for name in ('backbone','head','proj')},dest/'weights_epoch_1.pt')
+                finally:learner.Encoder=original_encoder;learner.DataLoader=original_loader;torch.optim.AdamW=original_adamw
         if not counts or min(counts.values())<2:raise ValueError('fewer than two actual updates for a training optimizer')
         if smoke and any(v!=2 for v in counts.values()):raise ValueError('smoke optimizer count differs from two')
         if not smoke and any(v!=observed.get('expected_updates') for v in counts.values()):raise ValueError('formal optimizer count differs from native loader length times ten epochs')
@@ -257,6 +304,9 @@ def train(args):
         if not finite(state):raise ValueError('nonfinite saved state')
         receipt(args.output/'train.json',passed=True,actual_exit_code=0,optimizer_updates=min(representation.values()),
             per_optimizer_updates=counts,model=args.model,mode=args.mode,smoke_export_partial_epoch=smoke,
+            restored_optimizer_updates=restored_counts,process_optimizer_updates={k:v-restored_counts.get(k,0) for k,v in counts.items()},
+            seed_scopes=observed.get('seed_scopes'),
+            gradient_clip_events_process=clip_records,
             representation_optimizer_updates=representation,auxiliary_optimizer_updates=auxiliary,
             auxiliary_idm_contract=observed.get('auxiliary_idm_contract'),
             expected_optimizer_updates=2 if smoke else observed['expected_updates'],
@@ -264,6 +314,10 @@ def train(args):
             artifacts=[ckpt/'config.json',ckpt/f'weights_epoch_{epoch}.pt',args.data_root/'audit.json',
                 args.data_root/('train_pcd.h5' if args.model=='jepa4r' else 'train_rgb.h5')]+
                 ([ckpt/'config.yaml'] if (ckpt/'config.yaml').exists() else []))
+    except Exception as error:
+        from bench.relocate.recovery import RecoveryPause
+        if isinstance(error,RecoveryPause):raise SystemExit(75) from error
+        raise
     finally:
         pl.Trainer=original_trainer
         for handle in handles:handle.remove()
@@ -331,6 +385,7 @@ def bc(args):
     import torch
     import numpy as np
     from bench.relocate.adroit_data import receipt,sha
+    from bench.relocate.encoder_identity import encoder_digest,assert_encoder_unchanged
     import lewm_cortex
     import jepa_baselines
     import train_loop
@@ -345,9 +400,7 @@ def bc(args):
     if os.environ.get('ADROIT_VJEPA_ROOT'):jepa_baselines.VJEPA2_REPO=Path(os.environ['ADROIT_VJEPA_ROOT'])
     original_load={}; encoders=[]
     def digest(model):
-        h=hashlib.sha256()
-        for name,value in model.state_dict().items():h.update(name.encode());h.update(value.detach().cpu().contiguous().reshape(-1).view(torch.uint8).numpy().tobytes())
-        return h.hexdigest()
+        return encoder_digest(model)
     for module,name in ((lewm_cortex,'load_lewm'),(lewm_cortex,'load_lewm_pcd'),
         (jepa_baselines,'load_pldm'),(jepa_baselines,'load_lejepa'),(jepa_baselines,'load_visreg'),(jepa_baselines,'load_vjepa21')):
         original=getattr(module,name);original_load[(module,name)]=original
@@ -360,6 +413,55 @@ def bc(args):
             return result
         setattr(module,name,load)
     updates=[];rollouts=[];observers=[];original_adam=torch.optim.Adam;original_paths=train_loop.sample_paths
+    tail=args.entry_args[1:] if args.entry_args[:1]==['--'] else args.entry_args
+    epochs=int(next(x.split('=',1)[1] for x in tail if x.startswith('epochs=')))
+    recovery_enabled=getattr(args,'bc_recovery',False)
+    bc_controller=None;bc_identity=None;last_bc_model=[]
+    old_hydra_error=os.environ.get('HYDRA_FULL_ERROR')
+    bc_context=nullcontext(None)
+    if recovery_enabled:
+        from bench.relocate.bc_recovery import install_bc_recovery,RecoveryPause,FROZEN_EAI_SHA256
+        from bench.relocate.bc_caller_state import save_caller_state,load_caller_state
+        from bench.relocate import bc_caller_state,bc_recovery
+        from bench.relocate import encoder_identity
+        overrides=dict(x.split('=',1) for x in tail if '=' in x and not x.startswith('--'))
+        if epochs!=1 or overrides.get('num_demos')!='1' or overrides.get('bc_kwargs.batch_size')!='128':
+            raise ValueError('Native BC recovery requires its explicit one-demo one-epoch 128/72 smoke')
+        demos=Path(overrides['data_dir'])/'relocate-v0.pickle'
+        weight=args.checkpoint/f'weights_epoch_{args.epoch}.pt' if args.checkpoint.is_dir() else args.checkpoint
+        bc_identity=dict(model=dict(kind='original-EAI-BatchNormMLP',input_dim=WIDTHS[args.model],action_dim=30),
+            data=dict(demos_sha256=sha(demos),conversion_receipt_sha256=sha(demos.parents[1]/'report.json')),
+            config={k:v for k,v in overrides.items() if k not in ('data_dir','hydra.run.dir','job_name')},
+            split='official-BC-first-demo-smoke',action_dim=30,
+            encoder=dict(method=args.model,weights_sha256=sha(weight),epoch=args.epoch,
+                config_files={name:sha(args.checkpoint/name) for name in ('config.json','config.yaml')
+                    if args.checkpoint.is_dir() and (args.checkpoint/name).is_file()},
+                loader_sources=dict(lewm_cortex=sha(Path(lewm_cortex.__file__)),jepa_baselines=sha(Path(jepa_baselines.__file__)))),
+            source=dict(eai_train_loop_sha256=FROZEN_EAI_SHA256,adapter_sha256=sha(Path(__file__)),
+                caller_state_sha256=sha(Path(bc_caller_state.__file__)),recovery_sha256=sha(Path(bc_recovery.__file__)),
+                encoder_identity_sha256=sha(Path(encoder_identity.__file__))))
+        def recovery_event(event,live):
+            last_bc_model[:]=[live['policy'].model]
+            if event['kind']=='resume_loaded':
+                if len(observers)!=1 or event['epoch_records']:raise ValueError('Native bounded BC resume observer/epoch prefix differs')
+                opt=live['optimizer'];steps=sorted({float(s['step']) for s in opt.state.values() if 'step' in s})
+                saved=load_caller_state(args.bc_resume_checkpoint,identity=bc_identity,
+                    committed_updates=event['committed_updates'],model_sha256=parameter_digest(observers[0].parameters),adam_steps=steps)
+                observers[0].load_history_state_dict(saved['optimizer_observer'])
+                if observers[0].count!=event['committed_updates']:raise ValueError('BC caller observer history length differs')
+                updates.extend([1]*event['committed_updates'])
+        bc_context=install_bc_recovery(train_loop,bc_identity,args.output/'recovery',enabled=True,
+            resume_from=args.bc_resume_checkpoint,pause_after_updates=args.bc_pause_after_updates,observer=recovery_event)
+        os.environ['HYDRA_FULL_ERROR']='1'
+    def seal_caller():
+        if bc_controller is None:return None
+        if len(observers)!=1 or not last_bc_model or bc_controller.last_checkpoint is None:
+            raise ValueError('BC caller has no sealed original head checkpoint')
+        return save_caller_state(bc_controller.last_checkpoint,identity=bc_identity,
+            state=dict(optimizer_observer=observers[0].history_state_dict()),committed_updates=len(bc_controller.records),
+            model_sha256=parameter_digest(observers[0].parameters))
+    evaluation_epochs=[i for i in range(epochs) if (i>0 and i%5==0) or i==epochs-1]
+    policy_references=[];evaluated_policies=[]
     class Adam(original_adam):
         def __init__(self,*a,**kw):
             super().__init__(*a,**kw)
@@ -374,16 +476,31 @@ def bc(args):
         for path in paths:
             actions=path['actions']
             if actions.shape!=(200,30) or not np.isfinite(actions).all():raise ValueError('online action contract mismatch')
+        if getattr(args,'policy_evidence',False):
+            from bench.relocate.policy_evidence import write_policy_reference
+            policy=kw['policy'];index=len(policy_references)
+            policy_references.append(write_policy_reference(args.output/'policy_evidence',
+                f'round{index:03d}',policy,np.asarray(paths[0]['observations']),
+                epoch=evaluation_epochs[index],score=float(np.mean([np.sum(p['rewards']) for p in paths]))))
+            evaluated_policies.append(policy)
         rollouts.append(len(paths));return paths
     torch.optim.Adam=Adam;train_loop.sample_paths=sample_paths
-    tail=args.entry_args[1:] if args.entry_args[:1]==['--'] else args.entry_args
     sys.argv=[str(ROOT/'bench/cortexbench'/('run_adroit_bc3d.py' if args.model=='jepa4r' else 'run_bc.py')),
         *tail,'embedding='+selector]
     try:
-        runpy.run_path(sys.argv[0],run_name='__main__')
+        try:
+            with bc_context as bc_controller:runpy.run_path(sys.argv[0],run_name='__main__')
+        except BaseException as error:
+            if recovery_enabled and isinstance(error,RecoveryPause):
+                caller=seal_caller()
+                receipt(args.output/'pause.json',passed=True,actual_exit_code=75,phase='intentional_sealed_pause',
+                    committed_optimizer_updates=len(bc_controller.records),scope='original BC loop paused; not completed training',
+                    artifacts=[bc_controller.last_checkpoint,caller])
+                raise SystemExit(75) from error
+            raise
+        caller=seal_caller()
         metrics_path=args.output/'run/metrics.jsonl'
         metrics=[json.loads(line) for line in metrics_path.read_text().splitlines() if line.strip()]
-        epochs=int(next(x.split('=',1)[1] for x in tail if x.startswith('epochs=')))
         trajectories=int(next(x.split('=',1)[1] for x in tail if x.startswith('eval_num_traj=')))
         demos_count=int(next(x.split('=',1)[1] for x in tail if x.startswith('num_demos=')))
         batch_size=int(next(x.split('=',1)[1] for x in tail if x.startswith('bc_kwargs.batch_size=')))
@@ -391,19 +508,38 @@ def bc(args):
         summary=validate_metrics(metrics,epochs)
         if len(updates)!=expected_updates or len(rollouts)!=summary['evaluation_rounds'] or any(n!=trajectories for n in rollouts):
             raise ValueError('actual optimization or online rollout budget differs')
-        if not encoders or any(digest(model)!=before for model,before in encoders):raise ValueError('BC changed its frozen encoder')
+        if not encoders:raise ValueError('BC has no actual frozen encoder')
+        for model,before in encoders:assert_encoder_unchanged(model,before)
         optimization=[observer.report() for observer in observers]
         if len(optimization)!=1 or optimization[0]['hook_count']!=len(updates):raise ValueError('BC Adam state/hook count mismatch')
         policy=args.output/'run/policy/iterations/best_policy.pickle'
         demos=Path(next(x.split('=',1)[1] for x in tail if x.startswith('data_dir=')))/'relocate-v0.pickle'
         weight=args.checkpoint/f'weights_epoch_{args.epoch}.pt' if args.checkpoint.is_dir() else args.checkpoint
+        replay={};replay_artifacts=[]
+        if getattr(args,'policy_evidence',False):
+            from bench.relocate.policy_evidence import select_best_reference,verify_policy_reference
+            selected=select_best_reference(policy_references)
+            final_path=policy.with_name('final_policy.pickle')
+            with final_path.open('xb') as stream:pickle.dump(evaluated_policies[-1],stream,protocol=4)
+            with policy.open('rb') as stream:selected_policy=pickle.load(stream)
+            selected_policy.model.to('cpu');selected_policy.model.eval()
+            replay=dict(selected_reference=str(Path(selected['metadata_path']).relative_to(args.output)),
+                final_reference=str(Path(policy_references[-1]['metadata_path']).relative_to(args.output)),
+                selected_epoch=selected['epoch'],final_epoch=policy_references[-1]['epoch'],
+                selected_replay=verify_policy_reference(selected_policy,selected['metadata_path']))
+            replay_artifacts=[final_path,*[Path(r[k]) for r in policy_references for k in ('metadata_path','arrays_path')]]
         receipt(args.output/'report.json',passed=True,actual_exit_code=0,optimizer_updates=len(updates),
             expected_optimizer_updates=expected_updates,frozen_encoder_unchanged=True,rollouts=sum(rollouts),
             optimizer_evidence=optimization,frozen_encoder_sha256=[before for _,before in encoders],
-            frozen_source=frozen_source,
-            **summary,artifacts=[metrics_path,policy,demos,weight,demos.parents[1]/'report.json']+
+            frozen_source=frozen_source,policy_evidence=replay,
+            recovery=dict(enabled=True,checkpoint=str(bc_controller.last_checkpoint),caller_state=str(caller),
+                batch_records=bc_controller.records,epoch_records=bc_controller.epoch_records) if bc_controller is not None else dict(enabled=False),
+            **summary,artifacts=[metrics_path,policy,demos,weight,demos.parents[1]/'report.json']+replay_artifacts+
                 ([ROOT.parent/'DEPENDENCIES.json'] if args.model in ('visreg','vjepa') else [args.checkpoint/'config.json']))
     finally:
+        if recovery_enabled:
+            if old_hydra_error is None:os.environ.pop('HYDRA_FULL_ERROR',None)
+            else:os.environ['HYDRA_FULL_ERROR']=old_hydra_error
         torch.optim.Adam=original_adam;train_loop.sample_paths=original_paths
         for observer in observers:observer.remove()
         for (module,name),original in original_load.items():setattr(module,name,original)
@@ -421,8 +557,19 @@ def reload_policy(args):
     second.model.to('cpu');second.model.eval()
     with torch.no_grad():b=second.model(x)
     if a.shape!=(2,30) or not torch.isfinite(a).all() or not torch.equal(a,b):raise ValueError('saved BC head failed independent CPU reload')
+    replay={};extra=[]
+    if getattr(args,'policy_evidence',False):
+        from bench.relocate.policy_evidence import verify_policy_reference
+        references=json.loads((args.output/'report.json').read_text())['policy_evidence']
+        selected=args.output/references['selected_reference'];final=args.output/references['final_reference']
+        final_policy_path=path.with_name('final_policy.pickle')
+        with final_policy_path.open('rb') as stream:final_policy=pickle.load(stream)
+        final_policy.model.to('cpu');final_policy.model.eval()
+        replay=dict(selected=verify_policy_reference(first,selected),final=verify_policy_reference(final_policy,final))
+        extra=[final_policy_path,selected,final]
     receipt(args.output/'reload.json',passed=True,actual_exit_code=0,strict_reload=True,
-        scope='saved BC head CPU reload',input_dim=WIDTHS[args.model],output_dim=30,artifacts=[path,args.output/'report.json'])
+        scope='saved BC head CPU reload',input_dim=WIDTHS[args.model],output_dim=30,
+        policy_evidence=replay,artifacts=[path,args.output/'report.json']+extra)
 
 
 def main():
@@ -431,7 +578,21 @@ def main():
     parser.add_argument('--model',required=True,choices=tuple(WIDTHS));parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--data-root',type=Path);parser.add_argument('--mode',choices=('smoke','full'))
     parser.add_argument('--checkpoint',type=Path);parser.add_argument('--epoch',type=int,default=10)
+    parser.add_argument('--recovery',action='store_true',help='Explicit bounded original-loop full-state recovery; default off')
+    parser.add_argument('--clip-evidence',action='store_true',help='Read original gradient clipping return and post-clip norms without changing clipping')
+    parser.add_argument('--resume-checkpoint',type=Path)
+    parser.add_argument('--pause-after-batches',type=int)
+    parser.add_argument('--policy-evidence',action='store_true',help='Retain real policy inputs and compare the corresponding in-memory and independently loaded states')
+    parser.add_argument('--bc-recovery',action='store_true',help='Explicit original BC 128/72 smoke recovery; default off')
+    parser.add_argument('--bc-resume-checkpoint',type=Path)
+    parser.add_argument('--bc-pause-after-updates',type=int)
     args,tail=parser.parse_known_args();args.entry_args=tail;configure_runtime()
+    if (args.resume_checkpoint is not None or args.pause_after_batches is not None) and not args.recovery:parser.error('recovery checkpoint/pause requires --recovery')
+    if args.recovery and (args.stage!='train' or args.mode!='smoke' or args.model not in ('jepa4r','lewm','pldm','lejepa')):parser.error('recovery is an explicit bounded trainable-model smoke interface')
+    if args.pause_after_batches is not None and args.pause_after_batches!=1:parser.error('the two-batch recovery gate pauses after exactly one committed batch')
+    if (args.bc_resume_checkpoint is not None or args.bc_pause_after_updates is not None) and not args.bc_recovery:parser.error('BC checkpoint/pause requires --bc-recovery')
+    if args.bc_recovery and args.stage!='bc':parser.error('BC recovery is available only for the BC stage')
+    if args.bc_pause_after_updates is not None and args.bc_pause_after_updates!=1:parser.error('BC recovery pauses after exactly one committed update')
     {'train':train,'reload-wm':reload_wm,'bc':bc,'reload-policy':reload_policy}[args.stage](args)
 
 

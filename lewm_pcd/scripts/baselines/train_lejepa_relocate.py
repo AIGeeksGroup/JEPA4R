@@ -86,7 +86,15 @@ class MWFrames(Dataset):
         return torch.stack([self.aug(img) for _ in range(self.V)])
 
 
-def main():
+def initialize_training_seed(seed=None):
+    if seed is None:
+        torch.manual_seed(0)
+    else:
+        from lightning import seed_everything
+        seed_everything(int(seed),workers=True)
+
+
+def main(*, gate=None):
     ap = argparse.ArgumentParser()
     ap.add_argument('--task', choices=('adroit_relocate',), default='adroit_relocate')
     ap.add_argument('--dataset', required=True, help='Final Relocate RGB HDF5')
@@ -99,8 +107,9 @@ def main():
     ap.add_argument('--proj-dim', type=int, default=16)
     ap.add_argument('--workers', type=int, default=8)
     ap.add_argument('--max-steps', type=int, default=0, help='smoke test: stop after this many steps, no checkpoint (0 = no limit)')
+    ap.add_argument('--seed',type=int,default=None,help='Explicit guide seed; omission retains legacy Torch0 initialization')
     args = ap.parse_args()
-    torch.manual_seed(0)
+    initialize_training_seed(args.seed)
 
     out = Path(os.environ['STABLEWM_HOME']) / 'checkpoints' / (args.name or f'lejepa_{args.task}')
     out.mkdir(parents=True, exist_ok=True)
@@ -117,11 +126,15 @@ def main():
     s2 = CosineAnnealingLR(opt, T_max=total_steps - warmup_steps, eta_min=1e-3)
     scheduler = SequentialLR(opt, schedulers=[s1, s2], milestones=[warmup_steps])
     scaler = GradScaler(enabled=True)
+    start_epoch = 0 if gate is None else gate.attach(net, sigreg, opt, scheduler, scaler, train, args)
     print(f'{args.task}: {len(ds)} frames, {len(train)} steps per epoch, {args.epochs} epochs', flush=True)
     t0 = time.time()
-    for epoch in range(args.epochs):
+    for epoch in range(start_epoch, args.epochs):
         net.train()
-        for step, vs in enumerate(train):
+        start_batch = 0 if gate is None else gate.next_batch_index(epoch)
+        for step, vs in enumerate(train, start=start_batch):
+            if gate is not None:
+                gate.before_input(vs)
             with autocast('cuda', dtype=torch.bfloat16):
                 vs = vs.to('cuda', non_blocking=True)
                 emb, proj = net(vs)
@@ -133,6 +146,8 @@ def main():
             scaler.step(opt)
             scaler.update()
             scheduler.step()
+            if gate is not None:
+                gate.after_step(epoch, step, loss=loss)
             if args.max_steps and step + 1 >= args.max_steps:
                 print(f'smoke test: {step + 1} steps, {time.time() - t0:.1f}s, loss {loss.item():.4f}, peak GPU memory {torch.cuda.max_memory_allocated() / 2**30:.1f} GiB', flush=True)
                 return

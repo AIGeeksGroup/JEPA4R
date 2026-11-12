@@ -27,6 +27,8 @@ def group_contract(group: str) -> dict:
     result = {'cube_count': cubes, 'state_dim': cfg.get('state_dim', 19 + 9 * cubes), 'current_dim': cfg.get('current_dim', 211), 'goal_dim': cfg.get('goal_dim', 192 + 3 * cubes), 'max_episode_steps': cfg.get('max_episode_steps', 500), 'mode': cfg['mode']}
     if cfg.get('record_capture_receipts', False):
         result['record_capture_receipts'] = True
+    if cfg.get('record_state_trace', False):
+        result['record_state_trace'] = True
     if cfg.get('pcd_crop_box') is not None:
         result['pcd_crop_box'] = cfg['pcd_crop_box']
     return result
@@ -182,6 +184,7 @@ class OnlineVisualEnv:
         self.last_info = None
         self.frame = None
         self.capture_proof = None
+        self.state_trace = None
 
     def capture(self, rgb, phase):
         contract = group_contract(self.group)
@@ -240,10 +243,16 @@ class OnlineVisualEnv:
         self.goal_encoder_calls = 0
         self.goal_raw_sha256 = hashlib.sha256(np.ascontiguousarray(goal_raw).tobytes()).hexdigest()
         self.encoder_calls_at_reset = self.encoder.calls
+        if group_contract(self.group).get('record_state_trace', False):
+            from ..native_trace import NativeTrace
+            self.state_trace = NativeTrace()
+            self.state_trace.reset(self.env.unwrapped, observation, info['goal'])
         return (observation, info)
 
     def step(self, action):
         observation, reward, terminated, truncated, info = self.env.step(action)
+        if self.state_trace is not None:
+            self.state_trace.step(self.env.unwrapped, action, observation, reward, terminated, truncated, info)
         self.last_info = info
         return (observation, reward, terminated, truncated, info)
 
@@ -284,7 +293,10 @@ class OnlineGCIQLPolicy:
         self.current_latents.append(latent)
         self.current_sha256.append(hashlib.sha256(np.ascontiguousarray(raw).tobytes()).hexdigest())
         self.input_contracts.append({'current_dim': int(current.shape[0]), 'goal_dim': int(goal_input.shape[0]), 'current_finite': bool(np.isfinite(current).all()), 'goal_finite': bool(np.isfinite(goal_input).all())})
-        return self.agent.sample_actions(observations=current, goals=goal_input, seed=seed, temperature=temperature)
+        action = self.agent.sample_actions(observations=current, goals=goal_input, seed=seed, temperature=temperature)
+        if self.env.state_trace is not None:
+            self.env.state_trace.policy(latent, goal_latent, current, goal_input, action)
+        return action
 
 def run_episode(group: str, agent, encoder: OnlineEncoder, task: int, index: int, output: Path):
     import jax
@@ -331,6 +343,13 @@ def run_episode(group: str, agent, encoder: OnlineEncoder, task: int, index: int
         result = {'actual_exit_code': 0, 'group_id': group, 'task_id': task, 'episode_index': index, 'seed': seed, 'steps': len(actions), 'success': int(stats['success']), 'online_encoder_calls': encoder.calls - start_encoder_calls, 'goal_online_encoder_calls': policy_env.goal_encoder_calls, 'encoding_protocol': ENCODING_PROTOCOL, 'current_goal_contract': {'current_dim': contract['current_dim'], 'goal_dim': contract['goal_dim'], 'synthetic_zero_padding': False}, 'camera': camera, 'goal_capture_proof': proof, 'goal_raw_sha256': policy_env.goal_raw_sha256, 'policy_input_contracts': policy.input_contracts, 'current_raw_sha256': policy.current_sha256, 'original_evaluate_reused': True, 'extra_policy_warmup': 0, 'evaluator_sha256': expected_eval, 'temperature': 0.0, 'gaussian_noise': None, 'elapsed_seconds': time.time() - started}
         output.mkdir(parents=True, exist_ok=False)
         np.savez_compressed(output / 'steps.npz', actions=actions, rewards=rewards, successes=successes)
+        if policy_env.state_trace is not None:
+            trace = policy_env.state_trace.arrays()
+            if not np.array_equal(trace['executed_actions'], actions):
+                raise ValueError('Native trace and official evaluator executed actions differ')
+            np.savez_compressed(output / 'trajectory.npz', **trace)
+            result['state_trace_sha256'] = sha(output / 'trajectory.npz')
+            result['state_trace_observations'] = len(actions) + 1
         atomic_json(output / 'result.json', result)
         (output / 'attempt_exit_code').write_text('0\n')
         return result

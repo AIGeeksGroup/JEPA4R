@@ -15,11 +15,15 @@ ROOT=Path(__file__).resolve().parents[1]
 EXPERT=(Path(os.environ['RH56_EXPERT_ROOT']).expanduser().resolve()
         if os.environ.get('RH56_EXPERT_ROOT') else None)
 BASELINE=Path(os.environ.get('RH56_BASELINE_ROOT',ROOT)).expanduser().resolve()
+LAST_BUNDLE_IDENTITY=None
 
 def expert_files():
     """Require the external native bundle rather than silently selecting another body."""
     if EXPERT is None:
         raise ValueError('provide RH56_EXPERT_ROOT for the native state56/action12 expert bundle')
+    from bench.relocate.asset_identity import verify_rh56_bundle
+    global LAST_BUNDLE_IDENTITY
+    LAST_BUNDLE_IDENTITY=verify_rh56_bundle(EXPERT,dependencies_path=ROOT.parent/'DEPENDENCIES.json')
     paths={name:EXPERT/name for name in ('env.py','ppo.py','experts/relocate_expert.pt')}
     for path in paths.values():
         if not path.is_file():raise FileNotFoundError(f'missing RH56 expert artifact: {path}')
@@ -39,6 +43,7 @@ class NativeBridge:
     def __init__(self,seed,render=True):
         if mujoco.__version__!='3.12.0':raise RuntimeError('frozen expert requires MuJoCo 3.12.0')
         expert_files()
+        self.bundle_identity=LAST_BUNDLE_IDENTITY
         sys.path.insert(0,str(EXPERT))
         bundle=importlib.import_module('env')
         if Path(bundle.__file__).resolve()!= (EXPERT/'env.py').resolve():raise RuntimeError('wrong expert env module')

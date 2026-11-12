@@ -82,5 +82,16 @@
       "filename": "vjepa2_1_vitb_dist_vitG_384.pt",
       "official_url": "https://dl.fbaipublicfiles.com/vjepa2/vjepa2_1_vitb_dist_vitG_384.pt"
     }
+  },
+  "rh56_native_bundle": {
+    "manifest": "provenance/assets/rh56_native_bundle_v1.json",
+    "manifest_sha256": "4f8036bba2d72ea1e6e895a4a45f6fb2c664ef2530ca6c1c0c799e6460a81372",
+    "schema": "jepa4r-rh56-native-trusted-bundle-v1",
+    "file_count": 91,
+    "archive_filename": "RH56_TRUSTED_BUNDLE_v1.tar.gz",
+    "archive_sha256": "caa43eaa80d5996f662d097ab7dd723c9673502898d5b2e8c02f16a097c3b3d0",
+    "acquisition": "Use the retained external native bundle archive or an identical extracted directory. Manifest provenance paths refer to evidence inside that archive. No upstream Git commit is asserted.",
+    "baseline_smoke_commit": "cee6ae430ee942aa0ef8675f62027508fff80415",
+    "expected_hashes_source": "retained old producer map SHA256 a8fb8848bfd7deb49d40fa22de7211faae0f9e2515342b951d82d9ea941c0bd5"
   }
 }

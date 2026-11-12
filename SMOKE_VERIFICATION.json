@@ -1,10 +1,122 @@
 {
-  "schema": "jepa4r_integrated_smoke_verification_v1",
-  "status": "not_run",
+  "schema": "jepa4r_integrated_smoke_verification_v2",
+  "status": "bounded_checks_completed_with_explicit_historical_qualifications",
   "integration_regression_passed": false,
-  "scope": "Original independent branch smoke records are retained as baseline evidence; they do not assert acceptance of this composed source tree.",
+  "strict_whole_guide_passed": false,
+  "verdict_reason": "No unconditional whole-guide certificate: exact historical config identity and original-production-protocol limitations remain. This is not a new full reproduction.",
   "baselines": {
     "cube": "provenance/baselines/cube/SMOKE_VERIFICATION.json",
     "adroit": "provenance/baselines/adroit/SMOKE_VERIFICATION.json"
+  },
+  "source_scope": {
+    "scientific_producers": "Immutable C3 and their recorded original R0 snapshots; never relabelled.",
+    "C3_freeze_sha256": "264343f331d1534e8608729e967e106428ea43459f6bfcb75d3840668c4e8143",
+    "C4_delta": "Two validation/recovery guard fixes and their tests only.",
+    "unchanged_C3_files": 614,
+    "new_model_GPU_or_physics_calls_for_C4": 0
+  },
+  "verified_bounded_checks": {
+    "G1": "Actual CUDA/BF16/JAX/EGL and imports verified in separate pinned environments.",
+    "D_M_T_E": "Existing bounded per-gate producer/consumer records retained outside source. No full training or new formal SR.",
+    "Cube24_formal_fixed_input_cells": 24,
+    "Cube24_main_encoder_calls": 192,
+    "Cube24_policy_actions": 144,
+    "Cube24_complete_numeric_elements_exact": 75237796,
+    "Cube24_full_policy_numeric_leaves_per_role": 3672,
+    "independent_formal_success_replays": {
+      "Cube1": {
+        "old_steps": 38,
+        "new_steps": 38,
+        "success": true,
+        "RGB_exception": "Only the specifically user-approved four auxiliary channels; actual PCD/NN/actions/physics/key arrays exact."
+      },
+      "Native_LeWM": {
+        "old_steps": 200,
+        "new_steps": 200,
+        "goal_steps_each": 35,
+        "all_trace_arrays_exact": true
+      },
+      "RH56_JEPA4R": {
+        "old_steps": 200,
+        "new_steps": 200,
+        "goal_steps_each": 140,
+        "overload": false,
+        "all_trace_arrays_and_scalars_exact": true
+      }
+    },
+    "original_R6_Cube_events_reaggregated": 6000,
+    "original_R6_BC_rounds_reaggregated": 480,
+    "reference_model_policy_asset_cells_available": 32,
+    "C4_guard_tests_passed": 52,
+    "independent_implementation_findings_found": 2,
+    "independent_implementation_findings_fixed": 2,
+    "known_unfixed_implementation_findings": 0
+  },
+  "qualifications": [
+    "Cube2 JEPA4R/G06 and LeWM/G05 original full argv/exit, WM and 1M manifest-policy bindings are verified; exact historical training config byte-SHA lacks an independent frozen pin.",
+    "Native Oct4 JEPA4R formal target-site point protocol is not certified as the current FinalVil visible-point online protocol. Formal weights/three heads were compared on shared current real history only.",
+    "Formal Cube24 fixed inputs compare f437 and C3 on each original formal WM/1M policy. The historical encoder_py312.FrozenPLDM production path was not independently rerun; derived invocation descriptors are labelled.",
+    "Formal fixed-input histories are shared true histories, not each saved policy own historical online trajectory. The three independent controller implementations have separate selected success replays.",
+    "Old VISReg Cube1 and old JEPA Cube2 first-segment after-state observations remain absent where originally unrecorded. Conditional unchanged-implementation/frozen-buffer reuse is separate from observed boundaries.",
+    "Full-data future runtime-derived statistics and a new complete paper training/SR reproduction were not executed under the smoke-only budget.",
+    "Original saved BC policy identity and logged highest-return event are separate; a historical save-event-to-file epoch binding is not invented."
+  ],
+  "user_exceptions": "Only the already approved frozen RGB trajectories are accepted separately; original strict failures, default tolerances, and generic comparators remain unchanged.",
+  "full_training_or_new_Native250_performed": false,
+  "GitHub_push_performed": false,
+  "main_merge_performed": false,
+  "evidence": {
+    "C3_source_freeze": {
+      "external_artifact_id": "source_candidate_v3/SOURCE_FREEZE.json",
+      "sha256": "264343f331d1534e8608729e967e106428ea43459f6bfcb75d3840668c4e8143"
+    },
+    "C4_guard_scope_and_scientific_reuse": {
+      "external_artifact_id": "C4_GUARD_SCOPE_AND_C3_SCIENTIFIC_REUSE_v1.json",
+      "sha256": "be6b6ad896fc1cb92a4582d32db272b2582794ed1c1e208416b0b2093443f814"
+    },
+    "C4_guard_RED_GREEN": {
+      "external_artifact_id": "C4_collection_input_guard_v1/WORKFLOW_FULL_CONTROL.stdout.json",
+      "sha256": "19f7fddf9032fe01a034097f8f65bb82033a998eb73d40dfc4c2463d9071c466"
+    },
+    "independent_review_and_fix_handoff": {
+      "external_artifact_id": "reviews/FINAL_FRESH_SOURCE_REVIEW_v1/HANDOFF_C4.md",
+      "sha256": "f5253f882f06dd8940aacdd1d4c99e2c074aefb24792da4addf56167168dd1e7"
+    },
+    "formal_Cube24_fixed_input": {
+      "external_artifact_id": "CUBE24_FORMAL_FIXED_INPUT_E4_v2/FINAL_CLOSED_EVIDENCE_v1/FORMAL24_FIXED_INPUT_ACCEPTANCE_v1.json",
+      "sha256": "5b1d4ae272b08dc73571f8a5df9f0223fa9af95ac91fedcf7b586678ee018b4e"
+    },
+    "formal_Cube24_final_pin_check": {
+      "external_artifact_id": "CUBE24_FORMAL_FIXED_INPUT_E4_v2/FINAL_CLOSED_EVIDENCE_v1/D_FINAL_PIN_BINDING_RECHECK_v1.json",
+      "sha256": "514fbd8426e4591c5b0533c1fd964e0090ee2316aaa4e65ceea0c8216cf6bce2"
+    },
+    "formal_Cube1_user_scoped_acceptance": {
+      "external_artifact_id": "reviews/CUBE1_E4_SCOPED_ACCEPTANCE_OLD_FALSE_NEW_FALSE_v1.json",
+      "sha256": "fe75c2af4edb9597dc0ea80ae2ff7eca41283f01df34bfa50c794845ebe0e3ca"
+    },
+    "formal_Native_LeWM_exact_success": {
+      "external_artifact_id": "D_NATIVE_FORMAL_CAS_VERIFIED_v1.json",
+      "sha256": "23e4feb6909e45f6c0bd7ca565e47a22e279c973b6d532d07748b198a9c159b5"
+    },
+    "formal_RH56_exact_success": {
+      "external_artifact_id": "RH_FORMAL_E4_NEW_CPU_PREP_v3/FINAL_HANDOFF_RECEIPT_v1.json",
+      "sha256": "164e0dbd91a293ee9a8da7e32ff30863745f4163d22bd9c293e6d6f043727a13"
+    },
+    "original_R6_all32": {
+      "external_artifact_id": "FINAL_R6_32CELL_RECOMPUTATION_v2/R6_ALL32_ORIGINAL_RESULTS_v2.json",
+      "sha256": "6764f0ec9d767a7e9780d9ca78e90f6a5bc5e77357840ecb9c51492d7455e4f2"
+    },
+    "R6_original_raw_preservation": {
+      "external_artifact_id": "R6_CUBE22_ORIGINAL_EVENTS_v1/raw_backup_v1/RAW_BACKUP_FINAL_ACCEPTANCE_v1.json",
+      "sha256": "55ffb9c18d030816455289114889bdb00fc4db64a4902d144366911fa7e84882"
+    },
+    "reference_asset_availability32": {
+      "external_artifact_id": "reference_availability_32_and_R6_CPU_v1/ORIGINAL_REFERENCE_32_AVAILABILITY_OVERLAY_v1.json",
+      "sha256": "abd481ebcc4313b09d461e818fc7c24cc4ba7aa30bd6b01129d4e7e83500a304"
+    },
+    "RGB_D3_segmented_handoff": {
+      "external_artifact_id": "RGB_D3_FINAL_HANDOFF_v1/RGB_D3_FINAL_SCOPE_RECEIPT_v1.json",
+      "sha256": "9c8888a9d657d6332e8a64d960ef56a07aa6f020ab0ec675cf18d8aff62981d1"
+    }
   }
 }

@@ -125,8 +125,8 @@ def rgb_demo(demo,env,capture):
         np.testing.assert_allclose(reward,demo['rewards'][t],atol=1e-6,rtol=0)
         if bool(info['goal_achieved'])!=bool(demo['env_infos']['goal_achieved'][t]):raise ValueError('official success replay differs')
     pixels=np.asarray(frames)
-    result=dict(demo,images=pixels,observations=pixels)
-    for key in set(demo)-{'images','observations'}:
+    result=dict(demo,images=pixels)
+    for key in set(demo)-{'images'}:
         if pickle.dumps(result[key],protocol=4)!=pickle.dumps(demo[key],protocol=4):raise ValueError('official field changed: '+key)
     return result
 

@@ -24,6 +24,8 @@ from rh56_adapter._runtime import (RUNTIME_HELPERS_SHA256, atomic_json, file_sha
 
 class EpisodePartition:
     def __init__(self, dataset, manifest):
+        from rh56_adapter.input_identity import validate_episode_producers
+        self.producer_binding = validate_episode_producers(dataset, manifest)
         records = manifest['episodes']
         n = len(dataset.lengths)
         if len(records) != n or sorted(r['episode_index'] for r in records) != list(range(n)):
@@ -58,6 +60,7 @@ class EpisodePartition:
         return dict(episode_ids=self.episode_ids, seeds=self.seeds,
                     clips={k: len(v) for k, v in self.clip_indices.items()},
                     rows={k: sum(hi - lo for lo, hi in v) for k, v in self.rows.items()},
+                    producer_binding=self.producer_binding,
                     policy='episode-disjoint; test excluded; train-only normalization')
 
 
@@ -274,10 +277,19 @@ def main(argv=None):
                         help='Experimental RGB CUDA only, default off; prior full-model CPU/GPU numerical gate failed')
     parser.add_argument('--seed', type=int, default=3072)
     parser.add_argument('--resume', action='store_true', help='Experimental: only this output sealed checkpoint; bit-exact continuation unverified; not old standalone receipts')
+    parser.add_argument('--recovery', action='store_true', help='Explicit bounded workers0 complete-state continuation; default off')
+    parser.add_argument('--resume-checkpoint', type=Path)
+    parser.add_argument('--pause-after-batches', type=int)
     args = parser.parse_args(argv)
     if args.uint8_gpu_preprocess and (args.route != 'rgb' or args.device != 'cuda'):
         parser.error('--uint8-gpu-preprocess requires --route rgb --device cuda')
     budget = resolve_budget(args.mode, args.batch_size, args.workers, args.prefetch_factor)
+    if (args.resume_checkpoint is not None or args.pause_after_batches is not None) and not args.recovery:
+        parser.error('bounded checkpoint/pause requires --recovery')
+    if args.recovery and (args.mode == 'formal' or args.resume or budget['workers'] != 0 or args.seed != 3072 or args.uint8_gpu_preprocess):
+        parser.error('bounded recovery requires smoke/profile, workers0, guide3072, original preprocessing and a fresh phase')
+    if args.pause_after_batches is not None and args.pause_after_batches != 1:
+        parser.error('two-step bounded recovery pauses after exactly one real batch')
     if args.resume and args.mode != 'formal':
         raise ValueError('resume is only supported for formal mode')
     out = Path(args.output).resolve()
@@ -353,7 +365,7 @@ def main(argv=None):
             cfg.trainer.precision = 'bf16-mixed' if args.device == 'cuda' else '32-true'
             cfg.trainer.enable_progress_bar = False
         identity = dict(mode=args.mode, route=args.route, seed=args.seed, device=args.device,
-                        seed_scope='cfg/data/shim startup seed; baseline Manager default retained',
+                        seed_scope='explicit cfg/data/construction/Manager guide seed',
                         budget=budget, dataset=str(Path(args.dataset).resolve()),
                         dataset_sha256=sha(args.dataset), manifest_sha256=sha(args.manifest),
                         adapter_sha256=sha(__file__), runtime_helpers_sha256=RUNTIME_HELPERS_SHA256,
@@ -363,6 +375,9 @@ def main(argv=None):
                         torch_version=torch.__version__, cuda_version=torch.version.cuda,
                         spt_version=getattr(spt, '__version__', None))
         identity['image_preprocessing'] = 'uint8_gpu' if args.uint8_gpu_preprocess else 'original_cpu'
+        if args.recovery:
+            from rh56_adapter import wm_recovery
+            identity['bounded_recovery'] = dict(enabled=True,helper_sha256=sha(wm_recovery.__file__))
         if args.uint8_gpu_preprocess:
             identity['image_preprocessing_sha256'] = sha(Path(__file__).with_name('uint8_gpu.py'))
         resume_receipt = None; resume_checkpoint = None; start_step = 0
@@ -390,6 +405,9 @@ def main(argv=None):
             gradient_checks=0, train_batches=0, val_batches=0, pre_step_lrs=[],
             train_loss=None, epochs=[], epoch_loss_means=[], epoch_validation_losses=[]))
         capture = {}; last_progress = [0.]
+        recovery_evidence = None
+        if args.recovery:
+            recovery_evidence = wm_recovery.EvidenceState(evidence,capture,out)
         gradient_interval = 100 if args.mode == 'formal' else 1
         metrics = (out / 'metrics.jsonl').open('a' if args.resume else 'x', encoding='utf-8')
         def log(row):
@@ -403,6 +421,9 @@ def main(argv=None):
             random.setstate(saved['python']); np.random.set_state(saved['numpy']); torch.set_rng_state(saved['torch'])
             if saved['cuda'] is not None and torch.cuda.is_available():torch.cuda.set_rng_state_all(saved['cuda'])
         class Evidence(original_callback):
+            def __init__(self,*a,**kw):
+                super().__init__(*a,**kw)
+                capture['evidence_callback'] = self
             def on_load_checkpoint(self, trainer, pl_module, checkpoint):
                 require_same_identity(identity, checkpoint.get('rh56_run_identity'))
                 self.loaded_rng = checkpoint.get('rh56_rng_state')
@@ -416,7 +437,8 @@ def main(argv=None):
                 evidence['seed_scopes'] = dict(configured_seed=int(cfg.seed),
                     data_generator_seed=int(cfg.seed),shim_startup_torch_seed=args.seed,
                     actual_torch_initial_seed_at_fit_start=int(torch.initial_seed()),
-                    baseline_manager_seed_override=False)
+                    explicit_manager_seed=int(args.seed))
+                if int(torch.initial_seed())!=int(args.seed):raise RuntimeError('guide WM Manager seed was not applied')
                 capture['initial'] = {n: p.detach().cpu().clone() for n, p in pl_module.model.named_parameters()}
                 capture['fit_started'] = time.perf_counter()
                 atomic_json(out/'data_boundary.json',dict(split=audit.partition.receipt(),normalizers=audit.normalizers,
@@ -431,8 +453,11 @@ def main(argv=None):
                     log(dict(event='resume_rng_restored', global_step=int(trainer.global_step),
                              loader_restored_before_construction=audit.train_loader_generator_restored))
             def on_train_epoch_start(self, trainer, pl_module):
-                self.epoch_sum = 0.; self.epoch_batches = 0
-                self.val_sum = 0.; self.val_batches = 0
+                capture['epoch_index'] = int(trainer.current_epoch)
+                restored = capture.pop('restored_epoch_progress',None) if args.recovery else None
+                if restored is None or not wm_recovery.restore_epoch_progress(self,restored,int(trainer.current_epoch)):
+                    self.epoch_sum = 0.; self.epoch_batches = 0
+                    self.val_sum = 0.; self.val_batches = 0
                 log(dict(event='epoch_started', epoch=int(trainer.current_epoch)+1, global_step=int(trainer.global_step)))
             def on_before_optimizer_step(self, trainer, pl_module, optimizer):
                 step = int(trainer.global_step)
@@ -448,7 +473,7 @@ def main(argv=None):
                 if not torch.isfinite(loss).all():raise RuntimeError('nonfinite training loss')
                 value = float(loss.detach().cpu()); evidence['train_batches'] += 1
                 evidence['train_loss'] = value; self.epoch_sum += value; self.epoch_batches += 1
-                if batch_idx == 0:
+                if batch_idx == 0 and (not args.recovery or 'batch' not in capture):
                     # A small real input probe avoids replaying a formal 128x4 batch on one CPU thread.
                     capture['batch'] = capture_training_batch(batch)
                     torch.save(capture['batch'], out / 'real_training_batch.pt')
@@ -489,6 +514,7 @@ def main(argv=None):
                 evidence['fit_wall_seconds'] = time.perf_counter()-capture['fit_started']
                 trainer.save_checkpoint(str(out/'trainer_final.ckpt'))
         def manager(*manager_args, **manager_kwargs):
+            manager_kwargs['seed'] = int(args.seed)
             if resume_checkpoint is not None:manager_kwargs['ckpt_path'] = str(resume_checkpoint)
             return original_manager(*manager_args, **manager_kwargs)
         state['phase']='training';write_state()
@@ -496,7 +522,13 @@ def main(argv=None):
         if not verification_only:
             with temporary_bindings((train, 'SaveCkptCallback', Evidence),
                                     (train.spt, 'Manager', manager)):
-                with install_episode_split(train,args.dataset,manifest,
+                from contextlib import nullcontext
+                recovery_context = (wm_recovery.training_context(train,
+                    lambda:wm_recovery.recovery_identity(args,cfg,identity),out/'recovery',seed=args.seed,
+                    pause_after_batches=args.pause_after_batches,resume_checkpoint=args.resume_checkpoint,
+                    evidence_provider=recovery_evidence.state_dict,evidence_restorer=recovery_evidence.load_state_dict)
+                    if args.recovery else nullcontext())
+                with recovery_context,install_episode_split(train,args.dataset,manifest,
                         generator_state=restored_rng['train_loader_generator'] if restored_rng else None,
                         gpu_image_preprocess=args.uint8_gpu_preprocess) as audit:
                     train.run.__wrapped__(cfg)
@@ -575,6 +607,8 @@ def main(argv=None):
                     script_sha256=identity['adapter_sha256'],runtime_helpers_sha256=RUNTIME_HELPERS_SHA256,
                     baseline_tree_sha256=identity['baseline_tree_sha256'],
                     baseline_fingerprint_scope=BASELINE_FINGERPRINT_SCOPE,
+                    bounded_recovery=dict(enabled=args.recovery,resume_checkpoint=str(args.resume_checkpoint) if args.resume_checkpoint else None,
+                                          final_checkpoint=str(out/'recovery/final.ckpt') if args.recovery else None),
                     train_py_sha256=sha(baseline/'train.py'),utils_py_sha256=sha(baseline/'utils.py'),
                     gradient_check_interval=gradient_interval,resume_used=args.resume,verification_only=verification_only)
         (out/'resolved_config.yaml').write_text(OmegaConf.to_yaml(cfg,resolve=True),encoding='utf-8')
@@ -582,7 +616,14 @@ def main(argv=None):
         state.update(phase='complete',completed=1,completed_epochs=completed,exit_code=0);write_state()
         print(json.dumps(result,indent=2),flush=True)
         return result
-    except BaseException:
+    except BaseException as error:
+        if args.recovery:
+            from bench.relocate.recovery import RecoveryPause
+            if isinstance(error,RecoveryPause):
+                state.update(phase='intentional_sealed_pause',completed=0,exit_code=75,
+                             checkpoint=str(error),scope='original RH56 update sealed; independent continuation pending')
+                write_state()
+                raise SystemExit(75) from error
         state.update(phase='failed',failures=state.get('failures',0)+1,exit_code=1,error=traceback.format_exc());write_state()
         raise
     finally:

@@ -144,7 +144,11 @@ class TrainingBoundaryTests(unittest.TestCase):
             train = SimpleNamespace(get_column_normalizer=original_normalizer,
                 spt=SimpleNamespace(data=SimpleNamespace(random_split=original_split)))
             with self.assertRaisesRegex(RuntimeError, 'expected boundary interruption'):
-                with self.wm.install_episode_split(train, dataset.h5_path, manifest,
+                # This test isolates hook restoration using an in-memory reader.
+                # Real producer/file contracts have separate red/green tests.
+                with mock.patch('rh56_adapter.input_identity.validate_episode_producers',
+                        return_value={'explicit_synthetic_hook_fixture': True}), \
+                        self.wm.install_episode_split(train, dataset.h5_path, manifest,
                         subset_factory=lambda data, indices: (data, indices)) as audit:
                     normalized_input = train.get_column_normalizer(dataset, 'action', 'action')
                     np.testing.assert_array_equal(normalized_input, actions[:6])

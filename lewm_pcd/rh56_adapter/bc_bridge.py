@@ -25,22 +25,24 @@ from rh56_adapter._runtime import (RUNTIME_HELPERS_SHA256, atomic_json, file_sha
 ENV_ID = 'rh56-relocate-v0'
 
 
-def build_run_spec(mode, checkpoint_epoch, train_seed, eval_seed_base):
+def build_run_spec(mode, checkpoint_epoch, train_seed, eval_seed_base, *, bc_recovery=False):
     if mode not in ('smoke', 'profile', 'formal'):
         raise ValueError('unknown BC mode')
     formal = mode == 'formal'
+    if bc_recovery and mode != 'profile':
+        raise ValueError('RH56 BC recovery is an explicit separate two-epoch profile, not the T3/formal budget')
     if formal and (checkpoint_epoch != 10 or train_seed not in (100, 200, 300)):
         raise ValueError('formal BC requires epoch10 WM and head seed100/200/300')
     if eval_seed_base is None:
         eval_seed_base = 65000000 + int(train_seed) * 1000
     if formal and eval_seed_base != 65000000 + int(train_seed) * 1000:
         raise ValueError('formal evaluation must use its fixed independent seed namespace')
-    return dict(mode=mode, epochs=100 if formal else 1, num_demos=100 if formal else 1,
+    return dict(mode=mode, epochs=100 if formal else 2 if bc_recovery else 1, num_demos=100 if formal else 1,
                 eval_num_traj=25 if formal else 1, eval_frequency=5 if formal else 1,
                 save_frequency=10 if formal else 1, batch_size=256,
                 train_seed=int(train_seed), eval_seed_base=int(eval_seed_base),
                 checkpoint_epoch=int(checkpoint_epoch), camera='opposite' if mode != 'smoke' else 'native',
-                scope='formal' if formal else 'one-minibatch interface profile; not formal SR')
+                scope='formal' if formal else 'explicit two-epoch original-loop recovery case; not T3/formal SR' if bc_recovery else 'one-minibatch interface profile; not formal SR')
 
 
 class EvaluationSeedMap:
@@ -278,8 +280,11 @@ class RH56LegacyCore:
 
 
 def _model_sha(model, parameters_only=False):
+    if not parameters_only:
+        from bench.relocate.encoder_identity import encoder_digest
+        return encoder_digest(model)
     digest = hashlib.sha256()
-    items = model.named_parameters() if parameters_only else model.state_dict().items()
+    items = model.named_parameters()
     for name, tensor in sorted(items):
         digest.update(name.encode())
         digest.update(tensor.detach().cpu().contiguous().numpy().tobytes())
@@ -354,8 +359,15 @@ def run_bc(args):
     if getattr(args, 'demo_cache_root', None):
         cache = demo_directory(out, args.demo_cache_root)
         validate_output_location(cache, baseline)
+    if out.exists():
+        raise FileExistsError(out)
+    from rh56_adapter.input_identity import require_bc_source
+    official_source_binding = require_bc_source(args.eai_root)
     out.mkdir(parents=True, exist_ok=False)
-    spec = build_run_spec(args.mode, args.epoch, args.train_seed, args.eval_seed_base)
+    recovery_enabled = getattr(args, 'bc_recovery', False)
+    if recovery_enabled:
+        from bench.relocate.recovery import RecoveryPause
+    spec = build_run_spec(args.mode, args.epoch, args.train_seed, args.eval_seed_base, bc_recovery=recovery_enabled)
     state = dict(phase='preflight', started=time.time(), updated=None, route=args.route, mode=args.mode,
                  completed=0, completed_epochs=0, failures=0, exit_code=None, run_spec=spec)
 
@@ -368,6 +380,7 @@ def run_bc(args):
     logger = None
     environments = []
     optimizer_hook_handles = []
+    bc_controller = None
     try:
         baseline, eai = Path(args.baseline).resolve(), Path(args.eai_root).resolve()
         vi = eai / 'cortexbench/mujoco_vc/visual_imitation'
@@ -383,6 +396,8 @@ def run_bc(args):
         official = importlib.import_module('train_loop')
         if Path(official.__file__).resolve() != (vi / 'train_loop.py').resolve():
             raise RuntimeError('BC loop resolved outside the explicit official dependency')
+        if _sha(official.__file__) != official_source_binding['sha256']:
+            raise ValueError('EAI BC source SHA changed before original training call')
         torch.set_num_threads(1)
         demo_paths, demo_receipts = load_demos(args, spec)
         demos = demo_directory(out, args.demo_cache_root)
@@ -474,6 +489,9 @@ def run_bc(args):
         original_policy = official.BatchNormMLP
         original_sampler = official.sample_paths
         original_train_rollout = official.rollout_from_init_states
+        policy_references = []
+        evaluation_epochs = [e for e in range(spec['epochs'])
+                             if e > 0 and e % spec['eval_frequency'] == 0 or e == spec['epochs'] - 1]
 
         def make_policy(*policy_args, **policy_kwargs):
             policy = original_policy(*policy_args, **policy_kwargs)
@@ -482,6 +500,12 @@ def run_bc(args):
 
         def sample_paths(*sample_args, **sample_kwargs):
             paths = original_sampler(*sample_args, **sample_kwargs)
+            if getattr(args, 'policy_evidence', False):
+                from bench.relocate.policy_evidence import write_policy_reference
+                index = len(policy_references)
+                policy_references.append(write_policy_reference(out / 'policy_evidence', f'round{index:03d}',
+                    sample_kwargs['policy'], np.asarray(paths[0]['observations']), epoch=evaluation_epochs[index],
+                    score=float(np.mean([np.sum(p['rewards']) for p in paths]))))
             online_paths.extend(paths)
             return paths
 
@@ -528,6 +552,55 @@ def run_bc(args):
                                       add_proprio=True, proprio_key='proprio'),
                       bc_kwargs=dict(hidden_sizes='(256, 256, 256)', nonlinearity='relu',
                                      loss_type='MSE', batch_size=256, lr=.001, dropout=0.))
+        from contextlib import nullcontext
+        bc_context = nullcontext(None)
+        if recovery_enabled:
+            from bench.relocate.bc_recovery import install_bc_recovery, RecoveryPause, FROZEN_EAI_SHA256
+            from bench.relocate.bc_caller_state import save_caller_state, load_caller_state, epoch_metric_prefix
+            from bench.relocate import bc_caller_state, bc_recovery
+            from bench.relocate import encoder_identity
+            bc_identity = dict(model=dict(kind='original-EAI-BatchNormMLP', input_dim=589, action_dim=12),
+                data=dict(demos_sha256=_sha(demos / f'{ENV_ID}.pickle'), demo_receipts=demo_receipts),
+                config={key: value for key, value in config.items() if key not in ('data_dir', 'job_name')},
+                split='RH56-pure-expert-one-demo-recovery', action_dim=12,
+                encoder=dict(route=args.route, weights_sha256=_sha(Path(args.checkpoint) / f'weights_epoch_{args.epoch}.pt'),
+                             config_sha256=_sha(Path(args.checkpoint) / 'config.yaml'), epoch=args.epoch,
+                             loader_sha256=_sha(lewm_cortex.__file__)),
+                source=dict(eai_train_loop_sha256=FROZEN_EAI_SHA256, adapter_sha256=_sha(__file__),
+                            caller_state_sha256=_sha(bc_caller_state.__file__), recovery_sha256=_sha(bc_recovery.__file__),
+                            encoder_identity_sha256=_sha(encoder_identity.__file__)))
+            def recovery_event(event, live):
+                if event['kind'] != 'resume_loaded':
+                    return
+                opt = live['optimizer']
+                steps = sorted({float(value['step']) for value in opt.state.values() if 'step' in value})
+                saved = load_caller_state(args.bc_resume_checkpoint, identity=bc_identity,
+                    committed_updates=event['committed_updates'], model_sha256=_model_sha(live['policy'].model, parameters_only=True),
+                    adam_steps=steps)
+                counts = saved['optimizer_evidence']
+                if counts['steps'] != event['committed_updates'] or counts['finite_gradient_checks'] != counts['steps']:
+                    raise ValueError('RH56 restored caller observer count differs')
+                optimizer_evidence.update(counts)
+                if optimizers:
+                    raise ValueError('RH56 optimizer ran before resume acceptance')
+                optimizers.append(opt)
+                if any('evaluation' in record for record in event['epoch_records']):
+                    raise ValueError('bounded RH56 recovery unexpectedly contains an earlier evaluation')
+                for row in epoch_metric_prefix(event['epoch_records']):
+                    logger.log({key: value for key, value in row.items() if key != '_step'}, step=row['_step'])
+                state['restored_epochs'] = len(event['epoch_records'])
+                state['restored_optimizer_updates'] = event['committed_updates']
+                save_state()
+            bc_context = install_bc_recovery(official, bc_identity, out / 'recovery', enabled=True,
+                resume_from=args.bc_resume_checkpoint, pause_after_updates=args.bc_pause_after_updates, observer=recovery_event)
+        def seal_caller():
+            if bc_controller is None:
+                return None
+            if len(policies) != 1 or bc_controller.last_checkpoint is None:
+                raise ValueError('RH56 caller has no sealed original head checkpoint')
+            return save_caller_state(bc_controller.last_checkpoint, identity=bc_identity,
+                state=dict(optimizer_evidence=optimizer_evidence), committed_updates=len(bc_controller.records),
+                model_sha256=_model_sha(policies[0][0].model, parameters_only=True))
         (out / 'job_config.json').write_text(json.dumps(config, indent=2))
         state['phase'] = 'official_bc_train_and_online_evaluation'
         save_state()
@@ -535,7 +608,9 @@ def run_bc(args):
         with install_bc_runtime(official, gw, load_embedding=load_embedding,
                 env_constructor=env_constructor, logger=logger, make_policy=make_policy,
                 sample_paths=sample_paths, train_rollout=train_rollout):
-            official.bc_pvr_train_loop(config)
+            with bc_context as bc_controller:
+                official.bc_pvr_train_loop(config)
+        caller_state = seal_caller()
         for handle in optimizer_hook_handles:
             handle.remove()
         os.chdir(original_cwd)
@@ -577,6 +652,26 @@ def run_bc(args):
         _finite('reloaded policy', before, after)
         if feature.shape != (589,) or np.asarray(after).shape != (12,) or not np.array_equal(before, after):
             raise RuntimeError('saved BC policy reload changed its action')
+        replay_evidence = {}
+        if getattr(args, 'policy_evidence', False):
+            import subprocess
+            from bench.relocate.policy_evidence import select_best_reference
+            selected = select_best_reference(policy_references)
+            for role, policy_path, reference in (
+                    ('selected', policy_file, selected),
+                    ('final', out / 'policy/iterations/final_policy.pickle', policy_references[-1])):
+                replay_output = out / ('policy_replay_' + role + '.json')
+                command = [sys.executable, '-B', '-m', 'bench.relocate.policy_evidence',
+                           '--policy', str(policy_path), '--reference', reference['metadata_path'],
+                           '--output', str(replay_output)]
+                with (out / ('policy_replay_' + role + '.log')).open('x') as log:
+                    actual = subprocess.run(command, stdout=log, stderr=subprocess.STDOUT)
+                (out / ('policy_replay_' + role + '.exit')).write_text(str(actual.returncode) + '\n')
+                if actual.returncode:
+                    raise RuntimeError('independent real-input policy replay failed: ' + role)
+                replay_evidence[role] = dict(epoch=reference['epoch'],
+                    reference=str(Path(reference['metadata_path']).relative_to(out)),
+                    result=json.loads(replay_output.read_text()))
         episode_records = []
         for role, paths in (('heldout_eval', online_paths), ('train_initial', train_initial_paths)):
             for index, path in enumerate(paths):
@@ -638,14 +733,33 @@ def run_bc(args):
                       reset_seeds=[env.env.unwrapped.reset_seeds for env in environments],
                       state_restore_seeds=[env.env.unwrapped.state_restore_seeds for env in environments],
                       source_seed_partition='pure BC demos separate from paired held-out evaluation seeds',
+                      trusted_native_bundles=[getattr(env.env.unwrapped.native,'bundle_identity',None)
+                                             for env in environments],
                       policy_selection='original highest-mean-reward best_policy; Best-of-20 SR reported separately',
+                      policy_evidence=replay_evidence,
+                      recovery=dict(enabled=True, checkpoint=str(bc_controller.last_checkpoint), caller_state=str(caller_state),
+                                    batch_records=bc_controller.records, epoch_records=bc_controller.epoch_records)
+                               if bc_controller is not None else dict(enabled=False),
                       scope=spec['scope'])
         (out / 'validation.json').write_text(json.dumps(result, indent=2))
         state.update(phase='complete', completed=1, exit_code=0)
         save_state()
         print(json.dumps(result, indent=2), flush=True)
         return result
-    except BaseException:
+    except BaseException as error:
+        if recovery_enabled and isinstance(error, RecoveryPause):
+            # A failed caller seal remains a genuine error, never an accepted75.
+            try:
+                caller_state = seal_caller()
+            except BaseException:
+                state.update(phase='failed_caller_seal', failures=1, exit_code=1, error=traceback.format_exc())
+                save_state()
+                raise
+            state.update(phase='intentional_sealed_pause', completed=0, failures=0, exit_code=75,
+                         committed_optimizer_updates=len(bc_controller.records),
+                         checkpoint=str(bc_controller.last_checkpoint), caller_state=str(caller_state))
+            save_state()
+            raise SystemExit(75) from error
         state.update(phase='failed', failures=1, exit_code=1, error=traceback.format_exc())
         save_state()
         raise
@@ -680,7 +794,18 @@ def main(argv=None):
     parser.add_argument('--mode', choices=('smoke', 'profile', 'formal'), default='smoke')
     parser.add_argument('--train-seed', type=int, default=100)
     parser.add_argument('--eval-seed-base', '--eval-seed', type=int)
-    return run_bc(parser.parse_args(argv))
+    parser.add_argument('--policy-evidence', action='store_true', help='Retain real policy inputs and verify corresponding selected/final policy outputs in independent processes')
+    parser.add_argument('--bc-recovery', action='store_true', help='Explicit separate two-epoch profile recovery; default off')
+    parser.add_argument('--bc-resume-checkpoint', type=Path)
+    parser.add_argument('--bc-pause-after-updates', type=int)
+    args = parser.parse_args(argv)
+    if (args.bc_resume_checkpoint is not None or args.bc_pause_after_updates is not None) and not args.bc_recovery:
+        parser.error('BC checkpoint/pause requires --bc-recovery')
+    if args.bc_recovery and args.mode != 'profile':
+        parser.error('RH56 recovery requires its explicit separate profile mode')
+    if args.bc_pause_after_updates is not None and args.bc_pause_after_updates != 1:
+        parser.error('bounded RH56 recovery pauses after exactly one update')
+    return run_bc(args)
 
 
 if __name__ == '__main__':

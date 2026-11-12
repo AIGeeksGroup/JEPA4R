@@ -74,6 +74,11 @@ def plan(args, assets):
             'wandb.project=local','wandb.entity=local'],bc/'report.json',epochs=1 if smoke else 100,rollouts=1 if smoke else 500)
         add('policy-reload-seed'+str(seed),args.sim_python,'adroit_learning',['reload-policy',
             '--model',model,'--output',bc],bc/'reload.json',strict_reload=True)
+    if assets.get('policy_evidence',False):
+        for stage in stages:
+            if stage['name'].startswith(('bc-seed','policy-reload-seed')):
+                command=stage['command']
+                command.insert(command.index('--') if '--' in command else len(command),'--policy-evidence')
     if assets.get('stable_worldmodel_root'):
         for s in stages: s['environment']['ADROIT_FRAMEWORK_ROOT']=str(assets['stable_worldmodel_root'])
     for key in ('visreg_checkpoint','vjepa_checkpoint','vjepa_root'):

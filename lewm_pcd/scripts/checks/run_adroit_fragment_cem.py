@@ -1,9 +1,11 @@
 """Task-only facade around the fresh CURRENT mainline eval.run; no CEM copy."""
 import argparse
+from contextlib import contextmanager, nullcontext
 from datetime import datetime, timezone
 import hashlib
 import importlib
 import json
+import operator
 from pathlib import Path
 import sys
 
@@ -24,6 +26,288 @@ def hdf_dependencies(path):
     module = importlib.util.module_from_spec(specification)
     specification.loader.exec_module(module)
     return module.hdf_dependencies(path)
+
+
+def build_input_binding(train, test, checkpoint, initials, route, mode):
+    """Bind reachable data and model contents independently of directory names."""
+    dependencies = {'train': hdf_dependencies(train), 'test': hdf_dependencies(test)}
+    configurations = {}
+    for name in ('config.json', 'config.yaml'):
+        path = Path(checkpoint).parent / name
+        configurations[name] = file_sha(path) if path.is_file() else None
+    content = dict(route=route, mode=mode,
+                   train=dependencies['train']['content_sha256'],
+                   test=dependencies['test']['content_sha256'],
+                   checkpoint=file_sha(checkpoint), initials=file_sha(initials),
+                   model_configurations=configurations)
+    return dict(schema='relocate-cem-input-binding-v1', content=content,
+                input_dependencies=dependencies)
+
+
+def validate_input_binding(actual, expected):
+    if (actual.get('schema') != 'relocate-cem-input-binding-v1'
+            or expected.get('schema') != actual['schema']
+            or expected.get('content') != actual['content']):
+        raise ValueError('CEM input binding differs from the frozen data/model/route reference')
+    return True
+
+
+def validate_fragment_selection(episodes, start_steps, goal_offset, expected=None):
+    def integer(value):
+        if isinstance(value, bool):
+            raise ValueError('CEM indices must be integers')
+        try:
+            return operator.index(value)
+        except TypeError as error:
+            raise ValueError('CEM indices must be integers') from error
+    selected = dict(episodes=list(map(integer, episodes)), start_steps=list(map(integer, start_steps)),
+                    goal_offset=integer(goal_offset))
+    if (len(selected['episodes']) != len(selected['start_steps'])
+            or any(value < 0 for value in selected['episodes'] + selected['start_steps'])
+            or selected['goal_offset'] != 25):
+        raise ValueError('invalid CEM source episode/start/future-goal selection')
+    if expected is not None and selected != expected:
+        raise ValueError('CEM source episode/start/future-goal selection differs from reference')
+    return selected
+
+
+class FullCEMTrace:
+    """Passive recorder for the original solver's existing callback interface."""
+    output_key = 'guide_evidence'
+
+    def __init__(self, directory):
+        self.directory = Path(directory)
+        self.directory.mkdir(parents=True, exist_ok=False)
+        self.history, self.records = {}, []
+        self.solve_index = 0
+
+    def reset(self):
+        self.solve_index += 1
+        self.batch_index = -1
+        self.history = {}
+
+    def start_batch(self):
+        self.batch_index += 1
+
+    def __call__(self, *, step, **state):
+        import numpy as np
+        names = ('candidates', 'costs', 'topk_vals', 'topk_inds', 'topk_candidates',
+                 'mean', 'var', 'prev_mean', 'prev_var')
+        arrays = {}
+        for name in names:
+            value = state[name]
+            if hasattr(value, 'detach'):
+                value = value.detach().cpu().numpy()
+            value = np.asarray(value)
+            if value.dtype.kind not in 'biuf' or not np.isfinite(value).all():
+                raise ValueError('CEM trace requires finite numeric arrays: ' + name)
+            arrays[name] = value.copy()
+        arrays['first_action_block'] = arrays['mean'][:, 0].copy()
+        name = f'solve_{self.solve_index:03d}_batch_{self.batch_index:03d}_step_{step:03d}.npz'
+        path = self.directory / name
+        with path.open('xb') as stream:
+            np.savez_compressed(stream, **arrays)
+        self.records.append(dict(solve=self.solve_index, batch=self.batch_index, step=step,
+                                 arrays_file=name, arrays_sha256=file_sha(path),
+                                 shapes={key: list(value.shape) for key, value in arrays.items()}))
+
+    def end_solve(self):
+        rows = [row for row in self.records if row['solve'] == self.solve_index]
+        if not rows:
+            raise ValueError('CEM solve produced no candidate evidence')
+        with (self.directory / f'solve_{self.solve_index:03d}.json').open('x', encoding='utf-8') as stream:
+            json.dump(dict(producer_sha256=file_sha(__file__), records=rows), stream, indent=2)
+
+
+class ModelTrace:
+    """Read-only hooks on the actual solver cost, including both projections."""
+    roles = ('encoder', 'projector', 'action_encoder', 'predictor', 'pred_proj')
+    def __init__(self, model, directory):
+        import inspect
+        self.model, self.directory = model, Path(directory)
+        self.directory.mkdir(parents=True, exist_ok=False)
+        if model.training or any(p.requires_grad for p in model.parameters()):
+            raise ValueError('CEM model must already be frozen and in eval mode')
+        self.before = self.state_digest()
+        self.records, self.handles, self.sources = [], [], {}
+        modules = [(role, getattr(model, role)) for role in self.roles]
+        for role, module in modules:
+            path = Path(inspect.getfile(type(module))).resolve()
+            self.sources[role] = dict(module=type(module).__module__+'.'+type(module).__name__,
+                                      path=str(path), sha256=file_sha(path))
+        for role, module in modules:
+            self.handles.append(module.register_forward_hook(self.hook(role)))
+
+    def state_digest(self):
+        import torch
+        digest = hashlib.sha256()
+        for name, value in self.model.state_dict().items():
+            value = value.detach().cpu().contiguous()
+            digest.update((name+str(value.dtype)+str(tuple(value.shape))).encode())
+            digest.update(value.reshape(-1).view(torch.uint8).numpy().tobytes())
+        return digest.hexdigest()
+
+    def hook(self, role):
+        def capture(module, inputs, output):
+            from collections.abc import Mapping
+            import numpy as np
+            import torch
+            arrays, dtypes = {}, {}
+            def visit(value, key):
+                if torch.is_tensor(value):
+                    dtypes[key] = str(value.dtype)
+                    value = value.detach().cpu()
+                    if value.dtype == torch.bfloat16:
+                        value = value.float()
+                    array = value.numpy().copy()
+                    if not np.isfinite(array).all():
+                        raise ValueError('nonfinite actual CEM model forward: '+role+'/'+key)
+                    arrays[key] = array
+                elif isinstance(value, Mapping):
+                    for name, child in value.items():
+                        visit(child, key+'/'+str(name))
+                elif isinstance(value, (list, tuple)):
+                    for index, child in enumerate(value):
+                        visit(child, key+'/'+str(index))
+            visit(inputs, 'input')
+            visit(output, 'output')
+            if not any(key.startswith('output') for key in arrays):
+                raise ValueError('actual CEM model hook has no output tensors')
+            name = f'{len(self.records):04d}_{role}.npz'
+            with (self.directory/name).open('xb') as stream:
+                np.savez_compressed(stream, **arrays)
+            self.records.append(dict(role=role, arrays_file=name,
+                                     arrays_sha256=file_sha(self.directory/name),
+                                     torch_dtypes=dtypes,
+                                     shapes={k:list(v.shape) for k,v in arrays.items()}))
+        return capture
+
+    def close(self, completed):
+        for handle in self.handles:
+            handle.remove()
+        after = self.state_digest()
+        self.summary = dict(completed=completed, producer_sha256=file_sha(__file__),
+                            frozen_before_sha256=self.before, frozen_after_sha256=after,
+                            frozen_unchanged=self.before == after, actual_sources=self.sources,
+                            calls={role:sum(row['role'] == role for row in self.records)
+                                   for role in self.roles},
+                            records=self.records)
+        with (self.directory/'report.json').open('x', encoding='utf-8') as stream:
+            json.dump(self.summary, stream, indent=2)
+        if completed and (self.before != after or any(count == 0 for count in self.summary['calls'].values())):
+            raise ValueError('actual CEM model usage or frozen-state contract failed')
+
+
+@contextmanager
+def observe_model(model, directory):
+    trace = ModelTrace(model, directory)
+    completed = False
+    try:
+        yield trace
+        completed = True
+    finally:
+        trace.close(completed)
+
+
+def validate_model_trace_records(actual, reference):
+    """Compare original Torch types as well as stored, NumPy-compatible arrays."""
+    if not actual or len(actual) != len(reference):
+        raise ValueError('CEM model trace event counts differ')
+    for left, right in zip(actual, reference):
+        for field in ('role', 'torch_dtypes', 'shapes'):
+            if not left.get(field) or not right.get(field) or left[field] != right[field]:
+                raise ValueError('CEM model trace '+field+' differs')
+    return True
+
+
+class RolloutTrace:
+    def __init__(self, directory):
+        self.directory = Path(directory)
+        self.directory.mkdir(parents=True, exist_ok=False)
+        self.records = []
+
+    def capture(self, world, kind, mask=None, raw_step_infos=None):
+        import numpy as np
+        names = ('qpos', 'qvel', 'proprio', 'native_observation', 'target_pos',
+                 'fragment_goal_position', 'fragment_distance', 'fragment_success',
+                 'fragment_failed', 'native_goal_achieved', 'native_done',
+                 'executed_action', 'action_clip_max_abs', 'time', 'seed', 'step_idx',
+                 'pixels', 'pcd_xyz', 'pcd_rgb', 'goal', 'goal_pixels', 'goal_pcd_xyz', 'goal_pcd_rgb',
+                 'goal_native_observation', 'goal_observation', 'goal_qpos', 'goal_qvel')
+        arrays = {}
+        for name in names:
+            if name in world.infos:
+                value = world.infos[name]
+            elif raw_step_infos and all(name in info for info in raw_step_infos.values()):
+                # EnvPool deliberately retains only the reset-time keys. Read
+                # step-only native evidence from the actual returned infos;
+                # never add keys to the planner's live buffered observations.
+                value = np.stack([raw_step_infos[i][name] for i in sorted(raw_step_infos)])[:, None]
+            else:
+                continue
+            if hasattr(value, 'detach'):
+                value = value.detach().cpu().numpy()
+            value = np.asarray(value)
+            if value.dtype.kind not in 'biuf' or not np.isfinite(value).all():
+                raise ValueError('nonfinite/nonnumeric actual rollout field: ' + name)
+            arrays[name] = value.copy()
+        if not {'qpos', 'qvel'} <= set(arrays) or kind == 'step' and 'executed_action' not in arrays:
+            raise ValueError('actual CEM rollout state/executed action is missing')
+        if kind == 'step':
+            for name in ('rewards', 'terminateds', 'truncateds'):
+                value = getattr(world, name, None)
+                if value is not None:
+                    arrays[name] = np.asarray(value).copy()
+        if mask is not None:
+            arrays['active_mask'] = np.asarray(mask).copy()
+        if any(value.dtype.kind not in 'biuf' or not np.isfinite(value).all() for value in arrays.values()):
+            raise ValueError('nonfinite/nonnumeric actual rollout state/action/event')
+        name = f'{len(self.records):04d}_{kind}.npz'
+        with (self.directory / name).open('xb') as stream:
+            np.savez_compressed(stream, **arrays)
+        self.records.append(dict(kind=kind, arrays_file=name, arrays_sha256=file_sha(self.directory / name)))
+
+
+@contextmanager
+def observe_rollout(world, directory):
+    """Observe the existing reset/on_step interfaces; retain the original loop."""
+    trace = RolloutTrace(directory)
+    original_reset, original_run = world.reset, world._run
+    pending, original_steps = {}, []
+    bases = [env.unwrapped for env in getattr(getattr(world, 'envs', None), 'envs', [])]
+    if len({id(base) for base in bases}) != len(bases):
+        raise ValueError('CEM trace requires distinct native env instances')
+    for index, base in enumerate(bases):
+        original = base.step
+        original_steps.append((base, original))
+        def step(action, _original=original, _index=index):
+            result = _original(action)
+            pending[_index] = result[-1]
+            return result
+        base.step = step
+    def reset(*args, **kwargs):
+        pending.clear()
+        result = original_reset(*args, **kwargs)
+        trace.capture(world, 'initial')
+        return result
+    def run(*args, **kwargs):
+        # Dataset-driven World.evaluate injects goals after reset, before _run.
+        trace.capture(world, 'planner_initial')
+        previous = kwargs.get('on_step')
+        def on_step(current, mask):
+            if previous is not None:
+                previous(current, mask)
+            kind = 'step' if pending or not bases else 'reset'
+            trace.capture(current, kind, mask, raw_step_infos=pending)
+            pending.clear()
+        return original_run(*args, **dict(kwargs, on_step=on_step))
+    world.reset, world._run = reset, run
+    try:
+        yield trace
+    finally:
+        world.reset, world._run = original_reset, original_run
+        for base, original in original_steps:
+            base.step = original
 
 
 def validate_rgb_cache(cache, test, initials, mode):
@@ -106,6 +390,10 @@ def make_parser():
     parser.add_argument('--train', type=Path, required=True)
     parser.add_argument('--test', type=Path, required=True)
     parser.add_argument('--checkpoint', type=Path, required=True)
+    parser.add_argument('--expected-binding', type=Path,
+                        help='Frozen content binding and optional fragments selection; checked before planning')
+    parser.add_argument('--gate-trace', action='store_true',
+                        help='Smoke only: passively retain full solver candidates/costs/elites/action blocks')
     parser.add_argument('--out', type=Path, required=True)
     return parser
 
@@ -113,6 +401,8 @@ def make_parser():
 def main(argv=None):
     parser = make_parser()
     args = parser.parse_args(argv)
+    if args.gate_trace and args.mode != 'smoke':
+        parser.error('--gate-trace requires the bounded smoke mode')
     if args.initials is None or (args.route == 'pix' and args.rgb_cache is None):
         parser.error('Relocate requires --initials, and pix also requires --rgb-cache')
     root = args.code_root.resolve()
@@ -121,6 +411,12 @@ def main(argv=None):
     for path in (args.train, args.test, args.checkpoint):
         if not path.resolve().is_file():
             raise FileNotFoundError(path)
+    input_binding = build_input_binding(args.train, args.test, args.checkpoint,
+                                        args.initials, args.route, args.mode)
+    expected_binding = (json.loads(args.expected_binding.read_text(encoding='utf-8'))
+                        if args.expected_binding is not None else None)
+    if expected_binding is not None:
+        validate_input_binding(input_binding, expected_binding)
     rgb_binding = validate_rgb_cache(args.rgb_cache, args.test, args.initials, args.mode) if args.route == 'pix' else None
     args.out = args.out.resolve()
     args.out.mkdir(parents=True, exist_ok=False)
@@ -133,6 +429,9 @@ def main(argv=None):
                   fragment_criterion=dict(distance_lt=.1,
                                       scope='future-object-position fragment; not native >25-step task success'),
                   original_result=str(args.out / 'mainline_results.txt'))
+    report['input_binding'] = input_binding
+    if args.expected_binding is not None:
+        report['expected_binding_sha256'] = file_sha(args.expected_binding)
     if rgb_binding is not None:
         report['rgb_cache_binding'] = rgb_binding
     report_path = args.out / 'report.json'
@@ -196,9 +495,30 @@ def main(argv=None):
         mainline.get_dataset = get_dataset
         original_evaluate = mainline.swm.World.evaluate
         def evaluate(world, *positional, **kwargs):
+            report['source_selection'] = validate_fragment_selection(
+                kwargs['episodes_idx'], kwargs['start_steps'], kwargs['goal_offset'],
+                expected_binding.get('fragments') if expected_binding is not None else None)
             report['sampled_episodes'] = list(map(int, kwargs['episodes_idx']))
             report['sampled_start_steps'] = list(map(int, kwargs['start_steps']))
-            result = original_evaluate(world, *positional, **kwargs)
+            trace = FullCEMTrace(args.out / 'cem_trace') if args.gate_trace else None
+            rollout = forward_trace = None
+            if trace is not None:
+                world.policy.solver.callbacks.append(trace)
+            try:
+                with (observe_model(world.policy.solver.cost, args.out / 'model_trace')
+                      if trace is not None else nullcontext()) as forward_trace, \
+                     (observe_rollout(world, args.out / 'rollout_trace')
+                      if trace is not None else nullcontext()) as rollout:
+                    result = original_evaluate(world, *positional, **kwargs)
+            finally:
+                if trace is not None:
+                    world.policy.solver.callbacks.remove(trace)
+                    report['cem_trace'] = trace.records
+                    if forward_trace is not None:
+                        report['model_trace'] = forward_trace.summary
+                    if rollout is not None:
+                        report['rollout_trace'] = rollout.records
+                        report['actual_control_steps'] = sum(row['kind'] == 'step' for row in rollout.records)
             report['metrics'] = {key: (value.tolist() if hasattr(value, 'tolist') else value)
                                  for key, value in result.items()}
             return result

@@ -202,3 +202,175 @@ def test_complete_receipt_requires_the_entire_chain(tmp_path, monkeypatch):
     monkeypatch.setattr(module.subprocess, 'run', child)
     assert module.execute(plan) == 0
     assert not (Path(cfg['output_root'])/'PIPELINE_COMPLETE.json').exists()
+
+
+def completed_gate(tmp_path, monkeypatch, stage='gate'):
+    """A real file transaction behind the existing gate-stage receipt schema."""
+    module = api()
+    path, cfg = config(tmp_path)
+    plan = module.build_plan(path, stage)
+    receipt = Path(plan['stages'][0]['receipt'])
+    gate = Path(cfg['output_root'])/'downstream/gate'
+    checkpoint = gate/'checkpoints/update_000000002'
+    files = dict(params=checkpoint/'params_2.pkl', state=checkpoint/'run_state.pkl',
+                 full_state=gate/'full_state.npz', actions=gate/'next_actions.npy')
+    calls = []
+
+    def child(*args, **kwargs):
+        calls.append(args)
+        checkpoint.mkdir(parents=True)
+        for name, target in files.items():
+            target.write_bytes(('unchanged '+name).encode())
+        (checkpoint/'manifest.json').write_text(json.dumps(dict(counter=2,
+            agent_sha256=module.sha(files['params']), sidecar_sha256=module.sha(files['state']))))
+        report = gate/'report.json'
+        report.write_text(json.dumps(dict(actual_exit_code=0, updates=2, checkpoint=str(checkpoint),
+            full_state_sha256=module.sha(files['full_state']),
+            action_reference_sha256=module.sha(files['actions']))))
+        if stage == 'reload':
+            report = gate.parent/'reload.json'
+            report.write_text(json.dumps(dict(actual_exit_code=0, backend='cpu',
+                action_reference_sha256=module.sha(files['actions']),
+                same_cpu_action_consistency_verified=False)))
+        receipt.parent.mkdir(parents=True)
+        receipt.write_text(json.dumps(dict(actual_exit_code=0, cube_count=4, mode='smoke',
+            artifacts=dict(gate_report=dict(path=str(report), sha256=module.sha(report))))))
+        return SimpleNamespace(returncode=0)
+
+    monkeypatch.setattr(module.subprocess, 'run', child)
+    assert module.execute(plan) == 0
+    return module, plan, cfg, files, calls
+
+
+def rejected_resume(module, plan):
+    try:
+        result = module.execute(plan, resume=True)
+    except (ValueError, FileNotFoundError):
+        return
+    assert result != 0, 'resume accepted changed or missing completed-stage evidence'
+
+
+def test_completed_resume_checks_real_artifacts_without_redispatch(tmp_path, monkeypatch):
+    module, plan, cfg, files, calls = completed_gate(tmp_path, monkeypatch)
+    receipt = Path(plan['stages'][0]['receipt']).read_bytes()
+    assert module.execute(plan, resume=True) == 0
+    assert len(calls) == 1
+    assert Path(plan['stages'][0]['receipt']).read_bytes() == receipt
+    assert all(target.is_file() for target in files.values())
+
+
+def test_completed_resume_keeps_legacy_reload_reference_location(tmp_path, monkeypatch):
+    module, plan, cfg, files, calls = completed_gate(tmp_path, monkeypatch, stage='reload')
+    assert module.execute(plan, resume=True) == 0
+    assert len(calls) == 1
+
+
+@pytest.mark.parametrize('target', ('report', 'params', 'state', 'full_state', 'actions'))
+def test_completed_resume_rejects_direct_and_nested_artifact_corruption(tmp_path, monkeypatch, target):
+    module, plan, cfg, files, calls = completed_gate(tmp_path, monkeypatch)
+    artifact = Path(cfg['output_root'])/'downstream/gate/report.json' if target == 'report' else files[target]
+    artifact.write_bytes(b'corrupted actual artifact')
+    rejected_resume(module, plan)
+    assert len(calls) == 1
+
+
+@pytest.mark.parametrize('evidence', ('nonzero_exit', 'missing_exit', 'missing_completion'))
+def test_completed_resume_rejects_missing_or_failed_dispatch_evidence(tmp_path, monkeypatch, evidence):
+    module, plan, cfg, files, calls = completed_gate(tmp_path, monkeypatch)
+    driver = Path(cfg['output_root'])/'dispatch/gate'
+    if evidence == 'nonzero_exit':
+        (driver/'actual_exit_code').write_text('7\n')
+    elif evidence == 'missing_exit':
+        (driver/'actual_exit_code').unlink()
+    else:
+        (driver/'COMPLETED.json').unlink()
+    rejected_resume(module, plan)
+    assert len(calls) == 1
+
+
+def test_completed_resume_rejects_redirected_canonical_receipt(tmp_path, monkeypatch):
+    module, plan, cfg, files, calls = completed_gate(tmp_path, monkeypatch)
+    root = Path(cfg['output_root'])
+    original = Path(plan['stages'][0]['receipt'])
+    other = root/'foreign-receipt.json'
+    other.write_bytes(original.read_bytes())
+    state = json.loads((root/'STATUS.json').read_text())
+    state['completed']['gate']['path'] = str(other)
+    (root/'STATUS.json').write_text(json.dumps(state))
+    rejected_resume(module, plan)
+    assert len(calls) == 1
+
+
+def test_completed_collection_resume_accepts_successful_retry_and_rechecks_input(tmp_path, monkeypatch):
+    module = api()
+    path, cfg = config(tmp_path)
+    plan = module.build_plan(path, 'collect')
+    target = Path(plan['stages'][0]['receipt'])
+    data = target.parent/'raw.h5'
+    calls = []
+
+    def child(*args, **kwargs):
+        calls.append(args)
+        if len(calls) == 1:
+            return SimpleNamespace(returncode=7)
+        target.parent.mkdir(parents=True)
+        data.write_bytes(b'accepted raw input bytes')
+        target.write_text(json.dumps(dict(actual_exit_code=0, cube_count=4, mode='smoke',
+            producer_binding=dict(files={}), data_files={str(data):dict(sha256=module.sha(data))})))
+        return SimpleNamespace(returncode=0)
+
+    monkeypatch.setattr(module.subprocess, 'run', child)
+    assert module.execute(plan) == 7
+    assert module.execute(plan, resume=True) == 0
+    root = Path(cfg['output_root'])
+    assert (root/'dispatch/collect/actual_exit_code').read_text().strip() == '7'
+    assert (root/'dispatch/collect/attempts/attempt_001/actual_exit_code').read_text().strip() == '0'
+    assert module.execute(plan, resume=True) == 0
+    assert len(calls) == 2
+    data.write_bytes(b'changed actual raw input')
+    rejected_resume(module, plan)
+    assert len(calls) == 2
+    assert (root/'dispatch/collect/actual_exit_code').read_text().strip() == '7'
+
+
+def completed_cache(tmp_path, monkeypatch):
+    module = api()
+    path, cfg = config(tmp_path)
+    plan = module.build_plan(path, 'encode')
+    receipt = Path(plan['stages'][0]['receipt'])
+    cache = Path(cfg['output_root'])/'downstream/cache'
+    latent = cache/'train/episode_000000/latent.npy'
+    calls = []
+
+    def child(*args, **kwargs):
+        calls.append(args)
+        latent.parent.mkdir(parents=True)
+        latent.write_bytes(b'accepted actual encoder features')
+        episode = latent.parent/'receipt.json'
+        episode.write_text(json.dumps(dict(actual_exit_code=0, split='train', episode=0,
+            latent=dict(path=str(latent), sha256=module.sha(latent)))))
+        manifest = cache/'cache_manifest.json'
+        manifest.write_text(json.dumps(dict(actual_exit_code=0,
+            splits=dict(train=[dict(episode=0, receipt_path=str(episode),
+                                    receipt_sha256=module.sha(episode))]))))
+        receipt.parent.mkdir(parents=True)
+        receipt.write_text(json.dumps(dict(actual_exit_code=0, cube_count=4, mode='smoke',
+            artifacts=dict(cache_manifest=dict(path=str(manifest),sha256=module.sha(manifest))))))
+        return SimpleNamespace(returncode=0)
+
+    monkeypatch.setattr(module.subprocess, 'run', child)
+    assert module.execute(plan) == 0
+    return module, plan, latent, calls
+
+
+def test_completed_resume_checks_nested_cache_without_redispatch(tmp_path, monkeypatch):
+    module, plan, latent, calls = completed_cache(tmp_path, monkeypatch)
+    assert module.execute(plan, resume=True) == 0
+    assert len(calls) == 1
+
+
+def test_completed_resume_rejects_nested_cache_latent_corruption(tmp_path, monkeypatch):
+    module, plan, latent, calls = completed_cache(tmp_path, monkeypatch)
+    latent.write_bytes(b'changed actual encoder features')
+    rejected_resume(module, plan)
+    assert len(calls) == 1

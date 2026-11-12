@@ -20,7 +20,7 @@ IMPORT_FILES = ('pldm/__init__.py', 'pldm/configs.py', 'pldm/models/__init__.py'
 def encoder_source_bindings(source):
     source = Path(source).resolve()
     manifest = json.loads((Path(__file__).parent/'pldm/source_manifest.json').read_text(encoding='utf8'))
-    if manifest['author_commit'] != '1bd7e564ecd961205bc18b23067b19e9ca24ac90':
+    if manifest['upstream_commit'] != '1bd7e564ecd961205bc18b23067b19e9ca24ac90':
         raise ValueError('Original PLDM source commit differs')
     result = {}
     for relative in IMPORT_FILES:
