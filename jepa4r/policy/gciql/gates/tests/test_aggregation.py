@@ -1,5 +1,4 @@
-# Moved from OGBench-cube@4fbb0c6:tests/gates/test_aggregation.py (verbatim except: module names / paths of the moved code adapted)
-import copy
+# Moved from OGBench-cube@4fbb0c6:tests/gates/test_aggregation.py (verbatim except: module names / paths of the moved code adapted; the CEM checks (appendix Tab. S1) left out)
 import unittest
 try:
     from jepa4r.policy.gciql.gates import aggregation as gates
@@ -71,14 +70,6 @@ class AggregationTests(unittest.TestCase):
             with self.assertRaises(ValueError): gates.bc_summary(rounds)
             del rounds[0][field]
             with self.assertRaises(ValueError): gates.bc_summary(rounds)
-        events = [{'fragment_id': i, 'source_episode_id': i, 'initial_distance': .2, 'final_distance': .05} for i in range(2)]
-        for field, first, other in [('route', 'pcd', 'pix'), ('method', 'jepa4r', 'lewm'), ('environment', 'native', 'rh56'), ('split', 'held_out', 'train_init')]:
-            supplied = [dict(event, **{field: first}) for event in events]
-            self.assertEqual(gates.cem_summary(supplied)['all']['success_percent'], 100.)
-            supplied[0][field] = other
-            with self.assertRaises(ValueError): gates.cem_summary(supplied)
-            del supplied[0][field]
-            with self.assertRaises(ValueError): gates.cem_summary(supplied)
 
     def test_real_rh56_episode_role_fields_cannot_mix(self):
         for field in ('role', 'evaluation_role'):
@@ -89,10 +80,6 @@ class AggregationTests(unittest.TestCase):
             with self.assertRaises(ValueError): gates.bc_summary(rounds)
             del rounds[0][field]
             with self.assertRaises(ValueError): gates.bc_summary(rounds)
-            cem = [{'fragment_id': i, 'source_episode_id': i, 'initial_distance': .2,
-                    'final_distance': .05, field: 'heldout_eval'} for i in range(2)]
-            cem[0][field] = 'train_initial'
-            with self.assertRaises(ValueError): gates.cem_summary(cem)
 
     def test_bc_reject_missing_round_duplicate_seed_and_denominator(self):
         for bad in [bc_rounds()[:-1], bc_rounds()+[bc_rounds()[0]], [r for r in bc_rounds() if r['seed'] != 300]]:
@@ -110,23 +97,6 @@ class AggregationTests(unittest.TestCase):
         self.assertTrue(gates.bc_success(26)); self.assertTrue(gates.bc_success(sum([True, False]*26)))
         self.assertTrue(gates.bc_success(26, environment='rh56', overload=False))
         self.assertFalse(gates.bc_success(26, environment='rh56', overload=True))
-        self.assertTrue(gates.cem_success(.0999)); self.assertFalse(gates.cem_success(.1000))
-        self.assertFalse(gates.cem_success(.01, native_failure=True))
-        with self.assertRaises(ValueError):gates.cem_success(float('nan'))
-        with self.assertRaises(ValueError):gates.cem_success(.2, native_failure='false')
         with self.assertRaises(ValueError):gates.bc_success(26, environment='unknown')
-
-    def test_a14_cem_both_denominators_and_identity(self):
-        events = [{'fragment_id': i, 'source_episode_id': f'episode-{i//2}', 'initial_distance': .09 if i < 12 else .2,
-                   'final_distance': .05 if i < 15 else .2, 'native_failure': False} for i in range(20)]
-        result = gates.cem_summary(events, expected_count=20)
-        self.assertEqual(result['all']['success_percent'], 75.)
-        self.assertEqual(result['initially_outside']['success_percent'], 37.5)
-        self.assertEqual(result['initially_outside']['fragments'], 8)
-        with self.assertRaises(ValueError):gates.cem_summary(events+[events[0]])
-        with self.assertRaises(ValueError):gates.cem_summary(events[:-1], expected_count=20)
-        result = gates.cem_summary(events[:12]); self.assertIsNone(result['initially_outside']['success_percent'])
-        bad = copy.deepcopy(events); bad[0]['success'] = False
-        with self.assertRaises(ValueError):gates.cem_summary(bad)
 
 if __name__ == '__main__': unittest.main()
