@@ -1,4 +1,4 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/gates/aggregation.py (verbatim)
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/gates/aggregation.py (verbatim except: cem_success / cem_summary, the CEM fragment aggregation of appendix Tab. S1, left out)
 """A1 raw-event aggregation. No training, rollout, or paper-target assumptions."""
 from numbers import Integral, Real
 import math
@@ -136,36 +136,3 @@ def bc_success(goal_steps, *, environment='native', overload=False):
     if environment not in ('native', 'rh56'): raise ValueError('unknown BC environment')
     return count > 25 and (environment != 'rh56' or not overload)
 
-
-def cem_success(distance, *, native_failure=False):
-    value = _finite(distance, 'distance', True)
-    failed = _boolean(native_failure, 'native_failure')
-    return value < 0.1 and not failed
-
-
-def cem_summary(events, *, expected_count=None):
-    events = list(events)
-    if expected_count is not None and len(events) != _integer(expected_count, 'expected_count', 1):
-        raise ValueError('incorrect fragment denominator')
-    if not events: raise ValueError('no CEM fragments')
-    _same_group(events, GROUP_FIELDS)
-    seen, accepted, outside = set(), [], []
-    for event in events:
-        identity = _identity(event['fragment_id'], 'fragment_id')
-        if identity in seen: raise ValueError('duplicate fragment')
-        seen.add(identity)
-        _identity(event['source_episode_id'], 'source_episode_id')
-        initial = _finite(event['initial_distance'], 'initial_distance', True)
-        success = cem_success(event['final_distance'], native_failure=event.get('native_failure', False))
-        if 'success' in event and _boolean(event['success'], 'success') != success:
-            raise ValueError('recorded fragment success differs from events')
-        row = dict(fragment_id=identity, source_episode_id=event['source_episode_id'], success=success)
-        accepted.append(row)
-        if initial >= 0.1: outside.append(row)
-    def summarize(rows):
-        successes = sum(row['success'] for row in rows)
-        return dict(successes=successes, fragments=len(rows),
-                    success_percent=100. * successes / len(rows) if rows else None,
-                    fragment_ids=[row['fragment_id'] for row in rows],
-                    source_episode_ids=[row['source_episode_id'] for row in rows])
-    return dict(all=summarize(accepted), initially_outside=summarize(outside))

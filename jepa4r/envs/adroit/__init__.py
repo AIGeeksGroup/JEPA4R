@@ -1,16 +1,13 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/envs/adroit/__init__.py (verbatim except: entry points adapted to the package; + make(), the skeleton's env interface)
-"""Lazy native collection and independent fragment registrations."""
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/envs/adroit/__init__.py (verbatim except: entry points adapted to the package; the CEM fragment env registration (appendix Tab. S1) left out; + make(), the skeleton's env interface)
+"""Lazy native collection registration."""
 from importlib import import_module
 from gymnasium.envs.registration import register, registry
 
 if 'swm/AdroitRelocate-v0' not in registry:
     register(id='swm/AdroitRelocate-v0', entry_point='jepa4r.envs.adroit.env:AdroitEnv', kwargs={'env_name': 'relocate-v0'})
-if 'swm/AdroitRelocateFragment-v0' not in registry:
-    register(id='swm/AdroitRelocateFragment-v0', entry_point='jepa4r.envs.adroit.fragment_env:RelocateFragmentEnv')
 
 _EXPORTS = {'AdroitEnv': 'env', 'AdroitFeedbackPolicy': 'policy',
-            'SavedStateExpert': 'policy', 'AdroitPointCloudWrapper': 'pcd',
-            'RelocateFragmentEnv': 'fragment_env'}
+            'SavedStateExpert': 'policy', 'AdroitPointCloudWrapper': 'pcd'}
 __all__ = list(_EXPORTS)
 
 def __getattr__(name):
