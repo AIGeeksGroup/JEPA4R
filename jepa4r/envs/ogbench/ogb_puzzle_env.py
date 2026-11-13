@@ -1,4 +1,5 @@
-# Moved from cortexbench@9331494:lewm_pcd/envs/ogb_puzzle_env.py (verbatim)
+# Moved from cortexbench@9331494:lewm_pcd/envs/ogb_puzzle_env.py (verbatim except: lines wrapped at 120 columns, no lint
+# exemptions, unused imports removed, registration imports as importlib.import_module)
 """OGBench's own ``puzzle-3x3-v0`` (the ogbench package; stable-worldmodel has no puzzle env) behind the repo's
 stable-worldmodel interface, ``swm/OGBenchPuzzle3x3-v0``, for the puzzle world-model data (scripts/data/collect_ogb.py);
 the larger boards the same way with ``env_type`` ('4x4': ``swm/OGBenchPuzzle4x4-v0``, 16 buttons; '4x5':
@@ -14,10 +15,11 @@ Collection policy as OGBench's official puzzle-3x3-noisy-v0 (data_gen_scripts/co
   * 1001 steps per episode (--max_episode_steps=1001).
 All draws as the official script makes them, from numpy's global RNG (seeded per episode): at the episode start the
 oracle's reset, then xi (the official script draws xi first; the same distributions), then per step whether the action
-is random (drawn by the env when the row starts, so the row can record it) and the action noise. One env per process (num_envs 1): env pools would share the global RNG. The random
-actions are OGBench's action_space.sample(): its action_space property builds a new, unseeded Box on every access, so
-the random actions (and with them the rows) are not reproducible from the seed, as in the official collection.
-The only difference from the official data is the observation:
+is random (drawn by the env when the row starts, so the row can record it) and the action noise. One env per process
+(num_envs 1): env pools would share the global RNG. The random actions are OGBench's action_space.sample(): its
+action_space property builds a new, unseeded Box on every access, so the random actions (and with them the rows) are not
+reproducible from the seed, as in the official collection. The only difference from the official data is the
+observation:
   * opaque arm (the materials of ob_type='states'; the official visual datasets make the arm translucent, but a
     translucent arm is still whole in the depth image, so the point cloud's colours and shape would disagree);
   * one camera, front_pixels (the official visual datasets' camera), 224x224 (``Camera``):
@@ -35,13 +37,14 @@ can load it by its path.
 """
 from __future__ import annotations
 
+import importlib
 import os
 
 os.environ.setdefault('MUJOCO_GL', 'egl')
 import gymnasium
 import mujoco
 import numpy as np
-import ogbench.manipspace  # noqa: F401  registers puzzle-3x3-v0
+importlib.import_module('ogbench.manipspace')  # registers puzzle-3x3-v0
 from gymnasium.spaces import Box
 from ogbench.manipspace.oracles.markov.button_markov import ButtonMarkovOracle
 from stable_worldmodel.policy import BasePolicy
@@ -169,13 +172,15 @@ def point_cloud(cam: Camera, rgb, depth, seg, R, t, rng: np.random.Generator):
 
 # -------------------------------------------------------------------------------------------------- env
 class OGBPuzzleEnv(gymnasium.Env):
-    """swm/OGBenchPuzzle3x3-v0 (env_type '4x4' / '4x5': swm/OGBenchPuzzle4x4-v0 / 4x5-v0), see the module docstring. The OGBench env is ``_env`` (gymnasium.make'd, as OGBench's
-    own scripts use it; its unwrapped PuzzleEnv is ``_u``); the oracle (``agent``) acts on ``ob`` / ``ob_info``, the
-    latest observation and info of OGBench's reset / step."""
+    """swm/OGBenchPuzzle3x3-v0 (env_type '4x4' / '4x5': swm/OGBenchPuzzle4x4-v0 / 4x5-v0), see the module docstring. The
+    OGBench env is ``_env`` (gymnasium.make'd, as OGBench's own scripts use it; its unwrapped PuzzleEnv is ``_u``); the
+    oracle (``agent``) acts on ``ob`` / ``ob_info``, the latest observation and info of OGBench's reset / step."""
 
     metadata = {'render_modes': ['rgb_array'], 'render_fps': 20}
 
-    def __init__(self, episode_len: int = EPISODE_STEPS, render_mode: str = 'rgb_array', env_type: str = '3x3', **kwargs):
+    def __init__(
+        self, episode_len: int = EPISODE_STEPS, render_mode: str = 'rgb_array', env_type: str = '3x3', **kwargs
+    ):
         self.render_mode = render_mode
         self.env_type = env_type
         self._env = make_env(max_episode_steps=episode_len, env_type=env_type)
@@ -203,8 +208,10 @@ class OGBPuzzleEnv(gymnasium.Env):
         }
 
     def reset(self, seed=None, options=None):
-        super().reset(seed=seed)  # this env's own np_random (stable-worldmodel draws its episode ids from it); unused here
-        np.random.seed(seed)  # the oracle (ButtonMarkovOracle.reset's end pose) uses the global np.random, as the official script
+        # this env's own np_random (stable-worldmodel draws its episode ids from it); unused here
+        super().reset(seed=seed)
+        # the oracle (ButtonMarkovOracle.reset's end pose) uses the global np.random, as the official script
+        np.random.seed(seed)
         self.ob, self.ob_info = self._env.reset(seed=seed)
         if self.cam is None or self.cam.model is not self._u._model:  # OGBench builds the model at reset
             if self.cam is not None:
@@ -218,7 +225,8 @@ class OGBPuzzleEnv(gymnasium.Env):
 
     def step(self, action):
         self.ob, reward, terminated, truncated, self.ob_info = self._env.step(action)
-        if self.agent.done:  # the button is pressed: a new random button (as the official script; ob / ob_info stay the step's)
+        # the button is pressed: a new random button (as the official script; ob / ob_info stay the step's)
+        if self.agent.done:
             agent_ob, agent_info = self._u.set_new_target()
             self.agent.reset(agent_ob, agent_info)
         self.rand = np.random.rand() < P_RANDOM_ACTION  # whether the next action is random

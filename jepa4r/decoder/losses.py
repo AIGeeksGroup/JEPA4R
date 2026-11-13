@@ -10,7 +10,8 @@ validation readout); ``decoder_loss`` adds them up as the backbone decoders' ``l
 import torch
 
 
-# Moved from lewm-pcd-recon-page4d@d3c2d07:lewm_pcd/recon/losses.py:_fp32, _nn_index, _gather, chamfer, sliced_wasserstein, nn_distance (lines 10-71; verbatim)
+# Moved from lewm-pcd-recon-page4d@d3c2d07:lewm_pcd/recon/losses.py:_fp32, _nn_index, _gather, chamfer,
+# sliced_wasserstein, nn_distance (lines 10-71; verbatim)
 def _fp32(*tensors):
     return [t.float() for t in tensors]
 
@@ -61,9 +62,12 @@ def sliced_wasserstein(pred, gt, n_proj=100):
         sg = (g @ theta.T).sort(dim=1).values.transpose(1, 2)              # (B, n_proj, M)
         if sp.size(-1) != sg.size(-1):
             n = max(sp.size(-1), sg.size(-1))
-            resample = lambda s: s if s.size(-1) == n else torch.nn.functional.interpolate(s, size=n, mode='linear', align_corners=True)
+            resample = lambda s: (
+                s if s.size(-1) == n else torch.nn.functional.interpolate(s, size=n, mode='linear', align_corners=True)
+            )
             sp, sg = resample(sp), resample(sg)
-        return 3.0 * (sp - sg).pow(2).mean()                               # x3: E[(theta . d)^2] = |d|^2 / 3, same units as Chamfer
+        # x3: E[(theta . d)^2] = |d|^2 / 3, same units as Chamfer
+        return 3.0 * (sp - sg).pow(2).mean()
 
 
 @torch.no_grad()

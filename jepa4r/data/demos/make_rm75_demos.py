@@ -1,4 +1,5 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/make_rm75_demos.py (verbatim except: imports / paths adapted to the package)
+# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/make_rm75_demos.py (verbatim except: imports / paths adapted
+# to the package; lines wrapped at 120 columns)
 """RM75 CortexBench demos for a task, made the way CortexBench's official ones are: 25 episodes of metaworld's scripted
 expert for the task on the RM75 (EXPERTS: bin-picking, drawer-open and assembly need RM75 versions,
 envs/metaworld/rm75/expert.py; button-press-topdown runs metaworld's script unchanged), each action recorded as the
@@ -58,7 +59,10 @@ while len(demos2d) < N:
             'env_infos': {k: np.array(v) for k, v in infos.items()}}
     demos2d.append(dict(base, images=np.array(I, dtype=np.uint8)))
     demos3d.append(dict(base, images=np.array(P, dtype=np.float32)))
-    print(f'demo {len(demos2d):2d}/{N}: seed {seed}, first success at step {int(np.argmax(infos["success"])) + 1}', flush=True)
+    print(
+        f'demo {len(demos2d):2d}/{N}: seed {seed}, first success at step {int(np.argmax(infos["success"])) + 1}',
+        flush=True,
+    )
     seed += 1
 for d, demos in ((OUT2D, demos2d), (OUT3D, demos3d)):
     with open(d / f'{ENV_NAME}.pickle', 'wb') as f:

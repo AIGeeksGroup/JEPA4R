@@ -1,4 +1,5 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/rh56_adapter/input_identity.py (verbatim except: imports / paths adapted to the package)
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/rh56_adapter/input_identity.py (verbatim except: imports / paths adapted to
+# the package; lines wrapped at 120 columns)
 """Validate original BC source and RH producer partitions before learning."""
 import hashlib
 import json
@@ -68,11 +69,15 @@ def validate_episode_producers(dataset,manifest):
         receipts=manifest.get('source_receipts')
         if not receipts or manifest.get('source_acceptance_checked') is not True:
             raise ValueError('publication is missing independent producer receipts')
-        selected=[row for row in manifest['datasets'] if Path(row['path']).name==path.name and row['sha256']==dataset_sha]
+        selected = [
+            row for row in manifest['datasets'] if Path(row['path']).name == path.name and row['sha256'] == dataset_sha
+        ]
         if len(selected)!=1:raise ValueError('published dataset/HDF header SHA binding differs')
         selected=selected[0];offset=0
         for source in selected['sources']:
-            actual=(path.parent/source['path']).resolve();batch=actual.parent;acceptance=sha(batch/'batch_acceptance.json')
+            actual = (path.parent / source['path']).resolve()
+            batch = actual.parent
+            acceptance = sha(batch / 'batch_acceptance.json')
             expected=[r['acceptance_sha256'] for r in receipts if r['acceptance_sha256']==acceptance]
             if len(expected)!=1:raise ValueError('publication producer acceptance binding differs')
             original,binding=_batch(batch,actual.name,expected[0])

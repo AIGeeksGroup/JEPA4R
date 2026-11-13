@@ -17,7 +17,12 @@ class FrozenImageEncoder:
     obs = 'image'
 
     def __init__(self, model, latent_dim, transforms, device='cpu'):
-        self.model, self.latent_dim, self.transforms, self.device = model.to(device).eval(), int(latent_dim), transforms, device
+        self.model, self.latent_dim, self.transforms, self.device = (
+            model.to(device).eval(),
+            int(latent_dim),
+            transforms,
+            device,
+        )
 
     def encode(self, batch):
         import torch

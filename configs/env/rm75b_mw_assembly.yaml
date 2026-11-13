@@ -5,10 +5,12 @@
 # collection plan, point clouds and imitation protocol are mw_assembly's; robot, collection env, CortexBench env and
 # demos are the twin's. The paper reports no number for it. Values from cortexbench@9331494:lewm_pcd/<path>:<line>.
 _base_: mw_assembly
-suite: metaworld_rm75         # bench/cortexbench/grid.py:46-50 (suite metaworld_rm75: run_bc_rm75.py, its own demos)
+suite: metaworld_rm75         # cortexbench@9331494:lewm_pcd/bench/cortexbench/grid.py:46-50 (suite metaworld_rm75:
+                              # run_bc_rm75.py, its own demos)
 name: rm75b_mw_assembly
 display: Assembly (RM75-B twin)
-env_id: rm75-assembly-v2-goal-observable   # CortexBench task id (demos, evaluation): bench/cortexbench/grid.py:46-48,
+env_id: rm75-assembly-v2-goal-observable   # CortexBench task id (demos, evaluation):
+                                           # cortexbench@9331494:lewm_pcd/bench/cortexbench/grid.py:46-48,
                               # run_bc_rm75.py:42-43 (TASKS)
 robot:
   name: rm75b
@@ -18,13 +20,18 @@ wm_data:
   env_id: swm/MWAssemblyRM75-v0   # scripts/data/config/mw_assembly_rm75.yaml:8; envs/metaworld/__init__.py:30-34
   pcd:
     multisample: false        # single-sample render (envs/metaworld/pcd.py since cortexbench 6a498d9, 2026-09-29): the
-                              # twin's data were collected on 2026-10-04 (logs/collect_mw_assembly_rm75.log of the data home)
-  policy: {_target_: jepa4r.envs.twins.metaworld_rm75.RM75AssemblyThreePartPolicy}   # scripts/data/config/mw_assembly_rm75.yaml:11-12 (the assembly backbone made for the RM75)
-  sets:                       # scripts/data/run_mw_collection.sh:17-18 (CFG=NAME=mw_assembly_rm75: 10,000 episodes in 40
+                              # twin's data were collected on 2026-10-04 (logs/collect_mw_assembly_rm75.log of the data
+                              # home)
+  # scripts/data/config/mw_assembly_rm75.yaml:11-12 (the assembly backbone made for the RM75)
+  policy: {_target_: jepa4r.envs.twins.metaworld_rm75.RM75AssemblyThreePartPolicy}
+  sets:                       # scripts/data/run_mw_collection.sh:17-18 (CFG=NAME=mw_assembly_rm75: 10,000 episodes in
+                              # 40
                               # shards, test 150 at world seed 2,000,000; logs/collect_mw_assembly_rm75.log)
     - {name: mw_assembly_rm75, num_episodes: 10000, shards: 40}
     - {name: mw_assembly_rm75_test, num_episodes: 150, world_seed: 2000000}
-  files: {pointcloud: mw_assembly_rm75_pcd.h5, image: mw_assembly_rm75.h5}   # config/train/data/mw_assembly_rm75{,_pcd}.yaml
+  # config/train/data/mw_assembly_rm75{,_pcd}.yaml
+  files: {pointcloud: mw_assembly_rm75_pcd.h5, image: mw_assembly_rm75.h5}
 policy_data:
-  source: demos               # bench/cortexbench/make_rm75_demos.py: 25 demos of metaworld's scripted expert on the twin
+  source: demos               # bench/cortexbench/make_rm75_demos.py: 25 demos of metaworld's scripted expert on the
+                              # twin
   demos_per_task: 25          # make_rm75_demos.py:28 (N = 25)

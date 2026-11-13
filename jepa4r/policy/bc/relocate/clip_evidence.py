@@ -1,4 +1,5 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/relocate/clip_evidence.py (verbatim)
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/relocate/clip_evidence.py (verbatim except: lines wrapped at 120
+# columns)
 """Passive clipping evidence; the original clip call alone mutates gradients."""
 from contextlib import contextmanager
 import math
@@ -22,11 +23,21 @@ def observe_gradient_clipping(records,*,model_provider=None):
         returned=original(values,*args,**kwargs)
         after=norm(values,order);encoder_after=None if not encoder else norm(encoder,order)
         before=float(returned.detach().float().cpu())
-        records.append(dict(event=len(records),parameter_tensors=len(values),gradient_tensors=sum(p.grad is not None for p in values),
-            max_norm=float(kwargs.get('max_norm',args[0] if args else 0.)),norm_type=float(order),
-            norm_before_original_return=before,norm_after=after,encoder_norm_before=encoder_before,
-            encoder_norm_after=encoder_after,finite=math.isfinite(before) and math.isfinite(after),
-            scope='Original clip_grad_norm_ return is pre-clip; added norm reads do not modify tensors or RNG'))
+        records.append(
+            dict(
+                event=len(records),
+                parameter_tensors=len(values),
+                gradient_tensors=sum(p.grad is not None for p in values),
+                max_norm=float(kwargs.get('max_norm', args[0] if args else 0.0)),
+                norm_type=float(order),
+                norm_before_original_return=before,
+                norm_after=after,
+                encoder_norm_before=encoder_before,
+                encoder_norm_after=encoder_after,
+                finite=math.isfinite(before) and math.isfinite(after),
+                scope='Original clip_grad_norm_ return is pre-clip; added norm reads do not modify tensors or RNG',
+            )
+        )
         return returned
     torch.nn.utils.clip_grad_norm_=observed
     try:yield

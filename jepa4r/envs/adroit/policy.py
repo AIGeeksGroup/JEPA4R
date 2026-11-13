@@ -1,4 +1,4 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/envs/adroit/policy.py (verbatim)
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/envs/adroit/policy.py (verbatim except: lines wrapped at 120 columns)
 """Trusted MJRL state feedback and the existing World.set_policy duck interface.
 
 This module needs only NumPy until a known checkpoint is explicitly unpickled;
@@ -72,7 +72,12 @@ class SavedStateExpert:
     def action(self, native_env):
         observation = self._vector(native_env.get_obs(), self.observation_dim, 'expert observation')
         result = self.policy.get_action(observation)
-        if not isinstance(result, (tuple, list)) or len(result) != 2 or not isinstance(result[1], Mapping) or 'evaluation' not in result[1]:
+        if (
+            not isinstance(result, (tuple, list))
+            or len(result) != 2
+            or not isinstance(result[1], Mapping)
+            or 'evaluation' not in result[1]
+        ):
             raise ValueError('MJRL get_action must return [sampled, info] with evaluation; no sampled fallback')
         # Leave the raw mean unclipped: collection adds noise before final clip.
         return self._vector(result[1]['evaluation'], self.action_dim, 'expert evaluation action')

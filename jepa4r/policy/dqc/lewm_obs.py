@@ -1,4 +1,6 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/dqc/lewm_obs.py (verbatim except: paths of lewm_cortex / jepa_baselines (jepa4r/policy/bc), the repository root and ogb_puzzle_env.py (jepa4r/envs/ogbench))
+# Moved from cortexbench@9331494:lewm_pcd/bench/dqc/lewm_obs.py (verbatim except: paths of lewm_cortex / jepa_baselines
+# (jepa4r/policy/bc), the repository root and ogb_puzzle_env.py (jepa4r/envs/ogbench); lines wrapped at 120 columns, no
+# lint exemptions)
 """Frozen LeWM latents of OGBench puzzle states (3x3, 4x4, 4x5), shared by extract_feats.py (the training set) and
 run_dqc.py (the evaluation): the camera and point clouds of the LeWM data (envs/ogb_puzzle_env.py: front_pixels 224, the
 opaque arm of ob_type='states'; 2D anti-aliased, 3D the same camera's depth with 1200 points) and the encoders as
@@ -20,7 +22,7 @@ LEWM = Path(__file__).resolve().parents[3]  # the repository root (jepa4r/policy
 sys.path.insert(0, str(LEWM / 'jepa4r' / 'policy' / 'bc'))  # lewm_cortex, jepa_baselines
 if str(LEWM) not in sys.path:
     sys.path.append(str(LEWM))  # jepa4r (the projector), after the DQC code's packages
-from lewm_cortex import IMAGENET, build_lewm_embedding, load_lewm_pcd  # noqa: E402
+from lewm_cortex import IMAGENET, build_lewm_embedding, load_lewm_pcd
 
 DEV = 'cuda' if torch.cuda.is_available() else 'cpu'
 PCD_CENTER, PCD_SCALE = (0.425, 0.0, 0.2), 4.0  # = config/train/data/ogb_pcd.yaml (puzzle_3x3_pcd.yaml keeps it)
@@ -29,7 +31,9 @@ PCD_CENTER, PCD_SCALE = (0.425, 0.0, 0.2), 4.0  # = config/train/data/ogb_pcd.ya
 def load_puzzle():
     """envs/ogb_puzzle_env.py as the module ogb_puzzle_env (by path, see the module docstring)."""
     if 'ogb_puzzle_env' not in sys.modules:
-        spec = importlib.util.spec_from_file_location('ogb_puzzle_env', LEWM / 'jepa4r' / 'envs' / 'ogbench' / 'ogb_puzzle_env.py')
+        spec = importlib.util.spec_from_file_location(
+            'ogb_puzzle_env', LEWM / 'jepa4r' / 'envs' / 'ogbench' / 'ogb_puzzle_env.py'
+        )
         mod = importlib.util.module_from_spec(spec)
         sys.modules['ogb_puzzle_env'] = mod
         spec.loader.exec_module(mod)
@@ -131,7 +135,9 @@ class LeWMObs:
         self.pdat, self.kind, self.lights = load_puzzle(), kind, lights
         self.u = env.unwrapped
         self.cam = self.pdat.Camera(self.u._model, self.u._num_buttons)
-        self.enc = Encoders(ckpt_2d=ckpt if kind == 'lewm2d' else None, ckpt_3d=ckpt if kind == 'lewm3d' else None, epoch=epoch)
+        self.enc = Encoders(
+            ckpt_2d=ckpt if kind == 'lewm2d' else None, ckpt_3d=ckpt if kind == 'lewm3d' else None, epoch=epoch
+        )
         self.rng = np.random.default_rng(12345)
 
     def __call__(self):

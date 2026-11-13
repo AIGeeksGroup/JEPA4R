@@ -1,4 +1,4 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/envs/adroit/hdf_binding.py (verbatim)
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/envs/adroit/hdf_binding.py (verbatim except: lines wrapped at 120 columns)
 """Read-only content binding for concrete HDF ExternalLink and VDS dependencies."""
 import hashlib
 import json
@@ -61,7 +61,11 @@ def hdf_dependencies(path):
                         raise ValueError('unsupported HDF raw external storage')
                     if item.is_virtual:
                         for index, mapping in enumerate(item.virtual_sources()):
-                            dataset_name = mapping.dset_name.decode('utf-8') if isinstance(mapping.dset_name, bytes) else mapping.dset_name
+                            dataset_name = (
+                                mapping.dset_name.decode('utf-8')
+                                if isinstance(mapping.dset_name, bytes)
+                                else mapping.dset_name
+                            )
                             edges.append(('vds:' + logical_name + '[' + str(index) + ']->' + dataset_name,
                                           target(mapping.file_name)))
 

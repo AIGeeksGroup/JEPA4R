@@ -7,8 +7,8 @@ Integrated code (cortexbench@9331494:lewm_pcd/bench/dqc/, moved into this packag
   run_dqc.py       dqc df89825's training loop (the checkout, unchanged, at JEPA4R_DQC or third_party/dqc) with the
                    frozen encoder's latent + the true lights as observation; restartable (resume.pkl); metrics to
                    train.jsonl / eval.jsonl; the agent settings of the run in flags.json
-  lewm_obs.py      the frozen encoders as CortexBench loads them (jepa4r/policy/bc/lewm_cortex.py, jepa_baselines.py) and
-                   the evaluation-time observations (LeWMObs, BaselineObs)
+  lewm_obs.py      the frozen encoders as CortexBench loads them (jepa4r/policy/bc/lewm_cortex.py, jepa_baselines.py)
+                   and the evaluation-time observations (LeWMObs, BaselineObs)
   extract_feats.py, extract_feats_baselines.py   every row of the official play data set back into the simulator,
                    rendered (front_pixels 224; point sampling seeded per frame with (20261011, split, row)) and encoded
                    (epoch 10) -> one latent per row
@@ -164,14 +164,15 @@ def train(cfg, out_dir) -> dict:
 def evaluate_run(cfg, run_dir, encoder, episodes=None):
     """Restore a run_dqc.py run (its flags.json + resume.pkl) as run_dqc.py builds and restores it, and evaluate it with
     run_dqc.py's own ``evaluate`` on OGBench's five tasks (episodes per task: ``episodes`` or cfg.env.eval
-    .episodes_per_task) -> {'success': %, 'success_per_task': {task: %}}. The observation is ``latent_obs`` of the frozen
-    encoder read from ``encoder``. Needs the DQC interpreter (JEPA4R_PY_DQC) and the run's latents (flags.json feats_dir)."""
+    .episodes_per_task) -> {'success': %, 'success_per_task': {task: %}}. The observation is ``latent_obs`` of the
+    frozen encoder read from ``encoder``. Needs the DQC interpreter (JEPA4R_PY_DQC) and the run's latents (flags.json
+    feats_dir)."""
     import pickle
     import random
 
     if str(HERE) not in sys.path:
         sys.path.insert(1, str(HERE))
-    import run_dqc  # noqa: F401  puts the dqc checkout first on sys.path, as for a run
+    import run_dqc  # puts the dqc checkout first on sys.path, as for a run
 
     import flax
     import ml_collections
@@ -188,13 +189,17 @@ def evaluate_run(cfg, run_dir, encoder, episodes=None):
     eval_env = make_ogbench_env_and_datasets(fl['env_name'], dataset_path=fl['dataset_path'], compact_dataset=True,
                                              env_only=True, width=224, height=224)
     kind = fl['obs'].split('_')[0]
-    z = np.load(Path(fl['feats_dir']) / f"{fl['feats_split']}_z{kind if kind in LOADERS else kind[-2:]}.npy", mmap_mode='r')
+    z = np.load(
+        Path(fl['feats_dir']) / f"{fl['feats_split']}_z{kind if kind in LOADERS else kind[-2:]}.npy", mmap_mode='r'
+    )
     train_dataset['observations'] = np.concatenate([z.astype(np.float32, copy=False),
                                                     train_dataset['button_states'].astype(np.float32)], axis=1)
     del z
     train_dataset = Dataset.create(**train_dataset)
     eps = 1e-5
-    train_dataset = train_dataset.copy(add_or_replace=dict(actions=np.clip(train_dataset['actions'], -1 + eps, 1 - eps)))
+    train_dataset = train_dataset.copy(
+        add_or_replace=dict(actions=np.clip(train_dataset['actions'], -1 + eps, 1 - eps))
+    )
     random.seed(fl['seed'])
     np.random.seed(fl['seed'])
     train_dataset = CGCDataset(Dataset.create(**train_dataset), config)

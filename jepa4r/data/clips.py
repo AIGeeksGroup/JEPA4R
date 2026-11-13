@@ -12,7 +12,8 @@ from pathlib import Path
 import numpy as np
 import torch
 
-# Moved from cortexbench@9331494:lewm_pcd/utils.py (lines 6-32; verbatim except: stable_pretraining imported inside the functions)
+# Moved from cortexbench@9331494:lewm_pcd/utils.py (lines 6-32; verbatim except: stable_pretraining imported inside the
+# functions)
 def get_img_preprocessor(source: str, target: str, img_size: int = 224):
     from stable_pretraining import data as dt
 
@@ -84,8 +85,8 @@ OBS_KEYS = {'pointcloud': ['pcd_xyz', 'pcd_rgb'], 'image': ['pixels']}
 
 
 def dataset_kwargs(method_cfg, obs, num_preds=1):
-    """The ``data.dataset`` block of LeWM's configs (cortexbench@9331494:lewm_pcd/config/train/data/ogb_pcd.yaml for point
-    clouds, dmc.yaml for pixels): clip length history + num_preds, frameskip 5, the observation columns + action +
+    """The ``data.dataset`` block of LeWM's configs (cortexbench@9331494:lewm_pcd/config/train/data/ogb_pcd.yaml for
+    point clouds, dmc.yaml for pixels): clip length history + num_preds, frameskip 5, the observation columns + action +
     observation (proprioception) loaded, action and observation cached."""
     return dict(num_steps=int(method_cfg.history) + int(num_preds), frameskip=int(method_cfg.frameskip),
                 keys_to_load=OBS_KEYS[obs] + ['action', 'observation'], keys_to_cache=['action', 'observation'])

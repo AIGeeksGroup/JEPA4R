@@ -1,12 +1,14 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/dqc/run_dqc.py (verbatim except: where the dqc checkout is found (JEPA4R_DQC, default <repo>/third_party/dqc))
+# Moved from cortexbench@9331494:lewm_pcd/bench/dqc/run_dqc.py (verbatim except: where the dqc checkout is found
+# (JEPA4R_DQC, default <repo>/third_party/dqc); lines wrapped at 120 columns, no lint exemptions)
 """DQC (Decoupled Q-chunking, github.com/ColinQiyangLi/dqc at df89825, in third_party/dqc unchanged) trained and
 evaluated on OGBench puzzle-3x3-play (the official data, 1 M steps). The inputs, everything else equal:
   --obs state  : the original input, the 55-d state vector (the reproduction);
   --obs lewm2d : [the frozen LeWM 2D encoder's 192-d latent, the 9 true lights];
   --obs lewm3d : [the frozen LeWM 3D encoder's 192-d latent, the 9 true lights];
   --obs lewm2d_nolight / lewm3d_nolight : the 192-d latent only (the lights only through the latent);
-  --obs vjepa21 / visreg / lejepa / pldm : [a JEPA-family baseline encoder's latent (lewm_obs.BaselineEncoder, as CortexBench
-                                   loads it; extract_feats_baselines.py), the true lights]; --ckpt its checkpoint.
+  --obs vjepa21 / visreg / lejepa / pldm : [a JEPA-family baseline encoder's latent (lewm_obs.BaselineEncoder, as
+                                   CortexBench loads it; extract_feats_baselines.py), the true lights]; --ckpt its
+                                   checkpoint.
 The goal is always the 9 lights' goal state (OGBench's oraclerep); algorithm, hyperparameters, data and evaluation
 (OGBench's 5 tasks) are unchanged.
 The training loop is dqc's main.py with three changes:
@@ -37,18 +39,18 @@ sys.path.insert(0, str(REPO))
 sys.path.insert(1, str(HERE))  # lewm_obs
 DATA = Path(os.environ.get('STABLEWM_HOME', '.')) / 'datasets' / 'ogbench'
 
-import flax  # noqa: E402
-import jax  # noqa: E402
-import numpy as np  # noqa: E402
-from absl import app, flags  # noqa: E402
-from ml_collections import config_flags  # noqa: E402
+import flax
+import jax
+import numpy as np
+from absl import app, flags
+from ml_collections import config_flags
 
-from agents import agents  # noqa: E402
-from envs.env_utils import make_ogbench_env_and_datasets  # noqa: E402
-from utils.datasets import CGCDataset, Dataset  # noqa: E402
-from utils.evaluation import add_to, flatten, supply_rng  # noqa: E402
+from agents import agents
+from envs.env_utils import make_ogbench_env_and_datasets
+from utils.datasets import CGCDataset, Dataset
+from utils.evaluation import add_to, flatten, supply_rng
 
-from lewm_obs import BaselineEncoder, BaselineObs, LeWMObs  # noqa: E402
+from lewm_obs import BaselineEncoder, BaselineObs, LeWMObs
 
 FLAGS = flags.FLAGS
 flags.DEFINE_string('obs', 'state', 'state | lewm2d | lewm3d | lewm2d_nolight | lewm3d_nolight | '
@@ -111,13 +113,32 @@ def main(_):
     kind = FLAGS.obs.split('_')[0]            # lewm2d / lewm3d / vjepa21 / lejepa / pldm
     baseline = kind in BaselineEncoder.LOADERS
     with_lights = not FLAGS.obs.endswith('_nolight')
-    flag_dict = {k: getattr(FLAGS, k) for k in FLAGS if '.' not in k and k in (
-        'obs', 'env_name', 'dataset_path', 'feats_dir', 'feats_split', 'ckpt', 'lewm_epoch', 'seed', 'offline_steps', 'log_interval',
-        'eval_interval', 'eval_episodes', 'save_every')}
+    flag_dict = {
+        k: getattr(FLAGS, k)
+        for k in FLAGS
+        if '.' not in k
+        and k
+        in (
+            'obs',
+            'env_name',
+            'dataset_path',
+            'feats_dir',
+            'feats_split',
+            'ckpt',
+            'lewm_epoch',
+            'seed',
+            'offline_steps',
+            'log_interval',
+            'eval_interval',
+            'eval_episodes',
+            'save_every',
+        )
+    }
     flag_dict['agent'] = config.to_dict()
     (run_dir / 'flags.json').write_text(json.dumps(flag_dict, indent=1))
 
-    # env and data (as main.py). The LeWM inputs render into a 224 offscreen buffer: the rendering size only, not the simulation.
+    # env and data (as main.py). The LeWM inputs render into a 224 offscreen buffer: the rendering size only, not the
+    # simulation.
     env_kwargs = dict(width=224, height=224) if lewm else {}
     env, train_dataset, _ = make_ogbench_env_and_datasets(FLAGS.env_name, dataset_path=FLAGS.dataset_path,
                                                           compact_dataset=True, add_info=True)
@@ -135,7 +156,9 @@ def main(_):
     print(train_dataset.keys(), train_dataset.size, 'obs', train_dataset['observations'].shape, flush=True)
     env.reset()
     eps = 1e-5
-    train_dataset = train_dataset.copy(add_or_replace=dict(actions=np.clip(train_dataset['actions'], -1 + eps, 1 - eps)))
+    train_dataset = train_dataset.copy(
+        add_or_replace=dict(actions=np.clip(train_dataset['actions'], -1 + eps, 1 - eps))
+    )
 
     random.seed(FLAGS.seed)
     np.random.seed(FLAGS.seed)
@@ -160,7 +183,8 @@ def main(_):
         np.random.set_state(d['np_rng'])
         random.setstate(d['py_rng'])
         metric_rng = jax.numpy.asarray(d['metric_rng'])
-        eval_pending = d.get('eval_pending', False)  # stopped during an evaluation: this step's update is done, the evaluation is redone
+        # stopped during an evaluation: this step's update is done, the evaluation is redone
+        eval_pending = d.get('eval_pending', False)
         start = d['step'] if eval_pending else d['step'] + 1
         print(f'resumed from step {d["step"]}' + (' (eval pending)' if eval_pending else ''), flush=True)
     else:

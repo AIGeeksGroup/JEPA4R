@@ -1,4 +1,5 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/scripts/baselines/adroit/train_pldm.py (verbatim except: imports / paths adapted to the package)
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/scripts/baselines/adroit/train_pldm.py (verbatim except: imports / paths
+# adapted to the package; lines wrapped at 120 columns)
 """Final Relocate data/output adapter; original learning methods are delegated.
 
 An explicit smoke/formal mode is required to execute; preparation is read-only.
@@ -88,19 +89,31 @@ def build_plan(args, parser):
     action_dim = 30
     recipe = dict(RECIPE, raw_action_dim=action_dim,
                   action_block_dim=action_dim * RECIPE['frameskip'])
-    return {'execution': 'PREPARED_ONLY', 'method': 'framework_PLDM', 'mode': args.mode,
-            'task': args.task,
-            'expected_visual_frames': 2000000,
-            'source_row_schema': 'pre_action_rows_with_outgoing_action',
-            'framework_root': str(framework), 'reference_commit': FRAMEWORK_COMMIT,
-            'native_script': str(script), 'native_source_sha256_lf': sha_lf(script),
-            'native_config_sha256_lf': sha_lf(config),
-            'dataset': str(dataset), 'output': str(output), 'name': args.name,
-            'device': args.device, 'hydra_overrides': overrides, 'recipe': recipe,
-            'workers': args.workers, 'prefetch_factor': args.prefetch_factor,
-            'data_boundary': 'native sequence sampling and all windows preserved; original normalizer excludes NaN rows and forward applies nan_to_num',
-            'compatibility': 'isolated-memory logger scope fix only; framework source stays unchanged',
-            'acceptance': 'pending real boundary-window GPU smoke and full-run checkpoint/gradient acceptance'}
+    return {
+        'execution': 'PREPARED_ONLY',
+        'method': 'framework_PLDM',
+        'mode': args.mode,
+        'task': args.task,
+        'expected_visual_frames': 2000000,
+        'source_row_schema': 'pre_action_rows_with_outgoing_action',
+        'framework_root': str(framework),
+        'reference_commit': FRAMEWORK_COMMIT,
+        'native_script': str(script),
+        'native_source_sha256_lf': sha_lf(script),
+        'native_config_sha256_lf': sha_lf(config),
+        'dataset': str(dataset),
+        'output': str(output),
+        'name': args.name,
+        'device': args.device,
+        'hydra_overrides': overrides,
+        'recipe': recipe,
+        'workers': args.workers,
+        'prefetch_factor': args.prefetch_factor,
+        'data_boundary': 'native sequence sampling and all windows preserved; original normalizer excludes NaN rows '
+                         'and forward applies nan_to_num',
+        'compatibility': 'isolated-memory logger scope fix only; framework source stays unchanged',
+        'acceptance': 'pending real boundary-window GPU smoke and full-run checkpoint/gradient acceptance',
+    }
 
 
 def logger_compatible_tree(source, filename):
@@ -221,13 +234,23 @@ def execute(plan):
             def record(receipt):
                 state['data_receipts'].append(receipt)
                 _write(output / 'state.json', state)
-            with helpers.dataset_handle_hook(native.swm, dataset, recorder=record), explicit_training_seed(native,int(cfg.seed)):
+
+            with (
+                helpers.dataset_handle_hook(native.swm, dataset, recorder=record),
+                explicit_training_seed(native, int(cfg.seed)),
+            ):
                 native.run.__wrapped__(cfg)
             state.update(phase='native_returned_acceptance_pending', exit_code=0, updated=time.time())
             _write(output / 'state.json', state)
             (output / 'actual_exit_code').write_text('0\n')
         except BaseException as error:
-            code = (error.code or 0) if isinstance(error, SystemExit) else 130 if isinstance(error, KeyboardInterrupt) else 1
+            code = (
+                (error.code or 0)
+                if isinstance(error, SystemExit)
+                else 130
+                if isinstance(error, KeyboardInterrupt)
+                else 1
+            )
             code = code if isinstance(code, int) else 1
             state.update(phase='failed' if code else 'native_returned_acceptance_pending',
                          exit_code=code, updated=time.time(), error=traceback.format_exc())

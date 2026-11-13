@@ -109,7 +109,9 @@ class ChunkedSharedMLP(nn.Module):
                 self._update(i, mean, var, m)
                 x = self._bn_act(i, y, (mean, var))
             return [reduce(x)]
-        run = (lambda f, *a: checkpoint(f, *a, use_reentrant=False)) if torch.is_grad_enabled() else (lambda f, *a: f(*a))
+        run = (
+            (lambda f, *a: checkpoint(f, *a, use_reentrant=False)) if torch.is_grad_enabled() else (lambda f, *a: f(*a))
+        )
         ns = [float(n) for _, n in chunks]
         m = sum(ns)
         stats = []
@@ -207,7 +209,8 @@ class DGCNN(nn.Module):
         self.edge = nn.ModuleList()
         d = in_dim
         for w in widths:
-            self.edge.append(ChunkedSharedMLP(2 * d, [w], bias=False, act='leaky'))  # its weights; computed in _edge_conv
+            # its weights; computed in _edge_conv
+            self.edge.append(ChunkedSharedMLP(2 * d, [w], bias=False, act='leaky'))
             d = w
         self.conv5 = ChunkedSharedMLP(sum(widths), [emb_dim], bias=False, act='leaky')
         self.head = nn.Linear(2 * emb_dim, out_dim)

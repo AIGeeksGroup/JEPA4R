@@ -1,4 +1,5 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/run_bc3d.py (verbatim except: imports / paths adapted to the package)
+# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/run_bc3d.py (verbatim except: imports / paths adapted to the
+# package; lines wrapped at 120 columns, no lint exemptions)
 """One CortexBench MetaWorld imitation run with a point-cloud encoder (the 3D LeWM). This is run_bc.py (the official
 hydra_launcher + train_loop at eai-vc 76fe35e, with its two logging-only patches), with the camera image replaced by
 the same camera's point cloud and nothing else changed:
@@ -27,14 +28,14 @@ CONF_HOME = os.environ.get('JEPA4R_BC_CONF_HOME', HERE)  # <CONF_HOME>/conf/mode
 sys.path.insert(0, VI)
 sys.path.insert(0, HERE)
 
-import hydra  # noqa: E402
-import mujoco_vc.gym_wrapper as gw  # noqa: E402
-import mujoco_vc.model_loading as ml  # noqa: E402
-import numpy as np  # noqa: E402
-import train_loop  # noqa: E402
-from omegaconf import OmegaConf  # noqa: E402
+import hydra
+import mujoco_vc.gym_wrapper as gw
+import mujoco_vc.model_loading as ml
+import numpy as np
+import train_loop
+from omegaconf import OmegaConf
 
-from pcd_fork import MWPointClouds, no_multisampling  # noqa: E402
+from pcd_fork import MWPointClouds, no_multisampling
 
 _official_load = ml.load_pretrained_model
 

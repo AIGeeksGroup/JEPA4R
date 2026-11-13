@@ -1,4 +1,5 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/envs/adroit/pcd.py (verbatim except: imports / paths adapted to the package)
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/envs/adroit/pcd.py (verbatim except: imports / paths adapted to the package;
+# lines wrapped at 120 columns)
 """Single-camera legacy Adroit surface PCD; real rendering remains a G3 gate.
 
 Depth is OpenGL normalized depth, inverted with model near/far times extent.
@@ -22,7 +23,12 @@ _PCD_FORK = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(_PCD_FORK)
 DEFAULT_CROP_BOX = ((-.6, -.6, -.05), (.6, .6, 1.1))
 TASK_SETTINGS = {
-    'relocate': {'camera': 'vil_camera', 'object_body': 'Object', 'target_site': 'target', 'crop_box': DEFAULT_CROP_BOX},
+    'relocate': {
+        'camera': 'vil_camera',
+        'object_body': 'Object',
+        'target_site': 'target',
+        'crop_box': DEFAULT_CROP_BOX,
+    },
 }
 
 class AdroitPointClouds:
@@ -70,7 +76,10 @@ class AdroitPointClouds:
         contexts = getattr(self.sim, '_render_contexts', ())
         created = getattr(self.sim, '_render_context_offscreen', None) is not None or bool(contexts)
         if created and m.vis.quality.offsamples != 0:
-            raise RuntimeError('HOLD: existing MSAA render context; PCD needs offsamples=0 before first render; use a separate replay process')
+            raise RuntimeError(
+                'HOLD: existing MSAA render context; PCD needs offsamples=0 before first render; use a separate '
+                'replay process'
+            )
         if not created:
             m.vis.quality.offsamples = 0
 
@@ -103,9 +112,15 @@ class AdroitPointClouds:
         target = np.zeros(sid.shape,dtype=bool) if self.target_site is None else (kind == 6) & (sid == self.target_site)
         valid = ((geom & self.fg[safe]) if self.foreground_only else geom) | target
         valid &= np.isfinite(xyz.reshape(-1,3)).all(axis=1) & np.isfinite(depth.reshape(-1)) & (depth.reshape(-1) < 1.)
-        self.last_info = {'camera':self.camera, 'target_visible_pixels':int(np.count_nonzero(target & valid)),
-                          'foreground_pixels':int(np.count_nonzero(valid)), 'target_surface_pass':self.target_site is not None,
-                          'render_validation':'UNVERIFIED_G3', 'depth_units':'world_metres', 'offsamples':0}
+        self.last_info = {
+            'camera': self.camera,
+            'target_visible_pixels': int(np.count_nonzero(target & valid)),
+            'foreground_pixels': int(np.count_nonzero(valid)),
+            'target_surface_pass': self.target_site is not None,
+            'render_validation': 'UNVERIFIED_G3',
+            'depth_units': 'world_metres',
+            'offsamples': 0,
+        }
         return self._sample(xyz.reshape(-1,3)[valid], rgb.reshape(-1,3)[valid],
                             (self.obj[safe] & geom)[valid])
 
@@ -155,7 +170,9 @@ class AdroitPointClouds:
                    and not np.any(robot & valid))
         if bg_fill:
             background = geom & ~self.fg[safe] & ~self.obj[safe]
-            background &= np.isfinite(xyz.reshape(-1,3)).all(axis=1) & np.isfinite(depth.reshape(-1)) & (depth.reshape(-1) < 1.)
+            background &= (
+                np.isfinite(xyz.reshape(-1, 3)).all(axis=1) & np.isfinite(depth.reshape(-1)) & (depth.reshape(-1) < 1.0)
+            )
             labels[background] = 3  # Private diagnostic role; never relabel BG as robot.
             pixels = np.concatenate((pixels, np.flatnonzero(background).astype(np.int64)))
             result = self._sample_pen(xyz.reshape(-1,3)[pixels], rgb.reshape(-1,3)[pixels],
@@ -167,10 +184,13 @@ class AdroitPointClouds:
             ball = target[self.last_source_indices]
             count = int(np.count_nonzero(ball))
             unique = int(np.unique(result[0][ball], axis=0).shape[0])
-            self.last_info.update(target_semantics=('ordinary_object_instance' if self.separate_object_instances else 'ordinary_object'),
-                                  ball_visible_pixels=int(np.count_nonzero(target & valid)),
-                                  ball_sampled=count, ball_unique_sampled=unique,
-                                  ball_duplicate_samples=count - unique)
+            self.last_info.update(
+                target_semantics=('ordinary_object_instance' if self.separate_object_instances else 'ordinary_object'),
+                ball_visible_pixels=int(np.count_nonzero(target & valid)),
+                ball_sampled=count,
+                ball_unique_sampled=unique,
+                ball_duplicate_samples=count - unique,
+            )
         return result
 
     def _sample_pen(self, pts, cols, labels, source_indices=None, background_fill=False):
@@ -186,13 +206,24 @@ class AdroitPointClouds:
                     and self.separate_object_instances and self.empty_robot_background_fill)
         if background_fill and (not bg_route or np.any(labels == 0)):
             raise ValueError('BG fill requires opt-in raw-empty-robot input')
-        if labels.shape != (len(pts),) or source.shape != (len(pts),) or not np.isin(labels, [0,1,2,3] if background_fill else [0,1,2]).all():
+        if (
+            labels.shape != (len(pts),)
+            or source.shape != (len(pts),)
+            or not np.isin(labels, [0, 1, 2, 3] if background_fill else [0, 1, 2]).all()
+        ):
             raise ValueError('Pen labels/source indices must match input points')
         if bg_route:
-            self.last_info.update(empty_robot_background_fill_used=int(background_fill),
-                visible_background=0, crop_background=0, voxel_background=0,
-                sampled_background=0, background_unique_sampled=0, background_duplicate_samples=0,
-                background_counts_scope='included background candidate pool only; unused zero does not imply no scene background')
+            self.last_info.update(
+                empty_robot_background_fill_used=int(background_fill),
+                visible_background=0,
+                crop_background=0,
+                voxel_background=0,
+                sampled_background=0,
+                background_unique_sampled=0,
+                background_duplicate_samples=0,
+                background_counts_scope='included background candidate pool only; unused zero does not imply no scene '
+                                        'background',
+            )
         self.last_labels = np.empty(0, dtype=np.int8)
         self.last_source_indices = np.empty(0, dtype=np.int64)
         classes = (('robot', 0), ('object', 1), ('target', 2)) + ((('background', 3),) if background_fill else ())
@@ -280,7 +311,10 @@ class AdroitPointCloudWrapper:
         out = wrapper_type(env)
         native = env.unwrapped
         if native.sim.model.vis.quality.offsamples != 0:
-            raise RuntimeError('HOLD: paired RGB/PCD requires validated separate MSAA and non-MSAA rendering; changing RGB offsamples is forbidden')
+            raise RuntimeError(
+                'HOLD: paired RGB/PCD requires validated separate MSAA and non-MSAA rendering; changing RGB '
+                'offsamples is forbidden'
+            )
         out._pcd = AdroitPointClouds(native.sim, native.task, num_points=num_points,
             size=size, camera=cameras[0], voxel_size=voxel_size, obj_fraction=cube_fraction,
             crop_box=crop_box, foreground_only=foreground_only,

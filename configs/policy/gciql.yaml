@@ -1,5 +1,6 @@
 # OGBench Cube: GCIQL [park2025ogbench], offline goal-conditioned RL (supp. sec:supp-policy).
-# Values not stated in the paper: the OGBench-cube branch's paper GCIQL (C4 = OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/):
+# Values not stated in the paper: the OGBench-cube branch's paper GCIQL (C4 =
+# OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/):
 # workflow_agent.json (OGBench's GCIQL agent config as run), downstream/trainer.py:83-86 (asserted run settings),
 # workflow_downstream.py (budgets). Run by that workflow, moved here: jepa4r/policy/gciql (downstream/ = this learner).
 name: gciql
@@ -27,6 +28,7 @@ hparams:                      # C4 workflow_agent.json
   actor_goals: {current: 0.0, trajectory: 1.0, random: 0.0, geometric: false}
   gc_negative: true
 eval:
-  every: null                 # one evaluation, of the final policy (update 1,000,000): C4 workflow_downstream.py stages accept -> native-sr
+  every: null                 # one evaluation, of the final policy (update 1,000,000): C4 workflow_downstream.py stages
+                              # accept -> native-sr
   report: final
   episodes: 250               # 5 official tasks x 50 (C4 workflow_downstream.py:38)

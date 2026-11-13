@@ -1,4 +1,5 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/scripts/baselines/train_lejepa_relocate.py (verbatim)
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/scripts/baselines/train_lejepa_relocate.py (verbatim except: lines wrapped at
+# 120 columns)
 """Tiny LeJEPA on final Relocate RGB data.
 
 The native recipe keeps four augmented views, a 512D downstream head, a
@@ -107,8 +108,12 @@ def main(*, gate=None):
     ap.add_argument('--lamb', type=float, default=0.02)
     ap.add_argument('--proj-dim', type=int, default=16)
     ap.add_argument('--workers', type=int, default=8)
-    ap.add_argument('--max-steps', type=int, default=0, help='smoke test: stop after this many steps, no checkpoint (0 = no limit)')
-    ap.add_argument('--seed',type=int,default=None,help='Explicit guide seed; omission retains legacy Torch0 initialization')
+    ap.add_argument(
+        '--max-steps', type=int, default=0, help='smoke test: stop after this many steps, no checkpoint (0 = no limit)'
+    )
+    ap.add_argument(
+        '--seed', type=int, default=None, help='Explicit guide seed; omission retains legacy Torch0 initialization'
+    )
     args = ap.parse_args()
     initialize_training_seed(args.seed)
 
@@ -150,13 +155,22 @@ def main(*, gate=None):
             if gate is not None:
                 gate.after_step(epoch, step, loss=loss)
             if args.max_steps and step + 1 >= args.max_steps:
-                print(f'smoke test: {step + 1} steps, {time.time() - t0:.1f}s, loss {loss.item():.4f}, peak GPU memory {torch.cuda.max_memory_allocated() / 2**30:.1f} GiB', flush=True)
+                print(
+                    f'smoke test: {step + 1} steps, {time.time() - t0:.1f}s, loss {loss.item():.4f}, peak GPU memory '
+                    f'{torch.cuda.max_memory_allocated() / 2**30:.1f} GiB',
+                    flush=True,
+                )
                 return
             if step % 500 == 0:
-                print(f'epoch {epoch} step {step}/{len(train)} loss {loss.item():.4f} sigreg {sigreg_loss.item():.4f} '
-                      f'inv {inv_loss.item():.4f} lr {scheduler.get_last_lr()[0]:.2e} {time.time() - t0:.0f}s', flush=True)
-        torch.save({'backbone': net.backbone.state_dict(), 'head': net.head.state_dict(), 'proj': net.proj.state_dict()},
-                   out / f'weights_epoch_{epoch + 1}.pt')
+                print(
+                    f'epoch {epoch} step {step}/{len(train)} loss {loss.item():.4f} sigreg {sigreg_loss.item():.4f} '
+                    f'inv {inv_loss.item():.4f} lr {scheduler.get_last_lr()[0]:.2e} {time.time() - t0:.0f}s',
+                    flush=True,
+                )
+        torch.save(
+            {'backbone': net.backbone.state_dict(), 'head': net.head.state_dict(), 'proj': net.proj.state_dict()},
+            out / f'weights_epoch_{epoch + 1}.pt',
+        )
         print(f'epoch {epoch + 1} saved, {time.time() - t0:.0f}s in total', flush=True)
 
 

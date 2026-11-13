@@ -2,20 +2,22 @@
 evaluation tasks, 100 on Adroit Relocate (cfg.env.policy_data.demos_per_task).
 
 Integrated code (moved unchanged apart from paths: data/policy/<env>/ = JEPA4R_DEMOS_HOME):
-  unpack_suite.py       cortexbench@9331494:lewm_pcd/bench/cortexbench/unpack_suite.py: the official CortexBench demo zip
-                        (downloads/<suite>.zip) -> <suite>/<env id>.pickle (MetaWorld, Adroit)
-  convert_demos_3d.py   cortexbench@9331494:.../convert_demos_3d.py: every official MetaWorld demo replayed (fresh env, seed
-                        12345 + i, the recorded actions), the point cloud of the frame before each action
+  unpack_suite.py       cortexbench@9331494:lewm_pcd/bench/cortexbench/unpack_suite.py: the official CortexBench demo
+                        zip (downloads/<suite>.zip) -> <suite>/<env id>.pickle (MetaWorld, Adroit)
+  convert_demos_3d.py   cortexbench@9331494:.../convert_demos_3d.py: every official MetaWorld demo replayed (fresh env,
+                        seed 12345 + i, the recorded actions), the point cloud of the frame before each action
                         (jepa4r.policy.bc.pcd_fork, multisampling off) -> metaworld-expert-v1.0-pcd/
   make_scene_demos.py   cortexbench@9331494:.../make_scene_demos.py: 25 scripted-expert demos per Scene task, seeds from
-                        12345 (a seed failing within 750 steps is skipped), padded to the slowest success -> scene-expert{,-pcd}/
-  make_rm75_demos.py    cortexbench@9331494:.../make_rm75_demos.py: 25 demos of metaworld's scripted expert (RM75 versions
-                        for bin-picking, drawer-open, assembly) on a MetaWorld task of the RM75-B twin, seeds 12345 + i (an
-                        episode not successful at step 500 is skipped) -> metaworld-rm75-expert{,-pcd}/
+                        12345 (a seed failing within 750 steps is skipped), padded to the slowest success ->
+                        scene-expert{,-pcd}/
+  make_rm75_demos.py    cortexbench@9331494:.../make_rm75_demos.py: 25 demos of metaworld's scripted expert (RM75
+                        versions for bin-picking, drawer-open, assembly) on a MetaWorld task of the RM75-B twin, seeds
+                        12345 + i (an episode not successful at step 500 is skipped) -> metaworld-rm75-expert{,-pcd}/
   prepare_official_assets.py  OGBench-cube@4fbb0c6:scripts/prepare_official_assets.py: the 100 official Relocate demos
                         (relocate-v0.pickle, sha256 pinned in policy/bc/relocate/DEPENDENCIES.json; JEPA4R_ADROIT_DEMOS)
                         -> a light copy (raw labels and non-visual fields kept) + the RH56 task initialisations
-  Adroit Relocate / RH56   the Relocate harness's official-demos / rh56_official_demo stage (jepa4r.policy.bc.relocate_stage)
+  Adroit Relocate / RH56   the Relocate harness's official-demos / rh56_official_demo stage
+                           (jepa4r.policy.bc.relocate_stage)
 Interpreters: JEPA4R_PY_CORTEXBENCH (eai-vc metaworld fork, MuJoCo 2.0) for MetaWorld, JEPA4R_PY_COLLECT (MuJoCo 3 +
 OGBench / metaworld 3.0) for Scene and the RM75-B twin's MetaWorld tasks, JEPA4R_PY_RELOCATE_WM for the Relocate light
 copy (the harness picks its own interpreters).
@@ -31,7 +33,8 @@ SUFFIX = '-v2-goal-observable'
 # run_scene_pipeline.sh:103 starts make_scene_demos.py with OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 (the scripted expert's
 # success steps depend on it; GATES.md D6), lewm_pcd/bench/cortexbench/env.sh:14 exports OMP_NUM_THREADS=2
 # MKL_NUM_THREADS=2 for the CortexBench scripts (make_rm75_demos.py is run after `source env.sh`: its docstring,
-# bench/cortexbench/make_rm75_demos.py:12). OPENBLAS_NUM_THREADS is set to the same value so that OpenBLAS (which reads it before
+# bench/cortexbench/make_rm75_demos.py:12). OPENBLAS_NUM_THREADS is set to the same value so that OpenBLAS (which reads
+# it before
 # OMP_NUM_THREADS) runs as in those launches.
 THREADS = {'make_scene_demos.py': '1', 'convert_demos_3d.py': '2', 'unpack_suite.py': '2', 'make_rm75_demos.py': '2'}
 
@@ -39,8 +42,15 @@ THREADS = {'make_scene_demos.py': '1', 'convert_demos_3d.py': '2', 'unpack_suite
 def script_env(script, out_dir):
     """Environment a demo script runs in (also used by the gates to run it the same way)."""
     n = THREADS[script]
-    return dict(os.environ, JEPA4R_DEMOS_HOME=str(out_dir), MUJOCO_GL='egl', OMP_NUM_THREADS=n, MKL_NUM_THREADS=n,
-                OPENBLAS_NUM_THREADS=n, PYTHONPATH=os.pathsep.join([str(HERE.parents[2]), os.environ.get('PYTHONPATH', '')]))
+    return dict(
+        os.environ,
+        JEPA4R_DEMOS_HOME=str(out_dir),
+        MUJOCO_GL='egl',
+        OMP_NUM_THREADS=n,
+        MKL_NUM_THREADS=n,
+        OPENBLAS_NUM_THREADS=n,
+        PYTHONPATH=os.pathsep.join([str(HERE.parents[2]), os.environ.get('PYTHONPATH', '')]),
+    )
 
 
 def _run(script, args, out_dir, py_var):

@@ -1,22 +1,28 @@
 # Sec. 5.6 in the RM75-B digital twin: twin check against the vendor URDF, twin-trained world model, policy head
 # and decoder, and the decoded look-ahead preview over 50 twin episodes. Real-arm runs are not included.
 name: twin
-expected: [paper/expected/twin.yaml]
+expected: [paper/expected/twin.yaml]   # no table: the paper reports no twin numbers (Sec. 5.6 "Results" is qualitative)
 
 jobs:
   - stage: verify_twin
     grid: {env: [rm75b_cube]}
   - stage: collect_wm_data
     grid: {env: [rm75b_cube]}
-  - stage: prepare_policy_data
-    grid: {env: [rm75b_cube]}
   - stage: train_wm
-    grid: {env: [rm75b_cube], method: [jepa4r]}
-  - stage: train_policy
     grid: {env: [rm75b_cube], method: [jepa4r]}
   - stage: train_decoder
     grid: {env: [rm75b_cube], decoder: [page4d]}
+  # a policy head and the look-ahead preview on the twin's Cube: no implementation in the source branches
+  # (configs/env/rm75b_cube.yaml policy / policy_data: ???; stage eval_preview is still the skeleton stub), so skipped
+  # by default
+  - stage: prepare_policy_data
+    optional: true
+    grid: {env: [rm75b_cube]}
+  - stage: train_policy
+    optional: true
+    grid: {env: [rm75b_cube], method: [jepa4r]}
   - stage: eval_preview
+    optional: true
     grid: {env: [rm75b_cube], decoder: [page4d]}
   # the RH56 dexterous hand on the twin (configs/env/rm75b_rh56_relocate.yaml): the OGBench-cube branch's RH56 Relocate,
   # JEPA4R and LeWM, BC seeds 100 / 200 / 300 (no number in the paper)

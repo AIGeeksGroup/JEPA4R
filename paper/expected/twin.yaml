@@ -1,29 +1,4 @@
-# Sec. 5.6 "Results" reports no twin numbers (main.tex, read 2026-11-12 and 2026-11-13: the results paragraph is
-# qualitative and the \est macro does not occur), and no commit of the four source branches has look-ahead preview /
-# cube-to-target code. The tables keep the metric names of the twin stages with no paper value (null: listed, never
-# compared).
-tables:
-  - name: twin_preview
-    title: "Sec. 5.6 -- decoded look-ahead in the RM75-B twin (cm), 50 episodes; no numbers in the paper"
-    stage: eval_preview
-    fixed: {env: rm75b_cube, decoder: page4d}
-    values:
-      preview_nn: null
-      preview_cube: null
-      cube_to_target_success: null
-      cube_to_target_failure: null
-
-  - name: twin_policy_heads
-    title: "Sec. 5.6 -- CortexBench success (%) of the policy heads trained in the RM75-B twin with the EG2-4C2 gripper; no numbers in the paper"
-    stage: train_policy
-    rows: method
-    cols: env
-    metric: success
-    col_order: [rm75b_mw_bin_pick, rm75b_mw_button, rm75b_mw_drawer, rm75b_mw_assembly]
-    labels:
-      lewm: LeWM (ViT-Tiny)
-      random_vitb: Random (ViT-B)
-    values:   # null: listed, never compared (the cortexbench branch's own records: lewm_pcd/results_metaworld.md)
-      jepa4r:      {rm75b_mw_bin_pick: null, rm75b_mw_button: null, rm75b_mw_drawer: null, rm75b_mw_assembly: null}
-      lewm:        {rm75b_mw_bin_pick: null, rm75b_mw_button: null, rm75b_mw_drawer: null, rm75b_mw_assembly: null}
-      random_vitb: {rm75b_mw_bin_pick: null, rm75b_mw_button: null}
+# Paper numbers of Sec. 5.6 in the RM75-B digital twin: none. Sec. 5.6 "Results" is qualitative (main.tex, read
+# 2026-11-12 and 2026-11-13; the \est macro does not occur), so this file holds no table; experiments/twin.yaml still
+# reproduces everything trained in the twin.
+tables: []

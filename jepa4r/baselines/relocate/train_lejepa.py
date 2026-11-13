@@ -1,4 +1,5 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/scripts/baselines/adroit/train_lejepa.py (verbatim except: imports / paths adapted to the package)
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/scripts/baselines/adroit/train_lejepa.py (verbatim except: imports / paths
+# adapted to the package; lines wrapped at 120 columns)
 """Final Relocate data/output adapter; original learning methods are delegated.
 
 An explicit smoke/formal mode is required to execute; preparation is read-only.
@@ -138,14 +139,20 @@ def execute(plan, *, gate=None):
         _write(output / 'state.json', state)
         (output / 'actual_exit_code').write_text('0\n')
     except BaseException as error:
-        code = (error.code or 0) if isinstance(error, SystemExit) else 130 if isinstance(error, KeyboardInterrupt) else 1
+        code = (
+            (error.code or 0) if isinstance(error, SystemExit) else 130 if isinstance(error, KeyboardInterrupt) else 1
+        )
         if gate is not None:
-            from jepa4r.policy.bc.relocate.recovery import RecoveryPause
+            from jepa4r.models.relocate.recovery import RecoveryPause
             if isinstance(error, RecoveryPause):
                 code = 75
         code = code if isinstance(code, int) else 1
-        state.update(phase='paused_for_recovery' if code == 75 else 'failed' if code else 'native_returned_acceptance_pending',
-                     exit_code=code, updated=time.time(), error=traceback.format_exc())
+        state.update(
+            phase='paused_for_recovery' if code == 75 else 'failed' if code else 'native_returned_acceptance_pending',
+            exit_code=code,
+            updated=time.time(),
+            error=traceback.format_exc(),
+        )
         _write(output / 'state.json', state)
         (output / 'actual_exit_code').write_text(str(code) + '\n')
         raise

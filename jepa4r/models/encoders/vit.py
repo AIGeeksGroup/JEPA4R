@@ -10,7 +10,8 @@ generic encoder contract (``(B, 3, H, W) -> (B, embed_dim)``). Behaviour is
 exactly what ``jepa.py`` used to do inline (``interpolate_pos_encoding=True``,
 CLS token); only the state-dict prefix moves from ``encoder.`` to ``encoder.vit.``.
 """
-# Moved from cortexbench@9331494:lewm_pcd/encoders/vit.py (lines 8-34; verbatim except: `import stable_pretraining as spt` moved into ViTCLS.__init__ (lazy import))
+# Moved from cortexbench@9331494:lewm_pcd/encoders/vit.py (lines 8-34; verbatim except: `import stable_pretraining as
+# spt` moved into ViTCLS.__init__ (lazy import))
 from torch import nn
 
 

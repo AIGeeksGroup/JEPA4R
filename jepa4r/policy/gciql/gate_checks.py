@@ -1,6 +1,8 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/gate_checks.py (verbatim except: imports / paths adapted to the package)
-# ruff: noqa: F401  (moved verbatim: unused imports)
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/gate_checks.py (verbatim except: imports / paths adapted to the
+# package; lines wrapped at 120 columns, no lint exemptions, unused imports removed, registration imports as
+# importlib.import_module)
 """Explicit bounded Cube gates around the existing model/update implementations."""
+import importlib
 import argparse
 from contextlib import contextmanager, nullcontext, redirect_stdout, redirect_stderr
 from datetime import datetime, timezone
@@ -12,7 +14,16 @@ from pathlib import Path
 import sys
 import traceback
 
-STAGES = ('tiny-step', 'gciql-step', 'gciql-cpu-reference', 'gciql-reload', 'compare-resume', 'model-numerics', 'compare-numerics', 'matrix-forward')
+STAGES = (
+    'tiny-step',
+    'gciql-step',
+    'gciql-cpu-reference',
+    'gciql-reload',
+    'compare-resume',
+    'model-numerics',
+    'compare-numerics',
+    'matrix-forward',
+)
 
 
 def sha(path):
@@ -178,7 +189,6 @@ class TinyFixedGate:
 
     def after_step(self, epoch, step, **outputs):
         import numpy as np
-        import torch
         from jepa4r.utils.training_state import save_torch_state
         consumed = self.cursor.take()
         count = self.cursor.position
@@ -209,7 +219,7 @@ class TinyFixedGate:
 
 
 def run_tiny(cfg, output):
-    from .native import tiny_train
+    from jepa4r.baselines.cube.native import tiny_train
     gate = TinyFixedGate(cfg, output)
     previous = os.environ.get('STABLEWM_HOME')
     os.environ['STABLEWM_HOME'] = str(output / 'native')
@@ -253,7 +263,9 @@ def reload_gciql(cfg, output):
     runtime=read(pinned(cfg['runtime_recipe']))
     _,boundary=install(runtime)
     target=output/'reload.json'
-    boundary.reload_gate(runtime,Path(cfg['gate_root']),target,cpu_reference=cfg.get('cpu_reference'),require_cpu_reference=True)
+    boundary.reload_gate(
+        runtime, Path(cfg['gate_root']), target, cpu_reference=cfg.get('cpu_reference'), require_cpu_reference=True
+    )
     return read(target)
 
 
@@ -305,7 +317,12 @@ def _gciql_sidecar(cfg, role):
         if type(state[name]) is not int or state[name] != expected:
             raise ValueError('GCIQL sidecar update/budget counter differs: ' + name)
     events = state['events']
-    for name, expected in [('committed_updates', 2), ('validation_count', 0), ('last_validation', 0), ('next_update', 3)]:
+    for name, expected in [
+        ('committed_updates', 2),
+        ('validation_count', 0),
+        ('last_validation', 0),
+        ('next_update', 3),
+    ]:
         if type(events.get(name)) is not int or events[name] != expected:
             raise ValueError('GCIQL sidecar committed event differs: ' + name)
     if events.get('checkpoint_event_complete') is not True or events.get('next_stage') != 'sample_train':
@@ -377,7 +394,7 @@ def model_numerics(cfg, output):
     import torch
     from omegaconf import OmegaConf
     from types import SimpleNamespace
-    from .training_runtime import pinned_native, require_sources, code_root
+    from jepa4r.models.cube.training_runtime import pinned_native, require_sources, code_root
     require_sources()
     code = code_root().resolve()
     expected_root = Path(cfg['source_root']).resolve()
@@ -408,7 +425,9 @@ def model_numerics(cfg, output):
                                                        code / 'jepa4r/models/world_model.py'):
                 raise ValueError('numerical gate imported another native model implementation')
             model = native.hydra.utils.instantiate(recipe.model).to(device)
-            model.load_state_dict(torch.load(pinned(cfg['checkpoint']), map_location=device, weights_only=True), strict=True)
+            model.load_state_dict(
+                torch.load(pinned(cfg['checkpoint']), map_location=device, weights_only=True), strict=True
+            )
             model.train(cfg.get('training', True))
             original_predict = model.predict
             def predict(*args, **kwargs):
@@ -435,9 +454,14 @@ def model_numerics(cfg, output):
             outputs = native.lejepa_forward(receiver, batch, 'gate', recipe)
         clip = float(recipe.trainer.get('gradient_clip_val', 1.0))
     elif method == 'pldm':
-        from .pldm import method as implementation
-        model = implementation.build_model(str(Path(implementation.__file__).parent / 'vendor/source')).to(device)
-        model.load_state_dict(torch.load(pinned(cfg['checkpoint']), map_location=device, weights_only=True), strict=True)
+        from jepa4r.baselines.cube.pldm import method as implementation
+
+        model = implementation.build_model(
+            str(Path(implementation.__file__).resolve().parents[4] / 'third_party/pldm')
+        ).to(device)
+        model.load_state_dict(
+            torch.load(pinned(cfg['checkpoint']), map_location=device, weights_only=True), strict=True
+        )
         model.train(cfg.get('training', True))
         opt = implementation.build_optimizer(model)
         schedule = implementation.build_scheduler(opt, epochs=10, batch_steps=cfg['train_batches'], batch_size=128)
@@ -713,7 +737,10 @@ def matrix_forward(cfg, output):
         selected = select_source_assets(case, runtime)
         source = selected['source_runtime']
         # The complete factory/preprocessor binding also defines encoder reuse.
-        key = (source['model'], hashlib.sha256(json.dumps(source['encoder_binding'], sort_keys=True).encode()).hexdigest())
+        key = (
+            source['model'],
+            hashlib.sha256(json.dumps(source['encoder_binding'], sort_keys=True).encode()).hexdigest(),
+        )
         if key not in encoders:
             encoders[key] = workflow._encoder(source)
         encoder = encoders[key]
@@ -796,10 +823,15 @@ def main(argv_values=None):
     parser.add_argument('--config', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--execute', action='store_true')
-    parser.add_argument('--source-root', type=Path, help='direct-script observer: import the frozen source package here')
+    parser.add_argument(
+        '--source-root', type=Path, help='direct-script observer: import the frozen source package here'
+    )
     args = parser.parse_args(argv_values)
     if args.source_root is None:
-        from .training_runtime import build_environment as _source_environment, code_root as _code_root
+        from jepa4r.models.cube.training_runtime import (
+            build_environment as _source_environment,
+            code_root as _code_root,
+        )
         sys.path[:0] = _source_environment(_code_root().parent, args.output)['PYTHONPATH'].split(os.pathsep)
     plan = build_plan(args.stage, args.config, args.output)
     print(json.dumps(plan, indent=2))
@@ -813,7 +845,7 @@ if __name__ == '__main__':
         if '--source-root' in sys.argv:   # the old frozen release, imported by its own package name
             source = Path(sys.argv[sys.argv.index('--source-root') + 1]).resolve()
             sys.path.insert(0, str(source / 'lewm_pcd'))
-            import bench.ogbench
+            importlib.import_module('bench.ogbench')   # the package of the relative imports below
             from bench.ogbench.training_runtime import build_environment as _source_environment
             _run_output = Path(sys.argv[sys.argv.index('--output') + 1]).resolve()
             sys.path[:0] = _source_environment(source, _run_output)['PYTHONPATH'].split(os.pathsep)
@@ -821,8 +853,8 @@ if __name__ == '__main__':
         else:   # this package in this repository
             source = Path(__file__).resolve().parents[3]
             sys.path.insert(0, str(source))
-            import jepa4r.policy.gciql
-            from jepa4r.policy.gciql.training_runtime import build_environment as _source_environment
+            importlib.import_module('jepa4r.policy.gciql')   # the package of the relative imports below
+            from jepa4r.models.cube.training_runtime import build_environment as _source_environment
             _run_output = Path(sys.argv[sys.argv.index('--output') + 1]).resolve()
             sys.path[:0] = _source_environment(source, _run_output)['PYTHONPATH'].split(os.pathsep)
             __package__ = 'jepa4r.policy.gciql'

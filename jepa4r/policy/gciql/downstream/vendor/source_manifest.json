@@ -3,11 +3,11 @@
   "files": {
     "boundary.py": {
       "path": "jepa4r/policy/gciql/downstream/vendor/boundary.py",
-      "sha256": "0ca8ddf6c9f48a27df3e3b12f2c35fa9baf737f9bd3a0b5b32a2e8b916170745"
+      "sha256": "034ed6c37f479a3b38514e530ea5484f6445e134e5ddf4ed07fcb65665772c0c"
     },
     "core.py": {
       "path": "jepa4r/policy/gciql/downstream/vendor/core.py",
-      "sha256": "1e53e2c13a72ef8e027bd4b4c7c692f7adbf1637705d6ecf209585e17ad51fd7"
+      "sha256": "c9a1bff3be632557688263b51696c07d74d5c82fb71605c400dd47573b040836"
     },
     "cube_inputs.py": {
       "path": "jepa4r/policy/gciql/downstream/vendor/cube_inputs.py",
@@ -19,7 +19,7 @@
     },
     "io.py": {
       "path": "jepa4r/policy/gciql/downstream/vendor/io.py",
-      "sha256": "7ee78f8bc727a6f4f77773d6c34d363dc144cc854e94eb83018473112f6cb7c1"
+      "sha256": "37c2d9e33f74b1104d0df3035d3353e371fac97fef10d79b0483217bb2a2a190"
     },
     "ogbench/impls/utils/__init__.py": {
       "path": "third_party/ogbench/impls/utils/__init__.py",
@@ -54,24 +54,24 @@
       "sha256": "e7e4c4a439b691911e5ae6c2653f253c5703e6b5d190d813e28ebc32e7306094"
     },
     "pcd/cube_pcd_env.py": {
-      "path": "jepa4r/policy/gciql/collection/vendor/pcd/cube_pcd_env.py",
+      "path": "jepa4r/data/cube/collection/vendor/pcd/cube_pcd_env.py",
       "sha256": "fc8be1866de1d07b2bf1c0677c9182a1b760a280e4d07a1002d7477e1984c7ab"
     },
     "pcd/native_pcd_frame.py": {
-      "path": "jepa4r/policy/gciql/collection/vendor/pcd/native_pcd_frame.py",
-      "sha256": "ffc7cc1436381a84da5690557167f2d7b482711350f2ae4fe8ffe56a99156b98"
+      "path": "jepa4r/data/cube/collection/vendor/pcd/native_pcd_frame.py",
+      "sha256": "695be6a7027d78cbed4c32fc5ea388c1d229203a4e0d3fe0c206bc63c2f4c13c"
     },
     "pcd/pcd_geometry.py": {
-      "path": "jepa4r/policy/gciql/collection/vendor/pcd/pcd_geometry.py",
-      "sha256": "e1b0f13db624d4e579946cfe909dd0acb342ad261c3d190e962260ed47b30bf2"
+      "path": "jepa4r/data/cube/collection/vendor/pcd/pcd_geometry.py",
+      "sha256": "910d6787d0942aed41750834dece119a94d514e5292ee05f020cb7ad95ee590a"
     },
     "pcd/pcd_wrapper.py": {
-      "path": "jepa4r/policy/gciql/collection/vendor/pcd/pcd_wrapper.py",
-      "sha256": "821d056ecf41ea69e116c0d37ac99be30dfd9ec3bda4d8e7531d03f67f9beb8e"
+      "path": "jepa4r/data/cube/collection/vendor/pcd/pcd_wrapper.py",
+      "sha256": "a9787fb9fff6de2775c302d1eae17da059b1220c8a7aca33d28b314ef9f1dd5a"
     },
     "physics.py": {
       "path": "jepa4r/policy/gciql/downstream/vendor/physics.py",
-      "sha256": "ecda44226abe105651cf26437eb3f36d4f9d9622aa277eda929111a5ae1c3da8"
+      "sha256": "1edc2aec6a08012a367c0b2a77fb86115dd08f0b3472a51d22f0be5f329a4a34"
     }
   },
   "original_component_sha256": {

@@ -1,4 +1,5 @@
-# Moved from OGBench-cube@4fbb0c6:scripts/prepare_official_assets.py (verbatim except: imports / paths adapted to the package)
+# Moved from OGBench-cube@4fbb0c6:scripts/prepare_official_assets.py (verbatim except: imports / paths adapted to the
+# package; lines wrapped at 120 columns, unused imports removed)
 #!/usr/bin/env python3
 """Prepare final Relocate assets from the original official 100-demo pickle.
 
@@ -23,7 +24,7 @@ import numpy as np
 
 # This entry also works from scripts/ without a caller-provided PYTHONPATH.
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
-from jepa4r.policy.bc.relocate import official_contract as official_content
+from jepa4r.data.relocate import official_contract as official_content
 
 demo_content_record = official_content.demo_content_record
 content_digest = official_content.content_digest

@@ -1,4 +1,5 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/lightning_compare.py (verbatim except: imports / paths adapted to the package)
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/lightning_compare.py (verbatim except: imports / paths adapted
+# to the package; lines wrapped at 120 columns)
 """Full sealed Lightning-state comparison with explicit run-local metadata aliases."""
 import copy,json,hashlib
 from pathlib import Path
@@ -23,7 +24,8 @@ def normalise(state):
         for field in ('dirpath','best_model_path','kth_best_model_path','last_model_path'):
             if field in row:row[field]=local(row[field],'callbacks/'+name+'/'+field)
         if 'best_k_models'in row:
-            original=row['best_k_models'];mapped={local(path,'callbacks/'+name+'/best_k_models'):score for path,score in original.items()}
+            original = row['best_k_models']
+            mapped = {local(path, 'callbacks/' + name + '/best_k_models'): score for path, score in original.items()}
             if len(mapped)!=len(original):raise ValueError('checkpoint path aliases collide')
             row['best_k_models']=mapped
         if 'kth_value'in row:
@@ -32,7 +34,9 @@ def normalise(state):
             if np.isnan(value):raise ValueError('NaN checkpoint selection metadata is not a valid sentinel')
             if np.isinf(value):
                 identity=dict(dtype=str(value.dtype),shape=list(value.shape),sha256=array_identity(value))
-                row['kth_value']=dict(scope='original Lightning checkpoint selection infinity sentinel',identity=identity)
+                row['kth_value'] = dict(
+                    scope='original Lightning checkpoint selection infinity sentinel', identity=identity
+                )
                 sentinels.append(dict(field='callbacks/'+name+'/kth_value',identity=identity))
     return result,dict(path_aliases=aliases,selection_sentinels=sentinels,no_checkpoint_fields_dropped=True)
 
@@ -50,7 +54,16 @@ def compare(actual_record,reference_record,expected_identity):
         state=torch.load(path,map_location='cpu',weights_only=False)
         if state.get('global_step')!=2:raise ValueError('actual Lightning global step differs')
         validate_identity(expected_identity,state['cube_smoke_state']['identity'])
-        required={'state_dict','optimizer_states','lr_schedulers','loops','callbacks','cube_smoke_state','adroit_train_loader_state','spt_run_dir'}
+        required = {
+            'state_dict',
+            'optimizer_states',
+            'lr_schedulers',
+            'loops',
+            'callbacks',
+            'cube_smoke_state',
+            'adroit_train_loader_state',
+            'spt_run_dir',
+        }
         if not required<=set(state):raise ValueError('complete Lightning training state is missing a field')
         return normalise(_state_cpu_arrays(state))
     actual,a_aliases=load(actual_record);reference,r_aliases=load(reference_record)

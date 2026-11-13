@@ -1,4 +1,4 @@
-# Moved from cortexbench@9331494:lewm_pcd/envs/metaworld/button_press.py (verbatim)
+# Moved from cortexbench@9331494:lewm_pcd/envs/metaworld/button_press.py (verbatim except: lines wrapped at 120 columns)
 """MetaWorld button-press-topdown (a CortexBench task): press the red button of the box from above.
 
 * Layout: metaworld 3.0 ``button-press-topdown-v3-goal-observable``; every reset places the box anew (x -0.1..0.1,
@@ -25,8 +25,10 @@ from .env import MWTaskEnv
 from .policy import P_GAIN, ThreePartPolicy
 
 BUTTON_TOP = 0.193            # the button's top above the box origin (metaworld's object position), unpressed
-BOX_HALF = 0.12              # the box's collision extent around its origin in x and y (its front edge: y - 0.12 >= 0.68)
-WAYPOINTS = ((-0.20, 0.45, 0.15), (0.20, 0.63, 0.35))  # the hand's targets between presses (in view, 5 cm in front of any box)
+# the box's collision extent around its origin in x and y (its front edge: y - 0.12 >= 0.68)
+BOX_HALF = 0.12
+# the hand's targets between presses (in view, 5 cm in front of any box)
+WAYPOINTS = ((-0.20, 0.45, 0.15), (0.20, 0.63, 0.35))
 HOVER_DZ = 0.08               # approach / lift height above the unpressed button top
 HOLD = 4                      # steps the pressed button is held down
 
@@ -115,8 +117,10 @@ class ButtonThreePartPolicy(ThreePartPolicy):
                 desired = hand + np.array([0.0, 0.0, 0.1])  # rise before moving over the box
             else:
                 desired = above
-            if np.linalg.norm(hand[:2] - top[:2]) < 0.015 and hand[2] > top0 + 0.03:  # over the button (the hover height
-                phase, m['zs'] = 'press', []                                             # is out of reach for far boxes)
+            # over the button (the hover height
+            if np.linalg.norm(hand[:2] - top[:2]) < 0.015 and hand[2] > top0 + 0.03:
+                # is out of reach for far boxes)
+                phase, m['zs'] = 'press', []
         if phase == 'press':
             desired = np.array([top[0], top[1], top[2] - 0.05])
             m['zs'].append(hand[2])

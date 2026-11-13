@@ -10,14 +10,17 @@ pointcloud:
   sampler: {name: stratified, object_fraction: 0.25}   # cortexbench:lewm_pcd/envs/pcd_wrapper.py:191-219;
                                                        # scripts/data/config/mw_binpick.yaml:32 (cube_fraction: 0.25)
   crop_box: [[-0.50, 0.30, -0.02], [0.50, 1.00, 0.60]] # cortexbench:lewm_pcd/envs/metaworld/pcd.py:24-25
-  affine: {center: [0.0, 0.65, 0.2], scale: 4.0}       # cortexbench:lewm_pcd/config/train/data/mw_binpick_pcd.yaml:10-12
+  # cortexbench:lewm_pcd/config/train/data/mw_binpick_pcd.yaml:10-12
+  affine: {center: [0.0, 0.65, 0.2], scale: 4.0}
 policy: bc
 wm_data:                      # supp. sec:supp-data (per task)
   num_episodes: 10000
   episode_len: 200
   mixture: {noisy_expert: 0.5, expert_interrupted_by_random: 0.3, random: 0.2}
-  collector: mw               # cortexbench:lewm_pcd/scripts/data/collect_mw.py (+ collect_cube_pcd_sharded.py, run_mw_collection.sh)
-  env_kwargs: {episode_len: 200, mix: [0.5, 0.3, 0.2]}   # scripts/data/config/mw_binpick.yaml:24-26 (backbone / branch / random)
+  collector: mw               # cortexbench:lewm_pcd/scripts/data/collect_mw.py (+ collect_cube_pcd_sharded.py,
+                              # run_mw_collection.sh)
+  env_kwargs: {episode_len: 200, mix: [0.5, 0.3, 0.2]}   # scripts/data/config/mw_binpick.yaml:24-26 (backbone / branch
+                                                         # / random)
   world: {num_envs: 10, max_episode_steps: 200, image_shape: [224, 224]}   # mw_binpick.yaml:19-22
   pcd:                        # mw_binpick.yaml:28-32 (one depth camera, top_cap2)
     _target_: jepa4r.envs.metaworld.pcd.MWPointCloudWrapper

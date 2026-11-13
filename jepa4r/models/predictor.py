@@ -13,7 +13,8 @@ def modulate(x, shift, scale):
     """AdaLN-zero modulation"""
     return x * (1 + scale) + shift
 
-# Moved from cortexbench@9331494:lewm_pcd/module.py:FeedForward, Attention, ConditionalBlock, Block, Transformer (lines 38-188; verbatim)
+# Moved from cortexbench@9331494:lewm_pcd/module.py:FeedForward, Attention, ConditionalBlock, Block, Transformer (lines
+# 38-188; verbatim)
 class FeedForward(nn.Module):
     """FeedForward network used in Transformers"""
 
@@ -212,7 +213,8 @@ class ARPredictor(nn.Module):
 
 
 def build_predictor(method_cfg):
-    """ARPredictor with the hyper-parameters of ``method_cfg.predictor`` (LeWM's config/train/model/lewm.yaml values)."""
+    """ARPredictor with the hyper-parameters of ``method_cfg.predictor`` (LeWM's config/train/model/lewm.yaml
+    values)."""
     p = method_cfg.predictor
     d = int(method_cfg.latent_dim)
     return ARPredictor(num_frames=int(method_cfg.history), depth=int(p.depth), heads=int(p.heads),

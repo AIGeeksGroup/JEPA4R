@@ -1,4 +1,5 @@
-# Moved from cortexbench@9331494:lewm_pcd/envs/cube_rm75_env.py (verbatim except: CubePCDEnv imported from jepa4r.envs.ogbench.cube_pcd_env)
+# Moved from cortexbench@9331494:lewm_pcd/envs/cube_rm75_env.py (verbatim except: CubePCDEnv imported from
+# jepa4r.envs.ogbench.cube_pcd_env; lines wrapped at 120 columns)
 """OGBench cube on the lab robot: RealMan RM75-B arm + Inspire EG2-4C2 gripper instead of UR5e + Robotiq 2F-85.
 
 Only OGBench's robot layer (``ManipSpaceEnv``) is replaced; the task layers above it are reused unchanged:
@@ -230,4 +231,12 @@ class RM75CubePCDEnv(CubePCDEnv, RM75ManipSpaceEnv):
         scale_cube_task(self)
 
 
-__all__ = ['RM75ManipSpaceEnv', 'RM75CubeEnv', 'RM75CubePCDEnv', 'scale_cube_task', 'CROP_BOX', 'ARM_XML', 'GRIPPER_XML']
+__all__ = [
+    'RM75ManipSpaceEnv',
+    'RM75CubeEnv',
+    'RM75CubePCDEnv',
+    'scale_cube_task',
+    'CROP_BOX',
+    'ARM_XML',
+    'GRIPPER_XML',
+]

@@ -1,12 +1,13 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/enc_server.py (verbatim except: imports / paths adapted to the package)
+# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/enc_server.py (verbatim except: imports / paths adapted to
+# the package; lines wrapped at 120 columns)
 """Shared GPU process for the frozen encoders: every evaluation job (run_bc_scene.py with ENC_SOCKET set) sends its
 preprocessed input here; the requests are batched, encoded in one CUDA context and returned to each job. Encoder,
 preprocessing and weights are exactly the jobs' own (the same conf/model config, the same lewm_cortex loader); only the
 dozens of per-job CUDA contexts are gone: with every job in its own context the GPU switches between them and a step
-waits tens of ms (measured: 24 jobs at once, 90-110 ms per step, about 50 ms of it encoding).
-Batched and one-by-one encoding differ by float rounding only (measured: at most 4e-6, against an embedding std of 0.85).
-Protocol (Unix socket, '@name' = Linux abstract namespace): 8-byte little-endian length + pickle((encoder name, float32
-array (B, ...))); reply: 8-byte length + pickle(float32 array (B, D)).
+waits tens of ms (measured: 24 jobs at once, 90-110 ms per step, about 50 ms of it encoding). Batched and one-by-one
+encoding differ by float rounding only (measured: at most 4e-6, against an embedding std of 0.85). Protocol (Unix
+socket, '@name' = Linux abstract namespace): 8-byte little-endian length + pickle((encoder name, float32 array (B,
+...))); reply: 8-byte length + pickle(float32 array (B, D)).
     source env.sh && $PY enc_server.py @lewm_scene_enc lewm_scene_pix,lewm_scene_pcd
 """
 import os
@@ -37,7 +38,8 @@ def conf(name):
 
 
 def sock_addr(name):
-    """'@name' = a socket in the Linux abstract namespace (no file path; paths on the data disk exceed AF_UNIX's 107 bytes)."""
+    """'@name' = a socket in the Linux abstract namespace (no file path; paths on the data disk exceed AF_UNIX's 107
+    bytes)."""
     return '\0' + name[1:] if name.startswith('@') else name
 
 
@@ -82,7 +84,8 @@ def main():
         for name in {r[1] for r in reqs}:
             group = [r for r in reqs if r[1] == name]
             x = torch.from_numpy(np.concatenate([r[2] for r in group]))
-            with torch.no_grad():  # at most MAX_BATCH at a time, to bound the GPU memory (the demo precompute sends 20 frames per request)
+            # at most MAX_BATCH at a time, to bound the GPU memory (the demo precompute sends 20 frames per request)
+            with torch.no_grad():
                 out = np.concatenate([models[name](x[s: s + MAX_BATCH].cuda()).float().cpu().numpy()
                                       for s in range(0, len(x), MAX_BATCH)])
             i = 0
@@ -96,8 +99,12 @@ def main():
             n_req += len(group)
             n_batch += 1
         if time.time() - t_last > 600:
-            print(f'{time.strftime("%F_%T")} {n_req} requests in {n_batch} batches (mean batch {n_req / max(n_batch, 1):.1f}), '
-                  f'{len(sel.get_map()) - 1} clients', flush=True)
+            print(
+                f'{time.strftime("%F_%T")} {n_req} requests in {n_batch} batches (mean batch '
+                f'{n_req / max(n_batch, 1):.1f}), '
+                f'{len(sel.get_map()) - 1} clients',
+                flush=True,
+            )
             n_req, n_batch, t_last = 0, 0, time.time()
 
 

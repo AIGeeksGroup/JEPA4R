@@ -1,11 +1,12 @@
-# Moved from cortexbench@9331494:lewm_pcd/envs/metaworld/rm75/policy.py (verbatim except: imports / paths adapted to the package)
+# Moved from cortexbench@9331494:lewm_pcd/envs/metaworld/rm75/policy.py (verbatim except: imports / paths adapted to the
+# package; lines wrapped at 120 columns)
 """The three-part collection policies for the RM75. RM75DrawerThreePartPolicy (drawer-open) and
 RM75AssemblyThreePartPolicy (assembly): at the end of this file.
 
-envs.metaworld.ThreePartPolicy (bin-picking) for the RM75 (RM75BinPickThreePartPolicy): the plan (backbone / branch / random), the noise and the
-random actions (kept in the camera's view) unchanged; the backbone's pick-and-place oracle keeps its sub-tasks
-(approach above the grasp point, down, grasp, lift, carry at TRAVEL_Z to the env's place target, put down, release,
-retreat, next target) and changes what the RM75 / EG2-4C2 needs:
+envs.metaworld.ThreePartPolicy (bin-picking) for the RM75 (RM75BinPickThreePartPolicy): the plan (backbone / branch /
+random), the noise and the random actions (kept in the camera's view) unchanged; the backbone's pick-and-place oracle
+keeps its sub-tasks (approach above the grasp point, down, grasp, lift, carry at TRAVEL_Z to the env's place target, put
+down, release, retreat, next target) and changes what the RM75 / EG2-4C2 needs:
 * P gain 20 instead of 25 (10 is slower and fails more grasps at the bin walls);
 * the grasp: all the way down (8 mm), close, and lift once the fingers stopped moving (the EG2-4C2 takes ~13 steps to
   close on the cube; the Sawyer version lifts after 6 steps at the grasp point);
@@ -23,7 +24,19 @@ from __future__ import annotations
 
 import numpy as np
 
-from jepa4r.envs.metaworld.drawer import ABOVE, HOLD_MAX, K_SLOW, PULL_COAST, PULL_OFF, PULL_START, PUSH_COAST, PUSH_OFF, PUSH_START, TOL, VMAX
+from jepa4r.envs.metaworld.drawer import (
+    ABOVE,
+    HOLD_MAX,
+    K_SLOW,
+    PULL_COAST,
+    PULL_OFF,
+    PULL_START,
+    PUSH_COAST,
+    PUSH_OFF,
+    PUSH_START,
+    TOL,
+    VMAX,
+)
 from jepa4r.envs.metaworld.drawer import DrawerThreePartPolicy
 from jepa4r.envs.metaworld.assembly import APPROACH_DZ as ASM_APPROACH_DZ, LIFT_Z as ASM_LIFT_Z, PLACE_Z as ASM_PLACE_Z
 from jepa4r.envs.metaworld.assembly import TRAVEL_Z as ASM_TRAVEL_Z, AssemblyThreePartPolicy
@@ -100,7 +113,11 @@ class RM75BinPickThreePartPolicy(ThreePartPolicy):
             xy = np.linalg.norm(hand[:2] - target[:2])
             m['over'] = xy < (WIN_OUT if m['over'] else WIN_IN)
             if not m['over']:
-                desired = np.array([hand[0], hand[1], hand[2] + 0.1]) if hand[2] < LIFT_Z else np.array([target[0], target[1], TRAVEL_Z])
+                desired = (
+                    np.array([hand[0], hand[1], hand[2] + 0.1])
+                    if hand[2] < LIFT_Z
+                    else np.array([target[0], target[1], TRAVEL_Z])
+                )
             else:
                 desired = np.array([target[0], target[1], PLACE_Z])
                 if hand[2] < PLACE_Z + 0.02:
@@ -141,7 +158,8 @@ class RM75DrawerThreePartPolicy(DrawerThreePartPolicy):
     @staticmethod
     def _oracle(m, env, info):
         hand = np.asarray(info['hand_pos'], dtype=np.float64)
-        h = np.asarray(info['obj_pos'], dtype=np.float64) + np.array([0.0, 0.0, HOOK_DZ])  # hook point: the pads straddle the bar
+        # hook point: the pads straddle the bar
+        h = np.asarray(info['obj_pos'], dtype=np.float64) + np.array([0.0, 0.0, HOOK_DZ])
         target = np.asarray(info['place_target'], dtype=np.float64)
         opening = float(info['drawer_open'])
         t = int(info['step_idx'])
@@ -216,8 +234,10 @@ class RM75DrawerThreePartPolicy(DrawerThreePartPolicy):
         return a
 
 
-ASM_GRASP_OFF = np.array([-0.02, 0.0, 0.03])  # assembly: the hand at the handle, as RM75AssemblyPolicy (the Sawyer version 0.045 up)
-ASM_P_GAIN = 15.0   # assembly: the Sawyer version's 25 swings the nut in the 20 N grip (more lost grasps, fewer placements)
+# assembly: the hand at the handle, as RM75AssemblyPolicy (the Sawyer version 0.045 up)
+ASM_GRASP_OFF = np.array([-0.02, 0.0, 0.03])
+# assembly: the Sawyer version's 25 swings the nut in the 20 N grip (more lost grasps, fewer placements)
+ASM_P_GAIN = 15.0
 ASM_LOST = 0.5      # assembly: gripper reading below: the fingers closed past the handle, it is no longer held
 
 
@@ -230,7 +250,8 @@ class RM75AssemblyThreePartPolicy(AssemblyThreePartPolicy):
       above), and it lifts once the pads squeeze the handle (reading < ASSEMBLY_FIRM, else after 30 steps; the Sawyer
       version after 6 steps below 0.7, when the slow EG2-4C2 has not closed yet);
     * a held nut turns in the 20 N grip, so 'dropped' is read from the gripper (closed past the handle, reading <
-      ASM_LOST) and the hand up to 8 cm from the grasp point (the Sawyer version: 5 cm, which re-picks a nut still held);
+      ASM_LOST) and the hand up to 8 cm from the grasp point (the Sawyer version: 5 cm, which re-picks a nut still
+      held);
     * the release waits until the fingers are open (reading > 0.9, at most 30 steps; the EG2-4C2 opens as slowly as it
       closes); P gain 15 instead of 25.
     Over 48 backbone episodes (200 steps, the plan's noise): 0.92 placements, 0.79 nut-onto-peg per episode (the
@@ -270,7 +291,11 @@ class RM75AssemblyThreePartPolicy(AssemblyThreePartPolicy):
             grab = GRAB
             err = target[:2] - ring[:2]  # move the hand so that the ring centre reaches the target
             if np.linalg.norm(err) > 0.012:
-                desired = hand + np.array([0.0, 0.0, 0.1]) if hand[2] < ASM_LIFT_Z else np.array([*(hand[:2] + err), ASM_TRAVEL_Z])
+                desired = (
+                    hand + np.array([0.0, 0.0, 0.1])
+                    if hand[2] < ASM_LIFT_Z
+                    else np.array([*(hand[:2] + err), ASM_TRAVEL_Z])
+                )
                 m['zs'] = []
             else:
                 desired = np.array([*(hand[:2] + err), ASM_PLACE_Z])

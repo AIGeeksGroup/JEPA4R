@@ -28,7 +28,8 @@ def build(env_cfg):
         from dm_control import mjcf
 
         GRIPPER_XML = END_EFFECTORS['eg2_4c2']
-        # Moved from cortexbench@9331494:lewm_pcd/envs/cube_rm75_env.py:RM75ManipSpaceEnv.build_mjcf_model (lines 108-109; verbatim)
+        # Moved from cortexbench@9331494:lewm_pcd/envs/cube_rm75_env.py:RM75ManipSpaceEnv.build_mjcf_model (lines
+        # 108-109; verbatim)
         gripper_mjcf = mjcf.from_path(GRIPPER_XML.as_posix(), escape_separators=True)
         gripper_mjcf.model = 'robotiq'
         return gripper_mjcf

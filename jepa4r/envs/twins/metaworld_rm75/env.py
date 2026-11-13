@@ -1,4 +1,5 @@
-# Moved from cortexbench@9331494:lewm_pcd/envs/metaworld/rm75/env.py (verbatim except: imports / paths adapted to the package)
+# Moved from cortexbench@9331494:lewm_pcd/envs/metaworld/rm75/env.py (verbatim except: imports / paths adapted to the
+# package; lines wrapped at 120 columns)
 """envs.metaworld's MetaWorld task envs (top_cap2 camera, three-part collection plan, eval hooks) on the RM75 metaworld
 env (robot.py) instead of the Sawyer one. Only what depends on the robot changes:
 
@@ -39,7 +40,8 @@ class RM75TaskEnv(MWTaskEnv):
         goal_tol_obj: float = 0.03,
         render_mode: str = 'rgb_array',
     ):
-        # MWTaskEnv.__init__ with the RM75 metaworld env (make: goal-observable, _freeze_rand_vec False, seeded_rand_vec)
+        # MWTaskEnv.__init__ with the RM75 metaworld env (make: goal-observable, _freeze_rand_vec False,
+        # seeded_rand_vec)
         mw = make(self.TASK)
         self._mw = mw
         self._model, self._data = mw.model, mw.data
@@ -124,8 +126,8 @@ class RM75ButtonPressEnv(MWButtonPressEnv, RM75TaskEnv):
 
 class RM75DrawerEnv(MWDrawerEnv, RM75TaskEnv):
     """MWDrawerEnv (bring the drawer to target openings / waypoints) on the RM75: MRO MWDrawerEnv -> RM75TaskEnv ->
-    MWTaskEnv. set_state restores the RM75 controller's state besides the drawer case (a fixture the reset moves) and the
-    target that depends on it."""
+    MWTaskEnv. set_state restores the RM75 controller's state besides the drawer case (a fixture the reset moves) and
+    the target that depends on it."""
 
     def set_state(self, qpos, qvel, ee_target=None, q_cmd=None, case_pos=None):
         if case_pos is not None:  # as MWDrawerEnv.set_state

@@ -1,4 +1,5 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/rh56_adapter/native.py (verbatim except: imports / paths adapted to the package)
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/rh56_adapter/native.py (verbatim except: imports / paths adapted to the
+# package; lines wrapped at 120 columns)
 """Native RH56 interface. Policy/physics and legacy point sampling remain unchanged."""
 import copy
 import hashlib
@@ -22,7 +23,7 @@ def expert_files():
     """Require the external native bundle rather than silently selecting another body."""
     if EXPERT is None:
         raise ValueError('provide RH56_EXPERT_ROOT for the native state56/action12 expert bundle')
-    from jepa4r.policy.bc.relocate.asset_identity import verify_rh56_bundle
+    from jepa4r.envs.twins.rh56.asset_identity import verify_rh56_bundle
     global LAST_BUNDLE_IDENTITY
     LAST_BUNDLE_IDENTITY=verify_rh56_bundle(EXPERT,dependencies_path=ROOT/'policy/bc/relocate/DEPENDENCIES.json')
     paths={name:EXPERT/name for name in ('env.py','ppo.py','experts/relocate_expert.pt')}
@@ -38,7 +39,9 @@ def load_file(name,path):
 def physical_hash(state):
     # Exclude seed labels; hash actual randomised scene, physics, and drive state.
     keys=('integration','body_pos','body_quat','site_pos','site_quat','p','v','q_cmd')
-    return hashlib.sha256(json.dumps({k:state[k] for k in keys},sort_keys=True,separators=(',',':')).encode()).hexdigest()
+    return hashlib.sha256(
+        json.dumps({k: state[k] for k in keys}, sort_keys=True, separators=(',', ':')).encode()
+    ).hexdigest()
 
 class NativeBridge:
     def __init__(self,seed,render=True):
@@ -49,7 +52,8 @@ class NativeBridge:
         bundle=importlib.import_module('env')
         if Path(bundle.__file__).resolve()!= (EXPERT/'env.py').resolve():raise RuntimeError('wrong expert env module')
         policy=importlib.import_module('ppo')
-        if Path(policy.__file__).resolve()!= (EXPERT/'ppo.py').resolve():raise RuntimeError('wrong expert policy module')
+        if Path(policy.__file__).resolve() != (EXPERT / 'ppo.py').resolve():
+            raise RuntimeError('wrong expert policy module')
         Agent=policy.Agent
         self.env=bundle.AdroitRM75Env('relocate')
         self.spec_state=mujoco.mjtState.mjSTATE_INTEGRATION

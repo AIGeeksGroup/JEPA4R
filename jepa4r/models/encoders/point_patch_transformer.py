@@ -53,7 +53,11 @@ def farthest_point_sampling(xyz: torch.Tensor, num: int, random_start: bool) -> 
     B, N, _ = xyz.shape
     idx = torch.zeros(B, num, dtype=torch.long, device=xyz.device)
     dist = torch.full((B, N), float('inf'), device=xyz.device)
-    far = torch.randint(0, N, (B,), device=xyz.device) if random_start else torch.zeros(B, dtype=torch.long, device=xyz.device)
+    far = (
+        torch.randint(0, N, (B,), device=xyz.device)
+        if random_start
+        else torch.zeros(B, dtype=torch.long, device=xyz.device)
+    )
     ar = torch.arange(B, device=xyz.device)
     for i in range(num):
         idx[:, i] = far
@@ -75,7 +79,9 @@ class SinusoidalPosEmbedder(nn.Module):
 
     def forward(self, xyz):  # (B, G, 3) -> (B, G, token_dim)
         B, G, _ = xyz.shape
-        dim_t = torch.pow(self.temperature, 2 * torch.arange(0, self.num_pos_features // 2, device=xyz.device) / self.num_pos_features)
+        dim_t = torch.pow(
+            self.temperature, 2 * torch.arange(0, self.num_pos_features // 2, device=xyz.device) / self.num_pos_features
+        )
         pos_divided = (xyz * self.scale).unsqueeze(-1) / dim_t
         pos_emb = torch.zeros(B, G, self.token_dim - self.padding, dtype=torch.float32, device=xyz.device)
         pos_emb[..., 0::2] = pos_divided.sin().reshape(B, G, -1)
@@ -84,7 +90,16 @@ class SinusoidalPosEmbedder(nn.Module):
 
 
 class Tokenizer(nn.Module):
-    def __init__(self, point_dim, embed_dim, mlp_1=(128, 256), mlp_2=(512, 512), group_size=32, sampling_ratio=0.0625, random_start=True):
+    def __init__(
+        self,
+        point_dim,
+        embed_dim,
+        mlp_1=(128, 256),
+        mlp_2=(512, 512),
+        group_size=32,
+        sampling_ratio=0.0625,
+        random_start=True,
+    ):
         super().__init__()
         self.mlp_1 = _pyg_mlp([point_dim, *mlp_1], act='relu')
         self.mlp_2 = _pyg_mlp([*mlp_2, embed_dim], act='relu')
@@ -113,7 +128,9 @@ class TransformerBlock(nn.Module):
     def __init__(self, embed_dim, num_heads, mlp_ratio=3, attn_dropout=0.0, mlp_dropout=0.0):
         super().__init__()
         self.attention = nn.MultiheadAttention(embed_dim, num_heads, dropout=attn_dropout, bias=True, batch_first=True)
-        self.mlp = _pyg_mlp([embed_dim, int(mlp_ratio * embed_dim), embed_dim], act='gelu', norm=False, dropout=mlp_dropout)
+        self.mlp = _pyg_mlp(
+            [embed_dim, int(mlp_ratio * embed_dim), embed_dim], act='gelu', norm=False, dropout=mlp_dropout
+        )
         self.norm_1 = nn.LayerNorm(embed_dim)
         self.norm_2 = nn.LayerNorm(embed_dim)
 
@@ -157,9 +174,13 @@ class PointPatchTransformer(nn.Module):
         out_dim: int = 192,
     ):
         super().__init__()
-        self.tokenizer = Tokenizer(in_dim, embed_dim, tuple(tokenizer_mlp_1), tuple(tokenizer_mlp_2), group_size, sampling_ratio, random_start)
+        self.tokenizer = Tokenizer(
+            in_dim, embed_dim, tuple(tokenizer_mlp_1), tuple(tokenizer_mlp_2), group_size, sampling_ratio, random_start
+        )
         self.pos_embedder = SinusoidalPosEmbedder(embed_dim, 3, pos_temperature, pos_scale)
-        self.blocks = nn.ModuleList([TransformerBlock(embed_dim, num_heads, mlp_ratio, attn_dropout, mlp_dropout) for _ in range(depth)])
+        self.blocks = nn.ModuleList(
+            [TransformerBlock(embed_dim, num_heads, mlp_ratio, attn_dropout, mlp_dropout) for _ in range(depth)]
+        )
         self.pooling = SequencePooling(embed_dim)
         self.apply(self._init_weights)
         self.head = nn.Linear(embed_dim, out_dim)  # LeWM latent adaptation
@@ -186,7 +207,8 @@ class PointPatchTransformer(nn.Module):
 
 
 def build(enc_cfg):
-    """configs/encoder/point_patch_transformer.yaml (hparams = cortexbench@9331494:lewm_pcd/config/train/model/encoder/ppt.yaml)."""
+    """configs/encoder/point_patch_transformer.yaml (hparams =
+    cortexbench@9331494:lewm_pcd/config/train/model/encoder/ppt.yaml)."""
     h = enc_cfg.hparams
     return PointPatchTransformer(in_dim=int(enc_cfg.in_dim), embed_dim=int(h.embed_dim), depth=int(h.depth),
                                  num_heads=int(h.num_heads), mlp_ratio=h.mlp_ratio, group_size=int(h.group_size),

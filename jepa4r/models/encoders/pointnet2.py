@@ -21,16 +21,16 @@ Adaptations to LeWM: a linear head from the global feature to out_dim (the 192-d
 are the authors' (their objects are normalised to the unit sphere; the LeWM point clouds, (xyz - centre) x 4, have
 about that extent).
 
-Computation: the first layer of each set abstraction is a linear map of [xyz_j - centre, feat_j], evaluated as
-W_xyz xyz_j + W_feat feat_j (per point) + b - W_xyz centre (per centre), the same map with fewer products, in
-float32. Memory: in training every BatchNorm normalises over the whole batch (all clouds, centres and neighbours), and the
-grouped activations of a 128 x 4-frame batch do not fit in GPU memory. The centres are therefore processed in chunks
-under activation checkpointing; each BatchNorm's batch statistics are summed over all chunks first (one pass per
-layer) and then applied, so the result is the unchunked network's up to floating-point summation order, and the
-running statistics are updated once per step as nn.BatchNorm does. In eval mode the running statistics are used.
-With bn_group (config/train/model/encoder/pointnet2.yaml: 32; the authors trained PointNet++ with batches of 16) the
-statistics are per group of that many clouds instead: each group is computed in one piece under activation
-checkpointing, and the running statistics are updated once per group.
+Computation: the first layer of each set abstraction is a linear map of [xyz_j - centre, feat_j], evaluated as W_xyz
+xyz_j + W_feat feat_j (per point) + b - W_xyz centre (per centre), the same map with fewer products, in float32. Memory:
+in training every BatchNorm normalises over the whole batch (all clouds, centres and neighbours), and the grouped
+activations of a 128 x 4-frame batch do not fit in GPU memory. The centres are therefore processed in chunks under
+activation checkpointing; each BatchNorm's batch statistics are summed over all chunks first (one pass per layer) and
+then applied, so the result is the unchunked network's up to floating-point summation order, and the running statistics
+are updated once per step as nn.BatchNorm does. In eval mode the running statistics are used. With bn_group
+(config/train/model/encoder/pointnet2.yaml: 32; the authors trained PointNet++ with batches of 16) the statistics are
+per group of that many clouds instead: each group is computed in one piece under activation checkpointing, and the
+running statistics are updated once per group.
 """
 # Moved from cortexbench@9331494:lewm_pcd/encoders/pointnet2.py (lines 32-263; verbatim)
 from __future__ import annotations
@@ -123,7 +123,9 @@ class ChunkedSharedMLP(nn.Module):
             out, stats = self.piece(make(c), reduce)
             self.update_running(stats, m)
             return [out]
-        run = (lambda f, *a: checkpoint(f, *a, use_reentrant=False)) if torch.is_grad_enabled() else (lambda f, *a: f(*a))
+        run = (
+            (lambda f, *a: checkpoint(f, *a, use_reentrant=False)) if torch.is_grad_enabled() else (lambda f, *a: f(*a))
+        )
         ns = [float(n) for _, n in chunks]
         m = sum(ns)
         stats = []
@@ -178,7 +180,7 @@ def _per_group(mlp, n_clouds, group, make, reduce, positions_per_cloud):
     outs = []
     for b in range(0, n_clouds, group):
         sl = slice(b, min(b + group, n_clouds))
-        fn = lambda sl=sl: mlp.piece(make(sl), reduce)  # noqa: E731
+        fn = lambda sl=sl: mlp.piece(make(sl), reduce)
         out, stats = checkpoint(fn, use_reentrant=False) if torch.is_grad_enabled() else fn()
         mlp.update_running(stats, (sl.stop - sl.start) * positions_per_cloud)
         outs.append(out)
@@ -267,7 +269,15 @@ class PointNet2(nn.Module):
 
 
 def build(enc_cfg):
-    """configs/encoder/pointnet2.yaml (hparams = cortexbench@9331494:lewm_pcd/config/train/model/encoder/pointnet2.yaml)."""
+    """configs/encoder/pointnet2.yaml (hparams =
+    cortexbench@9331494:lewm_pcd/config/train/model/encoder/pointnet2.yaml)."""
     h = enc_cfg.hparams
-    return PointNet2(in_dim=int(enc_cfg.in_dim), npoints=list(h.npoints), radii=list(h.radii), nsamples=list(h.nsamples),
-                     mlps=[list(m) for m in h.mlps], out_dim=int(enc_cfg.out_dim), bn_group=int(h.bn_group))
+    return PointNet2(
+        in_dim=int(enc_cfg.in_dim),
+        npoints=list(h.npoints),
+        radii=list(h.radii),
+        nsamples=list(h.nsamples),
+        mlps=[list(m) for m in h.mlps],
+        out_dim=int(enc_cfg.out_dim),
+        bn_group=int(h.bn_group),
+    )

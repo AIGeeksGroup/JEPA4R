@@ -1,4 +1,5 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/cortexbench/surface_geometry.py (verbatim)
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/cortexbench/surface_geometry.py (verbatim except: lines wrapped at 120
+# columns)
 """Depth back-projection and the unchanged shared visible-surface sampling primitive."""
 import numpy as np
 
@@ -21,7 +22,8 @@ def render_xyz_geom(sim, size=256, cam=CAM, rgb=False):
     cid = sim.model.camera_name2id(cam)
     img, depth = sim.render(width=size, height=size, depth=True, camera_name=cam, device_id=0)
     seg = sim.render(width=size, height=size, camera_name=cam, segmentation=True, device_id=0)
-    img, depth, seg = img[::-1], depth[::-1], seg[::-1]  # OpenGL rows are bottom-up; CortexBench flips its frames the same way
+    # OpenGL rows are bottom-up; CortexBench flips its frames the same way
+    img, depth, seg = img[::-1], depth[::-1], seg[::-1]
     xyz = _depth_to_xyz(sim, depth, size, cid)
     geom = np.where(seg[..., 0] == GEOM, seg[..., 1], -1)
     return (xyz, geom, img) if rgb else (xyz, geom)
@@ -51,7 +53,9 @@ class SurfaceSampler:
             return pts[sel].astype(np.float32), cols[sel].astype(np.uint8)
 
 
-def depth_to_world(depth: np.ndarray, camera_position: np.ndarray, camera_rotation: np.ndarray, fovy: float) -> np.ndarray:
+def depth_to_world(
+    depth: np.ndarray, camera_position: np.ndarray, camera_rotation: np.ndarray, fovy: float
+) -> np.ndarray:
     depth = np.asarray(depth, dtype=np.float64)
     if depth.ndim != 2 or depth.shape[0] != depth.shape[1]:
         raise ValueError(f"depth must be square HxW, got {depth.shape}")
@@ -62,4 +66,6 @@ def depth_to_world(depth: np.ndarray, camera_position: np.ndarray, camera_rotati
     camera_points = np.stack(
         [(u - center) * depth / focal, -(v - center) * depth / focal, -depth], axis=-1
     )
-    return camera_points @ np.asarray(camera_rotation, dtype=np.float64).T + np.asarray(camera_position, dtype=np.float64)
+    return camera_points @ np.asarray(camera_rotation, dtype=np.float64).T + np.asarray(
+        camera_position, dtype=np.float64
+    )

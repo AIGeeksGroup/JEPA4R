@@ -17,12 +17,15 @@ except ImportError:  # pragma: no cover
     swm = None
 
 
-# Moved from lewm-pcd-recon-page4d@d3c2d07:lewm_pcd/recon/rollout.py:training_setup, action_blocks, open_loop (lines 16-50; verbatim)
+# Moved from lewm-pcd-recon-page4d@d3c2d07:lewm_pcd/recon/rollout.py:training_setup, action_blocks, open_loop (lines
+# 16-50; verbatim)
 def training_setup(ckpt):
     """(frameskip, history_size, action mean, action std) of the run a world-model checkpoint belongs to."""
     path = Path(swm.data.utils.get_cache_dir(sub_folder='checkpoints'), ckpt)
     cfg = OmegaConf.load((path.parent if path.suffix == '.pt' else path) / 'config.yaml')
-    train_set = swm.data.load_dataset(cfg.data.dataset.name, transform=None, keys_to_load=['action'], keys_to_cache=['action'])
+    train_set = swm.data.load_dataset(
+        cfg.data.dataset.name, transform=None, keys_to_load=['action'], keys_to_cache=['action']
+    )
     a = torch.from_numpy(np.array(train_set.get_col_data('action')))
     a = a[~torch.isnan(a).any(dim=1)]
     return int(cfg.data.dataset.frameskip), int(cfg.history_size), a.mean(0, keepdim=True), a.std(0, keepdim=True)
@@ -57,8 +60,8 @@ def open_loop(world_model, latents, blocks, context, history):
 
 @torch.no_grad()
 def imagine(world_model, decoder, context_obs, action_blocks, history=3, num_points=1200):
-    """world_model: FrozenLatent (jepa4r.decoder.model) of the frozen JEPA; context_obs: the encoder input of the context
-    frames [C, ...] (env steps 0, 5, 10); action_blocks: normalised blocks [K - 1, frameskip x A] of the episode
+    """world_model: FrozenLatent (jepa4r.decoder.model) of the frozen JEPA; context_obs: the encoder input of the
+    context frames [C, ...] (env steps 0, 5, 10); action_blocks: normalised blocks [K - 1, frameskip x A] of the episode
     (``action_blocks``) -> decoded clouds [K - C, num_points, 6] of the predicted frames (env steps 5C, ..., 5(K - 1)),
     in the decoder's target frame (jepa4r.metrics.pointcloud.to_metres -> metres)."""
     ctx = world_model(context_obs[None])                                              # (1, C, D)

@@ -1,4 +1,4 @@
-# Moved from cortexbench@9331494:lewm_pcd/envs/metaworld/assembly.py (verbatim)
+# Moved from cortexbench@9331494:lewm_pcd/envs/metaworld/assembly.py (verbatim except: lines wrapped at 120 columns)
 """MetaWorld assembly (a CortexBench task): put the nut (a ring with a handle, body 'RoundNut') over the peg.
 
 * Layout: metaworld 3.0 ``assembly-v3-goal-observable`` (the same XML as CortexBench's v2 fork); every reset places the
@@ -10,13 +10,13 @@
 * info adds the ring centre, the peg top, the target (xy; z = 1 for the peg) and whether the ring is on the peg;
   obj_pos is metaworld's object position, the handle site 'RoundNut-8'.
 * Evaluation: set_state also restores the peg, a fixture the reset moves (model data, not qpos).
-* Backbone controller (AssemblyThreePartPolicy): the nut is grasped by its handle as metaworld's SawyerAssemblyV3Policy /
-  SawyerDisassembleV3Policy do (hand 2 cm behind the handle site, fingers closed at 0.6; lifting starts once the
-  gripper reading shows them closed), and carried to the target. A carry always starts with a straight lift to
-  LIFT_Z, so a nut on the peg comes off it before moving sideways; during the carry the hand moves so that the ring
-  centre (not the hand) reaches the target, which keeps the ring aligned with the peg whatever the nut's yaw. A
-  placement that gets stuck (the ring resting on the peg top) is released and the nut picked again; a dropped nut
-  is picked again. Branch and random steps: policy.ThreePartPolicy's.
+* Backbone controller (AssemblyThreePartPolicy): the nut is grasped by its handle as metaworld's SawyerAssemblyV3Policy
+  / SawyerDisassembleV3Policy do (hand 2 cm behind the handle site, fingers closed at 0.6; lifting starts once the
+  gripper reading shows them closed), and carried to the target. A carry always starts with a straight lift to LIFT_Z,
+  so a nut on the peg comes off it before moving sideways; during the carry the hand moves so that the ring centre (not
+  the hand) reaches the target, which keeps the ring aligned with the peg whatever the nut's yaw. A placement that gets
+  stuck (the ring resting on the peg top) is released and the nut picked again; a dropped nut is picked again. Branch
+  and random steps: policy.ThreePartPolicy's.
 """
 
 from __future__ import annotations
@@ -27,11 +27,13 @@ import numpy as np
 from .env import MWTaskEnv
 from .policy import GRAB, P_GAIN, RELEASE, ThreePartPolicy
 
-TABLE = ((-0.22, 0.56), (0.08, 0.70))  # ring-centre spots for table placements (the handle, +0.13 m in x, stays in view)
+# ring-centre spots for table placements (the handle, +0.13 m in x, stays in view)
+TABLE = ((-0.22, 0.56), (0.08, 0.70))
 PEG_CLEARANCE = 0.13                   # m between a table spot and the peg (ring outer radius ~0.066)
 GRASP_OFF = np.array([-0.02, 0.0, 0.045])  # hand relative to the handle site when holding it (metaworld: -0.02 in x)
 APPROACH_DZ = 0.10
-LIFT_Z = 0.20      # straight up to here before any sideways carry: the ring (~0.06 below the hand) clears the peg top (0.10)
+# straight up to here before any sideways carry: the ring (~0.06 below the hand) clears the peg top (0.10)
+LIFT_Z = 0.20
 TRAVEL_Z = 0.22
 PLACE_Z = 0.05     # lowest hand target (mocap_low z); the nut stops the hand at ~0.065 on the table
 
@@ -126,13 +128,16 @@ class AssemblyThreePartPolicy(ThreePartPolicy):
             else:
                 desired, grab = grasp, GRAB
                 m['n'] += 1
-                if (m['n'] >= 6 and info['gripper'] <= 0.7) or m['n'] >= 25:  # fingers closed (reading ~0.5 on the handle): lift
+                # fingers closed (reading ~0.5 on the handle): lift
+                if (m['n'] >= 6 and info['gripper'] <= 0.7) or m['n'] >= 25:
                     phase, m['n'], m['zs'] = 'carry', 0, []
         if phase == 'carry':
             grab = GRAB
             err = target[:2] - ring[:2]  # move the hand so that the ring centre reaches the target
             if np.linalg.norm(err) > 0.012:
-                desired = hand + np.array([0.0, 0.0, 0.1]) if hand[2] < LIFT_Z else np.array([*(hand[:2] + err), TRAVEL_Z])
+                desired = (
+                    hand + np.array([0.0, 0.0, 0.1]) if hand[2] < LIFT_Z else np.array([*(hand[:2] + err), TRAVEL_Z])
+                )
                 m['zs'] = []
             else:
                 desired = np.array([*(hand[:2] + err), PLACE_Z])

@@ -13,7 +13,8 @@ import torch
 from jepa4r.decoder.losses import _gather, _nn_index, sliced_wasserstein
 
 
-# Moved from lewm-pcd-recon-page4d@d3c2d07:lewm_pcd/recon/metrics.py:to_metres, nn_both_sides, colour_error, region_error, colour_signature, colour_match, object_centroid, sliced_w (lines 11-82; verbatim)
+# Moved from lewm-pcd-recon-page4d@d3c2d07:lewm_pcd/recon/metrics.py:to_metres, nn_both_sides, colour_error,
+# region_error, colour_signature, colour_match, object_centroid, sliced_w (lines 11-82; verbatim)
 def to_metres(cloud, center, scale):
     """target frame -> metres (inverse of ``utils.PointCloudPreprocessor``); colour channels untouched."""
     c = torch.as_tensor(center, dtype=cloud.dtype, device=cloud.device)
@@ -99,9 +100,9 @@ def nn_stats(pred_xyz, gt_xyz, outlier_cm=3.0) -> dict:
 
 @torch.no_grad()
 def cube_position_error(pred, gt, rule, centre=None, signature=None):
-    """Per frame, cm: |centroid of the cube's colour in the decoded cloud - in the real cloud| (eval_frames' object_pos).
-    The colour signature: the median rgb of the real points within 0.85 x rule.radius_cm of the simulator's cube
-    position ``centre`` (B, 3) over all given frames (colour_signature), or ``signature`` if given."""
+    """Per frame, cm: |centroid of the cube's colour in the decoded cloud - in the real cloud| (eval_frames'
+    object_pos). The colour signature: the median rgb of the real points within 0.85 x rule.radius_cm of the simulator's
+    cube position ``centre`` (B, 3) over all given frames (colour_signature), or ``signature`` if given."""
     if signature is None:
         signature, _ = colour_signature(gt, centre, float(rule.radius_cm) / 100 * 0.85)
     return (object_centroid(pred, signature) - object_centroid(gt, signature)).norm(dim=-1) * 100

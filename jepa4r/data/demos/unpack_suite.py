@@ -1,8 +1,9 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/unpack_suite.py (verbatim except: imports / paths adapted to the package)
+# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/unpack_suite.py (verbatim except: imports / paths adapted to
+# the package; lines wrapped at 120 columns)
 """Unpack one CortexBench demo zip ($STABLEWM_HOME/datasets/cortexbench/downloads/<name>.zip, URLs in README.md) into
 $STABLEWM_HOME/datasets/cortexbench/<name>/, taking each <name>/*.pickle once: the MetaWorld zip (and
 maybe others) also holds a second, identical copy under checkpoint/maksymets/eaif/datasets/mujoco_vil_datasets/.
-Files are written to _partial_<name>/ next to it and the directory is renamed into place at the end, so grid.py
+Files are written to _partial_<name>/ next to it and the directory is renamed into place at the end, so a BC job
 never sees a half-written pickle; each written file is fsynced and dropped from the page cache (container cap).
 
     source env.sh && $PY unpack_suite.py dmc-expert-v1.0

@@ -1,4 +1,4 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/pcd_fork.py (verbatim)
+# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/pcd_fork.py (verbatim except: lines wrapped at 120 columns)
 """Point clouds from CortexBench's MetaWorld env (metaworld fork 4e896a5, mujoco-py 2.0): the top_cap2 camera's depth
 image back-projected into the world frame, with MuJoCo's segmentation telling which geom each pixel belongs to.
 
@@ -46,7 +46,8 @@ def render_xyz_geom(sim, size=256, cam=CAM, rgb=False):
     cid = sim.model.camera_name2id(cam)
     img, depth = sim.render(width=size, height=size, depth=True, camera_name=cam, device_id=0)
     seg = sim.render(width=size, height=size, camera_name=cam, segmentation=True, device_id=0)
-    img, depth, seg = img[::-1], depth[::-1], seg[::-1]  # OpenGL rows are bottom-up; CortexBench flips its frames the same way
+    # OpenGL rows are bottom-up; CortexBench flips its frames the same way
+    img, depth, seg = img[::-1], depth[::-1], seg[::-1]
     xyz = _depth_to_xyz(sim, depth, size, cid)
     geom = np.where(seg[..., 0] == GEOM, seg[..., 1], -1)
     return (xyz, geom, img) if rgb else (xyz, geom)

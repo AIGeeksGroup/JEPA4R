@@ -1,4 +1,5 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/policy_reference.py (verbatim except: imports / paths adapted to the package)
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/policy_reference.py (verbatim except: imports / paths adapted
+# to the package; lines wrapped at 120 columns)
 """Device-labelled CPU endpoint reference, independently replayed from raw NPZ."""
 import hashlib,json,importlib.metadata
 from pathlib import Path
@@ -46,15 +47,39 @@ def write_cpu_reference(runtime,gate,output,trainer,boundary,runtime_recipe):
     action_path=output/'cpu_endpoint_actions.npy'
     with action_path.open('xb')as stream:np.save(stream,actions,allow_pickle=False)
     bind=lambda p:dict(path=str(p),sha256=sha(p))
-    reference=dict(schema='gciql_cpu_endpoint_reference_v1',scope='new_CPU_reference_from_real_terminal_NPZ_not_GPU_original_output',
-        actual_exit_code=0,backend='cpu',storage='terminal_full_state_npz',precision='fp32',updates=0,
-        source_export=dict(producer_report=bind(gate/'report.json'),full_state=bind(raw_path),next_batch=bind(batch_path),
-                           next_ids=bind(gate/'next_ids.npz'),runtime_recipe=runtime_recipe),
-        config_digest=config_digest(runtime),endpoint_fingerprint=fingerprint,complete153_mapping=leaf_comparison,
-        leaf_mapping=mapping,math_sources=math_sources,versions=versions,jax_default_matmul_precision=precision,
-        actions=dict(**bind(action_path),shape=list(actions.shape),dtype=str(actions.dtype),array_sha256=array_identity(actions)),
-        action_forward=proof,producer_source=bind(Path(__file__)),
-        mapping_source=bind(Path(__file__).with_name('state_replay.py')),producer_source_sha256=sha(__file__))
+    reference = dict(
+        schema='gciql_cpu_endpoint_reference_v1',
+        scope='new_CPU_reference_from_real_terminal_NPZ_not_GPU_original_output',
+        actual_exit_code=0,
+        backend='cpu',
+        storage='terminal_full_state_npz',
+        precision='fp32',
+        updates=0,
+        source_export=dict(
+            producer_report=bind(gate / 'report.json'),
+            full_state=bind(raw_path),
+            next_batch=bind(batch_path),
+            next_ids=bind(gate / 'next_ids.npz'),
+            runtime_recipe=runtime_recipe,
+        ),
+        config_digest=config_digest(runtime),
+        endpoint_fingerprint=fingerprint,
+        complete153_mapping=leaf_comparison,
+        leaf_mapping=mapping,
+        math_sources=math_sources,
+        versions=versions,
+        jax_default_matmul_precision=precision,
+        actions=dict(
+            **bind(action_path),
+            shape=list(actions.shape),
+            dtype=str(actions.dtype),
+            array_sha256=array_identity(actions),
+        ),
+        action_forward=proof,
+        producer_source=bind(Path(__file__)),
+        mapping_source=bind(Path(__file__).with_name('state_replay.py')),
+        producer_source_sha256=sha(__file__),
+    )
     target=output/'CPU_REFERENCE.json';save_new(target,reference)
     return dict(actual_exit_code=0,updates=0,cpu_reference=bind(target),endpoint_fingerprint=fingerprint,
                 reference_semantics=reference['scope'])
@@ -81,7 +106,9 @@ def validate_cpu_reference(record,runtime,gate,expected):
             not reference.get('complete153_mapping',{}).get('passed')or len(reference.get('leaf_mapping',[]))!=153):
         raise ValueError('CPU reference full-state/source/config mapping differs')
     original=expected['actual_source_binding']
-    if reference['versions']!=original['versions']or any(value not in set(original['code'].values())for value in reference['math_sources'].values()):
+    if reference['versions'] != original['versions'] or any(
+        value not in set(original['code'].values()) for value in reference['math_sources'].values()
+    ):
         raise ValueError('CPU reference source/library identities differ from its producer')
     for path,digest in reference['math_sources'].items():pinned(dict(path=path,sha256=digest))
     pinned(reference['producer_source']);pinned(reference['mapping_source'])

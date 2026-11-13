@@ -37,14 +37,7 @@ include = ["jepa4r*"]
 [tool.ruff]
 target-version = "py310"
 line-length = 120
-extend-exclude = ["third_party",   # vendored upstream code, unchanged apart from third_party/*/UPSTREAM.md
-                  # frozen copies the moved OGBench-cube Cube workflow pins by sha256 (its own source manifests)
-                  "jepa4r/policy/gciql/collection/vendor", "jepa4r/policy/gciql/downstream/vendor",
-                  "jepa4r/policy/gciql/pldm/vendor"]
+extend-exclude = ["third_party"]   # vendored upstream code, unchanged apart from the changes in third_party/*/UPSTREAM.md
 
 [tool.ruff.lint]
 select = ["E9", "F"]
-
-[tool.ruff.lint.per-file-ignores]
-# the OGBench-cube branch's own tests, moved with their sources' unused imports kept as they are
-"jepa4r/policy/bc/relocate/tests/*" = ["F401"]

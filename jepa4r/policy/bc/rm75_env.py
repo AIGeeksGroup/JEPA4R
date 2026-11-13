@@ -1,4 +1,5 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/rm75_env.py (verbatim except: imports / paths adapted to the package)
+# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/rm75_env.py (verbatim except: imports / paths adapted to the
+# package; lines wrapped at 120 columns, no lint exemptions)
 """CortexBench's MetaWorld env on the RM75 (runs in the lewm_mw env, MuJoCo 3): what the official harness's
 env_constructor + MuJoCoPixelObsWrapper give for the Sawyer (metaworld <task>-v2-goal-observable with
 _freeze_rand_vec False, a new layout per seed, the hand at the task's own start, 500-step episodes, 256x256 frames
@@ -19,15 +20,16 @@ from __future__ import annotations
 import os
 import sys
 
-LEWM = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..'))  # the repository (jepa4r/)
+# the repository (jepa4r/)
+LEWM = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..'))
 sys.path.insert(0, LEWM)
 os.environ.setdefault('MUJOCO_GL', 'egl')
 
-import mujoco  # noqa: E402
-import numpy as np  # noqa: E402
+import mujoco
+import numpy as np
 
-from jepa4r.envs.metaworld import MWPointCloudWrapper  # noqa: E402
-from jepa4r.envs.twins.metaworld_rm75 import RM75AssemblyEnv, RM75BinPickEnv, RM75ButtonPressEnv, RM75DrawerEnv  # noqa: E402
+from jepa4r.envs.metaworld import MWPointCloudWrapper
+from jepa4r.envs.twins.metaworld_rm75 import RM75AssemblyEnv, RM75BinPickEnv, RM75ButtonPressEnv, RM75DrawerEnv
 
 # task -> (env, fixtures: bodies a reset re-places, in the point-cloud foreground as in the task's collection config)
 TASKS = {'bin-picking': (RM75BinPickEnv, ()), 'button-press-topdown': (RM75ButtonPressEnv, ('box',)),

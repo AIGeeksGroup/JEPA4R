@@ -1,4 +1,5 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/downstream/native.py (verbatim except: imports / paths adapted to the package)
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/downstream/native.py (verbatim except: imports / paths adapted
+# to the package; lines wrapped at 120 columns)
 import importlib.util
 import json
 from pathlib import Path
@@ -61,7 +62,11 @@ class OnlineEncoder:
                 spec.loader.exec_module(module)
                 self.img_preprocess = module.get_img_preprocessor('pixels', 'pixels', 224)
                 pre = binding['preprocessing']
-                self.pcd_preprocess = module.get_pcd_preprocessor(center=pre['center'] if config['modality'] == 'pcd' else (0.425, 0.0, 0.2), scale=pre['scale'] if config['modality'] == 'pcd' else 4.0, use_rgb=True)
+                self.pcd_preprocess = module.get_pcd_preprocessor(
+                    center=pre['center'] if config['modality'] == 'pcd' else (0.425, 0.0, 0.2),
+                    scale=pre['scale'] if config['modality'] == 'pcd' else 4.0,
+                    use_rgb=True,
+                )
         if self.model.training or any((p.requires_grad for p in self.model.parameters())):
             raise ValueError('Online world-model encoder must remain frozen in eval mode')
 
@@ -74,7 +79,9 @@ class OnlineEncoder:
                 raise ValueError('Native RGB must be uint8 HWC224')
             pixels = torch.from_numpy(np.ascontiguousarray(value[None]))
             if family == 'pldm':
-                features = self.adapter.encode_uint8(self.model, pixels, preprocess_device=binding['preprocessing']['device'])
+                features = self.adapter.encode_uint8(
+                    self.model, pixels, preprocess_device=binding['preprocessing']['device']
+                )
             elif family == 'lejepa':
                 from PIL import Image
                 prepared = self.transform(Image.fromarray(value)).unsqueeze(0).to(self.device)
@@ -99,7 +106,9 @@ class OnlineEncoder:
 def install_native(config, trainer, boundary, config_path):
     from . import native_core as core
     if config['modality'] == 'state':
-        raise ValueError('This preserved visual Native loop requires a visual method; use the original official state Native entry')
+        raise ValueError(
+            'This preserved visual Native loop requires a visual method; use the original official state Native entry'
+        )
     trainer.torch.set_num_threads(1)
     physics = load_source('_cube_original_native_physics', 'physics.py')
     physics_binding = physics.configure_numpy_physics_runtime()
@@ -117,14 +126,28 @@ def install_native(config, trainer, boundary, config_path):
     if training['encoder_binding'] != encoder:
         raise ValueError('Native and cached policy encoder/preprocessing bindings differ')
     for split in ('train', 'val'):
-        if training['feature_loader_arguments'][split]['manifest_sha256'] != config['feature_loader_arguments'][split]['manifest_sha256']:
+        if (
+            training['feature_loader_arguments'][split]['manifest_sha256']
+            != config['feature_loader_arguments'][split]['manifest_sha256']
+        ):
             raise ValueError('Native recipe identifies a different training cache')
     group = 'cube' + str(config['cube_count']) + '_' + config['method']
     core.ROOT = VENDOR
     core.CASE = VENDOR
     core.LATENT_DIM = config['latent_dim']
     camera = dict(native['camera'])
-    cfg = dict(cube_count=config['cube_count'], state_dim=config['state_dim'], current_dim=config['input_contract']['current_dim'], goal_dim=config['input_contract']['goal_dim'], max_episode_steps=native['max_episode_steps'], mode=config['modality'], camera=camera, wm=Path(encoder['checkpoint']), wm_sha256=encoder['checkpoint_sha256'], manifest_sha256=policy['manifest_sha256'])
+    cfg = dict(
+        cube_count=config['cube_count'],
+        state_dim=config['state_dim'],
+        current_dim=config['input_contract']['current_dim'],
+        goal_dim=config['input_contract']['goal_dim'],
+        max_episode_steps=native['max_episode_steps'],
+        mode=config['modality'],
+        camera=camera,
+        wm=Path(encoder['checkpoint']),
+        wm_sha256=encoder['checkpoint_sha256'],
+        manifest_sha256=policy['manifest_sha256'],
+    )
     for key in ('training', 'acceptance', 'gate', 'final'):
         cfg[key] = Path(policy[key])
     for key in ('training_sha256', 'acceptance_sha256', 'gate_sha256'):
@@ -140,6 +163,8 @@ def install_native(config, trainer, boundary, config_path):
     reference = Path(config_path).parent / 'evaluator_reference.json'
     manifest = verify_sources()
     evaluator = IMPLS / 'utils/evaluation.py'
-    atomic_json(reference, dict(source_pins={str(evaluator): manifest['files']['ogbench/impls/utils/evaluation.py']['sha256']}))
+    atomic_json(
+        reference, dict(source_pins={str(evaluator): manifest['files']['ogbench/impls/utils/evaluation.py']['sha256']})
+    )
     core.EVALUATOR_REFERENCE = reference
     return (core, group)

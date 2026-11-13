@@ -7,7 +7,7 @@ data/policy/<env>/ holds the dataset cfg.env.policy_data.dataset and its -val sp
           a977253: files already present are kept). The learner inputs are derived from them when the policy is
           trained: the lights (button_states) and the oracle goal by DQC's loader (puzzle-<b>-play-oraclerep-v0), the
           latents by jepa4r/policy/dqc (cache_latents: every row set back into the simulator, rendered, encoded).
-  Cube    the Cube workflow's prepare-data stage (jepa4r/policy/gciql/official_data.py): the same public files,
+  Cube    the Cube workflow's prepare-data stage (jepa4r/data/cube/official_data.py): the same public files,
           downloaded and checked against the sha256 / byte counts of official_sources.json, into
           data/policy/<env>/official/cube<N>/ (OFFICIAL_DATA.json)
 Interpreter: JEPA4R_PY_DQC (any python with ogbench installed).

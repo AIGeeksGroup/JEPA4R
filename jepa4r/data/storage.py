@@ -35,27 +35,43 @@ class GzipHDF5Writer(HDF5Writer):
 
     def __init__(self, path, *, mode='append', chunk_rows=20, gzip_cols=('pixels',), gzip_chunk_rows=5, level=4):
         super().__init__(path, mode=mode)
-        self.chunk_rows, self.gzip_cols, self.gzip_chunk_rows, self.level = chunk_rows, set(gzip_cols), gzip_chunk_rows, level
+        self.chunk_rows, self.gzip_cols, self.gzip_chunk_rows, self.level = (
+            chunk_rows,
+            set(gzip_cols),
+            gzip_chunk_rows,
+            level,
+        )
 
     def _init_schema(self, sample_ep: dict) -> None:
         for col, vals in sample_ep.items():
             if _is_string_col(vals[0]):
-                self._f.create_dataset(col, shape=(0,), maxshape=(None,), dtype=h5py.string_dtype(), chunks=(self.chunk_rows,))
+                self._f.create_dataset(
+                    col, shape=(0,), maxshape=(None,), dtype=h5py.string_dtype(), chunks=(self.chunk_rows,)
+                )
                 continue
             sample = np.asarray(vals[0])
             if col in self.gzip_cols:
-                kw = dict(chunks=(self.gzip_chunk_rows, *sample.shape), compression='gzip', compression_opts=self.level, shuffle=True)
+                kw = dict(
+                    chunks=(self.gzip_chunk_rows, *sample.shape),
+                    compression='gzip',
+                    compression_opts=self.level,
+                    shuffle=True,
+                )
             else:
                 kw = dict(chunks=(self.chunk_rows, *sample.shape))
-            self._f.create_dataset(col, shape=(0, *sample.shape), maxshape=(None, *sample.shape), dtype=sample.dtype, **kw)
+            self._f.create_dataset(
+                col, shape=(0, *sample.shape), maxshape=(None, *sample.shape), dtype=sample.dtype, **kw
+            )
         self._f.create_dataset('ep_len', shape=(0,), maxshape=(None,), dtype=np.int32)
         self._f.create_dataset('ep_offset', shape=(0,), maxshape=(None,), dtype=np.int64)
 
 
 
-# Moved from cortexbench@9331494:lewm_pcd/scripts/data/collect_cube_pcd.py:PIX_COLS, PCD_COLS, PairedWriter (lines 40-65; verbatim)
+# Moved from cortexbench@9331494:lewm_pcd/scripts/data/collect_cube_pcd.py:PIX_COLS, PCD_COLS, PairedWriter (lines
+# 40-65; verbatim)
 PIX_COLS = ('pixels', 'render_time')    # swm's AddPixelsWrapper: 2D dataset only
-PCD_COLS = ('pcd_', 'pixels/', 'cam/')  # prefixes of PointCloudWrapper's keys (pixels/, cam/ only with keep_rgb): 3D dataset only
+# prefixes of PointCloudWrapper's keys (pixels/, cam/ only with keep_rgb): 3D dataset only
+PCD_COLS = ('pcd_', 'pixels/', 'cam/')
 
 
 class PairedWriter:
@@ -87,13 +103,20 @@ def check_paired(pcd, pix):
     """The 3D and 2D datasets of one paired collection hold the same episodes, row for row."""
     with h5py.File(pcd, 'r') as a, h5py.File(pix, 'r') as b:
         every = slice(None, None, 997)  # a sample of rows: the 3D file still has one-row chunks here
-        for col, rows in [('ep_len', slice(None)), ('ep_offset', slice(None)), ('id', every), ('qpos', every), ('action', every)]:
+        for col, rows in [
+            ('ep_len', slice(None)),
+            ('ep_offset', slice(None)),
+            ('id', every),
+            ('qpos', every),
+            ('action', every),
+        ]:
             if not np.array_equal(a[col][rows], b[col][rows], equal_nan=a[col].dtype.kind == 'f'):
                 sys.exit(f'{pcd.name} and {pix.name} differ in {col!r}: not the same rollouts')
     print(f'{pcd.name} (3D) and {pix.name} (2D) hold the same episodes row for row', flush=True)
 
 
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/scripts/data/merge_h5_shards.py:CHUNK, datasets, append_shard (lines 23-74; verbatim)
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/scripts/data/merge_h5_shards.py:CHUNK, datasets, append_shard (lines 23-74;
+# verbatim)
 CHUNK = 20_000  # frames per copy step
 
 
@@ -116,7 +139,10 @@ def append_shard(out_path, shard_path, preserve_episode_indices=False):
     with h5py.File(out_path, 'a', libver='latest') as fo, h5py.File(shard_path, 'r') as fs:
         co, cs = datasets(fo), datasets(fs)
         if 'ep_idx' in cs and not preserve_episode_indices:
-            raise ValueError(f'{shard_path} already has ep_idx (shard-local episode numbers); run add_eval_columns.py only after merging')
+            raise ValueError(
+                f'{shard_path} already has ep_idx (shard-local episode numbers); run add_eval_columns.py only after '
+                'merging'
+            )
         if co != cs:
             raise ValueError(f'schema mismatch: only in out {sorted(set(co) - set(cs))}, '
                              f'only in shard {sorted(set(cs) - set(co))}')
@@ -147,7 +173,8 @@ def append_shard(out_path, shard_path, preserve_episode_indices=False):
 
 
 
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/scripts/data/merge_h5_shards.py:main (lines 75-103; verbatim except: argparse replaced by the arguments of merge_shards)
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/scripts/data/merge_h5_shards.py:main (lines 75-103; verbatim except: argparse
+# replaced by the arguments of merge_shards)
 def merge_shards(out, shards, delete=False, preserve_episode_indices=False):
     out = Path(out)
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -172,31 +199,34 @@ def merge_shards(out, shards, delete=False, preserve_episode_indices=False):
 
 
 
-# Moved from cortexbench@9331494:lewm_pcd/scripts/data/add_eval_columns.py:main (lines 18-42; verbatim except: renamed add_eval_columns)
+# Moved from cortexbench@9331494:lewm_pcd/scripts/data/add_eval_columns.py:main (lines 18-42; verbatim except: renamed
+# add_eval_columns)
 def add_eval_columns(path):
     with h5py.File(path, 'a') as f:
-      lens, offs = f['ep_len'][:], f['ep_offset'][:]  # noqa: F841  (moved verbatim)
-      n = int(lens.sum())
-      if 'ep_idx' not in f:
-          ep_idx = np.repeat(np.arange(len(lens), dtype=np.int64), lens)
-          assert len(ep_idx) == n
-          f.create_dataset('ep_idx', data=ep_idx, chunks=(min(n, 1 << 16),))
-          print(f'added ep_idx ({n} rows, {len(lens)} episodes)')
-      nested = []
-      f.visititems(lambda k, o: nested.append(k) if isinstance(o, h5py.Dataset) and '/' in k else None)
-      added = 0
-      for k in nested:
-          flat = k.replace('/', '_')
-          if flat not in f:
-              f[flat] = f[k]  # hard link, data is not copied
-              added += 1
-          elif f[flat] != f[k]:
-              raise SystemExit(f'name clash: top-level {flat!r} exists and is not the same object as {k!r}; not touching the file')
-      groups = sorted({k.split('/')[0] for k in nested})
-      for g in groups:
-          del f[g]  # drop the group link; the datasets live on under their flat names
-      print(f'flattened {len(nested)} nested datasets ({added} new links); removed groups {groups}')
-      print('top-level columns:', sorted(k for k in f.keys()))
+        lens, _offs = f['ep_len'][:], f['ep_offset'][:]
+        n = int(lens.sum())
+        if 'ep_idx' not in f:
+            ep_idx = np.repeat(np.arange(len(lens), dtype=np.int64), lens)
+            assert len(ep_idx) == n
+            f.create_dataset('ep_idx', data=ep_idx, chunks=(min(n, 1 << 16),))
+            print(f'added ep_idx ({n} rows, {len(lens)} episodes)')
+        nested = []
+        f.visititems(lambda k, o: nested.append(k) if isinstance(o, h5py.Dataset) and '/' in k else None)
+        added = 0
+        for k in nested:
+            flat = k.replace('/', '_')
+            if flat not in f:
+                f[flat] = f[k]  # hard link, data is not copied
+                added += 1
+            elif f[flat] != f[k]:
+                raise SystemExit(
+                    f'name clash: top-level {flat!r} exists and is not the same object as {k!r}; not touching the file'
+                )
+        groups = sorted({k.split('/')[0] for k in nested})
+        for g in groups:
+            del f[g]  # drop the group link; the datasets live on under their flat names
+        print(f'flattened {len(nested)} nested datasets ({added} new links); removed groups {groups}')
+        print('top-level columns:', sorted(k for k in f.keys()))
 
 
 

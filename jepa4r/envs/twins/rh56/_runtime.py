@@ -1,4 +1,5 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/rh56_adapter/_runtime.py (verbatim except: the protected source directories are those of the jepa4r package)
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/rh56_adapter/_runtime.py (verbatim except: the protected source directories
+# are those of the jepa4r package; lines wrapped at 120 columns)
 """Small shared file guards and scoped bindings; no training or simulator imports."""
 from contextlib import ExitStack, contextmanager
 import hashlib
@@ -17,7 +18,10 @@ def file_sha256(path):
 def validate_output_location(output, baseline):
     """Keep new outputs outside the existing protected source directories."""
     output, baseline = Path(output).resolve(), Path(baseline).resolve()
-    protected = [baseline / name for name in ('models', 'data', 'envs', 'policy', 'baselines', 'decoder', 'eval', 'metrics', 'stages', 'utils')]
+    protected = [
+        baseline / name
+        for name in ('models', 'data', 'envs', 'policy', 'baselines', 'decoder', 'eval', 'metrics', 'stages', 'utils')
+    ]
     if baseline.is_relative_to(output) or any(output.is_relative_to(path) for path in protected):
         raise ValueError('RH56 output must stay outside protected repository sources')
 

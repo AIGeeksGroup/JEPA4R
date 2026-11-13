@@ -6,7 +6,7 @@ config pldm.yaml, at 6f1e499 with the logger / checkpoint-interval patch), start
 cortexbench@9331494:lewm_pcd/scripts/run_{mw,scene,puzzle}_baselines.sh started it: the recipe's config overrides
 (cfg.method.train.recipe) + the env's image dataset + trainer.max_epochs. The checkpoint (config.json +
 weights_epoch_<n>.pt, encoder + projector + predictor) lands in outputs/train_wm/<env>/pldm/<tag>/checkpoints/.
-OGBench Cube (Impala encoder, the C4 workflow's PLDM): jepa4r/policy/gciql.
+OGBench Cube (Impala encoder, the C4 workflow's PLDM): jepa4r/baselines/cube/pldm.
 load_frozen_encoder: encoder + projector, 192-d, as CortexBench and DQC read it (jepa_baselines.load_pldm).
 Interpreter: JEPA4R_PY_TRAIN (stable-worldmodel, stable-pretraining 0.1.8, Lightning).
 """
@@ -31,7 +31,8 @@ def train(cfg, out_dir) -> dict:
     from jepa4r.models.world_model import training_summary
 
     out_dir = Path(out_dir)
-    # STABLEWM_HOME = the run directory: pldm.py writes its config.yaml and checkpoints to $STABLEWM_HOME/checkpoints/<name>
+    # STABLEWM_HOME = the run directory: pldm.py writes its config.yaml and checkpoints to
+    # $STABLEWM_HOME/checkpoints/<name>
     env = dict(os.environ, STABLEWM_HOME=str(out_dir), HYDRA_FULL_ERROR='1',
                PYTHONPATH=os.pathsep.join([str(SWM), os.environ.get('PYTHONPATH', '')]))
     with open(out_dir / 'train.log', 'a') as log:

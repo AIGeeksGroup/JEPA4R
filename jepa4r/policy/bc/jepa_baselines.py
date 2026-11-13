@@ -1,4 +1,5 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/jepa_baselines.py (verbatim except: imports / paths adapted to the package)
+# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/jepa_baselines.py (verbatim except: imports / paths adapted
+# to the package; lines wrapped at 120 columns)
 """CortexBench loaders for the JEPA-family baselines, same interface as lewm_cortex.load_lewm: each returns
 (model, embedding_dim, transforms, metadata); model takes [B, 3, H, W] and returns [B, D], frozen, in eval mode.
 
@@ -6,8 +7,8 @@
   one per MetaWorld task on the same data as LeWM). Taken where PLDM's own encode() takes it: the ViT encoder's CLS
   (interpolate_pos_encoding=True) through the projector, 192-d, the space its predictor works in, i.e. the same place
   LeWM is read in CortexBench. Preprocessing as LeWM's: bicubic resize to 224 + ImageNet normalisation.
-* load_lejepa: a LeJEPA trained by scripts/baselines/train_lejepa_mw.py (same data as LeWM): the backbone CLS through the
-  512-d head, the feature the official recipe probes linearly (not the projector). Preprocessing as LeWM's.
+* load_lejepa: a LeJEPA trained by scripts/baselines/train_lejepa_mw.py (same data as LeWM): the backbone CLS through
+  the 512-d head, the feature the official recipe probes linearly (not the projector). Preprocessing as LeWM's.
 * load_vjepa21: Meta's V-JEPA 2.1 ViT-B (general video JEPA, frozen as released).
 * load_visreg: VISReg ViT-B/16 (arXiv 2606.02572; ImageNet-1K, 400 epochs; the authors' visreg-vit-b-inet1k.pth, shared
   by them), frozen as released: timm's vit_base_patch16_224, the CLS after the final norm (timm's pooled output, what
@@ -24,7 +25,8 @@ from hydra.utils import instantiate
 
 IMAGENET = ([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 # the official V-JEPA 2 code (github.com/facebookresearch/vjepa2 @ 204698b), cloned here; not tracked, see README.md
-VJEPA2_REPO = Path(os.environ.get('JEPA4R_VJEPA2') or Path(__file__).resolve().parents[3] / 'third_party' / 'vjepa2')  # facebookresearch/vjepa2 @ 204698b
+# facebookresearch/vjepa2 @ 204698b
+VJEPA2_REPO = Path(os.environ.get('JEPA4R_VJEPA2') or Path(__file__).resolve().parents[3] / 'third_party' / 'vjepa2')
 
 
 def _transforms():
@@ -51,8 +53,15 @@ def _vit_hf(size='tiny', patch_size=16, image_size=224, pretrained=False, use_ma
     pinned to 0.6.11 for VC-1."""
     from transformers import ViTConfig, ViTModel
     hidden, layers, heads = _VIT_SIZES[size]
-    cfg = ViTConfig(hidden_size=hidden, num_hidden_layers=layers, num_attention_heads=heads, intermediate_size=hidden * 4,
-                    image_size=image_size, patch_size=patch_size, **kwargs)
+    cfg = ViTConfig(
+        hidden_size=hidden,
+        num_hidden_layers=layers,
+        num_attention_heads=heads,
+        intermediate_size=hidden * 4,
+        image_size=image_size,
+        patch_size=patch_size,
+        **kwargs,
+    )
     model = ViTModel(cfg, add_pooling_layer=False, use_mask_token=use_mask_token)
     model.config.interpolate_pos_encoding = True
     return model
@@ -144,8 +153,13 @@ def load_vjepa21(checkpoint: str, resolution: int = 384):
     model = VJEPA21Embedding(build_vjepa21_encoder(checkpoint)).eval()
     for p in model.parameters():
         p.requires_grad_(False)
-    transforms = T.Compose([T.Resize((resolution, resolution), interpolation=T.InterpolationMode.BICUBIC, antialias=True),
-                            T.ToTensor(), T.Normalize(*IMAGENET)])
+    transforms = T.Compose(
+        [
+            T.Resize((resolution, resolution), interpolation=T.InterpolationMode.BICUBIC, antialias=True),
+            T.ToTensor(),
+            T.Normalize(*IMAGENET),
+        ]
+    )
     metadata = {'algo': 'vjepa2.1', 'model': 'vit_base_patch16 (V-JEPA 2.1, distilled from ViT-G, 384)',
                 'checkpoint': str(checkpoint), 'resolution': resolution}
     return model, 768, transforms, metadata

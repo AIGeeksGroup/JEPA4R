@@ -1,0 +1,47 @@
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/config/train/model/lewm_pcd.yaml (verbatim except: hydra targets of the moved
+# LeWM classes (jepa4r.models.world_model.LEGACY_TARGETS))
+defaults:
+  - encoder: dexart
+  - _self_
+
+_target_: jepa4r.models.world_model.JEPA
+
+obs_key: pcd
+
+# Final Relocate uses the DexArt PointNet encoder.
+
+predictor:
+  _target_: jepa4r.models.predictor.ARPredictor
+  num_frames: ${history_size}
+  input_dim: ${embed_dim}
+  hidden_dim: ${embed_dim}
+  output_dim: ${embed_dim}
+  depth: 6
+  heads: 16
+  mlp_dim: 2048
+  dim_head: 64
+  dropout: 0.1
+  emb_dropout: 0.0
+
+action_encoder:
+  _target_: jepa4r.models.heads.Embedder
+  input_dim: ???
+  emb_dim: ${embed_dim}
+
+projector:
+  _target_: jepa4r.models.heads.MLP
+  input_dim: ${embed_dim}
+  output_dim: ${embed_dim}
+  hidden_dim: 2048
+  norm_fn:
+    _target_: torch.nn.BatchNorm1d
+    _partial_: true
+
+pred_proj:
+  _target_: jepa4r.models.heads.MLP
+  input_dim: ${embed_dim}
+  output_dim: ${embed_dim}
+  hidden_dim: 2048
+  norm_fn:
+    _target_: torch.nn.BatchNorm1d
+    _partial_: true

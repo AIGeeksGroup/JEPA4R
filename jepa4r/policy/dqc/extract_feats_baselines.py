@@ -1,4 +1,4 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/dqc/extract_feats_baselines.py (verbatim)
+# Moved from cortexbench@9331494:lewm_pcd/bench/dqc/extract_feats_baselines.py (verbatim except: no lint exemptions)
 """extract_feats.py for the JEPA-family baselines: OGBench's puzzle-<env-type>-play data -> every state re-rendered with
 the LeWM data's camera (the 2D frame LeWM 2D sees: front_pixels, 224) -> each given baseline encoder as CortexBench
 loads it (lewm_obs.BaselineEncoder: its own transforms, its frozen embedding) -> one latent per step, for run_dqc.py
@@ -82,7 +82,7 @@ def main():
     print(f'{name}: {n} rows, {len(starts)} chunks, {len(todo)} to do; encoders '
           f'{", ".join(f"{k} ({e.dim}-d at {e.size})" for k, e in encs.items())}', flush=True)
     sizes = sorted({e.size for e in encs.values()})
-    sl = lambda x, s: x[s: min(s + a.chunk, n)]  # noqa: E731
+    sl = lambda x, s: x[s: min(s + a.chunk, n)]
     window = threading.BoundedSemaphore(2 * a.workers)  # chunks handed to the pool and not yet encoded
 
     def tasks():

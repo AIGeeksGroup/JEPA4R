@@ -1,4 +1,5 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/workflow.py (verbatim except: imports / paths adapted to the package)
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/workflow.py (verbatim except: imports / paths adapted to the
+# package; lines wrapped at 120 columns, unused imports removed)
 """One paper-only Cube workflow. Describe by default; execute explicitly."""
 import argparse
 from datetime import datetime, timezone
@@ -117,16 +118,117 @@ def build_plan(config_path, stage='all'):
                  wm=root/'wm'/'WM_ACCEPTANCE.json',camera=control/'CAMERA.json',
                  recipe=control/'downstream.json')
     calls = {
-        'prepare-data':(wm,['-m','jepa4r.policy.gciql.official_data','--cube-count',str(cube),'--output',config['official_root'],'--execute'],paths['official']),
-        'collect':(wm,['-m','jepa4r.policy.gciql.collection','--cube-count',str(cube),'--mode',mode,'--output',config['collection_root'],'--collection-seed',str(config['collection_seed']),'--python',wm,'--execute'],paths['collection']),
-        'views':(wm,['-m','jepa4r.policy.gciql.fresh_data','--collection-manifest',str(paths['collection']),'--output',config['data_root']],paths['data']),
-        'train':(wm,['-m','jepa4r.policy.gciql.fresh_train','--method',model,'--data-manifest',str(paths['data']),'--output',str(root/'wm'),'--mode',mode,'--workers',str(config['workers']),'--prefetch',str(config['prefetch']),'--execute'],paths['wm']),
-        'prepare-encoder':(down,['-m','jepa4r.policy.gciql.foundation_assets','--model',model,'--cube-count',str(cube),'--mode',mode,'--assets-root',config['assets_root'],'--output',str(root/'encoder'),'--execute','--download']+(['--weights',config['weights']] if config.get('weights') else []),root/'encoder'/'ENCODER.json'),
-        'camera':(wm,['-m','jepa4r.policy.gciql.workflow','--internal','camera','--config',str(control/'RUN.json')],paths['camera']),
-        'bind':(down,['-m','jepa4r.policy.gciql.workflow','--internal','bind','--config',str(control/'RUN.json')],paths['recipe']),
+        'prepare-data': (
+            wm,
+            [
+                '-m',
+                'jepa4r.data.cube.official_data',
+                '--cube-count',
+                str(cube),
+                '--output',
+                config['official_root'],
+                '--execute',
+            ],
+            paths['official'],
+        ),
+        'collect': (
+            wm,
+            [
+                '-m',
+                'jepa4r.data.cube.collection',
+                '--cube-count',
+                str(cube),
+                '--mode',
+                mode,
+                '--output',
+                config['collection_root'],
+                '--collection-seed',
+                str(config['collection_seed']),
+                '--python',
+                wm,
+                '--execute',
+            ],
+            paths['collection'],
+        ),
+        'views': (
+            wm,
+            [
+                '-m',
+                'jepa4r.data.cube.fresh_data',
+                '--collection-manifest',
+                str(paths['collection']),
+                '--output',
+                config['data_root'],
+            ],
+            paths['data'],
+        ),
+        'train': (
+            wm,
+            [
+                '-m',
+                'jepa4r.models.cube.fresh_train',
+                '--method',
+                model,
+                '--data-manifest',
+                str(paths['data']),
+                '--output',
+                str(root / 'wm'),
+                '--mode',
+                mode,
+                '--workers',
+                str(config['workers']),
+                '--prefetch',
+                str(config['prefetch']),
+                '--execute',
+            ],
+            paths['wm'],
+        ),
+        'prepare-encoder': (
+            down,
+            [
+                '-m',
+                'jepa4r.baselines.cube.foundation_assets',
+                '--model',
+                model,
+                '--cube-count',
+                str(cube),
+                '--mode',
+                mode,
+                '--assets-root',
+                config['assets_root'],
+                '--output',
+                str(root / 'encoder'),
+                '--execute',
+                '--download',
+            ]
+            + (['--weights', config['weights']] if config.get('weights') else []),
+            root / 'encoder' / 'ENCODER.json',
+        ),
+        'camera': (
+            wm,
+            ['-m', 'jepa4r.policy.gciql.workflow', '--internal', 'camera', '--config', str(control / 'RUN.json')],
+            paths['camera'],
+        ),
+        'bind': (
+            down,
+            ['-m', 'jepa4r.policy.gciql.workflow', '--internal', 'bind', '--config', str(control / 'RUN.json')],
+            paths['recipe'],
+        ),
     }
     for name in ('encode','cache-audit','gate','reload','gciql','accept','native-sr','native-audit'):
-        calls[name]=(down,['-m','jepa4r.policy.gciql.workflow_downstream','--stage',name,'--config',str(paths['recipe']),'--execute'],root/'downstream'/'stages'/(name+'.json'))
+        calls[name] = (
+            down,
+            [
+                '-m',
+                'jepa4r.policy.gciql.workflow_downstream',
+                '--stage',
+                name,
+                '--config',
+                str(paths['recipe']),
+                '--execute',
+            ],
+            root / 'downstream' / 'stages' / (name + '.json'),
+        )
     if stage == 'all':
         sequence=list(STAGES)
         if model in ('visreg','vjepa'):
@@ -178,7 +280,7 @@ def _reuse_input(row, config):
             if sha(value[split]['path']) != value[split]['sha256']:
                 raise ValueError('reused official source changed')
     elif row['stage'] == 'views':
-        from .fresh_data import load_binding
+        from jepa4r.data.cube.fresh_data import load_binding
         load_binding(row['receipt'])
     else:
         value=read(row['receipt'])
@@ -203,7 +305,7 @@ def _verify_artifacts(path, checked=None, verified=None):
     if value.get('schema')=='cube_current_training_v1':
         # The existing loader verifies retained same-byte aliases while keeping
         # original producer paths intact as historical provenance.
-        from .fresh_data import load_binding
+        from jepa4r.data.cube.fresh_data import load_binding
         load_binding(path)
         return
     def pin(record):
@@ -286,8 +388,20 @@ def _verify_completed(row, config, previous, root):
 
 def child_environment(cache, *, platform=None):
     cache=Path(cache)
-    env=dict(os.environ,PYTHONPATH=os.pathsep.join((str(LEWM),str(LEWM/'third_party/stable-worldmodel'),str(os.environ.get('JEPA4R_OGBENCH') or LEWM/'third_party/ogbench'))),
-             OMP_NUM_THREADS='1',MKL_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1',WANDB_MODE='offline')
+    env = dict(
+        os.environ,
+        PYTHONPATH=os.pathsep.join(
+            (
+                str(LEWM),
+                str(LEWM / 'third_party/stable-worldmodel'),
+                str(os.environ.get('JEPA4R_OGBENCH') or LEWM / 'third_party/ogbench'),
+            )
+        ),
+        OMP_NUM_THREADS='1',
+        MKL_NUM_THREADS='1',
+        OPENBLAS_NUM_THREADS='1',
+        WANDB_MODE='offline',
+    )
     for variable,folder in (('TORCHINDUCTOR_CACHE_DIR','inductor'),('TRITON_CACHE_DIR','triton'),
                             ('CUDA_CACHE_PATH','cuda'),('JAX_COMPILATION_CACHE_DIR','jax'),
                             ('HF_HOME','huggingface'),('TORCH_HOME','torch')):
@@ -325,7 +439,20 @@ def execute(plan, *, resume=False):
         root.mkdir(parents=True,exist_ok=False)
         save(run_file,config,new=True)
     state_path=root/'STATUS.json'
-    state=read(state_path) if state_path.exists() else dict(stage='ready',started_at=datetime.now(timezone.utc).isoformat(),completed={},completed_count=0,failed_count=0,actual_exit_code=None,config_sha256=plan['config_sha256'],source_binding=source)
+    state = (
+        read(state_path)
+        if state_path.exists()
+        else dict(
+            stage='ready',
+            started_at=datetime.now(timezone.utc).isoformat(),
+            completed={},
+            completed_count=0,
+            failed_count=0,
+            actual_exit_code=None,
+            config_sha256=plan['config_sha256'],
+            source_binding=source,
+        )
+    )
     if state['source_binding'] != source:
         raise ValueError('source release changed; do not resume into old outputs')
     for row in plan['stages']:
@@ -374,12 +501,18 @@ def execute(plan, *, resume=False):
                     raise RuntimeError('child exited '+str(code))
                 record=_receipt(row['receipt'],config,name)
             else:
-                (driver/'stdout_stderr.log').write_bytes(b'Existing immutable input validated and reused; no child dispatched.\n')
+                (driver / 'stdout_stderr.log').write_bytes(
+                    b'Existing immutable input validated and reused; no child dispatched.\n'
+                )
                 record=reused
             code=0
             state['completed'][name]=record
             state['completed_count']=len(state['completed'])
-            save(driver/'COMPLETED.json',dict(actual_exit_code=0,receipt=record,reused_input=reused is not None),new=True)
+            save(
+                driver / 'COMPLETED.json',
+                dict(actual_exit_code=0, receipt=record, reused_input=reused is not None),
+                new=True,
+            )
         except BaseException:
             if code == 0:
                 code=1
@@ -407,12 +540,21 @@ def bind(config_path):
     official=read(Path(config['official_root'])/'OFFICIAL_DATA.json')
     camera=read(root/'control'/'CAMERA.json')
     actual_camera=camera.get('camera',camera)
-    default_receipt=root/'encoder'/'ENCODER.json' if config['model'] in ('visreg','vjepa') else root/'wm'/'WM_ACCEPTANCE.json'
+    default_receipt = (
+        root / 'encoder' / 'ENCODER.json'
+        if config['model'] in ('visreg', 'vjepa')
+        else root / 'wm' / 'WM_ACCEPTANCE.json'
+    )
     receipt=str(default_receipt)
-    requested=dict(model=config['model'],cube_count=config['cube_count'],mode=config['mode'],
-                   official_data={s:{'path':official[s]['path'],'sha256':official[s]['sha256']} for s in ('train','val')},
-                   camera=actual_camera,downstream_output_root=str(root/'downstream'),
-                   cache_sampling_seed_base={'train':0,'val':1000000000})
+    requested = dict(
+        model=config['model'],
+        cube_count=config['cube_count'],
+        mode=config['mode'],
+        official_data={s: {'path': official[s]['path'], 'sha256': official[s]['sha256']} for s in ('train', 'val')},
+        camera=actual_camera,
+        downstream_output_root=str(root / 'downstream'),
+        cache_sampling_seed_base={'train': 0, 'val': 1000000000},
+    )
     for key in ('cuda_visible_devices',):
         if key in config:
             requested[key]=config[key]
@@ -425,8 +567,8 @@ def bind(config_path):
 def camera(config_path):
     config=normalize(read(config_path))
     control=Path(config['output_root'])/'control'
-    from .collection import materialize
-    from .collection import camera as probe
+    from jepa4r.data.cube.collection import materialize
+    from jepa4r.data.cube.collection import camera as probe
     runtime=control/'camera_runtime'
     binding=materialize(runtime)
     binding_path=control/'camera_source.json'
@@ -474,7 +616,9 @@ def main(argv=None):
                                 ('downstream',args.rl_python,'CUBE_RL_PYTHON')):
         selected=option or python.get(key) or os.environ.get(variable) or sys.executable
         # Resolving a venv's executable symlink selects its base environment.
-        resolved=os.path.abspath(os.path.expanduser(selected)) if Path(selected).is_absolute() else shutil.which(selected)
+        resolved = (
+            os.path.abspath(os.path.expanduser(selected)) if Path(selected).is_absolute() else shutil.which(selected)
+        )
         if resolved is None:
             parser.error('Python executable not found: '+selected)
         python[key]=resolved

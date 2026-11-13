@@ -1,4 +1,4 @@
-# Moved from cortexbench@9331494:lewm_pcd/envs/ogb_scene_expert.py (verbatim)
+# Moved from cortexbench@9331494:lewm_pcd/envs/ogb_scene_expert.py (verbatim except: lines wrapped at 120 columns)
 """Expert for OGBench scene's five evaluation tasks (the CortexBench demos, bench/cortexbench/make_scene_demos.py):
 OGBench's four per-object oracles (the Markov ones, ogb_scene_env.make_oracles, OGBench's collection parameters) chained
 by the task's goal. OGBench ships per-object oracles only, no expert for a whole task. The task env:
@@ -31,7 +31,13 @@ import numpy as np
 
 from . import ogb_scene_env as sd
 
-TASK_NAMES = ('task1_open', 'task2_unlock_and_lock', 'task3_rearrange_medium', 'task4_put_in_drawer', 'task5_rearrange_hard')
+TASK_NAMES = (
+    'task1_open',
+    'task2_unlock_and_lock',
+    'task3_rearrange_medium',
+    'task4_put_in_drawer',
+    'task5_rearrange_hard',
+)
 HORIZON = 750           # OGBench scene-v0's max_episode_steps
 TOL = 0.04              # OGBench's success threshold (cube position, drawer, window)
 DRAWER_IS_OPEN = -0.12  # OGBench set_new_target: the cube goes into the drawer only when qpos < -0.12
@@ -47,8 +53,12 @@ class SceneTaskExpert:
 
     def reset(self):
         g = self.u.cur_task_info['goal']
-        self.goal = dict(cube=np.asarray(g['block_xyzs'][0], np.float64), buttons=np.asarray(g['button_states']).astype(int),
-                         drawer=float(g['drawer_pos']), window=float(g['window_pos']))
+        self.goal = dict(
+            cube=np.asarray(g['block_xyzs'][0], np.float64),
+            buttons=np.asarray(g['button_states']).astype(int),
+            drawer=float(g['drawer_pos']),
+            window=float(g['window_pos']),
+        )
         self.goal_in_drawer = bool(self.goal['cube'][1] < -0.3)
         self.cur = None
         self.log = []
@@ -90,10 +100,14 @@ class SceneTaskExpert:
             info['privileged/target_button_top_pos'] = self.u._data.site_xpos[self.u._button_site_ids[tgt]].copy()
         elif kind == 'drawer':
             q = float(info['privileged/drawer_pos'][0])
-            info['privileged/target_drawer_handle_pos'] = info['privileged/drawer_handle_pos'] - np.array([0.0, tgt - q, 0.0])
+            info['privileged/target_drawer_handle_pos'] = info['privileged/drawer_handle_pos'] - np.array(
+                [0.0, tgt - q, 0.0]
+            )
         elif kind == 'window':
             q = float(info['privileged/window_pos'][0])
-            info['privileged/target_window_handle_pos'] = info['privileged/window_handle_pos'] + np.array([tgt - q, 0.0, 0.0])
+            info['privileged/target_window_handle_pos'] = info['privileged/window_handle_pos'] + np.array(
+                [tgt - q, 0.0, 0.0]
+            )
         return info
 
     def _achieved_and_lifted(self, info):
@@ -107,8 +121,13 @@ class SceneTaskExpert:
         if kind == 'button':
             return int(info[f'privileged/button_{tgt}_state']) == self.button_target
         if kind == 'drawer':
-            return bool(np.linalg.norm(info['privileged/target_drawer_handle_pos'] - info['privileged/drawer_handle_pos']) <= 0.01)
-        return bool(np.linalg.norm(info['privileged/target_window_handle_pos'] - info['privileged/window_handle_pos']) <= 0.01)
+            return bool(
+                np.linalg.norm(info['privileged/target_drawer_handle_pos'] - info['privileged/drawer_handle_pos'])
+                <= 0.01
+            )
+        return bool(
+            np.linalg.norm(info['privileged/target_window_handle_pos'] - info['privileged/window_handle_pos']) <= 0.01
+        )
 
     def act(self, ob, t=None):
         info = self.u.compute_ob_info()

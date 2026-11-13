@@ -1,4 +1,5 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/rm75_server.py (verbatim)
+# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/rm75_server.py (verbatim except: lines wrapped at 120
+# columns, no lint exemptions)
 """The RM75 CortexBench env (rm75_env.py) as a subprocess of the harness (run_bc_rm75.py's RM75Proxy): the harness runs
 in the cortexbench conda env (mujoco-py 2.0 for the official envs), the RM75 env needs MuJoCo 3 (lewm_mw). Protocol on
 stdin / a dup of stdout: 8-byte little-endian length + pickle of plain types (arrays as (dtype, shape, bytes)); fd 1 is
@@ -14,9 +15,9 @@ os.dup2(2, 1)
 sys.stdout = sys.stderr
 inp = sys.stdin.buffer
 
-import numpy as np  # noqa: E402
+import numpy as np
 
-from rm75_env import RM75CBEnv  # noqa: E402
+from rm75_env import RM75CBEnv
 
 
 def send(obj):
@@ -55,7 +56,8 @@ while True:
     elif cmd == 'step':
         o, r, d, info = env.step(np.frombuffer(args, dtype=np.float64))
         send((arr(o), r, d, info))
-    elif cmd == 'obs':  # metaworld's _get_obs() of the current state (the harness reads proprioception before any reset)
+    # metaworld's _get_obs() of the current state (the harness reads proprioception before any reset)
+    elif cmd == 'obs':
         send(arr(env.u._mw._get_obs()))
     elif cmd == 'rgb':
         send(arr(env.rgb()))

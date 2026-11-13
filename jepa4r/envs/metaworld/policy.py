@@ -1,4 +1,4 @@
-# Moved from cortexbench@9331494:lewm_pcd/envs/metaworld/policy.py (verbatim)
+# Moved from cortexbench@9331494:lewm_pcd/envs/metaworld/policy.py (verbatim except: lines wrapped at 120 columns)
 """Three-part collection policy for the MetaWorld envs: follows each episode's plan (sample type, noise level, random
 steps). ``ThreePartPolicy`` is the bin-picking one; a task subclass replaces the backbone controller (``_oracle``, its
 memory ``_new_mem``) and the lowest hand height of random actions (``LOW_Z``), e.g. assembly.AssemblyThreePartPolicy.
@@ -77,7 +77,8 @@ class ThreePartPolicy(BasePolicy):
         ahead = hand + a[:3] * STEP * 3  # where three such steps would take the hand
         if env.in_view(ahead) and ahead[2] >= self.LOW_Z:
             return a
-        away = (self.VIEW_CENTRE - hand) * a[:3] < 0  # reflect: flip every component that points away from the view centre
+        # reflect: flip every component that points away from the view centre
+        away = (self.VIEW_CENTRE - hand) * a[:3] < 0
         a[:3][away] = -a[:3][away]
         return a
 
@@ -106,7 +107,9 @@ class ThreePartPolicy(BasePolicy):
         if phase == 'carry':
             grab = GRAB
             if np.linalg.norm(hand[:2] - target[:2]) > 0.02:
-                desired = hand + np.array([0.0, 0.0, 0.1]) if hand[2] < LIFT_Z else np.array([target[0], target[1], TRAVEL_Z])
+                desired = (
+                    hand + np.array([0.0, 0.0, 0.1]) if hand[2] < LIFT_Z else np.array([target[0], target[1], TRAVEL_Z])
+                )
             else:
                 desired = np.array([target[0], target[1], PLACE_Z])
                 if hand[2] < PLACE_Z + 0.02:

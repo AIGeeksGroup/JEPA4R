@@ -1,4 +1,5 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/run_bc_rm75.py (verbatim except: imports / paths adapted to the package)
+# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/run_bc_rm75.py (verbatim except: imports / paths adapted to
+# the package; lines wrapped at 120 columns, no lint exemptions)
 """One CortexBench imitation run on the RM75 port of a MetaWorld task (env rm75-<task>-v2-goal-observable, TASKS):
 the official hydra_launcher + train_loop (eai-vc 76fe35e, unchanged on disk) with run_bc.py's runtime patches (embedding
 configs from conf/model, metrics.jsonl logging, the logging-only train/* rollouts reusing the evaluation paths) and
@@ -29,26 +30,32 @@ CONF_HOME = os.environ.get('JEPA4R_BC_CONF_HOME', HERE)  # <CONF_HOME>/conf/mode
 sys.path.insert(0, VI)
 MW_PY = os.environ.get('MW_PY', '')  # the lewm_mw python, for rm75_server.py
 
-import gym  # noqa: E402
-import hydra  # noqa: E402
-import mujoco_vc.gym_wrapper as gw  # noqa: E402
-import mujoco_vc.model_loading as ml  # noqa: E402
-import mujoco_vc.supported_envs as se  # noqa: E402
-import numpy as np  # noqa: E402
-import train_loop  # noqa: E402
-from gym.spaces import Box  # noqa: E402
-from mjrl.utils.gym_env import GymEnv  # noqa: E402
-from omegaconf import OmegaConf  # noqa: E402
-from PIL import Image  # noqa: E402
+import gym
+import hydra
+import mujoco_vc.gym_wrapper as gw
+import mujoco_vc.model_loading as ml
+import mujoco_vc.supported_envs as se
+import numpy as np
+import train_loop
+from gym.spaces import Box
+from mjrl.utils.gym_env import GymEnv
+from omegaconf import OmegaConf
+from PIL import Image
 
-TASKS = {'rm75-bin-picking-v2-goal-observable': 'bin-picking', 'rm75-button-press-topdown-v2-goal-observable': 'button-press-topdown',
-         'rm75-drawer-open-v2-goal-observable': 'drawer-open', 'rm75-assembly-v2-goal-observable': 'assembly'}
+TASKS = {
+    'rm75-bin-picking-v2-goal-observable': 'bin-picking',
+    'rm75-button-press-topdown-v2-goal-observable': 'button-press-topdown',
+    'rm75-drawer-open-v2-goal-observable': 'drawer-open',
+    'rm75-assembly-v2-goal-observable': 'assembly',
+}
 for name in TASKS:
     se.ENV_TO_SUITE[name] = 'metaworld'  # the same dict gym_wrapper imported
 EMB = next((a.split('=', 1)[1] for a in sys.argv[1:] if a.startswith('embedding=')), '')
 CONF = os.path.join(CONF_HOME, 'conf', 'model')
 MODE = 'rgb'
-if os.path.exists(os.path.join(CONF, EMB + '.yaml')) and OmegaConf.load(os.path.join(CONF, EMB + '.yaml'))._target_.endswith('_pcd'):
+if os.path.exists(os.path.join(CONF, EMB + '.yaml')) and OmegaConf.load(
+    os.path.join(CONF, EMB + '.yaml')
+)._target_.endswith('_pcd'):
     MODE = 'pcd'
 
 
@@ -64,9 +71,13 @@ class RM75Proxy(gym.Env):
         self.spec = namedtuple('spec', ['id', 'max_episode_steps'])(env_name, 500)
         self.observation_space = Box(-np.inf, np.inf, (39,), np.float64)
         self.action_space = Box(-1.0, 1.0, (4,), np.float32)
-        self._p = subprocess.Popen([MW_PY, os.path.join(HERE, 'rm75_server.py')], stdin=subprocess.PIPE,
-                                   stdout=subprocess.PIPE, stderr=open(os.path.join(os.getcwd(), 'rm75_server.log'), 'a'),
-                                   cwd=HERE)
+        self._p = subprocess.Popen(
+            [MW_PY, os.path.join(HERE, 'rm75_server.py')],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=open(os.path.join(os.getcwd(), 'rm75_server.log'), 'a'),
+            cwd=HERE,
+        )
         self._call('init', TASKS[env_name])
         self._obs = None
 
@@ -128,8 +139,16 @@ def env_constructor(env_name, pixel_based=True, device='cuda', image_width=256, 
     e = RM75Proxy(env_name)  # the official metaworld branch, with the proxy for the metaworld env
     e.seed(seed)
     e = gw.MuJoCoPixelObsWrapper(env=e, width=image_width, height=image_height, camera_name=camera_name, device_id=0)
-    e = gw.FrozenEmbeddingWrapper(env=e, embedding_name=embedding_name, suite='metaworld', history_window=history_window,
-                                  fuse_embeddings=fuse_embeddings, device=device, seed=seed, add_proprio=add_proprio)
+    e = gw.FrozenEmbeddingWrapper(
+        env=e,
+        embedding_name=embedding_name,
+        suite='metaworld',
+        history_window=history_window,
+        fuse_embeddings=fuse_embeddings,
+        device=device,
+        seed=seed,
+        add_proprio=add_proprio,
+    )
     e = GymEnv(e)
     e.set_seed(seed)
     return e

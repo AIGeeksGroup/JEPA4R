@@ -84,7 +84,7 @@
     }
   },
   "rh56_native_bundle": {
-    "manifest": "provenance/assets/rh56_native_bundle_v1.json",
+    "manifest": "rh56_native_bundle_v1.json",
     "manifest_sha256": "4f8036bba2d72ea1e6e895a4a45f6fb2c664ef2530ca6c1c0c799e6460a81372",
     "schema": "jepa4r-rh56-native-trusted-bundle-v1",
     "file_count": 91,

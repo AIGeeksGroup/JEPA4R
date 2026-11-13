@@ -1,9 +1,9 @@
-# Moved from cortexbench@9331494:lewm_pcd/envs/metaworld/drawer.py (verbatim)
+# Moved from cortexbench@9331494:lewm_pcd/envs/metaworld/drawer.py (verbatim except: lines wrapped at 120 columns)
 """MetaWorld drawer-open (a CortexBench task): bring the drawer to target openings, pulling it out or pushing it in.
 
-* Layout: metaworld 3.0 ``drawer-open-v3-goal-observable``; every reset places the drawer case anew (x -0.1..0.1, y 0.9).
-  The drawer is a slide joint (0 .. 0.16 m out, damping, no spring): it stays where it is left, so it can be opened and
-  closed again and again.
+* Layout: metaworld 3.0 ``drawer-open-v3-goal-observable``; every reset places the drawer case anew (x -0.1..0.1, y
+  0.9). The drawer is a slide joint (0 .. 0.16 m out, damping, no spring): it stays where it is left, so it can be
+  opened and closed again and again.
 * Targets: 'drawer' (bring the drawer to a random opening in [0, 0.16] m) or a waypoint in the air in front of the case
   ('wp'). After a drawer target the next one is another opening with probability 0.6, else a waypoint; after a waypoint
   it is an opening with probability 0.8.
@@ -27,7 +27,8 @@ from .env import MWTaskEnv
 from .policy import P_GAIN, STEP, ThreePartPolicy
 
 OPEN_MAX = 0.16
-GOAL_SITE_V2 = np.array([0.0, 0.74, 0.05])  # the goal marker where CortexBench's v2 env leaves it (v3 moves it to the target)
+# the goal marker where CortexBench's v2 env leaves it (v3 moves it to the target)
+GOAL_SITE_V2 = np.array([0.0, 0.74, 0.05])
 WAYPOINTS = ((-0.20, 0.45, 0.15), (0.20, 0.55, 0.30))  # in view, in front of a fully open drawer (handle y ~0.57)
 ABOVE = 0.08       # approach height above the handle
 TOL = 0.01         # m: target opening reached
@@ -71,7 +72,8 @@ class MWDrawerEnv(MWTaskEnv):
         self._target = self._draw_target(self.np_random, self._target[0] == 'drawer')
 
     def _reset_target(self, rng, obs):
-        # metaworld's reset_model moves the case (model data) after the last forward pass, so the reset row's frame, point
+        # metaworld's reset_model moves the case (model data) after the last forward pass, so the reset row's frame,
+        # point
         # cloud and observation would show it elsewhere: one more forward pass, and the reset observation redone (both
         # stacked frames the current one, as metaworld's reset does)
         self._model.site('goal').pos = GOAL_SITE_V2

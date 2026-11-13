@@ -6,12 +6,13 @@ Targets: observed clouds of data/wm/<env>; inputs: latents of the frozen world m
 Returns {"val_nn_stage_a": cm, "val_nn_stage_b": cm} (paper: 0.87 -> 0.79).
 
 Integrated code (lewm-pcd-recon-page4d@d3c2d07): recon/data.py (PairedFrames, build_dataset, Episodes: one frame for the
-encoder + the point cloud of the same simulator state) and train_recon.py's run (``run_stage``: one stage = one Lightning
-run of 14,140 batches of 32 frames on the 0.9 / 0.1 frame split of seed 3072, one AdamW per parameter group, the trained
-parts saved per epoch). ``recon_config`` composes each stage's run config (the recon branch's config/recon/recon.yaml +
-data/ogb_pcd.yaml + decoder/page4d.yaml + exp/{frozen,lora}.yaml) from cfg.decoder and cfg.env; ``train`` runs stage A
-into <out>/stage_a and stage B into <out>/stage_b and reports each stage's last validation readout (validate/nn_cm:
-mean two-sided NN distance, cm, over 100 validation batches), the numbers of Sec. 4.4.
+encoder + the point cloud of the same simulator state) and train_recon.py's run (``run_stage``: one stage = one
+Lightning run of 14,140 batches of 32 frames on the 0.9 / 0.1 frame split of seed 3072, one AdamW per parameter group,
+the trained parts saved per epoch). ``recon_config`` composes each stage's run config (the recon branch's
+config/recon/recon.yaml + data/ogb_pcd.yaml + decoder/page4d.yaml + exp/{frozen,lora}.yaml) from cfg.decoder and
+cfg.env; ``train`` runs stage A into <out>/stage_a and stage B into <out>/stage_b and reports each stage's last
+validation readout (validate/nn_cm: mean two-sided NN distance, cm, over 100 validation batches), the numbers of Sec.
+4.4.
 """
 import os
 from functools import partial
@@ -29,7 +30,8 @@ except ImportError:  # pragma: no cover
     swm = None
 
 
-# Moved from lewm-pcd-recon-page4d@d3c2d07:lewm_pcd/recon/data.py:PairedFrames, build_dataset, Episodes (lines 17-89; verbatim)
+# Moved from lewm-pcd-recon-page4d@d3c2d07:lewm_pcd/recon/data.py:PairedFrames, build_dataset, Episodes (lines 17-89;
+# verbatim)
 class PairedFrames(torch.utils.data.Dataset):
     """Row i of ``inputs`` + row i of ``targets``; only ``obs_key`` and ``target`` are kept."""
 
@@ -38,8 +40,10 @@ class PairedFrames(torch.utils.data.Dataset):
             'input and target datasets do not hold the same episodes (ep_len / ep_offset differ)'
         for col in align_on:
             a, b = inputs.get_col_data(col), targets.get_col_data(col)
-            assert a.shape == b.shape and np.array_equal(a, b), \
-                f"input and target datasets are not the same rows: '{col}' differs (max |diff| {np.abs(a - b).max() if a.shape == b.shape else 'shape'})"
+            assert a.shape == b.shape and np.array_equal(a, b), (
+                f"input and target datasets are not the same rows: '{col}' differs (max |diff| "
+                f"{np.abs(a - b).max() if a.shape == b.shape else 'shape'})"
+            )
         self.inputs, self.targets, self.obs_key = inputs, targets, obs_key
         self.lengths, self.offsets = targets.lengths, targets.offsets
 
@@ -99,13 +103,16 @@ class Episodes:
         if name not in self._cols:
             self._cols[name] = np.asarray(self.frames.get_col_data(name))
             for d in (self.frames, getattr(self.frames, 'inputs', None), getattr(self.frames, 'targets', None)):
-                if getattr(d, 'h5_file', None) is not None:          # reopened lazily; an open handle must not cross a DataLoader fork
+                # reopened lazily; an open handle must not cross a DataLoader fork
+                if getattr(d, 'h5_file', None) is not None:
                     d.h5_file.close()
                     d.h5_file = None
         return self._cols[name] if ep is None else self._cols[name][self.rows(ep, stride)]
 
 
-# Moved from lewm-pcd-recon-page4d@d3c2d07:lewm_pcd/train_recon.py:run (lines 18-99; verbatim except: no @hydra.main, renamed run_stage, run_dir argument instead of $STABLEWM_HOME/checkpoints/recon/<subdir>: weights, config.json and config.yaml into <run_dir>/checkpoints; lazy imports)
+# Moved from lewm-pcd-recon-page4d@d3c2d07:lewm_pcd/train_recon.py:run (lines 18-99; verbatim except: no @hydra.main,
+# renamed run_stage, run_dir argument instead of $STABLEWM_HOME/checkpoints/recon/<subdir>: weights, config.json and
+# config.yaml into <run_dir>/checkpoints; lazy imports)
 def run_stage(cfg, run_dir):
     import lightning as pl
     from lightning.pytorch.loggers import WandbLogger
@@ -144,7 +151,12 @@ def run_stage(cfg, run_dir):
     # of the pretrained backbone have their own learning rate
     base = OmegaConf.to_container(cfg.optimizer, resolve=True)
     optimizers = {
-        name: {"modules": g.modules, "optimizer": {**base, "lr": g.lr}, "scheduler": {"type": "LinearWarmupCosineAnnealingLR"}, "interval": "epoch"}
+        name: {
+            "modules": g.modules,
+            "optimizer": {**base, "lr": g.lr},
+            "scheduler": {"type": "LinearWarmupCosineAnnealingLR"},
+            "interval": "epoch",
+        }
         for name, g in cfg.optim_groups.items()
     }
 
@@ -202,34 +214,75 @@ def recon_config(cfg, stage, init_from=None):
 
     d, t, env = cfg.decoder, cfg.decoder.train, cfg.env
     st = t[f'stage_{stage}']
-    wm = stage_dir('train_wm', env.name, str(d.wm.method), None, str(d.wm.tag)) / 'checkpoints' / f'weights_epoch_{int(d.wm.epoch)}.pt'
+    wm = (
+        stage_dir('train_wm', env.name, str(d.wm.method), None, str(d.wm.tag))
+        / 'checkpoints'
+        / f'weights_epoch_{int(d.wm.epoch)}.pt'
+    )
     data = str(stage_dir('collect_wm_data', env.name) / env.wm_data.files.pointcloud)
     aff = env.pointcloud.affine
     groups = {'new': {'modules': str(t.param_groups.new), 'lr': float(st.lr)}}
     if stage == 'b':
         groups['lora'] = {'modules': str(t.param_groups.lora), 'lr': float(st.lora_lr)}
-    return OmegaConf.create({
-        'ckpt': str(wm), 'output_model_name': f'{d.name}_stage_{stage}', 'subdir': '',
-        'input_keys': None, 'input_preprocessor': None,   # as the world model was trained (its run's config.yaml)
-        'num_workers': int(t.num_workers), 'train_split': float(t.split), 'seed': int(t.seed),
-        'embed_dim': int(d.latent_dim), 'num_points': int(d.head.num_points),
-        'trainer': {'max_epochs': int(st.epochs), 'limit_train_batches': int(st.steps), 'limit_val_batches': int(t.val_batches),
-                    'devices': 'auto', 'accelerator': 'gpu', 'precision': str(t.precision),
-                    'gradient_clip_val': float(t.gradient_clip)},
-        'loader': {'batch_size': int(st.batch_size), 'num_workers': int(t.num_workers), 'persistent_workers': True,
-                   'prefetch_factor': 3, 'pin_memory': True},
-        'optimizer': {'type': 'AdamW', 'lr': float(t.optimizer.lr), 'weight_decay': float(t.optimizer.weight_decay),
-                      'betas': [float(b) for b in t.optimizer.betas]},
-        'wandb': {'enabled': False},
-        'data': {'input': data, 'target': data, 'target_keys': ['pcd_xyz', 'pcd_rgb'], 'align_on': ['qpos'],
-                 'target_preprocessor': {'_target_': 'jepa4r.data.clips.get_pcd_preprocessor', 'source_xyz': 'pcd_xyz',
-                                         'source_rgb': 'pcd_rgb', 'target': 'target',
-                                         'center': [float(c) for c in aff.center], 'scale': float(aff.scale),
-                                         'use_rgb': True, 'drop_sources': False}},
-        'decoder': {'_target_': f'{d.backbone.impl}.{d.backbone.decoder_class}', 'weights': str(d.backbone.weights),
-                    **decoder_kwargs(cfg, 'frozen' if stage == 'a' else 'lora', init_from)},
-        'optim_groups': groups,
-    })
+    return OmegaConf.create(
+        {
+            'ckpt': str(wm),
+            'output_model_name': f'{d.name}_stage_{stage}',
+            'subdir': '',
+            'input_keys': None,
+            'input_preprocessor': None,  # as the world model was trained (its run's config.yaml)
+            'num_workers': int(t.num_workers),
+            'train_split': float(t.split),
+            'seed': int(t.seed),
+            'embed_dim': int(d.latent_dim),
+            'num_points': int(d.head.num_points),
+            'trainer': {
+                'max_epochs': int(st.epochs),
+                'limit_train_batches': int(st.steps),
+                'limit_val_batches': int(t.val_batches),
+                'devices': 'auto',
+                'accelerator': 'gpu',
+                'precision': str(t.precision),
+                'gradient_clip_val': float(t.gradient_clip),
+            },
+            'loader': {
+                'batch_size': int(st.batch_size),
+                'num_workers': int(t.num_workers),
+                'persistent_workers': True,
+                'prefetch_factor': 3,
+                'pin_memory': True,
+            },
+            'optimizer': {
+                'type': 'AdamW',
+                'lr': float(t.optimizer.lr),
+                'weight_decay': float(t.optimizer.weight_decay),
+                'betas': [float(b) for b in t.optimizer.betas],
+            },
+            'wandb': {'enabled': False},
+            'data': {
+                'input': data,
+                'target': data,
+                'target_keys': ['pcd_xyz', 'pcd_rgb'],
+                'align_on': ['qpos'],
+                'target_preprocessor': {
+                    '_target_': 'jepa4r.data.clips.get_pcd_preprocessor',
+                    'source_xyz': 'pcd_xyz',
+                    'source_rgb': 'pcd_rgb',
+                    'target': 'target',
+                    'center': [float(c) for c in aff.center],
+                    'scale': float(aff.scale),
+                    'use_rgb': True,
+                    'drop_sources': False,
+                },
+            },
+            'decoder': {
+                '_target_': f'{d.backbone.impl}.{d.backbone.decoder_class}',
+                'weights': str(d.backbone.weights),
+                **decoder_kwargs(cfg, 'frozen' if stage == 'a' else 'lora', init_from),
+            },
+            'optim_groups': groups,
+        }
+    )
 
 
 def train(cfg, out_dir) -> dict:

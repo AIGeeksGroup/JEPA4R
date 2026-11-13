@@ -1,4 +1,4 @@
-# Moved from cortexbench@9331494:lewm_pcd/envs/expert_policy.py (verbatim)
+# Moved from cortexbench@9331494:lewm_pcd/envs/expert_policy.py (verbatim except: lines wrapped at 120 columns)
 """``ExpertPolicy`` that also accepts ``swm/OGBCubePCD-v0``.
 
 Upstream ``set_env`` whitelists the env id ('swm/OGBCube-v0' / 'swm/OGBScene-v0').
@@ -15,7 +15,9 @@ from stable_worldmodel.envs.ogbench import ExpertPolicy
 # set_env below is a copy of upstream's minus the env-id whitelist; refuse to run if upstream drifts
 _UPSTREAM_SET_ENV_MD5 = 'a4fd37fde61d5c1f5fa4fe079fe4cb62'
 _md5 = hashlib.md5(inspect.getsource(ExpertPolicy.set_env).encode()).hexdigest()
-assert _md5 == _UPSTREAM_SET_ENV_MD5, f'upstream ExpertPolicy.set_env changed (md5 {_md5}); update PCDExpertPolicy.set_env'
+assert _md5 == _UPSTREAM_SET_ENV_MD5, (
+    f'upstream ExpertPolicy.set_env changed (md5 {_md5}); update PCDExpertPolicy.set_env'
+)
 
 
 class PCDExpertPolicy(ExpertPolicy):

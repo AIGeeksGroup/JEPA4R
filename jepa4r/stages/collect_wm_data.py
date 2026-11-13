@@ -22,6 +22,7 @@ run_rm75_pipeline.sh did. Shard seeds: collect_cube_pcd_sharded.py's rule (``sha
 collectors: ``wm_data.collector: c4_cube`` (Cube1-4: its collection protocol, jepa4r.policy.gciql.collect_cube),
 ``adroit`` / ``rh56`` (Adroit Relocate / the RH56 twin: its Relocate harness, jepa4r.policy.bc.relocate_stage).
 """
+import importlib
 import json
 import logging
 import os
@@ -37,7 +38,8 @@ from jepa4r.data.storage import GzipHDF5Writer, PairedWriter, add_eval_columns, 
 
 logger = logging.getLogger(__name__)
 
-# Moved from cortexbench@9331494:lewm_pcd/scripts/data/collect_cube_pcd.py:run (lines 67-103; verbatim except: no @hydra.main, renamed collect_paired, output paths from cfg.out / cfg.out_pix, imports)
+# Moved from cortexbench@9331494:lewm_pcd/scripts/data/collect_cube_pcd.py:run (lines 67-103; verbatim except: no
+# @hydra.main, renamed collect_paired, output paths from cfg.out / cfg.out_pix, imports)
 def collect_paired(cfg: DictConfig):
     from functools import partial
 
@@ -46,13 +48,14 @@ def collect_paired(cfg: DictConfig):
     import stable_worldmodel as swm
     from jepa4r.data.pointcloud import PointCloudWrapper
     from jepa4r.envs.ogbench.expert_policy import PCDExpertPolicy
-    import jepa4r.envs.ogbench  # noqa: F401  registers swm/OGBCubePCD-v0
-    import jepa4r.envs.twins.rm75b  # noqa: F401  registers swm/OGBCubeRM75PCD-v0
+    importlib.import_module('jepa4r.envs.ogbench')  # registers swm/OGBCubePCD-v0
+    importlib.import_module('jepa4r.envs.twins.rm75b')  # registers swm/OGBCubeRM75PCD-v0
 
     """Run the paired data collection: pixels (2D) and point clouds (3D) of the same rollouts."""
 
     world = swm.World(
-        cfg.get('env_id', 'swm/OGBCubePCD-v0'),  # RM-75 configs set env_id (config/ogb_rm75_pcd.yaml); default = the UR5e env
+        # RM-75 configs set env_id (config/ogb_rm75_pcd.yaml); default = the UR5e env
+        cfg.get('env_id', 'swm/OGBCubePCD-v0'),
         **cfg.world,
         env_type='single',
         ob_type='states',
@@ -85,7 +88,8 @@ def collect_paired(cfg: DictConfig):
     logger.info(f'🎉🎉🎉 Completed paired data collection -> 3D {out} + 2D {out_pix} 🎉🎉🎉')
 
 
-# Moved from cortexbench@9331494:lewm_pcd/scripts/data/collect_mw.py:pix_name, run (lines 42-78; verbatim except: no @hydra.main, renamed collect_mw, output paths from cfg.out (/ cfg.out_pix), imports)
+# Moved from cortexbench@9331494:lewm_pcd/scripts/data/collect_mw.py:pix_name, run (lines 42-78; verbatim except: no
+# @hydra.main, renamed collect_mw, output paths from cfg.out (/ cfg.out_pix), imports)
 def pix_name(pcd_name: str) -> str:
     """The 2D dataset named after the 3D one: ``metaworld/x_pcd.h5`` -> ``metaworld/x.h5``,
     ``.../x_pcd.shard007.h5`` -> ``.../x.shard007.h5``."""
@@ -98,7 +102,7 @@ def pix_name(pcd_name: str) -> str:
 def collect_mw(cfg: DictConfig):
     import hydra
     import stable_worldmodel as swm
-    import jepa4r.envs.metaworld  # noqa: F401  registers the MetaWorld env ids
+    importlib.import_module('jepa4r.envs.metaworld')  # registers the MetaWorld env ids
 
     """Run the paired data collection: pixels (2D) and point clouds (3D) of the same rollouts."""
     rng = np.random.default_rng(cfg.seed)
@@ -127,7 +131,8 @@ def collect_mw(cfg: DictConfig):
     logger.info(f'Completed paired data collection (world seed {world_seed}) -> 3D {out} + 2D {out_pix}')
 
 
-# Moved from cortexbench@9331494:lewm_pcd/scripts/data/collect_ogb.py:RETRY_STRIDE, MAX_TRIES, _Episodes (lines 36-53; verbatim)
+# Moved from cortexbench@9331494:lewm_pcd/scripts/data/collect_ogb.py:RETRY_STRIDE, MAX_TRIES, _Episodes (lines 36-53;
+# verbatim)
 RETRY_STRIDE = 10_000_000
 MAX_TRIES = 50
 
@@ -148,11 +153,13 @@ class _Episodes:
 
 
 
-# Moved from cortexbench@9331494:lewm_pcd/scripts/data/collect_ogb.py:run (lines 61-98; verbatim except: no @hydra.main, renamed collect_ogb, output paths from cfg.out (/ cfg.out_pix), imports; pix_name is collect_mw's (the source copies it))
+# Moved from cortexbench@9331494:lewm_pcd/scripts/data/collect_ogb.py:run (lines 61-98; verbatim except: no @hydra.main,
+# renamed collect_ogb, output paths from cfg.out (/ cfg.out_pix), imports; pix_name is collect_mw's (the source copies
+# it))
 def collect_ogb(cfg: DictConfig):
     import hydra
     import stable_worldmodel as swm
-    import jepa4r.envs.ogbench  # noqa: F401  registers swm/OGBenchScene-v0, swm/OGBenchPuzzle*-v0
+    importlib.import_module('jepa4r.envs.ogbench')  # registers swm/OGBenchScene-v0, swm/OGBenchPuzzle*-v0
     from jepa4r.envs.ogbench.ogb_scene_env import healthy
 
     """Collect this shard's episodes, paired: pixels (2D) and point clouds (3D) of the same rollouts."""
@@ -194,10 +201,11 @@ def collect_ogb(cfg: DictConfig):
 
 def shard_seeds(num_traj, shards, seed):
     """Episode counts and World seeds of the shards (collect_cube_pcd_sharded.py)."""
-    class args:  # noqa: N801  the launcher's argparse namespace
+    class args:  # the launcher's argparse namespace
         pass
     args.num_traj, args.shards, args.seed = num_traj, shards, seed
-    # Moved from cortexbench@9331494:lewm_pcd/scripts/data/collect_cube_pcd_sharded.py:main (shard seeds) (lines 74-83; the shard-seed lines of main(), as a function; sys.exit kept)
+    # Moved from cortexbench@9331494:lewm_pcd/scripts/data/collect_cube_pcd_sharded.py:main (shard seeds) (lines 74-83;
+    # the shard-seed lines of main(), as a function; sys.exit kept)
     base, rem = divmod(args.num_traj, args.shards)
     counts = [base + (1 if i < rem else 0) for i in range(args.shards)]
     rng = np.random.default_rng(args.seed)
@@ -211,8 +219,10 @@ def shard_seeds(num_traj, shards, seed):
     return counts, seeds
 
 
-# Moved from cortexbench@9331494:lewm_pcd/scripts/checks/check_equivalence.py (lines 19-46, 'pcd' mode; adapted: the three
-# pinned random sources, the env, the point-cloud wrapper arguments, the number of envs / episodes, the World seed and the
+# Moved from cortexbench@9331494:lewm_pcd/scripts/checks/check_equivalence.py (lines 19-46, 'pcd' mode; adapted: the
+# three
+# pinned random sources, the env, the point-cloud wrapper arguments, the number of envs / episodes, the World seed and
+# the
 # output path are arguments instead of constants; the 'paper' pixel mode is not needed)
 def collect_pinned(cfg: DictConfig):
     """Collection with all three random sources of OGBench Cube fixed (GATES.md D4): the variation space (cube start /
@@ -223,8 +233,8 @@ def collect_pinned(cfg: DictConfig):
 
     import stable_worldmodel as swm
     import stable_worldmodel.spaces as swm_spaces
-    import jepa4r.envs.ogbench  # noqa: F401  registers swm/OGBCubePCD-v0
-    import jepa4r.envs.twins.rm75b  # noqa: F401  registers swm/OGBCubeRM75PCD-v0
+    importlib.import_module('jepa4r.envs.ogbench')  # registers swm/OGBCubePCD-v0
+    importlib.import_module('jepa4r.envs.twins.rm75b')  # registers swm/OGBCubeRM75PCD-v0
     from jepa4r.data.pointcloud import PointCloudWrapper
     from jepa4r.envs.ogbench.expert_policy import PCDExpertPolicy
 
@@ -252,14 +262,17 @@ def collect_pinned(cfg: DictConfig):
     world.collect(str(cfg.out), episodes=int(cfg.num_traj), seed=int(cfg.world_seed), format='hdf5', progress=False)
 
 
-# --------------------------------------------------------------------------- shard plans (the run_*_collection.sh scripts)
+# --------------------------------------------------------------------------- shard plans (the run_*_collection.sh
+# scripts)
 COLLECTORS = {'paired': collect_paired, 'mw': collect_mw, 'ogb': collect_ogb, 'pinned': collect_pinned}
 
 
 def _base(wm):
     """The keys of the original per-shard Hydra config that do not change between shards."""
     keys = ('env_id', 'world', 'pcd', 'policy', 'health_check', 'options')
-    cfg = {k: OmegaConf.to_container(wm[k], resolve=True) if OmegaConf.is_config(wm[k]) else wm[k] for k in keys if k in wm}
+    cfg = {
+        k: OmegaConf.to_container(wm[k], resolve=True) if OmegaConf.is_config(wm[k]) else wm[k] for k in keys if k in wm
+    }
     kw = wm.get('env_kwargs')
     cfg['env'] = OmegaConf.to_container(kw, resolve=True) if OmegaConf.is_config(kw) else dict(kw or {})
     return cfg
@@ -288,7 +301,12 @@ def plan_shards(wm, data_dir):
             counts, seeds = shard_seeds(int(part.num_episodes), int(part.shards), set_seed)
             for i, (sd, n) in enumerate(zip(seeds, counts)):
                 pcd_s, pix_s = shard_dir / f'{name}_pcd.shard{i:03d}.h5', shard_dir / f'{name}.shard{i:03d}.h5'
-                specs.append((collector, dict(base, num_traj=n, world_seed=sd, seed=set_seed, out=str(pcd_s), out_pix=str(pix_s))))
+                specs.append(
+                    (
+                        collector,
+                        dict(base, num_traj=n, world_seed=sd, seed=set_seed, out=str(pcd_s), out_pix=str(pix_s)),
+                    )
+                )
                 pcd_parts.append(pcd_s)
                 pix_parts.append(pix_s)
         else:  # ogb: explicit episode seeds, shard s collects i = s, s + K, ...
@@ -300,8 +318,21 @@ def plan_shards(wm, data_dir):
                     pcd_s = shard_dir / tag
                     pix_s = shard_dir / tag.replace('_pcd', '', 1)
                     env = dict(base['env'], task=task) if task else base['env']
-                    specs.append(('ogb', dict(base, env=env, seed_base=seed_base, episodes=int(part.num_episodes), shard=s,
-                                              num_shards=int(part.shards), out=str(pcd_s), out_pix=str(pix_s))))
+                    specs.append(
+                        (
+                            'ogb',
+                            dict(
+                                base,
+                                env=env,
+                                seed_base=seed_base,
+                                episodes=int(part.num_episodes),
+                                shard=s,
+                                num_shards=int(part.shards),
+                                out=str(pcd_s),
+                                out_pix=str(pix_s),
+                            ),
+                        )
+                    )
                     pcd_parts.append(pcd_s)
                     pix_parts.append(pix_s)
         merges += [(pcd_final, pcd_parts), (pix_final, pix_parts)]  # the same shard order for both

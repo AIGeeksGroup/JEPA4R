@@ -3,16 +3,17 @@ a new branch adds rgb, and 1,200 pixels form P_hat_t (selection rule: cfg.decode
 
 The head is built inside each backbone decoder (jepa4r/decoder/backbones: ``frame`` = the affine map, ``rgb`` = the
 colour branch, ``_pick`` = the pixel selection: a fresh random subset of the dense map while training, a fixed one --
-torch.randperm with a seed-0 generator -- otherwise), as in the recon branch; it is not a separate module there.
-The affine map starts as a virtual camera looking at the workspace: ``make_cam`` below, the recon branch's render.py
-moved unchanged (its rasteriser ``render_points`` / ``label`` / ``tile`` draws decoded clouds with the same camera model).
+torch.randperm with a seed-0 generator -- otherwise), as in the recon branch; it is not a separate module there. The
+affine map starts as a virtual camera looking at the workspace: ``make_cam`` below, the recon branch's render.py moved
+unchanged (its rasteriser ``render_points`` / ``label`` / ``tile`` draws decoded clouds with the same camera model).
 """
 import numpy as np
 import torch
 from PIL import Image, ImageDraw
 
 
-# Moved from lewm-pcd-recon-page4d@d3c2d07:lewm_pcd/recon/render.py:BG, make_cam, _shade, render_points, label, tile (lines 11-73; verbatim)
+# Moved from lewm-pcd-recon-page4d@d3c2d07:lewm_pcd/recon/render.py:BG, make_cam, _shade, render_points, label, tile
+# (lines 11-73; verbatim)
 BG = (0.09, 0.10, 0.12)
 
 
@@ -26,8 +27,14 @@ def make_cam(az_deg=45.0, el_deg=40.0, dist=1.2, target=(0.36, 0.0, 0.2), fovy_d
     right /= np.linalg.norm(right)
     R = np.stack([right, np.cross(fwd, right), fwd])
     f = 0.5 * size / np.tan(np.deg2rad(fovy_deg) / 2)
-    return dict(R=torch.tensor(R, dtype=torch.float32, device=device), t=torch.tensor(-R @ pos, dtype=torch.float32, device=device),
-                f=f, c=size / 2, size=size, device=device)
+    return dict(
+        R=torch.tensor(R, dtype=torch.float32, device=device),
+        t=torch.tensor(-R @ pos, dtype=torch.float32, device=device),
+        f=f,
+        c=size / 2,
+        size=size,
+        device=device,
+    )
 
 
 def _shade(col, z):  # cheap depth cue so the geometry reads in a still image
@@ -51,7 +58,8 @@ def render_points(cloud, cam, point_radius=0.006):
     rad = (cam['f'] * point_radius / z).clamp(0.7, 12.0)
     rgb = _shade(rgb, z)
 
-    r = int(rad.max().ceil().item())                                       # every disc's pixels at once, then one z-buffer resolve
+    # every disc's pixels at once, then one z-buffer resolve
+    r = int(rad.max().ceil().item())
     off = torch.arange(-r, r + 1, device=dev)
     dy, dx = (o.reshape(-1) for o in torch.meshgrid(off, off, indexing='ij'))
     ui, vi = u.round().long()[:, None] + dx, v.round().long()[:, None] + dy
@@ -60,7 +68,9 @@ def render_points(cloud, cam, point_radius=0.006):
     zz = z[:, None].expand_as(flat)
     depth = torch.full((S * S,), 1e9, device=dev).scatter_reduce_(0, flat[ok], zz[ok], reduce='amin')
     win = ok & (zz <= depth[flat])
-    img.view(-1, 3).scatter_(0, flat[win].unsqueeze(-1).expand(-1, 3), rgb[:, None, :].expand(-1, flat.size(1), -1)[win])
+    img.view(-1, 3).scatter_(
+        0, flat[win].unsqueeze(-1).expand(-1, 3), rgb[:, None, :].expand(-1, flat.size(1), -1)[win]
+    )
     return img.clamp(0, 1).cpu().numpy()
 
 

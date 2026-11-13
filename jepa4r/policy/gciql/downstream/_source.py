@@ -1,4 +1,5 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/downstream/_source.py (verbatim except: imports / paths adapted to the package)
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/downstream/_source.py (verbatim except: imports / paths adapted
+# to the package; lines wrapped at 120 columns)
 """Current pinned source roots shared by policy, official environment and PCD."""
 import hashlib
 import importlib.util
@@ -10,7 +11,7 @@ VENDOR=Path(__file__).resolve().parent/'vendor'
 LEWM=Path(__file__).resolve().parents[4]   # this repository
 OGBENCH_ROOT=Path(os.environ.get('JEPA4R_OGBENCH') or LEWM/'third_party/ogbench')   # OGBench a977253 checkout
 IMPLS=OGBENCH_ROOT/'impls'
-PCD_ROOT=Path(__file__).resolve().parents[1]/'collection/vendor/pcd'
+PCD_ROOT=LEWM/'jepa4r/data/cube/collection/vendor/pcd'
 def source_path(relative):
     name=PurePosixPath(relative)
     if name.is_absolute() or '..' in name.parts or '\\' in relative or ':' in relative:
@@ -38,8 +39,10 @@ def install_impls():
         if name=='utils' or name.startswith('utils.'):
             path=getattr(module,'__file__',None)
             paths=list(getattr(module,'__path__',[]))
-            if path and not Path(path).resolve().is_relative_to(IMPLS):raise RuntimeError('Conflicting OGBench utils import')
-            if paths and not all(Path(p).resolve().is_relative_to(IMPLS) for p in paths):raise RuntimeError('Conflicting OGBench utils package')
+            if path and not Path(path).resolve().is_relative_to(IMPLS):
+                raise RuntimeError('Conflicting OGBench utils import')
+            if paths and not all(Path(p).resolve().is_relative_to(IMPLS) for p in paths):
+                raise RuntimeError('Conflicting OGBench utils package')
     if str(OGBENCH_ROOT) not in sys.path:sys.path.insert(0,str(OGBENCH_ROOT))
     if str(IMPLS) not in sys.path:sys.path.insert(0,str(IMPLS))
 def load_source(name,relative):

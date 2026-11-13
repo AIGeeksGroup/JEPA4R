@@ -1,8 +1,10 @@
 # Latent-space reconstruction D_psi (Sec. 4.4, Eq. 2), trained post hoc on the frozen world model.
 # Tab. 4a keeps everything here fixed and swaps only `backbone`.
-# Values not stated in the paper: the recon branch's run configs RC = lewm-pcd-recon-page4d@d3c2d07:lewm_pcd/config/recon/
+# Values not stated in the paper: the recon branch's run configs RC =
+# lewm-pcd-recon-page4d@d3c2d07:lewm_pcd/config/recon/
 # {recon.yaml, data/ogb_pcd.yaml, decoder/page4d.yaml, exp/frozen.yaml, exp/lora.yaml}, as saved with every paper run
-# (HF AIGeeksGroup/JEPA4R ogbench-cube-recon, rm75b-twin-cube: decoder/<run>/config.yaml) and P4 = .../recon/decoders/page4d.py.
+# (HF AIGeeksGroup/JEPA4R ogbench-cube-recon, rm75b-twin-cube: decoder/<run>/config.yaml) and P4 =
+# .../recon/decoders/page4d.py.
 # The integrated code: jepa4r/decoder (training), jepa4r/eval/recon.py (evaluation).
 impl: jepa4r.decoder.train
 wm:                           # the frozen world model whose latents are decoded
@@ -20,7 +22,8 @@ set_generator:                # new: replaces the image input of the backbone
 head:
   point_map_size: [224, 224]
   affine: learnable           # moves the point map into the target frame (the world-model frame, env.pointcloud.affine)
-  init_view: [35.0, 30.0, 1.25]   # the affine map starts as a virtual camera: azimuth, elevation (deg), distance (m) (P4:66, view)
+  init_view: [35.0, 30.0, 1.25]   # the affine map starts as a virtual camera: azimuth, elevation (deg), distance (m)
+                                  # (P4:66, view)
   rgb_branch: true
   num_points: 1200            # pixels that form P_hat_t
   pixel_selection: random_train_fixed_eval   # a fresh random subset of the 224 x 224 map per training step, a fixed one
@@ -67,7 +70,8 @@ eval:
     report_env_steps: [15, 100, 200]
     batch: 8                  # episodes per batch, no effect on the numbers
   cube_position:              # how the cube position is read from a point cloud (not given in the paper)
-    column: privileged_block_0_pos   # the simulator's cube position: where the cube's colour is measured (eval_frames.py --regions)
+    column: privileged_block_0_pos   # the simulator's cube position: where the cube's colour is measured
+                                     # (eval_frames.py --regions)
     radius_cm: 3
     readout: colour_centroid  # centroid of the points carrying the cube's colour (median rgb of the real points within
                               # 0.85 x radius of the simulator position), decoded vs real cloud (recon/metrics.py)

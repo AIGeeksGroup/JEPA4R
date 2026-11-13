@@ -1,4 +1,5 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/cortexbench/lewm_cortex.py (verbatim except: imports / paths adapted to the package)
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/cortexbench/lewm_cortex.py (verbatim except: imports / paths adapted to
+# the package; lines wrapped at 120 columns)
 """vc_models entry point for LeWM encoders in CortexBench (the frozen-PVR imitation protocol of eai-vc).
 
 CortexBench loads an encoder through `hydra.utils.call(<vc_models conf/model/NAME.yaml>)`, which must return
@@ -25,7 +26,10 @@ from torch import nn
 def _moved(node):
     """config.json's 'module.MLP' -> the moved class (jepa4r.models.heads.MLP); everything else unchanged."""
     if isinstance(node, dict):
-        return {k: ('jepa4r.models.heads.MLP' if (k == '_target_' and v == 'module.MLP') else _moved(v)) for k, v in node.items()}
+        return {
+            k: ('jepa4r.models.heads.MLP' if (k == '_target_' and v == 'module.MLP') else _moved(v))
+            for k, v in node.items()
+        }
     return node
 
 IMAGENET = ([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
@@ -120,7 +124,9 @@ def build_lewm_embedding(checkpoint_dir, epoch=10, use_projector=True, random_in
     return LeWMEmbedding(encoder, projector).eval()
 
 
-def load_lewm(checkpoint_dir: str, epoch: int = 10, use_projector: bool = True, random_init: bool = False, seed: int = 0):
+def load_lewm(
+    checkpoint_dir: str, epoch: int = 10, use_projector: bool = True, random_init: bool = False, seed: int = 0
+):
     ckdir = Path(checkpoint_dir)
     model = build_lewm_embedding(ckdir, epoch, use_projector, random_init, seed)
     with torch.no_grad():
@@ -174,7 +180,9 @@ def load_lewm_pcd(checkpoint_dir: str, epoch: int = 10, center=(0.0, 0.65, 0.2),
     models whose metadata says input 'pcd'."""
     ckdir = Path(checkpoint_dir)
     cfg = json.loads((ckdir / 'config.json').read_text())
-    assert cfg['encoder']['_target_'] in ('encoders.DexArtPointNet', 'encoders.pointnet_dexart.DexArtPointNet'), cfg['encoder']['_target_']
+    assert cfg['encoder']['_target_'] in ('encoders.DexArtPointNet', 'encoders.pointnet_dexart.DexArtPointNet'), cfg[
+        'encoder'
+    ]['_target_']
     if (ckdir / 'config.yaml').exists():
         import yaml
         pre = yaml.safe_load((ckdir / 'config.yaml').read_text())['data']['preprocessor']

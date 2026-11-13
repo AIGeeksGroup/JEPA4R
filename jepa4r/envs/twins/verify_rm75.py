@@ -1,12 +1,14 @@
 # Moved from cortexbench@9331494:lewm_pcd/scripts/checks/verify_rm75.py (verbatim except: imports from the moved twin
 # module; vendor folder, report file and the two point-cloud datasets come from JEPA4R_TWIN_* environment variables that
-# jepa4r.envs.twins.rm75b.check_against_urdf sets from configs/env/rm75b_cube.yaml instead of $STABLEWM_HOME)
+# jepa4r.envs.twins.rm75b.check_against_urdf sets from configs/env/rm75b_cube.yaml instead of $STABLEWM_HOME; lines
+# wrapped at 120 columns, no lint exemptions)
 """Acceptance check for the RM75-B + EG2-4C2 OGBench cube env (envs/cube_rm75_env.py): one command, PASS/FAIL per
 claim, measured vs expected. Every reference is outside the env code: the vendor URDFs (loaded with MuJoCo's own URDF
 importer from $STABLEWM_HOME/vendor/realman/, RealMan's rm_models), the vendor dimension drawing and datasheets, the
 original UR5e env, and the UR5e dataset (section E runs only when both point-cloud datasets exist).
 
-    source env.sh; CUDA_VISIBLE_DEVICES= python scripts/checks/verify_rm75.py      # ~5 min on CPU, report -> $STABLEWM_HOME/logs/verify_rm75.txt
+    # ~5 min on CPU, report -> $STABLEWM_HOME/logs/verify_rm75.txt
+    source env.sh; CUDA_VISIBLE_DEVICES= python scripts/checks/verify_rm75.py
 """
 import os
 import re
@@ -17,10 +19,10 @@ import h5py
 import mujoco
 import numpy as np
 
-from ogbench.manipspace.oracles.plan.cube_plan import CubePlanOracle  # noqa: E402
-from stable_worldmodel.envs.ogbench.cube_env import CubeEnv  # noqa: E402
+from ogbench.manipspace.oracles.plan.cube_plan import CubePlanOracle
+from stable_worldmodel.envs.ogbench.cube_env import CubeEnv
 
-from jepa4r.envs.twins.cube_rm75_env import ARM_XML, GRIPPER_XML, RM75CubeEnv  # noqa: E402
+from jepa4r.envs.twins.cube_rm75_env import ARM_XML, GRIPPER_XML, RM75CubeEnv
 
 VENDOR = Path(os.environ['JEPA4R_TWIN_VENDOR'])  # RealMan rm_models folders RM75-B, EG2-4C2 (twin_check.vendor_dir)
 
@@ -28,9 +30,16 @@ VENDOR = Path(os.environ['JEPA4R_TWIN_VENDOR'])  # RealMan rm_models folders RM7
 def import_urdf(urdf, pkg, meshdir):
     """The vendor URDF as MuJoCo's own URDF importer reads it (package:// stripped, meshes from the vendor folder)."""
     txt = urdf.read_text().replace(f'package://{pkg}/meshes/', '')
-    txt = re.sub(r'<robot\s+name="([^"]+)">',
-                 lambda m: m.group(0) + f'<mujoco><compiler meshdir="{meshdir}" balanceinertia="true" discardvisual="false" fusestatic="false"/></mujoco>',
-                 txt, count=1)
+    txt = re.sub(
+        r'<robot\s+name="([^"]+)">',
+        lambda m: (
+            m.group(0)
+            + f'<mujoco><compiler meshdir="{meshdir}" balanceinertia="true" discardvisual="false" '
+              'fusestatic="false"/></mujoco>'
+        ),
+        txt,
+        count=1,
+    )
     return mujoco.MjModel.from_xml_string(txt)
 
 
@@ -38,7 +47,10 @@ ARM_URDF = VENDOR / 'RM75-B/urdf/RM75-B/urdf/RM75-B.urdf'
 GRIPPER_URDF = VENDOR / 'EG2-4C2/urdf/EG2-4C2.urdf'
 for _p in (ARM_URDF, GRIPPER_URDF):
     if not _p.exists():
-        sys.exit(f'missing vendor file {_p}: put the RM75-B and EG2-4C2 folders of RealMan rm_models (urdf + meshes) under {VENDOR}')
+        sys.exit(
+            f'missing vendor file {_p}: put the RM75-B and EG2-4C2 folders of RealMan rm_models (urdf + meshes) under '
+            f'{VENDOR}'
+        )
 REPORT = Path(os.environ['JEPA4R_TWIN_REPORT'])
 REPORT.parent.mkdir(parents=True, exist_ok=True)
 REPORT.write_text('')
@@ -71,7 +83,13 @@ for field, unit in [('body_mass', 'kg'), ('body_ipos', 'm')]:
 rel = (np.abs(vend.body_inertia - mine.body_inertia) / np.maximum(np.abs(vend.body_inertia), 1e-12))[1:].max()
 check('A arm', 'link inertia = vendor URDF (principal moments, relative)', rel < 1e-3, f'max relative diff {rel:.1e}',
       '< 0.1 % (both are MuJoCo eigen-decompositions of the same URDF numbers)')
-check('A arm', 'total arm mass', abs(mine.body_mass.sum() - 7.776) < 1e-3, f'{mine.body_mass.sum():.3f} kg', '7.776 kg (URDF), datasheet 7.8 kg')
+check(
+    'A arm',
+    'total arm mass',
+    abs(mine.body_mass.sum() - 7.776) < 1e-3,
+    f'{mine.body_mass.sum():.3f} kg',
+    '7.776 kg (URDF), datasheet 7.8 kg',
+)
 urdf = ARM_URDF.read_text()
 eff = [float(x) for x in re.findall(r'effort="([0-9.]+)"', urdf)]
 fr = mine.actuator_forcerange[:, 1].tolist()
@@ -93,8 +111,13 @@ dm.qpos[:] = 0
 mujoco.mj_kinematics(mine, dm)
 h = [round(dm.body(n).xpos[2] * 1000, 2) for n in ['link_1', 'link_3', 'link_5', 'link_7']]
 drawing = [240.5, 496.5, 706.5, 850.5]
-check('A arm', 'joint heights at zero pose = vendor drawing (240.5 + 256 + 210 + 144 mm)', np.allclose(h, drawing, atol=0.01),
-      f'{h} mm', f'{drawing} mm')
+check(
+    'A arm',
+    'joint heights at zero pose = vendor drawing (240.5 + 256 + 210 + 144 mm)',
+    np.allclose(h, drawing, atol=0.01),
+    f'{h} mm',
+    f'{drawing} mm',
+)
 
 # ---------------------------------------------------------------- B: gripper model vs vendor URDF / datasheet
 vg = import_urdf(GRIPPER_URDF, 'EG2-4C2', VENDOR / 'EG2-4C2/meshes')
@@ -114,8 +137,13 @@ for th in np.linspace(0.02, 0.82, 17):
     for vn, mn in pairs.items():
         perr = max(perr, np.linalg.norm(dvg.body(vn).xpos - (dmg.body(mn).xpos - base)))
         rerr = max(rerr, np.abs(dvg.body(vn).xmat - dmg.body(mn).xmat).max())
-check('B gripper', 'linkage kinematics = vendor URDF + its mimic tags (17 openings, 6 links)', perr < 1e-5 and rerr < 1e-5,
-      f'max {perr * 1e3:.5f} mm, rotation {rerr:.1e}', '0')
+check(
+    'B gripper',
+    'linkage kinematics = vendor URDF + its mimic tags (17 openings, 6 links)',
+    perr < 1e-5 and rerr < 1e-5,
+    f'max {perr * 1e3:.5f} mm, rotation {rerr:.1e}',
+    '0',
+)
 
 
 def gap(q):
@@ -130,7 +158,13 @@ def gap(q):
 check('B gripper', 'max opening between the finger pads', 60e-3 < gap(0.0) < 72e-3, f'{gap(0.0) * 1e3:.1f} mm',
       'datasheet stroke 70 mm (the vendor finger meshes give 66)')
 check('B gripper', 'closed', gap(0.8) < 3e-3, f'{gap(0.8) * 1e3:.1f} mm', '< 3 mm')
-check('B gripper', 'mass', abs(mg.body_mass.sum() - 0.271) < 0.005, f'{mg.body_mass.sum() * 1e3:.0f} g', '231 g datasheet + 40 g adapter plate')
+check(
+    'B gripper',
+    'mass',
+    abs(mg.body_mass.sum() - 0.271) < 0.005,
+    f'{mg.body_mass.sum() * 1e3:.0f} g',
+    '231 g datasheet + 40 g adapter plate',
+)
 spec = mujoco.MjSpec.from_file(str(GRIPPER_XML))
 blk = spec.worldbody.add_body(name='block', pos=[0, 0, 0.0118 + 0.131])
 blk.add_geom(name='block', type=mujoco.mjtGeom.mjGEOM_BOX, size=[0.02, 0.02, 0.02])
@@ -157,20 +191,59 @@ orr, ir = R.reset(seed=0)
 A, B = U.action_space, R.action_space
 check('C interface', 'action space', A.shape == B.shape and np.allclose(A.low, B.low) and np.allclose(A.high, B.high),
       f'{B.shape} in [{B.low.min()}, {B.high.max()}]', f'{A.shape} in [{A.low.min()}, {A.high.max()}] (UR5e)')
-check('C interface', 'action scaling (5 cm / 5 cm / 5 cm / 0.3 rad / 1 per step)', np.allclose(U.action_high, R.action_high),
-      R.action_high.tolist(), U.action_high.tolist())
-check('C interface', 'control / physics timestep', (U._control_timestep, U._physics_timestep) == (R._control_timestep, R._physics_timestep),
-      f'{R._control_timestep} / {R._physics_timestep} s', f'{U._control_timestep} / {U._physics_timestep} s')
+check(
+    'C interface',
+    'action scaling (5 cm / 5 cm / 5 cm / 0.3 rad / 1 per step)',
+    np.allclose(U.action_high, R.action_high),
+    R.action_high.tolist(),
+    U.action_high.tolist(),
+)
+check(
+    'C interface',
+    'control / physics timestep',
+    (U._control_timestep, U._physics_timestep) == (R._control_timestep, R._physics_timestep),
+    f'{R._control_timestep} / {R._physics_timestep} s',
+    f'{U._control_timestep} / {U._physics_timestep} s',
+)
 _, _, _, _, su = U.step(np.zeros(5))
 _, _, _, _, sr = R.step(np.zeros(5))
-check('C interface', 'reset-info and step-info keys', set(iu) == set(ir) and set(su) == set(sr), f'{len(ir)} / {len(sr)} keys',
-      f'the same {len(iu)} / {len(su)} keys as UR5e')
+check(
+    'C interface',
+    'reset-info and step-info keys',
+    set(iu) == set(ir) and set(su) == set(sr),
+    f'{len(ir)} / {len(sr)} keys',
+    f'the same {len(iu)} / {len(su)} keys as UR5e',
+)
 allowed = {'proprio/joint_pos', 'proprio/joint_vel', 'qpos', 'qvel', 'prev_qpos', 'prev_qvel', 'control', 'target'}
 diff = sorted(k for k in su if np.shape(su[k]) != np.shape(sr[k]))
-check('C interface', 'entries whose shape differs', set(diff) <= allowed, diff, 'only joint-count ones (7 arm joints, other gripper)')
-check('C interface', 'state observation', (ou.shape, orr.shape) == ((28,), (30,)), f'{ou.shape} -> {orr.shape}', '(28,) -> (30,): +1 joint pos, +1 joint vel')
-check('C interface', 'cameras (names, positions, orientations)', U.cameras == R.cameras, list(R.cameras), 'identical to UR5e')
-check('C interface', 'variation-space entries', U.variation_space.names() == R.variation_space.names(), f'{len(R.variation_space.names())} entries', 'identical to UR5e')
+check(
+    'C interface',
+    'entries whose shape differs',
+    set(diff) <= allowed,
+    diff,
+    'only joint-count ones (7 arm joints, other gripper)',
+)
+check(
+    'C interface',
+    'state observation',
+    (ou.shape, orr.shape) == ((28,), (30,)),
+    f'{ou.shape} -> {orr.shape}',
+    '(28,) -> (30,): +1 joint pos, +1 joint vel',
+)
+check(
+    'C interface',
+    'cameras (names, positions, orientations)',
+    U.cameras == R.cameras,
+    list(R.cameras),
+    'identical to UR5e',
+)
+check(
+    'C interface',
+    'variation-space entries',
+    U.variation_space.names() == R.variation_space.names(),
+    f'{len(R.variation_space.names())} entries',
+    'identical to UR5e',
+)
 
 
 def grip(env):
@@ -187,7 +260,8 @@ gu, gr = grip(U), grip(R)
 check('C interface', 'gripper_opening after 2 s closing / opening', gr[0] > 0.95 and gr[1] < 0.05,
       f'{gr[0]:.2f} / {gr[1]:.2f}', f'~1 / ~0 (UR5e {gu[0]:.2f} / {gu[1]:.2f})')
 
-# ---------------------------------------------------------------- D: behaviour under the collection policy (plan oracle)
+# ---------------------------------------------------------------- D: behaviour under the collection policy (plan
+# oracle)
 
 
 def rollouts(env, episodes, seed):
@@ -206,7 +280,9 @@ def rollouts(env, episodes, seed):
             q = info['proprio/joint_pos']
             viol += int(np.any((q < lo - 1e-3) | (q > hi + 1e-3)))
             vmax = np.maximum(vmax, np.abs(info['proprio/joint_vel']))
-            selfc += int(any(robot[m.geom_bodyid[c.geom1]] and robot[m.geom_bodyid[c.geom2]] for c in dd.contact[: dd.ncon]))
+            selfc += int(
+                any(robot[m.geom_bodyid[c.geom1]] and robot[m.geom_bodyid[c.geom2]] for c in dd.contact[: dd.ncon])
+            )
             maxz = max(maxz, info['privileged/block_0_pos'][2])
             if oracle.done:
                 ok.append(bool(env._success))
@@ -228,15 +304,34 @@ check('D behaviour', 'peak joint speeds <= datasheet (180 deg/s J1-2, 225 deg/s 
       f'{np.round(np.degrees(rm[5])).astype(int).tolist()} deg/s', f'<= {np.degrees(vlim).astype(int).tolist()}')
 check('D behaviour', 'robot self-collisions', rm[4] == 0, f'{rm[4]} steps', f'0 (UR5e {ur[4]})')
 
-# ---------------------------------------------------------------- E: datasets / point clouds (collected with the unchanged pipeline; needs both datasets)
+# ---------------------------------------------------------------- E: datasets / point clouds (collected with the
+# unchanged pipeline; needs both datasets)
 RM75_DS, UR5E_DS = Path(os.environ['JEPA4R_TWIN_RM75_DS']), Path(os.environ['JEPA4R_TWIN_UR5E_DS'])
 if not (RM75_DS.exists() and UR5E_DS.exists()):
-    check('E data', 'datasets', None, f'skipped: need {RM75_DS.name} and {UR5E_DS.name}', 'both point-cloud datasets present')
+    check(
+        'E data',
+        'datasets',
+        None,
+        f'skipped: need {RM75_DS.name} and {UR5E_DS.name}',
+        'both point-cloud datasets present',
+    )
     fr_ = fu_ = None
 else:
     fr_, fu_ = h5py.File(RM75_DS, 'r'), h5py.File(UR5E_DS, 'r')
-    check('E data', 'dataset columns', set(fr_) == set(fu_), f'{len(fr_)} columns', 'the same names as the UR5e dataset')
-    allowed = {'observation', 'target', 'qpos', 'qvel', 'prev_qpos', 'prev_qvel', 'control', 'proprio_joint_pos', 'proprio_joint_vel'}
+    check(
+        'E data', 'dataset columns', set(fr_) == set(fu_), f'{len(fr_)} columns', 'the same names as the UR5e dataset'
+    )
+    allowed = {
+        'observation',
+        'target',
+        'qpos',
+        'qvel',
+        'prev_qpos',
+        'prev_qvel',
+        'control',
+        'proprio_joint_pos',
+        'proprio_joint_vel',
+    }
     diff = sorted(k for k in fr_ if fr_[k].shape[1:] != fu_[k].shape[1:])
     check('E data', 'columns whose shape differs', set(diff) <= allowed, diff, 'only joint-count ones')
 
@@ -250,9 +345,20 @@ else:
 
     cr, br, xr = pcd_stats(fr_, (0.15, 0.0))
     cu, bu, xu = pcd_stats(fu_, (0.0, 0.0))
-    check('E data', 'share of points on the cube (pipeline quota 25 %, fewer when the cube is occluded)', abs(cr - cu) < 0.05,
-          f'RM75 {cr * 100:.1f} %', f'about UR5e {cu * 100:.1f} %')
-    check('E data', 'share of points on the static robot base', br < 0.01, f'RM75 {br * 100:.2f} %', f'~0 (UR5e {bu * 100:.2f} %)')
+    check(
+        'E data',
+        'share of points on the cube (pipeline quota 25 %, fewer when the cube is occluded)',
+        abs(cr - cu) < 0.05,
+        f'RM75 {cr * 100:.1f} %',
+        f'about UR5e {cu * 100:.1f} %',
+    )
+    check(
+        'E data',
+        'share of points on the static robot base',
+        br < 0.01,
+        f'RM75 {br * 100:.2f} %',
+        f'~0 (UR5e {bu * 100:.2f} %)',
+    )
     check('E data', 'crop x_min', xr >= 0.2099, f'{xr:.3f} m', '0.21 m (UR5e data 0.10)')
 
 n_pass = sum(r[0] == 'PASS' for r in RESULTS)
