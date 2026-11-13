@@ -1,8 +1,9 @@
 """CortexBench behaviour cloning [majumdar2023vc1] (supp. sec:supp-policy, configs/policy/bc.yaml).
 
 MetaWorld and Adroit Relocate follow the official CortexBench imitation protocol; OGBench Scene reuses the same
-code on its five evaluation tasks. 100 epochs on env.policy_data.demos_per_task demonstrations per task
-(25; 100 on Relocate); success = best of 20 evaluations (jepa4r/eval/cortexbench.py).
+code on its five evaluation tasks, and so do four MetaWorld tasks on the RM75-B twin (Sec. 5.6), on their own demos.
+100 epochs on env.policy_data.demos_per_task demonstrations per task (25; 100 on Relocate); success = best of 20
+evaluations (jepa4r/eval/cortexbench.py).
 
 Integrated code (cortexbench@9331494:lewm_pcd/bench/cortexbench/, moved unchanged into this package apart from where
 eai-vc / the embedding configs / V-JEPA 2 are found):
@@ -12,6 +13,8 @@ eai-vc / the embedding configs / V-JEPA 2 are found):
   run_bc3d.py      run_bc.py with the camera image replaced by the same camera's point cloud (pcd_fork.MWPointClouds)
   run_bc_scene.py  run_bc.py on OGBench scene's five tasks (scene_env.SceneCBEnv in a scene_server.py subprocess of the
                    MuJoCo 3 / OGBench python), proprioception = the first 6 of 8 entries (SCENE_PROPRIO_DIMS)
+  run_bc_rm75.py   run_bc.py / run_bc3d.py on the RM75-B twin's MetaWorld tasks (rm75_env.RM75CBEnv in a rm75_server.py
+                   subprocess of the MuJoCo 3 / metaworld 3.0 python given by MW_PY), on their own demos (make_rm75_demos.py)
   lewm_cortex.py   the frozen LeWM / JEPA4R encoders (encoder + projector, epoch 10) as CortexBench embeddings
   jepa_baselines.py  PLDM, LeJEPA, VISReg, V-JEPA 2.1 embeddings;  conf/model/*.yaml  the embeddings of the paper runs
   grid.py, scene_grid.py, summarize.py, summarize_scene.py, enc_server.py   the original job runners and summaries
@@ -21,7 +24,8 @@ eai-vc / the embedding configs / V-JEPA 2 are found):
 arguments grid.py / scene_grid.py gave it, then reports success = mean over tasks of the mean over seeds of each run's
 highest success among its 20 evaluations (summarize.py / summarize_scene.py; GATES.md 3.4).
 Interpreters / paths (environment variables): JEPA4R_PY_CORTEXBENCH (eai-vc + MuJoCo 2.0 + mujoco-py python),
-JEPA4R_PY_COLLECT (MuJoCo 3 + OGBench python for the scene env), JEPA4R_EAI_VC (eai-vc checkout), JEPA4R_VJEPA2.
+JEPA4R_PY_COLLECT (MuJoCo 3 + OGBench / metaworld 3.0 python for the scene env and the RM75-B twin's MetaWorld env),
+JEPA4R_EAI_VC (eai-vc checkout), JEPA4R_VJEPA2.
 """
 import hashlib
 import json
@@ -36,6 +40,7 @@ HERE = Path(__file__).resolve().parent
 SUITES = {  # suite -> (hydra config of eai-vc, 2D demo dir, 3D demo dir)   grid.py:39-44, scene_grid.py:79-80
     'metaworld': ('Metaworld_BC_config', 'metaworld-expert-v1.0', 'metaworld-expert-v1.0-pcd'),
     'ogbench': ('Metaworld_BC_config', 'scene-expert', 'scene-expert-pcd'),
+    'metaworld_rm75': ('Metaworld_BC_config', 'metaworld-rm75-expert', 'metaworld-rm75-expert-pcd'),   # grid.py:46-48
     'adroit': ('Adroit_BC_config', 'adroit-expert-v1.0', 'adroit-expert-v1.0-pcd'),
 }
 TEMPLATES = {  # method kind / name -> conf/model template of the paper runs (checkpoint filled in per run)
@@ -79,6 +84,9 @@ def run_command(cfg, task, seed, run_dir, emb_name, demos):
     if suite == 'ogbench':
         launcher = HERE / 'run_bc_scene.py'
         extra = ['camera=front_pixels', 'env_kwargs.add_proprio=True', 'env_kwargs.proprio_key=gripper_proprio']
+    elif suite == 'metaworld_rm75':   # grid.py:159-160: run_bc_rm75.py for image and point-cloud embeddings alike
+        launcher = HERE / 'run_bc_rm75.py'
+        extra = []
     else:
         launcher = HERE / ('run_bc3d.py' if pcd else 'run_bc.py')
         extra = []
@@ -116,6 +124,8 @@ def train(cfg, out_dir) -> dict:
                PYTHONPATH=os.pathsep.join([str(HERE.parents[2]), str(HERE)] + [os.environ.get('PYTHONPATH', '')]))
     if cfg.env.suite == 'ogbench':
         env.update(SCENE_PROPRIO_DIMS=str(cfg.policy.proprio.dims), MW_PY=os.environ.get('JEPA4R_PY_COLLECT', sys.executable))
+    if cfg.env.suite == 'metaworld_rm75':   # grid.py:177-178: the RM75 env runs in the MuJoCo 3 / metaworld 3.0 python
+        env.update(MW_PY=os.environ.get('JEPA4R_PY_COLLECT', sys.executable))
     runs = {}
     for seed in cfg.policy.eval.seeds:  # seed by seed, as grid.py
         for task in tasks(cfg.env):

@@ -30,6 +30,7 @@ Each point stores xyz and rgb, so an observation is a `[1200, 6]` array. Images 
 | Puzzle 3×3 / 4×4 / 4×5 | 1,000 / 1,000 / 3,000 | 1,001 | OGBench's noisy recipe |
 | Scene, MetaWorld (per task), Adroit Relocate | 10,000 | 200 | noisy expert, expert interrupted by random actions, random (0.5, 0.3, 0.2) |
 | Cube-Single, reconstruction data (`cube_single_recon`); RM75-B twin Cube (`rm75b_cube`) | 10,000 (+ 1,000 test) | 200 | stable-worldmodel's plan-oracle expert |
+| RM75-B twin, MetaWorld bin-picking / button-press / drawer-open / assembly with the EG2-4C2 (`rm75b_mw_*`) | 10,000 (+ 150 test) | 200 | as MetaWorld (0.5, 0.3, 0.2), with the collection policies made for the RM75 (button-press: MetaWorld's) |
 
 World models read clips of four frames spaced five environment steps apart; the action block between consecutive
 frames concatenates the five actions (`jepa4r/data/clips.py`).
@@ -45,6 +46,7 @@ frames concatenates the five actions (`jepa4r/data/clips.py`).
 | Puzzle | OGBench's official play data | latent, button lights; goal: target state of the lights |
 | Scene | 25 demonstrations per evaluation task | latent (+ proprioception) |
 | MetaWorld | 25 demonstrations per task | latent (+ proprioception) |
+| RM75-B twin, MetaWorld tasks | 25 demonstrations per task, recorded on the twin (`jepa4r/data/demos/make_rm75_demos.py`) | latent (+ proprioception) |
 | Adroit Relocate | 100 demonstrations | latent (+ proprioception) |
 
 ## Storage Format

@@ -21,8 +21,8 @@ baseline recipes) are implemented, because the main-text numbers depend on them.
 | Tab. 3a/b; 12.31 cm shuffled control; decoder stage A → B (0.87 → 0.79 cm); within 1.1 cm over 200 steps (UR5e Cube-Single reconstruction data, `cube_single_recon`) | `tab3_recon` | collect_wm_data, train_wm, train_decoder, eval_recon | `paper/expected/tab3_recon.yaml` |
 | Tab. 4a decoder backbone (Cube); 4b encoder, 4c temporal window, 4d hyper-parameters (Scene) | `tab4_ablations` | all of the above | `paper/expected/tab4_ablations.yaml` |
 | 5.51M PointNet vs. 5.50M ViT-tiny, ~18.0M JEPA4R, 5.75M decoder, 0.88M LoRA, ~0.94B PAGE-4D | `params` | count_params | `paper/expected/params.yaml` |
-| Sec. 5.6 in the RM75-B twin: twin vs. vendor URDF (2,000 joint configurations, limits, masses, gripper); twin-trained world model, policy head and decoder; the paper reports no twin numbers | `twin` | verify_twin, collect_wm_data, prepare_policy_data, train_wm, train_policy, train_decoder, eval_preview | `paper/expected/twin.yaml` |
-| Fig. 1a, Fig. 1b, observations, success plots, CortexBench scatter, simulation key frames, open-loop errors | — | outputs of the stages above | `paper/figures/*.py` |
+| Sec. 5.6 in the RM75-B twin: twin vs. vendor URDF (2,000 joint configurations, limits, masses, gripper); twin-trained world models, policy heads (EG2-4C2 gripper: four CortexBench MetaWorld tasks; RH56 hand: Relocate) and decoder; the paper reports no twin numbers | `twin` | verify_twin, collect_wm_data, prepare_policy_data, train_wm, train_policy, train_decoder, eval_preview | `paper/expected/twin.yaml` |
+| Fig. 1a, Fig. 1b, observations, success plots, CortexBench scatter, simulation key frames, open-loop errors | — | outputs of the stages above | `paper/figures/*.py` (not integrated, see Open Items) |
 
 ```bash
 jepa4r-reproduce experiments/tab1_ogbench.yaml                                  # list jobs and status
@@ -83,10 +83,14 @@ The configurations carry the values of the integrated code, each with the file a
   the V-JEPA 2.1 ViT-L/16 weights (Cube; the workflow fetches them), DAPG's Relocate state expert, the official Relocate
   demonstrations, the native RM75-B + RH56 bundle (its files are listed in
   `jepa4r/policy/bc/relocate/provenance/assets/rh56_native_bundle_v1.json`) and MuJoCo 2.0 for mujoco-py.
-- **Twin policy head and look-ahead preview** (`configs/env/rm75b_cube.yaml` `policy`, `policy_data`; stage
-  `eval_preview`): no implementation in the source branches.
-- **Figures** (`paper/figures/*.py`): no figure code in the source branches; the stages write their inputs
-  (`curves.npz` of eval_recon).
+- **Look-ahead preview** (stage `eval_preview`, Sec. 4.3): no commit of the four source branches has preview code, and
+  the paper reports no twin numbers (Sec. 5.6 "Results" is qualitative); the stage stays `TODO(integrate)`.
+- **Policy head on the twin's Cube** (`configs/env/rm75b_cube.yaml` `policy`, `policy_data`: `???`): on the twin's Cube
+  the source branches only plan with CEM (`config/eval/cube_rm75_*.yaml`, the setting of Tab. S1, out of scope); the
+  gripper's policy heads trained in the twin are the CortexBench ones of the four `rm75b_mw_*` tasks.
+- **Figures** (`paper/figures/*.py`): not integrated, since this repository reproduces the paper's numbers (Scope); the
+  scripts stay `TODO(integrate)`.
 - **Released weights:** VISReg's are shared by the authors on request (`scripts/download_checkpoints.py`).
-- **Random (ViT-B) row of Tab. 2:** the paper's values equal the VC-1 study's Table 8; the paper runs ran it only on
-  bin-picking (`configs/method/random_vitb.yaml`); the job stays optional.
+- **Random (ViT-B) row of Tab. 2:** the paper lists it with the published numbers (caption: "Published numbers: the
+  VC-1 study"), and its values equal the VC-1 study's Table 8 (`paper/expected/tab2_cortexbench.yaml` `published`); the
+  paper runs ran it only on bin-picking (`configs/method/random_vitb.yaml`); the job stays optional.

@@ -1,0 +1,11 @@
+# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/conf/model/lewm_mw_button_rm75_pcd.yaml (verbatim)
+# LeWM 3D encoder (DexArt PointNet + projector) trained on the full MetaWorld button-press-topdown three-part data of the
+# RM75-B + EG2-4C2, point clouds (config/train/data/mw_button_rm75_pcd.yaml; run mw_button_rm75_pcd_dexart, epoch 10),
+# for the RM75 runs (../../run_bc_rm75.py). Input: (N, 6) point clouds. center / scale / use_rgb = the training
+# preprocessor (that of mw_button_pcd.yaml).
+_target_: lewm_cortex.load_lewm_pcd
+checkpoint_dir: ${oc.env:STABLEWM_HOME}/checkpoints/mw_button_rm75_pcd_dexart
+epoch: 10
+center: [0.0, 0.65, 0.2]
+scale: 4.0
+use_rgb: true

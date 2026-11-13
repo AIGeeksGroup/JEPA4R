@@ -20,7 +20,7 @@
     "jepa4r/models/sigreg.py": "bc5c41d1a6ac1227463624368be87b25f721fae8e4f28e7b7fa8827ca761c768",
     "jepa4r/models/world_model.py": "30aa9170d54492614a6d388514441b4add68e85e8f35f8d244e821346739763f",
     "jepa4r/policy/__init__.py": "69781b38bf8a941747a0b61c1216998a8c35f13d75f82da5e8aaea62e3d09842",
-    "jepa4r/policy/bc/__init__.py": "4ef8be2faf8cb504489c5aeecd149c978fda2cb2fa1f1a61a8e21c4644de558a",
+    "jepa4r/policy/bc/__init__.py": "422a31f7581defcff5434fe802db3fe8b7c9a4f9071bbed1b5fc880b439d2a9e",
     "jepa4r/policy/bc/relocate/__init__.py": "3cdb05169a2e61d47d6101c745f2485132b9adf6d98e2da964c5ad5af0e45ec2",
     "jepa4r/policy/bc/relocate/cortexbench/__init__.py": "3a5d8b7a270fc320e2628677a1e8603022554471f3dbe4dd5ae0edb35fdd4271",
     "jepa4r/policy/bc/relocate/cortexbench/jepa_baselines.py": "841ce76c8b1517355acea13ed2dd051f220e930e41ff9ff5d9d22900ce8ff5be",

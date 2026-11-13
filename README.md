@@ -33,7 +33,9 @@ Each task is configured in `configs/env/<task>.yaml`; see the [data documentatio
 
 - OGBench: `cube_single`, `cube_double`, `cube_triple`, `cube_quadruple`, `scene`, `puzzle_3x3`, `puzzle_4x4`, `puzzle_4x5`
 - CortexBench: `mw_assembly`, `mw_bin_pick`, `mw_button`, `mw_drawer`, `mw_hammer`, `adroit_relocate`
-- Latent-space reconstruction: `cube_single_recon` (UR5e Cube-Single, plan-oracle data); RM75-B digital twin: `rm75b_cube`
+- Latent-space reconstruction: `cube_single_recon` (UR5e Cube-Single, plan-oracle data); RM75-B digital twin: `rm75b_cube`,
+  `rm75b_mw_bin_pick`, `rm75b_mw_button`, `rm75b_mw_drawer`, `rm75b_mw_assembly` (EG2-4C2 gripper), `rm75b_rh56_relocate`
+  (RH56 hand)
 
 1. **World-model data.** Collect paired image / point-cloud trajectories:
 
@@ -163,12 +165,12 @@ jepa4r-report                                           # outputs/report.md: pap
 bash scripts/reproduce_all.sh                           # every table, then the report
 ```
 
-The paper's numbers are stored in `paper/expected/`, and `paper/figures/` is where the figures are regenerated into `outputs/figures/` (not integrated yet, see below). See [docs/reproduce.md](docs/reproduce.md) for the scope and settings, and [docs/architecture.md](docs/architecture.md) for the code layout. The RM75-B digital twin and everything trained in it are included; runs on the real arm are not.
+The paper's numbers are stored in `paper/expected/`, and `paper/figures/` is where the figures would be regenerated into `outputs/figures/` (not integrated: this repository reproduces the paper's numbers). See [docs/reproduce.md](docs/reproduce.md) for the scope and settings, and [docs/architecture.md](docs/architecture.md) for the code layout. The RM75-B digital twin and everything trained in it are included; runs on the real arm are not.
 
 This repository integrates the code of the paper's runs; its equivalence with that code was checked against the released
-checkpoints and the paper's run records (data, model, training and evaluation gates) when it was integrated. Parts
-without code in the source branches (the twin's policy head and preview, the figures) are listed in
-[docs/reproduce.md](docs/reproduce.md).
+checkpoints and the paper's run records (data, model, training and evaluation gates) when it was integrated. What is
+not integrated (the twin's look-ahead preview, a policy head on the twin's Cube, the figures) is listed with the reason
+in [docs/reproduce.md](docs/reproduce.md).
 
 ## 😘 Acknowledgement
 
