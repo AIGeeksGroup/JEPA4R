@@ -1,0 +1,10 @@
+# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/conf/model/lewm_mw_button_pcd.yaml (verbatim)
+# LeWM 3D encoder (DexArt PointNet + projector) trained on the full MetaWorld button-press-topdown three-part data, point
+# clouds (config/train/data/mw_button_pcd.yaml; run mw_button_pcd_dexart, epoch 10). Input: (N, 6) point clouds, see
+# ../../run_bc3d.py. center / scale / use_rgb = the training preprocessor (checked against the checkpoint's config.yaml).
+_target_: lewm_cortex.load_lewm_pcd
+checkpoint_dir: ${oc.env:STABLEWM_HOME}/checkpoints/mw_button_pcd_dexart
+epoch: 10
+center: [0.0, 0.65, 0.2]
+scale: 4.0
+use_rgb: true

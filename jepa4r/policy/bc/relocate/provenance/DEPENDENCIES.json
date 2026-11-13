@@ -1,0 +1,86 @@
+{
+  "eai_vc": {
+    "repository": "https://github.com/facebookresearch/eai-vc",
+    "commit": "76fe35e87b1937168f1ec4b236e863451883eaf3",
+    "patch": "patches/eai-vc-train-loop.patch",
+    "train_loop_sha256": "c0819470fa0ca160544978faf2d4227b0bd2fdb49dd3c2d02ea59ffdf567eb45"
+  },
+  "mjrl": {
+    "repository": "https://github.com/aravindr93/mjrl",
+    "commit": "83d35df95eb64274c5e93bb32a0a4e2f6576638a"
+  },
+  "mj_envs": {
+    "repository": "https://github.com/aravindr93/mj_envs",
+    "commit": "c1557f5572977085f053df63f4e81f4b4e1fb17c"
+  },
+  "adroit_assets": {
+    "repository": "https://github.com/vikashplus/Adroit",
+    "commit": "0fe8a446c5b580ec49f2458d68747fcebb191fc0"
+  },
+  "mujoco_py": {
+    "repository": "https://github.com/aravindr93/mujoco-py",
+    "commit": "5f530c83a970a844bdafc3087a9f9fe7188b45d4",
+    "version": "2.0.2.13"
+  },
+  "dmc2gym": {
+    "repository": "https://github.com/denisyarats/dmc2gym",
+    "commit": "0d7581f3a4b9e065e810ce978d422921e9ee110a",
+    "import_overlay": "Remove only eager construction of seven unrelated environments; keep the factory unchanged."
+  },
+  "stable_worldmodel": {
+    "repository": "https://github.com/galilai-group/stable-worldmodel",
+    "commit": "6f1e499e9cc0c898d326112f485c1062c3d20f24",
+    "bundled_manifest": "lewm_pcd/third_party/stable-worldmodel/SOURCE.json"
+  },
+  "vjepa2": {
+    "repository": "https://github.com/facebookresearch/vjepa2",
+    "commit": "204698b45b3712590f06245fbfba32d3be539812"
+  },
+  "adroit_state_expert": {
+    "repository": "https://github.com/aravindr93/hand_dapg",
+    "commit": "9a1de23df6574e1b94e1da742e3326eb1f61c013",
+    "path": "dapg/policies/relocate-v0.pickle",
+    "sha256": "41432c3125c97a8eb101d5d482f062b1f9bb72239a3abccae7428ef0e66413fc"
+  },
+  "official_relocate": {
+    "raw_sha256": "c71c7af5dda7b9a3d133a7e2baaa821bfe1ab7c4445dfde5624b947d13865694",
+    "raw_bytes": 4211721780,
+    "initials_semantic_sha256": "064a33e46fdc7407c6b0599f16413c85aab579c8fcccc957606e39da067ad2a8",
+    "initials_semantic_keys": [
+      "demo_index",
+      "original_init_sha256",
+      "obj_pos",
+      "target_pos"
+    ],
+    "canonical_encoding": "UTF-8 json.dumps(ordered_records,sort_keys=True,separators=(comma,colon),allow_nan=False)",
+    "scope": "100 ordered official task positions and original initialization identities; paths and source labels excluded",
+    "policy_critical_content_sha256": "4ebf8f93e59668e9660bc09d72188f7bf118b0d3b83e79bb286454d8913bab47",
+    "policy_critical_content_contract": {
+      "records": "100 ordered entries: demo_index, original_init_sha256, arrays",
+      "arrays": [
+        "actions",
+        "state_obs",
+        "proprio",
+        "rewards"
+      ],
+      "array_encoding": "shape + dtype.str + SHA256(ascontiguousarray(value).tobytes(C-order))",
+      "initial_encoding": "SHA256(pickle.dumps(original init_state_dict,protocol=4))",
+      "record_encoding": "sorted compact UTF8 JSON, allow_nan=False"
+    }
+  },
+  "frozen_encoders": {
+    "visreg": {
+      "sha256": "23e6aa5fe93cc61b3d9ab13e35cb4966580612d39bae39b1991f35c19c8087b8",
+      "bytes": 368495235,
+      "filename": "visreg-vit-b-inet1k.pth",
+      "author_hf_repository": null,
+      "revision": "5186f23e669b962461352b21cb354d19c8a1d929"
+    },
+    "vjepa": {
+      "sha256": "848a77c33cc9e6649ed2119c9bea1e2c569bcdab9539ff3e7c02ccc2959ddf4d",
+      "bytes": 1664223428,
+      "filename": "vjepa2_1_vitb_dist_vitG_384.pt",
+      "official_url": "https://dl.fbaipublicfiles.com/vjepa2/vjepa2_1_vitb_dist_vitG_384.pt"
+    }
+  }
+}

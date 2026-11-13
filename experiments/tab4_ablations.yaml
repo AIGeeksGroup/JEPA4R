@@ -17,15 +17,15 @@ cd_variants: &cd_variants
   bs256: {method.train.batch_size: 256}
 
 jobs:
-  # (a) needs the cube_single data / JEPA4R world model of experiments/tab3_recon.yaml
+  # (a) needs the cube_single_recon data / JEPA4R world model of experiments/tab3_recon.yaml
   - stage: collect_wm_data
-    grid: {env: [cube_single]}
+    grid: {env: [cube_single_recon]}
   - stage: train_wm
-    grid: {env: [cube_single], method: [jepa4r]}
+    grid: {env: [cube_single_recon], method: [jepa4r]}
   - stage: train_decoder
-    grid: {env: [cube_single], decoder: *decoders}
+    grid: {env: [cube_single_recon], decoder: *decoders}
   - stage: eval_recon
-    grid: {env: [cube_single], decoder: *decoders}
+    grid: {env: [cube_single_recon], decoder: *decoders}
   # (b)
   - stage: collect_wm_data
     grid: {env: [scene]}

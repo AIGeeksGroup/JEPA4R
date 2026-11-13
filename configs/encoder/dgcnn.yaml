@@ -4,4 +4,8 @@ arch: dgcnn
 impl: jepa4r.models.encoders.dgcnn
 in_dim: 6
 out_dim: 192
-hparams: ???                  # k, widths chosen to match ~5.51M parameters
+hparams:                      # k, widths chosen to match ~5.51M parameters
+  # cortexbench:lewm_pcd/config/train/model/encoder/dgcnn.yaml (DGCNN k 20, original widths x 43/16)
+  k: 20
+  widths: [172, 172, 344, 688]
+  emb_dim: 2752

@@ -6,7 +6,7 @@ in: train_policy metrics of experiments/tab2_cortexbench.yaml, published rows of
 
 
 def main():
-    raise NotImplementedError("TODO(integrate)")
+    raise NotImplementedError("no figure code in the source branches: docs/reproduce.md, Open Items")
 
 
 if __name__ == "__main__":

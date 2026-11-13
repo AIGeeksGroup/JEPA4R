@@ -29,6 +29,7 @@ Each point stores xyz and rgb, so an observation is a `[1200, 6]` array. Images 
 | Cube, 1 / 2 / 3 / 4 cubes | 10,000 | 200 / 500 / 1,000 / 600 | low-noise expert, high-noise expert, expert-then-random, random (0.2, 0.4, 0.2, 0.2) |
 | Puzzle 3×3 / 4×4 / 4×5 | 1,000 / 1,000 / 3,000 | 1,001 | OGBench's noisy recipe |
 | Scene, MetaWorld (per task), Adroit Relocate | 10,000 | 200 | noisy expert, expert interrupted by random actions, random (0.5, 0.3, 0.2) |
+| Cube-Single, reconstruction data (`cube_single_recon`); RM75-B twin Cube (`rm75b_cube`) | 10,000 (+ 1,000 test) | 200 | stable-worldmodel's plan-oracle expert |
 
 World models read clips of four frames spaced five environment steps apart; the action block between consecutive
 frames concatenates the five actions (`jepa4r/data/clips.py`).
@@ -48,6 +49,22 @@ frames concatenates the five actions (`jepa4r/data/clips.py`).
 
 ## Storage Format
 
-To be documented with the integrated collection code (`jepa4r/data/storage.py`). Required per step: `rgb`
-`[224, 224, 3]` uint8, `pointcloud` `[1200, 6]` float32, `action`, episode id and step index, and the
-train / validation split; optional: simulator state, proprioception, goal state and segmentation ids.
+stable-worldmodel's HDF5 dataset format (`swm.data.load_dataset`), written by the collectors through
+`jepa4r/data/storage.py` (`PairedWriter`: one rollout, two files). One file per modality, rows of all episodes
+concatenated, row for row the same in the two files:
+
+| Column | Shape per row | Type | File |
+|---|---|---|---|
+| `pixels` | `[224, 224, 3]` | uint8, gzip | `<name>.h5` (2D) |
+| `pcd_xyz` | `[1200, 3]`, metres, world frame | float32 | `<name>_pcd.h5` (3D) |
+| `pcd_rgb` | `[1200, 3]` | uint8 | `<name>_pcd.h5` |
+| `action` | `[A]` (MetaWorld 4, OGBench 5) | float32 | both |
+| `observation`, `qpos`, `qvel`, task columns (`privileged_*`, `proprio_*`, `button_states`, `obj_pos`, ...) | per task | float64 / int | both |
+| `step_idx`, `id`, `terminated`, `truncated`, `reward` | scalar | int / bool / float | both |
+| `ep_len`, `ep_offset` | one entry per episode | int32 / int64 | both |
+
+The model input is built when the data are read (`jepa4r/data/clips.py`): xyz centred and scaled with
+`env.pointcloud.affine`, rgb / 255, concatenated to `[1200, 6]`; pixels with ImageNet statistics. The train /
+validation split is not stored: world models split clips randomly (0.9 / 0.1, seed 3072; Cube 1-4 use separate
+validation episodes), the decoder splits frames the same way. `check_paired` verifies that the two files hold the same
+rows; `merge_shards` concatenates the shards of a set in the order of the original launchers.

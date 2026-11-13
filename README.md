@@ -33,6 +33,7 @@ Each task is configured in `configs/env/<task>.yaml`; see the [data documentatio
 
 - OGBench: `cube_single`, `cube_double`, `cube_triple`, `cube_quadruple`, `scene`, `puzzle_3x3`, `puzzle_4x4`, `puzzle_4x5`
 - CortexBench: `mw_assembly`, `mw_bin_pick`, `mw_button`, `mw_drawer`, `mw_hammer`, `adroit_relocate`
+- Latent-space reconstruction: `cube_single_recon` (UR5e Cube-Single, plan-oracle data); RM75-B digital twin: `rm75b_cube`
 
 1. **World-model data.** Collect paired image / point-cloud trajectories:
 
@@ -60,20 +61,51 @@ python -m pip install -e .
 
 Dependencies are specified in `pyproject.toml`. Without installation, `python -m jepa4r <command>` replaces the `jepa4r-*` entry points.
 
+The integrated simulators and policy learners keep the software stacks they were run with, so some stages start their
+work in another interpreter, named by an environment variable (the default is the current Python):
+
+| Variable | Stack | Used for |
+|---|---|---|
+| `JEPA4R_PY_COLLECT` | MuJoCo 3, OGBench, MetaWorld 3, gymnasium 1.2 | data collection, Scene demonstrations |
+| `JEPA4R_PY_CORTEXBENCH` | eai-vc (CortexBench), MuJoCo 2.0 / mujoco-py, gym 0.23 | MetaWorld demonstrations, behavior cloning |
+| `JEPA4R_PY_DQC` | JAX 0.6.2, Flax 0.10.7, OGBench | Puzzle latents and DQC |
+| `JEPA4R_PY_TRAIN` | stable-pretraining 0.1.8, Lightning | PLDM training |
+| `JEPA4R_PY_CUBE_WM` | Python 3.10, NumPy 2.2.6, MuJoCo 3.3.7, stable-pretraining 0.1.8 | Cube 1-4: collection, world models |
+| `JEPA4R_PY_CUBE_RL` | Python 3.12, JAX 0.7.2, Flax 0.11.2, Torch | Cube 1-4: encoding, GCIQL, native evaluation |
+| `JEPA4R_PY_RELOCATE_WM` | NumPy 1.26.4, stable-pretraining 0.1.8, Lightning 2.6.6 | Relocate / RH56: world models |
+| `JEPA4R_PY_ADROIT_SIM` | eai-vc, MuJoCo 2.0 / mujoco-py, gym 0.23, NumPy 1.23.5 | Relocate: collection, behavior cloning |
+| `JEPA4R_PY_RH56_SIM` | MuJoCo 3.12, gym 0.23, NumPy 1.26.4 | RM75-B + RH56 twin: collection, behavior cloning |
+
+The Cube 1-4, Relocate and RH56 workflows (the OGBench-cube branch's, `jepa4r/policy/gciql`, `jepa4r/policy/bc/relocate`)
+keep their temporary files under `JEPA4R_TMPDIR` / `TMPDIR` when set; their package lists are in
+[docs/architecture.md](docs/architecture.md).
+
+Upstream checkouts at pinned commits (`third_party/<name>` by default, or the variable) are listed in
+[docs/architecture.md](docs/architecture.md); stable-worldmodel is vendored in `third_party/stable-worldmodel`
+(`pip install -e third_party/stable-worldmodel`).
+
 ### Pretrained Checkpoints
 
 Place third-party weights under `checkpoints/` (or set `JEPA4R_CHECKPOINTS`):
 
 ```text
 checkpoints/
-  visreg/            # VISReg, ViT-B/16, released weights
-  vjepa21/           # V-JEPA 2.1, ViT-B/16 and ViT-L/16 (Cube), released weights
-  page4d/            # PAGE-4D, decoder backbone
-  vggt/              # VGGT, decoder ablation
-  depth_anything3/   # Depth Anything 3, decoder ablation
+  visreg/visreg-vit-b-inet1k.pth                          # VISReg, ViT-B/16 (from the authors on request)
+  cortexbench_baselines/vjepa2_1_vitb_dist_vitG_384.pt    # V-JEPA 2.1, ViT-B/16
+  page4d/checkpoint_nomask.pt                             # PAGE-4D, decoder backbone
+  vggt/model.pt                                           # VGGT-1B, decoder ablation
+  da3/model.safetensors, da3/config.json                  # Depth Anything 3 Giant, decoder ablation
+  vjepa/vjepa2_1_vitl_dist_vitG_384.pt                    # V-JEPA 2.1, ViT-L/16 (Cube; fetched by the Cube workflow)
+  adroit/relocate-v0.pickle                               # DAPG's Relocate state expert (collection)
+  rh56/adroit_rm75_rh56/                                  # the native RM75-B + RH56 bundle (JEPA4R_RH56_BUNDLE)
 ```
 
-Set the `weights` entries in `configs/method/{visreg,vjepa21}.yaml` and `configs/decoder/*.yaml` accordingly. Values marked `???` in the configurations are not given in the paper and must be set before running.
+```bash
+python scripts/download_checkpoints.py --download    # fetch the public ones, check sizes and sha256
+```
+
+These paths are the `weights` entries of `configs/method/{visreg,vjepa21}.yaml` and `configs/decoder/*.yaml`. Values
+not given in the paper are taken from the source code of the paper's runs; each carries its source in a comment.
 
 ## 🚀 Training
 
@@ -98,7 +130,7 @@ Every encoder is frozen. Cube uses GCIQL and Puzzle uses decoupled Q-chunking (D
 ### Stage 3: Latent-Space Reconstruction
 
 ```bash
-jepa4r-run train_decoder env=cube_single decoder=page4d
+jepa4r-run train_decoder env=cube_single_recon decoder=page4d
 ```
 
 The decoder trains on the OGBench Cube data with latents from the frozen epoch-10 JEPA4R model, in two stages: stage A trains the 5.75M new parameters with PAGE-4D (about 0.94B) frozen, and stage B adds rank-4 LoRA adapters (0.88M) to the query and value projections of all 72 attention blocks. The loss is the symmetric Chamfer distance plus the squared sliced Wasserstein-2 distance on xyz, plus `0.1` times the L1 color error of nearest-neighbor matched points.
@@ -108,7 +140,7 @@ The decoder trains on the OGBench Cube data with latents from the frozen epoch-1
 Policy success rates are computed in Stage 2. Decode frozen and imagined latents and measure the point error in centimeters:
 
 ```bash
-jepa4r-run eval_recon env=cube_single decoder=page4d
+jepa4r-run eval_recon env=cube_single_recon decoder=page4d
 ```
 
 ### Reproducing the Paper
@@ -131,9 +163,12 @@ jepa4r-report                                           # outputs/report.md: pap
 bash scripts/reproduce_all.sh                           # every table, then the report
 ```
 
-The paper's numbers are stored in `paper/expected/`, and `paper/figures/` regenerates the figures into `outputs/figures/`. See [docs/reproduce.md](docs/reproduce.md) for the scope and settings, and [docs/architecture.md](docs/architecture.md) for the code layout. The RM75-B digital twin and everything trained in it are included; runs on the real arm are not.
+The paper's numbers are stored in `paper/expected/`, and `paper/figures/` is where the figures are regenerated into `outputs/figures/` (not integrated yet, see below). See [docs/reproduce.md](docs/reproduce.md) for the scope and settings, and [docs/architecture.md](docs/architecture.md) for the code layout. The RM75-B digital twin and everything trained in it are included; runs on the real arm are not.
 
-This repository is under construction: the pipeline, configurations, experiment specifications and reporting are in place, and the components marked `TODO(integrate)` are being filled in. No result has been reproduced with this code yet.
+This repository integrates the code of the paper's runs; its equivalence with that code was checked against the released
+checkpoints and the paper's run records (data, model, training and evaluation gates) when it was integrated. Parts
+without code in the source branches (the twin's policy head and preview, the figures) are listed in
+[docs/reproduce.md](docs/reproduce.md).
 
 ## 😘 Acknowledgement
 

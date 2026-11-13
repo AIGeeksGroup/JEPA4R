@@ -3,7 +3,7 @@ tables:
   - name: tab4a_decoder_backbone
     title: "Tab. 4a -- decoder backbone, OGBench Cube (cm)"
     stage: eval_recon
-    fixed: {env: cube_single}
+    fixed: {env: cube_single_recon}   # the reconstruction data (Tab. 3)
     rows: decoder
     cols: metric
     decimals: 2

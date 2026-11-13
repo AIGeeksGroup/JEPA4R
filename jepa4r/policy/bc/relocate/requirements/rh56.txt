@@ -1,0 +1,10 @@
+# Separate RM75-B/RH56 simulator/BC overlay; physical hardware is not used.
+numpy==1.26.4
+mujoco==3.12.0
+timm==0.6.11
+gym==0.23.1
+Cython==0.29.37
+fasteners==0.20
+transforms3d==0.4.2
+termcolor==2.4.0
+dill==0.3.8

@@ -4,3 +4,8 @@ name: lewm
 display: LeWM
 obs: image
 encoder: vit_tiny14
+per_env:                      # OGBench Cube1-4 world models were trained by the C4 workflow with seed 0
+  "cube_single": &c4_cube {train: {seed: 0}}   # OGBench-cube:lewm_pcd/bench/ogbench/recipes/lewm_pcd.json:6, lewm_rgb.json:6
+  "cube_double": *c4_cube
+  "cube_triple": *c4_cube
+  "cube_quadruple": *c4_cube

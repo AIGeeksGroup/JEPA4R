@@ -4,4 +4,12 @@ arch: point_patch_transformer
 impl: jepa4r.models.encoders.point_patch_transformer
 in_dim: 6
 out_dim: 192
-hparams: ???                  # patches, depth, width chosen to match ~5.51M parameters
+hparams:                      # patches, depth, width chosen to match ~5.51M parameters
+  # cortexbench:lewm_pcd/config/train/model/encoder/ppt.yaml (PPRL PointPatchTransformer defaults, embed_dim 402)
+  embed_dim: 402
+  depth: 3
+  num_heads: 6
+  mlp_ratio: 3
+  group_size: 32
+  sampling_ratio: 0.0625
+  random_start: true            # random FPS start in train mode only

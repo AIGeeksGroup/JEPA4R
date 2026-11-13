@@ -18,3 +18,13 @@ jobs:
     grid: {env: [rm75b_cube], decoder: [page4d]}
   - stage: eval_preview
     grid: {env: [rm75b_cube], decoder: [page4d]}
+  # the RH56 dexterous hand on the twin (configs/env/rm75b_rh56_relocate.yaml): the OGBench-cube branch's RH56 Relocate,
+  # JEPA4R and LeWM, BC seeds 100 / 200 / 300 (no number in the paper)
+  - stage: collect_wm_data
+    grid: {env: [rm75b_rh56_relocate]}
+  - stage: prepare_policy_data
+    grid: {env: [rm75b_rh56_relocate]}
+  - stage: train_wm
+    grid: {env: [rm75b_rh56_relocate], method: [jepa4r, lewm]}
+  - stage: train_policy
+    grid: {env: [rm75b_rh56_relocate], method: [jepa4r, lewm]}

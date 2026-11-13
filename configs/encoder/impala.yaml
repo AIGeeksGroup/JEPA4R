@@ -2,4 +2,8 @@
 name: impala
 arch: impala
 impl: jepa4r.models.encoders.impala
-hparams: ???                  # as in PLDM's recipe
+hparams:                      # as in PLDM's recipe: OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/pldm/method.py
+  input_channels: 3           # method.py:52 ImpalaEncoder(input_channels=3, final_ln=True); stacks (16, 32, 32) x 2
+  final_ln: true              # blocks: the class defaults, pldm/vendor/source/pldm/models/encoders/impala.py:82-83
+  input_size: [3, 65, 65]     # method.py:54 (backbone.input_dim); method.py:7 IMAGE_SIZE 65
+  out_dim: 512                # method.py:55 (output_dim); impala.py:111 Linear(2592, 512)

@@ -1,10 +1,11 @@
 # Paper numbers: Tab. 3 (tab:recon), Sec. 5.4, Sec. 4.4 (stage A -> B), OGBench Cube, cm (Outl. in %).
+# Env cube_single_recon: the UR5e Cube-Single data of the reconstruction (configs/env/cube_single_recon.yaml).
 tables:
   - name: tab3a_per_frame
     title: "Tab. 3a -- per-frame reconstruction (cm; outlier_pct in %), 4,096 validation frames"
     stage: eval_recon
     decimals: 2
-    fixed: {env: cube_single, decoder: page4d}
+    fixed: {env: cube_single_recon, decoder: page4d}
     values:
       nn_mean: 0.79
       nn_median: 0.78
@@ -17,7 +18,7 @@ tables:
     title: "Tab. 3b -- open-loop imagination, NN distance (cm) at env step"
     stage: eval_recon
     decimals: 2
-    fixed: {env: cube_single, decoder: page4d}
+    fixed: {env: cube_single_recon, decoder: page4d}
     rows: series
     cols: env_step
     metric_format: "{row}@{col}"
@@ -35,7 +36,7 @@ tables:
   - name: claim_open_loop
     title: "Abstract / Sec. 5.4 -- mean point error of imagined rollouts within 1.1 cm over 200 env steps"
     stage: eval_recon
-    fixed: {env: cube_single, decoder: page4d}
+    fixed: {env: cube_single_recon, decoder: page4d}
     values:
       imag_nn_max: {value: 1.1, op: "<="}
 
@@ -43,7 +44,7 @@ tables:
     title: "Sec. 4.4 -- validation NN error (cm) after decoder stage A / stage B"
     stage: train_decoder
     decimals: 2
-    fixed: {env: cube_single, decoder: page4d}
+    fixed: {env: cube_single_recon, decoder: page4d}
     values:
       val_nn_stage_a: 0.87
       val_nn_stage_b: 0.79

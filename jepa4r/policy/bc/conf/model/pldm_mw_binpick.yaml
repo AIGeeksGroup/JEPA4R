@@ -1,0 +1,6 @@
+# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/conf/model/pldm_mw_binpick.yaml (verbatim)
+# PLDM (ViT-tiny/14 + projector, 192-d, the space its predictor works in) trained on the MetaWorld bin-picking play data
+# that LeWM uses (the framework's scripts/train/pldm.py via scripts/run_mw_baselines.sh, 10 epochs, epoch 10). See ../../jepa_baselines.py
+_target_: jepa_baselines.load_pldm
+checkpoint_dir: ${oc.env:STABLEWM_HOME}/checkpoints/pldm_mw_binpick
+epoch: 10

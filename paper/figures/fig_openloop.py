@@ -7,7 +7,7 @@ in: outputs/eval_recon/cube_single/page4d/default/curves.npz
 
 
 def main():
-    raise NotImplementedError("TODO(integrate)")
+    raise NotImplementedError("no figure code in the source branches: docs/reproduce.md, Open Items")
 
 
 if __name__ == "__main__":

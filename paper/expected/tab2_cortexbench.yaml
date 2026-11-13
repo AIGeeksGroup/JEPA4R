@@ -24,7 +24,8 @@ tables:
       vjepa21:     {mw_assembly: 90.7, mw_bin_pick: 82.7,  mw_button: 77.3, mw_drawer: 100.0, mw_hammer: 100.0, mw_mean: 90.1, adroit_relocate: 36.0}
       lewm:        {mw_assembly: 72.0, mw_bin_pick: 77.3,  mw_button: 29.3, mw_drawer: 52.0,  mw_hammer: 89.3,  mw_mean: 64.0, adroit_relocate: 8.0}
       jepa4r:      {mw_assembly: 96.0, mw_bin_pick: 100.0, mw_button: 98.7, mw_drawer: 100.0, mw_hammer: 97.3,  mw_mean: 98.4, adroit_relocate: 88.0}
-      # optional row (experiments/tab2_cortexbench.yaml): ours or the VC-1 study's -- to confirm
+      # optional row (experiments/tab2_cortexbench.yaml): the values equal the VC-1 study's Table 8 random ViT-B entries
+      # (configs/method/random_vitb.yaml); the paper runs ran it only on bin-picking (0.0)
       random_vitb: {mw_assembly: 0.0,  mw_bin_pick: 0.0,   mw_button: 2.7,  mw_drawer: 0.0,   mw_hammer: 0.0,   mw_mean: 0.5,  adroit_relocate: 0.0}
     published:
       r3m:

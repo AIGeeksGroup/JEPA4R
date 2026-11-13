@@ -4,4 +4,10 @@ arch: pointnet2
 impl: jepa4r.models.encoders.pointnet2
 in_dim: 6
 out_dim: 192
-hparams: ???                  # widths / radii chosen to match ~5.51M parameters
+hparams:                      # widths / radii chosen to match ~5.51M parameters
+  # cortexbench:lewm_pcd/config/train/model/encoder/pointnet2.yaml (PointNet++ SSG, original MLP widths x 2.5)
+  npoints: [512, 128]
+  radii: [0.2, 0.4]
+  nsamples: [32, 64]
+  mlps: [[160, 160, 320], [320, 320, 640], [640, 1280, 2560]]
+  bn_group: 32

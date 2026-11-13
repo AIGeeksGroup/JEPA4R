@@ -2,7 +2,12 @@
 _base_: _base
 name: da3
 display: Depth Anything 3
+set_generator:
+  token_dim: 1536             # DA3 Giant's token width (DINOv2-g); the decoder takes it from the backbone
 backbone:
   name: da3
   impl: jepa4r.decoder.backbones.depth_anything3
-  weights: ???                # which DA3 model size: ???
+  decoder_class: DA3Decoder
+  weights: da3/model.safetensors   # under JEPA4R_CHECKPOINTS, with its config.json beside it: depth-anything/DA3-GIANT
+                                   # (GATES.md 2: sha256 1e47a083..., 5,422,814,644 bytes); model size: Giant (the
+                                   # released run config, HF ogbench-cube-recon decoder/ur5e_1cam_da3_*/config.json)

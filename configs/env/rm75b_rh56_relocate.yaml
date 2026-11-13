@@ -1,0 +1,41 @@
+# The Inspire RH56 dexterous hand on the RM75-B digital twin (Sec. 5.6 "Robot Setup": the twin carries either end
+# effector; the real task is picking an object with the RH56 hand). The OGBench-cube branch simulates it as Relocate:
+# Adroit Relocate's 100 official object / target positions moved onto the RM75-B + RH56 MuJoCo model of an external
+# native bundle (its env, robot assets and expert; its files are listed in
+# jepa4r/policy/bc/relocate/provenance/assets/rh56_native_bundle_v1.json), the final opposite camera. The paper reports
+# no number for it. Values from OGBench-cube:<path>:<line>.
+_base_: _base
+suite: rh56
+impl: jepa4r.envs.twins.rh56
+name: rm75b_rh56_relocate
+display: Relocate (RM75-B + RH56 twin)
+env_id: rh56-relocate         # the harness's --env: OGBench-cube:lewm_pcd/bench/relocate/workflow.py:17-20
+robot:
+  name: rm75b
+  end_effector: rh56          # jepa4r/envs/twins/hand.py (rh56): the external native RM75-B + RH56 bundle
+camera:
+  name: opposite              # OGBench-cube:lewm_pcd/bench/relocate/rh56_workflow.py:118 (--camera opposite);
+                              # 256x256 renders, OGBench-cube:lewm_pcd/rh56_adapter/native.py:123
+pointcloud:
+  keep_extra: [visible_goal_marker]
+  sampler: rh56_native        # OGBench-cube:lewm_pcd/rh56_adapter/native.py:62-63 (object quota 0.25, green cap 300)
+  crop_box: [[-0.6, -0.8, -0.25], [0.6, 0.6, 1.1]]   # native.py:63
+  affine: {center: [0.0, -0.2, 0.25], scale: 4.0}     # OGBench-cube:lewm_pcd/config/train/data/adroit_relocate_pcd.yaml:18-19
+                                                      # (composed by rh56_adapter/wm_bridge.py:337-340)
+policy: bc
+wm_data:
+  num_episodes: 9000          # + 1000 validation episodes: OGBench-cube:lewm_pcd/bench/relocate/rh56_workflow.py:47-48
+  episode_len: 200            # OGBench-cube:lewm_pcd/rh56_adapter/collect.py:30,134 (native early termination allowed)
+  mixture: {noisy_expert: 0.5, expert_interrupted_by_random: 0.3, random: 0.2}   # rh56_adapter/collect.py:30 (mix=(.5,.3,.2))
+  collector: rh56             # the harness's rh56_prepare / rh56_collect / rh56_validate / rh56_publish
+  sets:                       # rh56_workflow.py:47-48 (seed = base + index)
+    - {name: train, num_episodes: 9000, seed_base: 61000000}
+    - {name: val, num_episodes: 1000, seed_base: 62000000}
+  files: {pointcloud: paired_pcd.h5, image: paired_rgb.h5}   # rh56_workflow.py:129
+  split: episodes             # whole-episode train / val (rh56_adapter/wm_bridge.py install_episode_split)
+policy_data:
+  source: demos
+  demos_per_task: 100         # rh56_workflow.py:140 (--count 100)
+harness:
+  mode: full                  # full = the paper budgets (rh56_workflow.py:47-48,140,144); smoke = its bounded check
+  seed: 42                    # unused by RH56 (its episodes carry their own seeds); the harness's --seed default
