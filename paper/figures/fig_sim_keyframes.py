@@ -6,7 +6,7 @@ in: rendered episodes from the simulators (jepa4r.envs) or data/policy/<env>
 
 
 def main():
-    raise NotImplementedError("no figure code in the source branches: docs/reproduce.md, Open Items")
+    raise NotImplementedError("TODO(integrate)")
 
 
 if __name__ == "__main__":

@@ -13,5 +13,4 @@ out: outputs/eval_preview/<env>/<decoder>/<tag>/metrics.json, 50 twin evaluation
 
 
 def run(cfg, out_dir):
-    raise NotImplementedError("eval_preview has no implementation in the source branches (no twin policy head or "
-                              "look-ahead preview code; the paper reports no twin numbers): docs/reproduce.md, Open Items")
+    raise NotImplementedError("TODO(integrate): look-ahead preview in the twin (docs/reproduce.md, Open Items)")

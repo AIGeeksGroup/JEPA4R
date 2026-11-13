@@ -11,8 +11,9 @@ flag; one module per task because their module-level constants -- WAYPOINTS, HOL
   assembly, button_press, drawer, hammer   MW<Task>Env + <Task>ThreePartPolicy
   pcd            MWPointCloudWrapper (jepa4r.data.pointcloud.PointCloudWrapper with the task's fixtures)
 World-model data use metaworld 3.0 (conda env lewm_mw); the CortexBench demos and BC evaluation use eai-vc's metaworld
-fork on MuJoCo 2.0 (jepa4r.data.demos, jepa4r.policy.bc). The RM75-B MetaWorld variants of the source (envs/metaworld/rm75)
-are not part of the paper and are not integrated.
+fork on MuJoCo 2.0 (jepa4r.data.demos, jepa4r.policy.bc). The RM75-B + EG2-4C2 variants of four tasks (the source's
+envs/metaworld/rm75: the RM75-B digital twin, Sec. 5.6) are in jepa4r.envs.twins.metaworld_rm75; their env ids are
+registered here, as in the source.
 """
 from importlib import import_module
 
@@ -23,6 +24,12 @@ ENV_IDS = {
     'swm/MWButtonPress-v0': 'jepa4r.envs.metaworld.button_press:MWButtonPressEnv',
     'swm/MWDrawer-v0': 'jepa4r.envs.metaworld.drawer:MWDrawerEnv',
     'swm/MWHammer-v0': 'jepa4r.envs.metaworld.hammer:MWHammerEnv',
+    # cortexbench@9331494:lewm_pcd/envs/metaworld/__init__.py:30-34 (RealMan RM75-B + EG2-4C2 instead of the Sawyer;
+    # entry points re-pointed to jepa4r.envs.twins.metaworld_rm75)
+    'swm/MWBinPickRM75-v0': 'jepa4r.envs.twins.metaworld_rm75:RM75BinPickEnv',
+    'swm/MWButtonPressRM75-v0': 'jepa4r.envs.twins.metaworld_rm75:RM75ButtonPressEnv',
+    'swm/MWDrawerRM75-v0': 'jepa4r.envs.twins.metaworld_rm75:RM75DrawerEnv',
+    'swm/MWAssemblyRM75-v0': 'jepa4r.envs.twins.metaworld_rm75:RM75AssemblyEnv',
 }
 _EXPORTS = {
     'MWTaskEnv': 'env', 'MWBinPickEnv': 'env', 'SAMPLE_TYPES': 'env', 'ThreePartPolicy': 'policy',

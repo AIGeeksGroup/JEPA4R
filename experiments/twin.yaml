@@ -28,3 +28,17 @@ jobs:
     grid: {env: [rm75b_rh56_relocate], method: [jepa4r, lewm]}
   - stage: train_policy
     grid: {env: [rm75b_rh56_relocate], method: [jepa4r, lewm]}
+  # the EG2-4C2 gripper on the twin, four CortexBench MetaWorld tasks (configs/env/rm75b_mw_*.yaml): the cortexbench
+  # branch's RM75 runs (scripts/run_mw_pipeline.sh with TASK=mw_<task>_rm75: LeWM 2D and JEPA4R world models, 10 epochs;
+  # CortexBench BC seeds 100 / 200 / 300 on the twin's own demos), Random (ViT-B) on bin-picking and button-press as
+  # there (logs/cortexbench/runs/rand_vitb/rm75-*); no number in the paper
+  - stage: collect_wm_data
+    grid: {env: &rm75_mw [rm75b_mw_bin_pick, rm75b_mw_button, rm75b_mw_drawer, rm75b_mw_assembly]}
+  - stage: prepare_policy_data
+    grid: {env: *rm75_mw}
+  - stage: train_wm
+    grid: {env: *rm75_mw, method: [jepa4r, lewm]}
+  - stage: train_policy
+    grid: {env: *rm75_mw, method: [jepa4r, lewm]}
+  - stage: train_policy
+    grid: {env: [rm75b_mw_bin_pick, rm75b_mw_button], method: [random_vitb]}

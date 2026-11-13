@@ -18,7 +18,8 @@ jepa4r/
   envs/         wrappers with paired rgb / depth / segmentation: ogbench/ (Cube, Scene, Puzzle: envs, point clouds,
                 experts), metaworld/ (the five tasks, point clouds, three-part collection policies), adroit/
                 (Relocate: environment, point clouds, collection policy); twins/ RM75-B digital twin (cube_rm75_env.py,
-                verify_rm75.py, descriptions/), its hand (hand.py) and the RM75-B + RH56 Relocate twin (rh56/)
+                verify_rm75.py, descriptions/), its hand (hand.py), four MetaWorld tasks on it (metaworld_rm75/) and the
+                RM75-B + RH56 Relocate twin (rh56/)
   data/         point-cloud pipeline, collection behaviors, storage, clips, official play data, demos/ (CortexBench
                 and Scene demonstrations)
   models/       encoders, projector and action encoder, predictor, SIGReg, JEPA world model
