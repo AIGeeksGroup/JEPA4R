@@ -1,5 +1,5 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/downstream/trainer.py (verbatim except: imports / paths adapted to the package)
-# ruff: noqa: F401  (moved verbatim: unused imports)
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/downstream/trainer.py (verbatim except: imports / paths adapted
+# to the package; lines wrapped at 120 columns, no lint exemptions, unused imports removed, re-exports declared)
 """Six true-width inputs around the preserved Single GCIQL update/save code."""
 import argparse
 import hashlib
@@ -17,7 +17,8 @@ ROOT = Path(__file__).resolve().parent/'vendor'
 HERE = Path(__file__).resolve().parent
 SOURCE = ROOT
 CORE = ROOT
-IMPL = Path(os.environ.get('JEPA4R_OGBENCH') or Path(__file__).resolve().parents[4]/'third_party/ogbench')/'impls'   # OGBench a977253 checkout
+# OGBench a977253 checkout
+IMPL = Path(os.environ.get('JEPA4R_OGBENCH') or Path(__file__).resolve().parents[4]/'third_party/ogbench')/'impls'
 HELPER = ROOT/'io.py'
 os.environ.setdefault('XLA_PYTHON_CLIENT_PREALLOCATE', 'false')
 os.environ.setdefault('JAX_THREEFRY_PARTITIONABLE', 'false')
@@ -29,9 +30,9 @@ import numpy as np
 import ogbench
 import torch
 from utils.datasets import Dataset
-from utils.flax_utils import restore_agent
+from utils.flax_utils import restore_agent as restore_agent   # re-exported (gate_checks.py)
 from utils.log_utils import CsvLogger
-from .sampler import DistanceInputs, create_agent, file_stat, load_cached_features, read_json
+from .sampler import DistanceInputs, create_agent, file_stat, load_cached_features
 
 
 def load_module(name, path):
@@ -121,19 +122,44 @@ def prepare(config, shared_datasets=None):
             source_bindings[split] = dict(source=source, feature=feature_binding,
                                          input_contract=sampler.input_metadata)
         resources = InputResources(samplers, source_bindings)
-        binding = dict(config=config, agent_config=agent_config(config), source_bindings=source_bindings,
-            sampler=core.sampler_binding(samplers), frozen_full_state=resources.binding_hash,
+        binding = dict(
+            config=config,
+            agent_config=agent_config(config),
+            source_bindings=source_bindings,
+            sampler=core.sampler_binding(samplers),
+            frozen_full_state=resources.binding_hash,
             frozen_full_state_semantics='readonly data/cache binding; no runtime WM',
-            code={str(p):utility.sha(p) for p in [Path(__file__), HERE/'sampler.py', ROOT/'cube_inputs.py',
-                CORE/'core.py', CORE/'gciql.py', HELPER, IMPL/'utils/datasets.py',
-                IMPL/'utils/flax_utils.py', IMPL/'utils/networks.py', IMPL/'utils/encoders.py']},
-            versions={name:importlib.metadata.version(name) for name in ('jax','jaxlib','flax','optax','numpy','torch')},
-            runtime=dict(JAX_backend=jax.default_backend(), JAX_threefry_partitionable=jax.config.jax_threefry_partitionable,
+            code={
+                str(p): utility.sha(p)
+                for p in [
+                    Path(__file__),
+                    HERE / 'sampler.py',
+                    ROOT / 'cube_inputs.py',
+                    CORE / 'core.py',
+                    CORE / 'gciql.py',
+                    HELPER,
+                    IMPL / 'utils/datasets.py',
+                    IMPL / 'utils/flax_utils.py',
+                    IMPL / 'utils/networks.py',
+                    IMPL / 'utils/encoders.py',
+                ]
+            },
+            versions={
+                name: importlib.metadata.version(name) for name in ('jax', 'jaxlib', 'flax', 'optax', 'numpy', 'torch')
+            },
+            runtime=dict(
+                JAX_backend=jax.default_backend(),
+                JAX_threefry_partitionable=jax.config.jax_threefry_partitionable,
                 JAX_default_prng_impl=str(jax.config.jax_default_prng_impl),
                 JAX_default_matmul_precision=str(jax.config.jax_default_matmul_precision),
-                JAX_enable_x64=jax.config.jax_enable_x64, XLA_FLAGS=os.environ.get('XLA_FLAGS'),
-                lookup_workers=config['feature_lookup_workers'], readonly_RAM=True, runtime_encoder_calls=0,
-                no_cross_version_bitwise_claim=True))
+                JAX_enable_x64=jax.config.jax_enable_x64,
+                XLA_FLAGS=os.environ.get('XLA_FLAGS'),
+                lookup_workers=config['feature_lookup_workers'],
+                readonly_RAM=True,
+                runtime_encoder_calls=0,
+                no_cross_version_bitwise_claim=True,
+            ),
+        )
         return samplers, resources, binding
     except BaseException:
         for sampler in samplers.values():
@@ -212,7 +238,9 @@ def run(config_path):
                 last_time = now
             if ((counter == 1 and config.get('save_step1', False)) or
                     counter % config['save_interval'] == 0 or counter == config['total_updates']):
-                saved = core.save_boundary(agent, resources, binding, output, counter, validations, config['total_updates'])
+                saved = core.save_boundary(
+                    agent, resources, binding, output, counter, validations, config['total_updates']
+                )
                 status['last_checkpoint'] = str(saved)
             if counter % config['heartbeat_interval'] == 0 or counter == config['total_updates']:
                 status.update(stage='training', completed_updates=counter, network_step=int(agent.network.step),

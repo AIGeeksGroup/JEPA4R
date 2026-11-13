@@ -1,14 +1,16 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/dqc/check_eval_obs.py (verbatim)
+# Moved from cortexbench@9331494:lewm_pcd/bench/dqc/check_eval_obs.py (verbatim except: lines wrapped at 120 columns, no
+# lint exemptions, unused imports removed, registration imports as importlib.import_module)
 """Check: the observation computed in the evaluation (lewm_obs.LeWMObs on the eval env, OGBench's task mode) and the
 training set's observation (extract_feats.py: a data_collection-mode env re-rendering a stored state) agree for the same
 simulator state.
     python check_eval_obs.py --ckpt-2d <2D checkpoint dir> --ckpt-3d <3D checkpoint dir> [--env-type 4x4 / 4x5]
 """
+import importlib
 import argparse
 
 import gymnasium
 import numpy as np
-import ogbench.manipspace  # noqa: F401
+importlib.import_module('ogbench.manipspace')   # registers the OGBench manipulation envs
 
 import extract_feats as ef  # this script's directory is on sys.path
 from lewm_obs import Encoders, LeWMObs
@@ -38,7 +40,9 @@ def main():
             qpos, qvel, bst = u._data.qpos.copy(), u._data.qvel.copy(), u._cur_button_states.copy()
             obs2.cam.r2d.update_scene(u._data, camera='front_pixels')  # the eval env's own 2D frame
             pix_eval = obs2.cam.r2d.render().copy()
-            _, pix, xyz, col, _ = ef._render_chunk((0, 9, qpos[None].astype(np.float32), qvel[None].astype(np.float32), bst[None]))
+            _, pix, xyz, col, _ = ef._render_chunk(
+                (0, 9, qpos[None].astype(np.float32), qvel[None].astype(np.float32), bst[None])
+            )
             z2, z3 = enc.z2d(pix)[0], enc.z3d(xyz, col)[0]
             print(f'task {task} step {step + 1}: identical pixels {(pix[0] == pix_eval).all(-1).mean():.5f}; '
                   f'lights {np.array_equal(f2[192:], bst.astype(np.float32))}; '

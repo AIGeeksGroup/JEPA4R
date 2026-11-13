@@ -6,15 +6,20 @@ _base_: _ogbench
 name: rm75b_cube
 display: Cube (RM75-B twin)
 impl: jepa4r.envs.twins.rm75b
-cube_task: single             # OGBench Cube-Single: cortexbench:lewm_pcd/scripts/data/collect_cube_pcd.py:74 (env_type='single')
-env_id: swm/OGBCubeRM75-v0    # cortexbench:lewm_pcd/envs/__init__.py:14-16 (RM75CubeEnv); the collection uses its PCD variant
+cube_task: single             # OGBench Cube-Single: cortexbench:lewm_pcd/scripts/data/collect_cube_pcd.py:74
+                              # (env_type='single')
+env_id: swm/OGBCubeRM75-v0    # cortexbench:lewm_pcd/envs/__init__.py:14-16 (RM75CubeEnv); the collection uses its PCD
+                              # variant
 pointcloud:
-  crop_box: [[0.21, -0.50, -0.02], [0.75, 0.50, 0.60]]   # x_min past the RM75 base: cortexbench:lewm_pcd/envs/cube_rm75_env.py:51-53,
+  crop_box: [[0.21, -0.50, -0.02], [0.75, 0.50, 0.60]]   # x_min past the RM75 base:
+                                                         # cortexbench:lewm_pcd/envs/cube_rm75_env.py:51-53,
                                                          # scripts/data/config/ogb_rm75_pcd.yaml:11-12
 robot:
   name: rm75b
-  model: realman_rm75b/rm75b.xml   # MuJoCo twin built from the vendor URDF: jepa4r/envs/twins/descriptions/ (cortexbench:lewm_pcd/envs/cube_rm75_env.py:45)
-  end_effector: eg2_4c2       # paper: Inspire EG2-4C2 gripper; twin: descriptions/inspire_eg2_4c2/eg2_4c2.xml (cube_rm75_env.py:46)
+  model: realman_rm75b/rm75b.xml   # MuJoCo twin built from the vendor URDF: jepa4r/envs/twins/descriptions/
+                                   # (cortexbench:lewm_pcd/envs/cube_rm75_env.py:45)
+  end_effector: eg2_4c2       # paper: Inspire EG2-4C2 gripper; twin: descriptions/inspire_eg2_4c2/eg2_4c2.xml
+                              # (cube_rm75_env.py:46)
   reach_mm: 610
 workspace_scale: 0.5          # OGBench Cube workspace scaled about its center
 twin_check:                   # stage verify_twin: twin vs. vendor URDF
@@ -22,12 +27,15 @@ twin_check:                   # stage verify_twin: twin vs. vendor URDF
   compare: [forward_kinematics, joint_limits, masses, gripper_mechanics]
   # the integrated check (cortexbench:lewm_pcd/scripts/checks/verify_rm75.py) also covers the env interface, plan-oracle
   # behaviour and the two point-cloud datasets (sections C-E)
-  vendor_dir: null            # RealMan rm_models folders RM75-B/ and EG2-4C2/ (default: $JEPA4R_CHECKPOINTS/vendor/realman)
+  vendor_dir: null            # RealMan rm_models folders RM75-B/ and EG2-4C2/ (default:
+                              # $JEPA4R_CHECKPOINTS/vendor/realman)
   datasets: {twin: cube_rm75_single_expert_pcd.h5, ur5e_env: cube_single_recon, ur5e: cube_single_expert_pcd.h5}
 policy: ???                   # learner of the cube pick-and-place policy head
 wm_data:
-  recipe: plan_oracle         # stable-worldmodel ExpertPolicy(policy_type='plan_oracle'): collect_cube_pcd.py:91 (as cube_single_recon)
-  num_episodes: 10000         # cortexbench:lewm_pcd/scripts/data/config/ogb_pcd.yaml:36 (inherited by ogb_rm75_pcd.yaml)
+  recipe: plan_oracle         # stable-worldmodel ExpertPolicy(policy_type='plan_oracle'): collect_cube_pcd.py:91 (as
+                              # cube_single_recon)
+  num_episodes: 10000         # cortexbench:lewm_pcd/scripts/data/config/ogb_pcd.yaml:36 (inherited by
+                              # ogb_rm75_pcd.yaml)
   episode_len: 200            # ogb_pcd.yaml:20
   mixture: null               # one behaviour (the plan oracle), no mixture
   collector: paired           # collect_cube_pcd_sharded.py --config-name=ogb_rm75_pcd (run_rm75_pipeline.sh:14-16)

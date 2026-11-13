@@ -78,9 +78,9 @@ work in another interpreter, named by an environment variable (the default is th
 | `JEPA4R_PY_ADROIT_SIM` | eai-vc, MuJoCo 2.0 / mujoco-py, gym 0.23, NumPy 1.23.5 | Relocate: collection, behavior cloning |
 | `JEPA4R_PY_RH56_SIM` | MuJoCo 3.12, gym 0.23, NumPy 1.26.4 | RM75-B + RH56 twin: collection, behavior cloning |
 
-The Cube 1-4, Relocate and RH56 workflows (the OGBench-cube branch's, `jepa4r/policy/gciql`, `jepa4r/policy/bc/relocate`)
-keep their temporary files under `JEPA4R_TMPDIR` / `TMPDIR` when set; their package lists are in
-[docs/architecture.md](docs/architecture.md).
+The Cube 1-4, Relocate and RH56 workflows (the OGBench-cube branch's; controllers in `jepa4r/policy/gciql` and
+`jepa4r/policy/bc/relocate`) keep their temporary files under `JEPA4R_TMPDIR` / `TMPDIR` when set; their package
+lists are in [docs/architecture.md](docs/architecture.md).
 
 Upstream checkouts at pinned commits (`third_party/<name>` by default, or the variable) are listed in
 [docs/architecture.md](docs/architecture.md); stable-worldmodel is vendored in `third_party/stable-worldmodel`

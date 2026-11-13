@@ -1,8 +1,0 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/conf/model/lewm_mw_assembly_pix.yaml (verbatim)
-# LeWM 2D encoder (ViT-tiny + projector, the latent the predictor and planner use) trained on the full MetaWorld
-# assembly three-part data (config/train/data/mw_assembly.yaml; run mw_assembly_pix, epoch 10). See ../../lewm_cortex.py
-_target_: lewm_cortex.load_lewm
-checkpoint_dir: ${oc.env:STABLEWM_HOME}/checkpoints/mw_assembly_pix
-epoch: 10
-use_projector: true
-random_init: false

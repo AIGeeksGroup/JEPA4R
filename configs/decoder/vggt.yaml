@@ -7,4 +7,5 @@ backbone:
   impl: jepa4r.decoder.backbones.vggt
   decoder_class: VGGTDecoder
   weights: vggt/model.pt      # under JEPA4R_CHECKPOINTS: facebook/VGGT-1B model.pt (GATES.md 2: sha256 d15bf50a...,
-                              # 5,026,874,952 bytes); the released run config (HF ogbench-cube-recon decoder/ur5e_1cam_vggt_*/config.json)
+                              # 5,026,874,952 bytes); the released run config (HF ogbench-cube-recon
+                              # decoder/ur5e_1cam_vggt_*/config.json)

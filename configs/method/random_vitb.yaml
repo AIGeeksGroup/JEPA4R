@@ -1,7 +1,9 @@
 # Tab. 2 "Random (ViT-B), frozen": a randomly initialised ViT-B that is never trained.
 # The paper's row (0.0 / 0.0 / 2.7 / 0.0 / 0.0, mean 0.5; Relocate 0.0) equals the VC-1 study's random ViT-B entries
-# (Table 8 of arXiv 2303.18240v2, kept as PAPER['rand_vitb'] in cortexbench@9331494:lewm_pcd/bench/cortexbench/summarize.py:45-46);
-# the paper runs include our own run only for bin-picking (0.0 for seeds 100 / 200 / 300), and the paper lists the row with
+# (Table 8 of arXiv 2303.18240v2, kept as PAPER['rand_vitb'] in
+# cortexbench@9331494:lewm_pcd/bench/cortexbench/summarize.py:44-45);
+# the paper runs include our own run only for bin-picking (0.0 for seeds 100 / 200 / 300), and the paper lists the row
+# with
 # the published numbers (Tab. 2 caption: "Published numbers: the VC-1 study"; paper/expected/tab2_cortexbench.yaml
 # `published`). experiments/tab2_cortexbench.yaml keeps the job optional; the embedding is CortexBench's
 # (jepa4r/policy/bc/conf/model/rand_vitb.yaml).

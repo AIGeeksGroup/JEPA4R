@@ -1,4 +1,7 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/rh56_adapter/wm_bridge.py (verbatim except: imports / paths adapted to the package; the original train.py / utils.py / config/train are their moved counterparts (jepa4r.models.world_model.run_random_split with original_layout, jepa4r.data.clips, policy/bc/relocate/config/train))
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/rh56_adapter/wm_bridge.py (verbatim except: imports / paths adapted to the
+# package; the original train.py / utils.py / config/train are their moved counterparts
+# (jepa4r.models.world_model.run_random_split with original_layout, jepa4r.data.clips, policy/bc/relocate/config/train);
+# lines wrapped at 120 columns)
 """RH56 data-boundary hooks around the unchanged CortexBench LeWM entrypoint.
 
 Task data boundaries, run budgets and checkpoint evidence are adapted here.
@@ -221,7 +224,7 @@ def checked_resume_checkpoint(output, receipt):
 
 
 BASELINE_FINGERPRINT_SCOPE = (
-    'models/*.py; data/clips.py; models/encoders/**/*.py; policy/bc/relocate/config/train YAML; '
+    'models/*.py; data/clips.py; models/encoders/**/*.py; models/relocate/config/train YAML; '
     'policy/bc/relocate/cortexbench/lewm_cortex.py; '
     'excludes datasets, outputs, caches, external dependencies and adapter files'
 )
@@ -239,7 +242,7 @@ def tree_sha(root):
     paths = set((root / 'models').glob('*.py')) | {root / 'data/clips.py'}
     paths.update((root / 'models/encoders').rglob('*.py'))
     for suffix in ('*.yaml', '*.yml'):
-        paths.update((root / 'policy/bc/relocate/config/train').rglob(suffix))
+        paths.update((root / 'models/relocate/config/train').rglob(suffix))
     loader = root / 'policy/bc/relocate/cortexbench/lewm_cortex.py'
     if loader.is_file():
         paths.add(loader)
@@ -277,8 +280,15 @@ def main(argv=None):
     parser.add_argument('--uint8-gpu-preprocess', action='store_true',
                         help='Experimental RGB CUDA only, default off; prior full-model CPU/GPU numerical gate failed')
     parser.add_argument('--seed', type=int, default=3072)
-    parser.add_argument('--resume', action='store_true', help='Experimental: only this output sealed checkpoint; bit-exact continuation unverified; not old standalone receipts')
-    parser.add_argument('--recovery', action='store_true', help='Explicit bounded workers0 complete-state continuation; default off')
+    parser.add_argument(
+        '--resume',
+        action='store_true',
+        help='Experimental: only this output sealed checkpoint; bit-exact continuation unverified; not old standalone '
+             'receipts',
+    )
+    parser.add_argument(
+        '--recovery', action='store_true', help='Explicit bounded workers0 complete-state continuation; default off'
+    )
     parser.add_argument('--resume-checkpoint', type=Path)
     parser.add_argument('--pause-after-batches', type=int)
     args = parser.parse_args(argv)
@@ -287,8 +297,12 @@ def main(argv=None):
     budget = resolve_budget(args.mode, args.batch_size, args.workers, args.prefetch_factor)
     if (args.resume_checkpoint is not None or args.pause_after_batches is not None) and not args.recovery:
         parser.error('bounded checkpoint/pause requires --recovery')
-    if args.recovery and (args.mode == 'formal' or args.resume or budget['workers'] != 0 or args.seed != 3072 or args.uint8_gpu_preprocess):
-        parser.error('bounded recovery requires smoke/profile, workers0, guide3072, original preprocessing and a fresh phase')
+    if args.recovery and (
+        args.mode == 'formal' or args.resume or budget['workers'] != 0 or args.seed != 3072 or args.uint8_gpu_preprocess
+    ):
+        parser.error(
+            'bounded recovery requires smoke/profile, workers0, guide3072, original preprocessing and a fresh phase'
+        )
     if args.pause_after_batches is not None and args.pause_after_batches != 1:
         parser.error('two-step bounded recovery pauses after exactly one real batch')
     if args.resume and args.mode != 'formal':
@@ -339,13 +353,15 @@ def main(argv=None):
             OmegaConf.register_new_resolver('eval', eval)
         overrides = ['data=adroit_relocate', 'model=lewm'] if args.route == 'rgb' else [
             'data=adroit_relocate_pcd', 'model=lewm_pcd_dexart']
-        with initialize_config_dir(version_base=None, config_dir=str(baseline / 'policy/bc/relocate/config/train')):
+        with initialize_config_dir(version_base=None, config_dir=str(baseline / 'models/relocate/config/train')):
             cfg = compose(config_name='lewm', overrides=overrides)
         run_name = f'rh56_relocate_{args.route}_{args.mode}_v1'
         with open_dict(cfg):
             cfg.seed = args.seed
             cfg.data.dataset.name = str(Path(args.dataset).resolve())
-            cfg.data.dataset.keys_to_load = ['pixels', 'action'] if args.route == 'rgb' else ['pcd_xyz', 'pcd_rgb', 'action']
+            cfg.data.dataset.keys_to_load = (
+                ['pixels', 'action'] if args.route == 'rgb' else ['pcd_xyz', 'pcd_rgb', 'action']
+            )
             cfg.data.dataset.keys_to_cache = ['action']
             cfg.output_model_name = run_name; cfg.subdir = run_name
             cfg.num_workers = budget['workers']
@@ -461,7 +477,13 @@ def main(argv=None):
                 if restored is None or not wm_recovery.restore_epoch_progress(self,restored,int(trainer.current_epoch)):
                     self.epoch_sum = 0.; self.epoch_batches = 0
                     self.val_sum = 0.; self.val_batches = 0
-                log(dict(event='epoch_started', epoch=int(trainer.current_epoch)+1, global_step=int(trainer.global_step)))
+                log(
+                    dict(
+                        event='epoch_started',
+                        epoch=int(trainer.current_epoch) + 1,
+                        global_step=int(trainer.global_step),
+                    )
+                )
             def on_before_optimizer_step(self, trainer, pl_module, optimizer):
                 step = int(trainer.global_step)
                 if step >= 2 and step % gradient_interval and args.mode == 'formal':return
@@ -483,8 +505,13 @@ def main(argv=None):
                 log(dict(event='train_batch', epoch=int(trainer.current_epoch)+1,
                          global_step=int(trainer.global_step), loss=value))
                 if time.time() - last_progress[0] > 10:
-                    state.update(phase='training', epoch=int(trainer.current_epoch)+1,
-                                 global_step=int(trainer.global_step), train_batches=evidence['train_batches'], loss=value)
+                    state.update(
+                        phase='training',
+                        epoch=int(trainer.current_epoch) + 1,
+                        global_step=int(trainer.global_step),
+                        train_batches=evidence['train_batches'],
+                        loss=value,
+                    )
                     write_state(); last_progress[0] = time.time()
             def on_validation_batch_end(self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx=0):
                 if trainer.sanity_checking:return
@@ -496,7 +523,8 @@ def main(argv=None):
             def on_train_epoch_end(self, trainer, pl_module):
                 epoch = int(trainer.current_epoch)+1
                 if epoch in evidence['epochs']:raise RuntimeError('resume would overwrite an accepted epoch checkpoint')
-                if not self.epoch_batches or not self.val_batches:raise RuntimeError('epoch missing train or validation work')
+                if not self.epoch_batches or not self.val_batches:
+                    raise RuntimeError('epoch missing train or validation work')
                 super().on_train_epoch_end(trainer, pl_module)
                 evidence['epochs'].append(epoch)
                 evidence['epoch_loss_means'].append(self.epoch_sum/self.epoch_batches)
@@ -600,21 +628,48 @@ def main(argv=None):
         expected=expected_optimizer_steps(budget,boundary['split']['clips']['train'])
         if not steps or set(steps)!={expected}:raise RuntimeError('actual Adam state step does not match full budget')
         if tree_sha(baseline)!=identity['baseline_tree_sha256']:raise RuntimeError('protected baseline changed')
-        result=dict(status='passed',mode=args.mode,scope=('formal ten-epoch world-model training' if args.mode=='formal' else 'bounded interface/capacity profile; not formal training'),
-                    route=args.route,budget=budget,evidence=evidence,split=boundary['split'],normalizers=normalizers,
-                    data_io_boundary=dict(parent_hdf5_handle_closed=boundary['parent_hdf5_handle_closed'],
-                                          image_preprocessing=boundary.get('image_preprocessing')),
-                    strict_reload_maxabs=differences,reload_probe_samples=len(next(iter(batch.values()))),
-                    actual_adam_step_values=sorted(set(steps)),action_encoder_input_dim=int(model_cfg.action_encoder.input_dim),
-                    checkpoint=str(weight_path),checkpoint_epoch=completed,checkpoints=checkpoint_records,
-                    checkpoint_sha256=sha(weight_path),manifest_sha256=identity['manifest_sha256'],dataset_sha256=identity['dataset_sha256'],
-                    script_sha256=identity['adapter_sha256'],runtime_helpers_sha256=RUNTIME_HELPERS_SHA256,
-                    baseline_tree_sha256=identity['baseline_tree_sha256'],
-                    baseline_fingerprint_scope=BASELINE_FINGERPRINT_SCOPE,
-                    bounded_recovery=dict(enabled=args.recovery,resume_checkpoint=str(args.resume_checkpoint) if args.resume_checkpoint else None,
-                                          final_checkpoint=str(out/'recovery/final.ckpt') if args.recovery else None),
-                    train_py_sha256=sha(baseline/'models/world_model.py'),utils_py_sha256=sha(baseline/'data/clips.py'),
-                    gradient_check_interval=gradient_interval,resume_used=args.resume,verification_only=verification_only)
+        result = dict(
+            status='passed',
+            mode=args.mode,
+            scope=(
+                'formal ten-epoch world-model training'
+                if args.mode == 'formal'
+                else 'bounded interface/capacity profile; not formal training'
+            ),
+            route=args.route,
+            budget=budget,
+            evidence=evidence,
+            split=boundary['split'],
+            normalizers=normalizers,
+            data_io_boundary=dict(
+                parent_hdf5_handle_closed=boundary['parent_hdf5_handle_closed'],
+                image_preprocessing=boundary.get('image_preprocessing'),
+            ),
+            strict_reload_maxabs=differences,
+            reload_probe_samples=len(next(iter(batch.values()))),
+            actual_adam_step_values=sorted(set(steps)),
+            action_encoder_input_dim=int(model_cfg.action_encoder.input_dim),
+            checkpoint=str(weight_path),
+            checkpoint_epoch=completed,
+            checkpoints=checkpoint_records,
+            checkpoint_sha256=sha(weight_path),
+            manifest_sha256=identity['manifest_sha256'],
+            dataset_sha256=identity['dataset_sha256'],
+            script_sha256=identity['adapter_sha256'],
+            runtime_helpers_sha256=RUNTIME_HELPERS_SHA256,
+            baseline_tree_sha256=identity['baseline_tree_sha256'],
+            baseline_fingerprint_scope=BASELINE_FINGERPRINT_SCOPE,
+            bounded_recovery=dict(
+                enabled=args.recovery,
+                resume_checkpoint=str(args.resume_checkpoint) if args.resume_checkpoint else None,
+                final_checkpoint=str(out / 'recovery/final.ckpt') if args.recovery else None,
+            ),
+            train_py_sha256=sha(baseline / 'models/world_model.py'),
+            utils_py_sha256=sha(baseline / 'data/clips.py'),
+            gradient_check_interval=gradient_interval,
+            resume_used=args.resume,
+            verification_only=verification_only,
+        )
         (out/'resolved_config.yaml').write_text(OmegaConf.to_yaml(cfg,resolve=True),encoding='utf-8')
         atomic_json(out/'validation.json',result)
         state.update(phase='complete',completed=1,completed_epochs=completed,exit_code=0);write_state()
@@ -622,13 +677,19 @@ def main(argv=None):
         return result
     except BaseException as error:
         if args.recovery:
-            from jepa4r.policy.bc.relocate.recovery import RecoveryPause
+            from jepa4r.models.relocate.recovery import RecoveryPause
             if isinstance(error,RecoveryPause):
-                state.update(phase='intentional_sealed_pause',completed=0,exit_code=75,
-                             checkpoint=str(error),scope='original RH56 update sealed; independent continuation pending')
+                state.update(
+                    phase='intentional_sealed_pause',
+                    completed=0,
+                    exit_code=75,
+                    checkpoint=str(error),
+                    scope='original RH56 update sealed; independent continuation pending',
+                )
                 write_state()
                 raise SystemExit(75) from error
-        state.update(phase='failed',failures=state.get('failures',0)+1,exit_code=1,error=traceback.format_exc());write_state()
+        state.update(phase='failed', failures=state.get('failures', 0) + 1, exit_code=1, error=traceback.format_exc())
+        write_state()
         raise
     finally:
         if metrics is not None:metrics.close()

@@ -1,4 +1,5 @@
-# Moved from cortexbench@9331494:lewm_pcd/envs/metaworld/rm75/scene.py (verbatim except: imports / paths adapted to the package)
+# Moved from cortexbench@9331494:lewm_pcd/envs/metaworld/rm75/scene.py (verbatim except: imports / paths adapted to the
+# package; lines wrapped at 120 columns)
 """MuJoCo model of a MetaWorld 3.0 task with the RM75-B + EG2-4C2 in place of the Sawyer.
 
 * The task XML is loaded as is; the Sawyer (body 'base' and its subtree), its mocap body, the mocap weld and the two
@@ -77,8 +78,13 @@ def build_spec(task_xml: str) -> mujoco.MjSpec:
     spec.delete(spec.body('base'))          # the Sawyer: pedestal, arm, hand, fingers
     spec.delete(spec.body('mocap'))
 
-    spec.worldbody.add_geom(name='rm75_pedestal', type=mujoco.mjtGeom.mjGEOM_CYLINDER,
-                            size=[PEDESTAL_R, pos[2] / 2, 0], pos=[pos[0], pos[1], pos[2] / 2], rgba=[0.35, 0.35, 0.38, 1])
+    spec.worldbody.add_geom(
+        name='rm75_pedestal',
+        type=mujoco.mjtGeom.mjGEOM_CYLINDER,
+        size=[PEDESTAL_R, pos[2] / 2, 0],
+        pos=[pos[0], pos[1], pos[2] / 2],
+        rgba=[0.35, 0.35, 0.38, 1],
+    )
     frame = spec.worldbody.add_frame(pos=pos, quat=np.array([np.cos(MOUNT_YAW / 2), 0, 0, np.sin(MOUNT_YAW / 2)]))
     _set_options(spec)
     spec.attach(robot_spec(), prefix='rm75/', frame=frame)

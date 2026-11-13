@@ -1,4 +1,5 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/cortexbench/run_adroit_bc3d.py (verbatim except: imports / paths adapted to the package)
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/cortexbench/run_adroit_bc3d.py (verbatim except: imports / paths
+# adapted to the package; lines wrapped at 120 columns)
 """Thin Adroit PCD entry: original run_bc.py and official BC loop unchanged."""
 import importlib.util
 import hashlib

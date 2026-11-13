@@ -1,4 +1,6 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/dqc/extract_feats.py (verbatim except: --ckpt-2d / --ckpt-3d optional, only the given encoders' latents computed and written; each frame's point sampling is seeded on its own, so the latents do not depend on which encoders run)
+# Moved from cortexbench@9331494:lewm_pcd/bench/dqc/extract_feats.py (verbatim except: --ckpt-2d / --ckpt-3d optional,
+# only the given encoders' latents computed and written; each frame's point sampling is seeded on its own, so the
+# latents do not depend on which encoders run; lines wrapped at 120 columns)
 """OGBench's puzzle-3x3-play data (--env-type 4x4 / 4x5: puzzle-4x4-play / puzzle-4x5-play) -> every state re-rendered
 with the LeWM data's camera -> the frozen LeWM 2D / 3D encoders -> one 192-d latent per step (DQC's training
 observations, run_dqc.py).
@@ -11,7 +13,8 @@ observations, run_dqc.py).
 * Only the latents are stored (float32, N x 192, row for row with the npz), written in chunks, restartable.
     python extract_feats.py --ckpt-2d $STABLEWM_HOME/checkpoints/puzzle_3x3_pix --ckpt-3d .../puzzle_3x3_pcd_dexart \
         --out $STABLEWM_HOME/datasets/ogbench/dqc_feats/puzzle_3x3 --split train --workers 6
-    python extract_feats.py ... --check   # re-render our test set from its stored states, compare with its frames / latents
+    # re-render our test set from its stored states, compare with its frames / latents
+    python extract_feats.py ... --check
     python extract_feats.py --env-type 4x5 --ckpt-2d .../puzzle_4x5_pix --ckpt-3d .../puzzle_4x5_pcd_dexart \
         --out .../dqc_feats/puzzle_4x5 --split train --workers 6
 """
@@ -82,9 +85,11 @@ def check(a):
     cos = lambda x, y: np.sum(x * y, 1) / (np.linalg.norm(x, axis=1) * np.linalg.norm(y, axis=1))
     for name, z0, z1 in (('2D', enc.z2d(pix0), enc.z2d(pix1)), ('3D', enc.z3d(xyz0, col0), enc.z3d(xyz1, col1))):
         rnd = np.random.default_rng(0).permutation(len(z0))
-        print(f'{name} latents, stored vs re-rendered: cosine mean {cos(z0, z1).mean():.4f} min {cos(z0, z1).min():.4f}; '
-              f'max abs difference {np.abs(z0 - z1).max():.4f}; reference: cosine between different frames '
-              f'{cos(z0, z0[rnd]).mean():.4f}')
+        print(
+            f'{name} latents, stored vs re-rendered: cosine mean {cos(z0, z1).mean():.4f} min {cos(z0, z1).min():.4f}; '
+            f'max abs difference {np.abs(z0 - z1).max():.4f}; reference: cosine between different frames '
+            f'{cos(z0, z0[rnd]).mean():.4f}'
+        )
 
 
 def main():
@@ -128,9 +133,16 @@ def main():
     print(f'{name}: {n} rows, {len(starts)} chunks, {len(todo)} to do', flush=True)
     enc = Encoders(a.ckpt_2d, a.ckpt_3d, a.epoch)
     split_id = 0 if a.split == 'train' else 1
-    tasks = ((starts[i], split_id, qpos[starts[i]: starts[i] + a.chunk][: n - starts[i]],
-              qvel[starts[i]: starts[i] + a.chunk][: n - starts[i]], bst[starts[i]: starts[i] + a.chunk][: n - starts[i]])
-             for i in todo)
+    tasks = (
+        (
+            starts[i],
+            split_id,
+            qpos[starts[i] : starts[i] + a.chunk][: n - starts[i]],
+            qvel[starts[i] : starts[i] + a.chunk][: n - starts[i]],
+            bst[starts[i] : starts[i] + a.chunk][: n - starts[i]],
+        )
+        for i in todo
+    )
     t0, n_done = time.time(), 0
     with mp.get_context('spawn').Pool(a.workers, initializer=_init_worker, initargs=(a.env_type,)) as pool:
         for j, (s, pix, xyz, col, _) in enumerate(pool.imap(_render_chunk, tasks)):

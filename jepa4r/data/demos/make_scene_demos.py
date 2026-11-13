@@ -1,4 +1,5 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/make_scene_demos.py (verbatim except: imports / paths adapted to the package)
+# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/make_scene_demos.py (verbatim except: imports / paths
+# adapted to the package; lines wrapped at 120 columns, no lint exemptions)
 """Expert demos for OGBench scene's five evaluation tasks, built as make_rm75_demos.py (the format of CortexBench's
 official demos): 25 per task at seeds 12345 + i (as the official ones); expert = envs.ogb_scene_expert.SceneTaskExpert
 (OGBench's per-object oracles chained by the goal), env = the evaluation's own scene_env.SceneCBEnv (the same reset, the
@@ -23,7 +24,7 @@ from pathlib import Path
 import numpy as np
 
 from jepa4r.policy.bc.scene_env import HORIZON, SceneCBEnv  # first: it puts the repository on sys.path
-from jepa4r.envs.ogbench.ogb_scene_expert import TASK_NAMES, SceneTaskExpert  # noqa: E402
+from jepa4r.envs.ogbench.ogb_scene_expert import TASK_NAMES, SceneTaskExpert
 
 N, BASE_SEED = 25, 12345
 DATA = Path(os.environ['JEPA4R_DEMOS_HOME'])  # data/policy/scene
@@ -83,9 +84,12 @@ def main():
         for d, demos in ((OUT2D, demos2d), (OUT3D, demos3d)):
             with open(d / f'{name}.pickle', 'wb') as f:
                 pickle.dump(demos, f)
-        print(f'{name} ({TASK_NAMES[k - 1]}): {N} demos, seeds {seeds[0]}..{seeds[-1]}, skipped {skipped}, '
-              f'success step median {int(np.median(steps))} min {min(steps)} max {L} (= demo length), {time.time() - t0:.0f} s',
-              flush=True)
+        print(
+            f'{name} ({TASK_NAMES[k - 1]}): {N} demos, seeds {seeds[0]}..{seeds[-1]}, skipped {skipped}, '
+            f'success step median {int(np.median(steps))} min {min(steps)} max {L} (= demo length), '
+            f'{time.time() - t0:.0f} s',
+            flush=True,
+        )
         env.close()
     os._exit(0)
 

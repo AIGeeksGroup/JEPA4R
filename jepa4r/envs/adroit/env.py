@@ -1,4 +1,4 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/envs/adroit/env.py (verbatim)
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/envs/adroit/env.py (verbatim except: lines wrapped at 120 columns)
 """Gymnasium bridge to pinned mj_envs Relocate; no normalized-action rescaling.
 
 Native state dictionaries are flattened into numeric info columns, including
@@ -59,7 +59,9 @@ class AdroitEnv(gym.Env):
             raise ValueError('invalid burst_len')
         self.native_env = self._make_native_env(env_name)
         self.sim = self.native_env.sim
-        if self.native_env.action_space.shape != (self.action_dim,) or self.native_env.observation_space.shape != (self.observation_dim,):
+        if self.native_env.action_space.shape != (self.action_dim,) or self.native_env.observation_space.shape != (
+            self.observation_dim,
+        ):
             raise ValueError('native Adroit space dimensions do not match the pinned contract')
         self.action_space = Box(-1., 1., (self.action_dim,), np.float32)
         self.observation_space = Box(-np.inf, np.inf, (self.observation_dim,), np.float64)
@@ -114,7 +116,11 @@ class AdroitEnv(gym.Env):
         if kind == 1:
             # Retain the exclusive Relocate branch start range [15,160).
             branch_t = int(rng.integers(15, self.episode_len - 40))
-            branch_len = self.episode_len if rng.uniform() < self.branch_tail_prob else int(rng.integers(self.burst_len[0], self.burst_len[1] + 1))
+            branch_len = (
+                self.episode_len
+                if rng.uniform() < self.branch_tail_prob
+                else int(rng.integers(self.burst_len[0], self.burst_len[1] + 1))
+            )
         return kind, noise, branch_t, branch_len
 
     def _info(self, obs, goal_achieved=0):
@@ -163,7 +169,9 @@ class AdroitEnv(gym.Env):
 
     def render(self, camera=None, depth=False, segmentation=False, multisample=True):
         if not multisample and self.sim.model.vis.quality.offsamples != 0:
-            raise RuntimeError('non-MSAA rendering requires a separate validated offscreen context; use the Adroit PCD backend')
+            raise RuntimeError(
+                'non-MSAA rendering requires a separate validated offscreen context; use the Adroit PCD backend'
+            )
         raw = self.sim.render(width=self.width, height=self.height, camera_name=camera or self.camera,
                               depth=depth, segmentation=segmentation, device_id=0)
         if depth:

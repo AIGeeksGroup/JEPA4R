@@ -13,7 +13,8 @@ collector (jepa4r/stages/collect_wm_data.py) instantiates it:
   Scene       jepa4r/envs/ogbench/ogb_scene_env.py SceneThreePartPolicy (the same three-part plan)
   Puzzle      jepa4r/envs/ogbench/ogb_puzzle_env.py PuzzleNoisyPolicy (xi ~ U(0, 0.1) per episode, Gaussian noise
               [xi, xi, xi, 3 xi, 10 xi], uniform random action with probability 0.2)
-  UR5e / RM75-B cube (reconstruction, twin)   stable-worldmodel's plan-oracle expert (jepa4r/envs/ogbench/expert_policy.py)
+  UR5e / RM75-B cube (reconstruction, twin)   stable-worldmodel's plan-oracle expert
+  (jepa4r/envs/ogbench/expert_policy.py)
   Cube 1-4, Relocate   the OGBench-cube workflow's collectors (not integrated yet: see docs/reproduce.md, open items)
 """
 BEHAVIOURS = (

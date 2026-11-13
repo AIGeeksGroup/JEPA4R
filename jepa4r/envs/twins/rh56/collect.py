@@ -1,4 +1,5 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/rh56_adapter/collect.py (verbatim except: imports / paths adapted to the package)
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/rh56_adapter/collect.py (verbatim except: imports / paths adapted to the
+# package; lines wrapped at 120 columns)
 """Plan-driven paired collection using the original feedback mix and HDF writer.
 
 No simulator, model or sampling algorithm is changed here. External plans select
@@ -22,7 +23,8 @@ def validate_plan(payload):
         if type(seed) is not int or not 0<=seed<2**32:raise ValueError('seed must be a uint32 integer')
         if seed in seeds:raise ValueError('duplicate episode seed in plan')
         if coverage not in ('protocol','expert'):raise ValueError('external coverage must be protocol or expert')
-        if split in ('bc_demo','preview') and coverage!='expert':raise ValueError('auxiliary demos require expert coverage')
+        if split in ('bc_demo', 'preview') and coverage != 'expert':
+            raise ValueError('auxiliary demos require expert coverage')
         seeds.add(seed);result.append((split,seed,coverage))
     return result
 
@@ -56,7 +58,11 @@ def make_parser():
     ap.add_argument('--output',required=True);ap.add_argument('--preview',action='store_true')
     ap.add_argument('--plan',type=Path,help='Frozen episode plan; external rows use protocol or expert coverage')
     ap.add_argument('--camera',choices=('native','opposite'),default='native')
-    ap.add_argument('--allow-expert-failure',action='store_true',help='Retain failed auxiliary expert attempts for later audited selection')
+    ap.add_argument(
+        '--allow-expert-failure',
+        action='store_true',
+        help='Retain failed auxiliary expert attempts for later audited selection',
+    )
     return ap
 
 def main(argv=None):
@@ -83,14 +89,23 @@ def main(argv=None):
             from . import camera_preview as camera_module
             factory=camera_module.OppositeCameraBridge
         sys.path.insert(0,str(BASELINE.parent))
-        from jepa4r.policy.bc.relocate.paired_writer import AdroitPairedWriter
+        from jepa4r.data.relocate.paired_writer import AdroitPairedWriter
         legacy_env=load_file('_rh56_original_plan',BASELINE/'envs/adroit/env.py')
         legacy_policy=load_file('_rh56_original_feedback',BASELINE/'envs/adroit/policy.py')
-        config=dict(camera=args.camera,episodes=[dict(split=s,seed=seed,coverage=c) for s,seed,c in plan],
-                    mix=[.5,.3,.2],noise_max=.2,branch_tail_prob=.5,burst_len=[10,30],
-                    episode_len=200,dt=.01,allow_expert_failure=args.allow_expert_failure,
-                    action_alignment='outgoing; last row NaN; NPZ T actions/T+1 states',
-                    goal_columns='goal_achieved/geometry_goal_achieved use synchronized current geometry; native_goal_achieved/native_success preserve original step info')
+        config = dict(
+            camera=args.camera,
+            episodes=[dict(split=s, seed=seed, coverage=c) for s, seed, c in plan],
+            mix=[0.5, 0.3, 0.2],
+            noise_max=0.2,
+            branch_tail_prob=0.5,
+            burst_len=[10, 30],
+            episode_len=200,
+            dt=0.01,
+            allow_expert_failure=args.allow_expert_failure,
+            action_alignment='outgoing; last row NaN; NPZ T actions/T+1 states',
+            goal_columns='goal_achieved/geometry_goal_achieved use synchronized current geometry; '
+                         'native_goal_achieved/native_success preserve original step info',
+        )
         config_hash=hashlib.sha256(json.dumps(config,sort_keys=True,separators=(',',':')).encode()).hexdigest()
         provenance=dict(producer_sha256=sha(__file__),runtime_helpers_sha256=RUNTIME_HELPERS_SHA256,
                         native_adapter_sha256=sha(native_module.__file__),
@@ -100,7 +115,7 @@ def main(argv=None):
                         camera_adapter_sha256=sha(camera_module.__file__) if camera_module else None,
                         baseline_plan_sha256=sha(BASELINE/'envs/adroit/env.py'),
                         baseline_policy_sha256=sha(BASELINE/'envs/adroit/policy.py'),
-                        paired_writer_sha256=sha(BASELINE/'policy/bc/relocate/paired_writer.py'),
+                        paired_writer_sha256=sha(BASELINE/'data/relocate/paired_writer.py'),
                         plan_sha256=sha(args.plan) if args.plan else None,config_sha256=config_hash)
         atomic_json(out/'config.json',dict(config=config,provenance=provenance))
         manifest=dict(scope='frozen externally planned collection' if args.plan else 'bounded coverage smoke',
@@ -111,7 +126,8 @@ def main(argv=None):
             for split,seed,requested_coverage in plan:
                 if native is None:native=factory(seed)
                 obs,_=native.reset(seed);initial=native.get_state();initial_hash=physical_hash(initial)
-                if seed in all_seeds or initial_hash in all_initials:raise ValueError('seed or physical initial state reused')
+                if seed in all_seeds or initial_hash in all_initials:
+                    raise ValueError('seed or physical initial state reused')
                 all_seeds.add(seed);all_initials.add(initial_hash)
                 rng=np.random.default_rng(np.random.SeedSequence([seed,919]))
                 kind,noise,branch_t,branch_len,coverage=draw_collection_plan(
@@ -119,10 +135,24 @@ def main(argv=None):
                 policy=legacy_policy.AdroitFeedbackPolicy.__new__(legacy_policy.AdroitFeedbackPolicy)
                 policy.expert=SimpleNamespace(action_dim=12,action=lambda env:env.expert_action(env.observation()))
                 policy.rng=np.random.default_rng(np.random.SeedSequence([seed,313]))
-                policy.env=SimpleNamespace(num_envs=1,envs=[SimpleNamespace(unwrapped=SimpleNamespace(native_env=native))])
-                frames=[];observations=[];props=[];actions=[];rewards=[];traces=[];states=[];infos=[];qpositions=[];qvelocities=[]
+                policy.env = SimpleNamespace(
+                    num_envs=1, envs=[SimpleNamespace(unwrapped=SimpleNamespace(native_env=native))]
+                )
+                frames = []
+                observations = []
+                props = []
+                actions = []
+                rewards = []
+                traces = []
+                states = []
+                infos = []
+                qpositions = []
+                qvelocities = []
                 for t in range(201):
-                    frame=native.capture();frames.append(frame);observations.append(obs.copy());props.append(native.proprio())
+                    frame = native.capture()
+                    frames.append(frame)
+                    observations.append(obs.copy())
+                    props.append(native.proprio())
                     for view_kind in ('rgb','pcd'):
                         render_model=native.render_models[view_kind];render_data=native.render_data[view_kind]
                         camera_id=render_model.camera('vil_camera').id
@@ -163,35 +193,69 @@ def main(argv=None):
                     raise RuntimeError('fixed episode camera changed between frames')
                 episode_name=f'{split}_{seed}'
                 full_initial=json.dumps(initial,sort_keys=True)
-                arrays=dict(pixels=np.stack([f['pixels'] for f in frames]),
-                            xyz=np.stack([f['pcd_xyz'] for f in frames]),rgb=np.stack([f['pcd_rgb'] for f in frames]),
-                            label=np.stack([f['labels'] for f in frames]),
-                            observations=np.asarray(observations),proprio=np.asarray(props),actions=np.asarray(actions),
-                            rewards=np.asarray(rewards),trace=tr,integration=np.array([s['integration'] for s in states]),
-                            qpos=np.asarray(qpositions),qvel=np.asarray(qvelocities),
-                            initial_state_json=np.array(full_initial),initial_state_sha256=np.array(initial_hash),
-                            frame_stats=np.array(json.dumps([f['frame_stats'] for f in frames])),
-                            seed=np.int64(seed),dt=np.float64(.01),success=np.bool_(success),
-                            native_goal_achieved=native_goals,native_success=np.bool_(goal_audit['native_success']),
-                            native_success_history=np.array([i['success'] for i in infos],dtype=bool),
-                            rand_action_mask=np.array([i['rand_action'] for i in infos],dtype=bool),
-                            sample_type=np.int8(kind),noise_std=np.float64(noise),branch_t=np.int32(branch_t),branch_len=np.int32(branch_len),
-                            producer_sha256=np.array(provenance['producer_sha256']),config_sha256=np.array(config_hash),
-                            camera_json=np.array(json.dumps(camera)),goal_audit_json=np.array(json.dumps(goal_audit)),
-                            type=np.array(coverage),camera_xpos=frames[0]['camera_xpos'],
-                            camera_xmat=frames[0]['camera_xmat'],camera_fovy=frames[0]['camera_fovy'])
+                arrays = dict(
+                    pixels=np.stack([f['pixels'] for f in frames]),
+                    xyz=np.stack([f['pcd_xyz'] for f in frames]),
+                    rgb=np.stack([f['pcd_rgb'] for f in frames]),
+                    label=np.stack([f['labels'] for f in frames]),
+                    observations=np.asarray(observations),
+                    proprio=np.asarray(props),
+                    actions=np.asarray(actions),
+                    rewards=np.asarray(rewards),
+                    trace=tr,
+                    integration=np.array([s['integration'] for s in states]),
+                    qpos=np.asarray(qpositions),
+                    qvel=np.asarray(qvelocities),
+                    initial_state_json=np.array(full_initial),
+                    initial_state_sha256=np.array(initial_hash),
+                    frame_stats=np.array(json.dumps([f['frame_stats'] for f in frames])),
+                    seed=np.int64(seed),
+                    dt=np.float64(0.01),
+                    success=np.bool_(success),
+                    native_goal_achieved=native_goals,
+                    native_success=np.bool_(goal_audit['native_success']),
+                    native_success_history=np.array([i['success'] for i in infos], dtype=bool),
+                    rand_action_mask=np.array([i['rand_action'] for i in infos], dtype=bool),
+                    sample_type=np.int8(kind),
+                    noise_std=np.float64(noise),
+                    branch_t=np.int32(branch_t),
+                    branch_len=np.int32(branch_len),
+                    producer_sha256=np.array(provenance['producer_sha256']),
+                    config_sha256=np.array(config_hash),
+                    camera_json=np.array(json.dumps(camera)),
+                    goal_audit_json=np.array(json.dumps(goal_audit)),
+                    type=np.array(coverage),
+                    camera_xpos=frames[0]['camera_xpos'],
+                    camera_xmat=frames[0]['camera_xmat'],
+                    camera_fovy=frames[0]['camera_fovy'],
+                )
                 integration=arrays['integration']
                 path=out/f'{episode_name}.npz';np.savez_compressed(path,**arrays)
                 with np.load(path,allow_pickle=False) as check:
                     for key in ('observations','proprio','actions','rewards','trace','xyz','qpos','qvel'):
                         if not np.isfinite(check[key]).all():raise ValueError(f'nonfinite {key}')
                     assert check['observations'].shape==(F,56) and check['actions'].shape==(T,12)
-                record=dict(seed=seed,split=split,initial_state_sha256=initial_hash,steps=T,rows=F,
-                            **goal_audit,final_distance=float(tr[-1,7]),
-                            overload=bool(native.env.overloaded),npz=path.name,npz_sha256=hashlib.sha256(path.read_bytes()).hexdigest(),
-                            sample_type=kind,coverage=coverage,requested_coverage=requested_coverage,
-                            noise_std=noise,branch_t=branch_t,branch_len=branch_len,camera=camera,
-                            producer_sha256=provenance['producer_sha256'],config_sha256=config_hash)
+                record = dict(
+                    seed=seed,
+                    split=split,
+                    initial_state_sha256=initial_hash,
+                    steps=T,
+                    rows=F,
+                    **goal_audit,
+                    final_distance=float(tr[-1, 7]),
+                    overload=bool(native.env.overloaded),
+                    npz=path.name,
+                    npz_sha256=hashlib.sha256(path.read_bytes()).hexdigest(),
+                    sample_type=kind,
+                    coverage=coverage,
+                    requested_coverage=requested_coverage,
+                    noise_std=noise,
+                    branch_t=branch_t,
+                    branch_len=branch_len,
+                    camera=camera,
+                    producer_sha256=provenance['producer_sha256'],
+                    config_sha256=config_hash,
+                )
                 if not goal_audit['success_consistent']:
                     manifest.setdefault('rejected_episodes',[]).append(record)
                     atomic_json(out/'manifest.json',manifest)
@@ -199,19 +263,34 @@ def main(argv=None):
                 if split in ('train','val','test'):
                     record['episode_index']=len(manifest['episodes']);manifest['episodes'].append(record)
                     outgoing=np.r_[np.asarray(actions),np.full((1,12),np.nan)].astype(np.float32)
-                    episode=dict(pixels=arrays['pixels'],pcd_xyz=arrays['xyz'],pcd_rgb=arrays['rgb'],
-                                 action=outgoing,observation=arrays['observations'],native_observation=arrays['observations'],
-                                 proprio=arrays['proprio'],qpos=arrays['qpos'],qvel=arrays['qvel'],
-                                 episode_seed=np.full(F,seed,np.int64),step_idx=np.arange(F,dtype=np.int32),
-                                 sample_type=np.full(F,kind,np.int8),noise_std=np.full(F,noise),
-                                 branch_t=np.full(F,branch_t,np.int32),branch_len=np.full(F,branch_len,np.int32),
-                                 goal_achieved=np.r_[False,goals],geometry_goal_achieved=np.r_[False,goals],
-                                 native_goal_achieved=np.r_[False,native_goals],
-                                 native_success=np.r_[False,[i['success'] for i in infos]],reward=np.r_[0.,rewards],
-                                 rand_action=np.r_[[i['rand_action'] for i in infos],False].astype(np.int8),
-                                 executed_action_valid=np.r_[np.ones(T),0].astype(np.int8),
-                                 native_integration=integration,drive_p=np.array([s['p'] for s in states]),
-                                 drive_v=np.array([s['v'] for s in states]),q_cmd=np.array([s['q_cmd'] for s in states]))
+                    episode = dict(
+                        pixels=arrays['pixels'],
+                        pcd_xyz=arrays['xyz'],
+                        pcd_rgb=arrays['rgb'],
+                        action=outgoing,
+                        observation=arrays['observations'],
+                        native_observation=arrays['observations'],
+                        proprio=arrays['proprio'],
+                        qpos=arrays['qpos'],
+                        qvel=arrays['qvel'],
+                        episode_seed=np.full(F, seed, np.int64),
+                        step_idx=np.arange(F, dtype=np.int32),
+                        sample_type=np.full(F, kind, np.int8),
+                        noise_std=np.full(F, noise),
+                        branch_t=np.full(F, branch_t, np.int32),
+                        branch_len=np.full(F, branch_len, np.int32),
+                        goal_achieved=np.r_[False, goals],
+                        geometry_goal_achieved=np.r_[False, goals],
+                        native_goal_achieved=np.r_[False, native_goals],
+                        native_success=np.r_[False, [i['success'] for i in infos]],
+                        reward=np.r_[0.0, rewards],
+                        rand_action=np.r_[[i['rand_action'] for i in infos], False].astype(np.int8),
+                        executed_action_valid=np.r_[np.ones(T), 0].astype(np.int8),
+                        native_integration=integration,
+                        drive_p=np.array([s['p'] for s in states]),
+                        drive_v=np.array([s['v'] for s in states]),
+                        q_cmd=np.array([s['q_cmd'] for s in states]),
+                    )
                     writer.write_episode(episode)
                 else:
                     manifest['auxiliary'].append(record)
@@ -229,8 +308,16 @@ def main(argv=None):
                 for key in keys:assert np.array_equal(a[key][:],b[key][:],equal_nan=True),key
                 for rec,off,ln in zip(manifest['episodes'],a['ep_offset'][:],a['ep_len'][:]):
                     assert ln==rec['rows'] and np.all(a['episode_seed'][off:off+ln]==rec['seed'])
-        atomic_json(out/'seed_audit.json',dict(unique_seeds=sorted(all_seeds),unique_initial_hashes=sorted(all_initials),
-                                             pairwise_disjoint=True,record_count=len(plan),source='actual initial states; seed labels excluded from hash'))
+        atomic_json(
+            out / 'seed_audit.json',
+            dict(
+                unique_seeds=sorted(all_seeds),
+                unique_initial_hashes=sorted(all_initials),
+                pairwise_disjoint=True,
+                record_count=len(plan),
+                source='actual initial states; seed labels excluded from hash',
+            ),
+        )
         state.update(phase='complete',exit_code=0);save()
     except BaseException:
         state.update(phase='failed',exit_code=1,error=traceback.format_exc());save();raise

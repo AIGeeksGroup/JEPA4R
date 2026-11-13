@@ -1,7 +1,7 @@
-# Moved from cortexbench@9331494:lewm_pcd/envs/metaworld/env.py (verbatim)
-"""MetaWorld tasks of CortexBench as stable-worldmodel envs: three-part data collection (scripts/data/collect_mw.py) and the
-planning evaluation (config/eval/mw_<task>_*.yaml). ``MWTaskEnv`` holds what all tasks share, a subclass per task the
-rest (``MWBinPickEnv`` here, ``assembly.MWAssemblyEnv``):
+# Moved from cortexbench@9331494:lewm_pcd/envs/metaworld/env.py (verbatim except: lines wrapped at 120 columns)
+"""MetaWorld tasks of CortexBench as stable-worldmodel envs: three-part data collection (scripts/data/collect_mw.py) and
+the planning evaluation (config/eval/mw_<task>_*.yaml). ``MWTaskEnv`` holds what all tasks share, a subclass per task
+the rest (``MWBinPickEnv`` here, ``assembly.MWAssemblyEnv``):
 
 * Task: the metaworld 3.0 ``<task>-v3-goal-observable`` env with ``_freeze_rand_vec=False`` as CortexBench's eai-vc gym
   wrapper sets it (a new layout every reset), drawn from the reset seed (``seeded_rand_vec``).
@@ -30,7 +30,8 @@ BINS = {                                          # where place targets are draw
     'left': ((-0.17, 0.68), (-0.06, 0.72)),       # inside top_cap2's view (the cube spawns at x -0.21..-0.03)
     'right': ((0.06, 0.68), (0.17, 0.72)),        # the goal bin (bin_goal at x 0.12)
 }
-HAND_INIT = ((-0.20, 0.55, 0.10), (0.20, 0.80, 0.22))  # bin-picking: random start pose of the hand, kept only if in view
+# bin-picking: random start pose of the hand, kept only if in view
+HAND_INIT = ((-0.20, 0.55, 0.10), (0.20, 0.80, 0.22))
 VIEW_MARGIN = 16  # px: "in view" = the hand's projection is this far inside the 224 x 224 image
 SAMPLE_TYPES = ('backbone', 'branch', 'random')
 
@@ -101,8 +102,8 @@ class MWTaskEnv(gym.Env):
         return cam
 
     def _single_sample_renderer(self) -> mujoco.Renderer:
-        """A second renderer without multisampling, for the point cloud (depth, segmentation and the points' colours), as
-        the CortexBench 3D demos (bench/cortexbench/pcd_fork.py): with multisampling an edge pixel's id colour is the
+        """A second renderer without multisampling, for the point cloud (depth, segmentation and the points' colours),
+        as the CortexBench 3D demos (bench/cortexbench/pcd_fork.py): with multisampling an edge pixel's id colour is the
         average of two ids' colours and decodes to an unrelated geom. MuJoCo reads offsamples when a context is made, so
         it is 0 for this one only; the RGB frames keep CortexBench's multisampling."""
         if self._renderer_ss is None:
@@ -131,7 +132,11 @@ class MWTaskEnv(gym.Env):
         c = mujoco.mjv_averageCamera(s.camera[0], s.camera[1])
         fwd, up = np.array(c.forward, dtype=np.float64), np.array(c.up, dtype=np.float64)
         right = np.cross(fwd, up)
-        return np.array(c.pos, dtype=np.float64), np.stack([right, up, -fwd], axis=1), float(self._model.vis.global_.fovy)
+        return (
+            np.array(c.pos, dtype=np.float64),
+            np.stack([right, up, -fwd], axis=1),
+            float(self._model.vis.global_.fovy),
+        )
 
     def in_view(self, p, margin: float = VIEW_MARGIN) -> bool:
         """Whether world point p projects at least ``margin`` px inside the top_cap2 image."""

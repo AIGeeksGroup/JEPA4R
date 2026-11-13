@@ -1,4 +1,5 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/cortexbench/run_bc.py (verbatim except: imports / paths adapted to the package)
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/cortexbench/run_bc.py (verbatim except: imports / paths adapted to the
+# package; lines wrapped at 120 columns, no lint exemptions)
 """Final Relocate adapter around the original EAI-VC BC loop.
 
 Local model configurations select the paper encoders. Metrics are logged as
@@ -12,14 +13,16 @@ import runpy
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-EAI_VC = os.environ.get('CORTEXBENCH_EAI_VC_ROOT', os.path.join(HERE, '..', '..', '..', '..', '..', 'third_party', 'eai-vc'))
+EAI_VC = os.environ.get(
+    'CORTEXBENCH_EAI_VC_ROOT', os.path.join(HERE, '..', '..', '..', '..', '..', 'third_party', 'eai-vc')
+)
 VI = os.path.join(EAI_VC, 'cortexbench', 'mujoco_vc', 'visual_imitation')
 sys.path.insert(0, VI)
 
-import mujoco_vc.gym_wrapper as gw  # noqa: E402
-import mujoco_vc.model_loading as ml  # noqa: E402
-import numpy as np  # noqa: E402
-import train_loop  # noqa: E402
+import mujoco_vc.gym_wrapper as gw
+import mujoco_vc.model_loading as ml
+import numpy as np
+import train_loop
 
 _load = ml.load_pretrained_model  # the official one, or run_bc3d.py's point-cloud-aware wrapper of it
 
@@ -27,7 +30,8 @@ _load = ml.load_pretrained_model  # the official one, or run_bc3d.py's point-clo
 def load_pretrained_model(embedding_name, *args, **kwargs):
     if not os.path.exists(os.path.join(HERE, 'conf', 'model', embedding_name + '.yaml')):
         return _load(embedding_name, *args, **kwargs)
-    saved, ml.vc_models_dir_path = ml.vc_models_dir_path, HERE  # the loader reads <vc_models_dir_path>/conf/model/NAME.yaml
+    # the loader reads <vc_models_dir_path>/conf/model/NAME.yaml
+    saved, ml.vc_models_dir_path = ml.vc_models_dir_path, HERE
     try:
         return _load(embedding_name, *args, **kwargs)
     finally:

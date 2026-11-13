@@ -1,4 +1,5 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/lewm_cortex.py (verbatim except: imports / paths adapted to the package)
+# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/lewm_cortex.py (verbatim except: imports / paths adapted to
+# the package; lines wrapped at 120 columns)
 """vc_models entry point for LeWM encoders in CortexBench (the frozen-PVR imitation protocol of eai-vc).
 
 CortexBench loads an encoder through `hydra.utils.call(<vc_models conf/model/NAME.yaml>)`, which must return
@@ -27,7 +28,10 @@ IMAGENET = ([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 def _moved(node):
     """config.json's 'module.MLP' -> the moved class (jepa4r.models.heads.MLP); everything else unchanged."""
     if isinstance(node, dict):
-        return {k: ('jepa4r.models.heads.MLP' if (k == '_target_' and v == 'module.MLP') else _moved(v)) for k, v in node.items()}
+        return {
+            k: ('jepa4r.models.heads.MLP' if (k == '_target_' and v == 'module.MLP') else _moved(v))
+            for k, v in node.items()
+        }
     return node
 
 
@@ -92,7 +96,9 @@ def build_lewm_embedding(checkpoint_dir, epoch=10, use_projector=True, random_in
     return LeWMEmbedding(encoder, projector).eval()
 
 
-def load_lewm(checkpoint_dir: str, epoch: int = 10, use_projector: bool = True, random_init: bool = False, seed: int = 0):
+def load_lewm(
+    checkpoint_dir: str, epoch: int = 10, use_projector: bool = True, random_init: bool = False, seed: int = 0
+):
     ckdir = Path(checkpoint_dir)
     model = build_lewm_embedding(ckdir, epoch, use_projector, random_init, seed)
     with torch.no_grad():
@@ -134,7 +140,11 @@ PCD_ENCODERS = {
     'encoders.ManiSkillPointNet': ('pointnet_ms2.py', 'ManiSkillPointNet', 'ManiSkill PointNet'),
     'encoders.pointnet_ms2.ManiSkillPointNet': ('pointnet_ms2.py', 'ManiSkillPointNet', 'ManiSkill PointNet'),
     'encoders.PointPatchTransformer': ('point_patch_transformer.py', 'PointPatchTransformer', 'PointPatchTransformer'),
-    'encoders.ppt.PointPatchTransformer': ('point_patch_transformer.py', 'PointPatchTransformer', 'PointPatchTransformer'),
+    'encoders.ppt.PointPatchTransformer': (
+        'point_patch_transformer.py',
+        'PointPatchTransformer',
+        'PointPatchTransformer',
+    ),
     'encoders.PointNet2': ('pointnet2.py', 'PointNet2', 'PointNet++'),
     'encoders.pointnet2.PointNet2': ('pointnet2.py', 'PointNet2', 'PointNet++'),
     'encoders.DGCNN': ('dgcnn.py', 'DGCNN', 'DGCNN'),
@@ -159,7 +169,9 @@ def _dexart_pointnet_class():
     return _pcd_encoder_class('encoders.DexArtPointNet')
 
 
-def load_lewm_pcd(checkpoint_dir: str, epoch: int = 10, center=(0.0, 0.65, 0.2), scale: float = 4.0, use_rgb: bool = True):
+def load_lewm_pcd(
+    checkpoint_dir: str, epoch: int = 10, center=(0.0, 0.65, 0.2), scale: float = 4.0, use_rgb: bool = True
+):
     """The 3D LeWM's encoder (the one its config.json names: DexArt PointNet, ManiSkill PointNet,
     PointPatchTransformer, PointNet++ or DGCNN) + projector: one (N, 6) point cloud -> the 192-d LeWM latent.
     center / scale / use_rgb must be the checkpoint's data.preprocessor (checked against its config.yaml if present).

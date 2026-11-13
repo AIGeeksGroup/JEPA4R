@@ -1,4 +1,5 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/d3_mapping.py (verbatim except: imports / paths adapted to the package)
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/d3_mapping.py (verbatim except: imports / paths adapted to the
+# package; lines wrapped at 120 columns)
 """Row-level R4 evidence using the original Cube current/goal input seam."""
 import numpy as np
 from jepa4r.policy.gciql.gates.arrays import array_identity
@@ -10,15 +11,33 @@ def build_episode(features, states, actions, terminals, *, split, cube_count, ep
         raise ValueError('official train/val split is required')
     features,states,actions,terminals=map(np.asarray,(features,states,actions,terminals))
     rows=len(features);seam=CubeInputs(cube_count,features.shape[-1])
-    arrays=dict(states=states.copy(),current=seam.current(features,states),goal=seam.goal(features,states),
-                actions=actions.copy(),terminals=terminals.copy(),raw_row_id=np.arange(raw_start,raw_start+rows,dtype=np.int64),
-                episode_id=np.full(rows,episode,np.int64),step_id=np.arange(rows,dtype=np.int64),
-                split_id=np.full(rows,0 if split=='train'else 1,np.int8),task_id=np.full(rows,-1,np.int32))
-    meta=dict(schema='cube_r4_episode_mapping_v1',split=split,cube_count=cube_count,episode=episode,
-              raw_start=raw_start,rows=rows,source_sha256=source_sha256,task_id=-1,
-              task_semantics='official Play has no benchmark task label; -1 is explicitly unlabelled',
-              feature_row_sha256=[array_identity(row)for row in features],
-              source_arrays={k:array_identity(v)for k,v in dict(states=states,actions=actions,terminals=terminals).items()})
+    arrays = dict(
+        states=states.copy(),
+        current=seam.current(features, states),
+        goal=seam.goal(features, states),
+        actions=actions.copy(),
+        terminals=terminals.copy(),
+        raw_row_id=np.arange(raw_start, raw_start + rows, dtype=np.int64),
+        episode_id=np.full(rows, episode, np.int64),
+        step_id=np.arange(rows, dtype=np.int64),
+        split_id=np.full(rows, 0 if split == 'train' else 1, np.int8),
+        task_id=np.full(rows, -1, np.int32),
+    )
+    meta = dict(
+        schema='cube_r4_episode_mapping_v1',
+        split=split,
+        cube_count=cube_count,
+        episode=episode,
+        raw_start=raw_start,
+        rows=rows,
+        source_sha256=source_sha256,
+        task_id=-1,
+        task_semantics='official Play has no benchmark task label; -1 is explicitly unlabelled',
+        feature_row_sha256=[array_identity(row) for row in features],
+        source_arrays={
+            k: array_identity(v) for k, v in dict(states=states, actions=actions, terminals=terminals).items()
+        },
+    )
     validate_episode(features,arrays,meta)
     return arrays,meta
 
@@ -49,6 +68,10 @@ def validate_episode(features,arrays,meta):
 
 
 def validate_goal_link(current,goal):
-    if any(current.get(k)!=goal.get(k)for k in ('split','cube_count','source_sha256'))or current.get('task_id')!=-1 or goal.get('task_id')!=-1:
+    if (
+        any(current.get(k) != goal.get(k) for k in ('split', 'cube_count', 'source_sha256'))
+        or current.get('task_id') != -1
+        or goal.get('task_id') != -1
+    ):
         raise ValueError('goal crosses its official Play split/source or invents a task label')
     return True

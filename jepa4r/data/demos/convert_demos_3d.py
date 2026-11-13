@@ -1,4 +1,5 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/convert_demos_3d.py (verbatim except: imports / paths adapted to the package)
+# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/convert_demos_3d.py (verbatim except: imports / paths
+# adapted to the package; lines wrapped at 120 columns)
 """The official MetaWorld expert demos as point clouds: every demo replayed exactly (fresh env, seed 12345 + i, the
 recorded actions; README.md, "3D demos"), and at every step the 3D LeWM's point cloud of the frame
 (pcd_fork.MWPointClouds, the settings of its training data), instead of the 256 x 256 RGB frame.
@@ -50,7 +51,8 @@ for i, demo in enumerate(demos):
     T = len(demo['actions'])
     pcd = np.zeros((T, pcm.num_points, 6), dtype=np.float32)
     for t in range(T):
-        xyz, rgb = pcm()  # the frame before action t (the first render directly after reset, as the official collection)
+        # the frame before action t (the first render directly after reset, as the official collection)
+        xyz, rgb = pcm()
         pcd[t, :, :3], pcd[t, :, 3:] = xyz, rgb
         o, *_ = e.step(demo['actions'][t])
         obs.append(o)
@@ -74,5 +76,7 @@ with open(tmp, 'wb') as f:
     os.posix_fadvise(f.fileno(), 0, 0, os.POSIX_FADV_DONTNEED)
 os.replace(tmp, DST / f'{name}.pickle')
 LOG.mkdir(parents=True, exist_ok=True)
-(LOG / f'convert_{task}.json').write_text(json.dumps(dict(task=task, minutes=round((time.time() - t0) / 60, 1), demos=stats), indent=1))
+(LOG / f'convert_{task}.json').write_text(
+    json.dumps(dict(task=task, minutes=round((time.time() - t0) / 60, 1), demos=stats), indent=1)
+)
 print(f'{task}: wrote {DST / name}.pickle in {time.time() - t0:.0f} s', flush=True)

@@ -18,7 +18,8 @@ def depth_to_world(depth, K, T_world_cam):
     xn, yn = PointCloudWrapper._grid(_Grids, *depth.shape, float(K))
     R, t = np.asarray(T_world_cam[0]).reshape(3, 3), np.asarray(T_world_cam[1]).reshape(3)
     z = depth.reshape(-1)
-    # Moved from cortexbench@9331494:lewm_pcd/envs/pcd_wrapper.py:PointCloudWrapper._point_cloud (lines 166-167; the same
+    # Moved from cortexbench@9331494:lewm_pcd/envs/pcd_wrapper.py:PointCloudWrapper._point_cloud (lines 166-167; the
+    # same
     # formula applied to every pixel instead of the foreground indices only)
     p_cam = np.stack([xn * z, yn * z, -z], axis=1)
     return p_cam @ R.T + t

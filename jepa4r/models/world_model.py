@@ -14,8 +14,8 @@ Integrated code: ``JEPA`` is LeWM's ``jepa.py`` (dict interface: ``encode(info)`
 stable-worldmodel / stable-pretraining, in its two original variants:
   run_random_split   cortexbench / recon branches (+ the C4 seed hook): one dataset file, random 0.9 / 0.1 clip split
                      with torch.Generator().manual_seed(seed), the same generator shuffling the train loader
-  run_episode_split  OGBench-cube (C4) Cube1-4: an independent validation file (whole held-out episodes), seed 0 set with
-                     Lightning's seed_everything before the data are built
+  run_episode_split  OGBench-cube (C4) Cube1-4: an independent validation file (whole held-out episodes), seed 0 set
+                     with Lightning's seed_everything before the data are built
 Checkpoints: ``<out_dir>/checkpoints/{config.json, weights_epoch_<n>.pt}`` (stable-worldmodel ``save_pretrained``, the
 format of the released HF checkpoints, which ``load_checkpoint`` also reads).
 """
@@ -219,7 +219,8 @@ def lejepa_forward(self, batch, stage, cfg):
     self.log_dict(losses_dict, on_step=True, sync_dist=True)
     return output
 
-# Moved from cortexbench@9331494:lewm_pcd/utils.py:SaveCkptCallback (lines 34-61; verbatim except: optional cache_dir passed on to save_pretrained, so the weights land in the stage directory)
+# Moved from cortexbench@9331494:lewm_pcd/utils.py:SaveCkptCallback (lines 34-61; verbatim except: optional cache_dir
+# passed on to save_pretrained, so the weights land in the stage directory)
 class SaveCkptCallback(Callback):
     """Callback to save model checkpoint after each epoch using save_pretrained."""
 
@@ -251,7 +252,11 @@ class SaveCkptCallback(Callback):
         )
 
 
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/train.py:run (lines 47-146; verbatim except: no @hydra.main, renamed run_random_split, run_dir argument instead of $STABLEWM_HOME/checkpoints/<subdir>, checkpoints and config.yaml into <run_dir>/checkpoints (the paper runs had subdir == output_model_name: one directory), lazy imports, config.json written with LeWM's own target names: legacy_config; original_layout=True keeps the source's own output layout, $STABLEWM_HOME/checkpoints/<subdir>, for the moved OGBench-cube callers)
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/train.py:run (lines 47-146; verbatim except: no @hydra.main, renamed
+# run_random_split, run_dir argument instead of $STABLEWM_HOME/checkpoints/<subdir>, checkpoints and config.yaml into
+# <run_dir>/checkpoints (the paper runs had subdir == output_model_name: one directory), lazy imports, config.json
+# written with LeWM's own target names: legacy_config; original_layout=True keeps the source's own output layout,
+# $STABLEWM_HOME/checkpoints/<subdir>, for the moved OGBench-cube callers)
 def run_random_split(cfg, run_dir, *, manager_seed=None, original_layout=False):
     import hydra
     import lightning as pl
@@ -313,7 +318,8 @@ def run_random_split(cfg, run_dir, *, manager_seed=None, original_layout=False):
     world_model = spt.Module(
         model = world_model,
         sigreg = SIGReg(**cfg.loss.sigreg.kwargs),
-        forward=partial(hydra.utils.get_method(cfg.forward) if cfg.get("forward") else lejepa_forward, cfg=cfg),  # e.g. jepa_agg.agg_forward
+        # e.g. jepa_agg.agg_forward
+        forward=partial(hydra.utils.get_method(cfg.forward) if cfg.get("forward") else lejepa_forward, cfg=cfg),
         optim=optimizers,
     )
 
@@ -363,7 +369,9 @@ def run_random_split(cfg, run_dir, *, manager_seed=None, original_layout=False):
     manager()
     return
 
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/native/lewm_train.py:_prepare_fresh_run, _split_datasets, _validation_loader_kwargs (lines 16-49; verbatim except: _prepare_fresh_run takes the run directory instead of $STABLEWM_HOME/checkpoints/<subdir>, and accepts an existing one unless exist_ok=False, the source's own rule)
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/native/lewm_train.py:_prepare_fresh_run, _split_datasets,
+# _validation_loader_kwargs (lines 16-49; verbatim except: _prepare_fresh_run takes the run directory instead of
+# $STABLEWM_HOME/checkpoints/<subdir>, and accepts an existing one unless exist_ok=False, the source's own rule)
 def _prepare_fresh_run(cfg, run_dir, exist_ok=True):
     import lightning as pl
 
@@ -403,7 +411,10 @@ def _validation_loader_kwargs(cfg):
     return kwargs
 
 
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/native/lewm_train.py:run (lines 82-175; verbatim except: renamed run_episode_split, run_dir argument, checkpoints and config.yaml into <run_dir>/checkpoints, lazy imports, config.json written with LeWM's own target names: legacy_config; original_layout=True keeps the source's own output layout, $STABLEWM_HOME/checkpoints/<subdir>, for the moved OGBench-cube Cube workflow)
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/native/lewm_train.py:run (lines 82-175; verbatim except:
+# renamed run_episode_split, run_dir argument, checkpoints and config.yaml into <run_dir>/checkpoints, lazy imports,
+# config.json written with LeWM's own target names: legacy_config; original_layout=True keeps the source's own output
+# layout, $STABLEWM_HOME/checkpoints/<subdir>, for the moved OGBench-cube Cube workflow)
 def run_episode_split(cfg, run_dir, *, resume_checkpoint=None, state_callback=None, original_layout=False):
     import hydra
     import lightning as pl
@@ -411,7 +422,7 @@ def run_episode_split(cfg, run_dir, *, resume_checkpoint=None, state_callback=No
     import stable_worldmodel as swm
     from lightning.pytorch.loggers import WandbLogger
 
-    if original_layout:  # the source's own layout, which the moved Cube workflow (jepa4r/policy/gciql) reads back
+    if original_layout:  # the source's own layout, which the moved Cube workflow (jepa4r/models/cube) reads back
         run_dir = Path(swm.data.utils.get_cache_dir(sub_folder='checkpoints'), cfg.get("subdir") or "")
     fresh_seed = _prepare_fresh_run(cfg, run_dir, exist_ok=not original_layout)
     #########################
@@ -463,7 +474,8 @@ def run_episode_split(cfg, run_dir, *, resume_checkpoint=None, state_callback=No
     world_model = spt.Module(
         model = world_model,
         sigreg = SIGReg(**cfg.loss.sigreg.kwargs),
-        forward=partial(hydra.utils.get_method(cfg.forward) if cfg.get("forward") else lejepa_forward, cfg=cfg),  # e.g. jepa_agg.agg_forward
+        # e.g. jepa_agg.agg_forward
+        forward=partial(hydra.utils.get_method(cfg.forward) if cfg.get("forward") else lejepa_forward, cfg=cfg),
         optim=optimizers,
     )
 
@@ -622,16 +634,37 @@ def lewm_train_config(cfg):
         data['validation_dataset'] = {'name': str(data_dir / files[f'{obs}_val']), **dataset_kwargs(m, obs)}
     t = m.train
     lw = {
-        'output_model_name': str(m.name), 'subdir': '', 'num_workers': int(t.num_workers), 'train_split': float(t.train_split),
-        'seed': int(t.seed), 'img_size': 224, 'embed_dim': int(m.latent_dim), 'pcd_in_dim': 6,
-        'history_size': int(m.history), 'num_preds': 1,
-        'trainer': {'max_epochs': int(t.epochs), 'devices': 'auto', 'accelerator': 'gpu', 'precision': str(t.precision),
-                    'gradient_clip_val': float(t.gradient_clip)},
-        'loader': {'batch_size': int(t.batch_size), 'num_workers': int(t.num_workers), 'persistent_workers': True,
-                   'prefetch_factor': 3, 'pin_memory': True},
+        'output_model_name': str(m.name),
+        'subdir': '',
+        'num_workers': int(t.num_workers),
+        'train_split': float(t.train_split),
+        'seed': int(t.seed),
+        'img_size': 224,
+        'embed_dim': int(m.latent_dim),
+        'pcd_in_dim': 6,
+        'history_size': int(m.history),
+        'num_preds': 1,
+        'trainer': {
+            'max_epochs': int(t.epochs),
+            'devices': 'auto',
+            'accelerator': 'gpu',
+            'precision': str(t.precision),
+            'gradient_clip_val': float(t.gradient_clip),
+        },
+        'loader': {
+            'batch_size': int(t.batch_size),
+            'num_workers': int(t.num_workers),
+            'persistent_workers': True,
+            'prefetch_factor': 3,
+            'pin_memory': True,
+        },
         'optimizer': {'type': 'AdamW', 'lr': float(t.lr), 'weight_decay': float(t.weight_decay)},
-        'loss': {'sigreg': {'weight': float(m.loss.sigreg_weight),
-                            'kwargs': {'knots': int(m.loss.sigreg_knots), 'num_proj': int(m.loss.sigreg_projections)}}},
+        'loss': {
+            'sigreg': {
+                'weight': float(m.loss.sigreg_weight),
+                'kwargs': {'knots': int(m.loss.sigreg_knots), 'num_proj': int(m.loss.sigreg_projections)},
+            }
+        },
         'wandb': {'enabled': False},
         'data': data,
         'model': model_config(m),

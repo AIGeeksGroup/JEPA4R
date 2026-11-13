@@ -1,4 +1,4 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/dqc/summarize_dqc.py (verbatim)
+# Moved from cortexbench@9331494:lewm_pcd/bench/dqc/summarize_dqc.py (verbatim except: lines wrapped at 120 columns)
 """The DQC table of the puzzle boards: each input's success rate (OGBench's 5 tasks x 50 episodes, %) by OGBench's
 measure (the mean of the evaluations at 800 k, 900 k and 1 M steps) and the highest evaluation of the run (every
 100 k steps), from logs/dqc/puzzle_<board>/<input>/eval.jsonl.
@@ -9,8 +9,14 @@ import json
 import os
 from pathlib import Path
 
-INPUTS = [('lewm2d', 'LeWM 2D'), ('lewm3d', 'LeWM 3D'), ('vjepa21', 'V-JEPA 2.1 (frozen)'), ('visreg', 'VISReg (frozen)'),
-          ('lejepa', 'LeJEPA'), ('pldm', 'PLDM')]
+INPUTS = [
+    ('lewm2d', 'LeWM 2D'),
+    ('lewm3d', 'LeWM 3D'),
+    ('vjepa21', 'V-JEPA 2.1 (frozen)'),
+    ('visreg', 'VISReg (frozen)'),
+    ('lejepa', 'LeJEPA'),
+    ('pldm', 'PLDM'),
+]
 
 
 def main():

@@ -1,0 +1,22 @@
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/config/train/data/adroit_relocate_pcd.yaml (verbatim except: hydra targets of
+# the moved LeWM classes (jepa4r.models.world_model.LEGACY_TARGETS))
+dataset:
+  name: ${oc.env:RELOCATE_PCD_TRAIN}
+  num_steps: ${eval:'${num_preds} + ${history_size}'}
+  frameskip: 5
+  keys_to_load:
+    - pcd_xyz
+    - pcd_rgb
+    - action
+    - observation
+  keys_to_cache:
+    - action
+    - observation
+preprocessor:
+  _target_: jepa4r.data.clips.get_pcd_preprocessor
+  source_xyz: pcd_xyz
+  source_rgb: pcd_rgb
+  target: pcd
+  center: [0.0, -0.2, 0.25]
+  scale: 4.0
+  use_rgb: true

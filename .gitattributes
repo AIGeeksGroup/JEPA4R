@@ -1,10 +1,1 @@
 * text=auto eol=lf
-# Byte-exact copies pinned by sha256 in the OGBench-cube workflows' manifests (some keep their upstream's CRLF line
-# ends); end-of-line conversion would change their bytes and stop the workflows' integrity checks.
-jepa4r/policy/gciql/collection/vendor/** -text
-jepa4r/policy/gciql/downstream/vendor/** -text
-jepa4r/policy/gciql/pldm/vendor/** -text
-jepa4r/policy/gciql/provenance/** -text
-jepa4r/policy/gciql/released_models.json -text
-jepa4r/policy/gciql/workflow_agent.json -text
-jepa4r/policy/bc/relocate/provenance/** -text

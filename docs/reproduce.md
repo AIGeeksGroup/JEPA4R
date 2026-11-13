@@ -21,7 +21,7 @@ baseline recipes) are implemented, because the main-text numbers depend on them.
 | Tab. 3a/b; 12.31 cm shuffled control; decoder stage A → B (0.87 → 0.79 cm); within 1.1 cm over 200 steps (UR5e Cube-Single reconstruction data, `cube_single_recon`) | `tab3_recon` | collect_wm_data, train_wm, train_decoder, eval_recon | `paper/expected/tab3_recon.yaml` |
 | Tab. 4a decoder backbone (Cube); 4b encoder, 4c temporal window, 4d hyper-parameters (Scene) | `tab4_ablations` | all of the above | `paper/expected/tab4_ablations.yaml` |
 | 5.51M PointNet vs. 5.50M ViT-tiny, ~18.0M JEPA4R, 5.75M decoder, 0.88M LoRA, ~0.94B PAGE-4D | `params` | count_params | `paper/expected/params.yaml` |
-| Sec. 5.6 in the RM75-B twin: twin vs. vendor URDF (2,000 joint configurations, limits, masses, gripper); twin-trained world models, policy heads (EG2-4C2 gripper: four CortexBench MetaWorld tasks; RH56 hand: Relocate) and decoder; the paper reports no twin numbers | `twin` | verify_twin, collect_wm_data, prepare_policy_data, train_wm, train_policy, train_decoder, eval_preview | `paper/expected/twin.yaml` |
+| Sec. 5.6 in the RM75-B twin: twin vs. vendor URDF (2,000 joint configurations, limits, masses, gripper); twin-trained world models, policy heads (EG2-4C2 gripper: four CortexBench MetaWorld tasks; RH56 hand: Relocate) and decoder; the paper reports no twin numbers | `twin` | verify_twin, collect_wm_data, prepare_policy_data, train_wm, train_policy, train_decoder, eval_preview | `paper/expected/twin.yaml` (no table: the paper reports no twin numbers) |
 | Fig. 1a, Fig. 1b, observations, success plots, CortexBench scatter, simulation key frames, open-loop errors | — | outputs of the stages above | `paper/figures/*.py` (not integrated, see Open Items) |
 
 ```bash
@@ -78,16 +78,18 @@ The configurations carry the values of the integrated code, each with the file a
 ## Open Items
 
 - **OGBench Cube 1-4, Adroit Relocate, the RH56 hand twin** (Tab. 1 Cube columns and Sec. 5.3 Cube-Quadruple, Tab. 2
-  Relocate, the twin's hand) run the OGBench-cube branch's workflows (`jepa4r/policy/gciql`, `jepa4r/policy/bc/relocate`;
-  docs/architecture.md), which keep their own receipts and sha256 pins. Inputs they need from outside this repository:
-  the V-JEPA 2.1 ViT-L/16 weights (Cube; the workflow fetches them), DAPG's Relocate state expert, the official Relocate
-  demonstrations, the native RM75-B + RH56 bundle (its files are listed in
-  `jepa4r/policy/bc/relocate/provenance/assets/rh56_native_bundle_v1.json`) and MuJoCo 2.0 for mujoco-py.
+  Relocate, the twin's hand) run the OGBench-cube branch's workflows (controllers in `jepa4r/policy/gciql` and
+  `jepa4r/policy/bc/relocate`; docs/architecture.md), which keep their own receipts and sha256 pins. Inputs they need
+  from outside this repository: the V-JEPA 2.1 ViT-L/16 weights (Cube; the workflow fetches them), DAPG's Relocate state
+  expert, the official Relocate demonstrations, the native RM75-B + RH56 bundle (its files are listed in
+  `jepa4r/policy/bc/relocate/rh56_native_bundle_v1.json`) and MuJoCo 2.0 for mujoco-py.
 - **Look-ahead preview** (stage `eval_preview`, Sec. 4.3): no commit of the four source branches has preview code, and
-  the paper reports no twin numbers (Sec. 5.6 "Results" is qualitative); the stage stays `TODO(integrate)`.
+  the paper reports no twin numbers (Sec. 5.6 "Results" is qualitative); the stage stays `TODO(integrate)`, and its job
+  in `experiments/twin.yaml` is optional (skipped unless `--with-optional`).
 - **Policy head on the twin's Cube** (`configs/env/rm75b_cube.yaml` `policy`, `policy_data`: `???`): on the twin's Cube
   the source branches only plan with CEM (`config/eval/cube_rm75_*.yaml`, the setting of Tab. S1, out of scope); the
-  gripper's policy heads trained in the twin are the CortexBench ones of the four `rm75b_mw_*` tasks.
+  gripper's policy heads trained in the twin are the CortexBench ones of the four `rm75b_mw_*` tasks. The two jobs that
+  would need them (`prepare_policy_data`, `train_policy` on `rm75b_cube`) are optional in `experiments/twin.yaml`.
 - **Figures** (`paper/figures/*.py`): not integrated, since this repository reproduces the paper's numbers (Scope); the
   scripts stay `TODO(integrate)`.
 - **Released weights:** VISReg's are shared by the authors on request (`scripts/download_checkpoints.py`).

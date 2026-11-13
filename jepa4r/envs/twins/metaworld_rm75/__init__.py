@@ -1,4 +1,5 @@
-# Moved from cortexbench@9331494:lewm_pcd/envs/metaworld/rm75/__init__.py (verbatim)
+# Moved from cortexbench@9331494:lewm_pcd/envs/metaworld/rm75/__init__.py (verbatim except: lines wrapped at 120
+# columns)
 """MetaWorld tasks of CortexBench on the lab robot: RealMan RM75-B arm + Inspire EG2-4C2 gripper instead of MetaWorld's
 Sawyer, as envs/cube_rm75_env.py does for the OGBench cube. Only the robot layer changes; the task (layout, observation,
 reward, success), the camera, the collection plan and the eval hooks are envs.metaworld's.
@@ -24,6 +25,16 @@ from .env import RM75AssemblyEnv, RM75BinPickEnv, RM75ButtonPressEnv, RM75Drawer
 from .expert import RM75AssemblyPolicy, RM75BinPickingPolicy, RM75DrawerOpenPolicy
 from .policy import RM75AssemblyThreePartPolicy, RM75BinPickThreePartPolicy, RM75DrawerThreePartPolicy
 
-__all__ = ['RM75TaskEnv', 'RM75BinPickEnv', 'RM75AssemblyEnv', 'RM75ButtonPressEnv', 'RM75DrawerEnv', 'RM75BinPickThreePartPolicy',
-           'RM75DrawerThreePartPolicy', 'RM75AssemblyThreePartPolicy', 'RM75BinPickingPolicy', 'RM75DrawerOpenPolicy',
-           'RM75AssemblyPolicy']
+__all__ = [
+    'RM75TaskEnv',
+    'RM75BinPickEnv',
+    'RM75AssemblyEnv',
+    'RM75ButtonPressEnv',
+    'RM75DrawerEnv',
+    'RM75BinPickThreePartPolicy',
+    'RM75DrawerThreePartPolicy',
+    'RM75AssemblyThreePartPolicy',
+    'RM75BinPickingPolicy',
+    'RM75DrawerOpenPolicy',
+    'RM75AssemblyPolicy',
+]

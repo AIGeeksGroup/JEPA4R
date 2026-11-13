@@ -11,7 +11,8 @@ import torch.nn.functional as F
 from torch import nn
 
 
-# Moved from lewm-pcd-recon-page4d@d3c2d07:lewm_pcd/recon/decoders/set_decoder.py:FiLMBlock, SetDecoder (lines 8-50; verbatim)
+# Moved from lewm-pcd-recon-page4d@d3c2d07:lewm_pcd/recon/decoders/set_decoder.py:FiLMBlock, SetDecoder (lines 8-50;
+# verbatim)
 class FiLMBlock(nn.Module):
     """Residual per-element MLP modulated by the latent (FiLM)."""
 
@@ -60,5 +61,12 @@ class SetDecoder(nn.Module):
 def build_set_generator(decoder_cfg):
     """SetDecoder with cfg.decoder.set_generator, as the backbone decoders build it (PAGE4DDecoder.__init__)."""
     sg = decoder_cfg.set_generator
-    return SetDecoder(latent_dim=int(decoder_cfg.latent_dim), num_queries=int(sg.num_queries), out_dim=int(sg.token_dim),
-                      dim=int(sg.dim), hidden=int(sg.hidden), depth=int(sg.num_blocks), query_dim=int(sg.query_dim))
+    return SetDecoder(
+        latent_dim=int(decoder_cfg.latent_dim),
+        num_queries=int(sg.num_queries),
+        out_dim=int(sg.token_dim),
+        dim=int(sg.dim),
+        hidden=int(sg.hidden),
+        depth=int(sg.num_blocks),
+        query_dim=int(sg.query_dim),
+    )

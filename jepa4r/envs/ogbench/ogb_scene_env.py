@@ -1,4 +1,5 @@
-# Moved from cortexbench@9331494:lewm_pcd/envs/ogb_scene_env.py (verbatim)
+# Moved from cortexbench@9331494:lewm_pcd/envs/ogb_scene_env.py (verbatim except: lines wrapped at 120 columns, no lint
+# exemptions, unused imports removed, registration imports as importlib.import_module)
 """OGBench's own ``scene-v0`` (the ogbench package, not stable-worldmodel's ``swm/OGBScene-v0`` port) behind the repo's
 stable-worldmodel interface, ``swm/OGBenchScene-v0``, for the scene world-model data (scripts/data/collect_ogb.py) and
 the CortexBench evaluation tasks (bench/cortexbench/scene_env.py).
@@ -9,7 +10,8 @@ collected on its own with MetaWorld's three-part plan (envs/metaworld/env.py, po
     window openings uniform); the hand start is kept only inside the camera image (as MetaWorld);
   * the current task's object keeps OGBench's random initial state; every other task is set to its "done" or "not done"
     look, 1/2 each: drawer open (-0.16) / closed (0), window open (0.2) / closed (0), the locks as OGBench drew them,
-    the cube on the table (OGBench's spot) / in the drawer (a random spot inside; out of sight when the drawer is closed);
+    the cube on the table (OGBench's spot) / in the drawer (a random spot inside; out of sight when the drawer is
+    closed);
   * the episode's plan as MetaWorld's: backbone 0.5 / branch 0.3 / random 0.2; backbone and branch get an action-noise
     std ~ U(0, 0.2) on all 5 action entries; a branch starts uniform random actions at a step drawn from [15, L - 40):
     half of them to the episode end, half for U[10, 30] steps and then back to the backbone.
@@ -42,13 +44,14 @@ the arm.
 """
 from __future__ import annotations
 
+import importlib
 import os
 
 os.environ.setdefault('MUJOCO_GL', 'egl')
 import gymnasium
 import mujoco
 import numpy as np
-import ogbench.manipspace  # noqa: F401  registers scene-v0
+importlib.import_module('ogbench.manipspace')  # registers scene-v0
 from gymnasium.spaces import Box
 from ogbench.manipspace import lie
 from ogbench.manipspace.oracles.markov.button_markov import ButtonMarkovOracle
@@ -83,14 +86,16 @@ CUBE_Z_IN_DRAWER = 0.066  # cube centre height on the drawer floor (OGBench task
 NUM_POINTS = 1200
 VOXEL = 0.005
 OBJECT_FRACTION = 0.25
-CROP_BOX = np.array([[0.10, -0.55, -0.02], [0.75, 0.50, 0.60]])  # puzzle's box, y floor at -0.55 to hold the closed drawer
+# puzzle's box, y floor at -0.55 to hold the closed drawer
+CROP_BOX = np.array([[0.10, -0.55, -0.02], [0.75, 0.50, 0.60]])
 GEOM = int(mujoco.mjtObj.mjOBJ_GEOM)
 OBJ_NAMES = ('cube', 'button0', 'button1', 'drawer', 'window')
 ROOT2OBJ = {'object_0': 1, 'buttonbox_0': 2, 'buttonbox_1': 3, 'drawer_base': 4, 'window': 5}
 
 
 def make_env(max_episode_steps=EPISODE_STEPS, mode='data_collection'):
-    """OGBench's scene-v0 as the collection (data_collection) or the evaluation (task) uses it; not ending at the goal."""
+    """OGBench's scene-v0 as the collection (data_collection) or the evaluation (task) uses it; not ending at the
+    goal."""
     return gymnasium.make(ENV_NAME, ob_type='states', mode=mode, terminate_at_goal=False,
                           max_episode_steps=max_episode_steps, width=IMG, height=IMG, visualize_info=False)
 
@@ -169,7 +174,9 @@ class Camera:
 
     def visible_px(self, seg):
         """Pixels of the cube and of each button cap visible in the image."""
-        return np.array([np.isin(seg, self.cube_geoms).sum()] + [np.isin(seg, c).sum() for c in self.cap_geoms], np.int32)
+        return np.array(
+            [np.isin(seg, self.cube_geoms).sum()] + [np.isin(seg, c).sum() for c in self.cap_geoms], np.int32
+        )
 
 
 def point_cloud(cam: Camera, rgb, depth, seg, R, t, rng: np.random.Generator, return_labels=False):
@@ -415,8 +422,10 @@ class OGBSceneEnv(gymnasium.Env):
             self.cam = Camera(self._u._model)
 
     def reset(self, seed=None, options=None):
-        super().reset(seed=seed)  # this env's own np_random (stable-worldmodel draws its episode ids from it); unused here
-        if seed is None:  # an unseeded reset gets a seed from np_random, so the episode is still recorded and reproducible
+        # this env's own np_random (stable-worldmodel draws its episode ids from it); unused here
+        super().reset(seed=seed)
+        # an unseeded reset gets a seed from np_random, so the episode is still recorded and reproducible
+        if seed is None:
             seed = int(self.np_random.integers(2**31))
         if self.mode == 'task':
             np.random.seed(seed % 2**32)  # OGBench's oracles and task mode draw from numpy's global RNG in places
@@ -480,8 +489,11 @@ class SceneThreePartPolicy(BasePolicy):
             if env.rand_now():
                 a = random_action(env.cam, u._data, u._data.site_xpos[u._pinch_site_id].copy(), env.rng)
             else:
-                if env.restart_now():  # back to the backbone after a random burst: the oracle restarts from the current state
+                # back to the backbone after a random burst: the oracle restarts from the current state
+                if env.restart_now():
                     env.agent.reset(env.ob, env.ob_info)
-                a = np.asarray(env.agent.select_action(env.ob, env.ob_info), np.float64) + env.rng.normal(0.0, env.plan[1], 5)
+                a = np.asarray(env.agent.select_action(env.ob, env.ob_info), np.float64) + env.rng.normal(
+                    0.0, env.plan[1], 5
+                )
             actions[i] = np.clip(a, -1, 1).astype(np.float32)
         return actions

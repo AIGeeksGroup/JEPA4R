@@ -1,7 +1,7 @@
 # LeWM recipe shared by JEPA4R and the LeWM baseline (Sec. 3, Eq. 1; Sec. 4.2; supp. sec:supp-wm).
 # The two are identical except for the encoder (and therefore the observation).
 # Values not stated in the paper come from LeWM's configs as used for the paper runs:
-#   cortexbench:lewm_pcd/config/train/lewm.yaml (recipe) and cortexbench:lewm_pcd/config/train/model/lewm.yaml (modules);
+# cortexbench:lewm_pcd/config/train/lewm.yaml (recipe) and cortexbench:lewm_pcd/config/train/model/lewm.yaml (modules);
 #   the C4 Cube recipe OGBench-cube:lewm_pcd/bench/ogbench/recipes/lewm_pcd.json has the same values except seed 0.
 kind: jepa_wm
 impl: jepa4r.models.world_model
@@ -41,7 +41,8 @@ train:
   weight_decay: 1.0e-3        # cortexbench:lewm_pcd/config/train/lewm.yaml:35
   precision: bf16
   gradient_clip: 1.0          # cortexbench:lewm_pcd/config/train/lewm.yaml:23
-  seed: 3072                  # cortexbench:lewm_pcd/config/train/lewm.yaml:12 (split + shuffle generator); Cube1-4: per_env
+  seed: 3072                  # cortexbench:lewm_pcd/config/train/lewm.yaml:12 (split + shuffle generator); Cube1-4:
+                              # per_env
   train_split: 0.9            # cortexbench:lewm_pcd/config/train/lewm.yaml:11 (random clip split)
   num_workers: 6              # cortexbench:lewm_pcd/config/train/lewm.yaml:10 (loader only, no effect on the numbers)
   checkpoint_every_epoch: true  # the decoder uses the epoch-10 checkpoint (Sec. 4.4)

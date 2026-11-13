@@ -1,7 +1,7 @@
 """Stage ``eval_preview`` -- decoded look-ahead of the policy in the twin (Sec. 4.3, Sec. 5.6).
 
 The predictor rolls the policy head's action blocks forward and the decoder previews each executed 25-step segment
-as point clouds (cfg.env.preview). Metrics (Sec. 5.6 reports no twin numbers; paper/expected/twin.yaml):
+as point clouds (cfg.env.preview). Metrics (Sec. 5.6 reports no twin numbers):
   preview_nn                 decoded preview vs. observed clouds (cm)
   preview_cube               cube position error of the preview (cm)
   cube_to_target_success     cube distance to its target at the end of the last

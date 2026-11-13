@@ -1,4 +1,4 @@
-# Moved from cortexbench@9331494:lewm_pcd/envs/metaworld/rm75/expert.py (verbatim)
+# Moved from cortexbench@9331494:lewm_pcd/envs/metaworld/rm75/expert.py (verbatim except: lines wrapped at 120 columns)
 """metaworld 3.0's SawyerBinPickingV3Policy -- the scripted Sawyer expert whose outputs are CortexBench's bin-picking
 demos -- on the RM75, run the way it runs on the Sawyer: every action is a function of the current observation only
 (metaworld's 39-D observation, which also carries the previous step's hand and gripper, obs[18:22]), gain p 25, and the
@@ -45,7 +45,8 @@ FINGER = 0.0212  # EG2-4C2 finger thickness outside the pad (collision geometry)
 OPEN = 0.0662  # EG2-4C2 opening, grab <= 0: 66.2 mm; grab c > 0: 66.2 * (1 - c) mm (measured)
 PRESHAPE = 0.315  # grab command -> 45.3 mm between the pads (0.25 -> 49.7, 0.30 -> 46.3, 0.35 -> 43.0; measured)
 CLEARANCE = 0.0003  # m between the wall-side finger and the wall
-WALL_OFF = FINGER + CLEARANCE + 0.5 * OPEN * (1.0 - PRESHAPE)  # hand from the wall face: finger + clearance + half the opening
+# hand from the wall face: finger + clearance + half the opening
+WALL_OFF = FINGER + CLEARANCE + 0.5 * OPEN * (1.0 - PRESHAPE)
 HOLDING = 0.665  # obs[3] below: closed on something (a held cube reads 0.60-0.65; the 45.3 mm preshape 0.685)
 FIRM = 0.615     # obs[3] below: the pads squeeze the cube
 HOLD_WIN, HOLD_ZTOL = 0.04, 0.02  # held cube: xy window / z tolerance (the script: 0.02 / 0.01)
@@ -122,17 +123,17 @@ DRAWER_DZ = 0.028  # drawer-open: the hand this far above the handle point (the 
 
 
 class RM75DrawerOpenPolicy:
-    """metaworld 3.0's SawyerDrawerOpenV3Policy (the scripted Sawyer expert of CortexBench's drawer-open demos) on the RM75
-    with one change, stateless as the script: the hand's height at the handle, DRAWER_DZ above the handle point instead
-    of 2 cm below. The EG2-4C2's 3.35 cm pads then straddle the bar at its height, as the Sawyer's 9 cm pads do from 2 cm
-    below; from below they touch only one side of the bar, slide off it while pulling, and the drawer, let go, comes
-    back off its end stop (metaworld's success needs it held there). Everything else is the script's: p 4 to 30 cm
+    """metaworld 3.0's SawyerDrawerOpenV3Policy (the scripted Sawyer expert of CortexBench's drawer-open demos) on the
+    RM75 with one change, stateless as the script: the hand's height at the handle, DRAWER_DZ above the handle point
+    instead of 2 cm below. The EG2-4C2's 3.35 cm pads then straddle the bar at its height, as the Sawyer's 9 cm pads do
+    from 2 cm below; from below they touch only one side of the bar, slide off it while pulling, and the drawer, let go,
+    comes back off its end stop (metaworld's success needs it held there). Everything else is the script's: p 4 to 30 cm
     above the handle (beyond 6 cm in xy), p 4 down to it (beyond 4 cm in z), else p 50 towards 6 cm behind it, fingers
-    open; the move not clipped (the env clips it).
-    Success, as CortexBench counts it (info['success'] at step 500), seeds 12345 .. 13344: 998 / 1000 on the layouts of
-    the CortexBench env the demos and evaluations use (bench/cortexbench/rm75_env.py), 994 / 1000 on metaworld's own;
-    the unchanged script on the RM75 70 / 200 and 68 / 200 (each of these episodes succeeded on the way, then the
-    drawer came back off its stop), the Sawyer with it 200 / 200."""
+    open; the move not clipped (the env clips it). Success, as CortexBench counts it (info['success'] at step 500),
+    seeds 12345 .. 13344: 998 / 1000 on the layouts of the CortexBench env the demos and evaluations use
+    (bench/cortexbench/rm75_env.py), 994 / 1000 on metaworld's own; the unchanged script on the RM75 70 / 200 and 68 /
+    200 (each of these episodes succeeded on the way, then the drawer came back off its stop), the Sawyer with it 200 /
+    200."""
 
     def reset(self):
         pass

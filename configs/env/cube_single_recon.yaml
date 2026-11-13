@@ -5,7 +5,8 @@
 _base_: _ogbench
 name: cube_single_recon
 display: Cube-Single (reconstruction data)
-env_id: swm/OGBCube-v0        # stable-worldmodel's OGBench cube, env_type single: cortexbench:lewm_pcd/scripts/data/collect_cube_pcd.py:70-75
+env_id: swm/OGBCube-v0        # stable-worldmodel's OGBench cube, env_type single:
+                              # cortexbench:lewm_pcd/scripts/data/collect_cube_pcd.py:70-75
 pointcloud:
   crop_box: [[0.10, -0.50, -0.02], [0.75, 0.50, 0.60]]   # cortexbench:lewm_pcd/scripts/data/config/ogb_pcd.yaml:28
 wm_data:
@@ -26,9 +27,11 @@ wm_data:
     keep_rgb: false
   options: null               # ogb_pcd.yaml:38
   seed: 3072                  # ogb_pcd.yaml:34; GATES.md 3.1 (UR5e row)
-  sets:                       # logs/cube_ur5e_pipeline.log: "launched 20 shards (500..500 episodes each)" / test "launched 10 shards"
+  sets:                       # logs/cube_ur5e_pipeline.log: "launched 20 shards (500..500 episodes each)" / test
+                              # "launched 10 shards"
     - {name: cube_single_expert, num_episodes: 10000, shards: 20}
-    - {name: cube_single_expert_test, num_episodes: 1000, shards: 10, seed: 2000000}   # GATES.md 3.1: test 1,000, seed 2,000,000
+    # GATES.md 3.1: test 1,000, seed 2,000,000
+    - {name: cube_single_expert_test, num_episodes: 1000, shards: 10, seed: 2000000}
   files: {pointcloud: cube_single_expert_pcd.h5}   # 3D only (the paper run kept only the point clouds; the paired
                                                    # collector also writes the 2D file of the same rollouts)
   split: random_clips

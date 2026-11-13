@@ -6,7 +6,7 @@ encoder (HF ViT-tiny/14 at 224 + Linear(192 -> 512)), 4 views, batch 256, AdamW 
 linear warm-up then cosine to 1e-3, lambda 0.02, projector 512 -> 2048 -> 2048 -> 16 (BatchNorm), SIGReg 17 knots /
 256 directions, bf16, torch seed 0; 10 epochs over every frame (cfg.method.train.recipe). Checkpoints
 weights_epoch_<n>.pt (backbone, head, proj) in outputs/train_wm/<env>/lejepa/<tag>/checkpoints/.
-OGBench Cube: the C4 workflow's LeJEPA (jepa4r/policy/gciql).
+OGBench Cube: the C4 workflow's LeJEPA (jepa4r/baselines/cube/native).
 load_frozen_encoder: the CLS through the 512-d head, as CortexBench and DQC read it (jepa_baselines.load_lejepa).
 """
 import argparse
@@ -30,7 +30,8 @@ except ImportError:  # pragma: no cover
     swm = None
 
 
-# Moved from cortexbench@9331494:lewm_pcd/scripts/baselines/train_lejepa_mw.py:SIGReg, Encoder, MWFrames, main (lines 40-160; verbatim except: main(argv), --out (the checkpoint directory; default as before))
+# Moved from cortexbench@9331494:lewm_pcd/scripts/baselines/train_lejepa_mw.py:SIGReg, Encoder, MWFrames, main (lines
+# 40-160; verbatim except: main(argv), --out (the checkpoint directory; default as before))
 class SIGReg(nn.Module):  # MINIMAL.md as is
     def __init__(self, knots=17):
         super().__init__()
@@ -109,11 +110,17 @@ def main(argv=None):
     ap.add_argument('--lamb', type=float, default=0.02)
     ap.add_argument('--proj-dim', type=int, default=16)
     ap.add_argument('--workers', type=int, default=8)
-    ap.add_argument('--max-steps', type=int, default=0, help='smoke test: stop after this many steps, no checkpoint (0 = no limit)')
+    ap.add_argument(
+        '--max-steps', type=int, default=0, help='smoke test: stop after this many steps, no checkpoint (0 = no limit)'
+    )
     args = ap.parse_args(argv)
     torch.manual_seed(0)
 
-    out = Path(args.out) if args.out else Path(os.environ['STABLEWM_HOME']) / 'checkpoints' / (args.name or f'lejepa_{args.task}')
+    out = (
+        Path(args.out)
+        if args.out
+        else Path(os.environ['STABLEWM_HOME']) / 'checkpoints' / (args.name or f'lejepa_{args.task}')
+    )
     out.mkdir(parents=True, exist_ok=True)
     (out / 'config.json').write_text(json.dumps({'algo': 'lejepa', 'encoder': 'vit_hf tiny p14 224 + Linear(192,512)',
                                                  **vars(args)}, indent=1))
@@ -145,13 +152,22 @@ def main(argv=None):
             scaler.update()
             scheduler.step()
             if args.max_steps and step + 1 >= args.max_steps:
-                print(f'smoke test: {step + 1} steps, {time.time() - t0:.1f}s, loss {loss.item():.4f}, peak GPU memory {torch.cuda.max_memory_allocated() / 2**30:.1f} GiB', flush=True)
+                print(
+                    f'smoke test: {step + 1} steps, {time.time() - t0:.1f}s, loss {loss.item():.4f}, peak GPU memory '
+                    f'{torch.cuda.max_memory_allocated() / 2**30:.1f} GiB',
+                    flush=True,
+                )
                 return
             if step % 500 == 0:
-                print(f'epoch {epoch} step {step}/{len(train)} loss {loss.item():.4f} sigreg {sigreg_loss.item():.4f} '
-                      f'inv {inv_loss.item():.4f} lr {scheduler.get_last_lr()[0]:.2e} {time.time() - t0:.0f}s', flush=True)
-        torch.save({'backbone': net.backbone.state_dict(), 'head': net.head.state_dict(), 'proj': net.proj.state_dict()},
-                   out / f'weights_epoch_{epoch + 1}.pt')
+                print(
+                    f'epoch {epoch} step {step}/{len(train)} loss {loss.item():.4f} sigreg {sigreg_loss.item():.4f} '
+                    f'inv {inv_loss.item():.4f} lr {scheduler.get_last_lr()[0]:.2e} {time.time() - t0:.0f}s',
+                    flush=True,
+                )
+        torch.save(
+            {'backbone': net.backbone.state_dict(), 'head': net.head.state_dict(), 'proj': net.proj.state_dict()},
+            out / f'weights_epoch_{epoch + 1}.pt',
+        )
         print(f'epoch {epoch + 1} saved, {time.time() - t0:.0f}s in total', flush=True)
 
 
@@ -159,10 +175,30 @@ def train(cfg, out_dir) -> dict:
     from jepa4r.config import stage_dir
 
     r, ckpt = cfg.method.train.recipe, Path(out_dir) / 'checkpoints'
-    main(['--task', str(cfg.env.name), '--dataset', str(stage_dir('collect_wm_data', cfg.env.name) / cfg.env.wm_data.files.image),
-          '--out', str(ckpt), '--epochs', str(int(cfg.method.train.epochs)), '--bs', str(int(r.batch_size)),
-          '--V', str(int(r.views)), '--lr', str(float(r.lr)), '--lamb', str(float(r.lamb)), '--proj-dim', str(int(r.proj_dim)),
-          '--workers', str(int(r.workers))])
+    main(
+        [
+            '--task',
+            str(cfg.env.name),
+            '--dataset',
+            str(stage_dir('collect_wm_data', cfg.env.name) / cfg.env.wm_data.files.image),
+            '--out',
+            str(ckpt),
+            '--epochs',
+            str(int(cfg.method.train.epochs)),
+            '--bs',
+            str(int(r.batch_size)),
+            '--V',
+            str(int(r.views)),
+            '--lr',
+            str(float(r.lr)),
+            '--lamb',
+            str(float(r.lamb)),
+            '--proj-dim',
+            str(int(r.proj_dim)),
+            '--workers',
+            str(int(r.workers)),
+        ]
+    )
     return {'checkpoints': sorted(p.name for p in ckpt.glob('weights_epoch_*.pt'))}
 
 

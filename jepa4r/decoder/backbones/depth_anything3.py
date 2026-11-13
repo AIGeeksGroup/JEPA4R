@@ -20,15 +20,19 @@ from jepa4r.decoder.head import make_cam
 from jepa4r.decoder.lora import add_lora
 from jepa4r.decoder.set_generator import SetDecoder
 
-DA3_REPO = Path(os.environ.get('JEPA4R_DA3') or Path(__file__).resolve().parents[3] / 'third_party' / 'Depth-Anything-3')
+DA3_REPO = Path(
+    os.environ.get('JEPA4R_DA3') or Path(__file__).resolve().parents[3] / 'third_party' / 'Depth-Anything-3'
+)
 
 
-# Moved from the untracked lewm_pcd/recon_ext/recon_backbones.py of the local cortexbench worktree (not in any branch; GATES.md 1.2 item 6; sha256 25d4bc5cf5d8ee600db02c2523f1a083d590aeaf7ae922213e8f366a310904be):_BackboneDecoder, _load (lines 62-111; verbatim)
+# Moved from the untracked lewm_pcd/recon_ext/recon_backbones.py of the local cortexbench worktree (not in any branch;
+# GATES.md 1.2 item 6; sha256 25d4bc5cf5d8ee600db02c2523f1a083d590aeaf7ae922213e8f366a310904be):_BackboneDecoder, _load
+# (lines 62-111; verbatim)
 # --------------------------------------------------------------------------------------- shared base, other models
 class _BackboneDecoder(PAGE4DDecoder):
     """PAGE4DDecoder's construction with another backbone: ``build`` (the pretrained modules, named in PRETRAINED),
-    ``make_rgb``, ``lora_blocks`` and ``tokens_to_map`` come from the subclass; forward, loss, to_points, the frozen-weight
-    hooks and train() are PAGE4DDecoder's."""
+    ``make_rgb``, ``lora_blocks`` and ``tokens_to_map`` come from the subclass; forward, loss, to_points, the
+    frozen-weight hooks and train() are PAGE4DDecoder's."""
     PRETRAINED = ()
 
     def __init__(self, latent_dim=192, grid=16, num_points=1200, weights=None, train='frozen', lora_rank=4,
@@ -75,7 +79,9 @@ def _load(module, sd, what):
     return unexpected
 
 
-# Moved from the untracked lewm_pcd/recon_ext/recon_backbones.py of the local cortexbench worktree (not in any branch; GATES.md 1.2 item 6; sha256 25d4bc5cf5d8ee600db02c2523f1a083d590aeaf7ae922213e8f366a310904be):DA3Decoder (lines 194-274; verbatim except: DA3's clone at DA3_REPO instead of lewm_pcd/third_party)
+# Moved from the untracked lewm_pcd/recon_ext/recon_backbones.py of the local cortexbench worktree (not in any branch;
+# GATES.md 1.2 item 6; sha256 25d4bc5cf5d8ee600db02c2523f1a083d590aeaf7ae922213e8f366a310904be):DA3Decoder (lines
+# 194-274; verbatim except: DA3's clone at DA3_REPO instead of lewm_pcd/third_party)
 # --------------------------------------------------------------------------------------------- Depth Anything 3
 class DA3Decoder(_BackboneDecoder):
     PRETRAINED = ('dino', 'head')  # 'dino': the name the LoRA stage's optimizer matches (config/recon/exp/lora.yaml)
@@ -87,14 +93,17 @@ class DA3Decoder(_BackboneDecoder):
         from safetensors.torch import load_file
         path = checkpoint_path(weights)
         cfg = json.loads((path.parent / 'config.json').read_text())['config']
-        args = lambda c: {key: val for key, val in c.items() if key != '__object__'}  # noqa: E731
+        args = lambda c: {key: val for key, val in c.items() if key != '__object__'}
         net, head = DinoV2(**args(cfg['net'])), DualDPT(**args(cfg['head']))
         sd = load_file(str(path))
-        part = lambda prefix: {key[len(prefix):]: val for key, val in sd.items() if key.startswith(prefix)}  # noqa: E731
+        part = lambda prefix: {key[len(prefix):]: val for key, val in sd.items() if key.startswith(prefix)}
         _load(net, part('model.backbone.'), 'DA3 backbone')
-        missing, _ = head.load_state_dict(part('model.head.'), strict=False)   # the ray map's per-level LayerNorm affines
-        assert all('output_conv2_aux' in key for key in missing), missing[:5]  # are absent from the release: identity, as
-        self.dino, self.head = net.pretrained, head                            # the official loader (strict=False) has them
+        # the ray map's per-level LayerNorm affines
+        missing, _ = head.load_state_dict(part('model.head.'), strict=False)
+        # are absent from the release: identity, as
+        assert all('output_conv2_aux' in key for key in missing), missing[:5]
+        # the official loader (strict=False) has them
+        self.dino, self.head = net.pretrained, head
         self.out_layers, self.cat_token = list(net.out_layers), net.cat_token
         return self.dino.embed_dim, self.head.scratch.output_conv2[0].in_channels
 
@@ -116,7 +125,8 @@ class DA3Decoder(_BackboneDecoder):
         outs, local_x = [], x
         for i, blk in enumerate(p.blocks):                              # _get_intermediate_layers_not_chunked, one view
             use = None if (i < p.rope_start or p.rope is None) else pos
-            if p.alt_start != -1 and i == p.alt_start:                  # the reference view's camera token in place of cls
+            # the reference view's camera token in place of cls
+            if p.alt_start != -1 and i == p.alt_start:
                 x = torch.cat([p.camera_token[:, :1].expand(B, -1, -1), x[:, 1:]], dim=1)
             if p.alt_start != -1 and i >= p.alt_start and i % 2 == 1:  # "global" (with one view: the same tokens)
                 x = self._run(blk, x, None if use is None else pos_nodiff[:, 0])
@@ -126,13 +136,17 @@ class DA3Decoder(_BackboneDecoder):
             if i in self.out_layers:
                 outs.append(torch.cat([local_x, x], dim=-1) if self.cat_token else x)
         C = p.embed_dim
-        feats = [torch.cat([o[..., :C], p.norm(o[..., C:])], dim=-1) if o.size(-1) == 2 * C else p.norm(o) for o in outs]
+        feats = [
+            torch.cat([o[..., :C], p.norm(o[..., C:])], dim=-1) if o.size(-1) == 2 * C else p.norm(o) for o in outs
+        ]
         feats = [f_[:, 1 + p.num_register_tokens:] for f_ in feats]
 
-        h = self.head                                                    # precision as PAGE4DDecoder (see VGGTOmegaDecoder)
+        # precision as PAGE4DDecoder (see VGGTOmegaDecoder)
+        h = self.head
         ph = side // h.patch_size
         res = []
-        for s_i, take in enumerate(h.intermediate_layer_idx):           # DualDPT._forward_impl: depth (main) and ray (aux)
+        # DualDPT._forward_impl: depth (main) and ray (aux)
+        for s_i, take in enumerate(h.intermediate_layer_idx):
             t = h.norm(feats[take]).permute(0, 2, 1).reshape(B, -1, ph, ph)
             t = h.projects[s_i](t)
             if h.pos_embed:
@@ -152,7 +166,8 @@ class DA3Decoder(_BackboneDecoder):
             conf = h._apply_activation_single(main[..., -1], h.conf_activation)
             ray = h.scratch.output_conv2_aux[-1](aux)[:, :6]            # (B, 6, 8G, 8G): direction, origin (linear)
             ray = F.interpolate(ray, (out, out), mode='bilinear', align_corners=True).permute(0, 2, 3, 1)
-            pts = ray[..., 3:] + depth[..., None] * ray[..., :3]        # origin + depth x direction, the reference view's frame
+            # origin + depth x direction, the reference view's frame
+            pts = ray[..., 3:] + depth[..., None] * ray[..., :3]
             xyz = self.frame(pts.flatten(1, 2))
             if self.rgb is not None:
                 xyz = torch.cat([xyz, torch.sigmoid(self.rgb(fused)).flatten(2).transpose(1, 2)], dim=-1)

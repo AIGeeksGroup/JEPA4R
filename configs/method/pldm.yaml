@@ -8,16 +8,21 @@ obs: image
 encoder: vit_tiny14
 per_env:
   "cube_*": {encoder: impala}   # on Cube, PLDM uses an Impala encoder. Cube 1-4 train in the Cube workflow
-                                # (jepa4r/policy/gciql/pldm) with the PLDM authors' recipe, not the one below:
+                                # (jepa4r/baselines/cube/pldm) with the PLDM authors' recipe, not the one below:
                                 # OGBench-cube:lewm_pcd/bench/ogbench/pldm/method.py (Adam lr 7e-4, weight decay 1e-6,
                                 # cosine schedule with 10% warm-up, 16 frames / 15 actions at 65 x 65, VICReg + IDM) and
                                 # pldm/train.py:41-42 (batch 128, bf16, 10 epochs, seed 0)
 train:
   epochs: 10
-  recipe:                     # PLDM's own hyper-parameters: stable-worldmodel's training, unchanged apart from the patch in
-                              # third_party/stable-worldmodel/UPSTREAM.md (scripts/train/pldm.py + config pldm.yaml: ViT-tiny/14,
-                              # 6-layer predictor, std / cov / temporal-alignment terms, AdamW 5e-5, weight decay 1e-3, batch
-                              # 128, bf16, 0.9 / 0.1 split of seed 3072), started as cortexbench@9331494:lewm_pcd/scripts/
-                              # run_mw_baselines.sh:48-49 (run_scene_baselines.sh:135-137, run_puzzle_baselines.sh:123-125)
+  recipe:                     # PLDM's own hyper-parameters: stable-worldmodel's training, unchanged apart from the
+                              # patch in
+                              # third_party/stable-worldmodel/UPSTREAM.md (scripts/train/pldm.py + config pldm.yaml:
+                              # ViT-tiny/14,
+                              # 6-layer predictor, std / cov / temporal-alignment terms, AdamW 5e-5, weight decay 1e-3,
+                              # batch
+                              # 128, bf16, 0.9 / 0.1 split of seed 3072), started as
+                              # cortexbench@9331494:lewm_pcd/scripts/
+                              # run_mw_baselines.sh:48-49 (run_scene_baselines.sh:135-137,
+                              # run_puzzle_baselines.sh:123-125)
                               # started it: these overrides + the env's image dataset + trainer.max_epochs = epochs
     overrides: [data=ogb, "~data.dataset.keys_to_merge"]

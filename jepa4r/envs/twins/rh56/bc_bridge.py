@@ -1,4 +1,5 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/rh56_adapter/bc_bridge.py (verbatim except: imports / paths adapted to the package)
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/rh56_adapter/bc_bridge.py (verbatim except: imports / paths adapted to the
+# package; lines wrapped at 120 columns, no lint exemptions, unused results dropped)
 """Thin RH56 boundary around the unmodified CortexBench frozen-PVR BC loop.
 
 No BC optimizer, loss, feature-fusion or rollout algorithm is implemented here.
@@ -38,12 +39,24 @@ def build_run_spec(mode, checkpoint_epoch, train_seed, eval_seed_base, *, bc_rec
         eval_seed_base = 65000000 + int(train_seed) * 1000
     if formal and eval_seed_base != 65000000 + int(train_seed) * 1000:
         raise ValueError('formal evaluation must use its fixed independent seed namespace')
-    return dict(mode=mode, epochs=100 if formal else 2 if bc_recovery else 1, num_demos=100 if formal else 1,
-                eval_num_traj=25 if formal else 1, eval_frequency=5 if formal else 1,
-                save_frequency=10 if formal else 1, batch_size=256,
-                train_seed=int(train_seed), eval_seed_base=int(eval_seed_base),
-                checkpoint_epoch=int(checkpoint_epoch), camera='opposite' if mode != 'smoke' else 'native',
-                scope='formal' if formal else 'explicit two-epoch original-loop recovery case; not T3/formal SR' if bc_recovery else 'one-minibatch interface profile; not formal SR')
+    return dict(
+        mode=mode,
+        epochs=100 if formal else 2 if bc_recovery else 1,
+        num_demos=100 if formal else 1,
+        eval_num_traj=25 if formal else 1,
+        eval_frequency=5 if formal else 1,
+        save_frequency=10 if formal else 1,
+        batch_size=256,
+        train_seed=int(train_seed),
+        eval_seed_base=int(eval_seed_base),
+        checkpoint_epoch=int(checkpoint_epoch),
+        camera='opposite' if mode != 'smoke' else 'native',
+        scope='formal'
+        if formal
+        else 'explicit two-epoch original-loop recovery case; not T3/formal SR'
+        if bc_recovery
+        else 'one-minibatch interface profile; not formal SR',
+    )
 
 
 class EvaluationSeedMap:
@@ -68,7 +81,10 @@ def validate_demo_records(records, expected_count, forbidden_seeds):
         raise ValueError('selected demonstrations repeat seed, physical initial state, or source path')
     if any(len(h) != 64 for h in hashes) or set(seeds).intersection(forbidden_seeds):
         raise ValueError('invalid demo state hash or demonstration/evaluation seed overlap')
-    if any(not bool(r.get('success', False)) or r.get('coverage') != 'expert' or float(r.get('noise_std', -1)) != 0. for r in records):
+    if any(
+        not bool(r.get('success', False)) or r.get('coverage') != 'expert' or float(r.get('noise_std', -1)) != 0.0
+        for r in records
+    ):
         raise ValueError('BC demonstrations must be successful pure-expert episodes')
     return records
 
@@ -308,7 +324,9 @@ def load_demos(args, spec):
                           success=bool(np.asarray(arrays['success']).item()), coverage='expert', noise_std=0.,
                           initial_state_sha256=str(np.asarray(arrays['initial_state_sha256']).item()))
         records = [record]
-    validate_demo_records(records, spec['num_demos'], range(spec['eval_seed_base'], spec['eval_seed_base'] + spec['eval_num_traj']))
+    validate_demo_records(
+        records, spec['num_demos'], range(spec['eval_seed_base'], spec['eval_seed_base'] + spec['eval_num_traj'])
+    )
     if spec['mode'] == 'formal' and any(not 64000000 <= int(r['seed']) < 65000000 for r in records):
         raise ValueError('formal demonstrations must stay inside the independent 64000000 namespace')
     demos, receipts = [], []
@@ -324,7 +342,12 @@ def load_demos(args, spec):
             if spec['camera'] == 'opposite':
                 np.testing.assert_allclose(arrays['camera_xpos'], [0., 1.2, 1.2], rtol=0, atol=1e-12)
                 matrix = np.asarray(arrays['camera_xmat'])
-                if matrix.shape != (3, 3) or -matrix[1, 2] >= 0 or -matrix[2, 2] >= 0 or float(arrays['camera_fovy']) != 45.:
+                if (
+                    matrix.shape != (3, 3)
+                    or -matrix[1, 2] >= 0
+                    or -matrix[2, 2] >= 0
+                    or float(arrays['camera_fovy']) != 45.0
+                ):
                     raise ValueError('demonstration does not use the frozen opposite camera')
             demo = prepare_demo(arrays, args.route)
         if int(demo['init_state_dict']['seed']) != int(record['seed']):
@@ -367,7 +390,7 @@ def run_bc(args):
     out.mkdir(parents=True, exist_ok=False)
     recovery_enabled = getattr(args, 'bc_recovery', False)
     if recovery_enabled:
-        from jepa4r.policy.bc.relocate.recovery import RecoveryPause
+        from jepa4r.models.relocate.recovery import RecoveryPause
     spec = build_run_spec(args.mode, args.epoch, args.train_seed, args.eval_seed_base, bc_recovery=recovery_enabled)
     state = dict(phase='preflight', started=time.time(), updated=None, route=args.route, mode=args.mode,
                  completed=0, completed_epochs=0, failures=0, exit_code=None, run_spec=spec)
@@ -414,7 +437,9 @@ def run_bc(args):
             if args.route == 'rgb':
                 model, dimension, transform, metadata = lewm_cortex.load_lewm(
                     args.checkpoint, epoch=args.epoch, use_projector=True)
-                final_transform = lambda frame: transform(Image.fromarray(np.asarray(frame, dtype=np.uint8))).unsqueeze(0)
+                final_transform = lambda frame: transform(Image.fromarray(np.asarray(frame, dtype=np.uint8))).unsqueeze(
+                    0
+                )
             else:
                 import yaml
                 cfg = yaml.safe_load((Path(args.checkpoint) / 'config.yaml').read_text())
@@ -557,27 +582,46 @@ def run_bc(args):
         bc_context = nullcontext(None)
         if recovery_enabled:
             from jepa4r.policy.bc.relocate.bc_recovery import install_bc_recovery, RecoveryPause, FROZEN_EAI_SHA256
-            from jepa4r.policy.bc.relocate.bc_caller_state import save_caller_state, load_caller_state, epoch_metric_prefix
+            from jepa4r.policy.bc.relocate.bc_caller_state import (
+                save_caller_state,
+                load_caller_state,
+                epoch_metric_prefix,
+            )
             from jepa4r.policy.bc.relocate import bc_caller_state, bc_recovery
             from jepa4r.policy.bc.relocate import encoder_identity
-            bc_identity = dict(model=dict(kind='original-EAI-BatchNormMLP', input_dim=589, action_dim=12),
+            bc_identity = dict(
+                model=dict(kind='original-EAI-BatchNormMLP', input_dim=589, action_dim=12),
                 data=dict(demos_sha256=_sha(demos / f'{ENV_ID}.pickle'), demo_receipts=demo_receipts),
                 config={key: value for key, value in config.items() if key not in ('data_dir', 'job_name')},
-                split='RH56-pure-expert-one-demo-recovery', action_dim=12,
-                encoder=dict(route=args.route, weights_sha256=_sha(Path(args.checkpoint) / f'weights_epoch_{args.epoch}.pt'),
-                             config_sha256=_sha(Path(args.checkpoint) / 'config.yaml'), epoch=args.epoch,
-                             loader_sha256=_sha(lewm_cortex.__file__)),
-                source=dict(eai_train_loop_sha256=FROZEN_EAI_SHA256, adapter_sha256=_sha(__file__),
-                            caller_state_sha256=_sha(bc_caller_state.__file__), recovery_sha256=_sha(bc_recovery.__file__),
-                            encoder_identity_sha256=_sha(encoder_identity.__file__)))
+                split='RH56-pure-expert-one-demo-recovery',
+                action_dim=12,
+                encoder=dict(
+                    route=args.route,
+                    weights_sha256=_sha(Path(args.checkpoint) / f'weights_epoch_{args.epoch}.pt'),
+                    config_sha256=_sha(Path(args.checkpoint) / 'config.yaml'),
+                    epoch=args.epoch,
+                    loader_sha256=_sha(lewm_cortex.__file__),
+                ),
+                source=dict(
+                    eai_train_loop_sha256=FROZEN_EAI_SHA256,
+                    adapter_sha256=_sha(__file__),
+                    caller_state_sha256=_sha(bc_caller_state.__file__),
+                    recovery_sha256=_sha(bc_recovery.__file__),
+                    encoder_identity_sha256=_sha(encoder_identity.__file__),
+                ),
+            )
             def recovery_event(event, live):
                 if event['kind'] != 'resume_loaded':
                     return
                 opt = live['optimizer']
                 steps = sorted({float(value['step']) for value in opt.state.values() if 'step' in value})
-                saved = load_caller_state(args.bc_resume_checkpoint, identity=bc_identity,
-                    committed_updates=event['committed_updates'], model_sha256=_model_sha(live['policy'].model, parameters_only=True),
-                    adam_steps=steps)
+                saved = load_caller_state(
+                    args.bc_resume_checkpoint,
+                    identity=bc_identity,
+                    committed_updates=event['committed_updates'],
+                    model_sha256=_model_sha(live['policy'].model, parameters_only=True),
+                    adam_steps=steps,
+                )
                 counts = saved['optimizer_evidence']
                 if counts['steps'] != event['committed_updates'] or counts['finite_gradient_checks'] != counts['steps']:
                     raise ValueError('RH56 restored caller observer count differs')
@@ -592,8 +636,15 @@ def run_bc(args):
                 state['restored_epochs'] = len(event['epoch_records'])
                 state['restored_optimizer_updates'] = event['committed_updates']
                 save_state()
-            bc_context = install_bc_recovery(official, bc_identity, out / 'recovery', enabled=True,
-                resume_from=args.bc_resume_checkpoint, pause_after_updates=args.bc_pause_after_updates, observer=recovery_event)
+            bc_context = install_bc_recovery(
+                official,
+                bc_identity,
+                out / 'recovery',
+                enabled=True,
+                resume_from=args.bc_resume_checkpoint,
+                pause_after_updates=args.bc_pause_after_updates,
+                observer=recovery_event,
+            )
         def seal_caller():
             if bc_controller is None:
                 return None
@@ -620,12 +671,19 @@ def run_bc(args):
         save_state()
         rows = [json.loads(row) for row in (out / 'metrics.jsonl').read_text().splitlines()]
         metrics = validate_metric_rows(rows, spec['epochs'], spec['eval_frequency'])
-        evaluations = [row for row in rows if 'eval/success' in row]  # noqa: F841  (moved verbatim)
         expected_episodes = metrics['evaluation_rounds'] * spec['eval_num_traj']
         expected_updates = spec['epochs'] * int(np.ceil(spec['num_demos'] * 200 / spec['batch_size']))
-        if len(online_paths) != expected_episodes or len(train_initial_paths) != expected_episodes or len(policies) != 1:
+        if (
+            len(online_paths) != expected_episodes
+            or len(train_initial_paths) != expected_episodes
+            or len(policies) != 1
+        ):
             raise RuntimeError('actual online/train-initial episode count does not match official schedule')
-        if optimizer_evidence['steps'] != expected_updates or optimizer_evidence['finite_gradient_checks'] != expected_updates or len(optimizers) != 1:
+        if (
+            optimizer_evidence['steps'] != expected_updates
+            or optimizer_evidence['finite_gradient_checks'] != expected_updates
+            or len(optimizers) != 1
+        ):
             raise RuntimeError(f'actual original Adam updates differ from expected: {optimizer_evidence}')
         policy, initial_head_sha = policies[0]
         if _model_sha(policy.model, parameters_only=True) == initial_head_sha:
@@ -690,7 +748,9 @@ def run_bc(args):
                         raise RuntimeError('actual held-out rollout escaped its evaluation seed namespace')
                 elif int(seeds[0]) not in {r['seed'] for r in demo_receipts}:
                     raise RuntimeError('training-initial rollout does not restore a selected demonstration')
-                if np.abs(executed).max() > 1 or not np.array_equal(executed, np.clip(np.asarray(path['actions'], dtype=np.float32), -1., 1.)):
+                if np.abs(executed).max() > 1 or not np.array_equal(
+                    executed, np.clip(np.asarray(path['actions'], dtype=np.float32), -1.0, 1.0)
+                ):
                     raise RuntimeError('saved actual controls disagree with native execution clipping')
                 round_index = index // spec['eval_num_traj']
                 record = dict(role=role, round_index=round_index, epoch=metrics['evaluation_epochs'][round_index],
@@ -710,38 +770,58 @@ def run_bc(args):
         with (out / 'evaluation_episodes.jsonl').open('x') as stream:
             for record in episode_records:
                 stream.write(json.dumps(record) + '\n')
-        result = dict(status='PASS_FORMAL_OFFICIAL_BC_CHAIN' if args.mode == 'formal' else 'PASS_MINIMAL_OFFICIAL_BC_CHAIN', route=args.route,
-                      checkpoint=str(Path(args.checkpoint).resolve()), checkpoint_epoch=args.epoch,
-                      checkpoint_sha256=_sha(Path(args.checkpoint) / f'weights_epoch_{args.epoch}.pt'),
-                      mode=args.mode, run_spec=spec, demo_receipts=demo_receipts,
-                      demo_pickle_cache_directory=str(demos),
-                      demos_manifest_sha256=_sha(args.demos_manifest) if args.demos_manifest else None,
-                      demo_seed=demo_receipts[0]['seed'] if len(demo_receipts) == 1 else None,
-                      eval_seed=spec['eval_seed_base'],
-                      train_seed=spec['train_seed'], eval_seed_base=spec['eval_seed_base'],
-                      official_loop=str(Path(official.__file__).resolve()),
-                      official_loop_sha256=_sha(official.__file__),
-                      adapter_sha256=_sha(__file__), runtime_helpers_sha256=RUNTIME_HELPERS_SHA256,
-                      policy_sha256=_sha(policy_file),
-                      final_policy_sha256=_sha(out / 'policy/iterations/final_policy.pickle'),
-                      input_dim=589, action_dim=12, loss=metrics['final_loss'], metrics=metrics,
-                      optimizer_evidence=optimizer_evidence, expected_adam_updates=expected_updates,
-                      encoder_frozen_and_unchanged=True, head_updated=True, finite_head_gradients=True,
-                      policy_reload_max_abs=0., actual_online_episodes=len(online_paths),
-                      online_steps=sum(len(p['actions']) for p in online_paths),
-                      online_success_pct=metrics['final_success_pct'],
-                      actual_train_initial_episodes=len(train_initial_paths),
-                      reset_seeds=[env.env.unwrapped.reset_seeds for env in environments],
-                      state_restore_seeds=[env.env.unwrapped.state_restore_seeds for env in environments],
-                      source_seed_partition='pure BC demos separate from paired held-out evaluation seeds',
-                      trusted_native_bundles=[getattr(env.env.unwrapped.native,'bundle_identity',None)
-                                             for env in environments],
-                      policy_selection='original highest-mean-reward best_policy; Best-of-20 SR reported separately',
-                      policy_evidence=replay_evidence,
-                      recovery=dict(enabled=True, checkpoint=str(bc_controller.last_checkpoint), caller_state=str(caller_state),
-                                    batch_records=bc_controller.records, epoch_records=bc_controller.epoch_records)
-                               if bc_controller is not None else dict(enabled=False),
-                      scope=spec['scope'])
+        result = dict(
+            status='PASS_FORMAL_OFFICIAL_BC_CHAIN' if args.mode == 'formal' else 'PASS_MINIMAL_OFFICIAL_BC_CHAIN',
+            route=args.route,
+            checkpoint=str(Path(args.checkpoint).resolve()),
+            checkpoint_epoch=args.epoch,
+            checkpoint_sha256=_sha(Path(args.checkpoint) / f'weights_epoch_{args.epoch}.pt'),
+            mode=args.mode,
+            run_spec=spec,
+            demo_receipts=demo_receipts,
+            demo_pickle_cache_directory=str(demos),
+            demos_manifest_sha256=_sha(args.demos_manifest) if args.demos_manifest else None,
+            demo_seed=demo_receipts[0]['seed'] if len(demo_receipts) == 1 else None,
+            eval_seed=spec['eval_seed_base'],
+            train_seed=spec['train_seed'],
+            eval_seed_base=spec['eval_seed_base'],
+            official_loop=str(Path(official.__file__).resolve()),
+            official_loop_sha256=_sha(official.__file__),
+            adapter_sha256=_sha(__file__),
+            runtime_helpers_sha256=RUNTIME_HELPERS_SHA256,
+            policy_sha256=_sha(policy_file),
+            final_policy_sha256=_sha(out / 'policy/iterations/final_policy.pickle'),
+            input_dim=589,
+            action_dim=12,
+            loss=metrics['final_loss'],
+            metrics=metrics,
+            optimizer_evidence=optimizer_evidence,
+            expected_adam_updates=expected_updates,
+            encoder_frozen_and_unchanged=True,
+            head_updated=True,
+            finite_head_gradients=True,
+            policy_reload_max_abs=0.0,
+            actual_online_episodes=len(online_paths),
+            online_steps=sum(len(p['actions']) for p in online_paths),
+            online_success_pct=metrics['final_success_pct'],
+            actual_train_initial_episodes=len(train_initial_paths),
+            reset_seeds=[env.env.unwrapped.reset_seeds for env in environments],
+            state_restore_seeds=[env.env.unwrapped.state_restore_seeds for env in environments],
+            source_seed_partition='pure BC demos separate from paired held-out evaluation seeds',
+            trusted_native_bundles=[getattr(env.env.unwrapped.native, 'bundle_identity', None) for env in environments],
+            policy_selection='original highest-mean-reward best_policy; Best-of-20 SR reported separately',
+            policy_evidence=replay_evidence,
+            recovery=dict(
+                enabled=True,
+                checkpoint=str(bc_controller.last_checkpoint),
+                caller_state=str(caller_state),
+                batch_records=bc_controller.records,
+                epoch_records=bc_controller.epoch_records,
+            )
+            if bc_controller is not None
+            else dict(enabled=False),
+            scope=spec['scope'],
+        )
         (out / 'validation.json').write_text(json.dumps(result, indent=2))
         state.update(phase='complete', completed=1, exit_code=0)
         save_state()
@@ -795,8 +875,15 @@ def main(argv=None):
     parser.add_argument('--mode', choices=('smoke', 'profile', 'formal'), default='smoke')
     parser.add_argument('--train-seed', type=int, default=100)
     parser.add_argument('--eval-seed-base', '--eval-seed', type=int)
-    parser.add_argument('--policy-evidence', action='store_true', help='Retain real policy inputs and verify corresponding selected/final policy outputs in independent processes')
-    parser.add_argument('--bc-recovery', action='store_true', help='Explicit separate two-epoch profile recovery; default off')
+    parser.add_argument(
+        '--policy-evidence',
+        action='store_true',
+        help='Retain real policy inputs and verify corresponding selected/final policy outputs in independent '
+             'processes',
+    )
+    parser.add_argument(
+        '--bc-recovery', action='store_true', help='Explicit separate two-epoch profile recovery; default off'
+    )
     parser.add_argument('--bc-resume-checkpoint', type=Path)
     parser.add_argument('--bc-pause-after-updates', type=int)
     args = parser.parse_args(argv)

@@ -1,5 +1,5 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/downstream/vendor/boundary.py (verbatim except: imports / paths adapted to the package)
-import argparse
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/downstream/vendor/boundary.py (verbatim except: imports / paths
+# adapted to the package; lines wrapped at 120 columns, unused imports removed)
 import copy
 import csv
 import json
@@ -7,8 +7,21 @@ from pathlib import Path
 import pickle
 import random
 import time
-import traceback
-from trainer_runtime import agent_config, core, create_agent, fingerprint, get_batch, initial_agent, jax, model, np, prepare, restore_agent, torch, utility
+from trainer_runtime import (
+    agent_config,
+    core,
+    create_agent,
+    fingerprint,
+    get_batch,
+    initial_agent,
+    jax,
+    model,
+    np,
+    prepare,
+    restore_agent,
+    torch,
+    utility,
+)
 
 def finite_metrics(info):
     values = {key: float(value) for key, value in info.items()}
@@ -160,7 +173,30 @@ def gate(config, output, *, stop_after=2, resume_root=None):
         np.savez(output / 'next_ids.npz', **samplers['train'].last_ids)
         actions,forward_proof=deterministic_action_reference(agent,next_batch)
         np.save(output/'next_actions.npy',actions,allow_pickle=False)
-        report = dict(actual_exit_code=0, role=config['role'], completed=time.time(), batch_size=1024, updates=2, validation_probes=1, formal_validation_events=0, actual_backend=jax.default_backend(), input_metadata=samplers['train'].input_metadata, first_layer_kernels=shape_report, initial_state=initial, saved_state=expected, checkpoint=str(saved), update_metrics=records, validation=validation, network_step=3, adam_count=2, synthetic_zero_padding=False, encoder_calls=0, WM_dynamics_calls=0, formal_training_started=False, actual_source_binding=binding)
+        report = dict(
+            actual_exit_code=0,
+            role=config['role'],
+            completed=time.time(),
+            batch_size=1024,
+            updates=2,
+            validation_probes=1,
+            formal_validation_events=0,
+            actual_backend=jax.default_backend(),
+            input_metadata=samplers['train'].input_metadata,
+            first_layer_kernels=shape_report,
+            initial_state=initial,
+            saved_state=expected,
+            checkpoint=str(saved),
+            update_metrics=records,
+            validation=validation,
+            network_step=3,
+            adam_count=2,
+            synthetic_zero_padding=False,
+            encoder_calls=0,
+            WM_dynamics_calls=0,
+            formal_training_started=False,
+            actual_source_binding=binding,
+        )
         report.update(updates=stop_after, updates_this_process=stop_after-initial_counter,
                       validation_probes=int(stop_after == 2), network_step=stop_after+1,
                       adam_count=stop_after, initial_counter=initial_counter,
@@ -237,11 +273,31 @@ def reload_gate(config, output, report_path, *, cpu_reference=None, require_cpu_
             utility.atomic_json(report_path,dict(actual_exit_code=1,role=config['role'],
                 completed=time.time(),action_comparison=action_comparison,error='reloaded actions differ'))
             raise ValueError('independent same-CPU reload action arrays exceed FP32 tolerance')
-        utility.atomic_json(report_path, dict(actual_exit_code=0, role=config['role'], completed=time.time(), state=actual, fresh_process=True, backend='cpu', full153_state_exact=True, next_batch_and_rawIDs_exact=True, applied_host_RNG=['numpy', 'python', 'torchCPU'], cuda_RNG_payload_preserved_not_applied=True, finite_actions=True, CPU_action_forward=True, no_updates=True,
-            completed_updates=counter,action_comparison=action_comparison,action_reference_forward=forward_proof,
-            same_cpu_action_consistency_verified=action_comparison is not None,
-            cpu_reference=cpu_reference,cross_backend_diagnostic=cross_backend,
-            action_reference_sha256=expected.get('action_reference_sha256')))
+        utility.atomic_json(
+            report_path,
+            dict(
+                actual_exit_code=0,
+                role=config['role'],
+                completed=time.time(),
+                state=actual,
+                fresh_process=True,
+                backend='cpu',
+                full153_state_exact=True,
+                next_batch_and_rawIDs_exact=True,
+                applied_host_RNG=['numpy', 'python', 'torchCPU'],
+                cuda_RNG_payload_preserved_not_applied=True,
+                finite_actions=True,
+                CPU_action_forward=True,
+                no_updates=True,
+                completed_updates=counter,
+                action_comparison=action_comparison,
+                action_reference_forward=forward_proof,
+                same_cpu_action_consistency_verified=action_comparison is not None,
+                cpu_reference=cpu_reference,
+                cross_backend_diagnostic=cross_backend,
+                action_reference_sha256=expected.get('action_reference_sha256'),
+            ),
+        )
     finally:
         if resources:
             resources.close()
@@ -280,6 +336,31 @@ def accept(config, output, report_path):
     assert int(restored.network.step) == 1000001 and int(restored.network.opt_state[0].count) == 1000000
     for leaf in jax.tree_util.tree_leaves(restored):
         assert np.isfinite(np.asarray(leaf)).all()
-    actions = np.asarray(restored.sample_actions(batch['observations'], batch['actor_goals'], seed=jax.random.PRNGKey(0), temperature=0))
+    actions = np.asarray(
+        restored.sample_actions(batch['observations'], batch['actor_goals'], seed=jax.random.PRNGKey(0), temperature=0)
+    )
     assert actions.shape == (1024, 5) and np.isfinite(actions).all()
-    utility.atomic_json(report_path, dict(actual_exit_code=0, role=config['role'], completed=time.time(), full153_state_exact=True, state=actual, Adam_count=1000000, network_step=1000001, CSV_validation_records=200, checkpoint_transactions=ledger, finite_actions=True, actual_current_dim=resolved['actual_current_dim'], actual_goal_dim=resolved['actual_goal_dim'], synthetic_zero_padding=False, CPU_action_forward=True, no_optimizer_updates=True, entire_1M_host_sampler_replay_performed=False, SR_performed=False, final_checkpoint=str(checkpoint), final_manifest_sha256=utility.sha(checkpoint / 'manifest.json')))
+    utility.atomic_json(
+        report_path,
+        dict(
+            actual_exit_code=0,
+            role=config['role'],
+            completed=time.time(),
+            full153_state_exact=True,
+            state=actual,
+            Adam_count=1000000,
+            network_step=1000001,
+            CSV_validation_records=200,
+            checkpoint_transactions=ledger,
+            finite_actions=True,
+            actual_current_dim=resolved['actual_current_dim'],
+            actual_goal_dim=resolved['actual_goal_dim'],
+            synthetic_zero_padding=False,
+            CPU_action_forward=True,
+            no_optimizer_updates=True,
+            entire_1M_host_sampler_replay_performed=False,
+            SR_performed=False,
+            final_checkpoint=str(checkpoint),
+            final_manifest_sha256=utility.sha(checkpoint / 'manifest.json'),
+        ),
+    )

@@ -1,4 +1,7 @@
-# Moved from cortexbench@9331494:lewm_pcd/envs/metaworld/pcd.py (verbatim except: PointCloudWrapper imported from jepa4r.data.pointcloud; a multisample flag (default False = this file) restores the multisampled render of the paper data for bin-pick / assembly / button / drawer, the pre-6a498d9 code, GATES.md 1.2 item 1)
+# Moved from cortexbench@9331494:lewm_pcd/envs/metaworld/pcd.py (verbatim except: PointCloudWrapper imported from
+# jepa4r.data.pointcloud; a multisample flag (default False = this file) restores the multisampled render of the paper
+# data for bin-pick / assembly / button / drawer, the pre-6a498d9 code, GATES.md 1.2 item 1; lines wrapped at 120
+# columns)
 """The repo's single-depth-camera point cloud (envs/pcd_wrapper.py: crop, 5 mm voxel de-duplication, stratified draw
 with a guaranteed object share, shuffle) for the MetaWorld envs. Two things differ and are overridden here:
 
@@ -22,7 +25,8 @@ import numpy as np
 
 from jepa4r.data.pointcloud import PointCloudWrapper
 
-# workspace around the bins / the peg; drops the robot's shoulder / head behind it (y < 0.3) and the floor below the table
+# workspace around the bins / the peg; drops the robot's shoulder / head behind it (y < 0.3) and the floor below the
+# table
 DEFAULT_CROP_BOX = ((-0.50, 0.30, -0.02), (0.50, 1.00, 0.60))
 GEOM = int(mujoco.mjtObj.mjOBJ_GEOM)  # a plain int: comparing an array with the pybind enum is ~1000x slower
 

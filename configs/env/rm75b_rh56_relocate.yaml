@@ -2,7 +2,7 @@
 # effector; the real task is picking an object with the RH56 hand). The OGBench-cube branch simulates it as Relocate:
 # Adroit Relocate's 100 official object / target positions moved onto the RM75-B + RH56 MuJoCo model of an external
 # native bundle (its env, robot assets and expert; its files are listed in
-# jepa4r/policy/bc/relocate/provenance/assets/rh56_native_bundle_v1.json), the final opposite camera. The paper reports
+# jepa4r/policy/bc/relocate/rh56_native_bundle_v1.json), the final opposite camera. The paper reports
 # no number for it. Values from OGBench-cube:<path>:<line>.
 _base_: _base
 suite: rh56
@@ -20,13 +20,15 @@ pointcloud:
   keep_extra: [visible_goal_marker]
   sampler: rh56_native        # OGBench-cube:lewm_pcd/rh56_adapter/native.py:62-63 (object quota 0.25, green cap 300)
   crop_box: [[-0.6, -0.8, -0.25], [0.6, 0.6, 1.1]]   # native.py:63
-  affine: {center: [0.0, -0.2, 0.25], scale: 4.0}     # OGBench-cube:lewm_pcd/config/train/data/adroit_relocate_pcd.yaml:18-19
+  # OGBench-cube:lewm_pcd/config/train/data/adroit_relocate_pcd.yaml:18-19
+  affine: {center: [0.0, -0.2, 0.25], scale: 4.0}
                                                       # (composed by rh56_adapter/wm_bridge.py:337-340)
 policy: bc
 wm_data:
   num_episodes: 9000          # + 1000 validation episodes: OGBench-cube:lewm_pcd/bench/relocate/rh56_workflow.py:47-48
   episode_len: 200            # OGBench-cube:lewm_pcd/rh56_adapter/collect.py:30,134 (native early termination allowed)
-  mixture: {noisy_expert: 0.5, expert_interrupted_by_random: 0.3, random: 0.2}   # rh56_adapter/collect.py:30 (mix=(.5,.3,.2))
+  # rh56_adapter/collect.py:30 (mix=(.5,.3,.2))
+  mixture: {noisy_expert: 0.5, expert_interrupted_by_random: 0.3, random: 0.2}
   collector: rh56             # the harness's rh56_prepare / rh56_collect / rh56_validate / rh56_publish
   sets:                       # rh56_workflow.py:47-48 (seed = base + index)
     - {name: train, num_episodes: 9000, seed_base: 61000000}

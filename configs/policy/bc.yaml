@@ -1,15 +1,18 @@
 # CortexBench imitation protocol [majumdar2023vc1] (MetaWorld, Adroit Relocate), reused on OGBench Scene
 # (supp. sec:supp-policy). Demonstrations per task: env.policy_data.demos_per_task (25; 100 on Relocate).
 # Values not stated in the paper are those of eai-vc 76fe35e's official configs, which the integrated harness runs
-# unchanged (jepa4r/policy/bc): EV = eai-vc/cortexbench/mujoco_vc/visual_imitation/config/{Metaworld,Adroit}_BC_config.yaml.
+# unchanged (jepa4r/policy/bc): EV =
+# eai-vc/cortexbench/mujoco_vc/visual_imitation/config/{Metaworld,Adroit}_BC_config.yaml.
 name: bc
 impl: jepa4r.policy.bc
 data: demos
 epochs: 100
 proprio:                      # proprioception "where the task provides it" (Sec. 4.3)
-  key: gripper_proprio        # EV Metaworld_BC_config.yaml:38-39 (add_proprio: True; MetaWorld obs[:4]); Adroit: proprio (30-D)
+  key: gripper_proprio        # EV Metaworld_BC_config.yaml:38-39 (add_proprio: True; MetaWorld obs[:4]); Adroit:
+                              # proprio (30-D)
   dims: 6                     # Scene: the first 6 of the 8 entries (effector xyz, cos/sin yaw, gripper opening):
-                              # cortexbench:lewm_pcd/bench/cortexbench/scene_grid.py:38-39,111 (SCENE_PROPRIO_DIMS=6, hand6)
+                              # cortexbench:lewm_pcd/bench/cortexbench/scene_grid.py:38-39,111 (SCENE_PROPRIO_DIMS=6,
+                              # hand6)
 frame_stack: 3                # EV Metaworld_BC_config.yaml:37 (history_window: 3), embeddings fused with FLARE
 hparams:                      # EV Metaworld_BC_config.yaml:42-48 (Adroit_BC_config.yaml identical)
   hidden_sizes: [256, 256, 256]   # BatchNormMLP
@@ -22,8 +25,11 @@ hparams:                      # EV Metaworld_BC_config.yaml:42-48 (Adroit_BC_con
 eval:
   num_evals: 20
   report: best                # success = best of 20 evaluations
-  every: 5                    # EV Metaworld_BC_config.yaml:18 (eval_frequency: 5; plus the last epoch -> 20 evaluations)
+  every: 5                    # EV Metaworld_BC_config.yaml:18 (eval_frequency: 5; plus the last epoch -> 20
+                              # evaluations)
   episodes: 25                # EV Metaworld_BC_config.yaml:20 (eval_num_traj: 25)
-  seeds: [100, 200, 300]      # cortexbench:lewm_pcd/bench/cortexbench/grid.py:56 (--seeds 100,200,300); episode i reset with seed + i
-  horizon: {metaworld: 500, scene: 750}   # CortexBench MetaWorld (eai-vc gym_wrapper.py:222); scene-v0 max_episode_steps
+  seeds: [100, 200, 300]      # cortexbench:lewm_pcd/bench/cortexbench/grid.py:56 (--seeds 100,200,300); episode i reset
+                              # with seed + i
+  horizon: {metaworld: 500, scene: 750}   # CortexBench MetaWorld (eai-vc gym_wrapper.py:222); scene-v0
+                                          # max_episode_steps
                                           # (cortexbench:lewm_pcd/bench/cortexbench/scene_env.py:9-10)

@@ -1,6 +1,8 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/run_bc.py (verbatim except: imports / paths adapted to the package)
-"""One CortexBench MuJoCo imitation run: eai-vc's cortexbench/mujoco_vc/visual_imitation/hydra_launcher.py + train_loop.py
-(commit 76fe35e, third_party/eai-vc), unchanged on disk, with three runtime patches that do not change the reported numbers:
+# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/run_bc.py (verbatim except: imports / paths adapted to the
+# package; lines wrapped at 120 columns, no lint exemptions)
+"""One CortexBench MuJoCo imitation run: eai-vc's cortexbench/mujoco_vc/visual_imitation/hydra_launcher.py +
+train_loop.py (commit 76fe35e, third_party/eai-vc), unchanged on disk, with three runtime patches that do not change the
+reported numbers:
 
 1. Embedding configs: an embedding named NAME is read from conf/model/NAME.yaml next to this file when that file exists
    (the LeWM encoders and the extra baselines), otherwise from vc_models' own conf/model (VC-1). The official
@@ -14,7 +16,8 @@
    policy rollouts, so the evaluation episodes, the trained policy and eval/* are the same; only the logging-only
    train/* values change (they repeat eval/*). This halves the rollout time.
 
-    source env.sh && $PY run_bc.py --config-name Metaworld_BC_config env=... embedding=... seed=100 data_dir=... hydra.run.dir=...
+    source env.sh && $PY run_bc.py --config-name Metaworld_BC_config env=... embedding=... seed=100 data_dir=... \\
+        hydra.run.dir=...
 """
 
 import json
@@ -27,10 +30,10 @@ VI = os.path.join(os.environ['JEPA4R_EAI_VC'], 'cortexbench', 'mujoco_vc', 'visu
 CONF_HOME = os.environ.get('JEPA4R_BC_CONF_HOME', HERE)  # <CONF_HOME>/conf/model/NAME.yaml: the embedding configs
 sys.path.insert(0, VI)
 
-import mujoco_vc.gym_wrapper as gw  # noqa: E402
-import mujoco_vc.model_loading as ml  # noqa: E402
-import numpy as np  # noqa: E402
-import train_loop  # noqa: E402
+import mujoco_vc.gym_wrapper as gw
+import mujoco_vc.model_loading as ml
+import numpy as np
+import train_loop
 
 _load = ml.load_pretrained_model  # the official one, or run_bc3d.py's point-cloud-aware wrapper of it
 
@@ -38,7 +41,8 @@ _load = ml.load_pretrained_model  # the official one, or run_bc3d.py's point-clo
 def load_pretrained_model(embedding_name, *args, **kwargs):
     if not os.path.exists(os.path.join(CONF_HOME, 'conf', 'model', embedding_name + '.yaml')):
         return _load(embedding_name, *args, **kwargs)
-    saved, ml.vc_models_dir_path = ml.vc_models_dir_path, CONF_HOME  # the loader reads <vc_models_dir_path>/conf/model/NAME.yaml
+    # the loader reads <vc_models_dir_path>/conf/model/NAME.yaml
+    saved, ml.vc_models_dir_path = ml.vc_models_dir_path, CONF_HOME
     try:
         return _load(embedding_name, *args, **kwargs)
     finally:

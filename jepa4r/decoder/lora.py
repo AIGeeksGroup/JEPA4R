@@ -10,8 +10,8 @@ from torch import nn
 
 # Moved from lewm-pcd-recon-page4d@d3c2d07:lewm_pcd/recon/decoders/lora.py:LoRAQV, add_lora (lines 7-36; verbatim)
 class LoRAQV(nn.Module):
-    """LoRA on the fused qkv projection, update restricted to the q and v slices: W x + s * [B_q; 0; B_v] (A x).
-    The pretrained qkv weight is untouched; A is random, B is zero, so training starts exactly at the pretrained model."""
+    """LoRA on the fused qkv projection, update restricted to the q and v slices: W x + s * [B_q; 0; B_v] (A x). The
+    pretrained qkv weight is untouched; A is random, B is zero, so training starts exactly at the pretrained model."""
 
     def __init__(self, qkv, rank, alpha=None):
         super().__init__()
@@ -25,7 +25,9 @@ class LoRAQV(nn.Module):
 
     def forward(self, x):
         h = self.down(x)
-        delta = torch.cat([self.up_q(h), torch.zeros_like(h[..., :1]).expand(*h.shape[:-1], self.dim), self.up_v(h)], dim=-1)
+        delta = torch.cat(
+            [self.up_q(h), torch.zeros_like(h[..., :1]).expand(*h.shape[:-1], self.dim), self.up_v(h)], dim=-1
+        )
         return self.qkv(x) + self.scale * delta
 
 

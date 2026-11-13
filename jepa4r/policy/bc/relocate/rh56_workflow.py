@@ -1,4 +1,5 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/relocate/rh56_workflow.py (verbatim except: imports / paths adapted to the package)
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/relocate/rh56_workflow.py (verbatim except: imports / paths adapted to
+# the package; lines wrapped at 120 columns)
 """Thin dispatcher for the final simulated RM75-B/RH56 Relocate protocol.
 
 Planning imports no simulator or learning framework. Existing RH56 bridges own
@@ -25,7 +26,11 @@ OFFICIAL_TASK_CONTENT_SHA256 = '064a33e46fdc7407c6b0599f16413c85aab579c8fcccc957
 
 def _sha(path):
     with Path(path).open('rb') as stream:
-        return hashlib.file_digest(stream, 'sha256').hexdigest() if hasattr(hashlib, 'file_digest') else _stream_sha(stream)
+        return (
+            hashlib.file_digest(stream, 'sha256').hexdigest()
+            if hasattr(hashlib, 'file_digest')
+            else _stream_sha(stream)
+        )
 
 
 def _stream_sha(stream):
@@ -224,13 +229,29 @@ def verify_stage(stage, args, assets) -> dict:
             report = _read(directory / 'manifest.json')
             records = report['episodes']
             expected = _episode_batches(args.mode)[index]
-            _require(state['completed'] == len(expected) and len(records) == len(expected), 'missing collection episodes')
-            _require([(r['split'], r['seed']) for r in records] == [(r['split'], r['seed']) for r in expected], 'collection seed/partition differs')
-            _require(len({r['initial_state_sha256'] for r in records}) == len(records), 'duplicate physical initial state')
-            _require(all(r['camera']['mode'] == 'opposite' and r['success_consistent'] and r['rows'] == r['steps'] + 1 for r in records), 'collection contract failed')
+            _require(
+                state['completed'] == len(expected) and len(records) == len(expected), 'missing collection episodes'
+            )
+            _require(
+                [(r['split'], r['seed']) for r in records] == [(r['split'], r['seed']) for r in expected],
+                'collection seed/partition differs',
+            )
+            _require(
+                len({r['initial_state_sha256'] for r in records}) == len(records), 'duplicate physical initial state'
+            )
+            _require(
+                all(
+                    r['camera']['mode'] == 'opposite' and r['success_consistent'] and r['rows'] == r['steps'] + 1
+                    for r in records
+                ),
+                'collection contract failed',
+            )
             if name.startswith('rh56_validate_'):
                 report = _read(directory / 'batch_acceptance.json')
-                _require(report['status'] == 'PASS_BATCH' and report['deep_data_check'], 'requires deep paired numerical acceptance')
+                _require(
+                    report['status'] == 'PASS_BATCH' and report['deep_data_check'],
+                    'requires deep paired numerical acceptance',
+                )
                 _bound_file(base / 'inputs' / f'plan_{index:03d}.json', report['plan_sha256'])
                 for item in report['files']:
                     _require(Path(item['path']).stat().st_size == item['bytes'], 'accepted payload size changed')
@@ -238,7 +259,10 @@ def verify_stage(stage, args, assets) -> dict:
         elif name == 'rh56_publish':
             report = _read(base / 'data/manifest.json')
             _require(report['source_acceptance_checked'], 'VDS sources were not accepted')
-            _require(report['registry']['counts'] == ({'train': 2, 'val': 1} if smoke else {'train': 9000, 'val': 1000}), 'published split differs')
+            _require(
+                report['registry']['counts'] == ({'train': 2, 'val': 1} if smoke else {'train': 9000, 'val': 1000}),
+                'published split differs',
+            )
             for item in report['datasets']:
                 _bound_file(item['path'], item['sha256'])
             for item in report['source_receipts']:
@@ -247,28 +271,66 @@ def verify_stage(stage, args, assets) -> dict:
             _completed(base / 'wm')
             report = _read(base / 'wm/validation.json')
             identity = _read(base / 'wm/run_identity.json')
-            _require(report['status'] == 'passed' and report['route'] == route and identity['device'] == 'cuda', 'WM route/device gate differs')
-            _require(report['evidence']['optimizer_steps'] == (2 if smoke else report['budget']['completed_epochs'] * (report['split']['clips']['train'] // report['budget']['batch_size'])), 'WM actual optimizer budget differs')
-            _require(report['evidence']['changed_parameter_tensors'] > 0 and report['evidence']['gradient_checks'] > 0, 'WM did not update with checked gradients')
-            _require(math.isfinite(report['evidence']['train_loss']) and
-                     all(math.isfinite(v) for v in report['evidence']['epoch_validation_losses']), 'WM nonfinite recorded loss')
-            _require(report['evidence']['epochs'] == list(range(1, (1 if smoke else 10) + 1)), 'WM completed epoch schedule differs')
+            _require(
+                report['status'] == 'passed' and report['route'] == route and identity['device'] == 'cuda',
+                'WM route/device gate differs',
+            )
+            _require(
+                report['evidence']['optimizer_steps']
+                == (
+                    2
+                    if smoke
+                    else report['budget']['completed_epochs']
+                    * (report['split']['clips']['train'] // report['budget']['batch_size'])
+                ),
+                'WM actual optimizer budget differs',
+            )
+            _require(
+                report['evidence']['changed_parameter_tensors'] > 0 and report['evidence']['gradient_checks'] > 0,
+                'WM did not update with checked gradients',
+            )
+            _require(
+                math.isfinite(report['evidence']['train_loss'])
+                and all(math.isfinite(v) for v in report['evidence']['epoch_validation_losses']),
+                'WM nonfinite recorded loss',
+            )
+            _require(
+                report['evidence']['epochs'] == list(range(1, (1 if smoke else 10) + 1)),
+                'WM completed epoch schedule differs',
+            )
             if smoke:
                 _require(report['evidence']['train_batches'] == 2 and report['evidence']['val_batches'] == 1,
                          'WM bounded batch budget differs')
             _require(report['checkpoint_epoch'] == (1 if smoke else 10), 'WM checkpoint epoch differs')
-            _require(report['strict_reload_maxabs'] and all(v == 0 for v in report['strict_reload_maxabs'].values()), 'strict model/loss reload failed')
-            _require(report['actual_adam_step_values'] == [report['evidence']['optimizer_steps']], 'WM Adam state differs')
+            _require(
+                report['strict_reload_maxabs'] and all(v == 0 for v in report['strict_reload_maxabs'].values()),
+                'strict model/loss reload failed',
+            )
+            _require(
+                report['actual_adam_step_values'] == [report['evidence']['optimizer_steps']], 'WM Adam state differs'
+            )
             _bound_file(report['checkpoint'], report['checkpoint_sha256'])
             _bound_file(base / 'data/manifest.json', report['manifest_sha256'])
             _bound_file(base / f'data/paired_{route}.h5', report['dataset_sha256'])
         elif name == 'rh56_official_demo':
             _completed(base / 'demos', 'wrapper_state.json')
             report = _read(base / 'demos/bc_demos_manifest.json')
-            _require(report['all_requested_sources_succeeded'] and report['requested_count'] == (1 if smoke else 100), 'official demonstration attempt failed/incomplete')
-            _require(report['profile_bc_ready'] if smoke else report['formal_bc_ready'], 'official demos are not ready for this budget')
+            _require(
+                report['all_requested_sources_succeeded'] and report['requested_count'] == (1 if smoke else 100),
+                'official demonstration attempt failed/incomplete',
+            )
+            _require(
+                report['profile_bc_ready'] if smoke else report['formal_bc_ready'],
+                'official demos are not ready for this budget',
+            )
             for item in report['selected']:
-                _require(item['success'] and item['coverage'] == 'expert' and item['noise_std'] == 0 and item['camera']['mode'] == 'opposite', 'official demo protocol differs')
+                _require(
+                    item['success']
+                    and item['coverage'] == 'expert'
+                    and item['noise_std'] == 0
+                    and item['camera']['mode'] == 'opposite',
+                    'official demo protocol differs',
+                )
                 _bound_file(item['npz'], item['npz_sha256'])
         elif name.startswith('rh56_bc_'):
             seed = int(name.rsplit('_', 1)[1])
@@ -279,17 +341,42 @@ def verify_stage(stage, args, assets) -> dict:
             expected_updates = 1 if smoke else 7900
             _require(job['device'] == 'cuda' and job['epochs'] == (1 if smoke else 100) and
                      job['num_demos'] == (1 if smoke else 100), 'BC actual CUDA job budget differs')
-            _require(report['status'] == ('PASS_MINIMAL_OFFICIAL_BC_CHAIN' if smoke else 'PASS_FORMAL_OFFICIAL_BC_CHAIN'), 'BC numerical chain did not pass')
-            _require(report['route'] == route and report['run_spec']['camera'] == 'opposite', 'BC modality/camera differs')
-            _require(report['train_seed'] == seed and report['input_dim'] == 589 and report['action_dim'] == 12, 'BC seed/dimensions differ')
-            _require(report['encoder_frozen_and_unchanged'] and report['head_updated'] and report['finite_head_gradients'], 'BC model/gradient gate failed')
-            _require(report['optimizer_evidence']['steps'] == expected_updates and report['optimizer_evidence']['finite_gradient_checks'] == expected_updates, 'BC actual Adam budget differs')
-            _require(report['actual_online_episodes'] == (1 if smoke else 500) and report['actual_train_initial_episodes'] == (1 if smoke else 500) and report['online_steps'] > 0, 'BC actual closed-loop rollout count differs')
-            _require(report['policy_reload_max_abs'] == 0 and math.isfinite(report['loss']), 'BC policy reload/loss failed')
+            _require(
+                report['status'] == ('PASS_MINIMAL_OFFICIAL_BC_CHAIN' if smoke else 'PASS_FORMAL_OFFICIAL_BC_CHAIN'),
+                'BC numerical chain did not pass',
+            )
+            _require(
+                report['route'] == route and report['run_spec']['camera'] == 'opposite', 'BC modality/camera differs'
+            )
+            _require(
+                report['train_seed'] == seed and report['input_dim'] == 589 and report['action_dim'] == 12,
+                'BC seed/dimensions differ',
+            )
+            _require(
+                report['encoder_frozen_and_unchanged'] and report['head_updated'] and report['finite_head_gradients'],
+                'BC model/gradient gate failed',
+            )
+            _require(
+                report['optimizer_evidence']['steps'] == expected_updates
+                and report['optimizer_evidence']['finite_gradient_checks'] == expected_updates,
+                'BC actual Adam budget differs',
+            )
+            _require(
+                report['actual_online_episodes'] == (1 if smoke else 500)
+                and report['actual_train_initial_episodes'] == (1 if smoke else 500)
+                and report['online_steps'] > 0,
+                'BC actual closed-loop rollout count differs',
+            )
+            _require(
+                report['policy_reload_max_abs'] == 0 and math.isfinite(report['loss']), 'BC policy reload/loss failed'
+            )
             _bound_file(directory / 'policy/iterations/best_policy.pickle', report['policy_sha256'])
             _bound_file(directory / 'policy/iterations/final_policy.pickle', report['final_policy_sha256'])
             _bound_file(base / 'demos/bc_demos_manifest.json', report['demos_manifest_sha256'])
-            _bound_file(Path(report['checkpoint']) / f'weights_epoch_{report["checkpoint_epoch"]}.pt', report['checkpoint_sha256'])
+            _bound_file(
+                Path(report['checkpoint']) / f'weights_epoch_{report["checkpoint_epoch"]}.pt',
+                report['checkpoint_sha256'],
+            )
         else:
             raise ValueError('unknown RH56 stage: ' + name)
         return dict(passed=True, details=report)

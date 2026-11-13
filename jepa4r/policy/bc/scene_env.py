@@ -1,4 +1,5 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/scene_env.py (verbatim except: imports / paths adapted to the package)
+# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/scene_env.py (verbatim except: imports / paths adapted to
+# the package; lines wrapped at 120 columns, no lint exemptions)
 """OGBench scene's five evaluation tasks as an env of CortexBench's (eai-vc) imitation harness (runs in the lewm_mw env,
 MuJoCo 3 + OGBench); built as rm75_env.py: the harness (MuJoCo 2.0) reaches it through run_bc_scene.py's proxy and the
 scene_server.py subprocess, and the env is the repo's (envs.ogb_scene_env.OGBSceneEnv, mode='task') with its point-cloud
@@ -11,24 +12,25 @@ wrapper (envs.ogb_pcd.ScenePointCloudWrapper).
 * rgb(): front_pixels 224x224, anti-aliased (OGBSceneEnv.render: the renderer and the size of the 2D LeWM data);
 * pcd(): (1200, 6) float32 xyz (m) + rgb 0..255, the 3D LeWM data's recipe (ScenePointCloudWrapper's point cloud), its
   sampling RNG seeded with the seed + 7919 at every reset; a cloud is drawn only when the harness asks for a frame;
-* proprioception (proprio_of): [effector xyz, cos yaw, sin yaw, gripper opening, button 0 (drawer lock), button 1 (window
-  lock)], 8 entries; run_bc_scene.py feeds the policy the first SCENE_PROPRIO_DIMS of them (scene_grid.py --proprio:
-  hand6 = the first 6, the robot's own state; none = no proprioception).
+* proprioception (proprio_of): [effector xyz, cos yaw, sin yaw, gripper opening, button 0 (drawer lock), button 1
+  (window lock)], 8 entries; run_bc_scene.py feeds the policy the first SCENE_PROPRIO_DIMS of them (the source's
+  scene_grid.py --proprio: hand6 = the first 6, the robot's own state; none = no proprioception).
 Used by make_scene_demos.py (the demos) and scene_server.py (the evaluation env)."""
 from __future__ import annotations
 
 import os
 import sys
 
-LEWM = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..'))  # the repository (jepa4r/)
+# the repository (jepa4r/)
+LEWM = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..'))
 sys.path.insert(0, LEWM)
 os.environ.setdefault('MUJOCO_GL', 'egl')
 
-import numpy as np  # noqa: E402
+import numpy as np
 
-from jepa4r.envs.ogbench.ogb_pcd import SEED_OFFSET, ScenePointCloudWrapper  # noqa: E402
-from jepa4r.envs.ogbench.ogb_scene_env import OGBSceneEnv  # noqa: E402
-from jepa4r.envs.ogbench.ogb_scene_expert import HORIZON  # noqa: E402
+from jepa4r.envs.ogbench.ogb_pcd import SEED_OFFSET, ScenePointCloudWrapper
+from jepa4r.envs.ogbench.ogb_scene_env import OGBSceneEnv
+from jepa4r.envs.ogbench.ogb_scene_expert import HORIZON
 
 TASKS = {f'scene-task{k}-v0': k for k in range(1, 6)}
 
@@ -49,7 +51,8 @@ class SceneCBEnv:
         self.u = self.genv._u
         self._seed = 0
         self.obs = None
-        self.reset()  # OGBench builds the model at the first reset; the harness reads proprioception before its first reset
+        # OGBench builds the model at the first reset; the harness reads proprioception before its first reset
+        self.reset()
 
     def seed(self, s):
         self._seed = int(s)
@@ -57,7 +60,8 @@ class SceneCBEnv:
     def reset(self):
         s = self._seed
         self.genv.reset(seed=s, options=dict(task_id=self.task_id))
-        self.pcw._rng = np.random.default_rng(s + SEED_OFFSET)  # no cloud at reset: drawn when the harness asks for a frame
+        # no cloud at reset: drawn when the harness asks for a frame
+        self.pcw._rng = np.random.default_rng(s + SEED_OFFSET)
         self.obs = proprio_of(self.u)
         return self.obs
 

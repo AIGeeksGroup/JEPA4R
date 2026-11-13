@@ -5,12 +5,18 @@ goal: target state of the objects. Evaluation: 50 episodes on each of the five o
 (jepa4r/eval/ogbench.py).
 
 Integrated code: the OGBench-cube branch's Cube 1-4 workflow ("Current paper Cube workflow.",
-OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench), moved here with its own layout. Its controller (workflow.py) runs fifteen
-stages as child processes (python -m jepa4r.policy.gciql.<module>); each closes with a receipt that the next stage and
-any resume verify, and every run binds the sha256 of its sources (INTEGRATED_SOURCES.json, SOURCE_MANIFEST.json,
-collection/sources.json, downstream/vendor/source_manifest.json, pldm/source_manifest.json, ALGORITHM_SIGNATURES.json:
-the moved files, re-pinned at their places here; a run refuses a pinned file that changed, as the branch's release
-did). The stages of this repository run the workflow's stages for (cfg.env, cfg.method), in the workflow's own order:
+OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench), placed along the Integration Map (docs/architecture.md): GCIQL, its
+native evaluation and acceptance stages and the controller here; collection and official play data in jepa4r/data/cube,
+world-model training in jepa4r/models/cube, PLDM, LeJEPA and the released VISReg / V-JEPA 2.1 weights in
+jepa4r/baselines/cube. The controller (workflow.py) runs fifteen stages as child processes (python -m <module>); each
+closes with a receipt that the next stage and any resume verify, and every run binds the sha256 of its sources
+(INTEGRATED_SOURCES.json and ALGORITHM_SIGNATURES.json here, jepa4r/models/cube/SOURCE_MANIFEST.json,
+jepa4r/data/cube/collection/sources.json, downstream/vendor/source_manifest.json,
+jepa4r/baselines/cube/pldm/source_manifest.json; a run refuses a pinned file that changed, as the branch's release
+did). downstream/vendor/ holds the branch's frozen GCIQL copies (downstream/vendor/source_manifest.json); here they are
+wrapped at 120 columns, with LF line ends, without unused imports and with the names downstream/trainer.py sets at run
+time declared, otherwise unchanged (the same AST). The stages of this repository run the workflow's stages for
+(cfg.env, cfg.method), in the workflow's own order:
 
   stage                workflow stages                                                  run root (the workflow's
   collect_wm_data      collect, views                                                   output_root)
@@ -22,14 +28,14 @@ did). The stages of this repository run the workflow's stages for (cfg.env, cfg.
                        camera, bind, encode, cache-audit, gate, reload, gciql, accept,
                        native-sr, native-audit
 
-Shared inputs of every run root of an env: official play data data/policy/<env>/official/cube<N>, the paired
-collection data/wm/<env>/collected/<mode>/cube<N> and its training views data/wm/<env>/views/<mode>/cube<N>, the
-released weights checkpoints/<visreg|vjepa>/ (prepare-encoder downloads a missing file from the URL pinned in
-released_models.json). cfg.env.harness.mode: formal (the paper protocol: 1e6 GCIQL updates, 250 native episodes) or
-smoke (the workflow's two-update diagnostic). Interpreters: JEPA4R_PY_CUBE_WM (world model, collection, camera; the
-paper runs: Python 3.10, NumPy 2.2.6, MuJoCo 3.3.7) and JEPA4R_PY_CUBE_RL (GCIQL, encoding, native evaluation; JAX 0.7.2,
-Flax 0.11.2, Torch). Checkouts: JEPA4R_OGBENCH (OGBench a977253, default third_party/ogbench), JEPA4R_VJEPA2 (V-JEPA 2
-204698b, default third_party/vjepa2); stable-worldmodel is the vendored third_party/stable-worldmodel.
+Shared inputs of every run root of an env: official play data data/policy/<env>/official/cube<N>, the paired collection
+data/wm/<env>/collected/<mode>/cube<N> and its training views data/wm/<env>/views/<mode>/cube<N>, the released weights
+checkpoints/<visreg|vjepa>/ (prepare-encoder downloads a missing file from the URL pinned in released_models.json).
+cfg.env.harness.mode: formal (the paper protocol: 1e6 GCIQL updates, 250 native episodes) or smoke (the workflow's
+two-update diagnostic). Interpreters: JEPA4R_PY_CUBE_WM (world model, collection, camera; the paper runs: Python 3.10,
+NumPy 2.2.6, MuJoCo 3.3.7) and JEPA4R_PY_CUBE_RL (GCIQL, encoding, native evaluation; JAX 0.7.2, Flax 0.11.2, Torch).
+Checkouts: JEPA4R_OGBENCH (OGBench a977253, default third_party/ogbench), JEPA4R_VJEPA2 (V-JEPA 2 204698b, default
+third_party/vjepa2); stable-worldmodel is the vendored third_party/stable-worldmodel.
 """
 import json
 import os
@@ -83,15 +89,24 @@ def workflow_config(cfg, stage):
             raise SystemExit(f'the Cube workflow has no {cfg.method.name!r} model (it runs {sorted(MODELS)})')
         model = MODELS[cfg.method.name]
     wm = stage_dir('collect_wm_data', cfg.env.name)
-    config = dict(schema='cube_workflow_v1', cube_count=n, model=model, mode=mode,
-                  output_root=str(run_root(cfg, stage).resolve()),
-                  python=dict(world_model=os.path.abspath(os.environ.get('JEPA4R_PY_CUBE_WM') or sys.executable),
-                              downstream=os.path.abspath(os.environ.get('JEPA4R_PY_CUBE_RL') or sys.executable)),
-                  official_root=str((stage_dir('prepare_policy_data', cfg.env.name) / 'official' / f'cube{n}').resolve()),
-                  collection_root=str((wm / 'collected' / mode / f'cube{n}').resolve()),
-                  data_root=str((wm / 'views' / mode / f'cube{n}').resolve()),
-                  assets_root=str(paths()['checkpoints'].resolve()),
-                  workers=int(cfg.env.harness.workers), prefetch=int(cfg.env.harness.prefetch), collection_seed=0)
+    config = dict(
+        schema='cube_workflow_v1',
+        cube_count=n,
+        model=model,
+        mode=mode,
+        output_root=str(run_root(cfg, stage).resolve()),
+        python=dict(
+            world_model=os.path.abspath(os.environ.get('JEPA4R_PY_CUBE_WM') or sys.executable),
+            downstream=os.path.abspath(os.environ.get('JEPA4R_PY_CUBE_RL') or sys.executable),
+        ),
+        official_root=str((stage_dir('prepare_policy_data', cfg.env.name) / 'official' / f'cube{n}').resolve()),
+        collection_root=str((wm / 'collected' / mode / f'cube{n}').resolve()),
+        data_root=str((wm / 'views' / mode / f'cube{n}').resolve()),
+        assets_root=str(paths()['checkpoints'].resolve()),
+        workers=int(cfg.env.harness.workers),
+        prefetch=int(cfg.env.harness.prefetch),
+        collection_seed=0,
+    )
     if os.environ.get('CUDA_VISIBLE_DEVICES'):
         config['cuda_visible_devices'] = os.environ['CUDA_VISIBLE_DEVICES']
     return config
@@ -110,7 +125,9 @@ def cube_stage(cfg, stage, out_dir=None):
     plan['requested_stage'] = 'all' if stage == 'train_policy' else stage   # PIPELINE_COMPLETE after the last one
     root = Path(config['output_root'])
     status = root / 'STATUS.json'
-    resume = status.is_file() and any(row['stage'] in json.loads(status.read_text())['completed'] for row in plan['stages'])
+    resume = status.is_file() and any(
+        row['stage'] in json.loads(status.read_text())['completed'] for row in plan['stages']
+    )
     print(json.dumps(plan, indent=2), flush=True)
     code = workflow.execute(plan, resume=resume)
     state = json.loads(status.read_text())
@@ -140,27 +157,39 @@ def train_world_model(cfg, out_dir):
     return {'harness_status': state['stage'], 'completed': sorted(state['completed'])}
 
 
-def native_result(root):
-    """The native evaluation of a run root: per task the successes over its episodes (native/episodes/task*/...)."""
-    per_task = {}
+def native_events(root):
+    """The native evaluation of a run root, one event per episode (downstream/native/episodes/task*/episode_*/
+    result.json): task, episode, success and the evaluated model group."""
+    events = []
     for path in sorted((Path(root) / 'downstream' / 'native' / 'episodes').glob('task*/episode_*/result.json')):
         result = json.loads(path.read_text())
-        per_task.setdefault(int(result['task_id']), []).append(bool(result['success']))
-    return per_task
+        events.append(dict(task=int(result['task_id']), episode_id=int(result['episode_index']),
+                           success=bool(result['success']), model=result['group_id']))
+    return events
+
+
+def native_summary(cfg, root):
+    """The success of a run root's native evaluation through the A1 raw-event aggregation (jepa4r.eval.aggregation
+    .cube_summary): a missing task, a duplicated episode, a wrong denominator or a second model group raises. formal:
+    the 5 tasks x 50 episodes of the paper protocol; smoke: the workflow's one diagnostic episode (task 1)."""
+    from jepa4r.eval.aggregation import cube_summary
+
+    formal = str(cfg.env.harness.mode) == 'formal'
+    return cube_summary(native_events(root), tasks=(1, 2, 3, 4, 5) if formal else (1,),
+                        episodes_per_task=50 if formal else 1)
 
 
 def train(cfg, out_dir) -> dict:
     """train_policy on Cube 1-4: encode the official play data with the frozen encoder, GCIQL (1e6 updates, seed 0),
     then the native evaluation of the final policy (5 tasks x 50 episodes)."""
     cube_stage(cfg, 'train_policy', out_dir)
-    root = run_root(cfg, 'train_policy')
-    per_task = native_result(root)
-    episodes = sum(len(v) for v in per_task.values())
-    if not episodes:
-        raise RuntimeError(f'{cfg.env.name} train_policy: no native evaluation episodes under {root}')
-    success = 100.0 * sum(sum(v) for v in per_task.values()) / episodes
-    return {'success': success, 'success_per_task': {f'task{t}': 100.0 * sum(v) / len(v) for t, v in sorted(per_task.items())},
-            'evals': [{'step': 1000000 if str(cfg.env.harness.mode) == 'formal' else 2, 'success': success}]}
+    summary = native_summary(cfg, run_root(cfg, 'train_policy'))
+    success = summary['success_percent']
+    return {
+        'success': success,
+        'success_per_task': {f"task{row['task']}": row['success_percent'] for row in summary['tasks']},
+        'evals': [{'step': 1000000 if str(cfg.env.harness.mode) == 'formal' else 2, 'success': success}],
+    }
 
 
 def load_frozen_vjepa21(cfg):
@@ -169,9 +198,11 @@ def load_frozen_vjepa21(cfg):
     raw uint8 RGB [B, 3, 224, 224]."""
     from types import SimpleNamespace
 
-    from jepa4r.policy.gciql.released_encoders import load_encoder
+    from jepa4r.baselines.cube.released_encoders import load_encoder
 
-    model = load_encoder(run_root(cfg, 'train_policy') / 'encoder' / 'encoder_spec.json', device=str(cfg.get('device', 'cuda')))
+    model = load_encoder(
+        run_root(cfg, 'train_policy') / 'encoder' / 'encoder_spec.json', device=str(cfg.get('device', 'cuda'))
+    )
     return SimpleNamespace(obs='image', latent_dim=int(model.output_dim), encode=model.encode_uint8, model=model)
 
 
@@ -187,7 +218,7 @@ def load_frozen_pldm(cfg):
     accepted export; encode() takes the raw uint8 RGB [B, 224, 224, 3] (resized to 65x65 there, PLDM's input)."""
     from types import SimpleNamespace
 
-    from jepa4r.policy.gciql import workflow_pldm_encoder as adapter
+    from jepa4r.baselines.cube import workflow_pldm_encoder as adapter
 
     receipt = json.loads((run_root(cfg, 'train_wm') / 'wm' / 'WM_ACCEPTANCE.json').read_text())
     model = adapter.load_frozen(Path(receipt['checkpoint']['path']), device=str(cfg.get('device', 'cuda')))
@@ -198,8 +229,9 @@ def load_frozen_pldm(cfg):
 def cache_latents(cfg, encoder, out_path):
     """features.cache_latents on Cube: the workflow's encode and cache-audit stages for (cfg.env, cfg.method) -- every
     official play row set back into the simulator, rendered and encoded with the run's frozen encoder (the export
-    train_wm accepted, or the released weights prepare-encoder bound). The cache stays where the workflow's receipts bind
-    it (the run root's downstream/cache), so out_path is not written; ``encoder``, when given, must be that encoder.
+    train_wm accepted, or the released weights prepare-encoder bound). The cache stays where the workflow's receipts
+    bind it (the run root's downstream/cache), so out_path is not written; ``encoder``, when given, must be that
+    encoder.
     -> {split: the feature loader arguments of runtime_recipe.json}"""
     from jepa4r.methods import trained_by_us
 
@@ -231,12 +263,11 @@ def evaluate_run(cfg, policy=None, encoder=None):
     config's). Runs the remaining train_policy stages first if the evaluation has not run.
     -> {"success": %, "success_per_task": {task: %}, "episodes": n}"""
     root = Path(policy) if policy else run_root(cfg, 'train_policy')
-    if not native_result(root):
+    if not native_events(root):
         if root.resolve() != run_root(cfg, 'train_policy').resolve():
             raise FileNotFoundError(f'no native evaluation in {root}')
         cube_stage(cfg, 'train_policy')
-    per_task = native_result(root)
-    episodes = sum(len(v) for v in per_task.values())
-    return {'success': 100.0 * sum(sum(v) for v in per_task.values()) / episodes,
-            'success_per_task': {f'task{t}': 100.0 * sum(v) / len(v) for t, v in sorted(per_task.items())},
-            'episodes': episodes}
+    summary = native_summary(cfg, root)
+    return {'success': summary['success_percent'],
+            'success_per_task': {f"task{row['task']}": row['success_percent'] for row in summary['tasks']},
+            'episodes': summary['episodes']}

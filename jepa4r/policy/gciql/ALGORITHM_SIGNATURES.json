@@ -11,47 +11,47 @@
       "sha256": "0a0cd586895f23cba25c2811cb4cdb096a5b83affa0a8c585e0260b7187d56f0"
     },
     {
-      "file": "native/tiny_train.py",
+      "file": "../../baselines/cube/native/tiny_train.py",
       "name": "SIGReg",
       "sha256": "799ee019b7a87d770318d5b27833b6499f988679565f91ef49a850285147b477"
     },
     {
-      "file": "native/tiny_train.py",
+      "file": "../../baselines/cube/native/tiny_train.py",
       "name": "Encoder",
       "sha256": "00f41dbb95d845befa9c68dcd107672423c9abbf2572fe6797764a76fc579036"
     },
     {
-      "file": "pldm/method.py",
+      "file": "../../baselines/cube/pldm/method.py",
       "name": "check_batch",
       "sha256": "f0cc68928799f68c5067ccb76be8cd9a8378280ca5123df229087bd59744baed"
     },
     {
-      "file": "pldm/method.py",
+      "file": "../../baselines/cube/pldm/method.py",
       "name": "build_model",
       "sha256": "62d0bf16d3850d88c671b9d89a80ff6cd06a8995f3a40338a80fef7b4030dcd8"
     },
     {
-      "file": "pldm/method.py",
+      "file": "../../baselines/cube/pldm/method.py",
       "name": "build_optimizer",
       "sha256": "34cb56e8a4d0fa6300b6964feeebc0b224d76c5cb2a4fcedb5291a9788fc4c73"
     },
     {
-      "file": "pldm/method.py",
+      "file": "../../baselines/cube/pldm/method.py",
       "name": "build_scheduler",
       "sha256": "ea4ef670f926ea9568d71af9b5ed85e83f51c79de65ec62cb71703149134ca33"
     },
     {
-      "file": "pldm/train.py",
+      "file": "../../baselines/cube/pldm/train.py",
       "name": "native_module",
       "sha256": "c37af0223ec3d17725c429851f5c58ecb9eaf2faa459baeb42e991e53b0aba56"
     },
     {
-      "file": "pldm/train.py",
+      "file": "../../baselines/cube/pldm/train.py",
       "name": "author_schedule_before_step",
       "sha256": "b6d6c4282d6da71ac72859424dbebdf66f78704033b53b60da46aa42fe712d88"
     },
     {
-      "file": "pldm/train.py",
+      "file": "../../baselines/cube/pldm/train.py",
       "name": "trainer_options",
       "sha256": "3c591c0af39eea77cddc79c79129ddd06b1345a7e8c3a92ec33ae5275a7f790a"
     }

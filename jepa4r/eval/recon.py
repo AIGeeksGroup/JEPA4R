@@ -7,10 +7,11 @@ open loop  for cfg.decoder.eval.open_loop.num_episodes episodes: encode the cont
            actions (control), and decode encoder latents of the true frames (true latents); decode every step
 Metrics: jepa4r/metrics/pointcloud.py, in cm in the world frame. Output keys: jepa4r/stages/eval_recon.py.
 
-Integrated code (lewm-pcd-recon-page4d@d3c2d07): scripts/recon/eval_frames.py and eval_rollout.py, moved as the functions
-``eval_frames(argv)`` / ``eval_rollout(argv)`` (their command lines unchanged). ``evaluate`` runs both on the stage-B
-decoder of outputs/train_decoder/<env>/<decoder>/<tag>/ and reads the table entries off their outputs:
-  eval_frames/metrics.json   errors.<name>.{mean, median, p90} over the frames (nn, outliers_pct, object_pos, nn_shuffled)
+Integrated code (lewm-pcd-recon-page4d@d3c2d07): scripts/recon/eval_frames.py and eval_rollout.py, moved as the
+functions ``eval_frames(argv)`` / ``eval_rollout(argv)`` (their command lines unchanged). ``evaluate`` runs both on the
+stage-B decoder of outputs/train_decoder/<env>/<decoder>/<tag>/ and reads the table entries off their outputs:
+  eval_frames/metrics.json   errors.<name>.{mean, median, p90} over the frames (nn, outliers_pct, object_pos,
+                             nn_shuffled)
   eval_rollout/rollout.json  mean_per_frame['<metric>/<kind>'] per model frame (kind: true, pred, wrong, hold),
                              meta.env_steps
 """
@@ -21,14 +22,14 @@ from pathlib import Path
 
 import matplotlib
 matplotlib.use('Agg')
-import matplotlib.pyplot as plt  # noqa: E402
-import numpy as np  # noqa: E402
-import stable_pretraining as spt  # noqa: E402
-import torch  # noqa: E402
+import matplotlib.pyplot as plt
+import numpy as np
+import stable_pretraining as spt
+import torch
 
-from jepa4r.decoder.imagine import action_blocks, open_loop, training_setup  # noqa: E402
-from jepa4r.decoder.model import open_run  # noqa: E402
-from jepa4r.metrics import pointcloud as M  # noqa: E402
+from jepa4r.decoder.imagine import action_blocks, open_loop, training_setup
+from jepa4r.decoder.model import open_run
+from jepa4r.metrics import pointcloud as M
 
 try:  # stable-worldmodel (third_party/stable-worldmodel) is needed to run, not to import this module
     import stable_worldmodel as swm
@@ -36,16 +37,23 @@ except ImportError:  # pragma: no cover
     swm = None
 
 
-# Moved from lewm-pcd-recon-page4d@d3c2d07:lewm_pcd/scripts/recon/eval_frames.py:main (lines 36-129; verbatim except: main() -> eval_frames(argv), parse_args(argv))
+# Moved from lewm-pcd-recon-page4d@d3c2d07:lewm_pcd/scripts/recon/eval_frames.py:main (lines 36-129; verbatim except:
+# main() -> eval_frames(argv), parse_args(argv))
 def eval_frames(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--recon', required=True, help='<run> or <run>/weights_epoch_N.pt under checkpoints/recon/')
     ap.add_argument('--input', help='dataset the encoder reads (default: the one the run was trained on)')
-    ap.add_argument('--target', help='point clouds of the same rows (default: as trained; = --input for point-cloud checkpoints)')
+    ap.add_argument(
+        '--target', help='point clouds of the same rows (default: as trained; = --input for point-cloud checkpoints)'
+    )
     ap.add_argument('--split', choices=['val', 'all'], help='default: val on the training datasets, all otherwise')
     ap.add_argument('--frames', type=int, default=4096)
-    ap.add_argument('--regions', nargs='*', default=['object=privileged_block_0_pos:3', 'effector=proprio_effector_pos:6'],
-                    help='name=position column:radius in cm; the first one is the object whose position is read out')
+    ap.add_argument(
+        '--regions',
+        nargs='*',
+        default=['object=privileged_block_0_pos:3', 'effector=proprio_effector_pos:6'],
+        help='name=position column:radius in cm; the first one is the object whose position is read out',
+    )
     ap.add_argument('--outlier', type=float, default=3.0, help='outlier threshold, cm')
     ap.add_argument('--batch', type=int, default=128)
     ap.add_argument('--seed', type=int, default=0)
@@ -60,7 +68,9 @@ def eval_frames(argv=None):
     index = np.arange(len(episodes.frames))
     if split == 'val':  # the frames train_recon.py held out
         g = torch.Generator().manual_seed(cfg.seed)
-        index = np.asarray(spt.data.random_split(episodes.frames, [cfg.train_split, 1 - cfg.train_split], generator=g)[1].indices)
+        index = np.asarray(
+            spt.data.random_split(episodes.frames, [cfg.train_split, 1 - cfg.train_split], generator=g)[1].indices
+        )
     index = np.sort(np.random.default_rng(args.seed).choice(index, min(args.frames, len(index)), replace=False))
 
     regions, radius = {}, {}
@@ -74,7 +84,9 @@ def eval_frames(argv=None):
     obj = next(iter(regions), None)
 
     center, scale = cfg.data.target_preprocessor.center, cfg.data.target_preprocessor.scale
-    loader = torch.utils.data.DataLoader(torch.utils.data.Subset(episodes.frames, index.tolist()), batch_size=args.batch, num_workers=6)
+    loader = torch.utils.data.DataLoader(
+        torch.utils.data.Subset(episodes.frames, index.tolist()), batch_size=args.batch, num_workers=6
+    )
     rows, clouds = [], []
     with torch.no_grad():
         for b, batch in enumerate(loader):
@@ -84,8 +96,13 @@ def eval_frames(argv=None):
             for tag, z in (('', latent), ('_shuffled', latent.roll(1, 0))):
                 pred = M.to_metres(decoder.to_points(decoder(z), gt.size(1)).float(), center, scale)
                 spurious, missing, d_pg = M.nn_both_sides(pred, gt)
-                out = {'nn': 50 * (spurious + missing), 'nn_spurious': 100 * spurious, 'nn_missing': 100 * missing,
-                       'outliers_pct': 100 * (d_pg > args.outlier / 100).float().mean(-1), 'sliced_w': 100 * M.sliced_w(pred, gt)}
+                out = {
+                    'nn': 50 * (spurious + missing),
+                    'nn_spurious': 100 * spurious,
+                    'nn_missing': 100 * missing,
+                    'outliers_pct': 100 * (d_pg > args.outlier / 100).float().mean(-1),
+                    'sliced_w': 100 * M.sliced_w(pred, gt),
+                }
                 if gt.size(-1) > 3 and pred.size(-1) > 3:
                     out['colour'] = M.colour_error(pred, gt)
                 for name, pos in regions.items():
@@ -110,16 +127,37 @@ def eval_frames(argv=None):
             res['object_pos_sim' + tag] = (c_dec - regions[obj]).norm(dim=-1) * 100
         res['object_pos_real_sim'] = (c_real - regions[obj]).norm(dim=-1) * 100
 
-    stat = lambda v: {'mean': float(np.nanmean(v)), 'median': float(np.nanmedian(v)), 'p90': float(np.nanpercentile(v, 90)),
-                      'nan_pct': float(np.isnan(v).mean() * 100)}
+    stat = lambda v: {
+        'mean': float(np.nanmean(v)),
+        'median': float(np.nanmedian(v)),
+        'p90': float(np.nanpercentile(v, 90)),
+        'nan_pct': float(np.isnan(v).mean() * 100),
+    }
     summary = {k: stat(v.numpy()) for k, v in res.items()}
-    out_dir = Path(args.out) if args.out else Path(swm.data.utils.get_cache_dir(sub_folder='checkpoints'), 'recon', args.recon.split('/')[0],
-                                                     'eval_frames' + (f'_{Path(cfg.data.target).stem}' if other_data else ''))
+    out_dir = (
+        Path(args.out)
+        if args.out
+        else Path(
+            swm.data.utils.get_cache_dir(sub_folder='checkpoints'),
+            'recon',
+            args.recon.split('/')[0],
+            'eval_frames' + (f'_{Path(cfg.data.target).stem}' if other_data else ''),
+        )
+    )
     out_dir.mkdir(parents=True, exist_ok=True)
-    meta = dict(recon=args.recon, world_model=cfg.ckpt, decoder=cfg.decoder._target_, input=cfg.data.input, target=cfg.data.target, split=split,
-                frames=len(index), outlier_cm=args.outlier, regions=args.regions,
-                object_colour=None if purity is None else [round(float(c), 3) for c in signature],
-                object_colour_elsewhere_pct=None if purity is None else float(purity) * 100)
+    meta = dict(
+        recon=args.recon,
+        world_model=cfg.ckpt,
+        decoder=cfg.decoder._target_,
+        input=cfg.data.input,
+        target=cfg.data.target,
+        split=split,
+        frames=len(index),
+        outlier_cm=args.outlier,
+        regions=args.regions,
+        object_colour=None if purity is None else [round(float(c), 3) for c in signature],
+        object_colour_elsewhere_pct=None if purity is None else float(purity) * 100,
+    )
     json.dump({'meta': meta, 'errors': summary}, open(out_dir / 'metrics.json', 'w'), indent=2)
     with open(out_dir / 'frames.csv', 'w', newline='') as f:
         w = csv.writer(f)
@@ -128,12 +166,19 @@ def eval_frames(argv=None):
 
     print(f'[eval_frames] {args.recon}: {len(index)} {split} frames of {cfg.data.target} -> {out_dir}')
     if purity is not None and purity > 0.01:
-        print(f'[eval_frames] WARNING the object colour also covers {float(purity) * 100:.1f} % of the rest of the scene: object_pos is unreliable here')
+        print(
+            f'[eval_frames] WARNING the object colour also covers {float(purity) * 100:.1f} % of the rest of the '
+            'scene: object_pos is unreliable here'
+        )
     for k, v in summary.items():
-        print(f'  {k:28s} mean {v["mean"]:8.3f}  median {v["median"]:8.3f}  p90 {v["p90"]:8.3f}' + (f'  (no readout in {v["nan_pct"]:.1f} %)' if v['nan_pct'] else ''))
+        print(
+            f'  {k:28s} mean {v["mean"]:8.3f}  median {v["median"]:8.3f}  p90 {v["p90"]:8.3f}'
+            + (f'  (no readout in {v["nan_pct"]:.1f} %)' if v['nan_pct'] else '')
+        )
 
 
-# Moved from lewm-pcd-recon-page4d@d3c2d07:lewm_pcd/scripts/recon/eval_rollout.py:KINDS, parse_episodes, main (lines 36-173; verbatim except: main() -> eval_rollout(argv), parse_args(argv))
+# Moved from lewm-pcd-recon-page4d@d3c2d07:lewm_pcd/scripts/recon/eval_rollout.py:KINDS, parse_episodes, main (lines
+# 36-173; verbatim except: main() -> eval_rollout(argv), parse_args(argv))
 KINDS = {'true': '#eb6834', 'pred': '#2a78d6', 'wrong': '#1baf7a', 'hold': '#8a8984'}
 
 
@@ -150,12 +195,18 @@ def eval_rollout(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--recon', required=True, help='<run> or <run>/weights_epoch_N.pt under checkpoints/recon/')
     ap.add_argument('--input', help='trajectories the encoder reads (default: the dataset the run was trained on)')
-    ap.add_argument('--target', help='point clouds of the same rows (default: as trained; = --input for point-cloud checkpoints)')
+    ap.add_argument(
+        '--target', help='point clouds of the same rows (default: as trained; = --input for point-cloud checkpoints)'
+    )
     ap.add_argument('--episodes', default='0:64', help='a:b ranges and single indices, comma separated')
     ap.add_argument('--context', type=int, help='given model frames (default: the world model\'s history size)')
-    ap.add_argument('--regions', nargs='*', default=['object=privileged_block_0_pos:3', 'effector=proprio_effector_pos:6'])
+    ap.add_argument(
+        '--regions', nargs='*', default=['object=privileged_block_0_pos:3', 'effector=proprio_effector_pos:6']
+    )
     ap.add_argument('--batch', type=int, default=8, help='episodes per batch')
-    ap.add_argument('--chunk', type=int, default=64, help='latents decoded at a time (GPU memory; the result does not depend on it)')
+    ap.add_argument(
+        '--chunk', type=int, default=64, help='latents decoded at a time (GPU memory; the result does not depend on it)'
+    )
     ap.add_argument('--device', default='cuda')
     ap.add_argument('--out', help='default: <run dir>/eval_rollout[_<target name>]')
     args = ap.parse_args(argv)
@@ -188,13 +239,22 @@ def eval_rollout(argv=None):
             loaded = [episodes.load(e, frameskip) for e in chunk]
             K = min(x['target'].size(0) for x in loaded)
             obs = torch.stack([x[wm.obs_key][:K] for x in loaded]).to(args.device)
-            gt = M.to_metres(torch.stack([x['target'][:K] for x in loaded]).to(args.device).float(), center, scale)       # (E, K, N, C)
-            blocks = torch.stack([action_blocks(episodes.column('action', e), frameskip, a_mean, a_std)[:K - 1] for e in chunk]).to(args.device)
-            true = wm(obs)                                                                                         # (E, K, D)
+            # (E, K, N, C)
+            gt = M.to_metres(torch.stack([x['target'][:K] for x in loaded]).to(args.device).float(), center, scale)
+            blocks = torch.stack(
+                [action_blocks(episodes.column('action', e), frameskip, a_mean, a_std)[: K - 1] for e in chunk]
+            ).to(args.device)
+            # (E, K, D)
+            true = wm(obs)
             lat = {'true': true, 'pred': open_loop(wm.world_model, true, blocks, context, history),
                    'wrong': open_loop(wm.world_model, true, blocks.roll(1, 0), context, history),
                    'hold': true[:, context - 1:context].expand_as(true)}
-            region_pos = {n: torch.from_numpy(np.stack([episodes.column(c, e, frameskip)[:K] for e in chunk])).float().to(args.device) for n, c in regions.items()}
+            region_pos = {
+                n: torch.from_numpy(np.stack([episodes.column(c, e, frameskip)[:K] for e in chunk]))
+                .float()
+                .to(args.device)
+                for n, c in regions.items()
+            }
             flat = lambda t: t.flatten(0, 1)
             for kind, z in lat.items():
                 dec = decode(z)
@@ -212,7 +272,8 @@ def eval_rollout(argv=None):
                 pos['sim'].append(region_pos[obj].cpu())
             print(f'[eval_rollout] episodes {i + len(chunk)}/{len(eps)}', flush=True)
 
-    res = {k: torch.cat(v).numpy() for k, v in res.items()}                                                        # (E, K)
+    # (E, K)
+    res = {k: torch.cat(v).numpy() for k, v in res.items()}
     K = next(iter(res.values())).shape[1]
     steps = np.arange(K) * frameskip
     purity, track = None, {}
@@ -227,47 +288,100 @@ def eval_rollout(argv=None):
             res[f'object_pos_xy/{k}'] = (d[..., :2].norm(dim=-1) * 100).numpy()
             res[f'object_pos_z/{k}'] = (d[..., 2].abs() * 100).numpy()
 
-    out_dir = Path(args.out) if args.out else Path(swm.data.utils.get_cache_dir(sub_folder='checkpoints'), 'recon', args.recon.split('/')[0],
-                                                     'eval_rollout' + (f'_{Path(cfg.data.target).stem}' if args.input or args.target else ''))
+    out_dir = (
+        Path(args.out)
+        if args.out
+        else Path(
+            swm.data.utils.get_cache_dir(sub_folder='checkpoints'),
+            'recon',
+            args.recon.split('/')[0],
+            'eval_rollout' + (f'_{Path(cfg.data.target).stem}' if args.input or args.target else ''),
+        )
+    )
     out_dir.mkdir(parents=True, exist_ok=True)
     curves = {k: np.nanmean(v, 0).tolist() for k, v in res.items()}
-    meta = dict(recon=args.recon, world_model=cfg.ckpt, decoder=cfg.decoder._target_, input=cfg.data.input, target=cfg.data.target,
-                episodes=args.episodes, context_frames=context, frameskip=frameskip, env_steps=steps.tolist(), regions=args.regions,
-                object_colour_elsewhere_pct=None if purity is None else float(purity) * 100)
+    meta = dict(
+        recon=args.recon,
+        world_model=cfg.ckpt,
+        decoder=cfg.decoder._target_,
+        input=cfg.data.input,
+        target=cfg.data.target,
+        episodes=args.episodes,
+        context_frames=context,
+        frameskip=frameskip,
+        env_steps=steps.tolist(),
+        regions=args.regions,
+        object_colour_elsewhere_pct=None if purity is None else float(purity) * 100,
+    )
     json.dump({'meta': meta, 'mean_per_frame': curves}, open(out_dir / 'rollout.json', 'w'), indent=1)
     with open(out_dir / 'rollout.csv', 'w', newline='') as f:
         w = csv.writer(f)
         w.writerow(['episode', 'env_step', *res])
-        w.writerows([e, int(steps[k]), *(f'{res[m][j, k]:.4f}' for m in res)] for j, e in enumerate(eps) for k in range(K))
+        w.writerows(
+            [e, int(steps[k]), *(f'{res[m][j, k]:.4f}' for m in res)] for j, e in enumerate(eps) for k in range(K)
+        )
 
     # curves: what deviates, and how fast
-    panels = [m for m in ('nn', f'{obj}_missing' if obj else None, 'object_pos' if obj else None, 'latent_rel') if m and f'{m}/pred' in res]
+    panels = [
+        m
+        for m in ('nn', f'{obj}_missing' if obj else None, 'object_pos' if obj else None, 'latent_rel')
+        if m and f'{m}/pred' in res
+    ]
     fig, axes = plt.subplots(1, len(panels), figsize=(4.6 * len(panels), 3.8))
     for ax, m in zip(np.atleast_1d(axes), panels):
         ax.axvspan(-frameskip / 2, steps[context - 1] + frameskip / 2, color='#efeee9', lw=0)
         for kind, colour in KINDS.items():
             k0 = 0 if kind == 'true' else context - 1
-            ax.plot(steps[k0:], np.nanmean(res[f'{m}/{kind}'], 0)[k0:], color=colour, lw=2, label=kind, ls='--' if kind == 'hold' else '-')
-        ax.set_title(m + ('' if m.startswith('latent') else '  (cm)')); ax.set_xlabel('env step'); ax.set_ylim(bottom=0); ax.grid(alpha=0.3)
+            ax.plot(
+                steps[k0:],
+                np.nanmean(res[f'{m}/{kind}'], 0)[k0:],
+                color=colour,
+                lw=2,
+                label=kind,
+                ls='--' if kind == 'hold' else '-',
+            )
+        ax.set_title(m + ('' if m.startswith('latent') else '  (cm)'))
+        ax.set_xlabel('env step')
+        ax.set_ylim(bottom=0)
+        ax.grid(alpha=0.3)
     np.atleast_1d(axes)[0].legend(frameon=False)
-    fig.suptitle(f'{args.recon}: open loop from {context} given frames, {len(eps)} episodes of {Path(cfg.data.target).stem}', fontsize=10)
+    fig.suptitle(
+        f'{args.recon}: open loop from {context} given frames, {len(eps)} episodes of {Path(cfg.data.target).stem}',
+        fontsize=10,
+    )
     fig.tight_layout(); fig.savefig(out_dir / 'rollout.png', dpi=130); plt.close(fig)
 
     if obj:  # top view of the object's path: simulator, read from the real cloud, read from the open-loop prediction
         show = list(range(min(8, len(eps))))
-        fig, axes = plt.subplots(2, 4, figsize=(15, 7.6)) if len(show) > 4 else plt.subplots(1, len(show), figsize=(3.8 * len(show), 3.9))
+        fig, axes = (
+            plt.subplots(2, 4, figsize=(15, 7.6))
+            if len(show) > 4
+            else plt.subplots(1, len(show), figsize=(3.8 * len(show), 3.9))
+        )
         for ax, j in zip(np.atleast_1d(axes).ravel(), show):
-            for k, colour, name in (('sim', '#0b0b0b', 'simulator'), ('real', KINDS['true'], 'real cloud'), ('pred', KINDS['pred'], 'open loop')):
+            for k, colour, name in (
+                ('sim', '#0b0b0b', 'simulator'),
+                ('real', KINDS['true'], 'real cloud'),
+                ('pred', KINDS['pred'], 'open loop'),
+            ):
                 xy = track[k][j, :, :2].numpy()
                 ax.plot(xy[:, 1], xy[:, 0], '-o', ms=2.5, lw=1.3, color=colour, label=name)
-            ax.set_title(f'episode {eps[j]}', fontsize=9); ax.set_aspect('equal'); ax.invert_xaxis(); ax.grid(alpha=0.3); ax.set_xlabel('y (m)'); ax.set_ylabel('x (m)')
+            ax.set_title(f'episode {eps[j]}', fontsize=9)
+            ax.set_aspect('equal')
+            ax.invert_xaxis()
+            ax.grid(alpha=0.3)
+            ax.set_xlabel('y (m)')
+            ax.set_ylabel('x (m)')
         np.atleast_1d(axes).ravel()[0].legend(frameon=False, fontsize=8)
         fig.suptitle(f'{args.recon}: object path, top view', fontsize=10)
         fig.tight_layout(); fig.savefig(out_dir / 'object_paths.png', dpi=130, bbox_inches='tight'); plt.close(fig)
 
     print(f'[eval_rollout] {args.recon}: {len(eps)} episodes, {context} given frames -> {out_dir}')
     if purity is not None and purity > 0.01:
-        print(f'[eval_rollout] WARNING the object colour also covers {float(purity) * 100:.1f} % of the rest of the scene: object_pos is unreliable here')
+        print(
+            f'[eval_rollout] WARNING the object colour also covers {float(purity) * 100:.1f} % of the rest of the '
+            'scene: object_pos is unreliable here'
+        )
     at = sorted({context - 1, context, K // 2, K - 1})
     print('  env step'.ljust(30) + ''.join(f'{steps[k]:>9d}' for k in at))
     for m in res:

@@ -5,8 +5,8 @@ decoder_kwargs(cfg, train, init_from)    its constructor arguments from cfg.deco
 load_decoder(env, decoder, tag, stage)   a trained decoder of outputs/train_decoder/<env>/<decoder>/<tag>/stage_<a|b>/
 load_decoder_checkpoint(path)            any decoder run (config.json + weights_epoch_<n>.pt), incl. the released ones
 The recon branch's recon/model.py, moved: FrozenLatent (the frozen world model as observation -> per-frame latent),
-input_pipeline (what the encoder reads, from the world model's run config), load_recon / open_run (a trained run with its
-world model and frames), recon_forward (the training step). World models load through
+input_pipeline (what the encoder reads, from the world model's run config), load_recon / open_run (a trained run with
+its world model and frames), recon_forward (the training step). World models load through
 jepa4r.models.world_model.load_checkpoint; the released decoder configs name recon.decoders.PAGE4DDecoder /
 recon_backbones.* (DECODER_TARGETS maps them to the moved classes).
 """
@@ -36,7 +36,10 @@ DECODER_TARGETS = {  # _target_ of the released decoder configs (HF AIGeeksGroup
 PIXEL_SELECTION = 'random_train_fixed_eval'   # PAGE4DDecoder._pick
 
 
-# Moved from lewm-pcd-recon-page4d@d3c2d07:lewm_pcd/recon/model.py:FrozenLatent, load_world_model, input_pipeline, load_recon, open_run, recon_forward (lines 14-97; verbatim except: world models / decoders load through load_checkpoint / load_decoder_checkpoint from given paths instead of stable-worldmodel's load_pretrained under $STABLEWM_HOME/checkpoints; Episodes / build_dataset from jepa4r.decoder.train)
+# Moved from lewm-pcd-recon-page4d@d3c2d07:lewm_pcd/recon/model.py:FrozenLatent, load_world_model, input_pipeline,
+# load_recon, open_run, recon_forward (lines 14-97; verbatim except: world models / decoders load through
+# load_checkpoint / load_decoder_checkpoint from given paths instead of stable-worldmodel's load_pretrained under
+# $STABLEWM_HOME/checkpoints; Episodes / build_dataset from jepa4r.decoder.train)
 class FrozenLatent(nn.Module):
     """A trained world model reduced to its per-frame latent. Never trains, never leaves eval mode (the
     projector's BatchNorm statistics and every dropout stay as trained) -- also when Lightning calls ``train()``."""
@@ -141,8 +144,8 @@ def load_decoder_checkpoint(path):
 
 def decoder_kwargs(cfg, train='frozen', init_from=None):
     """Constructor arguments of the backbone decoders (the recon branch's config/recon/decoder/page4d.yaml and
-    exp/{frozen,lora}.yaml) from cfg.decoder; the target frame = cfg.env.pointcloud.affine. ``train``: 'frozen' (stage A)
-    or 'lora' (stage B, the new parts starting from the stage-A weights ``init_from``)."""
+    exp/{frozen,lora}.yaml) from cfg.decoder; the target frame = cfg.env.pointcloud.affine. ``train``: 'frozen' (stage
+    A) or 'lora' (stage B, the new parts starting from the stage-A weights ``init_from``)."""
     d, sg, head, loss = cfg.decoder, cfg.decoder.set_generator, cfg.decoder.head, cfg.decoder.loss
     grid = math.isqrt(int(sg.num_queries))
     assert grid * grid == int(sg.num_queries), 'num_queries must be a square grid'
@@ -168,7 +171,9 @@ def load_decoder(env, decoder, tag="default", stage="b"):
     """Checkpoint from outputs/train_decoder/<env>/<decoder>/<tag>/."""
     from jepa4r.config import stage_dir
 
-    return load_decoder_checkpoint(stage_dir('train_decoder', env, None, decoder, tag) / f'stage_{stage}' / 'checkpoints')
+    return load_decoder_checkpoint(
+        stage_dir('train_decoder', env, None, decoder, tag) / f'stage_{stage}' / 'checkpoints'
+    )
 
 
 def count_parameters(decoder_cfg):
@@ -182,15 +187,26 @@ def count_parameters(decoder_cfg):
     if str(decoder_cfg.backbone.name) not in ('page4d', 'vggt'):
         raise ValueError('decoder parameters are counted for the PAGE-4D architecture (page4d, vggt)')
     sg, head = decoder_cfg.set_generator, decoder_cfg.head
-    loader, p4.load_page4d = p4.load_page4d, lambda weights: p4.PAGE4D(enable_camera=False, enable_depth=False, enable_track=False)
+    loader, p4.load_page4d = (
+        p4.load_page4d,
+        lambda weights: p4.PAGE4D(enable_camera=False, enable_depth=False, enable_track=False),
+    )
     try:
-        dec = p4.PAGE4DDecoder(latent_dim=int(decoder_cfg.latent_dim), grid=math.isqrt(int(sg.num_queries)),
-                               num_points=int(head.num_points), train='lora', lora_rank=int(decoder_cfg.train.stage_b.lora_rank),
-                               color=bool(head.rgb_branch), gen_dim=int(sg.dim), gen_hidden=int(sg.hidden),
-                               gen_depth=int(sg.num_blocks), query_dim=int(sg.query_dim))
+        dec = p4.PAGE4DDecoder(
+            latent_dim=int(decoder_cfg.latent_dim),
+            grid=math.isqrt(int(sg.num_queries)),
+            num_points=int(head.num_points),
+            train='lora',
+            lora_rank=int(decoder_cfg.train.stage_b.lora_rank),
+            color=bool(head.rgb_branch),
+            gen_dim=int(sg.dim),
+            gen_hidden=int(sg.hidden),
+            gen_depth=int(sg.num_blocks),
+            query_dim=int(sg.query_dim),
+        )
     finally:
         p4.load_page4d = loader
-    is_lora = lambda name: any(t in name for t in p4.ADAPTER_KEYS)  # noqa: E731
+    is_lora = lambda name: any(t in name for t in p4.ADAPTER_KEYS)
     params = list(dec.named_parameters())
     new = sum(p.numel() for n, p in params if n.split('.')[0] in ('generator', 'frame', 'rgb'))
     lora = sum(p.numel() for n, p in params if is_lora(n))

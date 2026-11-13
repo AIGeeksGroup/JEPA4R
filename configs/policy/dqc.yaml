@@ -1,5 +1,6 @@
 # OGBench Puzzle: decoupled Q-chunking (DQC) [li2025dqc], offline goal-conditioned RL (supp. sec:supp-policy).
-# Values not stated in the paper are those of the paper runs (cortexbench@9331494:lewm_pcd/scripts/run_puzzle_pipeline.sh,
+# Values not stated in the paper are those of the paper runs
+# (cortexbench@9331494:lewm_pcd/scripts/run_puzzle_pipeline.sh,
 # run_puzzle_baselines.sh; recorded in every run's flags.json); every other agent setting is dqc df89825's default
 # (agents/dqc.py:339-383). The integrated harness: jepa4r/policy/dqc.
 name: dqc

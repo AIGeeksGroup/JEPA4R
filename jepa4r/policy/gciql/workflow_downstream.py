@@ -1,5 +1,6 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/workflow_downstream.py (verbatim except: imports / paths adapted to the package)
-# ruff: noqa: F401  (moved verbatim: unused imports)
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/workflow_downstream.py (verbatim except: imports / paths
+# adapted to the package; lines wrapped at 120 columns, no lint exemptions, unused imports removed, registration imports
+# as importlib.import_module)
 """Unified six-model Cube paper protocol over original GCIQL/Native functions.
 
 Planning imports only the standard library. Execution belongs in a fresh child.
@@ -159,7 +160,9 @@ def _current_training_data(receipt,cube_count,mode):
         raise ValueError('Current training and collection seed must both be integer0')
     expected={'cube_count':cube_count,'raw_horizon':horizon,'training_rows_per_episode':horizon,
               'train_episodes':counts[0],'validation_episodes':counts[1]}
-    if data.get('mode')!=mode or any(type(data.get(key)) is not int or data[key]!=value for key,value in expected.items()):
+    if data.get('mode') != mode or any(
+        type(data.get(key)) is not int or data[key] != value for key, value in expected.items()
+    ):
         raise ValueError('Current training data Cube/mode/full-horizon/budget differs')
     return data
 
@@ -174,7 +177,7 @@ def _assets(config):
     receipt = read(receipt_path)
     imported = 'encoder_import' in config
     if imported:
-        from .retained_encoder import validate_import
+        from jepa4r.models.cube.retained_encoder import validate_import
         validate_import(config['encoder_import'], config)
     if not imported and (receipt.get('schema') not in ('cube_workflow_encoder_v1', 'cube_fresh_wm_acceptance_v1') or
             receipt.get('actual_exit_code') != 0 or
@@ -194,7 +197,9 @@ def _assets(config):
     for path, digest in ({} if imported else receipt.get('source_binding', {})).items():
         pinned(dict(path=path, sha256=digest))
     if not imported and receipt.get('schema') == 'cube_fresh_wm_acceptance_v1':
-        if receipt.get('config') != encoder.get('factory_config') or receipt.get('actual_epochs') != encoder.get('epoch'):
+        if receipt.get('config') != encoder.get('factory_config') or receipt.get('actual_epochs') != encoder.get(
+            'epoch'
+        ):
             raise ValueError('Fresh WM receipt and actual factory/epoch binding differ')
         if 'data_manifest' in receipt:
             pinned(receipt['data_manifest'])
@@ -210,8 +215,12 @@ def _assets(config):
         pinned(encoder['spec'])
         spec = read(encoder['spec']['path'])
         expected_family = 'visreg_vitb768' if contract['family'] == 'visreg' else 'vjepa21_vitl1024'
-        if (spec.get('family') != expected_family or spec.get('output_dim') != encoder['latent_dim'] or
-                spec.get('checkpoint') != encoder['checkpoint'] or spec.get('checkpoint_sha256') != encoder['checkpoint_sha256']):
+        if (
+            spec.get('family') != expected_family
+            or spec.get('output_dim') != encoder['latent_dim']
+            or spec.get('checkpoint') != encoder['checkpoint']
+            or spec.get('checkpoint_sha256') != encoder['checkpoint_sha256']
+        ):
             raise ValueError('Official encoder spec/family/checkpoint differs')
         if config['mode']=='formal' and spec.get('diagnostic_only',False) is not False:
             raise ValueError('Diagnostic official encoder spec cannot enter formal paper mode')
@@ -227,12 +236,18 @@ def prepare_recipe(run_config, encoder_receipt_path, output_path):
     downstream_output_root or output_root (then a downstream child directory).
     Frozen official families additionally provide their explicit encoder_binding.
     """
-    config = dict(schema=SCHEMA, model=run_config['model'], cube_count=run_config['cube_count'],
-                  mode=run_config['mode'], official_data=copy.deepcopy(run_config['official_data']),
-                  camera=copy.deepcopy(run_config['camera']),
-                  cache_sampling_seed_base=copy.deepcopy(run_config.get('cache_sampling_seed_base',CACHE_SEED_BASES)),
-                  output_root=str(Path(run_config['downstream_output_root']).resolve())
-                  if 'downstream_output_root' in run_config else str(Path(run_config['output_root']).resolve()/'downstream'))
+    config = dict(
+        schema=SCHEMA,
+        model=run_config['model'],
+        cube_count=run_config['cube_count'],
+        mode=run_config['mode'],
+        official_data=copy.deepcopy(run_config['official_data']),
+        camera=copy.deepcopy(run_config['camera']),
+        cache_sampling_seed_base=copy.deepcopy(run_config.get('cache_sampling_seed_base', CACHE_SEED_BASES)),
+        output_root=str(Path(run_config['downstream_output_root']).resolve())
+        if 'downstream_output_root' in run_config
+        else str(Path(run_config['output_root']).resolve() / 'downstream'),
+    )
     receipt_path = Path(encoder_receipt_path).resolve()
     receipt = read(receipt_path)
     config['encoder_receipt'] = dict(path=str(receipt_path), sha256=sha(receipt_path))
@@ -248,7 +263,11 @@ def prepare_recipe(run_config, encoder_receipt_path, output_path):
     else:
         if imported is None:
             _current_training_data(receipt,config['cube_count'],config['mode'])
-        checkpoint, factory = (imported['checkpoint'], imported['factory_config']) if imported is not None else (receipt.get('checkpoint'), receipt.get('config'))
+        checkpoint, factory = (
+            (imported['checkpoint'], imported['factory_config'])
+            if imported is not None
+            else (receipt.get('checkpoint'), receipt.get('config'))
+        )
         if not checkpoint or not factory:
             raise ValueError('Accepted WM receipt needs actual checkpoint and factory config')
         checkpoint_path, factory_path = pinned(checkpoint), pinned(factory)
@@ -269,11 +288,14 @@ def prepare_recipe(run_config, encoder_receipt_path, output_path):
             pre_source = PACKAGE.parent/'bc/relocate/cortexbench/jepa_baselines.py'
         elif model == 'pldm':
             cfg = read(factory_path)
-            if cfg.get('_target_') != 'jepa4r.policy.gciql.pldm.method.build_model' or cfg.get('pretrained') is not False:
+            if (
+                cfg.get('_target_') != 'jepa4r.baselines.cube.pldm.method.build_model'
+                or cfg.get('pretrained') is not False
+            ):
                 raise ValueError('Cube PLDM requires the native Impala factory, not a ViT checkpoint')
-            from .workflow_pldm_encoder import encoder_source_bindings
+            from jepa4r.baselines.cube.workflow_pldm_encoder import encoder_source_bindings
             encoder_source_bindings(cfg['official_source'])
-            pre_source = PACKAGE/'workflow_pldm_encoder.py'
+            pre_source = PACKAGE.parents[1]/'baselines/cube/workflow_pldm_encoder.py'
             binding['adapter'] = dict(path=str(pre_source), sha256=sha(pre_source))
         else:
             cfg = read(factory_path)
@@ -281,7 +303,7 @@ def prepare_recipe(run_config, encoder_receipt_path, output_path):
             expected = 'DexArtPointNet' if model == 'lewm_pcd' else 'ViTCLS'
             if cfg.get('_target_') != 'jepa.JEPA' or expected not in encoder_target:
                 raise ValueError('Actual LeWM factory encoder family differs from this model')
-            adapter = PACKAGE/'workflow_lewm_encoder.py'
+            adapter = PACKAGE.parents[1]/'models/cube/workflow_lewm_encoder.py'
             binding['adapter'] = dict(path=str(adapter), sha256=sha(adapter))
         binding['preprocessing'] = dict(source_path=str(pre_source), source_sha256=sha(pre_source),
             device='cpu', input_dtype='float32' if model == 'lewm_pcd' else 'uint8',
@@ -296,12 +318,14 @@ def prepare_recipe(run_config, encoder_receipt_path, output_path):
             if type(run_config[flag]) is not bool or config['mode']!='smoke':
                 raise ValueError('raw-input/R4 capture must be explicit bounded smoke')
             config[flag]=run_config[flag]
-    sources = [Path(__file__), PACKAGE/'workflow_lewm_encoder.py', PACKAGE/'workflow_pldm_encoder.py', PACKAGE/'downstream/sampler.py',
+    sources = [Path(__file__), PACKAGE.parents[1]/'models/cube/workflow_lewm_encoder.py',
+               PACKAGE.parents[1]/'baselines/cube/workflow_pldm_encoder.py', PACKAGE/'downstream/sampler.py',
                PACKAGE/'downstream/trainer.py', PACKAGE/'downstream/runtime.py',
                PACKAGE/'downstream/native.py', PACKAGE/'downstream/native_core.py', PACKAGE/'workflow_agent.json']
     config['implementation_sources'] = {str(path):sha(path) for path in sources}
     if imported is not None:
-        config['implementation_sources'][str(PACKAGE/'retained_encoder.py')] = sha(PACKAGE/'retained_encoder.py')
+        retained = PACKAGE.parents[1]/'models/cube/retained_encoder.py'
+        config['implementation_sources'][str(retained)] = sha(retained)
     if config.get('r4_mapping'):
         config['implementation_sources'][str(PACKAGE/'d3_mapping.py')] = sha(PACKAGE/'d3_mapping.py')
     if model == 'pldm':
@@ -350,16 +374,32 @@ def build_plan(config_path, stage):
     for prior in prerequisites(stage, config['mode']):
         _stage_receipt(root, prior, digest)
     budget=protocol_budget(config)
-    return dict(schema=SCHEMA, stage=stage, config=str(config_path), config_sha256=digest,
-                output_root=str(root), execute=False, model=config['model'], cube_count=config['cube_count'], mode=config['mode'],
-                execution_protocol='cube_paper_gciql_v1' if config['mode']=='formal' else 'cube_paper_gciql_smoke_v1',
-                paper_reported_result_reproduced=False, diagnostic_only=budget['diagnostic_only'],
-                formal_acceptance=False, formal_acceptance_required=config['mode']=='formal',
-                split_episodes=budget['split_episodes'], training_updates=1000000, batch_size=1024,training_seed=0,
-                raw_rows_per_episode=1001, gate_updates=2, native_episodes=budget['native_episodes'],
-                cache_sampling_seed_base=config['cache_sampling_seed_base'],
-                native_max_episode_steps=contract['native_max_episode_steps'],
-                input_contract=contract['input_contract'])
+    return dict(
+        schema=SCHEMA,
+        stage=stage,
+        config=str(config_path),
+        config_sha256=digest,
+        output_root=str(root),
+        execute=False,
+        model=config['model'],
+        cube_count=config['cube_count'],
+        mode=config['mode'],
+        execution_protocol='cube_paper_gciql_v1' if config['mode'] == 'formal' else 'cube_paper_gciql_smoke_v1',
+        paper_reported_result_reproduced=False,
+        diagnostic_only=budget['diagnostic_only'],
+        formal_acceptance=False,
+        formal_acceptance_required=config['mode'] == 'formal',
+        split_episodes=budget['split_episodes'],
+        training_updates=1000000,
+        batch_size=1024,
+        training_seed=0,
+        raw_rows_per_episode=1001,
+        gate_updates=2,
+        native_episodes=budget['native_episodes'],
+        cache_sampling_seed_base=config['cache_sampling_seed_base'],
+        native_max_episode_steps=contract['native_max_episode_steps'],
+        input_contract=contract['input_contract'],
+    )
 
 
 class FrozenOfficialEncoder:
@@ -402,7 +442,7 @@ def _encoder(config):
 
 def _core(config):
     from .downstream import native_core as core
-    from .downstream._source import VENDOR, IMPLS, load_source, verify_sources
+    from .downstream._source import VENDOR, load_source
     import torch
     torch.set_num_threads(1)
     physics = load_source('_workflow_native_physics', 'physics.py')
@@ -461,10 +501,17 @@ def _extract_official(config, root):
             target.parent.mkdir(parents=True, exist_ok=True)
             with target.open('xb') as stream:
                 np.savez_compressed(stream, **values)
-        splits[split] = dict(path=str(target), accepted_stat=file_stat(target),
-            accepted_raw_sha256=source['sha256'] if target==path else sha(target), episodes=counts[split], raw_rows=rows,
-            observation_shape=list(values['observations'].shape), action_shape=list(values['actions'].shape),
-            original_official_source=source, subset='first complete real1001 episode' if config['mode']=='smoke' else None)
+        splits[split] = dict(
+            path=str(target),
+            accepted_stat=file_stat(target),
+            accepted_raw_sha256=source['sha256'] if target == path else sha(target),
+            episodes=counts[split],
+            raw_rows=rows,
+            observation_shape=list(values['observations'].shape),
+            action_shape=list(values['actions'].shape),
+            original_official_source=source,
+            subset='first complete real1001 episode' if config['mode'] == 'smoke' else None,
+        )
         arrays[split]={}
         for key in ('qpos','qvel'):
             array_path=root/'source_arrays'/(split+'_'+key+'.npy')
@@ -486,17 +533,37 @@ def _runtime_config(config, root, data, manifest_sha):
     # Reuse the exact existing agent hyperparameters, not a parallel agent factory.
     template = read(PACKAGE/'workflow_agent.json')
     contract = group_contract(config['model'], config['cube_count'])
-    result = dict(protocol='cube_all_distance_v1', model=config['model'], method=config['model'],
-        role=config['model']+'_cube'+str(config['cube_count']), cube_count=config['cube_count'],
-        state_dim=19+9*config['cube_count'],
-        modality=contract['modality'], encoder_family=contract['family'], latent_dim=contract['input_contract']['latent_dim'],
-        seed=0, batch_size=1024, total_updates=1000000, resume_from=None,
-        validation_interval=5000, save_interval=100000, save_step1=True, heartbeat_interval=100,
-        feature_lookup_workers=4, input_contract=contract['input_contract'], agent_config=template['agent_config'],
-        output=str(root/'policy'), data_binding=data, encoder_binding=config['encoder_binding'],
-        native_protocol=dict(camera=config['camera']), feature_loader_arguments={},
-        workflow_protocol='cube_paper_gciql_v1', mode=config['mode'],
-        diagnostic_only=config['mode']=='smoke', formal_acceptance=False)
+    result = dict(
+        protocol='cube_all_distance_v1',
+        model=config['model'],
+        method=config['model'],
+        role=config['model'] + '_cube' + str(config['cube_count']),
+        cube_count=config['cube_count'],
+        state_dim=19 + 9 * config['cube_count'],
+        modality=contract['modality'],
+        encoder_family=contract['family'],
+        latent_dim=contract['input_contract']['latent_dim'],
+        seed=0,
+        batch_size=1024,
+        total_updates=1000000,
+        resume_from=None,
+        validation_interval=5000,
+        save_interval=100000,
+        save_step1=True,
+        heartbeat_interval=100,
+        feature_lookup_workers=4,
+        input_contract=contract['input_contract'],
+        agent_config=template['agent_config'],
+        output=str(root / 'policy'),
+        data_binding=data,
+        encoder_binding=config['encoder_binding'],
+        native_protocol=dict(camera=config['camera']),
+        feature_loader_arguments={},
+        workflow_protocol='cube_paper_gciql_v1',
+        mode=config['mode'],
+        diagnostic_only=config['mode'] == 'smoke',
+        formal_acceptance=False,
+    )
     for split, source in data['splits'].items():
         result['feature_loader_arguments'][split] = dict(cache_dir=str(root/'cache'), split=split,
             manifest_sha256=manifest_sha, checkpoint_sha256=config['encoder_binding']['checkpoint_sha256'],
@@ -507,7 +574,8 @@ def _runtime_config(config, root, data, manifest_sha):
 
 def encode(config, root):
     import numpy as np
-    from .downstream.sampler import file_stat
+    # installs and verifies OGBench's impls on import
+    importlib.import_module('jepa4r.policy.gciql.downstream.sampler')
     data,arrays = _extract_official(config, root)
     core, group = _core(config)
     encoder = _encoder(config)
@@ -560,17 +628,37 @@ def encode(config, root):
                 latent_path = directory/'latent.npy'
                 with latent_path.open('xb') as stream:
                     np.save(stream, features, allow_pickle=False)
-                record = dict(actual_exit_code=0, split=split, episode=episode, raw_row_start=start,
-                    raw_row_count=1001, main_rows=1000, terminal_raw_id=start+1000,
-                    canonical_raw_ids_sha256=hashlib.sha256(np.arange(start,start+1001,dtype='<i8').tobytes()).hexdigest(),
+                record = dict(
+                    actual_exit_code=0,
+                    split=split,
+                    episode=episode,
+                    raw_row_start=start,
+                    raw_row_count=1001,
+                    main_rows=1000,
+                    terminal_raw_id=start + 1000,
+                    canonical_raw_ids_sha256=hashlib.sha256(
+                        np.arange(start, start + 1001, dtype='<i8').tobytes()
+                    ).hexdigest(),
                     checkpoint_sha256=config['encoder_binding']['checkpoint_sha256'],
                     source_npz=dict(path=source['path'], accepted_stat=source['accepted_stat']),
-                    latent=dict(path=str(latent_path), shape=list(features.shape), dtype='float32',
-                                bytes=latent_path.stat().st_size, sha256=sha(latent_path)),
-                    camera=camera, diagnostic_only=config['mode']=='smoke', formal_acceptance=False,
-                    cache_sampling_seed=dict(rule='base+canonical_raw_id; current private RNG reset per raw frame',
-                        base=config['cache_sampling_seed_base'][split], first=cache_sampling_seed(config,split,start),
-                        last=cache_sampling_seed(config,split,start+1000)),pcd_capture_receipt_stream_sha256=capture_hash.hexdigest() if wrapper else None)
+                    latent=dict(
+                        path=str(latent_path),
+                        shape=list(features.shape),
+                        dtype='float32',
+                        bytes=latent_path.stat().st_size,
+                        sha256=sha(latent_path),
+                    ),
+                    camera=camera,
+                    diagnostic_only=config['mode'] == 'smoke',
+                    formal_acceptance=False,
+                    cache_sampling_seed=dict(
+                        rule='base+canonical_raw_id; current private RNG reset per raw frame',
+                        base=config['cache_sampling_seed_base'][split],
+                        first=cache_sampling_seed(config, split, start),
+                        last=cache_sampling_seed(config, split, start + 1000),
+                    ),
+                    pcd_capture_receipt_stream_sha256=capture_hash.hexdigest() if wrapper else None,
+                )
                 if raw_rgb is not None:
                     raw_path=directory/'raw_inputs.npz'
                     raw_arrays=dict(rgb=raw_rgb)
@@ -595,8 +683,19 @@ def encode(config, root):
                 entries[split].append(dict(episode=episode, receipt_path=str(receipt), receipt_sha256=sha(receipt)))
                 progress=root/'drivers/encode/progress.json'
                 temporary=progress.with_suffix('.tmp')
-                temporary.write_text(json.dumps(dict(split=split,completed_episodes=episode+1,total_episodes=source['episodes'],
-                    updated_at=time.time(),encoder_calls=encoder.calls))+'\n',encoding='utf8')
+                temporary.write_text(
+                    json.dumps(
+                        dict(
+                            split=split,
+                            completed_episodes=episode + 1,
+                            total_episodes=source['episodes'],
+                            updated_at=time.time(),
+                            encoder_calls=encoder.calls,
+                        )
+                    )
+                    + '\n',
+                    encoding='utf8',
+                )
                 temporary.replace(progress)
         finally:
             if wrapper:
@@ -617,12 +716,17 @@ def encode(config, root):
         cache_sampling_seed_base=config['cache_sampling_seed_base']))
     runtime = root/'runtime_recipe.json'
     save_new(runtime, _runtime_config(config, root, data, sha(manifest)))
-    return dict(artifacts=dict(runtime_recipe=dict(path=str(runtime),sha256=sha(runtime)),
-                               cache_manifest=dict(path=str(manifest),sha256=sha(manifest)),
-                               source_arrays=dict(path=str(root/'source_arrays.json'),sha256=sha(root/'source_arrays.json'))),
-                raw_rows_encoded=sum(s['raw_rows'] for s in data['splits'].values()),
-                actual_encoder_calls=actual_encoder_calls,
-                real_complete_episodes=sum(s['episodes'] for s in data['splits'].values()), encoder_calls=encoder.calls)
+    return dict(
+        artifacts=dict(
+            runtime_recipe=dict(path=str(runtime), sha256=sha(runtime)),
+            cache_manifest=dict(path=str(manifest), sha256=sha(manifest)),
+            source_arrays=dict(path=str(root / 'source_arrays.json'), sha256=sha(root / 'source_arrays.json')),
+        ),
+        raw_rows_encoded=sum(s['raw_rows'] for s in data['splits'].values()),
+        actual_encoder_calls=actual_encoder_calls,
+        real_complete_episodes=sum(s['episodes'] for s in data['splits'].values()),
+        encoder_calls=encoder.calls,
+    )
 
 
 def _install_runtime(root):
@@ -634,7 +738,7 @@ def _install_runtime(root):
 
 def _native(config, root):
     import numpy as np
-    from .downstream._source import VENDOR, IMPLS, verify_sources
+    from .downstream._source import IMPLS
     runtime, trainer, boundary = _install_runtime(root)
     core, group = _core(config)
     if config['mode']=='formal':
@@ -713,7 +817,10 @@ def run_stage(config, root, stage):
                             validate_episode(features[start:start+count],arrays,metadata)
                             for name,key in [('states','observations'),('actions','actions'),('terminals','terminals')]:
                                 np.testing.assert_array_equal(arrays[name],source[key][start:start+count],err_msg=name)
-                        if metadata['source_sha256']!=config['official_data'][split]['sha256'] or metadata['split']!=split:
+                        if (
+                            metadata['source_sha256'] != config['official_data'][split]['sha256']
+                            or metadata['split'] != split
+                        ):
                             raise ValueError('R4 row mapping belongs to another source/split')
                         mapping_rows+=count
                     if config.get('retain_raw_inputs'):
@@ -762,9 +869,15 @@ def run_stage(config, root, stage):
         report = read(root/'native/report.json')
         episodes = sorted((root/'native/episodes').glob('task*/episode_*/result.json'))
         expected=250 if config['mode']=='formal' else 1
-        if (report['actual_exit_code'] != 0 or report['episodes'] != expected or report['unique_seeds'] != expected or
-                report['mode'] != ('full' if config['mode']=='formal' else 'diagnostic') or not report['online_encoder'] or
-                report['offline_embedding_cache_used_for_policy'] or len(episodes) != expected):
+        if (
+            report['actual_exit_code'] != 0
+            or report['episodes'] != expected
+            or report['unique_seeds'] != expected
+            or report['mode'] != ('full' if config['mode'] == 'formal' else 'diagnostic')
+            or not report['online_encoder']
+            or report['offline_embedding_cache_used_for_policy']
+            or len(episodes) != expected
+        ):
             raise ValueError('Native count/encoder/mode contract failed')
         identities,seeds,successes=set(),set(),0
         horizon=group_contract(config['model'],config['cube_count'])['native_max_episode_steps']
@@ -798,7 +911,12 @@ def run_stage(config, root, stage):
                         result['goal_online_encoder_calls']!=len(actions)):
                     raise ValueError('Native actions/horizon/online calls failed')
         wanted={(t,i) for t in range(1,6) for i in range(50)} if expected==250 else {(1,0)}
-        if identities!=wanted or len(seeds)!=expected or successes!=report['successes'] or report['success_rate']!=successes/expected:
+        if (
+            identities != wanted
+            or len(seeds) != expected
+            or successes != report['successes']
+            or report['success_rate'] != successes / expected
+        ):
             raise ValueError('Native independent aggregate/identity audit failed')
         return dict(episodes_verified=expected, actual_successes=successes,success_rate=successes/expected,
                     paper_reported_result_reproduced=False,diagnostic_only=config['mode']=='smoke',

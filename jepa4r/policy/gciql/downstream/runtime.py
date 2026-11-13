@@ -1,18 +1,12 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/downstream/runtime.py (verbatim)
-# ruff: noqa: F401  (moved verbatim: unused imports)
-import argparse
-from contextlib import redirect_stdout, redirect_stderr
-import copy
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/downstream/runtime.py (verbatim except: lines wrapped at 120
+# columns, no lint exemptions, unused imports removed)
 import hashlib
 import importlib.util
 import json
-import os
 from pathlib import Path
 import sys
-import time
-import traceback
 from . import validate_cache_protocol
-from ._source import VENDOR, install_impls, load_source, verify_sources
+from ._source import VENDOR, install_impls, verify_sources
 
 def runtime_environment(stage, action='train', cuda_visible_devices='0'):
     """The original launcher's backend/RNG bindings, before importing JAX/Torch."""
@@ -21,7 +15,20 @@ def runtime_environment(stage, action='train', cuda_visible_devices='0'):
     cpu_only = stage == 'gciql' and action == 'reload'
     if not isinstance(cuda_visible_devices, str) or not cuda_visible_devices:
         raise ValueError('An explicit visible CUDA device selection is required')
-    environment = dict(CUDA_VISIBLE_DEVICES='' if cpu_only else cuda_visible_devices, JAX_PLATFORMS='cpu' if cpu_only or stage == 'native-sr' else 'cuda,cpu', XLA_PYTHON_CLIENT_PREALLOCATE='false', JAX_THREEFRY_PARTITIONABLE='false', JAX_DEFAULT_PRNG_IMPL='threefry2x32', JAX_ENABLE_X64='false', OMP_NUM_THREADS='4', MKL_NUM_THREADS='4', OPENBLAS_NUM_THREADS='4', PYTHONDONTWRITEBYTECODE='1', PYTHONUNBUFFERED='1', XLA_FLAGS='--xla_gpu_autotune_level=0')
+    environment = dict(
+        CUDA_VISIBLE_DEVICES='' if cpu_only else cuda_visible_devices,
+        JAX_PLATFORMS='cpu' if cpu_only or stage == 'native-sr' else 'cuda,cpu',
+        XLA_PYTHON_CLIENT_PREALLOCATE='false',
+        JAX_THREEFRY_PARTITIONABLE='false',
+        JAX_DEFAULT_PRNG_IMPL='threefry2x32',
+        JAX_ENABLE_X64='false',
+        OMP_NUM_THREADS='4',
+        MKL_NUM_THREADS='4',
+        OPENBLAS_NUM_THREADS='4',
+        PYTHONDONTWRITEBYTECODE='1',
+        PYTHONUNBUFFERED='1',
+        XLA_FLAGS='--xla_gpu_autotune_level=0',
+    )
     if stage == 'native-sr':
         environment['MUJOCO_GL'] = 'egl'
     return environment
@@ -65,7 +72,12 @@ def install(config):
     def prepare(cfg, shared_datasets=None):
         samplers, resources, binding = original_prepare(cfg, shared_datasets)
         binding['source_manifest'] = verify_sources()
-        binding['runtime'].update(encoder_family=config['encoder_family'], latent_dim=config['latent_dim'], task_encoder_parameter_binding=True, source_string_rewrites=False)
+        binding['runtime'].update(
+            encoder_family=config['encoder_family'],
+            latent_dim=config['latent_dim'],
+            task_encoder_parameter_binding=True,
+            source_string_rewrites=False,
+        )
         binding['code'][str(Path(__file__))] = sha(__file__)
         return (samplers, resources, binding)
     trainer.prepare = prepare

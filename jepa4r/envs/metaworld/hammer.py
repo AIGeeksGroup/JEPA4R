@@ -1,4 +1,4 @@
-# Moved from cortexbench@9331494:lewm_pcd/envs/metaworld/hammer.py (verbatim)
+# Moved from cortexbench@9331494:lewm_pcd/envs/metaworld/hammer.py (verbatim except: lines wrapped at 120 columns)
 """MetaWorld hammer (a CortexBench task): pick the hammer up and drive the nail into the box with it.
 
 * Layout: metaworld 3.0 ``hammer-v3-goal-observable``; every reset places the hammer anew (x -0.1..0.1, y 0.4..0.5,
@@ -7,8 +7,8 @@
   target depth). The hammer's claw can catch the nail head when the hand backs off after a hit and pull the nail out
   again (in about 3 % of the full collection's episodes, by 1 cm in the median).
 * Targets: 'grasp' (pick the hammer up), 'hit' (drive the nail to a target depth, then hold the hammer against it for a
-  while, as CortexBench's demos do after success), 'wp' (carry the hammer to a point in the air), 'place' (put it down on
-  the table where resets place it, release; a 'grasp' follows). After a grasp / hit / waypoint the next target is
+  while, as CortexBench's demos do after success), 'wp' (carry the hammer to a point in the air), 'place' (put it down
+  on the table where resets place it, release; a 'grasp' follows). After a grasp / hit / waypoint the next target is
   drawn among hit (0.6), wp (0.3) and place (0.1).
 * info adds the nail depth and the target (x, y, z, kind 0 grasp / 1 hit / 2 wp / 3 place, value = hit depth).
   obj_pos is metaworld's object position: the hammer (handle centre).
@@ -119,7 +119,8 @@ class HammerThreePartPolicy(ThreePartPolicy):
         g = hammer + np.array([c * GRASP_OFF[0], s * GRASP_OFF[0], GRASP_OFF[2]])
         held = np.linalg.norm(hand[:2] - g[:2]) < 0.05 and hammer[2] > 0.05
 
-        if kind != 'grasp' and m['phase'] not in ('lower', 'release') and not held and m['n'] > 3:  # dropped it: pick it up again
+        # dropped it: pick it up again
+        if kind != 'grasp' and m['phase'] not in ('lower', 'release') and not held and m['n'] > 3:
             env.grasp_again()
             kind, m['phase'], m['n'] = 'grasp', 'approach', 0
 
@@ -157,7 +158,11 @@ class HammerThreePartPolicy(ThreePartPolicy):
         if kind == 'hit':
             phase = m['phase']
             if phase == 'go':  # in front of the nail (from further in, back off first), then push
-                pre = np.array([HIT_X, HIT_Y0, HIT_Z]) if hand[1] < HIT_Y0 + 0.02 else np.array([hand[0], hand[1] - 0.03, HIT_Z])
+                pre = (
+                    np.array([HIT_X, HIT_Y0, HIT_Z])
+                    if hand[1] < HIT_Y0 + 0.02
+                    else np.array([hand[0], hand[1] - 0.03, HIT_Z])
+                )
                 if np.linalg.norm(hand - pre) > 0.02 and m['n'] < 60:
                     return act(pre, GRAB)
                 m['phase'], m['n'], m['ys'] = 'push', 0, []

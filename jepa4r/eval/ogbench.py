@@ -2,8 +2,8 @@
 
 Puzzle: DQC evaluates during training (run_dqc.py every 100k steps; jepa4r/policy/dqc); ``evaluate_policy`` evaluates a
 finished run again with the same function (jepa4r.policy.dqc.evaluate_run; DQC interpreter). Cube: the Cube workflow's
-native evaluation (stages native-sr, native-audit of train_policy; jepa4r.policy.gciql.evaluate_run reads it, and runs it
-first when it has not run).
+native evaluation (stages native-sr, native-audit of train_policy; jepa4r.policy.gciql.evaluate_run reads it, and runs
+it first when it has not run).
 """
 
 

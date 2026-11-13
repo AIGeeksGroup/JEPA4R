@@ -17,8 +17,10 @@ wm_data:                      # supp. sec:supp-data
   pcd: {_target_: jepa4r.envs.ogbench.ogb_pcd.ScenePointCloudWrapper}          # ogb_scene_pcd.yaml:26-27
   policy: {_target_: jepa4r.envs.ogbench.ogb_scene_env.SceneThreePartPolicy}   # ogb_scene_pcd.yaml:29-30
   health_check: true          # ogb_scene_pcd.yaml:36 (an episode whose cube left the view is collected again)
-  sets:                       # 4 object tasks x 2500 episodes; task k at seed (k+1)*10^6 + i, 6 shards, merged task by task
-    - {name: scene_wm10000, num_episodes: 2500, shards: 6, tasks: [cube, button, drawer, window], seed_base_step: 1000000}
+  sets:                       # 4 object tasks x 2500 episodes; task k at seed (k+1)*10^6 + i, 6 shards, merged task by
+                              # task
+    - {name: scene_wm10000, num_episodes: 2500, shards: 6, tasks: [cube, button, drawer, window],
+       seed_base_step: 1000000}
                               # run_scene_collection.sh:15 (N, SHARDS, NAME), 22-26 (tasks, base), 37-39 (merge order)
   files: {pointcloud: scene_wm10000_pcd.h5, image: scene_wm10000.h5}
   split: random_clips

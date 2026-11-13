@@ -1,4 +1,5 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/rh56_adapter/official_init.py (verbatim except: imports / paths adapted to the package)
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/rh56_adapter/official_init.py (verbatim except: imports / paths adapted to
+# the package; lines wrapped at 120 columns)
 """Opt-in task-initial-state adapter; delegate collection to rh56_adapter.collect.
 
 Only Object/target positions are imported. RH56 reset, feedback expert, actions,

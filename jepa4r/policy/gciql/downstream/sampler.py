@@ -1,4 +1,7 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/downstream/sampler.py (verbatim except: DistanceInputs also accepts the 768-D VISReg and 1024-D V-JEPA 2.1 latents that this file's own load_cached_features contract lists; the source accepted only 192/512, which conflicts with the paper's Tab. 1 VISReg / V-JEPA 2.1 Cube rows, and the paper wins)
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/downstream/sampler.py (verbatim except: DistanceInputs also
+# accepts the 768-D VISReg and 1024-D V-JEPA 2.1 latents that this file's own load_cached_features contract lists; the
+# source accepted only 192/512, which conflicts with the paper's Tab. 1 VISReg / V-JEPA 2.1 Cube rows, and the paper
+# wins; lines wrapped at 120 columns)
 """Thin multi-Cube input projection and per-object ALL-distance reward.
 
 The original GCDataset owns all sampling and RNG. Features are one readonly
@@ -115,7 +118,8 @@ class DistanceInputs(GCDataset):
             self.current_dim,self.goal_dim=19+9*self.cubes,3*self.cubes
             self.contract=None
         else:
-            if self.latent_dim not in (192,512,768,1024):   # source: (192,512); paper Tab. 1 VISReg 768 / V-JEPA 2.1 1024
+            # source: (192,512); paper Tab. 1 VISReg 768 / V-JEPA 2.1 1024
+            if self.latent_dim not in (192,512,768,1024):
                 raise ValueError('Selected encoder must produce actual192, actual512, actual768 or actual1024')
             if not isinstance(self.features,np.ndarray) or self.features.shape!=(self.size,self.latent_dim):
                 raise ValueError('One aligned readonly FP32 feature array at the actual encoder width required')
@@ -125,7 +129,11 @@ class DistanceInputs(GCDataset):
                 raise ValueError('Use selected four role threads or zero-thread reference')
             self.current_dim,self.goal_dim=self.latent_dim+19,self.latent_dim+3*self.cubes
             self.contract=CubeInputs(self.cubes,self.latent_dim)
-        self.executor=ThreadPoolExecutor(max_workers=self.workers,thread_name_prefix='cube-role-lookup') if self.workers else None
+        self.executor = (
+            ThreadPoolExecutor(max_workers=self.workers, thread_name_prefix='cube-role-lookup')
+            if self.workers
+            else None
+        )
         self.input_metadata=dict(cubes=self.cubes,mode=self.mode,current_dim=self.current_dim,goal_dim=self.goal_dim,
             state_indices='full official state' if self.mode=='state' else 'originalstate[0:19]',
             goal_XYZ_offsets=[19+9*i for i in range(self.cubes)],
@@ -152,7 +160,10 @@ class DistanceInputs(GCDataset):
         batch=super().sample(batch_size,idxs=idxs,evaluation=evaluation)
         value_ids,actor_ids=self._goal_ids
         current=batch['observations'];value_goal=batch['value_goals']
-        success=np.all(np.linalg.norm(object_xyz(current,self.cubes)-object_xyz(value_goal,self.cubes),axis=-1)<=.4,axis=-1)
+        success = np.all(
+            np.linalg.norm(object_xyz(current, self.cubes) - object_xyz(value_goal, self.cubes), axis=-1) <= 0.4,
+            axis=-1,
+        )
         # Preserve the original sampler's reward/mask dtype; only labels change.
         batch['rewards']=success.astype(batch['rewards'].dtype)-1.
         batch['masks']=1.-success.astype(batch['masks'].dtype)

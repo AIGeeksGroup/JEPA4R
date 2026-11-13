@@ -7,22 +7,26 @@ evaluations (jepa4r/eval/cortexbench.py).
 
 Integrated code (cortexbench@9331494:lewm_pcd/bench/cortexbench/, moved unchanged into this package apart from where
 eai-vc / the embedding configs / V-JEPA 2 are found):
-  run_bc.py        eai-vc 76fe35e's hydra_launcher + train_loop (unchanged on disk) with three runtime patches that do not
-                   change the numbers (local embedding configs, metrics.jsonl logging, reuse of the evaluation paths for
-                   the logging-only train/* rollouts)
+  run_bc.py        eai-vc 76fe35e's hydra_launcher + train_loop (unchanged on disk) with three runtime patches that do
+                   not change the numbers (local embedding configs, metrics.jsonl logging, reuse of the evaluation paths
+                   for the logging-only train/* rollouts)
   run_bc3d.py      run_bc.py with the camera image replaced by the same camera's point cloud (pcd_fork.MWPointClouds)
   run_bc_scene.py  run_bc.py on OGBench scene's five tasks (scene_env.SceneCBEnv in a scene_server.py subprocess of the
                    MuJoCo 3 / OGBench python), proprioception = the first 6 of 8 entries (SCENE_PROPRIO_DIMS)
   run_bc_rm75.py   run_bc.py / run_bc3d.py on the RM75-B twin's MetaWorld tasks (rm75_env.RM75CBEnv in a rm75_server.py
-                   subprocess of the MuJoCo 3 / metaworld 3.0 python given by MW_PY), on their own demos (make_rm75_demos.py)
+                   subprocess of the MuJoCo 3 / metaworld 3.0 python given by MW_PY), on their own demos
+                   (make_rm75_demos.py)
   lewm_cortex.py   the frozen LeWM / JEPA4R encoders (encoder + projector, epoch 10) as CortexBench embeddings
-  jepa_baselines.py  PLDM, LeJEPA, VISReg, V-JEPA 2.1 embeddings;  conf/model/*.yaml  the embeddings of the paper runs
-  grid.py, scene_grid.py, summarize.py, summarize_scene.py, enc_server.py   the original job runners and summaries
-  relocate/        Adroit Relocate and the RH56 twin: the OGBench-cube branch's Relocate harness (its bench/relocate,
-                   with its own bench/cortexbench variant, LeWM train configs and DEPENDENCIES.json), see relocate_stage
+  jepa_baselines.py  PLDM, LeJEPA, VISReg, V-JEPA 2.1 embeddings;  conf/model/*.yaml  the embedding templates of the
+                   paper runs, one per encoder kind (embedding_config fills in each run's checkpoint)
+  enc_server.py    the frozen encoder in one shared GPU process for run_bc_scene.py (ENC_SOCKET)
+  relocate/        behaviour cloning on Adroit Relocate and the RH56 twin with the OGBench-cube branch's Relocate
+                   controllers (its bench/relocate and bench/cortexbench variant; its data in jepa4r/data/relocate, its
+                   world-model support in jepa4r/models/relocate), see relocate_stage
 ``train`` runs, for each evaluation task of the env and each seed of cfg.policy.eval.seeds, one runner process with the
-arguments grid.py / scene_grid.py gave it, then reports success = mean over tasks of the mean over seeds of each run's
-highest success among its 20 evaluations (summarize.py / summarize_scene.py; GATES.md 3.4).
+arguments the source's job runners gave it (cortexbench@9331494:lewm_pcd/bench/cortexbench/grid.py, scene_grid.py), then
+reports success = mean over tasks of the mean over seeds of each run's highest success among its 20 evaluations (the
+source's summarize.py / summarize_scene.py; GATES.md 3.4).
 Interpreters / paths (environment variables): JEPA4R_PY_CORTEXBENCH (eai-vc + MuJoCo 2.0 + mujoco-py python),
 JEPA4R_PY_COLLECT (MuJoCo 3 + OGBench / metaworld 3.0 python for the scene env and the RM75-B twin's MetaWorld env),
 JEPA4R_EAI_VC (eai-vc checkout), JEPA4R_VJEPA2.
@@ -37,10 +41,11 @@ from pathlib import Path
 import yaml
 
 HERE = Path(__file__).resolve().parent
-SUITES = {  # suite -> (hydra config of eai-vc, 2D demo dir, 3D demo dir)   grid.py:39-44, scene_grid.py:79-80
+SUITES = {  # suite -> (hydra config of eai-vc, 2D demo dir, 3D demo dir)   source grid.py:39-44, scene_grid.py:79-80
     'metaworld': ('Metaworld_BC_config', 'metaworld-expert-v1.0', 'metaworld-expert-v1.0-pcd'),
     'ogbench': ('Metaworld_BC_config', 'scene-expert', 'scene-expert-pcd'),
-    'metaworld_rm75': ('Metaworld_BC_config', 'metaworld-rm75-expert', 'metaworld-rm75-expert-pcd'),   # grid.py:46-48
+    # source grid.py:46-48
+    'metaworld_rm75': ('Metaworld_BC_config', 'metaworld-rm75-expert', 'metaworld-rm75-expert-pcd'),
     'adroit': ('Adroit_BC_config', 'adroit-expert-v1.0', 'adroit-expert-v1.0-pcd'),
 }
 TEMPLATES = {  # method kind / name -> conf/model template of the paper runs (checkpoint filled in per run)
@@ -76,7 +81,8 @@ def embedding_config(cfg):
 
 
 def run_command(cfg, task, seed, run_dir, emb_name, demos):
-    """The command grid.py (MetaWorld, Adroit) / scene_grid.py (Scene, hand6 proprioception) gave one job."""
+    """The command the source's grid.py (MetaWorld, Adroit) / scene_grid.py (Scene, hand6 proprioception) gave one
+    job."""
     suite = cfg.env.suite
     config_name = SUITES[suite][0]
     pcd = cfg.method.obs == 'pointcloud'
@@ -84,7 +90,8 @@ def run_command(cfg, task, seed, run_dir, emb_name, demos):
     if suite == 'ogbench':
         launcher = HERE / 'run_bc_scene.py'
         extra = ['camera=front_pixels', 'env_kwargs.add_proprio=True', 'env_kwargs.proprio_key=gripper_proprio']
-    elif suite == 'metaworld_rm75':   # grid.py:159-160: run_bc_rm75.py for image and point-cloud embeddings alike
+    # source grid.py:159-160: run_bc_rm75.py for image and point-cloud embeddings alike
+    elif suite == 'metaworld_rm75':
         launcher = HERE / 'run_bc_rm75.py'
         extra = []
     else:
@@ -95,7 +102,8 @@ def run_command(cfg, task, seed, run_dir, emb_name, demos):
 
 
 def evals_of(run_dir):
-    """The 20 evaluation records of one run (grid.py / summarize_scene.py: lines with eval/epoch in metrics.jsonl)."""
+    """The 20 evaluation records of one run (source grid.py / summarize_scene.py: lines with eval/epoch in
+    metrics.jsonl)."""
     m = Path(run_dir) / 'metrics.jsonl'
     return [json.loads(line) for line in m.read_text().splitlines() if '"eval/epoch"' in line] if m.exists() else []
 
@@ -103,7 +111,9 @@ def evals_of(run_dir):
 def aggregate(runs):
     """runs: {task: {seed: [eval records]}} -> the train_policy metrics. Per run the highest eval/success of its 20
     evaluations; per task the mean over seeds; success = the mean over tasks (GATES.md 3.4)."""
-    per_task = {t: float(sum(max(e['eval/success'] for e in ev) for ev in s.values()) / len(s)) for t, s in runs.items()}
+    per_task = {
+        t: float(sum(max(e['eval/success'] for e in ev) for ev in s.values()) / len(s)) for t, s in runs.items()
+    }
     evals = [{'task': t, 'seed': int(seed), 'epoch': int(e['eval/epoch']), 'success': float(e['eval/success'])}
              for t, s in runs.items() for seed, ev in s.items() for e in ev]
     return {'success': sum(per_task.values()) / len(per_task), 'success_per_task': per_task, 'evals': evals}
@@ -119,15 +129,21 @@ def train(cfg, out_dir) -> dict:
     conf_dir = out_dir / 'conf' / 'model'
     conf_dir.mkdir(parents=True, exist_ok=True)
     (conf_dir / f'{emb_name}.yaml').write_text(yaml.safe_dump(embedding_config(cfg), sort_keys=False))
-    demos = stage_dir('prepare_policy_data', cfg.env.name) / SUITES[cfg.env.suite][2 if cfg.method.obs == 'pointcloud' else 1]
+    demos = (
+        stage_dir('prepare_policy_data', cfg.env.name)
+        / SUITES[cfg.env.suite][2 if cfg.method.obs == 'pointcloud' else 1]
+    )
     env = dict(os.environ, JEPA4R_BC_CONF_HOME=str(out_dir), MUJOCO_GL='egl', WANDB_MODE='disabled',
                PYTHONPATH=os.pathsep.join([str(HERE.parents[2]), str(HERE)] + [os.environ.get('PYTHONPATH', '')]))
     if cfg.env.suite == 'ogbench':
-        env.update(SCENE_PROPRIO_DIMS=str(cfg.policy.proprio.dims), MW_PY=os.environ.get('JEPA4R_PY_COLLECT', sys.executable))
-    if cfg.env.suite == 'metaworld_rm75':   # grid.py:177-178: the RM75 env runs in the MuJoCo 3 / metaworld 3.0 python
+        env.update(
+            SCENE_PROPRIO_DIMS=str(cfg.policy.proprio.dims), MW_PY=os.environ.get('JEPA4R_PY_COLLECT', sys.executable)
+        )
+    # source grid.py:177-178: the RM75 env runs in the MuJoCo 3 / metaworld 3.0 python
+    if cfg.env.suite == 'metaworld_rm75':
         env.update(MW_PY=os.environ.get('JEPA4R_PY_COLLECT', sys.executable))
     runs = {}
-    for seed in cfg.policy.eval.seeds:  # seed by seed, as grid.py
+    for seed in cfg.policy.eval.seeds:  # seed by seed, as the source's grid.py
         for task in tasks(cfg.env):
             run_dir = out_dir / task / f's{seed}'
             run_dir.mkdir(parents=True, exist_ok=True)
@@ -139,7 +155,8 @@ def train(cfg, out_dir) -> dict:
 
 
 # ------------------------------------------------------------------------------------ Adroit Relocate and the RH56 twin
-# The OGBench-cube branch's Relocate harness (policy/bc/relocate, moved from its lewm_pcd/bench/relocate): one plan per
+# The OGBench-cube branch's Relocate harness (moved from its lewm_pcd/bench/relocate; controllers in policy/bc/relocate,
+# data in data/relocate, world-model support in models/relocate): one plan per
 # (env, model) -- collect, data audit, WM training + strict reload, official demonstrations, BC per seed + policy reload
 # -- run by its own executor, which checks every stage's receipt and artifacts. Each skeleton stage runs its share of
 # that plan with the harness's commands unchanged; the artifacts stay at the harness's paths under one run root per
@@ -164,7 +181,8 @@ RELOCATE_LINKS = {  # artifacts a run root takes from the shared stages: (owner 
 
 
 def official_assets_dir():
-    """The light copy of the official Relocate demonstrations + the RH56 initialisations (prepare_official_assets.py)."""
+    """The light copy of the official Relocate demonstrations + the RH56 initialisations
+    (prepare_official_assets.py)."""
     from jepa4r.config import stage_dir
     return stage_dir('prepare_policy_data', 'adroit_relocate') / 'official_assets'
 
@@ -284,15 +302,36 @@ def relocate_stage(cfg, stage, out_dir):
 
 def relocate_policy(cfg, out_dir):
     """train_policy on Adroit Relocate / the RH56 twin: the harness's BC per seed (100 / 200 / 300), then the paper's
-    rule -- per seed the highest success of its 20 evaluations, the mean over seeds (Tab. 2)."""
+    rule -- per seed the highest success of its 20 evaluations, the mean over seeds (Tab. 2) -- checked by the A1
+    raw-event aggregation (jepa4r.eval.aggregation.bc_summary: every seed and evaluation round present once, each with
+    its episode count), whose summary (per seed best, final and their means, the sample standard deviation of the bests)
+    goes to out_dir/bc_summary.json. formal: seeds 100 / 200 / 300, the 20 rounds of 25 episodes at epochs 5 .. 95, 99;
+    smoke: seed 100, one round of one episode at epoch 0 (the harness's smoke plan)."""
+    from jepa4r.eval.aggregation import BC_EPOCHS, bc_summary
+
     status = relocate_stage(cfg, 'train_policy', out_dir)
     root = relocate_run_root(cfg, 'train_policy')
-    runs = {}
-    for seed in cfg.policy.eval.seeds:   # the harness's BC record: bc-seed<s>/run/ (Native), rh56/bc_seed<s>/ (RH56)
+    formal = str(cfg.env.harness.mode) == 'formal'
+    seeds = tuple(int(s) for s in cfg.policy.eval.seeds) if formal else (100,)
+    episodes = 25 if formal else 1
+    runs, rounds = {}, []
+    for seed in seeds:   # the harness's BC record: bc-seed<s>/run/ (Native), rh56/bc_seed<s>/ (RH56)
         run = root / (f'bc-seed{seed}/run' if cfg.env.suite == 'adroit' else f'rh56/bc_seed{seed}')
         records = evals_of(run)
         if records:
-            runs.setdefault(str(cfg.env.env_id), {})[int(seed)] = records
+            runs.setdefault(str(cfg.env.env_id), {})[seed] = records
+        for record in records:
+            successes = round(record['eval/success'] * episodes / 100)
+            if abs(100.0 * successes / episodes - record['eval/success']) > 1e-9:
+                raise ValueError(f'{run}: eval/success {record["eval/success"]} is not a count of {episodes} episodes')
+            rounds.append(dict(seed=seed, epoch=int(record['eval/epoch']), successes=successes, episodes=episodes))
     if not runs:
-        raise RuntimeError(f'{cfg.env.name} train_policy: harness {status["status"]} but no BC evaluation records under {root}')
-    return aggregate(runs)
+        raise RuntimeError(
+            f'{cfg.env.name} train_policy: harness {status["status"]} but no BC evaluation records under {root}'
+        )
+    summary = bc_summary(rounds, seeds=seeds, epochs=BC_EPOCHS if formal else (0,), episodes_per_round=episodes)
+    (Path(out_dir) / 'bc_summary.json').write_text(json.dumps(summary, indent=2))
+    metrics = aggregate(runs)
+    if abs(metrics['success'] - summary['best_mean_percent']) > 1e-9:
+        raise RuntimeError(f'{cfg.env.name} train_policy: the Tab. 2 rule and the A1 aggregation disagree')
+    return metrics

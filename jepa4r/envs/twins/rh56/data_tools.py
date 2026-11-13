@@ -1,4 +1,5 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/rh56_adapter/data_tools.py (verbatim except: imports / paths adapted to the package)
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/rh56_adapter/data_tools.py (verbatim except: imports / paths adapted to the
+# package; lines wrapped at 120 columns)
 """Validate direct RH56 batches and publish paired header-only VDS inputs.
 
 The actual paired writer and numerical collection contract are unchanged. There
@@ -42,11 +43,13 @@ def validate_batch(attempt,plan_path=None,deep=True,report_path=None):
         expected=json.loads(Path(plan_path).read_text())['episodes']
         if [(r['split'],int(r['seed'])) for r in records]!=[(r['split'],int(r['seed'])) for r in expected]:
             raise ValueError('completed episodes differ from frozen batch plan')
-        if [r['requested_coverage'] for r in records]!=[r['coverage'] for r in expected]:raise ValueError('coverage differs from frozen plan')
+        if [r['requested_coverage'] for r in records] != [r['coverage'] for r in expected]:
+            raise ValueError('coverage differs from frozen plan')
         if manifest['provenance']['plan_sha256']!=sha(plan_path):raise ValueError('producer used another plan')
     config=json.loads((attempt/'config.json').read_text())
     config_hash=hashlib.sha256(json.dumps(config['config'],sort_keys=True,separators=(',',':')).encode()).hexdigest()
-    if config['provenance']!=manifest['provenance'] or config_hash!=manifest['provenance']['config_sha256']:raise ValueError('producer/config identity mismatch')
+    if config['provenance'] != manifest['provenance'] or config_hash != manifest['provenance']['config_sha256']:
+        raise ValueError('producer/config identity mismatch')
     registry=check_registry(records);files=[]
     # The paired writer keeps shared numerical columns bitwise equal, with only terminal action NaN.
     if mixed:
@@ -56,7 +59,8 @@ def validate_batch(attempt,plan_path=None,deep=True,report_path=None):
             for key in shared:
                 values=a[key][:]
                 if not np.array_equal(values,b[key][:],equal_nan=True):raise ValueError('paired mismatch '+key)
-                if key!='action' and values.dtype.kind=='f' and not np.isfinite(values).all():raise ValueError('nonfinite shared column '+key)
+                if key != 'action' and values.dtype.kind == 'f' and not np.isfinite(values).all():
+                    raise ValueError('nonfinite shared column ' + key)
             lengths=a['ep_len'][:];offsets=a['ep_offset'][:]
             if not np.array_equal(offsets,np.r_[0,np.cumsum(lengths)[:-1]]):raise ValueError('invalid offsets')
             if len(lengths)!=len(mixed):raise ValueError('episode count mismatch')
@@ -67,42 +71,70 @@ def validate_batch(attempt,plan_path=None,deep=True,report_path=None):
                 if not np.isnan(a['action'][off+T]).all():raise ValueError('missing terminal NaN action')
                 actions=a['action'][off:off+T]
                 if not np.isfinite(actions).all() or np.abs(actions).max()>1:raise ValueError('invalid executed action')
-                if a['pixels'].shape[1:]!=(256,256,3) or b['pcd_xyz'].shape[1:]!=(1200,3):raise ValueError('modality shape mismatch')
-                if a['pixels'].dtype!=np.uint8 or b['pcd_xyz'].dtype!=np.float32 or b['pcd_rgb'].dtype!=np.uint8:raise ValueError('modality dtype mismatch')
+                if a['pixels'].shape[1:] != (256, 256, 3) or b['pcd_xyz'].shape[1:] != (1200, 3):
+                    raise ValueError('modality shape mismatch')
+                if a['pixels'].dtype != np.uint8 or b['pcd_xyz'].dtype != np.float32 or b['pcd_rgb'].dtype != np.uint8:
+                    raise ValueError('modality dtype mismatch')
                 if deep:
                     with np.load(attempt/r['npz'],allow_pickle=False) as z:
                         for key in ('observations','actions','proprio','qpos','qvel','trace','rewards','xyz'):
                             if not np.isfinite(z[key]).all():raise ValueError('nonfinite stored '+key)
-                        for column,key,file in [('action','actions',a),('observation','observations',a),('proprio','proprio',a),
-                                                ('qpos','qpos',a),('qvel','qvel',a),('pixels','pixels',a),('pcd_xyz','xyz',b),('pcd_rgb','rgb',b)]:
+                        for column, key, file in [
+                            ('action', 'actions', a),
+                            ('observation', 'observations', a),
+                            ('proprio', 'proprio', a),
+                            ('qpos', 'qpos', a),
+                            ('qvel', 'qvel', a),
+                            ('pixels', 'pixels', a),
+                            ('pcd_xyz', 'xyz', b),
+                            ('pcd_rgb', 'rgb', b),
+                        ]:
                             selected=file[column][off:off+(T if column=='action' else F)]
                             if not np.array_equal(selected,z[key]):raise ValueError('HDF/actual episode mismatch '+key)
                         initial=json.loads(z['initial_state_json'].item())
                         fields=('integration','body_pos','body_quat','site_pos','site_quat','p','v','q_cmd')
-                        initial_hash=hashlib.sha256(json.dumps({k:initial[k] for k in fields},sort_keys=True,separators=(',',':')).encode()).hexdigest()
+                        initial_hash = hashlib.sha256(
+                            json.dumps({k: initial[k] for k in fields}, sort_keys=True, separators=(',', ':')).encode()
+                        ).hexdigest()
                         if initial_hash!=r['initial_state_sha256']:raise ValueError('physical initial hash mismatch')
                         camera=json.loads(z['camera_json'].item())
-                        if camera['mode']!='opposite' or camera['position']!=[0.,1.2,1.2] or camera['fovy']!=45.:raise ValueError('wrong camera')
+                        if (
+                            camera['mode'] != 'opposite'
+                            or camera['position'] != [0.0, 1.2, 1.2]
+                            or camera['fovy'] != 45.0
+                        ):
+                            raise ValueError('wrong camera')
                         kind=r['sample_type'];branch=r['branch_t'];length=r['branch_len']
                         expected=np.array([kind==2 or kind==1 and branch<=t<branch+length for t in range(T)],np.int8)
-                        if not np.array_equal(a['rand_action'][off:off+T],expected):raise ValueError('random segment mask mismatch')
-                        if kind==1 and not (15<=branch<160 and (length==200 or 10<=length<=30)):raise ValueError('branch protocol mismatch')
-                        if not 0<=r['noise_std']<.2 or kind==2 and r['noise_std']!=0:raise ValueError('noise protocol mismatch')
+                        if not np.array_equal(a['rand_action'][off : off + T], expected):
+                            raise ValueError('random segment mask mismatch')
+                        if kind == 1 and not (15 <= branch < 160 and (length == 200 or 10 <= length <= 30)):
+                            raise ValueError('branch protocol mismatch')
+                        if not 0 <= r['noise_std'] < 0.2 or kind == 2 and r['noise_std'] != 0:
+                            raise ValueError('noise protocol mismatch')
     for r in records:
         path=attempt/r['npz']
         if sha(path)!=r['npz_sha256']:raise ValueError('NPZ hash mismatch')
-        if r['producer_sha256']!=manifest['provenance']['producer_sha256'] or r['config_sha256']!=config_hash:raise ValueError('episode producer/config mismatch')
+        if r['producer_sha256'] != manifest['provenance']['producer_sha256'] or r['config_sha256'] != config_hash:
+            raise ValueError('episode producer/config mismatch')
         if deep and r['split'] not in ('train','val','test'):
             with np.load(path,allow_pickle=False) as z:
                 T=r['steps'];F=T+1
-                if z['actions'].shape!=(T,12) or z['observations'].shape!=(F,56) or z['proprio'].shape!=(F,13):raise ValueError('auxiliary shape mismatch')
-                if z['pixels'].shape!=(F,256,256,3) or z['xyz'].shape!=(F,1200,3):raise ValueError('auxiliary visual shape mismatch')
+                if z['actions'].shape != (T, 12) or z['observations'].shape != (F, 56) or z['proprio'].shape != (F, 13):
+                    raise ValueError('auxiliary shape mismatch')
+                if z['pixels'].shape != (F, 256, 256, 3) or z['xyz'].shape != (F, 1200, 3):
+                    raise ValueError('auxiliary visual shape mismatch')
                 for key in ('actions','observations','proprio','qpos','qvel','integration','trace','rewards','xyz'):
                     if not np.isfinite(z[key]).all():raise ValueError('nonfinite auxiliary '+key)
-                initial=json.loads(z['initial_state_json'].item());fields=('integration','body_pos','body_quat','site_pos','site_quat','p','v','q_cmd')
-                digest=hashlib.sha256(json.dumps({k:initial[k] for k in fields},sort_keys=True,separators=(',',':')).encode()).hexdigest()
-                if digest!=r['initial_state_sha256'] or int(z['seed'])!=r['seed']:raise ValueError('auxiliary initial/seed mismatch')
-                if bool(z['success'])!=r['success'] or bool(z['native_success'])!=r['native_success']:raise ValueError('auxiliary goal mismatch')
+                initial = json.loads(z['initial_state_json'].item())
+                fields = ('integration', 'body_pos', 'body_quat', 'site_pos', 'site_quat', 'p', 'v', 'q_cmd')
+                digest = hashlib.sha256(
+                    json.dumps({k: initial[k] for k in fields}, sort_keys=True, separators=(',', ':')).encode()
+                ).hexdigest()
+                if digest != r['initial_state_sha256'] or int(z['seed']) != r['seed']:
+                    raise ValueError('auxiliary initial/seed mismatch')
+                if bool(z['success']) != r['success'] or bool(z['native_success']) != r['native_success']:
+                    raise ValueError('auxiliary goal mismatch')
                 if json.loads(z['camera_json'].item())!=r['camera']:raise ValueError('auxiliary camera mismatch')
         files.append(dict(path=str(path.resolve()),sha256=r['npz_sha256'],bytes=path.stat().st_size))
         if r['camera']['mode']!='opposite':raise ValueError('wrong task camera')
@@ -110,10 +142,18 @@ def validate_batch(attempt,plan_path=None,deep=True,report_path=None):
     for name in ('paired_rgb.h5','paired_pcd.h5','manifest.json','state.json','config.json'):
         path=attempt/name
         if path.exists():files.append(dict(path=str(path.resolve()),sha256=sha(path),bytes=path.stat().st_size))
-    result=dict(status='PASS_BATCH',validated=time.time(),registry=registry,records=records,validator_sha256=sha(__file__),
-                runtime_helpers_sha256=RUNTIME_HELPERS_SHA256,
-                files=files,plan_sha256=sha(plan_path) if plan_path else None,deep_data_check=deep,
-                numeric_contract='T+1 physical states; T actual actions; outgoing HDF terminal NaN')
+    result = dict(
+        status='PASS_BATCH',
+        validated=time.time(),
+        registry=registry,
+        records=records,
+        validator_sha256=sha(__file__),
+        runtime_helpers_sha256=RUNTIME_HELPERS_SHA256,
+        files=files,
+        plan_sha256=sha(plan_path) if plan_path else None,
+        deep_data_check=deep,
+        numeric_contract='T+1 physical states; T actual actions; outgoing HDF terminal NaN',
+    )
     save(receipt,result)
     return result
 

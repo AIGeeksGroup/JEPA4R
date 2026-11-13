@@ -1,8 +1,0 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/conf/model/lewm_mw_drawer_pix.yaml (verbatim)
-# LeWM 2D encoder (ViT-tiny + projector, the latent the predictor and planner use) trained on the full MetaWorld
-# drawer-open three-part data (config/train/data/mw_drawer.yaml; run mw_drawer_pix, epoch 10). See ../../lewm_cortex.py
-_target_: lewm_cortex.load_lewm
-checkpoint_dir: ${oc.env:STABLEWM_HOME}/checkpoints/mw_drawer_pix
-epoch: 10
-use_projector: true
-random_init: false
