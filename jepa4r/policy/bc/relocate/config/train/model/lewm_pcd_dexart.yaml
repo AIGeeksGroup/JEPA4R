@@ -1,0 +1,6 @@
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/config/train/model/lewm_pcd_dexart.yaml (verbatim)
+# alias: lewm_pcd with encoder dexart  (same as `model=lewm_pcd model/encoder=dexart`)
+defaults:
+  - lewm_pcd
+  - override encoder: dexart
+  - _self_

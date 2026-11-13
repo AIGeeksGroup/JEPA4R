@@ -4,12 +4,14 @@
 name: tab3_recon
 expected: [paper/expected/tab3_recon.yaml]
 
+# Data and world model: the UR5e Cube-Single collection of the reconstruction (configs/env/cube_single_recon.yaml; the
+# released runs: HF AIGeeksGroup/JEPA4R branch ogbench-cube-recon), not the C4 data of Tab. 1's cube_single.
 jobs:
   - stage: collect_wm_data
-    grid: {env: [cube_single]}
+    grid: {env: [cube_single_recon]}
   - stage: train_wm                 # the decoder reads the frozen epoch-10 JEPA4R latents
-    grid: {env: [cube_single], method: [jepa4r]}
+    grid: {env: [cube_single_recon], method: [jepa4r]}
   - stage: train_decoder
-    grid: {env: [cube_single], decoder: [page4d]}
+    grid: {env: [cube_single_recon], decoder: [page4d]}
   - stage: eval_recon
-    grid: {env: [cube_single], decoder: [page4d]}
+    grid: {env: [cube_single_recon], decoder: [page4d]}

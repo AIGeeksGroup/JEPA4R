@@ -1,0 +1,41 @@
+# One current-paper paired RGB/PCD recipe; the plan binds Cube count and budget.
+defaults:
+  - _self_
+  - launcher/local
+hydra:
+  output_subdir: null
+  mode: RUN
+  run:
+    dir: ${oc.env:CUBE_COLLECTION_RUNTIME_ROOT}/logs/collection
+cache_dir: null
+env_type: single
+fixed_task_id: 1
+strategy: expert_low_noise
+noise: null
+noise_smoothing: 0.5
+mixed_switch_step: null
+split: train
+seed: 0
+world_seed: null
+num_traj: 1
+num_workers: 1
+dataset_name: paired_pcd.h5
+pix_dataset_name: paired_rgb.h5
+world:
+  num_envs: 1
+  max_episode_steps: 200
+  image_shape: [224, 224]
+pcd:
+  num_points: 1200
+  cameras: [front_pixels]
+  foreground_only: true
+  crop_box: [[0.10, -0.50, -0.02], [0.75, 0.50, 0.60]]
+  voxel_size: 0.005
+  cube_fraction: 0.25
+  keep_rgb: false
+options: null
+sealed_capture:
+  crop_box: ${pcd.crop_box}
+  frame_source_path: ${oc.env:CUBE_COLLECTION_RUNTIME_ROOT}/external/native_pcd_frame.py
+  core_path: ${oc.env:CUBE_COLLECTION_RUNTIME_ROOT}/code/lewm_pcd/envs/pcd_wrapper.py
+  provider_path: ${oc.env:CUBE_COLLECTION_RUNTIME_ROOT}/external/pcd_geometry.py

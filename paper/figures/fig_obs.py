@@ -6,7 +6,7 @@ in: data/wm/cube_single
 
 
 def main():
-    raise NotImplementedError("TODO(integrate)")
+    raise NotImplementedError("no figure code in the source branches: docs/reproduce.md, Open Items")
 
 
 if __name__ == "__main__":

@@ -1,3 +1,17 @@
 _base_: _metaworld
 name: mw_bin_pick
 display: Bin-pick
+env_id: bin-picking-v2-goal-observable   # CortexBench task id (demos, evaluation): cortexbench:lewm_pcd/bench/cortexbench/grid.py:41-43
+pointcloud:
+  keep_extra: []   # fixtures welded to the world but re-placed at reset (scripts/data/config/mw_binpick.yaml; pcd_fork.py:23)
+wm_data:
+  env_id: swm/MWBinPick-v0   # collection env (metaworld 3.0 bin-picking-v3-goal-observable): cortexbench:lewm_pcd/scripts/data/config/mw_binpick.yaml:15,34-35
+  pcd:
+    fixtures: []
+    multisample: true   # point clouds of the paper data: multisampled render (collected before cortexbench 6a498d9); GATES.md 1.2 item 1, D1
+  policy: {_target_: jepa4r.envs.metaworld.ThreePartPolicy}
+  sets:
+    - {name: mw_binpick, num_episodes: 10000, shards: 40}          # run_mw_collection.sh:17 (NUM_TRAJ, SHARDS)
+    - {name: mw_binpick_test, num_episodes: 150, world_seed: 2000000}   # run_mw_collection.sh:18 (TEST_TRAJ, TEST_SEED)
+  files: {pointcloud: mw_binpick_pcd.h5, image: mw_binpick.h5}
+  split: random_clips

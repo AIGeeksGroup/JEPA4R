@@ -1,0 +1,7 @@
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/cortexbench/conf/model/lewm_adroit_relocate_2d.yaml (verbatim)
+_target_: lewm_cortex.load_lewm
+checkpoint_dir: ${oc.env:RELOCATE_RGB_CHECKPOINT}
+epoch: 10
+use_projector: true
+random_init: false
+seed: 0

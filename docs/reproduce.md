@@ -18,10 +18,10 @@ baseline recipes) are implemented, because the main-text numbers depend on them.
 |---|---|---|---|
 | Tab. 1: 6 encoders on Cube-Single / Double / Triple, Scene, Puzzle 3×3 / 4×4 / 4×5; Cube-Quadruple 0.0 (Sec. 5.3) | `tab1_ogbench` | collect_wm_data, prepare_policy_data, train_wm, train_policy | `paper/expected/tab1_ogbench.yaml` |
 | Tab. 2: 6 encoders (+ Random, optional) on 5 MetaWorld tasks and the mean, and Adroit Relocate | `tab2_cortexbench` | same | `paper/expected/tab2_cortexbench.yaml` |
-| Tab. 3a/b; 12.31 cm shuffled control; decoder stage A → B (0.87 → 0.79 cm); within 1.1 cm over 200 steps | `tab3_recon` | collect_wm_data, train_wm, train_decoder, eval_recon | `paper/expected/tab3_recon.yaml` |
+| Tab. 3a/b; 12.31 cm shuffled control; decoder stage A → B (0.87 → 0.79 cm); within 1.1 cm over 200 steps (UR5e Cube-Single reconstruction data, `cube_single_recon`) | `tab3_recon` | collect_wm_data, train_wm, train_decoder, eval_recon | `paper/expected/tab3_recon.yaml` |
 | Tab. 4a decoder backbone (Cube); 4b encoder, 4c temporal window, 4d hyper-parameters (Scene) | `tab4_ablations` | all of the above | `paper/expected/tab4_ablations.yaml` |
 | 5.51M PointNet vs. 5.50M ViT-tiny, ~18.0M JEPA4R, 5.75M decoder, 0.88M LoRA, ~0.94B PAGE-4D | `params` | count_params | `paper/expected/params.yaml` |
-| Sec. 5.6 in the RM75-B twin: twin vs. vendor URDF (2,000 joint configurations, limits, masses, gripper); twin-trained world model, policy head and decoder; preview 0.58 cm (cube 0.79 cm), cube-to-target 1.3 vs. 5.6 cm over 50 episodes (estimates in the paper) | `twin` | verify_twin, collect_wm_data, prepare_policy_data, train_wm, train_policy, train_decoder, eval_preview | `paper/expected/twin.yaml` |
+| Sec. 5.6 in the RM75-B twin: twin vs. vendor URDF (2,000 joint configurations, limits, masses, gripper); twin-trained world model, policy head and decoder; the paper reports no twin numbers | `twin` | verify_twin, collect_wm_data, prepare_policy_data, train_wm, train_policy, train_decoder, eval_preview | `paper/expected/twin.yaml` |
 | Fig. 1a, Fig. 1b, observations, success plots, CortexBench scatter, simulation key frames, open-loop errors | — | outputs of the stages above | `paper/figures/*.py` |
 
 ```bash
@@ -51,28 +51,42 @@ jepa4r-report                                                                   
   Evaluation: 4,096 validation frames, outliers above 3 cm; open loop over 64 episodes with context frames at
   environment steps 0, 5 and 10, a horizon of 200 steps, and reports at steps 15, 100 and 200.
 
+## Values Not Stated in the Paper
+
+The configurations carry the values of the integrated code, each with the file and line it comes from
+(`configs/**/*.yaml` comments; moved files start with a `# Moved from <branch>:<path>` line):
+
+1. Task ids, play datasets, cameras, crop boxes, affine maps, point sampler: `configs/env/*.yaml`.
+2. Collection policies, noise and switch schedules: `jepa4r/envs/{metaworld,ogbench}/` (`jepa4r/data/behaviors.py`
+   lists them); shard plans and seeds: `jepa4r/stages/collect_wm_data.py`.
+3. How the policy learners observe their data: CortexBench embeds every frame on the fly (`jepa4r/policy/bc`);
+   DQC re-renders every row of OGBench's play data and encodes it (`jepa4r/policy/dqc`).
+4. Projector, action encoder, predictor widths, weight decay, gradient clipping, split: `configs/method/_jepa_wm.yaml`.
+   The training seed fixes the split and the shuffling, as in the paper runs; the initial weights come from torch's
+   default generator, which those runs did not seed, so two trainings with the same seed differ as two seeds do.
+5. DQC (`configs/policy/dqc.yaml`): the paper's "best of ten evaluations" are the evaluations at 100k ... 1M steps;
+   the runner also evaluates the untrained agent at step 0 (kept: it shares the RNG of the batch sampling; 0.0 in all
+   18 paper runs, so the best of ten equals GATES.md's best of eleven). BC: `configs/policy/bc.yaml` (eai-vc 76fe35e's
+   configs, seeds 100 / 200 / 300, episode i at seed + i).
+6. Decoder: `configs/decoder/_base.yaml` (pixel selection, 100 sliced-W2 projections, 14,140 batches of 32 per stage,
+   learning rates 3e-4 / 1e-5, split 0.9 of seed 3072); Depth Anything 3 Giant; the cube position is read as the
+   centroid of the points carrying the cube's colour.
+7. Tab. 4b encoders: `configs/encoder/{pointnet2,dgcnn,point_patch_transformer}.yaml`.
+8. Reconstruction data: the UR5e Cube-Single plan-oracle collection (`configs/env/cube_single_recon.yaml`), not Tab. 1's
+   Cube-Single data.
+
 ## Open Items
 
-Values marked `???` in `configs/` are not given in the paper and are taken from the integrated code:
-
-1. Benchmark task ids and the names of OGBench's official play datasets; camera names; crop boxes, affine maps,
-   point sampler and rgb scaling.
-2. Expert controllers, noise scales and interruption schedules of the data mixtures; how the Puzzle data follow
-   OGBench's noisy recipe.
-3. How the frozen encoders observe the official play data (images / point clouds for its recorded states).
-4. Projector and action encoder inherited from LeWM; weight decay.
-5. GCIQL, DQC and BC hyper-parameters; the frames the policy head reads; evaluation schedule; whether Cube reports
-   the final evaluation.
-6. CortexBench evaluation seeds and episodes per evaluation (every CortexBench value of the paper is a multiple of
-   1/75, e.g. 97.3 = 73/75).
-7. Whether the Random (ViT-B) row of Tab. 2 is our run (the specification marks it optional).
-8. Tab. 4c: whether the policy head's input window changes together with the world-model context.
-9. Decoder: pixel selection for the 1,200 points, sliced-W2 projections, epochs, learning rates and batch sizes per
-   stage, train / validation split, which Cube task ("OGBench Cube"; the configurations use Cube-Single), Depth
-   Anything 3 model size.
-10. Metric definitions: how the bidirectional nearest-neighbor distances are aggregated; how the cube position is
-    read from a point cloud.
-11. Hyper-parameters of the Tab. 4b encoders at ~5.51M parameters; checkpoint files.
-12. RM75-B twin (`configs/env/rm75b_cube.yaml`): twin model files, the hand / end-effector twin (the paper names an
-    Inspire EG2-4C2 gripper), the Cube task, the twin's data recipe and policy learner, the tolerances of the URDF
-    check, and how the preview metrics are computed.
+- **OGBench Cube 1-4, Adroit Relocate, the RH56 hand twin** (Tab. 1 Cube columns and Sec. 5.3 Cube-Quadruple, Tab. 2
+  Relocate, the twin's hand) run the OGBench-cube branch's workflows (`jepa4r/policy/gciql`, `jepa4r/policy/bc/relocate`;
+  docs/architecture.md), which keep their own receipts and sha256 pins. Inputs they need from outside this repository:
+  the V-JEPA 2.1 ViT-L/16 weights (Cube; the workflow fetches them), DAPG's Relocate state expert, the official Relocate
+  demonstrations, the native RM75-B + RH56 bundle (its files are listed in
+  `jepa4r/policy/bc/relocate/provenance/assets/rh56_native_bundle_v1.json`) and MuJoCo 2.0 for mujoco-py.
+- **Twin policy head and look-ahead preview** (`configs/env/rm75b_cube.yaml` `policy`, `policy_data`; stage
+  `eval_preview`): no implementation in the source branches.
+- **Figures** (`paper/figures/*.py`): no figure code in the source branches; the stages write their inputs
+  (`curves.npz` of eval_recon).
+- **Released weights:** VISReg's are shared by the authors on request (`scripts/download_checkpoints.py`).
+- **Random (ViT-B) row of Tab. 2:** the paper's values equal the VC-1 study's Table 8; the paper runs ran it only on
+  bin-picking (`configs/method/random_vitb.yaml`); the job stays optional.

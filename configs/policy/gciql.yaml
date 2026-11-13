@@ -1,12 +1,32 @@
 # OGBench Cube: GCIQL [park2025ogbench], offline goal-conditioned RL (supp. sec:supp-policy).
+# Values not stated in the paper: the OGBench-cube branch's paper GCIQL (C4 = OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/):
+# workflow_agent.json (OGBench's GCIQL agent config as run), downstream/trainer.py:83-86 (asserted run settings),
+# workflow_downstream.py (budgets). Run by that workflow, moved here: jepa4r/policy/gciql (downstream/ = this learner).
 name: gciql
 impl: jepa4r.policy.gciql
 data: official_play           # env.policy_data
-train_steps: 1000000
+train_steps: 1000000          # C4 trainer.py:83 (total_updates)
+seed: 0                       # C4 trainer.py:83
 inputs: [latent, proprio]     # frozen latent + robot state
 goal: object_state            # target state of the objects
-frame_stack: ???              # "the head reads the latents of recent frames" (Sec. 4.3)
-hparams: ???
+frame_stack: 1                # one frame: current input = latent + 19 state entries, goal = latent + 3N (C4
+                              # workflow_downstream.py:77-78; workflow_agent.json frame_stack: null)
+hparams:                      # C4 workflow_agent.json
+  lr: 3.0e-4
+  batch_size: 1024
+  actor_hidden_dims: [512, 512, 512]
+  value_hidden_dims: [512, 512, 512]
+  layer_norm: true
+  discount: 0.99
+  tau: 0.005
+  expectile: 0.9
+  actor_loss: ddpgbc
+  alpha: 1.0
+  const_std: true
+  value_goals: {current: 0.2, trajectory: 0.5, random: 0.3, geometric: true}
+  actor_goals: {current: 0.0, trajectory: 1.0, random: 0.0, geometric: false}
+  gc_negative: true
 eval:
-  every: ???
-  report: ???                 # the paper states "best of ten evaluations" only for Puzzle
+  every: null                 # one evaluation, of the final policy (update 1,000,000): C4 workflow_downstream.py stages accept -> native-sr
+  report: final
+  episodes: 250               # 5 official tasks x 50 (C4 workflow_downstream.py:38)

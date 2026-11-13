@@ -1,0 +1,10 @@
+# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/conf/model/lewm_scene_pcd_lr1e4.yaml (verbatim)
+# LeWM 3D (DexArt PointNet + projector) trained with learning rate 1e-4 (scripts/run_scene_ablations.sh; run
+# scene_pcd_dexart_lr1e4, epoch 10), otherwise as lewm_scene_pcd.yaml. Input (N, 6) point clouds; center / scale /
+# use_rgb = the training preprocessing (checked against the checkpoint's config.yaml)
+_target_: lewm_cortex.load_lewm_pcd
+checkpoint_dir: ${oc.env:STABLEWM_HOME}/checkpoints/scene_pcd_dexart_lr1e4
+epoch: 10
+center: [0.425, 0.0, 0.2]
+scale: 4.0
+use_rgb: true

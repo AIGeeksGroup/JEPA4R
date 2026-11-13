@@ -15,6 +15,12 @@ dependencies = ["torch>=2.8,<2.9", "numpy", "PyYAML>=6", "omegaconf>=2.3"]
 
 [project.optional-dependencies]
 dev = ["build>=1.2", "ruff>=0.11", "pip-audit>=2.9"]
+# The training stack of the paper runs (versions: GATES.md G1, conda env lewm_pcd); stable-worldmodel is vendored
+# (pip install -e third_party/stable-worldmodel). The collection, CortexBench and DQC stacks: README.md (Installation);
+# the OGBench-cube workflows' stacks: jepa4r/policy/gciql/requirements/, jepa4r/policy/bc/relocate/requirements/.
+train = ["torchvision==0.23.0", "numpy==1.24.4", "mujoco==3.12.0", "gymnasium==0.29.1", "timm==1.0.29",
+         "transformers==4.50.3", "lightning==2.5.6", "stable-pretraining==0.1.8", "hydra-core", "einops", "h5py",
+         "tensorboard", "matplotlib"]
 
 [project.scripts]
 jepa4r-run = "jepa4r.cli:run_main"
@@ -24,9 +30,21 @@ jepa4r-report = "jepa4r.report:main"
 [tool.setuptools.packages.find]
 include = ["jepa4r*"]
 
+[tool.setuptools.package-data]
+"jepa4r.envs.twins" = ["descriptions/**/*"]      # RM75-B + EG2-4C2 MJCF and meshes
+"jepa4r.policy.bc" = ["conf/model/*.yaml"]       # the CortexBench embedding configs of the paper runs
+
 [tool.ruff]
 target-version = "py310"
 line-length = 120
+extend-exclude = ["third_party",   # vendored upstream code, unchanged apart from third_party/*/UPSTREAM.md
+                  # frozen copies the moved OGBench-cube Cube workflow pins by sha256 (its own source manifests)
+                  "jepa4r/policy/gciql/collection/vendor", "jepa4r/policy/gciql/downstream/vendor",
+                  "jepa4r/policy/gciql/pldm/vendor"]
 
 [tool.ruff.lint]
 select = ["E9", "F"]
+
+[tool.ruff.lint.per-file-ignores]
+# the OGBench-cube branch's own tests, moved with their sources' unused imports kept as they are
+"jepa4r/policy/bc/relocate/tests/*" = ["F401"]

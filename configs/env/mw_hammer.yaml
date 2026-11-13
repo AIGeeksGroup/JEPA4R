@@ -1,3 +1,17 @@
 _base_: _metaworld
 name: mw_hammer
 display: Hammer
+env_id: hammer-v2-goal-observable   # CortexBench task id (demos, evaluation): cortexbench:lewm_pcd/bench/cortexbench/grid.py:41-43
+pointcloud:
+  keep_extra: []   # fixtures welded to the world but re-placed at reset (scripts/data/config/mw_hammer.yaml; pcd_fork.py:23)
+wm_data:
+  env_id: swm/MWHammer-v0   # collection env (metaworld 3.0 hammer-v3-goal-observable): cortexbench:lewm_pcd/scripts/data/config/mw_hammer.yaml:7-11
+  pcd:
+    fixtures: []
+    multisample: false   # point clouds of the paper data: single-sample render (collected after 6a498d9); GATES.md 1.2 item 1, D1
+  policy: {_target_: jepa4r.envs.metaworld.HammerThreePartPolicy}
+  sets:
+    - {name: mw_hammer, num_episodes: 10000, shards: 40}          # run_mw_collection.sh:17 (NUM_TRAJ, SHARDS)
+    - {name: mw_hammer_test, num_episodes: 150, world_seed: 2000000}   # run_mw_collection.sh:18 (TEST_TRAJ, TEST_SEED)
+  files: {pointcloud: mw_hammer_pcd.h5, image: mw_hammer.h5}
+  split: random_clips

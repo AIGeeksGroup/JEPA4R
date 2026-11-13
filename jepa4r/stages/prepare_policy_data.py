@@ -5,7 +5,7 @@ cfg.env.policy_data.source
                  (robot state on Cube, button lights on Puzzle) and the goals (target state of the objects or
                  lights)                                                              -> data/official_play.py
   demos          Scene, MetaWorld, Adroit Relocate: demonstrations for behaviour cloning,
-                 cfg.env.policy_data.demos_per_task per task (25; 100 on Relocate)   -> data/demos.py
+                 cfg.env.policy_data.demos_per_task per task (25; 100 on Relocate)   -> data/demos/
 out: data/policy/<env>/
 """
 

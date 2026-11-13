@@ -1,18 +1,37 @@
 # CortexBench Adroit Relocate [rajeswaran2018dapg], the dexterous-hand task.
+# Integrated code: the OGBench-cube branch's Relocate harness (jepa4r/policy/bc/relocate; values below from that branch,
+# cited as OGBench-cube:<path>:<line>). Every stage of this env runs its share of the harness's plan.
 _base_: _base
 suite: adroit
 impl: jepa4r.envs.adroit
 name: adroit_relocate
 display: Relocate
+env_id: swm/AdroitRelocate-v0 # OGBench-cube:lewm_pcd/envs/adroit/__init__.py:5-6 (AdroitEnv on mj_envs relocate-v0)
 camera:
-  name: ???                   # the CortexBench Adroit camera
+  name: vil_camera            # OGBench-cube:lewm_pcd/config/adroit_relocate_sampling.json (camera; 256x256 renders, "size")
 pointcloud:
   keep_extra: [visible_goal_marker]   # Sec. 4.1: on Relocate the visible goal marker is a task object
+  sampler: adroit_relocate_sampling   # jepa4r/envs/adroit/adroit_relocate_sampling.json = OGBench-cube:lewm_pcd/config/
+                                      # adroit_relocate_sampling.json: foreground only, object quota 0.25, visible green
+                                      # target cap 300, empty-robot background fill
+  crop_box: [[-0.6, -0.8, -0.25], [0.6, 0.6, 1.1]]   # the same file (crop_box)
+  affine: {center: [0.0, -0.2, 0.25], scale: 4.0}     # OGBench-cube:lewm_pcd/config/train/data/adroit_relocate_pcd.yaml:18-19
 policy: bc
 wm_data:                      # supp. sec:supp-data
   num_episodes: 10000
-  episode_len: 200
-  mixture: {noisy_expert: 0.5, expert_interrupted_by_random: 0.3, random: 0.2}
+  episode_len: 200            # OGBench-cube:lewm_pcd/envs/adroit/env.py:20 (TASKS relocate-v0 horizon 200)
+  mixture: {noisy_expert: 0.5, expert_interrupted_by_random: 0.3, random: 0.2}   # = OGBench-cube:lewm_pcd/envs/adroit/
+                                                                                 # env.py:33 (mix=(.5, .3, .2))
+  collector: adroit           # OGBench-cube:lewm_pcd/bench/relocate/adroit_collect.py (harness stage collect + data-audit)
+  seed: 42                    # OGBench-cube:lewm_pcd/bench/relocate/workflow.py:226 (--seed default)
+  sets:                       # OGBench-cube:lewm_pcd/bench/relocate/adroit_workflow.py:46 (train 10000, test 150)
+    - {name: train, num_episodes: 10000}
+    - {name: test, num_episodes: 150}
+  files: {pointcloud: train_pcd.h5, image: train_rgb.h5}   # adroit_workflow.py:87-88
+  split: random_clips         # LeWM's random 0.9 / 0.1 clip split (seed 3072), OGBench-cube:lewm_pcd/config/train/lewm.yaml:11-12
 policy_data:
   source: demos
   demos_per_task: 100         # 100 demonstrations on Relocate (supp. sec:supp-policy)
+harness:                      # jepa4r.policy.bc.relocate_stage (the harness's --mode / --seed)
+  mode: full                  # full = the paper budgets (adroit_workflow.py:46,52,64,70-71); smoke = its bounded check
+  seed: 42                    # workflow.py:226

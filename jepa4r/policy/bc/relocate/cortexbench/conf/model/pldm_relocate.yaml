@@ -1,0 +1,5 @@
+# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/cortexbench/conf/model/pldm_relocate.yaml (verbatim)
+# Native Adroit Relocate checkpoint; the existing PLDM loader and BC loop are unchanged.
+_target_: jepa_baselines.load_pldm
+checkpoint_dir: ${oc.env:RELOCATE_PLDM_CHECKPOINT}
+epoch: 10

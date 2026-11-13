@@ -1,11 +1,45 @@
+# Integrated code: the OGBench-cube branch's Cube workflow (jepa4r/policy/gciql). Values below come from that branch,
+# cited as OGBench-cube:lewm_pcd/bench/ogbench/<path>:<line>. Fixed in that code for this env, not set here:
+#   native evaluation horizon 500 steps (workflow_downstream.py:79); reset seed 970000000 + 100000 * task + episode
+#   (downstream/native_core.py:50-53); official play 1000/100 train / val episodes (workflow_downstream.py:31);
+#   GCIQL current input latent + 19, goal latent + 6 (workflow_downstream.py:77-78).
 _base_: _ogbench
 name: cube_double
 display: Cube-Double
+env_id: cube-double-play-v0   # OGBench task of the native evaluation:
+                              # downstream/native_core.py:156-157
+camera:
+  name: front_pixels          # the render camera of every Cube: collection/camera.py:38
+                              # (render_name), collection/__init__.py:484 (224 x 224, RGB AA4,
+                              # geometry AA0); here OGBench's front camera turned 5 degrees up
+                              # about its local x axis
+pointcloud:
+  crop_box: [[0.10, -0.50, -0.02], [0.75, 0.50, 0.60]]   # collection/camera.py:38
 policy: gciql
 wm_data:                      # supp. sec:supp-data
   num_episodes: 10000
-  episode_len: 500
+  episode_len: 500            # collection/__init__.py:14 (HORIZONS)
   mixture: {expert_low_noise: 0.2, expert_high_noise: 0.4, expert_then_random: 0.2, random: 0.2}
+                              # = collection/__init__.py:15 (STRATEGIES: 400 / 800 / 200 + 200 / 400
+                              # of each task's 2,000 train episodes; expert-then-random is two
+                              # branch variants, 0.1 each: collection/__init__.py:484)
+  collector: c4_cube          # the workflow's collect + views stages (collection/, fresh_data.py)
+  env_id: swm/OGBCubeOfficialFixed-v0
+                              # collection/vendor/fixed/double_collection.py:14 (DOUBLE_ENV_ID)
+  seed: 0                     # workflow.py:96-98 (collection seed fixed at 0); world seed base
+                              # 2000000, policy seed base 102000000: collection/__init__.py:467-468
+  sets:                       # collection/__init__.py:470-471 (5 tasks x 5 strategies, train then
+                              # validation)
+    - {name: train, num_episodes: 10000}
+    - {name: validation, num_episodes: 1000}
+  split: episodes             # independent validation episodes (collection/__init__.py:484;
+                              # fresh_data.py views)
 policy_data:
   source: official_play       # OGBench's official play data (supp. sec:supp-policy)
-  dataset: ???
+  dataset: cube-double-play-v0 # + its -val split: official_sources.json:29,37 (sha256 and
+                              # bytes pinned there)
+harness:                      # jepa4r.policy.gciql.cube_stage (the workflow's run config)
+  mode: formal                # workflow.py:465 (default): the paper protocol; smoke = its two-update
+                              # diagnostic
+  workers: 2                  # workflow.py:92 (default)
+  prefetch: 2                 # workflow.py:92 (default)
