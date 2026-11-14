@@ -3,7 +3,7 @@ train_loop.py (commit 76fe35e, third_party/eai-vc), unchanged on disk, with thre
 reported numbers:
 
 1. Embedding configs: an embedding named NAME is read from conf/model/NAME.yaml next to this file when that file exists
-   (the LeWM encoders and the extra baselines), otherwise from vc_models' own conf/model (VC-1). The official
+   (the LeWM / JEPA4R encoders and the extra baselines), otherwise from vc_models' own conf/model (VC-1). The official
    load_pretrained_model does the loading either way.
 2. Logging: `setup_wandb` returns a logger that appends every `wandb_run.log(...)` record to metrics.jsonl in the
    hydra run dir (wandb is disabled here). The records are the ones the official loop logs, e.g. eval/highest_success.

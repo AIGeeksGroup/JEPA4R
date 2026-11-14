@@ -102,7 +102,7 @@ def main(argv=None):
         checkpoint = os.environ.get("JEPA4R_CHECKPOINT_DIR")
         if checkpoint:
             if config.get("_target_") != "wm_embeddings.load_jepa4r":
-                raise ValueError("checkpoint override requires the LeWM PCD embedding")
+                raise ValueError("checkpoint override requires the JEPA4R embedding")
             config.checkpoint_dir = checkpoint
         model, embedding_dim, transforms, metadata = hydra.utils.call(config)
         if metadata.get("input") != "pcd":

@@ -54,7 +54,7 @@ CONF = os.path.join(CONF_HOME, "conf", "model")
 MODE = "rgb"
 if os.path.exists(os.path.join(CONF, EMB + ".yaml")) and OmegaConf.load(
     os.path.join(CONF, EMB + ".yaml")
-)._target_.endswith("_pcd"):
+)._target_.endswith("load_jepa4r"):
     MODE = "pcd"
 
 
@@ -186,8 +186,8 @@ _official_load = ml.load_pretrained_model
 
 
 def load_pretrained_model(embedding_name, input_type=np.ndarray, *args, **kwargs):
-    """Embeddings configured in ./conf/model (the LeWM encoders); a point-cloud one gets the model's own point-cloud
-    preprocessing (run_bc3d.py), an image one the official PIL wrapper."""
+    """Embeddings configured in ./conf/model (the LeWM / JEPA4R encoders); a point-cloud one gets the model's own
+    point-cloud preprocessing (run_bc3d.py), an image one the official PIL wrapper."""
     path = os.path.join(CONF, embedding_name + ".yaml")
     if not os.path.exists(path):
         return _official_load(embedding_name, input_type, *args, **kwargs)

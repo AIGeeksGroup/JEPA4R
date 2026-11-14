@@ -1,5 +1,5 @@
 """OGBench's puzzle-3x3-play data (--env-type 4x4 / 4x5: puzzle-4x4-play / puzzle-4x5-play) -> every state re-rendered
-with the LeWM data's camera -> the frozen LeWM / JEPA4R encoders -> one 192-d latent per step (DQC's training
+with the world-model data's camera -> the frozen LeWM / JEPA4R encoders -> one 192-d latent per step (DQC's training
 observations, run_dqc.py).
 * The official data stores states only (OGBench's state observation + qpos / qvel / button_states), no images. Each
   step's qpos / qvel / button_states are set back into the simulator (env.set_state) and the frame is rendered as the

@@ -18,7 +18,7 @@ encoder.
 
 Adaptations to LeWM: a linear head from the global feature to out_dim (the 192-d latent), and the MLP widths x 2.5
 (ratios kept), so that the parameter count matches the pixel model's ViT-tiny encoder: 5.51 M (5.50 M). The radii
-are the authors' (their objects are normalised to the unit sphere; the LeWM point clouds, (xyz - centre) x 4, have
+are the authors' (their objects are normalised to the unit sphere; the JEPA4R point clouds, (xyz - centre) x 4, have
 about that extent).
 
 Computation: the first layer of each set abstraction is a linear map of [xyz_j - centre, feat_j], evaluated as W_xyz

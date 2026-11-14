@@ -1,4 +1,4 @@
-"""vc_models entry point for LeWM encoders in CortexBench (the frozen-PVR imitation protocol of eai-vc).
+"""vc_models entry point for the LeWM and JEPA4R encoders in CortexBench (the frozen-PVR imitation protocol of eai-vc).
 
 CortexBench loads an encoder through `hydra.utils.call(<vc_models conf/model/NAME.yaml>)`, which must return
 (model, embedding_dim, transforms, metadata); the model maps a batch of preprocessed frames (B, 3, 224, 224) to one
@@ -79,7 +79,7 @@ def _train_data(ckdir):
     return [yaml.safe_load(p.read_text())["data"]["dataset"]["name"]]
 
 
-class LeWMEmbedding(nn.Module):
+class WMEmbedding(nn.Module):
     def __init__(self, encoder, projector=None):
         super().__init__()
         self.encoder = encoder
@@ -137,7 +137,7 @@ def build_wm_embedding(checkpoint_dir, epoch=10, use_projector=True, random_init
         encoder.load_state_dict(_remap_vit_state_dict_for_runtime(encoder_state, encoder.state_dict()), strict=True)
         if projector is not None:
             projector.load_state_dict({k[len("projector.") :]: v for k, v in sd.items() if k.startswith("projector.")})
-    return LeWMEmbedding(encoder, projector).eval()
+    return WMEmbedding(encoder, projector).eval()
 
 
 def load_lewm(
@@ -168,7 +168,7 @@ def load_lewm(
     return model, int(dim), transforms, metadata
 
 
-# ---------------------------------------------------------------- 3D (point cloud) LeWM
+# ---------------------------------------------------------------- JEPA4R (point clouds)
 class PcdTransform:
     """(N, 6) numpy point cloud [xyz in metres, rgb 0..255] -> (N, 6) float tensor, as JEPA4R's training
     preprocessor (utils.PointCloudPreprocessor): (xyz - center) * scale ; rgb / 255."""
@@ -210,7 +210,7 @@ def _pcd_encoder_class(target):
 
     fname, cls, _ = PCD_ENCODERS[target]
     path = Path(__file__).resolve().parents[2] / "models" / "encoders" / fname  # jepa4r/models/encoders
-    spec = importlib.util.spec_from_file_location("lewm_" + fname[: -len(".py")], path)
+    spec = importlib.util.spec_from_file_location("wm_" + fname[: -len(".py")], path)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return getattr(mod, cls)
@@ -231,7 +231,7 @@ def load_jepa4r(
     seed: int = 0,
 ):
     """JEPA4R's encoder (the one its config.json names: DexArt PointNet, ManiSkill PointNet,
-    PointPatchTransformer, PointNet++ or DGCNN) + projector: one (N, 6) point cloud -> the 192-d LeWM latent.
+    PointPatchTransformer, PointNet++ or DGCNN) + projector: one (N, 6) point cloud -> the 192-d latent.
     center / scale / use_rgb must be the checkpoint's data.preprocessor (checked against its config.yaml if present).
     random_init uses the checkpoint's architecture with fixed seeded weights, without reading its weights file.
     CortexBench's load_pretrained_model wraps transforms for images (PIL); run_bc3d.py replaces that wrapper for
@@ -264,11 +264,11 @@ def load_jepa4r(
         sd = torch.load(ckdir / f"weights_epoch_{epoch}.pt", map_location="cpu")
     encoder.load_state_dict({k[len("encoder.") :]: v for k, v in sd.items() if k.startswith("encoder.")})
     projector.load_state_dict({k[len("projector.") :]: v for k, v in sd.items() if k.startswith("projector.")})
-    model = LeWMEmbedding(encoder, projector).eval()
+    model = WMEmbedding(encoder, projector).eval()
     with torch.no_grad():
         dim = model(torch.zeros(2, 1200, 6 if use_rgb else 3)).shape[-1]
     metadata = {
-        "algo": "random" if random_init else "lewm",
+        "algo": "random" if random_init else "jepa4r",
         "input": "pcd",
         "model": f"{PCD_ENCODERS[target][2]} (JEPA4R encoder + projector)",
         "data": [] if random_init else _train_data(ckdir),

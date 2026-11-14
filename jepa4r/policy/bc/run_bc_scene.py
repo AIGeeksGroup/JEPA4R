@@ -67,7 +67,7 @@ def conf_path(name):
 
 
 MODE = "rgb"
-if conf_path(EMB) and OmegaConf.load(conf_path(EMB))._target_.endswith("_pcd"):
+if conf_path(EMB) and OmegaConf.load(conf_path(EMB))._target_.endswith("load_jepa4r"):
     MODE = "pcd"
 
 
