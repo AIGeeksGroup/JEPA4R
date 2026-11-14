@@ -1,8 +1,8 @@
 """Success rates from the raw per-episode evaluation events (Cube: cube_summary; BC: bc_summary, the best of the 20
 evaluations per seed, averaged over seeds); a missing or duplicated event raises. No training or rollout here."""
 
-from numbers import Integral, Real
-import math
+from numbers import Integral
+
 import numpy as np
 
 BC_EPOCHS = tuple(range(5, 100, 5)) + (99,)
@@ -32,17 +32,6 @@ def _boolean(value, name):
     if not isinstance(value, (bool, np.bool_)):
         raise ValueError(name + " must be boolean")
     return bool(value)
-
-
-def _finite(value, name, nonnegative=False):
-    if (
-        not isinstance(value, Real)
-        or isinstance(value, bool)
-        or not math.isfinite(value)
-        or (nonnegative and value < 0)
-    ):
-        raise ValueError(name + " must be finite" + (" and nonnegative" if nonnegative else ""))
-    return float(value)
 
 
 def _identity(value, name):
@@ -134,60 +123,3 @@ def bc_summary(rounds, *, seeds=(100, 200, 300), epochs=BC_EPOCHS, episodes_per_
         best_sample_std_pp=float(np.std(best_values, ddof=1)) if len(seeds) > 1 else None,
         final_mean_percent=float(np.mean(final_values)),
     )
-
-
-def select_saved_policy(rounds):
-    """Return-based identity; equal highest returns retain the latest evaluated epoch."""
-    rounds = list(rounds)
-    if not rounds:
-        raise ValueError("no policy evaluations")
-    _same_group(rounds, GROUP_FIELDS + ("seed",))
-    seen = set()
-    for event in rounds:
-        epoch = _integer(event["epoch"], "epoch")
-        if epoch in seen:
-            raise ValueError("duplicate policy evaluation epoch")
-        seen.add(epoch)
-        _round(event)
-        _finite(event["mean_return"], "mean_return")
-        _identity(event["policy_id"], "policy_id")
-    best = max(rounds, key=lambda event: (event["mean_return"], event["epoch"]))
-    successes, episodes = _round(best)
-    return dict(
-        epoch=best["epoch"],
-        policy_id=best["policy_id"],
-        mean_return=best["mean_return"],
-        success_percent=100.0 * successes / episodes,
-    )
-
-
-def audit_saved_policies(rounds, save_events):
-    """Check immediate highest-return (including equal-return) best-policy writes.
-
-    Events describe best_policy writes, not periodic checkpoint snapshots.
-    The patched eai-vc train loop (third_party/eai-vc-relocate) saves on >=, so a later tie is saved too.
-    The caller must bind these observed events to actual saved files/reloads;
-    this function cannot establish that a filesystem write happened."""
-    rounds = list(rounds)
-    selected = select_saved_policy(rounds)
-    expected, best_return, last_epoch = [], -math.inf, -1
-    for event in rounds:
-        if event["epoch"] <= last_epoch:
-            raise ValueError("evaluations must be chronological")
-        last_epoch = event["epoch"]
-        if event["mean_return"] >= best_return:
-            best_return = event["mean_return"]
-            expected.append(dict(epoch=event["epoch"], policy_id=event["policy_id"]))
-    observed = [
-        dict(epoch=_integer(event["epoch"], "save epoch"), policy_id=_identity(event["policy_id"], "saved policy_id"))
-        for event in save_events
-    ]
-    return dict(passed=observed == expected, expected_saves=expected, observed_saves=observed, selected_policy=selected)
-
-
-def bc_success(goal_steps, *, environment="native", overload=False):
-    count = _integer(goal_steps, "cumulative goal_steps")
-    overload = _boolean(overload, "overload")
-    if environment not in ("native", "rh56"):
-        raise ValueError("unknown BC environment")
-    return count > 25 and (environment != "rh56" or not overload)

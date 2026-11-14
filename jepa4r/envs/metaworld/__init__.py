@@ -10,7 +10,7 @@ multisample flag selects the render of the paper data, see configs/env/mw_*.yaml
   policy         ThreePartPolicy (backbone / branch / random) for bin-picking
   assembly, button_press, drawer, hammer   MW<Task>Env + <Task>ThreePartPolicy
   pcd            MWPointCloudWrapper (jepa4r.data.pointcloud.PointCloudWrapper with the task's fixtures)
-World-model data use metaworld 3.0 (conda env lewm_mw); the CortexBench demos and BC evaluation use eai-vc's metaworld
+World-model data use metaworld 3.0 (a MuJoCo 3 python); the CortexBench demos and BC evaluation use eai-vc's metaworld
 fork on MuJoCo 2.0 (jepa4r.data.demos, jepa4r.policy.bc). The RM75-B + EG2-4C2 variants of four tasks (the
 RM75-B digital twin, Sec. 5.6) are in jepa4r.envs.twins.metaworld_rm75; their env ids are registered here.
 """

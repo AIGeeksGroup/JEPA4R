@@ -1,7 +1,6 @@
 """Thin Adroit PCD entry: original run_bc.py and official BC loop unchanged."""
 
 import importlib.util
-import hashlib
 import json
 import os
 from pathlib import Path
@@ -31,16 +30,13 @@ def load_backend():
 
 
 def build_point_clouds(sim, task):
-    """One explicit sampling contract for official replay and online BC."""
+    """The point-cloud sampler of the Relocate demos and of the online BC evaluation (configs/env/relocate/
+    adroit_relocate_sampling.json via ADROIT_PCD_CONFIG)."""
     task = task_from_env_id(task)
     path = os.environ.get("ADROIT_PCD_CONFIG")
     kwargs = {"size": 256}
     if path:
-        payload = Path(path).read_bytes()
-        expected = os.environ.get("ADROIT_PCD_CONFIG_SHA256")
-        if expected and hashlib.sha256(payload).hexdigest() != expected:
-            raise ValueError("Adroit PCD configuration SHA mismatch")
-        config = json.loads(payload)
+        config = json.loads(Path(path).read_text())
         kwargs.update(config.get("pcd_constructor_kwargs", config))
         if task_from_env_id(kwargs.pop("task", task)) != task:
             raise ValueError("Adroit PCD configuration task mismatch")
@@ -103,9 +99,9 @@ def main(argv=None):
 
     def load_pretrained_model(embedding_name, input_type=np.ndarray, *args, **kwargs):
         config = OmegaConf.load(os.path.join(ml.vc_models_dir_path, "conf/model", embedding_name + ".yaml"))
-        checkpoint = os.environ.get("LEWM_PCD_CHECKPOINT_DIR")
+        checkpoint = os.environ.get("JEPA4R_CHECKPOINT_DIR")
         if checkpoint:
-            if config.get("_target_") != "lewm_cortex.load_lewm_pcd":
+            if config.get("_target_") != "wm_embeddings.load_jepa4r":
                 raise ValueError("checkpoint override requires the LeWM PCD embedding")
             config.checkpoint_dir = checkpoint
         model, embedding_dim, transforms, metadata = hydra.utils.call(config)

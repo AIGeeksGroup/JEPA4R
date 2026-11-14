@@ -116,7 +116,7 @@ def make_triple_wrapper(env, *, task_id, strategy, mixed_switch_step, capture, n
     import mujoco
 
     frame_path = Path(capture["frame_source_path"])
-    spec = importlib.util.spec_from_file_location("sealed_triple_native_frame", frame_path)
+    spec = importlib.util.spec_from_file_location("_triple_pcd_frame", frame_path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     core_factory = None

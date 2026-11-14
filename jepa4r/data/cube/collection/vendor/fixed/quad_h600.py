@@ -1,9 +1,8 @@
-"""Entry of the quadruple-cube collection: episodes of 600 steps (H600) on the shared fixed-task collector."""
+"""Entry of the quadruple-cube collection: episodes of 600 steps (H600) on the shared fixed-task collector, with the
+camera pulled back by 0.10 m (camera_pullback.py)."""
 
 import argparse
-import hashlib
 import importlib.util
-import json
 from pathlib import Path
 import sys
 from types import MethodType
@@ -28,34 +27,11 @@ def effective_source(source, horizon):
     )
 
 
-def write_adapter_binding(output, collector, camera, horizon, pullback):
-    output = Path(output)
-    if output.exists():
-        raise FileExistsError(output)
-    files = {
-        str(path.resolve()): hashlib.sha256(path.read_bytes()).hexdigest()
-        for path in (Path(__file__), Path(collector), Path(camera))
-    }
-    record = dict(
-        schema="paper_cube_adapter_binding_v1",
-        stage="source_binding_prepared",
-        files=files,
-        raw_horizon=horizon,
-        pullback_m=pullback,
-    )
-    output.parent.mkdir(parents=True, exist_ok=True)
-    with output.open("x", encoding="utf8") as stream:
-        json.dump(record, stream, indent=2)
-        stream.write("\n")
-    return record
-
-
 def main():
     parser = argparse.ArgumentParser(add_help=False)
     parser.add_argument("--base-root", type=Path, required=True)
     parser.add_argument("--horizon-actions", type=int, choices=(600,), default=600)
     parser.add_argument("--camera-pullback-m", type=float, choices=(0.10,), default=0.10)
-    parser.add_argument("--adapter-binding", type=Path, required=True)
     args, passthrough = parser.parse_known_args()
     if passthrough[:1] == ["--"]:
         passthrough = passthrough[1:]
@@ -63,9 +39,9 @@ def main():
     sys.path[:0] = [
         str(root / n)
         for n in (
-            "code/lewm_pcd",
-            "code/lewm_pcd/scripts/data",
-            "code/lewm_pcd/third_party/stable-worldmodel",
+            "code/collection",
+            "code/collection/scripts/data",
+            "code/collection/third_party/stable-worldmodel",
             "third_party/ogbench",
             "third_party/stable-pretraining",
         )
@@ -75,16 +51,13 @@ def main():
     camera = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(camera)
     camera.install(root, args.camera_pullback_m)
-    original = root / "code/lewm_pcd/scripts/data/collect_cube_pcd.py"
+    original = root / "code/collection/scripts/data/collect_cube_pcd.py"
     source = effective_source(original.read_text(), args.horizon_actions)
-    runtime_sha = hashlib.sha256(source.encode()).hexdigest()
-    write_adapter_binding(args.adapter_binding, original, camera_path, args.horizon_actions, args.camera_pullback_m)
     if args.horizon_actions == 600:
         import gymnasium as gym
         import quadruple_collection as quad
-        import collection_protocol as protocol
 
-        factory, manifest_class = quad.make_quadruple_wrapper, protocol.CollectionManifest
+        factory = quad.make_quadruple_wrapper
 
         def h600_factory(*factory_args, **kwargs):
             wrapped = factory(*factory_args, **kwargs)
@@ -108,29 +81,9 @@ def main():
             wrapped._capture = MethodType(terminal_capture, wrapped)
             return wrapped
 
-        class HorizonManifest(manifest_class):
-            def __init__(self, paths, config):
-                config = dict(config)
-                if config["horizon_actions"] != 600 or config["env_type"] != "quadruple":
-                    raise ValueError("Explicit Quadruple H600 configuration required")
-                config["horizon_override"] = dict(
-                    actions=600,
-                    observations=601,
-                    terminal_source_enum=2,
-                    effective_TimeLimit=600,
-                    adapter_path=str(Path(__file__).resolve()),
-                    adapter_SHA256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
-                    base_collector_SHA256=hashlib.sha256(original.read_bytes()).hexdigest(),
-                    effective_collector_runtime_SHA256=runtime_sha,
-                    original_ROOT_sources_unchanged=True,
-                )
-                super().__init__(paths, config)
-
         quad.make_quadruple_wrapper = h600_factory
-        protocol.CollectionManifest = HorizonManifest
     sys.argv = [str(original), *passthrough]
-    # The manifest records the checksums of both the collector file on disk and
-    # the version run here (with the 600-step limit); no source file is overwritten.
+    # the collector runs from its file with the 600-step limit in place of its 1000-step check; the file is unchanged
     namespace = dict(__name__="__main__", __file__=str(original), __package__=None)
     exec(compile(source, str(original), "exec"), namespace)
 

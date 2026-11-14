@@ -1,4 +1,5 @@
-# One current-paper paired RGB/PCD recipe; the plan binds Cube count and budget.
+# The paired RGB / point-cloud collection of Cube 1-4 (jepa4r/data/cube/collection); its plan sets the Cube count and
+# the episodes of each part.
 defaults:
   - _self_
   - launcher/local
@@ -34,8 +35,8 @@ pcd:
   cube_fraction: 0.25
   keep_rgb: false
 options: null
-sealed_capture:
+pcd_capture:
   crop_box: ${pcd.crop_box}
   frame_source_path: ${oc.env:CUBE_COLLECTION_RUNTIME_ROOT}/external/native_pcd_frame.py
-  core_path: ${oc.env:CUBE_COLLECTION_RUNTIME_ROOT}/code/lewm_pcd/envs/pcd_wrapper.py
+  core_path: ${oc.env:CUBE_COLLECTION_RUNTIME_ROOT}/code/collection/envs/pcd_wrapper.py
   provider_path: ${oc.env:CUBE_COLLECTION_RUNTIME_ROOT}/external/pcd_geometry.py

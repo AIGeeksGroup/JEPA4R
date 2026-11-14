@@ -1,5 +1,5 @@
 """The RM75 CortexBench env (rm75_env.py) as a subprocess of the harness (run_bc_rm75.py's RM75Proxy): the harness runs
-in the cortexbench conda env (mujoco-py 2.0 for the official envs), the RM75 env needs MuJoCo 3 (lewm_mw). Protocol on
+in the cortexbench conda env (mujoco-py 2.0 for the official envs), the RM75 env needs MuJoCo 3. Protocol on
 stdin / a dup of stdout: 8-byte little-endian length + pickle of plain types (arrays as (dtype, shape, bytes)); fd 1 is
 pointed at stderr so library prints cannot corrupt the stream.
     $MW_PY rm75_server.py     (started by run_bc_rm75.py)"""

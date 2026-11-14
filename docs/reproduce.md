@@ -79,8 +79,8 @@ The configurations carry the values of the code the paper's runs used:
   the RH56 hand twin run the Cube and Relocate workflows (controllers in `jepa4r/policy/gciql` and
   `jepa4r/policy/bc/relocate`; docs/architecture.md). Inputs they need from outside this repository: the V-JEPA 2.1
   ViT-L/16 weights (Cube; the workflow fetches them), DAPG's Relocate state expert, the official Relocate
-  demonstrations, the native RM75-B + RH56 bundle (its files are listed in
-  `configs/policy/bc/relocate/rh56_native_bundle_v1.json`) and MuJoCo 2.0 for mujoco-py.
+  demonstrations, the native RM75-B + RH56 bundle (`env.py`, `ppo.py`, `experts/relocate_expert.pt`;
+  `configs/policy/bc/relocate/DEPENDENCIES.json`) and MuJoCo 2.0 for mujoco-py.
 - **Look-ahead preview** (Sec. 4.3): not part of this repository; the paper reports no twin numbers (Sec. 5.6
   "Results" is qualitative).
 - **Policy head on the twin's Cube** (`configs/env/rm75b_cube.yaml` `policy`, `policy_data`: `???`): on the twin's

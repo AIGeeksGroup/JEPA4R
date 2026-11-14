@@ -1,8 +1,9 @@
-"""Frozen LeWM latents of OGBench puzzle states (3x3, 4x4, 4x5), shared by extract_feats.py (the training set) and
-run_dqc.py (the evaluation): the camera and point clouds of the LeWM data (envs/ogb_puzzle_env.py: front_pixels 224, the
-opaque arm of ob_type='states'; 2D anti-aliased, 3D the same camera's depth with 1200 points) and the encoders as
-CortexBench loads them (bench/cortexbench/lewm_cortex.py: 2D pixels / 255 normalised with ImageNet's mean / std; 3D
-(xyz - center) * scale with rgb / 255), their output the projector's 192-d latent (LeWM's latent).
+"""Frozen world-model latents (LeWM, JEPA4R) of OGBench puzzle states (3x3, 4x4, 4x5), shared by extract_feats.py (the
+training set) and run_dqc.py (the evaluation): the camera and point clouds of the LeWM data (envs/ogb_puzzle_env.py:
+front_pixels 224, the opaque arm of ob_type='states'; the images anti-aliased, the point clouds from the same camera's
+depth with 1200 points) and the encoders as CortexBench loads them (jepa4r/policy/bc/wm_embeddings.py: LeWM pixels / 255
+normalised with ImageNet's mean / std; JEPA4R (xyz - center) * scale with rgb / 255), their output the projector's
+192-d latent.
 envs/ogb_puzzle_env.py is loaded by its path: the DQC code (third_party/dqc) has packages named envs and utils too and
 comes first on run_dqc.py's sys.path (the module imports nothing from the repo).
 """
@@ -16,11 +17,11 @@ import torch
 import torchvision.transforms as T
 from PIL import Image
 
-LEWM = Path(__file__).resolve().parents[3]  # the repository root (jepa4r/policy/dqc/lewm_obs.py)
-sys.path.insert(0, str(LEWM / "jepa4r" / "policy" / "bc"))  # lewm_cortex, jepa_baselines
-if str(LEWM) not in sys.path:
-    sys.path.append(str(LEWM))  # jepa4r (the projector), after the DQC code's packages
-from lewm_cortex import IMAGENET, build_lewm_embedding, load_lewm_pcd
+REPO = Path(__file__).resolve().parents[3]  # the repository root (jepa4r/policy/dqc/wm_obs.py)
+sys.path.insert(0, str(REPO / "jepa4r" / "policy" / "bc"))  # wm_embeddings, jepa_baselines
+if str(REPO) not in sys.path:
+    sys.path.append(str(REPO))  # jepa4r (the projector), after the DQC code's packages
+from wm_embeddings import IMAGENET, build_wm_embedding, load_jepa4r
 
 DEV = "cuda" if torch.cuda.is_available() else "cpu"
 PCD_CENTER, PCD_SCALE = (0.425, 0.0, 0.2), 4.0  # = config/train/data/ogb_pcd.yaml (puzzle_3x3_pcd.yaml keeps it)
@@ -30,7 +31,7 @@ def load_puzzle():
     """envs/ogb_puzzle_env.py as the module ogb_puzzle_env (by path, see the module docstring)."""
     if "ogb_puzzle_env" not in sys.modules:
         spec = importlib.util.spec_from_file_location(
-            "ogb_puzzle_env", LEWM / "jepa4r" / "envs" / "ogbench" / "ogb_puzzle_env.py"
+            "ogb_puzzle_env", REPO / "jepa4r" / "envs" / "ogbench" / "ogb_puzzle_env.py"
         )
         mod = importlib.util.module_from_spec(spec)
         sys.modules["ogb_puzzle_env"] = mod
@@ -39,19 +40,19 @@ def load_puzzle():
 
 
 class Encoders:
-    """The frozen 2D / 3D LeWM encoders + projectors of the given checkpoint directories (either may be None)."""
+    """The frozen LeWM / JEPA4R encoders + projectors of the given checkpoint directories (either may be None)."""
 
-    def __init__(self, ckpt_2d=None, ckpt_3d=None, epoch=10):
-        self.m2 = build_lewm_embedding(ckpt_2d, epoch).to(DEV) if ckpt_2d else None
+    def __init__(self, ckpt_lewm=None, ckpt_jepa4r=None, epoch=10):
+        self.m2 = build_wm_embedding(ckpt_lewm, epoch).to(DEV) if ckpt_lewm else None
         self.m3, self.tf = None, None
-        if ckpt_3d:
-            m3, _, self.tf, _ = load_lewm_pcd(ckpt_3d, epoch, center=PCD_CENTER, scale=PCD_SCALE)  # tf: PcdTransform
+        if ckpt_jepa4r:
+            m3, _, self.tf, _ = load_jepa4r(ckpt_jepa4r, epoch, center=PCD_CENTER, scale=PCD_SCALE)  # tf: PcdTransform
             self.m3 = m3.to(DEV)
         self.mean = torch.tensor(IMAGENET[0], device=DEV).view(1, 3, 1, 1)
         self.std = torch.tensor(IMAGENET[1], device=DEV).view(1, 3, 1, 1)
 
     @torch.no_grad()
-    def z2d(self, pix, bs=256):
+    def z_lewm(self, pix, bs=256):
         out = []
         for i in range(0, len(pix), bs):
             x = torch.from_numpy(pix[i : i + bs]).to(DEV).permute(0, 3, 1, 2).float() / 255
@@ -59,7 +60,7 @@ class Encoders:
         return torch.cat(out).numpy()
 
     @torch.no_grad()
-    def z3d(self, xyz, col, bs=64):
+    def z_jepa4r(self, xyz, col, bs=64):
         out = []
         for i in range(0, len(xyz), bs):
             x = torch.stack([self.tf(np.concatenate([a, b], 1)) for a, b in zip(xyz[i : i + bs], col[i : i + bs])])
@@ -107,8 +108,8 @@ class BaselineEncoder:
 
 
 class BaselineObs:
-    """The evaluation-time observation for a baseline encoder: the current frame of the LeWM data's camera (the 2D
-    frame LeWMObs gives LeWM 2D) -> BaselineEncoder -> its latent, the true lights appended, as
+    """The evaluation-time observation for a baseline encoder: the current frame of the LeWM data's camera (the image
+    WMObs gives LeWM) -> BaselineEncoder -> its latent, the true lights appended, as
     extract_feats_baselines.py builds the training set's observations."""
 
     def __init__(self, env, kind, path, epoch):
@@ -124,7 +125,7 @@ class BaselineObs:
         return np.concatenate([z, self.u._cur_button_states.astype(np.float32)])
 
 
-class LeWMObs:
+class WMObs:
     """The evaluation-time observation: the current frame of the same camera -> the frozen encoder -> the 192-d latent,
     with the true lights appended (lights=True; 9 on puzzle-3x3, one per button), as the training set's observations
     (extract_feats.py)."""
@@ -135,19 +136,19 @@ class LeWMObs:
         self.u = env.unwrapped
         self.cam = self.pdat.Camera(self.u._model, self.u._num_buttons)
         self.enc = Encoders(
-            ckpt_2d=ckpt if kind == "lewm2d" else None, ckpt_3d=ckpt if kind == "lewm3d" else None, epoch=epoch
+            ckpt_lewm=ckpt if kind == "lewm" else None, ckpt_jepa4r=ckpt if kind == "jepa4r" else None, epoch=epoch
         )
         self.rng = np.random.default_rng(12345)
 
     def __call__(self):
         cam, data = self.cam, self.u._data
-        if self.kind == "lewm2d":
+        if self.kind == "lewm":
             cam.r2d.update_scene(data, camera=self.pdat.CAMERA)
-            z = self.enc.z2d(cam.r2d.render().copy()[None])[0]
+            z = self.enc.z_lewm(cam.r2d.render().copy()[None])[0]
         else:
             _, rgb, depth, seg, _, R, t = cam.render(data)
             xyz, col = self.pdat.point_cloud(cam, rgb, depth, seg, R, t, self.rng)
-            z = self.enc.z3d(xyz[None], col[None])[0]
+            z = self.enc.z_jepa4r(xyz[None], col[None])[0]
         if not self.lights:
             return z
         return np.concatenate([z, self.u._cur_button_states.astype(np.float32)])

@@ -111,9 +111,6 @@ def main(argv=None):
     ap.add_argument("--lamb", type=float, default=0.02)
     ap.add_argument("--proj-dim", type=int, default=16)
     ap.add_argument("--workers", type=int, default=8)
-    ap.add_argument(
-        "--max-steps", type=int, default=0, help="smoke test: stop after this many steps, no checkpoint (0 = no limit)"
-    )
     args = ap.parse_args(argv)
     torch.manual_seed(0)
 
@@ -160,13 +157,6 @@ def main(argv=None):
             scaler.step(opt)
             scaler.update()
             scheduler.step()
-            if args.max_steps and step + 1 >= args.max_steps:
-                print(
-                    f"smoke test: {step + 1} steps, {time.time() - t0:.1f}s, loss {loss.item():.4f}, peak GPU memory "
-                    f"{torch.cuda.max_memory_allocated() / 2**30:.1f} GiB",
-                    flush=True,
-                )
-                return
             if step % 500 == 0:
                 print(
                     f"epoch {epoch} step {step}/{len(train)} loss {loss.item():.4f} sigreg {sigreg_loss.item():.4f} "

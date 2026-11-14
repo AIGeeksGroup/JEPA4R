@@ -4,7 +4,7 @@ normalization."""
 
 def data_profile(cube_name, data_binding=None):
     if data_binding is None:
-        raise ValueError("current training requires an explicit data manifest")
+        raise ValueError("the training needs the data manifest of its training views")
     from jepa4r.data.cube.fresh_data import profile
 
     value = profile(data_binding)
@@ -49,7 +49,6 @@ def action_statistics(train_reader, profile_name, data_binding=None):
         correction=1,
         epsilon=1e-6,
         source_split="train",
-        manifest_sha256=profile["manifest_sha256"],
         normalizations_per_sample=1,
     )
 

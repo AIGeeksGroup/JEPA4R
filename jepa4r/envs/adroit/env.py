@@ -6,9 +6,6 @@ jepa4r/data/relocate/adroit_collect.py. The reset distribution, horizon and succ
 
 from __future__ import annotations
 
-import hashlib
-import json
-
 import gymnasium as gym
 import numpy as np
 from gymnasium.spaces import Box
@@ -16,12 +13,6 @@ from gymnasium.spaces import Box
 SAMPLE_TYPES = ("backbone", "branch", "random")
 # action, native observation, qpos/qvel, native horizon
 TASKS = {"relocate-v0": (30, 39, 36, 200)}
-
-
-def legacy_state_sha256(state):
-    """Checksum of a state dict as the Adroit collector records it: values as full lists, JSON with sorted keys."""
-    payload = json.dumps({key: np.asarray(value).tolist() for key, value in state.items()}, sort_keys=True)
-    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
 class AdroitEnv(gym.Env):
@@ -137,14 +128,10 @@ class AdroitEnv(gym.Env):
         kind, noise, branch_t, branch_len = self._plan
         info = {key: value.copy() for key, value in state.items()}
         info.update({"initial_" + key: value.copy() for key, value in self._initial_state.items()})
-        digest, initial_digest = legacy_state_sha256(state), legacy_state_sha256(self._initial_state)
         info.update(
             native_observation=obs.copy(),
             initial_native_observation=self._initial_obs.copy(),
             proprio=obs[: self.action_dim].copy(),
-            state_sha256=np.frombuffer(bytes.fromhex(digest), dtype=np.uint8).copy(),
-            initial_state_sha256=np.frombuffer(bytes.fromhex(initial_digest), dtype=np.uint8).copy(),
-            legacy_initial_state_sha256=np.frombuffer(initial_digest.encode("ascii"), dtype=np.uint8).copy(),
             episode_seed=np.int64(self._seed),
             native_step_idx=np.int64(self._t),
             executed_action=np.zeros(self.action_dim, dtype=np.float64),

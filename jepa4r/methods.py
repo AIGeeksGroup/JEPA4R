@@ -36,7 +36,7 @@ def train(cfg, out_dir) -> dict:
     if cfg.env.suite in ("adroit", "rh56"):  # Relocate: the Relocate workflow trains all four methods
         from jepa4r.policy.bc import relocate_stage
 
-        return {"harness_status": relocate_stage(cfg, "train_wm", out_dir)["status"]}
+        return {"workflow": relocate_stage(cfg, "train_wm", out_dir)}
     from jepa4r.policy.gciql import is_cube_workflow
 
     if is_cube_workflow(cfg):  # Cube 1-4: the Cube workflow trains all four methods

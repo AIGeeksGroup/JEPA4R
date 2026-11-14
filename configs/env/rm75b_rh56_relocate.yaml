@@ -1,8 +1,8 @@
 # The Inspire RH56 dexterous hand on the RM75-B digital twin (Sec. 5.6 "Robot Setup": the twin carries either end
 # effector; the real task is picking an object with the RH56 hand), simulated as Relocate: Adroit Relocate's 100
 # official object / target positions moved onto the RM75-B + RH56 MuJoCo model of an external native bundle (its env,
-# robot assets and expert; its files are listed in configs/policy/bc/relocate/rh56_native_bundle_v1.json), the final
-# opposite camera. Run by the Relocate workflow (jepa4r/policy/bc/relocate). The paper reports no number for it.
+# robot assets and expert: env.py, ppo.py, experts/relocate_expert.pt; configs/policy/bc/relocate/DEPENDENCIES.json),
+# the final opposite camera. Run by the Relocate workflow (jepa4r/policy/bc/relocate). The paper reports no number for it.
 _base_: _base
 suite: rh56
 impl: jepa4r.envs.twins.rh56
@@ -24,7 +24,7 @@ wm_data:
   num_episodes: 9000          # + 1,000 validation episodes
   episode_len: 200            # native early termination allowed
   mixture: {noisy_expert: 0.5, expert_interrupted_by_random: 0.3, random: 0.2}
-  collector: rh56             # the workflow's rh56_prepare / rh56_collect / rh56_validate / rh56_publish
+  collector: rh56             # the workflow's rh56_prepare / rh56_collect / rh56_publish
   sets:                       # seed = base + index
     - {name: train, num_episodes: 9000, seed_base: 61000000}
     - {name: val, num_episodes: 1000, seed_base: 62000000}
@@ -33,6 +33,3 @@ wm_data:
 policy_data:
   source: demos
   demos_per_task: 100
-harness:
-  mode: full                  # full = the paper budgets; smoke = its bounded check
-  seed: 42                    # unused by RH56 (its episodes carry their own seeds); the workflow's --seed default

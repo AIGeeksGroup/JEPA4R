@@ -1,5 +1,5 @@
 """The official MetaWorld expert demos as point clouds: every demo replayed exactly (fresh env, seed 12345 + i, the
-recorded actions; README.md, "3D demos"), and at every step the 3D LeWM's point cloud of the frame
+recorded actions; README.md, "3D demos"), and at every step JEPA4R's point cloud of the frame
 (pcd_fork.MWPointClouds, the settings of its training data), instead of the 256 x 256 RGB frame.
 
 Written in the official pickle format, so that CortexBench's train loop reads it unchanged: 'images' holds the point

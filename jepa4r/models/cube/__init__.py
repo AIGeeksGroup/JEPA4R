@@ -3,5 +3,5 @@
 fresh_train.py            the train stage: JEPA4R / LeWM (jepa4r/models/world_model.py with the recipes in
                           configs/method/cube/recipes/), PLDM and LeJEPA (jepa4r/baselines/cube)
 training_runtime.py       recipe loading and the training environment
-workflow_lewm_encoder.py  the frozen LeWM / JEPA4R encoder for the policy stages
+workflow_wm_encoder.py  the frozen LeWM / JEPA4R encoder for the policy stages
 """

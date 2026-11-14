@@ -9,7 +9,7 @@ Seeds 12345 + i as the official demos; an episode not successful at its last ste
 clouds) come from the same rollouts.
 -> $STABLEWM_HOME/datasets/cortexbench/metaworld-rm75-expert{,-pcd}/rm75-<task>-v2-goal-observable.pickle
 
-    source env.sh && $MW_PY make_rm75_demos.py <task>     (MW_PY: the lewm_mw python, MuJoCo 3 + metaworld 3.0)
+    source env.sh && $MW_PY make_rm75_demos.py <task>     (MW_PY: the MuJoCo 3 python, MuJoCo 3 + metaworld 3.0)
 """
 
 import os

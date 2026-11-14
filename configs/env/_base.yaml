@@ -28,6 +28,6 @@ wm_data:                      # world-model training data (stage collect_wm_data
   #   files       {pointcloud: <set>_pcd.h5, image: <set>.h5 [, <obs>_val: ...]}  the world-model training files
   #   split       random_clips (LeWM random 0.9 / 0.1 clip split) | episodes (independent validation file, Cube 1-4)
 policy_data: ???              # data for the policy head (stage prepare_policy_data)
-# harness: run settings of the workflows that run an env end to end (Relocate / RH56: jepa4r.policy.bc.relocate_stage,
-#   mode + seed; Cube 1-4: jepa4r.policy.gciql.cube_stage, mode + workers + prefetch)
+# workflow: run settings of the workflows that run an env end to end (Adroit Relocate: jepa4r.policy.bc.relocate_stage,
+#   the collection seed; Cube 1-4: jepa4r.policy.gciql.cube_stage, the data-loader workers + prefetch)
 policy: ???                   # default policy learner, a file in configs/policy

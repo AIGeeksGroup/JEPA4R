@@ -1,17 +1,17 @@
-"""Small env/model dispatcher with persistent stage logs and artifact verification."""
+"""The Relocate workflow runner: the stages of the Adroit Relocate or the RH56 twin plan (adroit_workflow.py,
+rh56_workflow.py), each a child process with its log in <output>/logs; a stage that finished (exit code 0 recorded in
+logs/<stage>.exit) is kept, so running again continues where it stopped.
+usage: python -m jepa4r.policy.bc.relocate.workflow --env <adroit-relocate|rh56-relocate> --model <m> --assets <json>
+       --output <dir> [--stage <name>] --execute"""
 
 from __future__ import annotations
 
 import argparse
-from datetime import datetime, timezone
-import hashlib
 import importlib
 import json
 import os
 from pathlib import Path
-import re
 import subprocess
-
 
 ROOT = Path(__file__).resolve().parents[4]
 MODELS = {
@@ -20,240 +20,41 @@ MODELS = {
 }
 
 
-def _now():
-    return datetime.now(timezone.utc).isoformat()
-
-
-def _write_json(path, value):
-    temporary = path.with_suffix(path.suffix + ".tmp")
-    temporary.write_text(json.dumps(value, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    temporary.replace(path)
-
-
-def execute_plan(stages, output, verify, identity, resume=False, configuration=None):
-    """Run each stage once; a stage counts as done only with exit code 0 and verified outputs.
-
-    A resume rechecks the completed stages and continues with the ones not started. A stage that failed partway
-    needs a new output directory, so that its outputs are never overwritten."""
-    names = [stage["name"] for stage in stages]
-    if len(names) != len(set(names)) or any(not re.fullmatch(r"[A-Za-z0-9_-]+", name) for name in names):
-        raise ValueError("Stage names must be unique safe filenames")
+def execute_plan(stages, output):
+    """Run the stages in order; a finished stage is kept. Returns 0, or the exit code of the stage that failed."""
     output = Path(output).resolve()
-    status_path = output / "STATUS.json"
-    if output.exists():
-        if not resume:
-            raise FileExistsError(f"Output already exists; preserve it or use --resume: {output}")
-        state = json.loads(status_path.read_text(encoding="utf-8"))
-        if state["identity"] != identity:
-            raise ValueError("Frozen source/configuration identity changed; use a fresh output")
-        saved_plan = json.loads((output / "PLAN.json").read_text(encoding="utf-8"))
-        if saved_plan["stages"] != stages:
-            raise ValueError("Stage plan changed; a subset cannot resume a different run")
-    else:
-        if resume:
-            raise FileNotFoundError(f"Cannot resume an absent output: {output}")
-        output.mkdir(parents=True)
-        state = {
-            "status": "running",
-            "stage": None,
-            "started_at": _now(),
-            "updated_at": _now(),
-            "identity": identity,
-            "completed_count": 0,
-            "failed_count": 0,
-            "exit_code": None,
-            "error": None,
-            "stages": {},
-        }
-        _write_json(
-            output / "PLAN.json", {"identity": identity, "configuration": configuration or {}, "stages": stages}
-        )
-    (output / "logs").mkdir(exist_ok=True)
-
-    def save():
-        state["updated_at"] = _now()
-        state["completed_count"] = sum(s["status"] == "complete" for s in state["stages"].values())
-        state["failed_count"] = sum(
-            s["status"] in ("failed", "verification_failed", "interrupted") for s in state["stages"].values()
-        )
-        _write_json(status_path, state)
-
-    save()
+    (output / "logs").mkdir(parents=True, exist_ok=True)
+    (output / "PLAN.json").write_text(json.dumps(stages, indent=2) + "\n", encoding="utf-8")
     for stage in stages:
         name = stage["name"]
-        state["stage"] = name
-        previous = state["stages"].get(name)
-        if previous and previous["status"] != "complete":
-            raise FileExistsError(f"Preserved partial stage {name}; use a fresh output directory")
-        if previous:
-            try:
-                actual_exit = int((output / "logs" / f"{name}.exit").read_text(encoding="ascii").strip())
-                if actual_exit != 0 or actual_exit != previous.get("exit_code"):
-                    raise ValueError("Preserved process exit evidence changed")
-                result = verify(stage)
-                if result.get("passed") is True and result != previous.get("verification"):
-                    previous["recheck_verification"] = result
-                    raise ValueError("Accepted artifact/receipt evidence changed")
-            except BaseException as error:
-                interrupted = isinstance(error, KeyboardInterrupt)
-                previous.update(
-                    status="interrupted" if interrupted else "verification_failed",
-                    error=f"{type(error).__name__}: {error}",
-                )
-                state.update(
-                    status="interrupted" if interrupted else "failed",
-                    exit_code=130 if interrupted else 1,
-                    error=previous["error"],
-                )
-                save()
-                return state["exit_code"]
-            if result.get("passed") is not True:
-                state.update(
-                    status="failed", exit_code=1, error=f"Previously accepted stage no longer verifies: {name}"
-                )
-                previous.update(status="verification_failed", recheck_verification=result)
-                save()
-                return 1
+        exit_file = output / "logs" / f"{name}.exit"
+        if exit_file.is_file() and exit_file.read_text(encoding="ascii").strip() == "0":
             continue
-        record = {
-            "status": "running",
-            "started_at": _now(),
-            "exit_code": None,
-            "command": stage["command"],
-            "cwd": stage["cwd"],
-            "environment": stage.get("environment", {}),
-        }
-        state["stages"][name] = record
-        state.update(status="running", exit_code=None, error=None)
-        save()
         environment = os.environ.copy()
         environment.update(stage.get("environment", {}))
-        try:
-            with (output / "logs" / f"{name}.log").open("xb") as log:
-                print(f"Running {name}", flush=True)
-                process = subprocess.run(
-                    stage["command"], cwd=stage["cwd"], env=environment, stdout=log, stderr=subprocess.STDOUT
-                )
-            record["exit_code"] = process.returncode
-            (output / "logs" / f"{name}.exit").write_text(str(process.returncode) + "\n", encoding="ascii")
-            if process.returncode != 0:
-                record["status"] = "failed"
-                state.update(status="failed", exit_code=process.returncode, error=f"Stage process failed: {name}")
-                record["finished_at"] = _now()
-                save()
-                return process.returncode
-            result = verify(stage)
-            record["verification"] = result
-            record["status"] = "complete" if result.get("passed") is True else "verification_failed"
-            record["finished_at"] = _now()
-            if record["status"] != "complete":
-                state.update(status="failed", exit_code=1, error=f"Stage artifact verification failed: {name}")
-                save()
-                return 1
-            save()
-        except BaseException as error:
-            interrupted = isinstance(error, KeyboardInterrupt)
-            record.update(
-                status="interrupted" if interrupted else "failed",
-                error=f"{type(error).__name__}: {error}",
-                finished_at=_now(),
+        print(f"Running {name}", flush=True)
+        with (output / "logs" / f"{name}.log").open("wb") as log:
+            process = subprocess.run(
+                stage["command"], cwd=stage["cwd"], env=environment, stdout=log, stderr=subprocess.STDOUT
             )
-            state.update(
-                status="interrupted" if interrupted else "failed",
-                exit_code=130 if interrupted else 1,
-                error=record["error"],
-            )
-            save()
-            return state["exit_code"]
-    state.update(status="complete", stage=None, exit_code=0, error=None)
-    save()
+        exit_file.write_text(str(process.returncode) + "\n", encoding="ascii")
+        if process.returncode != 0:
+            return process.returncode
     return 0
 
 
-def asset_fingerprints(assets):
-    """Bind external source and input contents, including files reached via roots.
-
-    Environment package versions are recorded separately by the runtime doctor;
-    Python executable bytes and any supplied runtime manifest are bound here.
-    Missing paths remain visible in a preparation-only plan.
-    """
-    fingerprints = {}
-
-    def file_sha(path):
-        digest = hashlib.sha256()
-        with path.open("rb") as stream:
-            for block in iter(lambda: stream.read(8 << 20), b""):
-                digest.update(block)
-        return digest.hexdigest()
-
-    def bind(label, value):
-        if not isinstance(value, str) or not value:
-            return
-        path = Path(os.path.expandvars(value)).expanduser()
-        if path.is_file():
-            fingerprints[label] = {"path": str(path.resolve()), "sha256": file_sha(path)}
-        elif path.is_dir():
-            digest = hashlib.sha256()
-            count = 0
-            for directory, dirs, names in os.walk(path, followlinks=False):
-                dirs[:] = sorted(d for d in dirs if d not in (".git", "__pycache__", ".pytest_cache"))
-                for name in sorted(names):
-                    child = Path(directory) / name
-                    if child.suffix in (".pyc", ".pyo") or not child.is_file():
-                        continue
-                    digest.update(child.relative_to(path).as_posix().encode())
-                    digest.update(file_sha(child).encode())
-                    count += 1
-            fingerprints[label] = {"path": str(path.resolve()), "files": count, "sha256": digest.hexdigest()}
-        else:
-            fingerprints[label] = {"path": str(path), "missing": True}
-
-    for key, value in sorted(assets.items()):
-        if key.endswith(("_root", "_checkpoint", "_python", "_manifest")) or key in (
-            "adroit_expert",
-            "adroit_official_demos",
-            "rh56_official_task_init",
-            "mujoco_path",
-            "mujoco_key",
-        ):
-            bind(key, value)
-        elif key == "pythonpath":
-            for index, path in enumerate(value):
-                bind(f"pythonpath[{index}]", path)
-    return fingerprints
-
-
-def _source_identity(configuration):
-    digest = hashlib.sha256(json.dumps(configuration, sort_keys=True).encode())
-    for path in sorted([*(ROOT / "jepa4r").rglob("*"), *(ROOT / "configs").rglob("*")]):  # code and its configs
-        if (
-            path.is_file()
-            and path.suffix in (".py", ".yaml", ".json")
-            and "__pycache__" not in path.parts
-            and ".git" not in path.parts
-        ):
-            digest.update(path.relative_to(ROOT).as_posix().encode())
-            digest.update(path.read_bytes())
-    for name in ("configs/policy/bc/relocate/DEPENDENCIES.json",):
-        digest.update(name.encode())
-        digest.update((ROOT / name).read_bytes())
-    return digest.hexdigest()
-
-
 def parser():
-    result = argparse.ArgumentParser(description=__doc__)
-    result.add_argument("--list", action="store_true", help="List published environments and models")
+    result = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    result.add_argument("--list", action="store_true", help="List the environments and their models")
     result.add_argument("--env", choices=tuple(MODELS), default="adroit-relocate")
     result.add_argument("--model", default="jepa4r")
-    result.add_argument("--mode", choices=("smoke", "full"), default="smoke")
-    result.add_argument("--assets", type=Path, help="External asset/environment JSON; see assets.example.json")
-    result.add_argument("--output", type=Path, help="Fresh absolute run directory outside the checkout")
-    result.add_argument("--wm-python", help="World-model environment Python")
-    result.add_argument("--sim-python", help="Selected simulator/BC environment Python")
+    result.add_argument("--assets", type=Path, help="asset / environment JSON (see jepa4r.policy.bc.relocate_assets)")
+    result.add_argument("--output", type=Path, help="absolute run directory outside the checkout")
+    result.add_argument("--wm-python", help="world-model environment Python")
+    result.add_argument("--sim-python", help="simulator / BC environment Python")
     result.add_argument("--seed", type=int, default=42)
-    result.add_argument("--stage", default="all", help="One planned stage name, or all")
-    result.add_argument("--execute", action="store_true", help="Execute; otherwise print the plan only")
-    result.add_argument("--resume", action="store_true", help="Reverify completed stages and continue unstarted ones")
+    result.add_argument("--stage", default="all", help="one planned stage name, or all")
+    result.add_argument("--execute", action="store_true", help="run; otherwise print the plan only")
     return result
 
 
@@ -265,53 +66,25 @@ def main(argv=None):
         return 0
     if args.model not in MODELS[args.env]:
         argument_parser.error(f"{args.env} does not support model {args.model!r}")
-    if args.assets is None or args.output is None:
-        argument_parser.error("--assets and --output are required")
-    if not args.output.is_absolute():
-        argument_parser.error("--output must be an absolute path")
+    if args.assets is None or args.output is None or not args.output.is_absolute():
+        argument_parser.error("--assets and an absolute --output are required")
     args.output = args.output.resolve()
-    if args.output == ROOT or ROOT in args.output.parents:
-        argument_parser.error("--output must be outside the source checkout")
     assets = json.loads(args.assets.read_text(encoding="utf-8-sig"))
-    args.sim_python_override = args.sim_python is not None
     args.wm_python = args.wm_python if args.wm_python is not None else assets.get("wm_python")
     if args.sim_python is None:
         args.sim_python = assets.get(args.env.split("-")[0] + "_sim_python") or assets.get("sim_python")
     if not args.wm_python or not args.sim_python:
         argument_parser.error("Provide wm_python and sim_python through flags or the asset JSON")
     module_name = "adroit_workflow" if args.env == "adroit-relocate" else "rh56_workflow"
-    backend = importlib.import_module(f"jepa4r.policy.bc.relocate.{module_name}")
-    stages = backend.plan(args, assets)
+    stages = importlib.import_module(f"jepa4r.policy.bc.relocate.{module_name}").plan(args, assets)
     if args.stage != "all":
-        selected = [stage for stage in stages if stage["name"] == args.stage]
-        if not selected:
-            argument_parser.error(f"Unknown stage {args.stage!r}; choose {[s['name'] for s in stages]}")
-        stages = selected
-    configuration = {
-        "env": args.env,
-        "model": args.model,
-        "mode": args.mode,
-        "seed": args.seed,
-        "assets": assets,
-        "wm_python": args.wm_python,
-        "sim_python": args.sim_python,
-        "output": str(args.output),
-        "sim_python_override": args.sim_python_override,
-        "stage": args.stage,
-        "external_fingerprints": asset_fingerprints(dict(assets, wm_python=args.wm_python, sim_python=args.sim_python)),
-    }
-    identity = _source_identity(configuration)
+        stages = [stage for stage in stages if stage["name"] == args.stage]
+        if not stages:
+            argument_parser.error(f"Unknown stage {args.stage!r}")
     if not args.execute:
-        print(json.dumps({"identity": identity, "configuration": configuration, "stages": stages}, indent=2))
+        print(json.dumps(stages, indent=2))
         return 0
-    return execute_plan(
-        stages,
-        args.output,
-        lambda stage: backend.verify_stage(stage, args, assets),
-        identity,
-        resume=args.resume,
-        configuration=configuration,
-    )
+    return execute_plan(stages, args.output)
 
 
 if __name__ == "__main__":

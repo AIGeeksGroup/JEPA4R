@@ -96,10 +96,10 @@ def initialize_training_seed(seed=None):
         seed_everything(int(seed), workers=True)
 
 
-def main(*, gate=None):
+def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--task", choices=("adroit_relocate",), default="adroit_relocate")
-    ap.add_argument("--dataset", required=True, help="Final Relocate RGB HDF5")
+    ap.add_argument("--dataset", required=True, help="the Relocate RGB training data (HDF5)")
     ap.add_argument("--name", default=None, help="checkpoint directory name (default: lejepa_<task>)")
     ap.add_argument("--epochs", type=int, default=10)
     ap.add_argument("--bs", type=int, default=256)
@@ -108,12 +108,7 @@ def main(*, gate=None):
     ap.add_argument("--lamb", type=float, default=0.02)
     ap.add_argument("--proj-dim", type=int, default=16)
     ap.add_argument("--workers", type=int, default=8)
-    ap.add_argument(
-        "--max-steps", type=int, default=0, help="smoke test: stop after this many steps, no checkpoint (0 = no limit)"
-    )
-    ap.add_argument(
-        "--seed", type=int, default=None, help="Explicit guide seed; omission retains legacy Torch0 initialization"
-    )
+    ap.add_argument("--seed", type=int, default=None, help="the training seed (default: torch.manual_seed(0))")
     args = ap.parse_args()
     initialize_training_seed(args.seed)
 
@@ -140,15 +135,11 @@ def main(*, gate=None):
     s2 = CosineAnnealingLR(opt, T_max=total_steps - warmup_steps, eta_min=1e-3)
     scheduler = SequentialLR(opt, schedulers=[s1, s2], milestones=[warmup_steps])
     scaler = GradScaler(enabled=True)
-    start_epoch = 0 if gate is None else gate.attach(net, sigreg, opt, scheduler, scaler, train, args)
     print(f"{args.task}: {len(ds)} frames, {len(train)} steps per epoch, {args.epochs} epochs", flush=True)
     t0 = time.time()
-    for epoch in range(start_epoch, args.epochs):
+    for epoch in range(args.epochs):
         net.train()
-        start_batch = 0 if gate is None else gate.next_batch_index(epoch)
-        for step, vs in enumerate(train, start=start_batch):
-            if gate is not None:
-                gate.before_input(vs)
+        for step, vs in enumerate(train):
             with autocast("cuda", dtype=torch.bfloat16):
                 vs = vs.to("cuda", non_blocking=True)
                 emb, proj = net(vs)
@@ -160,15 +151,6 @@ def main(*, gate=None):
             scaler.step(opt)
             scaler.update()
             scheduler.step()
-            if gate is not None:
-                gate.after_step(epoch, step, loss=loss)
-            if args.max_steps and step + 1 >= args.max_steps:
-                print(
-                    f"smoke test: {step + 1} steps, {time.time() - t0:.1f}s, loss {loss.item():.4f}, peak GPU memory "
-                    f"{torch.cuda.max_memory_allocated() / 2**30:.1f} GiB",
-                    flush=True,
-                )
-                return
             if step % 500 == 0:
                 print(
                     f"epoch {epoch} step {step}/{len(train)} loss {loss.item():.4f} sigreg {sigreg_loss.item():.4f} "

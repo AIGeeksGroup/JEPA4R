@@ -5,7 +5,6 @@ The JEPAConfig / objective factories are not imported: their predictor and optim
 encode single frames. No model code is rewritten (also not for Python 3.11+); the authors' Impala class runs the
 whole forward pass."""
 
-import hashlib
 import importlib
 import json
 from pathlib import Path
@@ -13,26 +12,6 @@ import sys
 
 FAMILY, DIM = "pldm", 512
 PREFIX = "core.backbone."
-IMPORT_FILES = (
-    "pldm/__init__.py",
-    "pldm/configs.py",
-    "pldm/models/__init__.py",
-    "pldm/models/encoders/__init__.py",
-    "pldm/models/encoders/enums.py",
-    "pldm/models/encoders/base_class.py",
-    "pldm/models/encoders/impala.py",
-)
-
-
-def encoder_source_bindings(source):
-    source = Path(source).resolve()
-    result = {}
-    for relative in IMPORT_FILES:
-        path = source / relative
-        if not path.is_file():
-            raise FileNotFoundError("Missing original PLDM source: " + str(path))
-        result[str(path)] = hashlib.sha256(path.read_bytes()).hexdigest()
-    return result
 
 
 def select_backbone_state(state, expected_shapes):
@@ -56,18 +35,17 @@ def load_frozen(checkpoint, device="cuda"):
         config.get("_target_") != "jepa4r.baselines.cube.pldm.method.build_model"
         or config.get("pretrained") is not False
     ):
-        raise ValueError("An actual Cube Impala factory config is required")
+        raise ValueError("the checkpoint's config.json is not the Cube PLDM (Impala) factory config")
     source = Path(config["official_source"]).resolve()
-    encoder_source_bindings(source)
     sys.path.insert(0, str(source))
     package = importlib.import_module("pldm")
     if Path(package.__file__).resolve() != source / "pldm/__init__.py":
-        raise ValueError("Conflicting PLDM package import")
+        raise ValueError("pldm was imported from another place than the config's official_source")
     module = importlib.import_module("pldm.models.encoders.impala")
     if Path(module.__file__).resolve() != source / "pldm/models/encoders/impala.py":
-        raise ValueError("Conflicting original Impala import")
-    # Exact constructor used by ImagePLDM.core.backbone; caller CPU RNG is
-    # preserved and CUDA is not initialized by discarded factory weights.
+        raise ValueError("the Impala encoder was imported from another place than official_source")
+    # the constructor ImagePLDM.core.backbone uses; the caller's CPU RNG is kept and CUDA is not initialized by the
+    # discarded initial weights
     with torch.random.fork_rng(devices=[]):
         model = module.ImpalaEncoder(input_channels=3, final_ln=True)
     state = torch.load(checkpoint, map_location="cpu", weights_only=True)

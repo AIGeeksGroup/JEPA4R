@@ -43,7 +43,7 @@ def evaluate_policy(cfg, policy, encoder) -> dict:
     run_cfg["env_kwargs"]["embedding_name"] = encoder
     conf = Path(os.environ.get("JEPA4R_BC_CONF_HOME", BC)) / "conf" / "model" / f"{encoder}.yaml"
     # point-cloud embedding: run_bc3d.py's patches
-    if str(OmegaConf.load(conf).get("_target_", "")).endswith("load_lewm_pcd"):
+    if str(OmegaConf.load(conf).get("_target_", "")).endswith("load_jepa4r"):
         _apply_runner_patches(BC / "run_bc3d.py")
     _apply_runner_patches(BC / "run_bc.py")
     import mujoco_vc.gym_wrapper as gw

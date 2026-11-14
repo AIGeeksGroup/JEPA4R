@@ -1,12 +1,12 @@
 """Shared GPU process for the frozen encoders: every evaluation job (run_bc_scene.py with ENC_SOCKET set) sends its
 preprocessed input here; the requests are batched, encoded in one CUDA context and returned to each job. Encoder,
-preprocessing and weights are exactly the jobs' own (the same conf/model config, the same lewm_cortex loader); only the
-dozens of per-job CUDA contexts are gone: with every job in its own context the GPU switches between them and a step
+preprocessing and weights are exactly the jobs' own (the same conf/model config, the same wm_embeddings loader); only
+the dozens of per-job CUDA contexts are gone: with every job in its own context the GPU switches between them and a step
 waits tens of ms (measured: 24 jobs at once, 90-110 ms per step, about 50 ms of it encoding). Batched and one-by-one
 encoding differ by float rounding only (measured: at most 4e-6, against an embedding std of 0.85). Protocol (Unix
 socket, '@name' = Linux abstract namespace): 8-byte little-endian length + pickle((encoder name, float32 array (B,
 ...))); reply: 8-byte length + pickle(float32 array (B, D)).
-    source env.sh && $PY enc_server.py @lewm_scene_enc lewm_scene_pix,lewm_scene_pcd
+    source env.sh && $PY enc_server.py @scene_encoders lewm_scene,jepa4r_scene
 """
 
 import os
@@ -24,7 +24,7 @@ import torch
 from omegaconf import OmegaConf
 
 HERE = Path(__file__).resolve().parent
-sys.path.insert(0, str(HERE))  # lewm_cortex
+sys.path.insert(0, str(HERE))  # wm_embeddings
 CONFS = [Path(os.environ.get("JEPA4R_BC_CONF_HOME", HERE)) / "conf" / "model"]
 MAX_BATCH = 64
 

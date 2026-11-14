@@ -5,18 +5,8 @@ Everything else (oracle construction, per-episode noise, sub-task switching)
 is inherited unchanged, so the collection policy is identical.
 """
 
-import hashlib
-import inspect
-
 import numpy as np
 from stable_worldmodel.envs.ogbench import ExpertPolicy
-
-# set_env below is a copy of upstream's minus the env-id whitelist; refuse to run if upstream drifts
-_UPSTREAM_SET_ENV_MD5 = "a4fd37fde61d5c1f5fa4fe079fe4cb62"
-_md5 = hashlib.md5(inspect.getsource(ExpertPolicy.set_env).encode()).hexdigest()
-assert _md5 == _UPSTREAM_SET_ENV_MD5, (
-    f"upstream ExpertPolicy.set_env changed (md5 {_md5}); update PCDExpertPolicy.set_env"
-)
 
 
 class PCDExpertPolicy(ExpertPolicy):

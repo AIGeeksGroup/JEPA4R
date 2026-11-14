@@ -40,3 +40,6 @@ logs/
 *.h5
 *.hdf5
 *.zarr/
+
+# Local verification runs (short budgets and checks), kept out of the release
+/gates/

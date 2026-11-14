@@ -1,8 +1,8 @@
-# LeWM 3D encoder (DexArt PointNet + projector) trained on the full MetaWorld hammer three-part data, point
-# clouds (LeWM's mw_hammer_pcd data; run mw_hammer_pcd_dexart, epoch 10). Input: (N, 6) point clouds, see
+# JEPA4R encoder (DexArt PointNet + projector) trained on the full MetaWorld hammer three-part data, point
+# clouds (the mw_hammer_pcd data; run mw_hammer_pcd_dexart, epoch 10). Input: (N, 6) point clouds, see
 # jepa4r/policy/bc/run_bc3d.py. center / scale / use_rgb = the training preprocessor (checked against the checkpoint's
 # config.yaml).
-_target_: lewm_cortex.load_lewm_pcd
+_target_: wm_embeddings.load_jepa4r
 checkpoint_dir: ${oc.env:STABLEWM_HOME}/checkpoints/mw_hammer_pcd_dexart
 epoch: 10
 center: [0.0, 0.65, 0.2]

@@ -27,23 +27,22 @@ jepa4r/
                 RM75-B + RH56 Relocate twin (rh56/)
   data/         point-cloud pipeline, collection behaviors, storage, clips, official play data, demos/ (CortexBench
                 and Scene demonstrations); cube/, relocate/ (collection and data of the Cube 1-4 and Relocate workflows)
-  models/       encoders, projector and action encoder, predictor, SIGReg, JEPA world model; cube/, relocate/
-                (world-model training of the two workflows)
+  models/       encoders, projector and action encoder, predictor, SIGReg, JEPA world model; cube/ (world-model
+                training of the Cube workflow)
   baselines/    PLDM, LeJEPA, VISReg, V-JEPA 2.1, random ViT-B; cube/, relocate/ (their training and loaders in the two
                 workflows)
-  policy/       frozen-encoder interface, latent caching, gciql/ (GCIQL on Cube 1-4, its native evaluation and the Cube
-                workflow's controller), dqc/ (DQC harness), bc/ (CortexBench harness; relocate/ behavior cloning on
-                Relocate and RH56 with that workflow's controllers)
+  policy/       frozen-encoder interface, latent caching, gciql/ (GCIQL on Cube 1-4, its online evaluation and the Cube
+                workflow's controller), dqc/ (DQC), bc/ (CortexBench behavior cloning; relocate/ the Relocate workflow
+                on Adroit and the RH56 twin)
   eval/         OGBench, CortexBench and reconstruction evaluation
   decoder/      set generator, backbones/, head, LoRA, losses, training, imagination
   metrics/      point-cloud metrics in centimeters
 scripts/        reproduce_all.sh, download_checkpoints.py
-tests/          configuration, specification, report and code-style checks (unittest); cube/, relocate/ the two
-                workflows' own suites (pytest)
+tests/          configuration, specification, workflow, report and code-style checks (unittest)
 third_party/    vendored upstream code with UPSTREAM.md (stable-worldmodel, PLDM)
 ```
 
-Code that works as a unit (the CortexBench and DQC harnesses, the environment packages, the demonstration converters)
+Code that works as a unit (the CortexBench and DQC code, the environment packages, the demonstration converters)
 is a package at the location given in the table below; its `__init__.py` adapts it to the stage interface.
 
 Storage (git-ignored): `data/` datasets, `outputs/` runs, report and figures, `checkpoints/` third-party weights;
@@ -137,45 +136,29 @@ others are used unchanged from a checkout (the path in an environment variable, 
 The stages that run in other interpreters start them from `JEPA4R_PY_COLLECT` (MuJoCo 3 + OGBench + MetaWorld 3),
 `JEPA4R_PY_CORTEXBENCH` (eai-vc, MuJoCo 2.0 / mujoco-py), `JEPA4R_PY_DQC` (JAX) and `JEPA4R_PY_TRAIN` (PLDM training).
 
-Cube 1-4 and Adroit Relocate (with the RH56 hand twin) run as two workflows with their own stage controllers and stage
-receipts; their code sits where the table above puts it, and the stages of this repository run their shares of them:
-- Cube 1-4 (`cube_stage` in `jepa4r/policy/gciql`): the controller `workflow.py` with the GCIQL stages
-  (`workflow_downstream.py`, `downstream/`) and their acceptance checks; collection and official play data in
+Cube 1-4 and Adroit Relocate (with the RH56 hand twin) run as two workflows with their own stage controllers; their
+code sits where the table above puts it, and the stages of this repository run their shares of them:
+- Cube 1-4 (`cube_stage` in `jepa4r/policy/gciql`): the controller `workflow.py` (a stage is done when its output
+  exists) with the GCIQL stages (`workflow_downstream.py`, `downstream/`); collection and official play data in
   `jepa4r/data/cube`, world-model training in `jepa4r/models/cube`, PLDM, LeJEPA and the released VISReg / V-JEPA 2.1
   weights in `jepa4r/baselines/cube`, the PLDM authors' source (`1bd7e56`) in `third_party/pldm`. collect_wm_data =
-  collect + views, prepare_policy_data = prepare-data, train_wm = train, train_policy = prepare-encoder ...
-  native-audit.
+  collect + views, prepare_policy_data = prepare-data, train_wm = train, train_policy = prepare-encoder, camera, bind,
+  encode, gciql, evaluate.
   Its configurations: `configs/env/cube` (collection Hydra configs and the list of collection sources, official play
   data), `configs/method/cube` (LeWM recipes, released VISReg / V-JEPA 2.1 weights), `configs/policy/gciql` (GCIQL
   agent settings and the list of its vendored sources). Interpreters `JEPA4R_PY_CUBE_WM` (collection,
-  world models; pyproject extra `cube-worldmodel`) and `JEPA4R_PY_CUBE_RL` (encoding, GCIQL, native evaluation; extra
+  world models; pyproject extra `cube-worldmodel`) and `JEPA4R_PY_CUBE_RL` (encoding, GCIQL, online evaluation; extra
   `cube-policy`); checkouts `JEPA4R_OGBENCH`, `JEPA4R_VJEPA2`.
-- Adroit Relocate and the RM75-B + RH56 twin (`relocate_stage` in `jepa4r/policy/bc`): the controllers
-  `jepa4r/policy/bc/relocate/{workflow,adroit_workflow,rh56_workflow}.py` with behavior cloning (`bc_*.py` and the
-  CortexBench runner of `jepa4r/policy/bc`) and their inputs
-  (`configs/policy/bc/relocate/DEPENDENCIES.json`, `rh56_native_bundle_v1.json`; the LeWM training configs
+- Adroit Relocate and the RM75-B + RH56 twin (`relocate_stage` in `jepa4r/policy/bc`): the runner and the stage plans
+  `jepa4r/policy/bc/relocate/{workflow,adroit_workflow,rh56_workflow}.py` (a stage is done when it exited with 0) with
+  world-model training and behavior cloning (`adroit_learning.py` and the CortexBench runner of `jepa4r/policy/bc`)
+  and their inputs (`configs/policy/bc/relocate/DEPENDENCIES.json`; the LeWM training configs
   `configs/method/relocate/train`, the embedding configs `configs/policy/bc/conf/model`); collection and the official
-  demonstrations in `jepa4r/data/relocate`, world-model training support in `jepa4r/models/relocate`, the LeJEPA hook
-  in `jepa4r/baselines/relocate`, the RH56 bundle check in `jepa4r/envs/twins/rh56`. Interpreters
+  demonstrations in `jepa4r/data/relocate`, the PLDM and LeJEPA runners in `jepa4r/baselines/relocate`, the RH56
+  twin's collection, world-model and BC code in `jepa4r/envs/twins/rh56`. Interpreters
   `JEPA4R_PY_RELOCATE_WM` (pyproject extra `relocate-wm`), `JEPA4R_PY_ADROIT_SIM` (extra `relocate-adroit`, over the
   eai-vc stack), `JEPA4R_PY_RH56_SIM` (extra `relocate-rh56`); checkouts `JEPA4R_SWM` (stable-worldmodel
   `6f1e499`), `JEPA4R_EAI_VC_RELOCATE` (eai-vc `76fe35e` with `third_party/eai-vc-relocate/eai-vc-train-loop.patch`),
   `JEPA4R_DMC_IMPORT_OVERLAY`; inputs `JEPA4R_ADROIT_DEMOS` (the official 100 demonstrations), `JEPA4R_RH56_BUNDLE`,
   `MUJOCO_PY_MUJOCO_PATH` / `MUJOCO_PY_MJKEY_PATH`.
 - Temporary files of their children go to `JEPA4R_TMPDIR` (else `TMPDIR`, else `/tmp`).
-- Names in their code, kept as the paper's runs used them:
-  - run modes (`env.harness.mode`): Cube 1-4 `formal` (the paper protocol) or `smoke`; Relocate and RH56 `full` (the
-    paper budgets) or `smoke`. `smoke` runs the stages at a small size to check them (a few episodes, two GCIQL
-    updates instead of the training, one evaluation episode);
-  - receipt: the JSON record a stage writes when it completes (what it produced, with checksums); the next stage and a
-    resumed run check it before going on;
-  - evidence: records of the checks made while a stage runs (a policy's outputs on real inputs before and after
-    reloading, gradient norms around clipping, optimizer state), kept next to the results;
-  - native: as the environment or method itself has it: the online evaluation in the simulator (Cube `native-sr`),
-    Relocate with the Adroit hand (as opposed to the RH56 twin), a method's own trainer;
-  - `lewm_rgb` / `lewm_pcd`: the Cube workflow's names for LeWM and JEPA4R (`method=lewm` / `method=jepa4r`), and
-    LeWM's config and loader names for the point-cloud model (`model=lewm_pcd`, `load_lewm_pcd`); `code/lewm_pcd/` is
-    the directory layout the collection copies its scripts into to run them;
-  - harness: such a workflow as a stage of this repository runs it (`env.harness`, outputs under `.../harness/`).
-- Their own test suites are `tests/cube` and `tests/relocate` (pytest, in the workflows' interpreters; packages
-  without `__init__.py`, so `python -m unittest discover -s tests` leaves them out).

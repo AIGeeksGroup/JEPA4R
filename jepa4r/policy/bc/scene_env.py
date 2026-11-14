@@ -1,14 +1,14 @@
-"""OGBench scene's five evaluation tasks as an env of CortexBench's (eai-vc) imitation harness (runs in the lewm_mw env,
-MuJoCo 3 + OGBench); built as rm75_env.py: the harness (MuJoCo 2.0) reaches it through run_bc_scene.py's proxy and the
-scene_server.py subprocess, and the env is the repo's (envs.ogb_scene_env.OGBSceneEnv, mode='task') with its point-cloud
-wrapper (envs.ogb_pcd.ScenePointCloudWrapper).
+"""OGBench scene's five evaluation tasks as an env of CortexBench's (eai-vc) imitation harness (runs in the
+MuJoCo 3 + OGBench python); built as rm75_env.py: the harness (MuJoCo 2.0) reaches it through run_bc_scene.py's proxy
+and the scene_server.py subprocess, and the env is the repo's (envs.ogb_scene_env.OGBSceneEnv, mode='task') with its
+point-cloud wrapper (envs.ogb_pcd.ScenePointCloudWrapper).
 * reset(): OGBench's task-mode reset (the task_id fixed) with the seed set by seed(): random arm, the cube / drawer /
   window within +-1 cm of the task's initial state;
 * step(a): OGBench's step; the episode ends at the goal (done = info['success'], OGBench's default terminate_at_goal),
   so the harness's "success at the last step" is OGBench's success rate; at most 750 steps (scene-v0's
   max_episode_steps);
-* rgb(): front_pixels 224x224, anti-aliased (OGBSceneEnv.render: the renderer and the size of the 2D LeWM data);
-* pcd(): (1200, 6) float32 xyz (m) + rgb 0..255, the 3D LeWM data's recipe (ScenePointCloudWrapper's point cloud), its
+* rgb(): front_pixels 224x224, anti-aliased (OGBSceneEnv.render: the renderer and the size of the LeWM data);
+* pcd(): (1200, 6) float32 xyz (m) + rgb 0..255, JEPA4R data's recipe (ScenePointCloudWrapper's point cloud), its
   sampling RNG seeded with the seed + 7919 at every reset; a cloud is drawn only when the harness asks for a frame;
 * proprioception (proprio_of): [effector xyz, cos yaw, sin yaw, gripper opening, button 0 (drawer lock), button 1
   (window lock)], 8 entries; run_bc_scene.py feeds the policy the first SCENE_PROPRIO_DIMS of them (the source's
@@ -21,8 +21,8 @@ import os
 import sys
 
 # the repository (jepa4r/)
-LEWM = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
-sys.path.insert(0, LEWM)
+REPO = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
+sys.path.insert(0, REPO)
 os.environ.setdefault("MUJOCO_GL", "egl")
 
 import numpy as np

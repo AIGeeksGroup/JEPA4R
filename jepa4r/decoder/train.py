@@ -128,7 +128,7 @@ def run_stage(cfg, run_dir):
     # frozen world model     ##
     ##############################
 
-    world_model = load_world_model(cfg.ckpt)  # 2D / 3D / 4D checkpoint -> latent1, never updated
+    world_model = load_world_model(cfg.ckpt)  # image, point-cloud or 4D checkpoint -> latent1, never updated
     input_keys, input_preprocessor = input_pipeline(cfg)  # as the checkpoint was trained, see its config.yaml
 
     #########################

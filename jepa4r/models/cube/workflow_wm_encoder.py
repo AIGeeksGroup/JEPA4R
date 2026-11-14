@@ -1,10 +1,11 @@
-"""LeWM's checkpoint loading and encode API, for the weights the Cube workflow trains (JEPA4R, LeWM)."""
+"""Checkpoint loading and encoding of the JEPA world models the Cube workflow trains (JEPA4R, LeWM), with LeWM's
+loader."""
 
 from pathlib import Path
 import os
 import sys
 
-FAMILY, DIM = "lewm", 192
+FAMILY, DIM = "jepa_wm", 192
 
 
 def load_frozen(checkpoint, device="cuda"):

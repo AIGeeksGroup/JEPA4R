@@ -55,7 +55,10 @@
     }
   },
   "rh56_native_bundle": {
-    "manifest": "rh56_native_bundle_v1.json",
-    "file_count": 91
+    "required_files": [
+      "env.py",
+      "ppo.py",
+      "experts/relocate_expert.pt"
+    ]
   }
 }

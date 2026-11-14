@@ -1,6 +1,6 @@
 {
-  "output_model_name": "lewm_rgb",
-  "subdir": "lewm_rgb",
+  "output_model_name": "jepa4r",
+  "subdir": "jepa4r",
   "num_workers": 2,
   "validation_num_workers": 2,
   "seed": 0,
@@ -43,23 +43,32 @@
   },
   "data": {
     "preprocessor": {
-      "_target_": "jepa4r.data.clips.get_img_preprocessor",
-      "source": "pixels",
-      "target": "pixels",
-      "img_size": 224
+      "_target_": "jepa4r.data.clips.get_pcd_preprocessor",
+      "source_xyz": "pcd_xyz",
+      "source_rgb": "pcd_rgb",
+      "target": "pcd",
+      "center": [
+        0.425,
+        0.0,
+        0.2
+      ],
+      "scale": 4.0,
+      "use_rgb": true
     }
   },
   "model": {
-    "_target_": "jepa4r.models.world_model.JEPA",
-    "obs_key": "pixels",
     "encoder": {
-      "_target_": "jepa4r.models.encoders.vit.ViTCLS",
-      "size": "tiny",
-      "patch_size": 14,
-      "image_size": 224,
-      "pretrained": false,
-      "use_mask_token": false
+      "_target_": "jepa4r.models.encoders.pointnet.DexArtPointNet",
+      "in_dim": 6,
+      "mlp_spec": [
+        1080,
+        4320
+      ],
+      "out_dim": 192,
+      "chunk_points": 1200
     },
+    "_target_": "jepa4r.models.world_model.JEPA",
+    "obs_key": "pcd",
     "predictor": {
       "_target_": "jepa4r.models.predictor.ARPredictor",
       "num_frames": 3,

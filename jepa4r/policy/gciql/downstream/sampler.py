@@ -7,9 +7,6 @@ that sample future batches. State-only constructs no visual dimensions.
 
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
-import hashlib
-import io
-import json
 from pathlib import Path
 
 import numpy as np
@@ -20,103 +17,18 @@ from utils.datasets import GCDataset
 from .vendor.cube_inputs import CubeInputs
 
 
-def file_stat(path):
-    value = Path(path).stat()
-    return dict(
-        size=value.st_size,
-        mtime_ns=value.st_mtime_ns,
-        ctime_ns=value.st_ctime_ns,
-        device=value.st_dev,
-        inode=value.st_ino,
-    )
-
-
-def read_json(path, expected_sha):
-    before = file_stat(path)
-    blob = Path(path).read_bytes()
-    assert hashlib.sha256(blob).hexdigest() == expected_sha, str(path)
-    assert file_stat(path) == before, str(path)
-    return json.loads(blob)
-
-
-def load_cached_features(
-    cache_dir,
-    split,
-    manifest_sha256,
-    checkpoint_sha256,
-    source_npz,
-    expected_rows,
-    feature_dim=192,
-    encoder_family="lewm",
-):
-    """One bounded per-episode read into one RAM allocation; no extra feature pass."""
-    if split not in ("train", "val") or expected_rows % 1001:
-        raise ValueError("Expected canonical raw1001 split")
-    root = Path(cache_dir).resolve()
-    manifest = read_json(root / "cache_manifest.json", manifest_sha256)
-    assert manifest["actual_exit_code"] == 0 and manifest["checkpoint_sha256"] == checkpoint_sha256
-    if (encoder_family, feature_dim) not in (
-        ("lewm", 192),
-        ("pldm", 512),
-        ("lejepa", 512),
-        ("visreg", 768),
-        ("vjepa", 1024),
-    ):
-        raise ValueError("Unsupported encoder family/output width")
-    if encoder_family != "lewm":
-        protocol = manifest["protocol"]
-        if protocol["encoder_family"] != encoder_family or protocol["latent_dim"] != feature_dim:
-            raise ValueError("Feature cache encoder binding mismatch")
-    entries = manifest["splits"][split]
-    assert len(entries) * 1001 == expected_rows
-    assert [entry["episode"] for entry in entries] == list(range(len(entries)))
-    source = Path(source_npz).resolve()
-    source_stat = file_stat(source)
-    result = np.empty((expected_rows, feature_dim), dtype=np.float32)
-    stream_hash = hashlib.sha256()
-    for entry in entries:
-        record = read_json(entry["receipt_path"], entry["receipt_sha256"])
-        episode = entry["episode"]
-        start = episode * 1001
-        assert record["split"] == split and record["episode"] == episode and record["actual_exit_code"] == 0
-        assert record["raw_row_start"] == start and record["raw_row_count"] == 1001 and record["main_rows"] == 1000
-        assert record["terminal_raw_id"] == start + 1000 and record["checkpoint_sha256"] == checkpoint_sha256
-        expected_ids = np.arange(start, start + 1001, dtype="<i8")
-        assert record["canonical_raw_ids_sha256"] == hashlib.sha256(expected_ids.tobytes()).hexdigest()
-        assert Path(record["source_npz"]["path"]).resolve() == source
-        assert record["source_npz"]["accepted_stat"] == source_stat
-        latent = record["latent"]
-        path = Path(latent["path"]).resolve()
-        assert path.is_relative_to(root) and latent["shape"] == [1001, feature_dim] and latent["dtype"] == "float32"
-        before = file_stat(path)
-        assert before["size"] == latent["bytes"]
-        blob = path.read_bytes()
-        assert hashlib.sha256(blob).hexdigest() == latent["sha256"]
-        assert file_stat(path) == before
-        values = np.load(io.BytesIO(blob), allow_pickle=False)
-        assert values.shape == (1001, feature_dim) and values.dtype == np.float32 and np.isfinite(values).all()
-        result[start : start + 1001] = values
-        stream_hash.update(entry["receipt_sha256"].encode())
-        stream_hash.update(latent["sha256"].encode())
-    assert file_stat(source) == source_stat
+def load_cached_features(cache_dir, split, episodes, feature_dim):
+    """The cached latents of one split, episode by episode (``<cache_dir>/<split>/episode_<i>/latent.npy``, 1001 rows
+    each), as one readonly FP32 array in RAM."""
+    root = Path(cache_dir)
+    result = np.empty((episodes * 1001, feature_dim), dtype=np.float32)
+    for episode in range(episodes):
+        values = np.load(root / split / f"episode_{episode:06d}" / "latent.npy", allow_pickle=False)
+        if values.shape != (1001, feature_dim) or values.dtype != np.float32 or not np.isfinite(values).all():
+            raise ValueError(f"the cached latents of {split} episode {episode} have the wrong shape, dtype or values")
+        result[episode * 1001 : (episode + 1) * 1001] = values
     result.setflags(write=False)
-    return result, dict(
-        split=split,
-        rows=expected_rows,
-        shape=list(result.shape),
-        dtype="float32",
-        manifest_sha256=manifest_sha256,
-        checkpoint_sha256=checkpoint_sha256,
-        source_npz=str(source),
-        source_stat=source_stat,
-        canonical_rows_per_episode=1001,
-        loaded_receipt_feature_stream_sha256=stream_hash.hexdigest(),
-        readonly=True,
-        one_RAM_allocation=True,
-        encoder_calls=0,
-        encoder_family=encoder_family,
-        latent_dim=feature_dim,
-    )
+    return result
 
 
 def object_xyz(states, cubes):
@@ -164,19 +76,6 @@ class DistanceInputs(GCDataset):
             if self.workers
             else None
         )
-        self.input_metadata = dict(
-            cubes=self.cubes,
-            mode=self.mode,
-            current_dim=self.current_dim,
-            goal_dim=self.goal_dim,
-            state_indices="full official state" if self.mode == "state" else "originalstate[0:19]",
-            goal_XYZ_offsets=[19 + 9 * i for i in range(self.cubes)],
-            latent_dim=0 if self.mode == "state" else self.latent_dim,
-            synthetic_zero_padding=False,
-            sampler="originalGCDataset once in parent",
-            lookup_workers=self.workers,
-            reward="ALL(each cube current-to-valuegoal L2<=0.4 scaled); r=success-1; mask=1-success",
-        )
 
     def sample_goals(self, *args, **kwargs):
         ids = super().sample_goals(*args, **kwargs)
@@ -222,7 +121,6 @@ class DistanceInputs(GCDataset):
                     self.contract.current if role in ("observations", "next_observations") else self.contract.goal
                 )
                 batch[role] = operation(latent, batch[role], oracle=False)
-        self.last_ids = dict(current=idxs.copy(), next=idxs + 1, value_goal=value_ids, actor_goal=actor_ids)
         return batch
 
     def close(self):

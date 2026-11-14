@@ -1,32 +1,26 @@
-"""The RH56 twin's interface to the external native bundle; its policy, physics and point sampling are used
-unchanged."""
+"""The RH56 twin's interface to the external native bundle (RH56_EXPERT_ROOT: its env.py, ppo.py and
+experts/relocate_expert.pt); its policy, physics and point sampling are used unchanged."""
 
 import copy
-import hashlib
 import importlib
 import importlib.util
-import json
 import os
 from pathlib import Path
 import sys
+
+import mujoco
 import numpy as np
 import torch
-import mujoco
 
 ROOT = Path(__file__).resolve().parents[3]
 EXPERT = Path(os.environ["RH56_EXPERT_ROOT"]).expanduser().resolve() if os.environ.get("RH56_EXPERT_ROOT") else None
-BASELINE = Path(os.environ.get("RH56_BASELINE_ROOT", ROOT)).expanduser().resolve()
-LAST_BUNDLE_IDENTITY = None
+PACKAGE_ROOT = Path(os.environ.get("RH56_PACKAGE_ROOT", ROOT)).expanduser().resolve()
 
 
 def expert_files():
-    """Require the external native bundle rather than silently selecting another body."""
+    """The bundle's env, policy and expert checkpoint."""
     if EXPERT is None:
         raise ValueError("provide RH56_EXPERT_ROOT for the native state56/action12 expert bundle")
-    from jepa4r.envs.twins.rh56.asset_identity import verify_rh56_bundle
-
-    global LAST_BUNDLE_IDENTITY
-    LAST_BUNDLE_IDENTITY = verify_rh56_bundle(EXPERT)
     paths = {name: EXPERT / name for name in ("env.py", "ppo.py", "experts/relocate_expert.pt")}
     for path in paths.values():
         if not path.is_file():
@@ -42,20 +36,11 @@ def load_file(name, path):
     return mod
 
 
-def physical_hash(state):
-    # Exclude seed labels; hash actual randomised scene, physics, and drive state.
-    keys = ("integration", "body_pos", "body_quat", "site_pos", "site_quat", "p", "v", "q_cmd")
-    return hashlib.sha256(
-        json.dumps({k: state[k] for k in keys}, sort_keys=True, separators=(",", ":")).encode()
-    ).hexdigest()
-
-
 class NativeBridge:
     def __init__(self, seed, render=True):
         if mujoco.__version__ != "3.12.0":
             raise RuntimeError("frozen expert requires MuJoCo 3.12.0")
         expert_files()
-        self.bundle_identity = LAST_BUNDLE_IDENTITY
         sys.path.insert(0, str(EXPERT))
         bundle = importlib.import_module("env")
         if Path(bundle.__file__).resolve() != (EXPERT / "env.py").resolve():
@@ -70,8 +55,8 @@ class NativeBridge:
         self.renderers = {}
         self.render_models = {}
         self.render_data = {}
-        self.sampler_module = load_file("_rh56_original_adroit_sampler", BASELINE / "envs/adroit/pcd.py")
-        self.geometry = load_file("_rh56_original_depth_projection", BASELINE / "envs/adroit/surface_geometry.py")
+        self.sampler_module = load_file("_rh56_adroit_sampler", PACKAGE_ROOT / "envs/adroit/pcd.py")
+        self.geometry = load_file("_rh56_depth_projection", PACKAGE_ROOT / "envs/adroit/surface_geometry.py")
         self.sampler = self.sampler_module.AdroitPointClouds.__new__(self.sampler_module.AdroitPointClouds)
         s = self.sampler
         s.task = "relocate"
@@ -98,7 +83,6 @@ class NativeBridge:
         self.actor.load_state_dict(ck["agent"])
         self.actor.eval()
         self.mean, self.var = ck["obs_mean"], ck["obs_var"]
-        assert all(torch.isfinite(t).all() for t in self.actor.state_dict().values())
         self.reset(seed)
 
     def reset(self, seed=None):

@@ -9,7 +9,7 @@ seed: 100001                  # run_dqc.py's --seed default (every paper run)
 save_every: 25000             # restart checkpoint (resume.pkl), no effect on the numbers
 inputs: [latent, button_lights]
 goal: button_lights           # target state of the lights (OGBench's oraclerep goal)
-frame_stack: 1                # one row = the current frame's latent + the lights (jepa4r/policy/dqc/lewm_obs.py)
+frame_stack: 1                # one row = the current frame's latent + the lights (jepa4r/policy/dqc/wm_obs.py)
 hparams:                      # DQC settings for puzzle (run_dqc.py --agent.<key>=<value>)
   agent:
     num_qs: 2

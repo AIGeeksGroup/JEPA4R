@@ -1,4 +1,6 @@
-"""Entry point of the RH56 Relocate workflow (opt-in); the Adroit entry points do not use it."""
+"""Entry point of the RH56 Relocate workflow's stages (jepa4r/envs/twins/rh56): collect, publish, official-init, wm, bc;
+the arguments after the stage go to its module unchanged.
+usage: python jepa4r/policy/bc/relocate/run_rh56.py <stage> [--route rgb|pcd] [--expert-root <dir>] ..."""
 
 import argparse
 from contextlib import contextmanager
@@ -9,10 +11,9 @@ from pathlib import Path
 import sys
 
 
-LEWM_ROOT = Path(__file__).resolve().parents[3]
+PACKAGE_ROOT = Path(__file__).resolve().parents[3]
 MODULES = {
     "collect": "jepa4r.envs.twins.rh56.collect",
-    "validate": "jepa4r.envs.twins.rh56.data_tools",
     "publish": "jepa4r.envs.twins.rh56.data_tools",
     "official-init": "jepa4r.envs.twins.rh56.official_init",
     "wm": "jepa4r.envs.twins.rh56.wm_bridge",
@@ -23,23 +24,20 @@ MODULES = {
 def parser():
     result = argparse.ArgumentParser(
         description=__doc__,
-        epilog="Backend arguments are forwarded unchanged. No stage prints help only. "
-        "Collection is paired RGB/PCD; learning requires an explicit route. "
-        "See docs/experiments/rh56_native_20261025.md for complete examples.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="Collection is paired RGB / point clouds; wm and bc take the route (rgb or pcd).",
     )
     result.add_argument("stage", choices=tuple(MODULES), nargs="?")
     result.add_argument("--route", "--modality", choices=("rgb", "pcd"))
+    result.add_argument("--package-root", type=Path, help="the jepa4r package root; defaults to this checkout")
     result.add_argument(
-        "--baseline-root", "--baseline", type=Path, help="Existing LeWM source/config root; defaults to this checkout"
+        "--expert-root", type=Path, help="the external native RM75-B + RH56 bundle; or RH56_EXPERT_ROOT"
     )
     result.add_argument(
-        "--expert-root", type=Path, help="External native 56D-to-12D expert bundle; or RH56_EXPERT_ROOT"
+        "--eai-root", "--eai-vc-root", type=Path, help="eai-vc checkout for BC; or CORTEXBENCH_EAI_VC_ROOT"
     )
     result.add_argument(
-        "--eai-root", "--eai-vc-root", type=Path, help="Existing eai-vc checkout for BC; or CORTEXBENCH_EAI_VC_ROOT"
-    )
-    result.add_argument(
-        "--dry-run", action="store_true", help="Print dispatch and paths without importing or running a backend"
+        "--dry-run", action="store_true", help="print the stage's module, arguments and environment only"
     )
     return result
 
@@ -50,22 +48,22 @@ def make_plan(args, forwarded, argument_parser):
         argument_parser.error("wm/bc require an explicit --route rgb|pcd")
     if not learning and args.route is not None:
         argument_parser.error("--route applies only to wm/bc; collection is paired")
-    baseline = Path(args.baseline_root or os.environ.get("RH56_BASELINE_ROOT") or LEWM_ROOT).expanduser().resolve()
+    package = Path(args.package_root or os.environ.get("RH56_PACKAGE_ROOT") or PACKAGE_ROOT).expanduser().resolve()
     expert = args.expert_root or os.environ.get("RH56_EXPERT_ROOT")
-    environment = {"RH56_BASELINE_ROOT": str(baseline)}
+    environment = {"RH56_PACKAGE_ROOT": str(package)}
     if expert:
         environment["RH56_EXPERT_ROOT"] = str(Path(expert).expanduser().resolve())
     argv = list(forwarded)
-    if args.stage in ("validate", "publish"):
-        argv.insert(0, args.stage)
     if args.stage == "collect" and not any(a == "--camera" or a.startswith("--camera=") for a in argv):
         argv += ["--camera", "opposite"]
     if learning:
         argv += ["--route", args.route]
-        argv += ["--baseline-root" if args.stage == "wm" else "--baseline", str(baseline)]
+        argv += ["--package-root", str(package)]
     if args.stage == "bc":
         eai = (
-            Path(args.eai_root or os.environ.get("CORTEXBENCH_EAI_VC_ROOT") or LEWM_ROOT.parent / "third_party/eai-vc")
+            Path(
+                args.eai_root or os.environ.get("CORTEXBENCH_EAI_VC_ROOT") or PACKAGE_ROOT.parent / "third_party/eai-vc"
+            )
             .expanduser()
             .resolve()
         )
@@ -81,11 +79,9 @@ def make_plan(args, forwarded, argument_parser):
 
 
 def check_runtime_inputs(plan):
-    baseline = Path(plan["environment"]["RH56_BASELINE_ROOT"])
-    if not (
-        baseline / "models/world_model.py"
-    ).is_file():  # LeWM's train.py, in world_model.py (as in rh56/wm_bridge.tree_sha)
-        raise FileNotFoundError(f"LeWM source root has no train.py: {baseline}")
+    package = Path(plan["environment"]["RH56_PACKAGE_ROOT"])
+    if not (package / "models/world_model.py").is_file():  # LeWM's train.py
+        raise FileNotFoundError(f"no models/world_model.py under {package}")
     if plan["stage"] in ("collect", "official-init", "bc"):
         expert = plan["environment"].get("RH56_EXPERT_ROOT")
         if not expert:
@@ -116,7 +112,7 @@ def runtime_environment(values):
 
 
 def invoke(module, argv):
-    path = str(LEWM_ROOT.parent)
+    path = str(PACKAGE_ROOT.parent)
     added = path not in sys.path
     if added:
         sys.path.insert(0, path)

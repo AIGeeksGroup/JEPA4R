@@ -1,10 +1,10 @@
 """DQC (Decoupled Q-chunking, github.com/ColinQiyangLi/dqc at df89825, in third_party/dqc unchanged) trained and
 evaluated on OGBench puzzle-3x3-play (the official data, 1 M steps). The inputs, everything else equal:
   --obs state  : the original input, the 55-d state vector (the reproduction);
-  --obs lewm2d : [the frozen LeWM 2D encoder's 192-d latent, the 9 true lights];
-  --obs lewm3d : [the frozen LeWM 3D encoder's 192-d latent, the 9 true lights];
-  --obs lewm2d_nolight / lewm3d_nolight : the 192-d latent only (the lights only through the latent);
-  --obs vjepa21 / visreg / lejepa / pldm : [a JEPA-family baseline encoder's latent (lewm_obs.BaselineEncoder, as
+  --obs lewm : [the frozen LeWM encoder's 192-d latent, the 9 true lights];
+  --obs jepa4r : [the frozen JEPA4R encoder's 192-d latent, the 9 true lights];
+  --obs lewm_nolight / jepa4r_nolight : the 192-d latent only (the lights only through the latent);
+  --obs vjepa21 / visreg / lejepa / pldm : [a JEPA-family baseline encoder's latent (wm_obs.BaselineEncoder, as
                                    CortexBench loads it; extract_feats_baselines.py), the true lights]; --ckpt its
                                    checkpoint.
 The goal is always the 9 lights' goal state (OGBench's oraclerep); algorithm, hyperparameters, data and evaluation
@@ -14,11 +14,11 @@ The training loop is dqc's main.py with three changes:
      states, the step) goes to disk; on SIGTERM it is saved once more before exiting;
   2. LeWM inputs: the training set's observations are extract_feats.py's latents (+ the lights); in the evaluation, each
      time the policy needs an action, the current frame of the LeWM data's camera (front_pixels, 224, the opaque arm of
-     ob_type='states') goes through the same frozen encoder (lewm_obs.LeWMObs, the checkpoint given by --ckpt). The
+     ob_type='states') goes through the same frozen encoder (wm_obs.WMObs, the checkpoint given by --ckpt). The
      original computes an observation every step; here only when the policy uses it (the steps of an action chunk do
      not reach the policy): the same results, less rendering;
   3. no wandb: metrics go to jsonl files.
-    python run_dqc.py --obs lewm3d --ckpt $STABLEWM_HOME/checkpoints/puzzle_3x3_pcd_dexart \\
+    python run_dqc.py --obs jepa4r --ckpt $STABLEWM_HOME/checkpoints/puzzle_3x3_pcd_dexart \\
         --feats_dir $STABLEWM_HOME/datasets/ogbench/dqc_feats/puzzle_3x3 --run_dir <dir> [--agent.xxx=...]
 """
 
@@ -35,7 +35,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 REPO = Path(os.environ.get("JEPA4R_DQC") or HERE.parents[2] / "third_party" / "dqc")  # ColinQiyangLi/dqc @ df89825
 sys.path.insert(0, str(REPO))
-sys.path.insert(1, str(HERE))  # lewm_obs
+sys.path.insert(1, str(HERE))  # wm_obs
 DATA = Path(os.environ.get("STABLEWM_HOME", ".")) / "datasets" / "ogbench"
 
 import flax
@@ -49,19 +49,19 @@ from envs.env_utils import make_ogbench_env_and_datasets
 from utils.datasets import CGCDataset, Dataset
 from utils.evaluation import add_to, flatten, supply_rng
 
-from lewm_obs import BaselineEncoder, BaselineObs, LeWMObs
+from wm_obs import BaselineEncoder, BaselineObs, WMObs
 
 FLAGS = flags.FLAGS
 flags.DEFINE_string(
-    "obs", "state", "state | lewm2d | lewm3d | lewm2d_nolight | lewm3d_nolight | vjepa21 | visreg | lejepa | pldm"
+    "obs", "state", "state | lewm | jepa4r | lewm_nolight | jepa4r_nolight | vjepa21 | visreg | lejepa | pldm"
 )
 flags.DEFINE_string("run_dir", None, "Output directory (checkpoint, logs).")
 flags.DEFINE_string("env_name", "puzzle-3x3-play-oraclerep-v0", "")
 flags.DEFINE_string("dataset_path", str(DATA / "official" / "puzzle-3x3-play-v0.npz"), "")
 flags.DEFINE_string("feats_dir", None, "extract_feats.py's output directory (LeWM inputs).")
-flags.DEFINE_string("feats_split", "train", "Prefix of the latent files (val only for smoke tests).")
+flags.DEFINE_string("feats_split", "train", "Prefix of the latent files (train or val).")
 flags.DEFINE_string("ckpt", None, "Checkpoint directory of the LeWM encoder (LeWM inputs; extract_feats.py's).")
-flags.DEFINE_integer("lewm_epoch", 10, "Epoch of the LeWM weights.")
+flags.DEFINE_integer("wm_epoch", 10, "Epoch of the LeWM weights.")
 flags.DEFINE_integer("seed", 100001, "")
 flags.DEFINE_integer("offline_steps", 1000000, "")
 flags.DEFINE_integer("log_interval", 5000, "")
@@ -107,11 +107,11 @@ def main(_):
     run_dir.mkdir(parents=True, exist_ok=True)
     signal.signal(signal.SIGTERM, _on_term)
     config = FLAGS.agent
-    assert FLAGS.obs in ("state", "lewm2d", "lewm3d", "lewm2d_nolight", "lewm3d_nolight", *BaselineEncoder.LOADERS), (
+    assert FLAGS.obs in ("state", "lewm", "jepa4r", "lewm_nolight", "jepa4r_nolight", *BaselineEncoder.LOADERS), (
         FLAGS.obs
     )
-    lewm = FLAGS.obs != "state"  # a frozen encoder's latent (LeWM or a baseline)
-    kind = FLAGS.obs.split("_")[0]  # lewm2d / lewm3d / vjepa21 / lejepa / pldm
+    encoded = FLAGS.obs != "state"  # a frozen encoder's latent (LeWM, JEPA4R or a baseline)
+    kind = FLAGS.obs.split("_")[0]  # lewm / jepa4r / vjepa21 / lejepa / pldm
     baseline = kind in BaselineEncoder.LOADERS
     with_lights = not FLAGS.obs.endswith("_nolight")
     flag_dict = {
@@ -126,7 +126,7 @@ def main(_):
             "feats_dir",
             "feats_split",
             "ckpt",
-            "lewm_epoch",
+            "wm_epoch",
             "seed",
             "offline_steps",
             "log_interval",
@@ -140,17 +140,15 @@ def main(_):
 
     # env and data (as main.py). The LeWM inputs render into a 224 offscreen buffer: the rendering size only, not the
     # simulation.
-    env_kwargs = dict(width=224, height=224) if lewm else {}
+    env_kwargs = dict(width=224, height=224) if encoded else {}
     env, train_dataset, _ = make_ogbench_env_and_datasets(
         FLAGS.env_name, dataset_path=FLAGS.dataset_path, compact_dataset=True, add_info=True
     )
     eval_env = make_ogbench_env_and_datasets(
         FLAGS.env_name, dataset_path=FLAGS.dataset_path, compact_dataset=True, env_only=True, **env_kwargs
     )
-    if lewm:
-        z = np.load(
-            Path(FLAGS.feats_dir) / f"{FLAGS.feats_split}_z{kind if baseline else kind[-2:]}.npy", mmap_mode="r"
-        )
+    if encoded:
+        z = np.load(Path(FLAGS.feats_dir) / f"{FLAGS.feats_split}_z{kind}.npy", mmap_mode="r")
         assert len(z) == len(train_dataset["observations"]), (z.shape, train_dataset["observations"].shape)
         parts = [z.astype(np.float32, copy=False)] + (
             [train_dataset["button_states"].astype(np.float32)] if with_lights else []
@@ -174,9 +172,9 @@ def main(_):
     action_dim = example_batch["actions"].shape[-1]
     obs_fn = None
     if baseline:
-        obs_fn = BaselineObs(eval_env, kind, FLAGS.ckpt, FLAGS.lewm_epoch)
-    elif lewm:
-        obs_fn = LeWMObs(eval_env, kind, FLAGS.ckpt, FLAGS.lewm_epoch, lights=with_lights)
+        obs_fn = BaselineObs(eval_env, kind, FLAGS.ckpt, FLAGS.wm_epoch)
+    elif encoded:
+        obs_fn = WMObs(eval_env, kind, FLAGS.ckpt, FLAGS.wm_epoch, lights=with_lights)
 
     # restart
     ckpt = run_dir / "resume.pkl"

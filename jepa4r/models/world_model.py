@@ -590,7 +590,7 @@ def encoder_config(enc_cfg, latent_dim, in_dim=6):
 
 
 def model_config(method_cfg, action_dim=None):
-    """The Hydra model block of LeWM's config/train/model/lewm.yaml / lewm_pcd.yaml for this method."""
+    """The Hydra model block of LeWM's config/train/model/lewm.yaml / jepa4r.yaml for this method."""
     d, p = int(method_cfg.latent_dim), method_cfg.predictor
     t = LEGACY_TARGETS
 
@@ -634,7 +634,7 @@ def build_world_model(method_cfg, action_dim):
     return instantiate(model_config(method_cfg, action_dim))
 
 
-def lewm_train_config(cfg):
+def wm_train_config(cfg):
     """The configuration LeWM's train.py (config/train/lewm.yaml + data/<task>.yaml + model/<encoder>.yaml) receives,
     composed from cfg.method (recipe) and cfg.env (dataset files, affine, split)."""
     from jepa4r.config import stage_dir
@@ -695,7 +695,7 @@ def lewm_train_config(cfg):
 
 def train(cfg, out_dir) -> dict:
     """Stage train_wm for kind jepa_wm: one checkpoint per epoch in out_dir; returns final losses."""
-    lw, split = lewm_train_config(cfg)
+    lw, split = wm_train_config(cfg)
     out_dir = Path(out_dir)
     cwd = os.getcwd()
     os.chdir(out_dir)  # LeWM ran in its Hydra run dir (hydra.job.chdir): Lightning's default logs stay in the run
