@@ -205,8 +205,8 @@ class TrainingBoundaryTests(unittest.TestCase):
             (root / 'models/world_model.py').write_text('original training source\n')
             encoder = root / 'models/encoders' / 'encoder.py'
             encoder.write_text('original encoder\n')
-            (root.parent / 'configs/policy/bc/relocate/train').mkdir(parents=True)
-            (root.parent / 'configs/policy/bc/relocate/train/lewm.yaml').write_text('history_size: 3\n')
+            (root.parent / 'configs/method/relocate/train').mkdir(parents=True)
+            (root.parent / 'configs/method/relocate/train/lewm.yaml').write_text('history_size: 3\n')
             before = self.wm.tree_sha(root)
             (root / 'outputs').mkdir()
             (root / 'outputs/state.json').write_text('{"phase":"training"}')

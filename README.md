@@ -82,7 +82,8 @@ The Cube 1-4, Relocate and RH56 workflows (the OGBench-cube branch's; controller
 `jepa4r/policy/bc/relocate`) keep their temporary files under `JEPA4R_TMPDIR` / `TMPDIR` when set. Their five
 interpreters are the `pyproject.toml` extras `cube-worldmodel`, `cube-policy`, `relocate-wm`, `relocate-adroit` and
 `relocate-rh56` (`python -m pip install -e ".[cube-policy]" --extra-index-url https://download.pytorch.org/whl/cu128`);
-their configurations and pinned manifests are in `configs/policy/gciql` and `configs/policy/bc/relocate`.
+their configurations and pinned manifests are in `configs/{env,method}/{cube,relocate}`, `configs/policy/gciql` and
+`configs/policy/bc/relocate`.
 
 Upstream checkouts at pinned commits (`third_party/<name>` by default, or the variable) are listed in
 [docs/architecture.md](docs/architecture.md); stable-worldmodel is vendored in `third_party/stable-worldmodel`
@@ -167,12 +168,12 @@ jepa4r-report                                           # outputs/report.md: pap
 bash scripts/reproduce_all.sh                           # every table, then the report
 ```
 
-The paper's numbers are stored in `paper/expected/`, and `paper/figures/` is where the figures would be regenerated into `outputs/figures/` (not integrated: this repository reproduces the paper's numbers). See [docs/reproduce.md](docs/reproduce.md) for the scope and settings, and [docs/architecture.md](docs/architecture.md) for the code layout. The RM75-B digital twin and everything trained in it are included; runs on the real arm are not.
+The paper's numbers are stored in `paper/expected/` (this repository reproduces the paper's numbers, not its figures). See [docs/reproduce.md](docs/reproduce.md) for the scope and settings, and [docs/architecture.md](docs/architecture.md) for the code layout. The RM75-B digital twin and everything trained in it are included; runs on the real arm are not.
 
 This repository integrates the code of the paper's runs; its equivalence with that code was checked against the released
 checkpoints and the paper's run records (data, model, training and evaluation gates) when it was integrated. What is
-not integrated (the twin's look-ahead preview, a policy head on the twin's Cube, the figures) is listed with the reason
-in [docs/reproduce.md](docs/reproduce.md); no experiment specification runs them.
+not in it (the twin's look-ahead preview and a policy head on the twin's Cube, which no source branch implements and
+the paper gives no number for; the figures) is listed with the reason in [docs/reproduce.md](docs/reproduce.md).
 
 ## 😘 Acknowledgement
 

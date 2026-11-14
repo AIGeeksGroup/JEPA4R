@@ -5,6 +5,6 @@ lewm_pcd/bench/ogbench; its stages are driven by jepa4r/policy/gciql/workflow.py
   native/tiny_train.py      LeJEPA's Tiny/14 trainer
   workflow_pldm_encoder.py  the frozen PLDM encoder for the policy stages
   released_encoders.py, foundation_assets.py
-                            the released VISReg / V-JEPA 2.1 weights (configs/policy/gciql/released_models.json)
+                            the released VISReg / V-JEPA 2.1 weights (configs/method/cube/released_models.json)
                             and their preprocessing
 """

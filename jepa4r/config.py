@@ -39,7 +39,6 @@ RUN_KEYS = {
     "train_decoder": ("env", "decoder"),
     "eval_recon": ("env", "decoder"),
     "verify_twin": ("env",),                              # digital twin vs. vendor URDF
-    "eval_preview": ("env", "decoder"),                   # decoded look-ahead of the policy in the twin
     "count_params": ("method", "decoder"),                # exactly one of them
 }
 STAGES = tuple(RUN_KEYS)

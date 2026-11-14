@@ -37,7 +37,7 @@ def plan(args, assets):
         key=os.path.normcase(os.path.normpath(value))
         if key not in seen:seen.add(key);unique.append(value)
     common['PYTHONPATH']=os.pathsep.join(unique)
-    sampling=ROOT.parent/'configs/policy/bc/relocate/adroit_relocate_sampling.json'
+    sampling=ROOT.parent/'configs/env/relocate/adroit_relocate_sampling.json'
     common.update(ADROIT_FRESH_EVAL='1',ADROIT_PCD_CONFIG=str(sampling),
         ADROIT_PCD_CONFIG_SHA256=hashlib.sha256(sampling.read_bytes()).hexdigest())
     for key, env in (('eai_vc_root','CORTEXBENCH_EAI_VC_ROOT'),

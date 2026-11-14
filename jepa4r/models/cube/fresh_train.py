@@ -295,18 +295,18 @@ def _source_binding(method, cubes):
         'jepa4r/models/cube/fresh_train.py',
         'jepa4r/data/cube/fresh_data.py',
         'jepa4r/models/cube/training_runtime.py',
-        'configs/policy/gciql/SOURCE_MANIFEST.json',
+        'configs/method/cube/SOURCE_MANIFEST.json',
     ]
     if method == 'pldm':
         names += [
             'jepa4r/baselines/cube/pldm/' + name
             for name in ('train.py', 'shared_data.py', 'method.py')
-        ] + ['configs/policy/gciql/pldm/source_manifest.json']
+        ] + ['configs/method/cube/pldm/source_manifest.json']
     else:
         names += (
             ['jepa4r/baselines/cube/native/tiny_train.py']
             if method == 'lejepa'
-            else ['configs/policy/gciql/recipes/' + method + '.json']
+            else ['configs/method/cube/recipes/' + method + '.json']
         )
     result = {str(code/name): fresh_data.sha256(code/name) for name in names}
     if method.startswith('lewm'):

@@ -286,7 +286,7 @@ def train(args):
                 os.environ['RELOCATE_' + ('PCD' if args.model == 'jepa4r' else 'RGB') + '_TRAIN'] = str(
                     args.data_root / ('train_' + ('pcd' if args.model == 'jepa4r' else 'rgb') + '.h5')
                 )
-                train_configs=str(ROOT.parent/'configs/policy/bc/relocate/train')
+                train_configs=str(ROOT.parent/'configs/method/relocate/train')
                 with hydra.initialize_config_dir(version_base=None,config_dir=train_configs):
                     cfg=hydra.compose(config_name='lewm',overrides=overrides)
                 spt.set(

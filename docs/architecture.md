@@ -3,20 +3,22 @@
 ## Layout
 
 ```text
-configs/        one YAML per task (env/), table row (method/), encoder, policy learner, decoder; policy/gciql/,
-                policy/bc/ the policy learners' own files (the Cube and Relocate workflows' configurations and
-                pinned manifests, CortexBench's embedding configs)
+configs/        one YAML per task (env/), table row (method/), encoder, policy learner, decoder; the files the
+                OGBench-cube workflows and CortexBench bring with them sit in the group of the part that reads them:
+                env/cube/, env/relocate/ (collection configs, official data, point-cloud sampling), method/cube/,
+                method/relocate/ (training recipes and Hydra configs, training-source pins, released encoder weights),
+                policy/gciql/, policy/bc/ (GCIQL agent settings, the controllers' release and dependency pins,
+                CortexBench embedding configs)
 experiments/    one specification per paper table: which stage runs on which configurations
 paper/
   expected/     the paper's numbers, compared with finished runs by jepa4r-report
-  figures/      scripts that regenerate the paper's figures into outputs/figures/
 jepa4r/
   cli.py        jepa4r-run and python -m jepa4r
   config.py     configuration composition and storage layout
   orchestrate.py  jepa4r-reproduce
   report.py     jepa4r-report
   methods.py    dispatch over the encoder rows of Tab. 1 / Tab. 2
-  stages/       the seven pipeline stages
+  stages/       the pipeline stages
   envs/         wrappers with paired rgb / depth / segmentation: ogbench/ (Cube, Scene, Puzzle: envs, point clouds,
                 experts), metaworld/ (the five tasks, point clouds, three-part collection policies), adroit/
                 (Relocate: environment, point clouds, collection policy); twins/ RM75-B digital twin (cube_rm75_env.py,
@@ -54,7 +56,7 @@ override with `JEPA4R_DATA`, `JEPA4R_OUTPUTS` and `JEPA4R_CHECKPOINTS`.
 collect_wm_data ------> train_wm ------> train_policy ---------------> Tab. 1, Tab. 2, Tab. 4b-d
 prepare_policy_data ---------------------^
 train_wm (cube_single_recon, jepa4r, epoch 10) --> train_decoder --> eval_recon --> Tab. 3, Tab. 4a
-verify_twin + twin-trained train_wm / train_policy / train_decoder --> eval_preview --> Sec. 5.6 (twin)
+verify_twin + twin-trained train_wm / train_policy / train_decoder --> Sec. 5.6 (twin)
 count_params ---------------------------------------------------------> Sec. 4.2 / 4.4 parameter counts
                                      jepa4r-report <-- outputs/**/metrics.json + paper/expected/*.yaml
 ```
@@ -68,7 +70,6 @@ count_params ---------------------------------------------------------> Sec. 4.2
 | `train_decoder` | env, decoder | `data/wm/<env>/`, JEPA4R epoch 10 | `outputs/train_decoder/<env>/<decoder>/<tag>/` |
 | `eval_recon` | env, decoder | decoder, world model, validation data | `outputs/eval_recon/<env>/<decoder>/<tag>/` |
 | `verify_twin` | env | twin, vendor URDF | `outputs/verify_twin/<env>/<tag>/metrics.json` |
-| `eval_preview` | env, decoder | twin-trained world model, policy head, decoder | `outputs/eval_preview/<env>/<decoder>/<tag>/metrics.json` |
 | `count_params` | method or decoder | configurations only | `outputs/count_params/<method or decoder>/<tag>/` |
 
 Each stage is `jepa4r/stages/<stage>.py: run(cfg, out_dir) -> dict | None`. `jepa4r-run` composes the configuration,
@@ -80,7 +81,6 @@ key `{stage, env, method, decoder, tag}`, and finally writes `DONE`. `jepa4r-rep
 | `train_policy` | `success` (%, the table entry), `success_per_task`, `evals` |
 | `train_decoder` | `val_nn_stage_a`, `val_nn_stage_b` (cm) |
 | `eval_recon` | `nn_mean`, `nn_median`, `nn_p90`, `outlier_pct`, `cube_err`, `shuffled_nn`; `imag_nn@S`, `true_nn@S`, `other_actions_nn@S`, `imag_cube@S` for S in 15 / 100 / 200; `imag_nn_max` (cm; `outlier_pct` in %) |
-| `eval_preview` | `preview_nn`, `preview_cube`, `cube_to_target_success`, `cube_to_target_failure` (cm) |
 | `count_params` | `encoder_params_M`, `total_params_M` (method); `new_params_M`, `lora_params_M`, `backbone_params_B` (decoder) |
 
 ## Configurations
@@ -108,7 +108,7 @@ produced by some job.
 |---|---|---|
 | depth → point cloud | `jepa4r/data/pointcloud.py`, `jepa4r/envs/camera.py` | — |
 | simulator wrappers, cameras, experts | `jepa4r/envs/{ogbench,metaworld,adroit}/` | OGBench, CortexBench |
-| RM75-B twin, hand twin, URDF check, look-ahead preview | `jepa4r/envs/twins/*`, `configs/env/rm75b_cube.yaml`, `jepa4r/stages/{verify_twin,eval_preview}.py` | vendor URDF |
+| RM75-B twin, hand twin, URDF check | `jepa4r/envs/twins/*`, `configs/env/rm75b_cube.yaml`, `jepa4r/stages/verify_twin.py` | vendor URDF |
 | data collection with mixtures | `jepa4r/stages/collect_wm_data.py`, `jepa4r/data/{behaviors,storage}.py` | — |
 | official play data, demonstrations | `jepa4r/data/official_play.py`, `jepa4r/data/demos/` | OGBench, CortexBench |
 | LeWM recipe and PointNet | `jepa4r/models/*` | stable-worldmodel, LeWM, DexArt |
@@ -117,7 +117,6 @@ produced by some job.
 | GCIQL, DQC, behavior cloning and their evaluation | `jepa4r/policy/{gciql,dqc,bc}/`, `jepa4r/eval/{ogbench,cortexbench}.py` | OGBench, DQC, CortexBench |
 | decoder | `jepa4r/decoder/*` | PAGE-4D, VGGT, Depth Anything 3 |
 | reconstruction metrics, open-loop evaluation | `jepa4r/metrics/pointcloud.py`, `jepa4r/eval/recon.py`, `jepa4r/decoder/imagine.py` | — |
-| plotting and rendering | `paper/figures/*` | — |
 
 Prefer installed packages for upstream code. When upstream code has to be modified, vendor it under `third_party/<name>/`
 with an `UPSTREAM.md` that records the repository, the commit and the local changes.
@@ -147,8 +146,10 @@ where the table above puts it, and this repository's stages run their shares of 
   weights in `jepa4r/baselines/cube`, the PLDM authors' source (`1bd7e56`) in `third_party/pldm`. collect_wm_data =
   collect + views, prepare_policy_data = prepare-data, train_wm = train, train_policy = prepare-encoder ...
   native-audit.
-  Its configurations and pinned manifests (collection Hydra configs, recipes, the GCIQL agent settings, official data
-  and released weights, the source pins) are in `configs/policy/gciql`. Interpreters `JEPA4R_PY_CUBE_WM` (collection,
+  Its configurations and pinned manifests: `configs/env/cube` (collection Hydra configs and their source pins, official
+  play data), `configs/method/cube` (LeWM recipes, training-source pins, PLDM source pins, released VISReg / V-JEPA 2.1
+  weights), `configs/policy/gciql` (GCIQL agent settings, its vendored-source pins and the workflow's release pins
+  `INTEGRATED_SOURCES.json`). Interpreters `JEPA4R_PY_CUBE_WM` (collection,
   world models; pyproject extra `cube-worldmodel`) and `JEPA4R_PY_CUBE_RL` (encoding, GCIQL, native evaluation; extra
   `cube-policy`); checkouts `JEPA4R_OGBENCH`, `JEPA4R_VJEPA2`. A file pinned in
   `configs/policy/gciql/INTEGRATED_SOURCES.json` that changed stops a run, as in the branch.
@@ -156,7 +157,7 @@ where the table above puts it, and this repository's stages run their shares of 
   `jepa4r/policy/bc/relocate/{workflow,adroit_workflow,rh56_workflow}.py` with behavior cloning (`bc_*.py` and the
   CortexBench runner of `jepa4r/policy/bc`, its copy of which is merged there) and their pinned inputs
   (`configs/policy/bc/relocate/DEPENDENCIES.json`, `rh56_native_bundle_v1.json`; the LeWM training configs
-  `configs/policy/bc/relocate/train`, the embedding configs `configs/policy/bc/conf/model`); collection and the official
+  `configs/method/relocate/train`, the embedding configs `configs/policy/bc/conf/model`); collection and the official
   demonstrations in `jepa4r/data/relocate`, world-model training support in `jepa4r/models/relocate`, the LeJEPA hook
   in `jepa4r/baselines/relocate`, the RH56 bundle check in `jepa4r/envs/twins/rh56`. Interpreters
   `JEPA4R_PY_RELOCATE_WM` (pyproject extra `relocate-wm`), `JEPA4R_PY_ADROIT_SIM` (extra `relocate-adroit`, over the

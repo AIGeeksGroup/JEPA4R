@@ -8,7 +8,7 @@ Vendored here: the package `pldm/` (configs, encoders, predictors, objectives, s
 bundles it (`OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/pldm/vendor/source`). Used by the Cube 1-4 PLDM runs
 (`jepa4r/baselines/cube/pldm`, `jepa4r/baselines/cube/workflow_pldm_encoder.py`) and by
 `jepa4r/models/encoders/impala.py`. The sha256 of every file is pinned in
-`configs/policy/gciql/pldm/source_manifest.json` (entries `vendor/source/...`).
+`configs/method/cube/pldm/source_manifest.json` (entries `vendor/source/...`).
 
 ## Local changes
 

@@ -12,7 +12,7 @@ import sys
 HERE = Path(__file__).resolve().parent
 LEWM = HERE.parents[3]   # this repository (jepa4r/, third_party/)
 REPO = LEWM
-SOURCES = LEWM / 'configs' / 'policy' / 'gciql' / 'collection' / 'sources.json'   # the pinned collection sources
+SOURCES = LEWM / 'configs' / 'env' / 'cube' / 'collection' / 'sources.json'   # the pinned collection sources
 OGBENCH = Path(os.environ.get('JEPA4R_OGBENCH') or LEWM / 'third_party/ogbench')   # OGBench a977253 checkout
 ENV_TYPES = ('single', 'double', 'triple', 'quadruple')
 HORIZONS = (200, 500, 1000, 600)

@@ -10,12 +10,13 @@ native evaluation and acceptance stages and the controller here; collection and 
 world-model training in jepa4r/models/cube, PLDM, LeJEPA and the released VISReg / V-JEPA 2.1 weights in
 jepa4r/baselines/cube. The controller (workflow.py) runs fifteen stages as child processes (python -m <module>); each
 closes with a receipt that the next stage and any resume verify, and every run binds the sha256 of its sources
-(configs/policy/gciql: INTEGRATED_SOURCES.json, SOURCE_MANIFEST.json, collection/sources.json,
-downstream/source_manifest.json, pldm/source_manifest.json; a run refuses a pinned file that changed, as the branch's
-release did). downstream/vendor/ holds the branch's frozen GCIQL copies (pinned in
-configs/policy/gciql/downstream/source_manifest.json); here they are
-wrapped at 120 columns, with LF line ends, without unused imports and with the names downstream/trainer.py sets at run
-time declared, otherwise unchanged (the same AST). The stages of this repository run the workflow's stages for
+(configs/policy/gciql/INTEGRATED_SOURCES.json, configs/method/cube/SOURCE_MANIFEST.json,
+configs/env/cube/collection/sources.json, configs/policy/gciql/downstream/source_manifest.json,
+configs/method/cube/pldm/source_manifest.json; a run refuses a pinned file that changed, as the branch's release
+did). downstream/vendor/ holds the branch's frozen GCIQL copies (pinned in
+configs/policy/gciql/downstream/source_manifest.json); here they are wrapped at 120 columns, with LF line ends,
+without unused imports and with the names downstream/trainer.py sets at run time declared, otherwise unchanged (the
+same AST). The stages of this repository run the workflow's stages for
 (cfg.env, cfg.method), in the workflow's own order:
 
   stage                workflow stages                                                  run root (the workflow's
@@ -31,7 +32,7 @@ time declared, otherwise unchanged (the same AST). The stages of this repository
 Shared inputs of every run root of an env: official play data data/policy/<env>/official/cube<N>, the paired collection
 data/wm/<env>/collected/<mode>/cube<N> and its training views data/wm/<env>/views/<mode>/cube<N>, the released weights
 checkpoints/<visreg|vjepa>/ (prepare-encoder downloads a missing file from the URL pinned in
-configs/policy/gciql/released_models.json).
+configs/method/cube/released_models.json).
 cfg.env.harness.mode: formal (the paper protocol: 1e6 GCIQL updates, 250 native episodes) or smoke (the workflow's
 two-update diagnostic). Interpreters: JEPA4R_PY_CUBE_WM (world model, collection, camera; the paper runs: Python 3.10,
 NumPy 2.2.6, MuJoCo 3.3.7) and JEPA4R_PY_CUBE_RL (GCIQL, encoding, native evaluation; JAX 0.7.2, Flax 0.11.2, Torch).
@@ -146,7 +147,7 @@ def collect_cube(cfg, out_dir):
 
 def prepare_official(cfg, out_dir):
     """prepare_policy_data on Cube 1-4: the byte-pinned public play data (official_data.py,
-    configs/policy/gciql/official_sources.json)."""
+    configs/env/cube/official_sources.json)."""
     state = cube_stage(cfg, 'prepare_policy_data', out_dir)
     official = json.loads((Path(workflow_config(cfg, 'prepare_policy_data')['official_root']) / 'OFFICIAL_DATA.json')
                           .read_text())

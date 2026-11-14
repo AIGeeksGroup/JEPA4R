@@ -20,7 +20,6 @@ key=value selects configs (env / method / policy / decoder) or overrides a value
   train_decoder        env=E decoder=D [tag=T]
   eval_recon           env=E decoder=D [tag=T]
   verify_twin          env=E
-  eval_preview         env=E decoder=D [tag=T]
   count_params         method=M | decoder=D
 """
 
