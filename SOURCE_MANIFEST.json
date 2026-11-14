@@ -9,11 +9,13 @@
   "files": {
     ".gitattributes": "5056d26311f340e946fbc66e2a718f912bdc0eae629f18d45d898c3d9833e3be",
     ".gitignore": "bafeb479d59ed0e1cdb5b6347c076f12fc966ba7eed79e4474dce045546cd982",
+    "CHECKPOINT_RELEASE_VERIFICATION.json": "7d4485e0fc65bf2188b74125e5ecdd43fdd33e003aed3d61f69947262236de8e",
     "DEPENDENCIES.json": "065bdc3e66ee8184606a26892af1f1aafb33f7ee4726587819d6d21931fa3f69",
     "LICENSE": "4882021920cbd61e050e4dc2e02440e9bd36ea4cbc5803e738a2ee3d63502e07",
-    "README.md": "ea8ae2f59304c41ef9ad5dc6b2c9af39ac9f32f7150c2ab667489bde0d0477f4",
+    "README.md": "61c90f90b956c2232215659bc453eca9d27ac0f29979cc138a5ecc55b6cec0e6",
     "SMOKE_VERIFICATION.json": "08c23acb8d70972c560025a299e56971be3ed119d18d1eac6baaacde4fa7fb3e",
     "assets.example.json": "63eb51bdabbf88abcd12a9e3d2087e845cca5518f605e4eedabf16d39c14845d",
+    "docs/CHECKPOINTS.md": "53ceb0914540fb31a301a72c223a5777ee6d9f3f54a10fbb896f76ae77ca238e",
     "lewm_pcd/.gitignore": "5c4a7f56807707d60680adfd2c6206dc4e16f4340e53f3b581db749466df21cf",
     "lewm_pcd/LICENSE-le-wm": "0e66685ed351839b0baf614c4207aa2c5e6ab9dbe419aac9c38d0998a000200c",
     "lewm_pcd/README.md": "b8f7c64e073a72dc407a40a1d3cb2a9c16f47044fa6995b182368816cdb43cba",
@@ -605,7 +607,9 @@
     "provenance/baselines/cube/SOURCE_MANIFEST.json": "2d93733da5e3412b8449f7b4f56c6f10a7da6de237c70c1bc40b2b72a20e334c",
     "provenance/baselines/cube/VALIDATION_MANIFEST.json": "d2eef26d2ddf91eb0907024f71a811a75e7ce92c7d32d9fef4408aa0f2d38692",
     "provenance/baselines/cube/run.py": "e955125b174f3c2b0662929bfb0e43afe56cb1402378c415ec505a7157616e20",
+    "provenance/checkpoint_release/C4_SOURCE_MANIFEST.json": "0bfd51aef31f4d1bb4b9a6a84638d6313151122c6773120817ba95bb62c75582",
     "pyproject.toml": "c4361d69583288d97dd6c892ad8e42bfc6096dfb472f472c8577f39ad56efb1c",
+    "released_checkpoints.json": "cd189ffaf5dbc4788057ad25c92b913083ff8212af3168b985403e8a0f83b3d4",
     "requirements.txt": "ecc19632e3fb38345af2a8f4a366ff2099e4a6cb182600a4138e73677afb1110",
     "requirements/adroit.txt": "36a3c22e13941f3dfbbc622b6fc239ac0fa0b566266b94dfb9dd76b05c0be0eb",
     "requirements/mpc.txt": "b73078a3a52fd022fc0aa5d06fc65ca2b92e328ae673cbf5b177ffd2f1f7d045",
@@ -614,11 +618,16 @@
     "requirements/wm.txt": "8b223867698eb7d142da64b1b089b4d74c57b847704bc23f809b03521ff2660b",
     "requirements/worldmodel.txt": "b9dba3cf051a9600e37621f23321f56ce91aa8f19a72b1385164e4a841f678f4",
     "run.py": "289d8db94d14590f95466045b3b891a134f09de234f23685c87307a6c8296d17",
+    "scripts/checkpoint_smoke.py": "b7f60927e47df8275271f6e5ca81822c7b2f52d834a3bdb6707a80f14cb1432f",
+    "scripts/download_checkpoints.py": "9e5ad439befb96ee4488176325e9ed843252401a54ebb8525d0d5519d08abfde",
     "scripts/prepare_official_assets.py": "68e71c90a524d998683b8e872d2a853a4c3eaf9647ef30851632504f9cad2efa",
     "tests/gates/test_aggregation.py": "455280d0ba9bcd06e2665a799427cc231d6882ae2f747e3eafdd66988726a76f",
     "tests/gates/test_arrays.py": "f4baaf5dd6e0d2f7ce278c172068f0283a2bee9d1fbba43222d4edb7815e2343",
     "tests/gates/test_records.py": "c91dbd64906a3e23c09e6abeaad3e203703ed8a7b4f60166faed13c6fd276e07",
     "tests/test_adroit_cem_binding.py": "e349e644a202859a034f4ee85d3a2620f920cc1d7f06df5cde130abe3dece644",
+    "tests/test_checkpoint_downloads.py": "428e647c9acf5b170568f6214441f077ae5b8a3a5172ccebd60e2af0f0415f37",
+    "tests/test_checkpoint_smoke.py": "d58e98d24a80635210b4b4f0989901fecf242ca64343bb7c221c7f8d32755d1f",
+    "tests/test_checkpoint_source_manifest.py": "9b10ffabe1a6f2fe3bb27a6ae9a253472eff107dd66ec3054d3207bf30134a63",
     "tests/test_framework_source.py": "60b2984093cf600ad08321f2fa482358536f452165cb4dc58b21868858c5a37f",
     "tests/test_integration_entry.py": "d5267e32b62bf283ca9b075fdd83c2c9c218794f12dadb0d3f3a59465d9de6d5",
     "tests/test_official_assets.py": "5d6edcae6323a959c3de458d3f6c85ffaeece6f1e3d86bc8bdc044f89442a09a",
@@ -626,5 +635,13 @@
     "tests/test_runtime_source_identity.py": "82fa058bc8a6811400061c64dca1cf36e440d7c78abbf4c80a463e0afe42a093",
     "tests/test_source_package.py": "2a6e8e1c1e32b007a3d8e71c327f41f441eae0a86a66aa5c1b62f61f38e4df6a",
     "tests/test_workflow.py": "55f34c25248cde629ac6fa0575d5ca5cad6fc022fafe278ee1f60790e1f2de44"
+  },
+  "checkpoint_publication": {
+    "schema": "checkpoint_source_refreeze_v1",
+    "parent_manifest": {
+      "path": "provenance/checkpoint_release/C4_SOURCE_MANIFEST.json",
+      "sha256": "0bfd51aef31f4d1bb4b9a6a84638d6313151122c6773120817ba95bb62c75582"
+    },
+    "scope": "Refresh the current source inventory for the added checkpoint interfaces and documentation; retain all original runtime/guide code and historical acceptance records."
   }
 }

@@ -1,0 +1,699 @@
+{
+  "schema": "jepa4r_released_checkpoints_v1",
+  "releases": [
+    {
+      "task": "cube_single",
+      "model": "jepa4r",
+      "repo_id": "AIGeeksGroup/JEPA4R",
+      "branch": "ogbench-cube-single",
+      "revision": "dd98a32be6ab70424111bab6880cf8e77800ea8f",
+      "world_model": {
+        "weights": "jepa4r/world_model/weights_epoch_10.pt",
+        "config": "jepa4r/world_model/config.json",
+        "training_config": "jepa4r/world_model/config.yaml"
+      },
+      "policies": [
+        {
+          "seed": 0,
+          "kind": "cube_gciql",
+          "path": "jepa4r/policy/seed0/checkpoints/update_001000000/params_1000000.pkl",
+          "run_state": "jepa4r/policy/seed0/checkpoints/update_001000000/run_state.pkl",
+          "manifest": "jepa4r/policy/seed0/checkpoints/update_001000000/manifest.json",
+          "agent_config": "jepa4r/policy/seed0/original_training_metadata.json"
+        }
+      ],
+      "preprocessing": {
+        "points": 1200,
+        "channels": 6,
+        "layout": "XYZRGB",
+        "center": [
+          0.425,
+          0.0,
+          0.2
+        ],
+        "scale": 4.0,
+        "use_rgb": true,
+        "latent_dim": 192
+      },
+      "profile": {
+        "source": "retained original formal checkpoint",
+        "policy_updates": 1000000,
+        "paper_success_rate": 78.4,
+        "new_full_evaluation": false
+      },
+      "files": [
+        {
+          "path": ".gitattributes",
+          "bytes": 178,
+          "sha256": "9c4392ab5487b3dc238c2f45de24c764e5f49a4e54bac9f89c656a7a60f01347"
+        },
+        {
+          "path": "interface_contract.json",
+          "bytes": 1018,
+          "sha256": "161f4b3122f59fcfe46f1bdc70528dd23c32d32898380d9cfdce88d3a59fc2f3"
+        },
+        {
+          "path": "jepa4r/policy/seed0/checkpoints/update_001000000/manifest.json",
+          "bytes": 198,
+          "sha256": "0700fad1241d1b8e67d46bedcee664c1ed790040c26950598129496010814595"
+        },
+        {
+          "path": "jepa4r/policy/seed0/checkpoints/update_001000000/params_1000000.pkl",
+          "bytes": 53203749,
+          "sha256": "71cfe95bdc2ea9e3a8a1ae07fca7a0e9d5aac803f20bc7f21790aed12f4e1be2"
+        },
+        {
+          "path": "jepa4r/policy/seed0/checkpoints/update_001000000/run_state.pkl",
+          "bytes": 22961,
+          "sha256": "615b27f200654a47d5a5ce47844663a602275034f3fd4e06b1ab37c8f8d81084"
+        },
+        {
+          "path": "jepa4r/policy/seed0/original_training_metadata.json",
+          "bytes": 15523,
+          "sha256": "d5ec1e6c65b4d0f312809826c2c9c9b600557cdc4c4aedd91789f7619b4442ab"
+        },
+        {
+          "path": "jepa4r/world_model/config.json",
+          "bytes": 1010,
+          "sha256": "2312179814f61cee5501bc38f4b5477fa93aa864de0924989c55a1bf35a600b7"
+        },
+        {
+          "path": "jepa4r/world_model/config.yaml",
+          "bytes": 2182,
+          "sha256": "f93c68a7f9a353135aef638a5efd3013ade0e7f6e1442469d648f7a6bd3ed517"
+        },
+        {
+          "path": "jepa4r/world_model/weights_epoch_10.pt",
+          "bytes": 72241790,
+          "sha256": "ab9f2e69d58eea4f4d8f469a7dd259c5944f45d0d54ec20061cf63c7a9630d03"
+        },
+        {
+          "path": "README.md",
+          "bytes": 825,
+          "sha256": "f04542c59c565208ef083e7d59f0fa446a0d8aa54fe11ebc20f9c2118211928d"
+        },
+        {
+          "path": "source_versions.json",
+          "bytes": 452,
+          "sha256": "933f4408ed370f5c7c354b12e8802a122b1a3cdfeb8a353438baf2be9e4204b0"
+        },
+        {
+          "path": "release_manifest.json",
+          "bytes": 2007,
+          "sha256": "c032754e3c750b694de3abded55b930183728d72d8512df3ffeb6e864a7dae16"
+        }
+      ]
+    },
+    {
+      "task": "cube_double",
+      "model": "jepa4r",
+      "repo_id": "AIGeeksGroup/JEPA4R",
+      "branch": "ogbench-cube-double",
+      "revision": "308eabf452824d14c0afead1cb0f44d639443c59",
+      "world_model": {
+        "weights": "jepa4r/world_model/weights_epoch_10.pt",
+        "config": "jepa4r/world_model/config.json",
+        "training_config": "jepa4r/world_model/config.yaml"
+      },
+      "policies": [
+        {
+          "seed": 0,
+          "kind": "cube_gciql",
+          "path": "jepa4r/policy/seed0/checkpoints/update_001000000/params_1000000.pkl",
+          "run_state": "jepa4r/policy/seed0/checkpoints/update_001000000/run_state.pkl",
+          "manifest": "jepa4r/policy/seed0/checkpoints/update_001000000/manifest.json",
+          "agent_config": "jepa4r/policy/seed0/original_training_metadata.json"
+        }
+      ],
+      "preprocessing": {
+        "points": 1200,
+        "channels": 6,
+        "layout": "XYZRGB",
+        "center": [
+          0.425,
+          0.0,
+          0.2
+        ],
+        "scale": 4.0,
+        "use_rgb": true,
+        "latent_dim": 192
+      },
+      "profile": {
+        "source": "retained original formal checkpoint",
+        "policy_updates": 1000000,
+        "paper_success_rate": 41.6,
+        "new_full_evaluation": false
+      },
+      "files": [
+        {
+          "path": ".gitattributes",
+          "bytes": 178,
+          "sha256": "9c4392ab5487b3dc238c2f45de24c764e5f49a4e54bac9f89c656a7a60f01347"
+        },
+        {
+          "path": "interface_contract.json",
+          "bytes": 1018,
+          "sha256": "9a72ba86385bb1445fa7163b5d17c23b65f8a9bb13ba863275a6dcae1af50049"
+        },
+        {
+          "path": "jepa4r/policy/seed0/checkpoints/update_001000000/manifest.json",
+          "bytes": 198,
+          "sha256": "e26cfd3d474b2b7a36d2832d5c6b093a2333ecba8a51cad2899a74f16200fe8f"
+        },
+        {
+          "path": "jepa4r/policy/seed0/checkpoints/update_001000000/params_1000000.pkl",
+          "bytes": 53314342,
+          "sha256": "dd9851d9d611904cb34a5e06526f40c25a93d3fa8f4a05fac7e9ae492fa558da"
+        },
+        {
+          "path": "jepa4r/policy/seed0/checkpoints/update_001000000/run_state.pkl",
+          "bytes": 28043,
+          "sha256": "c290e8351e9424c144fef3fa5a7fb409edd4b90dd801370b742f04deba4af686"
+        },
+        {
+          "path": "jepa4r/policy/seed0/original_training_metadata.json",
+          "bytes": 27533,
+          "sha256": "9027f801da62c7892c3c9adb4267a38087dcb752c8fbd72553ae1adc2a4d4758"
+        },
+        {
+          "path": "jepa4r/world_model/config.json",
+          "bytes": 1010,
+          "sha256": "2312179814f61cee5501bc38f4b5477fa93aa864de0924989c55a1bf35a600b7"
+        },
+        {
+          "path": "jepa4r/world_model/config.yaml",
+          "bytes": 2616,
+          "sha256": "ddded088cd078391d7a21afbeaab6cf26bb17c5911505179d90c093e22fb8715"
+        },
+        {
+          "path": "jepa4r/world_model/weights_epoch_10.pt",
+          "bytes": 72241790,
+          "sha256": "f391f047aa73fa08b2b4534e6018fde6a219cc3ae6ba4464b907e2b9f9138a46"
+        },
+        {
+          "path": "README.md",
+          "bytes": 825,
+          "sha256": "8250765e3fbe7e632e8c43aaf8438372b3dbb79955549076f8b6b97ce9c371a5"
+        },
+        {
+          "path": "source_versions.json",
+          "bytes": 452,
+          "sha256": "933f4408ed370f5c7c354b12e8802a122b1a3cdfeb8a353438baf2be9e4204b0"
+        },
+        {
+          "path": "release_manifest.json",
+          "bytes": 2007,
+          "sha256": "3640007cca6ae2d50db3936729d266bf5729a5c4ce29afc546c376713d103735"
+        }
+      ]
+    },
+    {
+      "task": "cube_triple",
+      "model": "jepa4r",
+      "repo_id": "AIGeeksGroup/JEPA4R",
+      "branch": "ogbench-cube-triple",
+      "revision": "a79e26db61ea9a1ae3ed901f78e487c67bb0144e",
+      "world_model": {
+        "weights": "jepa4r/world_model/weights_epoch_10.pt",
+        "config": "jepa4r/world_model/config.json",
+        "training_config": "jepa4r/world_model/config.yaml"
+      },
+      "policies": [
+        {
+          "seed": 0,
+          "kind": "cube_gciql",
+          "path": "jepa4r/policy/seed0/checkpoints/update_001000000/params_1000000.pkl",
+          "run_state": "jepa4r/policy/seed0/checkpoints/update_001000000/run_state.pkl",
+          "manifest": "jepa4r/policy/seed0/checkpoints/update_001000000/manifest.json",
+          "agent_config": "jepa4r/policy/seed0/original_training_metadata.json"
+        }
+      ],
+      "preprocessing": {
+        "points": 1200,
+        "channels": 6,
+        "layout": "XYZRGB",
+        "center": [
+          0.425,
+          0.0,
+          0.2
+        ],
+        "scale": 4.0,
+        "use_rgb": true,
+        "latent_dim": 192
+      },
+      "profile": {
+        "source": "retained original formal checkpoint",
+        "policy_updates": 1000000,
+        "paper_success_rate": 18.4,
+        "new_full_evaluation": false
+      },
+      "files": [
+        {
+          "path": ".gitattributes",
+          "bytes": 178,
+          "sha256": "9c4392ab5487b3dc238c2f45de24c764e5f49a4e54bac9f89c656a7a60f01347"
+        },
+        {
+          "path": "interface_contract.json",
+          "bytes": 1018,
+          "sha256": "b2571a08a7e6739ae9c22065a0858df2101f1efb5d5e0a8aea38d750ab22aab9"
+        },
+        {
+          "path": "jepa4r/policy/seed0/checkpoints/update_001000000/manifest.json",
+          "bytes": 198,
+          "sha256": "fcae078a0350bde4b02a5e35cedcf47445751628805c69539478f7eeb0557f56"
+        },
+        {
+          "path": "jepa4r/policy/seed0/checkpoints/update_001000000/params_1000000.pkl",
+          "bytes": 53424934,
+          "sha256": "461367cb9b65ea9a779f2f0c4d51406dc4887cca5e15a74d3aacf023f238712a"
+        },
+        {
+          "path": "jepa4r/policy/seed0/checkpoints/update_001000000/run_state.pkl",
+          "bytes": 28071,
+          "sha256": "fd5d6ddd27de5ffa6e7ad42ffc6e12a196e9f17e052be99aeb8875df71f765fe"
+        },
+        {
+          "path": "jepa4r/policy/seed0/original_training_metadata.json",
+          "bytes": 27709,
+          "sha256": "6d6d7160dfb00c656ec9f659d378bff4df89472c09748f48e1b5488112727718"
+        },
+        {
+          "path": "jepa4r/world_model/config.json",
+          "bytes": 1010,
+          "sha256": "2312179814f61cee5501bc38f4b5477fa93aa864de0924989c55a1bf35a600b7"
+        },
+        {
+          "path": "jepa4r/world_model/config.yaml",
+          "bytes": 2946,
+          "sha256": "9268e3232771d744d02e67ecf1a2c6414c47c01bcadc57de5fe860b6b7918cce"
+        },
+        {
+          "path": "jepa4r/world_model/weights_epoch_10.pt",
+          "bytes": 72241790,
+          "sha256": "07bb8d2160b1a0fecda35bba3aede4790071540a6d7a9c34b92d89ae437a04b6"
+        },
+        {
+          "path": "README.md",
+          "bytes": 825,
+          "sha256": "092953a5af77c69a6ce8d0b323c42a3636aa9d3834d05567a2fd8b64248917fb"
+        },
+        {
+          "path": "source_versions.json",
+          "bytes": 452,
+          "sha256": "933f4408ed370f5c7c354b12e8802a122b1a3cdfeb8a353438baf2be9e4204b0"
+        },
+        {
+          "path": "release_manifest.json",
+          "bytes": 2007,
+          "sha256": "8fdf1fe19c749eef003251e428376dba59783ccf9467c05fb15e78cdb125dca5"
+        }
+      ]
+    },
+    {
+      "task": "cube_quadruple",
+      "model": "jepa4r",
+      "repo_id": "AIGeeksGroup/JEPA4R",
+      "branch": "ogbench-cube-quadruple",
+      "revision": "51f91e8eeafff9a0ca6be952f50bbd895c057c61",
+      "world_model": {
+        "weights": "jepa4r/world_model/weights_epoch_10.pt",
+        "config": "jepa4r/world_model/config.json",
+        "training_config": "jepa4r/world_model/config.yaml"
+      },
+      "policies": [
+        {
+          "seed": 0,
+          "kind": "cube_gciql",
+          "path": "jepa4r/policy/seed0/checkpoints/update_001000000/params_1000000.pkl",
+          "run_state": "jepa4r/policy/seed0/checkpoints/update_001000000/run_state.pkl",
+          "manifest": "jepa4r/policy/seed0/checkpoints/update_001000000/manifest.json",
+          "agent_config": "jepa4r/policy/seed0/original_training_metadata.json"
+        }
+      ],
+      "preprocessing": {
+        "points": 1200,
+        "channels": 6,
+        "layout": "XYZRGB",
+        "center": [
+          0.425,
+          0.0,
+          0.2
+        ],
+        "scale": 4.0,
+        "use_rgb": true,
+        "latent_dim": 192
+      },
+      "profile": {
+        "source": "retained original formal checkpoint",
+        "policy_updates": 1000000,
+        "paper_success_rate": null,
+        "new_full_evaluation": false
+      },
+      "files": [
+        {
+          "path": ".gitattributes",
+          "bytes": 178,
+          "sha256": "9c4392ab5487b3dc238c2f45de24c764e5f49a4e54bac9f89c656a7a60f01347"
+        },
+        {
+          "path": "interface_contract.json",
+          "bytes": 1021,
+          "sha256": "945f14b6a9a2aeb99ef3541286c5079437d541b13bff216b67874032a9ed33cb"
+        },
+        {
+          "path": "jepa4r/policy/seed0/checkpoints/update_001000000/manifest.json",
+          "bytes": 198,
+          "sha256": "64e75fee499eff7f12f6690c142886916bfd2219ce1b876f5257efbcf9079118"
+        },
+        {
+          "path": "jepa4r/policy/seed0/checkpoints/update_001000000/params_1000000.pkl",
+          "bytes": 53535526,
+          "sha256": "16045f46f4b46c22837757bd5e07f216d3d81441f8a21c20ce697d9b7a95f11e"
+        },
+        {
+          "path": "jepa4r/policy/seed0/checkpoints/update_001000000/run_state.pkl",
+          "bytes": 30861,
+          "sha256": "316ee436719ec32190900afcdd8695e878f5b3839bc77ad2250fbdd5ec69ac2f"
+        },
+        {
+          "path": "jepa4r/policy/seed0/original_training_metadata.json",
+          "bytes": 19164,
+          "sha256": "58b1ec3531d31323bcf341807984c1176092ced6c567fd304651ab038a78259f"
+        },
+        {
+          "path": "jepa4r/world_model/config.json",
+          "bytes": 1010,
+          "sha256": "2312179814f61cee5501bc38f4b5477fa93aa864de0924989c55a1bf35a600b7"
+        },
+        {
+          "path": "jepa4r/world_model/config.yaml",
+          "bytes": 3003,
+          "sha256": "314c08d94014b91505b1f83e4f4f3d017120f221cd424dcd23f9015793728d07"
+        },
+        {
+          "path": "jepa4r/world_model/weights_epoch_10.pt",
+          "bytes": 72241790,
+          "sha256": "95e7980f665a0ad888a0723499f5d0771c8cf797065b1f1b39c3eae39fd951d8"
+        },
+        {
+          "path": "README.md",
+          "bytes": 828,
+          "sha256": "d51eaa924089e015cb48f15917c63df24d694e270c521b8ca2af9eab6f3e38bf"
+        },
+        {
+          "path": "source_versions.json",
+          "bytes": 452,
+          "sha256": "933f4408ed370f5c7c354b12e8802a122b1a3cdfeb8a353438baf2be9e4204b0"
+        },
+        {
+          "path": "release_manifest.json",
+          "bytes": 2010,
+          "sha256": "77bd1378f471e883a206e2386714ecdad297027bc61402de1c8343e2f5b8eca6"
+        }
+      ]
+    },
+    {
+      "task": "adroit_relocate",
+      "model": "jepa4r",
+      "repo_id": "AIGeeksGroup/JEPA4R",
+      "branch": "adroit-relocate",
+      "revision": "09885959b46fcf58623acdde376eaa6a020af244",
+      "world_model": {
+        "weights": "jepa4r/world_model/weights_epoch_10.pt",
+        "config": "jepa4r/world_model/config.json",
+        "training_config": "jepa4r/world_model/config.yaml"
+      },
+      "policies": [
+        {
+          "seed": 100,
+          "kind": "native_adroit_bc",
+          "path": "jepa4r/policy/seed100/best_policy.pickle",
+          "config": "jepa4r/policy/seed100/config.yaml",
+          "job_config": "jepa4r/policy/seed100/job_config.json"
+        },
+        {
+          "seed": 200,
+          "kind": "native_adroit_bc",
+          "path": "jepa4r/policy/seed200/best_policy.pickle",
+          "config": "jepa4r/policy/seed200/config.yaml",
+          "job_config": "jepa4r/policy/seed200/job_config.json"
+        },
+        {
+          "seed": 300,
+          "kind": "native_adroit_bc",
+          "path": "jepa4r/policy/seed300/best_policy.pickle",
+          "config": "jepa4r/policy/seed300/config.yaml",
+          "job_config": "jepa4r/policy/seed300/job_config.json"
+        }
+      ],
+      "preprocessing": {
+        "points": 1200,
+        "channels": 6,
+        "layout": "XYZRGB",
+        "use_rgb": true,
+        "latent_dim": 192,
+        "settings_source": "jepa4r/world_model/config.yaml"
+      },
+      "profile": {
+        "source": "Oct6 formal three-seed reward-best BC; paper 88.0 lineage",
+        "paper_success_rate": 88.0,
+        "policy_selection": "best evaluation reward",
+        "new_full_evaluation": false
+      },
+      "files": [
+        {
+          "path": ".gitattributes",
+          "bytes": 178,
+          "sha256": "9c4392ab5487b3dc238c2f45de24c764e5f49a4e54bac9f89c656a7a60f01347"
+        },
+        {
+          "path": "interface_contract.json",
+          "bytes": 1368,
+          "sha256": "92b54d6524ee775040f5d4f843eddb3a87799accbdd5272b7d9e029ab8e8cd12"
+        },
+        {
+          "path": "jepa4r/policy/seed100/best_policy.pickle",
+          "bytes": 2392263,
+          "sha256": "cc8805c6951066f3fc00c20ee222b698398c1c0d4a85aeec9d1e3fc14085a54b"
+        },
+        {
+          "path": "jepa4r/policy/seed100/config.yaml",
+          "bytes": 926,
+          "sha256": "ae928988725b2dc2b632b7ccae9c76dbeb743435e7936133fc8bc36da0bdb1ff"
+        },
+        {
+          "path": "jepa4r/policy/seed100/job_config.json",
+          "bytes": 937,
+          "sha256": "b04db6316013a0a26a87147e0aceb418ef323d77cc0e63a407ee2edf5cfa8987"
+        },
+        {
+          "path": "jepa4r/policy/seed200/best_policy.pickle",
+          "bytes": 2392263,
+          "sha256": "547ac51071b2521b7dea0f66bf418cd8d16fb91e7537b0b510abc873e4ae4102"
+        },
+        {
+          "path": "jepa4r/policy/seed200/config.yaml",
+          "bytes": 926,
+          "sha256": "4e7d7b6dcfac73575fecc0357234cc71031bd0544ede844ce5be3cbed3455a20"
+        },
+        {
+          "path": "jepa4r/policy/seed200/job_config.json",
+          "bytes": 937,
+          "sha256": "a3d94dddbb90aee1cee4aa6e0c5425c2ebda74a78e89d6bb0f6fcce2bc88a069"
+        },
+        {
+          "path": "jepa4r/policy/seed300/best_policy.pickle",
+          "bytes": 2392267,
+          "sha256": "53b52a22e760225ab75bfb5671d65a91f3d0a06bfc1af43cf5184cf1ff824642"
+        },
+        {
+          "path": "jepa4r/policy/seed300/config.yaml",
+          "bytes": 926,
+          "sha256": "5130f24e7fb058db8e4367088d2dc3810a399a2e722072b16e0593911d183a61"
+        },
+        {
+          "path": "jepa4r/policy/seed300/job_config.json",
+          "bytes": 937,
+          "sha256": "eb4035f0a0b6d048568c7bacba227a4f4d75aea889354bf9caa87e57c210346a"
+        },
+        {
+          "path": "jepa4r/provenance/seed100_formal_binding.json",
+          "bytes": 8577,
+          "sha256": "4394ea907359d60c000cbea423b121fc53d30939230ad37fa4f6a2c7f3688c53"
+        },
+        {
+          "path": "jepa4r/provenance/seed200_formal_binding.json",
+          "bytes": 8577,
+          "sha256": "e6add63e82a1b12ba3c8e81f0eef0e29654484b167fd3004b1b0f4d7827a3fc5"
+        },
+        {
+          "path": "jepa4r/provenance/seed300_formal_binding.json",
+          "bytes": 8577,
+          "sha256": "e076c83b550edb1641861878621a797cc851f115c84f2cb0654cffe9d7096cf0"
+        },
+        {
+          "path": "jepa4r/results/final_three_seed_report_v1.json",
+          "bytes": 2383,
+          "sha256": "4e19417ca8f3a37ec8dc662f9c88453030a0f79dc1b86a5bacbd46b59dc031c0"
+        },
+        {
+          "path": "jepa4r/results/seed100_metrics.jsonl",
+          "bytes": 11230,
+          "sha256": "a36d42b462280a55053ee6e88acadef5dd6c1313ffd565f51b71bfc9fb2344e8"
+        },
+        {
+          "path": "jepa4r/results/seed200_metrics.jsonl",
+          "bytes": 11254,
+          "sha256": "262443817add0c460e86b5fc2336a301f47d384096c7badc2135e2cdbdb38636"
+        },
+        {
+          "path": "jepa4r/results/seed300_metrics.jsonl",
+          "bytes": 11244,
+          "sha256": "45c924d19c765a43aa6953aaa370a8e333d6352723372b49752433bac5905b7d"
+        },
+        {
+          "path": "jepa4r/world_model/config.json",
+          "bytes": 985,
+          "sha256": "c15240dd7bd31b1c3d9f6d5cd50243e5d91f69e9ec0c9f4865c697e066e21543"
+        },
+        {
+          "path": "jepa4r/world_model/config.yaml",
+          "bytes": 2172,
+          "sha256": "00a152d30354c907b66daf29d75def2a45fc42a6863925d0d54a6f7e0deb38e0"
+        },
+        {
+          "path": "jepa4r/world_model/weights_epoch_10.pt",
+          "bytes": 72246782,
+          "sha256": "78c46eac196eae49778332519131ce300a0e65d37d5e932139498ab9d1837a13"
+        },
+        {
+          "path": "README.md",
+          "bytes": 825,
+          "sha256": "071ca78f1240cccb1ebfb6094f6f7f3cd3e8f2b2220599492195d6a1bc193b2a"
+        },
+        {
+          "path": "source_versions.json",
+          "bytes": 452,
+          "sha256": "933f4408ed370f5c7c354b12e8802a122b1a3cdfeb8a353438baf2be9e4204b0"
+        },
+        {
+          "path": "release_manifest.json",
+          "bytes": 4008,
+          "sha256": "16d5872df8caa2e3bfae85e47d609c48f85de6af5c2cc9a66dda19465357b414"
+        }
+      ]
+    },
+    {
+      "task": "rh56_relocate",
+      "model": "jepa4r",
+      "repo_id": "AIGeeksGroup/JEPA4R",
+      "branch": "rh56-relocate-pcd",
+      "revision": "11d2802382e0aa5a66897676d7754d58d8f6c65f",
+      "world_model": {
+        "weights": "world_model/weights_epoch_10.pt",
+        "config": "world_model/config.json",
+        "training_config": "world_model/config.yaml"
+      },
+      "policies": [
+        {
+          "seed": 100,
+          "kind": "rh56_bc",
+          "path": "bc/seed100/best_policy.pickle",
+          "config": "bc/seed100/policy_config.json"
+        },
+        {
+          "seed": 200,
+          "kind": "rh56_bc",
+          "path": "bc/seed200/best_policy.pickle",
+          "config": "bc/seed200/policy_config.json"
+        },
+        {
+          "seed": 300,
+          "kind": "rh56_bc",
+          "path": "bc/seed300/best_policy.pickle",
+          "config": "bc/seed300/policy_config.json"
+        }
+      ],
+      "preprocessing": {
+        "points": 1200,
+        "channels": 6,
+        "layout": "XYZRGB",
+        "use_rgb": true,
+        "latent_dim": 192,
+        "settings_source": "world_model/config.yaml"
+      },
+      "profile": {
+        "source": "existing original formal RH56 PCD publication; exact WM and three reward-best policies match the verified original catalog",
+        "new_full_evaluation": false
+      },
+      "files": [
+        {
+          "path": "world_model/weights_epoch_10.pt",
+          "bytes": 72243198,
+          "sha256": "f26804c3df382040c71eaad547da153471a030ef6ef6f3375a2876ab1f9b356c"
+        },
+        {
+          "path": "world_model/config.json",
+          "bytes": 984,
+          "sha256": "f917df6b0ee709b39838739eba165586e5dd868e07a0ef806b1adb2e7ad3ab9b"
+        },
+        {
+          "path": "world_model/config.yaml",
+          "bytes": 2030,
+          "sha256": "1169d2ff649bcbb5d4192e24494b12ed650b7f115ec0ba886dfb5225ba23172d"
+        },
+        {
+          "path": "bc/seed100/best_policy.pickle",
+          "bytes": 2319557,
+          "sha256": "202e2ddd16795b34158b6202795b647ae0ae3ac2dd0298a0a2c3df825a225f66"
+        },
+        {
+          "path": "bc/seed100/policy_config.json",
+          "bytes": 994,
+          "sha256": "a1e8b8cbfc366763004e9af52d3ac1ab0d151e25a09dfbb1546cfeacac403c76"
+        },
+        {
+          "path": "bc/seed200/best_policy.pickle",
+          "bytes": 2319553,
+          "sha256": "a2e79af8472900392dca52e019e2617bd9251535bfa64dd2c0165ccc745c6482"
+        },
+        {
+          "path": "bc/seed200/policy_config.json",
+          "bytes": 994,
+          "sha256": "cbeb9dff0782b323f7590faf4bf59ad1acb6091d3e579a1e71b86d462d93baf3"
+        },
+        {
+          "path": "bc/seed300/best_policy.pickle",
+          "bytes": 2319555,
+          "sha256": "afeb0fc3eaf7ba564e7a9135b8af53ed40f258ee0607cd7403229a0aa0352592"
+        },
+        {
+          "path": "bc/seed300/policy_config.json",
+          "bytes": 993,
+          "sha256": "b5d685956e87dcaed2af2e0bec1d9ae73e2b72a52bc1877d46c9fd98c8b4b78d"
+        },
+        {
+          "path": "README.md",
+          "bytes": 13882,
+          "sha256": "47af24f0b02adc7f81e7f23390c1e82de009213bb3e5a1c499e36401901e3857"
+        },
+        {
+          "path": "release_manifest.json",
+          "bytes": 82211,
+          "sha256": "0c66f26317ce141e1e31d4b065d3e27b28969b279ec3948bf9d33f77fff079e7"
+        },
+        {
+          "path": "interface_contract.json",
+          "bytes": 3914,
+          "sha256": "b26ce8538f88170ca618f8801320b582f48a793bbd67a73f02fdaa250c347d7d"
+        },
+        {
+          "path": "source_versions.json",
+          "bytes": 1084,
+          "sha256": "7b2d2be74e292cc428ba0a59ed1c675c2212a345f61a08dfaeebdb1c222171fa"
+        }
+      ]
+    }
+  ]
+}

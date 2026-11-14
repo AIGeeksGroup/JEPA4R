@@ -1,0 +1,746 @@
+{
+  "schema": "jepa4r_checkpoint_release_verification_v1",
+  "created_utc": "2026-11-14T10:25:36.572619+00:00",
+  "scope": "JEPA4R checkpoint publication and load-only smoke; original C4 workflows and guide gates preserved",
+  "combined_base_commit": "9c5adb879b76fb415f7d259fc7e8493977ac41ae",
+  "scientific_source_tree": "2d174d642583c082ef1104113dfc0c3328405ba1",
+  "code_sha256": {
+    "scripts/download_checkpoints.py": "9e5ad439befb96ee4488176325e9ed843252401a54ebb8525d0d5519d08abfde",
+    "scripts/checkpoint_smoke.py": "b7f60927e47df8275271f6e5ca81822c7b2f52d834a3bdb6707a80f14cb1432f",
+    "released_checkpoints.json": "cd189ffaf5dbc4788057ad25c92b913083ff8212af3168b985403e8a0f83b3d4"
+  },
+  "preserved_existing_files": 618,
+  "changed_existing_runtime_or_gate_files": 0,
+  "published_new_hf_branches": 5,
+  "reused_hf_branches": 1,
+  "downloaded_tasks": 6,
+  "downloaded_and_sha_verified_files": 85,
+  "focused_tests": {
+    "passed": 65,
+    "actual_exit_code": 0,
+    "log_sha256": "8e6a09d72f9dd548c22f3cc60e21a1aafc75f7e83b7d940d38bfc872476a8595"
+  },
+  "load_smoke": {
+    "passed": 16,
+    "actual_exit_code": 0,
+    "cases": [
+      {
+        "task": "adroit_relocate",
+        "component": "policy",
+        "seed": 100,
+        "revision": "09885959b46fcf58623acdde376eaa6a020af244",
+        "actual_exit_code": 0,
+        "environment_steps": 0,
+        "optimizer_updates": 0,
+        "result": {
+          "loader": "mjrl.policies.gaussian_mlp.BatchNormMLP",
+          "serialization": "original pickle",
+          "input_shape": [
+            606
+          ],
+          "output": {
+            "shape": [
+              30
+            ],
+            "dtype": "float32",
+            "finite": true,
+            "repeat_max_abs": 0.0,
+            "sha256": "50931b3db37eeaedb1dfa5153318a88dade2c0e63cf3c5c3995d9743485db5b2"
+          }
+        },
+        "versions": {
+          "torch": "2.8.0+cu128",
+          "numpy": "1.23.4",
+          "hydra-core": "1.3.6"
+        },
+        "source_receipt_sha256": "fb7d82e91e990825d057a770459f98f52d14916e266032b86db255349bdfaebd",
+        "actual_exit_sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "bundle_sha256": "07a4b9a0298dd4576f1625cbe4ddb163bb26487b9ee5b38adb2769cc9b285e1c"
+      },
+      {
+        "task": "adroit_relocate",
+        "component": "policy",
+        "seed": 200,
+        "revision": "09885959b46fcf58623acdde376eaa6a020af244",
+        "actual_exit_code": 0,
+        "environment_steps": 0,
+        "optimizer_updates": 0,
+        "result": {
+          "loader": "mjrl.policies.gaussian_mlp.BatchNormMLP",
+          "serialization": "original pickle",
+          "input_shape": [
+            606
+          ],
+          "output": {
+            "shape": [
+              30
+            ],
+            "dtype": "float32",
+            "finite": true,
+            "repeat_max_abs": 0.0,
+            "sha256": "0ddb5255cd424acddb1ac9a65734daac86c9d3092131c8019bb54c3b559a6e71"
+          }
+        },
+        "versions": {
+          "torch": "2.8.0+cu128",
+          "numpy": "1.23.4",
+          "hydra-core": "1.3.6"
+        },
+        "source_receipt_sha256": "1ee18f44ff1a3278546efc3497424242f19465c5c5c95ea369946c435026aace",
+        "actual_exit_sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "bundle_sha256": "07a4b9a0298dd4576f1625cbe4ddb163bb26487b9ee5b38adb2769cc9b285e1c"
+      },
+      {
+        "task": "adroit_relocate",
+        "component": "policy",
+        "seed": 300,
+        "revision": "09885959b46fcf58623acdde376eaa6a020af244",
+        "actual_exit_code": 0,
+        "environment_steps": 0,
+        "optimizer_updates": 0,
+        "result": {
+          "loader": "mjrl.policies.gaussian_mlp.BatchNormMLP",
+          "serialization": "original pickle",
+          "input_shape": [
+            606
+          ],
+          "output": {
+            "shape": [
+              30
+            ],
+            "dtype": "float32",
+            "finite": true,
+            "repeat_max_abs": 0.0,
+            "sha256": "e7614e65b0afb2523ca147fb67f3ca6db33f39ba1524fb995d725aecda802edb"
+          }
+        },
+        "versions": {
+          "torch": "2.8.0+cu128",
+          "numpy": "1.23.4",
+          "hydra-core": "1.3.6"
+        },
+        "source_receipt_sha256": "46c8351a8a2c08ae4a7104c6d41be7f6b00063db225abdd2da37581c8100a522",
+        "actual_exit_sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "bundle_sha256": "07a4b9a0298dd4576f1625cbe4ddb163bb26487b9ee5b38adb2769cc9b285e1c"
+      },
+      {
+        "task": "adroit_relocate",
+        "component": "wm",
+        "seed": null,
+        "revision": "09885959b46fcf58623acdde376eaa6a020af244",
+        "actual_exit_code": 0,
+        "environment_steps": 0,
+        "optimizer_updates": 0,
+        "result": {
+          "loader": "stable_worldmodel.wm.utils.load_pretrained",
+          "strict_state_dict": true,
+          "input_shape": [
+            1,
+            2,
+            1200,
+            6
+          ],
+          "preprocessing": {
+            "_target_": "utils.get_pcd_preprocessor",
+            "source_xyz": "pcd_xyz",
+            "source_rgb": "pcd_rgb",
+            "target": "pcd",
+            "center": [
+              0.0,
+              -0.2,
+              0.25
+            ],
+            "scale": 4.0,
+            "use_rgb": true
+          },
+          "output": {
+            "shape": [
+              1,
+              4,
+              192
+            ],
+            "dtype": "float32",
+            "finite": true,
+            "repeat_max_abs": 0.0,
+            "sha256": "27ecc5d902d0a8fe0dae1c248ccad862a7fa0d9f139861401a4bd18e8dff7405"
+          }
+        },
+        "versions": {
+          "torch": "2.8.0",
+          "numpy": "2.2.6",
+          "jax": "0.7.2",
+          "jaxlib": "0.7.2",
+          "flax": "0.11.2",
+          "optax": "0.2.5",
+          "hydra-core": "1.3.6",
+          "stable-pretraining": "0.1.8"
+        },
+        "source_receipt_sha256": "e81e6b49e46660df40c290d5b6dc0b04b5d3fcaf3e0f0c566eafc340c5b70f97",
+        "actual_exit_sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "bundle_sha256": "07a4b9a0298dd4576f1625cbe4ddb163bb26487b9ee5b38adb2769cc9b285e1c"
+      },
+      {
+        "task": "cube_double",
+        "component": "policy",
+        "seed": 0,
+        "revision": "308eabf452824d14c0afead1cb0f44d639443c59",
+        "actual_exit_code": 0,
+        "environment_steps": 0,
+        "optimizer_updates": 0,
+        "result": {
+          "loader": "original create_agent / restore_agent / _matrix_restore_policy",
+          "strict_state_dict": true,
+          "state_leaves": 153,
+          "checkpoint_counter": 1000000,
+          "output": {
+            "shape": [
+              1,
+              5
+            ],
+            "dtype": "float32",
+            "finite": true,
+            "repeat_max_abs": 0.0,
+            "sha256": "1ce0ece153d9c45b498a152ce6c5246dfdd0c6348749dbb6d449fb236d16f27a"
+          }
+        },
+        "versions": {
+          "torch": "2.8.0",
+          "numpy": "2.2.6",
+          "jax": "0.7.2",
+          "jaxlib": "0.7.2",
+          "flax": "0.11.2",
+          "optax": "0.2.5",
+          "hydra-core": "1.3.6",
+          "stable-pretraining": "0.1.8"
+        },
+        "source_receipt_sha256": "fb74c929f7707b6d3f47aa82809d545e9d22871a1c4aa43fde69a8b33219fe6f",
+        "actual_exit_sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "bundle_sha256": "923095bc0799d7a0ab8954517ab1272922875c020d974a0a3a9d5f63f2959d11"
+      },
+      {
+        "task": "cube_double",
+        "component": "wm",
+        "seed": null,
+        "revision": "308eabf452824d14c0afead1cb0f44d639443c59",
+        "actual_exit_code": 0,
+        "environment_steps": 0,
+        "optimizer_updates": 0,
+        "result": {
+          "loader": "stable_worldmodel.wm.utils.load_pretrained",
+          "strict_state_dict": true,
+          "input_shape": [
+            1,
+            2,
+            1200,
+            6
+          ],
+          "preprocessing": {
+            "_target_": "utils.get_pcd_preprocessor",
+            "source_xyz": "pcd_xyz",
+            "source_rgb": "pcd_rgb",
+            "target": "pcd",
+            "center": [
+              0.425,
+              0.0,
+              0.2
+            ],
+            "scale": 4.0,
+            "use_rgb": true
+          },
+          "output": {
+            "shape": [
+              1,
+              4,
+              192
+            ],
+            "dtype": "float32",
+            "finite": true,
+            "repeat_max_abs": 0.0,
+            "sha256": "05926079e14e4626a799b81e81c74f8143a7e96a0a4653f9692cd7a40e6f69bf"
+          }
+        },
+        "versions": {
+          "torch": "2.8.0",
+          "numpy": "2.2.6",
+          "jax": "0.7.2",
+          "jaxlib": "0.7.2",
+          "flax": "0.11.2",
+          "optax": "0.2.5",
+          "hydra-core": "1.3.6",
+          "stable-pretraining": "0.1.8"
+        },
+        "source_receipt_sha256": "64e3022d7c0554ac405c6a33348a33fd78c6afd7e0a0ff32939875457053bcb7",
+        "actual_exit_sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "bundle_sha256": "923095bc0799d7a0ab8954517ab1272922875c020d974a0a3a9d5f63f2959d11"
+      },
+      {
+        "task": "cube_quadruple",
+        "component": "policy",
+        "seed": 0,
+        "revision": "51f91e8eeafff9a0ca6be952f50bbd895c057c61",
+        "actual_exit_code": 0,
+        "environment_steps": 0,
+        "optimizer_updates": 0,
+        "result": {
+          "loader": "original create_agent / restore_agent / _matrix_restore_policy",
+          "strict_state_dict": true,
+          "state_leaves": 153,
+          "checkpoint_counter": 1000000,
+          "output": {
+            "shape": [
+              1,
+              5
+            ],
+            "dtype": "float32",
+            "finite": true,
+            "repeat_max_abs": 0.0,
+            "sha256": "7683958c35a7cb0124b7b4a5455bb9d32472cdadf19a31bd133bdcf04a79c91d"
+          }
+        },
+        "versions": {
+          "torch": "2.8.0",
+          "numpy": "2.2.6",
+          "jax": "0.7.2",
+          "jaxlib": "0.7.2",
+          "flax": "0.11.2",
+          "optax": "0.2.5",
+          "hydra-core": "1.3.6",
+          "stable-pretraining": "0.1.8"
+        },
+        "source_receipt_sha256": "f1c77086fcee23ea552efc2b53cc8cbec1971ad60f2df60cc25909781dffbae5",
+        "actual_exit_sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "bundle_sha256": "1dfdca0d35c1fc30c17b5cc22467d9ab2c6ee992cc4a2f31dfbf117b6e1b997c"
+      },
+      {
+        "task": "cube_quadruple",
+        "component": "wm",
+        "seed": null,
+        "revision": "51f91e8eeafff9a0ca6be952f50bbd895c057c61",
+        "actual_exit_code": 0,
+        "environment_steps": 0,
+        "optimizer_updates": 0,
+        "result": {
+          "loader": "stable_worldmodel.wm.utils.load_pretrained",
+          "strict_state_dict": true,
+          "input_shape": [
+            1,
+            2,
+            1200,
+            6
+          ],
+          "preprocessing": {
+            "_target_": "utils.get_pcd_preprocessor",
+            "source_xyz": "pcd_xyz",
+            "source_rgb": "pcd_rgb",
+            "target": "pcd",
+            "center": [
+              0.425,
+              0.0,
+              0.2
+            ],
+            "scale": 4.0,
+            "use_rgb": true
+          },
+          "output": {
+            "shape": [
+              1,
+              4,
+              192
+            ],
+            "dtype": "float32",
+            "finite": true,
+            "repeat_max_abs": 0.0,
+            "sha256": "81c2e4784895ce96bae1e5e699dacbd92e08de342f8bbc6ff9511c7ba12d6467"
+          }
+        },
+        "versions": {
+          "torch": "2.8.0",
+          "numpy": "2.2.6",
+          "jax": "0.7.2",
+          "jaxlib": "0.7.2",
+          "flax": "0.11.2",
+          "optax": "0.2.5",
+          "hydra-core": "1.3.6",
+          "stable-pretraining": "0.1.8"
+        },
+        "source_receipt_sha256": "9c856da6e08b07fe701abb51752fb0052575182d5a86d9f0298694d38c22405f",
+        "actual_exit_sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "bundle_sha256": "1dfdca0d35c1fc30c17b5cc22467d9ab2c6ee992cc4a2f31dfbf117b6e1b997c"
+      },
+      {
+        "task": "cube_single",
+        "component": "policy",
+        "seed": 0,
+        "revision": "dd98a32be6ab70424111bab6880cf8e77800ea8f",
+        "actual_exit_code": 0,
+        "environment_steps": 0,
+        "optimizer_updates": 0,
+        "result": {
+          "loader": "original create_agent / restore_agent / _matrix_restore_policy",
+          "strict_state_dict": true,
+          "state_leaves": 153,
+          "checkpoint_counter": 1000000,
+          "output": {
+            "shape": [
+              1,
+              5
+            ],
+            "dtype": "float32",
+            "finite": true,
+            "repeat_max_abs": 0.0,
+            "sha256": "3eb4c473bffb97680e442e0dd037d989490f460d9c3ca06e4971b29dea58039c"
+          }
+        },
+        "versions": {
+          "torch": "2.8.0",
+          "numpy": "2.2.6",
+          "jax": "0.7.2",
+          "jaxlib": "0.7.2",
+          "flax": "0.11.2",
+          "optax": "0.2.5",
+          "hydra-core": "1.3.6",
+          "stable-pretraining": "0.1.8"
+        },
+        "source_receipt_sha256": "21506e712af45d17c97d4e0f964cbb2318f9fa3c088eda24f0afa5e00d87eea2",
+        "actual_exit_sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "bundle_sha256": "411fe9a6c40e6c8ce38755d55db81fa1bbda1d8b4c20428f50a46ba6b5639141"
+      },
+      {
+        "task": "cube_single",
+        "component": "wm",
+        "seed": null,
+        "revision": "dd98a32be6ab70424111bab6880cf8e77800ea8f",
+        "actual_exit_code": 0,
+        "environment_steps": 0,
+        "optimizer_updates": 0,
+        "result": {
+          "loader": "stable_worldmodel.wm.utils.load_pretrained",
+          "strict_state_dict": true,
+          "input_shape": [
+            1,
+            2,
+            1200,
+            6
+          ],
+          "preprocessing": {
+            "_target_": "utils.get_pcd_preprocessor",
+            "source_xyz": "pcd_xyz",
+            "source_rgb": "pcd_rgb",
+            "target": "pcd",
+            "center": [
+              0.425,
+              0.0,
+              0.2
+            ],
+            "scale": 4.0,
+            "use_rgb": true
+          },
+          "output": {
+            "shape": [
+              1,
+              4,
+              192
+            ],
+            "dtype": "float32",
+            "finite": true,
+            "repeat_max_abs": 0.0,
+            "sha256": "ceeb27d77fa87e3a258fd7f914d7de382496f129790ff581f5503053366629ef"
+          }
+        },
+        "versions": {
+          "torch": "2.8.0",
+          "numpy": "2.2.6",
+          "jax": "0.7.2",
+          "jaxlib": "0.7.2",
+          "flax": "0.11.2",
+          "optax": "0.2.5",
+          "hydra-core": "1.3.6",
+          "stable-pretraining": "0.1.8"
+        },
+        "source_receipt_sha256": "9fce499041a2577cfb81808de2b385d85d22dd961cfab5c8a312a86e5a24915c",
+        "actual_exit_sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "bundle_sha256": "411fe9a6c40e6c8ce38755d55db81fa1bbda1d8b4c20428f50a46ba6b5639141"
+      },
+      {
+        "task": "cube_triple",
+        "component": "policy",
+        "seed": 0,
+        "revision": "a79e26db61ea9a1ae3ed901f78e487c67bb0144e",
+        "actual_exit_code": 0,
+        "environment_steps": 0,
+        "optimizer_updates": 0,
+        "result": {
+          "loader": "original create_agent / restore_agent / _matrix_restore_policy",
+          "strict_state_dict": true,
+          "state_leaves": 153,
+          "checkpoint_counter": 1000000,
+          "output": {
+            "shape": [
+              1,
+              5
+            ],
+            "dtype": "float32",
+            "finite": true,
+            "repeat_max_abs": 0.0,
+            "sha256": "a3eb53d72724680230126d73010f3b935bff16806175df63223de532fecd9706"
+          }
+        },
+        "versions": {
+          "torch": "2.8.0",
+          "numpy": "2.2.6",
+          "jax": "0.7.2",
+          "jaxlib": "0.7.2",
+          "flax": "0.11.2",
+          "optax": "0.2.5",
+          "hydra-core": "1.3.6",
+          "stable-pretraining": "0.1.8"
+        },
+        "source_receipt_sha256": "ee98a0028c4a278b94ce545b38bc014e4940469720a7f88b432cb2fac617f202",
+        "actual_exit_sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "bundle_sha256": "3ddf7fc4a80cb9d3f0c0ad5e8e110bfb6f34a16ef7b4f248aad275f7a227a89d"
+      },
+      {
+        "task": "cube_triple",
+        "component": "wm",
+        "seed": null,
+        "revision": "a79e26db61ea9a1ae3ed901f78e487c67bb0144e",
+        "actual_exit_code": 0,
+        "environment_steps": 0,
+        "optimizer_updates": 0,
+        "result": {
+          "loader": "stable_worldmodel.wm.utils.load_pretrained",
+          "strict_state_dict": true,
+          "input_shape": [
+            1,
+            2,
+            1200,
+            6
+          ],
+          "preprocessing": {
+            "_target_": "utils.get_pcd_preprocessor",
+            "source_xyz": "pcd_xyz",
+            "source_rgb": "pcd_rgb",
+            "target": "pcd",
+            "center": [
+              0.425,
+              0.0,
+              0.2
+            ],
+            "scale": 4.0,
+            "use_rgb": true
+          },
+          "output": {
+            "shape": [
+              1,
+              4,
+              192
+            ],
+            "dtype": "float32",
+            "finite": true,
+            "repeat_max_abs": 0.0,
+            "sha256": "df76b4023866de553c32e5fd59095856e24f176a55dcf90822e4b9112f7992c7"
+          }
+        },
+        "versions": {
+          "torch": "2.8.0",
+          "numpy": "2.2.6",
+          "jax": "0.7.2",
+          "jaxlib": "0.7.2",
+          "flax": "0.11.2",
+          "optax": "0.2.5",
+          "hydra-core": "1.3.6",
+          "stable-pretraining": "0.1.8"
+        },
+        "source_receipt_sha256": "30960e369ecf4cb62557682b9ac1ec988c4fabadbdf3441ff2f1b9c16c2fe9ab",
+        "actual_exit_sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "bundle_sha256": "3ddf7fc4a80cb9d3f0c0ad5e8e110bfb6f34a16ef7b4f248aad275f7a227a89d"
+      },
+      {
+        "task": "rh56_relocate",
+        "component": "policy",
+        "seed": 100,
+        "revision": "11d2802382e0aa5a66897676d7754d58d8f6c65f",
+        "actual_exit_code": 0,
+        "environment_steps": 0,
+        "optimizer_updates": 0,
+        "result": {
+          "loader": "mjrl.policies.gaussian_mlp.BatchNormMLP",
+          "serialization": "original pickle",
+          "input_shape": [
+            589
+          ],
+          "output": {
+            "shape": [
+              12
+            ],
+            "dtype": "float32",
+            "finite": true,
+            "repeat_max_abs": 0.0,
+            "sha256": "3a54cfb6cd63ce29367c44ab446a57da32ed808060cdadf478989fbfc763056d"
+          }
+        },
+        "versions": {
+          "torch": "2.8.0+cu128",
+          "numpy": "1.23.4",
+          "hydra-core": "1.3.6"
+        },
+        "source_receipt_sha256": "15f73593f14d99dd554bfe00ed6d22d92217490a61507f72ef5ff4612c0eb27d",
+        "actual_exit_sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "bundle_sha256": "2539c58662d6fec5b4e08f2cf942710c50ddaa4ae95c067a1b28601516d088e4"
+      },
+      {
+        "task": "rh56_relocate",
+        "component": "policy",
+        "seed": 200,
+        "revision": "11d2802382e0aa5a66897676d7754d58d8f6c65f",
+        "actual_exit_code": 0,
+        "environment_steps": 0,
+        "optimizer_updates": 0,
+        "result": {
+          "loader": "mjrl.policies.gaussian_mlp.BatchNormMLP",
+          "serialization": "original pickle",
+          "input_shape": [
+            589
+          ],
+          "output": {
+            "shape": [
+              12
+            ],
+            "dtype": "float32",
+            "finite": true,
+            "repeat_max_abs": 0.0,
+            "sha256": "eedf2263d95d4258e1bfe6a0ce19326eb77f337fea1c829caa840f38f221cdf4"
+          }
+        },
+        "versions": {
+          "torch": "2.8.0+cu128",
+          "numpy": "1.23.4",
+          "hydra-core": "1.3.6"
+        },
+        "source_receipt_sha256": "331f50149b075e614c097e811c4a7dfbb64eed5bb1cf1c370a9b701b96b39dd2",
+        "actual_exit_sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "bundle_sha256": "2539c58662d6fec5b4e08f2cf942710c50ddaa4ae95c067a1b28601516d088e4"
+      },
+      {
+        "task": "rh56_relocate",
+        "component": "policy",
+        "seed": 300,
+        "revision": "11d2802382e0aa5a66897676d7754d58d8f6c65f",
+        "actual_exit_code": 0,
+        "environment_steps": 0,
+        "optimizer_updates": 0,
+        "result": {
+          "loader": "mjrl.policies.gaussian_mlp.BatchNormMLP",
+          "serialization": "original pickle",
+          "input_shape": [
+            589
+          ],
+          "output": {
+            "shape": [
+              12
+            ],
+            "dtype": "float32",
+            "finite": true,
+            "repeat_max_abs": 0.0,
+            "sha256": "0a4c4d7020ef00e29e0e5e6f0ce9eeebfac9e628b77b94aa07f5d710e6307e7e"
+          }
+        },
+        "versions": {
+          "torch": "2.8.0+cu128",
+          "numpy": "1.23.4",
+          "hydra-core": "1.3.6"
+        },
+        "source_receipt_sha256": "143da7040e09ed8e5c6a080584d35d6621f886f7856bde690144b3c037d623f6",
+        "actual_exit_sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "bundle_sha256": "2539c58662d6fec5b4e08f2cf942710c50ddaa4ae95c067a1b28601516d088e4"
+      },
+      {
+        "task": "rh56_relocate",
+        "component": "wm",
+        "seed": null,
+        "revision": "11d2802382e0aa5a66897676d7754d58d8f6c65f",
+        "actual_exit_code": 0,
+        "environment_steps": 0,
+        "optimizer_updates": 0,
+        "result": {
+          "loader": "stable_worldmodel.wm.utils.load_pretrained",
+          "strict_state_dict": true,
+          "input_shape": [
+            1,
+            2,
+            1200,
+            6
+          ],
+          "preprocessing": {
+            "_target_": "utils.get_pcd_preprocessor",
+            "source_xyz": "pcd_xyz",
+            "source_rgb": "pcd_rgb",
+            "target": "pcd",
+            "center": [
+              0.0,
+              -0.2,
+              0.25
+            ],
+            "scale": 4.0,
+            "use_rgb": true
+          },
+          "output": {
+            "shape": [
+              1,
+              4,
+              192
+            ],
+            "dtype": "float32",
+            "finite": true,
+            "repeat_max_abs": 0.0,
+            "sha256": "69f832e4794b16cb5277696261cdb2a0830a8aee7053e45403759120cf47488a"
+          }
+        },
+        "versions": {
+          "torch": "2.8.0",
+          "numpy": "2.2.6",
+          "jax": "0.7.2",
+          "jaxlib": "0.7.2",
+          "flax": "0.11.2",
+          "optax": "0.2.5",
+          "hydra-core": "1.3.6",
+          "stable-pretraining": "0.1.8"
+        },
+        "source_receipt_sha256": "46bdfaae39654cd21ee7b177d770a22cae46e5edfcbb19bae900cf083b90c735",
+        "actual_exit_sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "bundle_sha256": "2539c58662d6fec5b4e08f2cf942710c50ddaa4ae95c067a1b28601516d088e4"
+      }
+    ]
+  },
+  "retained_failed_attempts": [
+    {
+      "receipt": "loader_tests/bjb2_initial_failure/adroit_relocate_policy_seed100.json",
+      "sha256": "820b71888a0ba4e1bf7e8abe582e9d7f31579b18e746425cb4a189e398c492cc",
+      "error": "Exception: \nYou appear to be missing MuJoCo.  We expected to find the file here: /root/.mujoco/mujoco200\n\nThis package only provides python bindings, the library must be installed separately.\n\nPlease follow the instructions on the README to install MuJoCo\n\n    https://github.com/openai/mujoco-py#install-mujoco\n\nWhich can be downloaded from the website\n\n    https://www.roboti.us/index.html\n"
+    }
+  ],
+  "failure_resolution": "Original mjrl import required existing MuJoCo runtime environment variables; same loader source then passed. No environment was installed or rebuilt.",
+  "new_full_training_runs": 0,
+  "new_full_evaluation_runs": 0,
+  "new_statistical_success_rates": false,
+  "historical_acceptance_records_modified": false,
+  "limitations": [
+    "This is a load-only publication acceptance, not a new full-paper or whole-guide certificate.",
+    "Other baseline workflows remain unchanged; this checkpoint registry publishes JEPA4R only."
+  ],
+  "actual_exit_code": 0,
+  "source_manifest_refreeze": {
+    "original_manifest": {
+      "path": "provenance/checkpoint_release/C4_SOURCE_MANIFEST.json",
+      "sha256": "0bfd51aef31f4d1bb4b9a6a84638d6313151122c6773120817ba95bb62c75582"
+    },
+    "reason": "The original top-level source gate also pins README; refresh the current inventory for checkpoint interfaces and documentation while preserving the original manifest and gate implementation.",
+    "regression_red_actual_exit_code": 1,
+    "regression_green_actual_exit_code": 0,
+    "existing_changed_files": [
+      "README.md",
+      "SOURCE_MANIFEST.json"
+    ],
+    "model_load_evidence_reused": "Only documentation/source-index metadata changed; tested loader, registry, model classes, numerical paths and component source manifests are byte unchanged."
+  }
+}
