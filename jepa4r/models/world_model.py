@@ -9,12 +9,12 @@ Interface used by the rest of the code:
     predict(z_hist [B, T, 192], a_hist [B, T, A*5]) -> z_next [B, 192]           (T <= history)
     rollout(z_ctx [B, 3, 192], action_blocks [B, H, A*5]) -> z_hat [B, H, 192]   (autoregressive; Sec. 4.4)
 
-Integrated code: ``JEPA`` is LeWM's ``jepa.py`` (dict interface: ``encode(info)`` fills info['emb'] / info['act_emb'],
+``JEPA`` is LeWM's ``jepa.py`` (dict interface: ``encode(info)`` fills info['emb'] / info['act_emb'],
 ``predict(emb, act_emb)``, ``rollout(info, action_sequence, history_size)``); training is LeWM's ``train.py`` run on
 stable-worldmodel / stable-pretraining, in its two original variants:
-  run_random_split   cortexbench / recon branches (+ the C4 seed hook): one dataset file, random 0.9 / 0.1 clip split
-                     with torch.Generator().manual_seed(seed), the same generator shuffling the train loader
-  run_episode_split  OGBench-cube (C4) Cube1-4: an independent validation file (whole held-out episodes), seed 0 set
+  run_random_split   one dataset file, random 0.9 / 0.1 clip split with torch.Generator().manual_seed(seed), the same
+                     generator shuffling the train loader (+ the Cube workflow's seed hook)
+  run_episode_split  Cube 1-4: an independent validation file (whole held-out episodes), seed 0 set
                      with Lightning's seed_everything before the data are built
 Checkpoints: ``<out_dir>/checkpoints/{config.json, weights_epoch_<n>.pt}`` (stable-worldmodel ``save_pretrained``, the
 format of the released HF checkpoints, which ``load_checkpoint`` also reads).
@@ -38,7 +38,6 @@ try:  # Lightning is needed to train, not to import this module (tests import ev
 except ImportError:  # pragma: no cover
     Callback = object
 
-# Moved from cortexbench@9331494:lewm_pcd/jepa.py:detach_clone, JEPA (lines 8-154; verbatim)
 def detach_clone(v):
     return v.detach().clone() if torch.is_tensor(v) else v
 
@@ -188,7 +187,6 @@ class JEPA(nn.Module):
         return cost
 
 
-# Moved from cortexbench@9331494:lewm_pcd/train.py:lejepa_forward (lines 17-45; verbatim)
 def lejepa_forward(self, batch, stage, cfg):
     """encode observations, predict next states, compute losses."""
 
@@ -219,8 +217,6 @@ def lejepa_forward(self, batch, stage, cfg):
     self.log_dict(losses_dict, on_step=True, sync_dist=True)
     return output
 
-# Moved from cortexbench@9331494:lewm_pcd/utils.py:SaveCkptCallback (lines 34-61; verbatim except: optional cache_dir
-# passed on to save_pretrained, so the weights land in the stage directory)
 class SaveCkptCallback(Callback):
     """Callback to save model checkpoint after each epoch using save_pretrained."""
 
@@ -252,11 +248,6 @@ class SaveCkptCallback(Callback):
         )
 
 
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/train.py:run (lines 47-146; verbatim except: no @hydra.main, renamed
-# run_random_split, run_dir argument instead of $STABLEWM_HOME/checkpoints/<subdir>, checkpoints and config.yaml into
-# <run_dir>/checkpoints (the paper runs had subdir == output_model_name: one directory), lazy imports, config.json
-# written with LeWM's own target names: legacy_config; original_layout=True keeps the source's own output layout,
-# $STABLEWM_HOME/checkpoints/<subdir>, for the moved OGBench-cube callers)
 def run_random_split(cfg, run_dir, *, manager_seed=None, original_layout=False):
     import hydra
     import lightning as pl
@@ -327,7 +318,7 @@ def run_random_split(cfg, run_dir, *, manager_seed=None, original_layout=False):
     ##       training       ##
     ##########################
 
-    if original_layout:  # the source's own layout, which the moved OGBench-cube callers (Relocate, RH56) read back
+    if original_layout:  # the original layout, which the Relocate / RH56 workflow reads back
         run_id = cfg.get("subdir") or ""
         run_dir = Path(swm.data.utils.get_cache_dir(sub_folder='checkpoints'), run_id)
     else:
@@ -369,9 +360,6 @@ def run_random_split(cfg, run_dir, *, manager_seed=None, original_layout=False):
     manager()
     return
 
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/native/lewm_train.py:_prepare_fresh_run, _split_datasets,
-# _validation_loader_kwargs (lines 16-49; verbatim except: _prepare_fresh_run takes the run directory instead of
-# $STABLEWM_HOME/checkpoints/<subdir>, and accepts an existing one unless exist_ok=False, the source's own rule)
 def _prepare_fresh_run(cfg, run_dir, exist_ok=True):
     import lightning as pl
 
@@ -411,10 +399,6 @@ def _validation_loader_kwargs(cfg):
     return kwargs
 
 
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/native/lewm_train.py:run (lines 82-175; verbatim except:
-# renamed run_episode_split, run_dir argument, checkpoints and config.yaml into <run_dir>/checkpoints, lazy imports,
-# config.json written with LeWM's own target names: legacy_config; original_layout=True keeps the source's own output
-# layout, $STABLEWM_HOME/checkpoints/<subdir>, for the moved OGBench-cube Cube workflow)
 def run_episode_split(cfg, run_dir, *, resume_checkpoint=None, state_callback=None, original_layout=False):
     import hydra
     import lightning as pl
@@ -630,7 +614,7 @@ def lewm_train_config(cfg):
     data = {'dataset': {'name': str(data_dir / files[obs]), **dataset_kwargs(m, obs)},
             'preprocessor': preprocessor_kwargs(cfg.env, obs)}
     split = str(wm.get('split', 'random_clips'))
-    if split == 'episodes':  # OGBench-cube (C4) Cube1-4: whole validation episodes in their own file
+    if split == 'episodes':  # Cube 1-4: whole validation episodes in their own file
         data['validation_dataset'] = {'name': str(data_dir / files[f'{obs}_val']), **dataset_kwargs(m, obs)}
     t = m.train
     lw = {

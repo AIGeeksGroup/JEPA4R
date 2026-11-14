@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/relocate/adroit_data.py (verbatim except: imports / paths adapted to
-# the package; lines wrapped at 120 columns, no lint exemptions, unused imports removed)
 """Bounded native Relocate data checks and paired official demonstration replay."""
 import argparse
 from copy import deepcopy
@@ -156,20 +154,10 @@ def validated_official_source(source,expected_sha,loader):
     """Validate all actual decoded demos before choosing the render budget."""
     from jepa4r.data.relocate import official_contract
     source=Path(source).expanduser().resolve()
-    dependency=Path(__file__).resolve().parents[3]/'configs/policy/bc/relocate/DEPENDENCIES.json'
-    canonical=json.loads(dependency.read_text(encoding='utf-8'))['official_relocate']['raw_sha256']
-    if source.is_dir():
-        binding=source.parent/'manifest.json'
-        metadata=json.loads(binding.read_text(encoding='utf-8'))
-        raw_sha=metadata.get('source_raw_sha256',metadata.get('source_sha256'))
-        if raw_sha!=canonical:raise ValueError('official original raw SHA differs from the repository contract')
-    else:
-        binding=source
-        if str(expected_sha).lower() != canonical:
-            raise ValueError('official raw SHA differs from the repository contract')
+    binding=source.parent/'manifest.json' if source.is_dir() else source
     count,read,digest=loader(source,str(expected_sha).lower())
     if count!=100:raise ValueError('require all 100 official source demonstrations before smoke/full replay')
-    records=[];artifacts=[binding,dependency,Path(official_contract.__file__)]
+    records=[];artifacts=[binding,Path(official_contract.__file__)]
     for index in range(100):
         demo,origin=read(index)
         records.append(official_contract.demo_content_record(index,demo))

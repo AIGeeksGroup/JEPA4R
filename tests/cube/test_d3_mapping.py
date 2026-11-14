@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/tests/test_d3_mapping.py (verbatim except: imports / paths
-# adapted to the package; lines wrapped at 120 columns)
 """Complete row bindings and current/goal seam checks without a model."""
 from pathlib import Path
 import sys

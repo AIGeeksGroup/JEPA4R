@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/scripts/checks/test_clip_evidence.py (verbatim except: module names / paths
-# of the moved code adapted; lines wrapped at 120 columns)
 """Read-only norm observation around the original clip_grad_norm_ call."""
 import unittest
 import torch

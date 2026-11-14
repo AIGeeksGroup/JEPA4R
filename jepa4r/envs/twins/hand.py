@@ -1,21 +1,21 @@
 """Twin of the hand / end effector mounted on the RM75-B (paper, Sec. 5.6: Inspire EG2-4C2 gripper; the twin
-matches the URDF in gripper mechanics). Model files and details come from the integrated code.
+matches the URDF in gripper mechanics).
 
 The paper's twin "carries either end effector" (Sec. 5.6, Robot Setup): the Inspire EG2-4C2 parallel gripper (picking
 and pushing a cube; OGBench Cube in the twin, configs/env/rm75b_cube.yaml) and the Inspire RH56 dexterous hand
-(picking an object; the RM75-B + RH56 Relocate simulation of the C4 branch, configs/env/rm75b_rh56_relocate.yaml).
-  eg2_4c2  descriptions/inspire_eg2_4c2/eg2_4c2.xml (+ STL meshes), cortexbench@9331494:lewm_pcd/envs/descriptions/:
+(picking an object; the RM75-B + RH56 Relocate simulation, configs/env/rm75b_rh56_relocate.yaml).
+  eg2_4c2  descriptions/inspire_eg2_4c2/eg2_4c2.xml (+ STL meshes):
            the vendor URDF's links / inertials / meshes (RealMan rm_models, EG2-4C2 + B-series adapter plate) on
            OGBench's 2f85.xml template, keeping OGBench's slot / entity names (robotiq, pinch, right_driver_joint, ...)
            so that the unchanged ManipSpaceEnv / CubeEnv code finds the gripper; attached to the arm flange exactly as
            RM75ManipSpaceEnv.build_mjcf_model does
-  rh56     jepa4r.envs.twins.rh56 (OGBench-cube@4fbb0c6:lewm_pcd/rh56_adapter): adapter of the external native RM75-B +
-           RH56 simulation bundle (its env.py, robot assets and expert are not part of any source branch)
+  rh56     jepa4r.envs.twins.rh56: adapter of the external native RM75-B + RH56 simulation bundle (its env.py, robot
+           assets and expert are not part of this repository)
 """
 from pathlib import Path
 
 DESCRIPTIONS = Path(__file__).resolve().parent / 'descriptions'
-END_EFFECTORS = {  # cortexbench@9331494:lewm_pcd/envs/cube_rm75_env.py:46 (GRIPPER_XML)
+END_EFFECTORS = {  # the twin's GRIPPER_XML (jepa4r/envs/twins/cube_rm75_env.py)
     'eg2_4c2': DESCRIPTIONS / 'inspire_eg2_4c2' / 'eg2_4c2.xml',
 }
 
@@ -28,8 +28,6 @@ def build(env_cfg):
         from dm_control import mjcf
 
         GRIPPER_XML = END_EFFECTORS['eg2_4c2']
-        # Moved from cortexbench@9331494:lewm_pcd/envs/cube_rm75_env.py:RM75ManipSpaceEnv.build_mjcf_model (lines
-        # 108-109; verbatim)
         gripper_mjcf = mjcf.from_path(GRIPPER_XML.as_posix(), escape_separators=True)
         gripper_mjcf.model = 'robotiq'
         return gripper_mjcf

@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/tests/test_collection_hdf_resume.py (verbatim except: imports /
-# paths of the package layout, unused imports removed)
 """Real HDF/VDS recovery mechanics on synthetic rows; no simulator or policy."""
 import importlib.util
 import json

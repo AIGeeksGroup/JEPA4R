@@ -1,4 +1,3 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/pcd_fork.py (verbatim except: lines wrapped at 120 columns)
 """Point clouds from CortexBench's MetaWorld env (metaworld fork 4e896a5, mujoco-py 2.0): the top_cap2 camera's depth
 image back-projected into the world frame, with MuJoCo's segmentation telling which geom each pixel belongs to.
 

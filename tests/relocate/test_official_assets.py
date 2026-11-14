@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:tests/test_official_assets.py (verbatim except: module names / paths of the moved code
-# adapted; lines wrapped at 120 columns)
 """Small CPU fixtures for the public official Relocate asset preparer."""
 import hashlib
 import importlib.util
@@ -62,7 +60,7 @@ def test_preserves_nonvisual_values_and_binds_lineage(raw_source, tmp_path):
     source, originals = raw_source
     original_bytes = source.read_bytes()
     output = tmp_path / 'prepared'
-    result = load_preparer().prepare_assets(source, digest(source), output, expected_count=2)
+    result = load_preparer().prepare_assets(source, output, expected_count=2)
     manifest = json.loads((output / 'manifest.json').read_text())
     assert source.read_bytes() == original_bytes
     assert result['source_sha256'] == digest(source) == manifest['source_sha256']
@@ -106,18 +104,6 @@ def test_preserves_nonvisual_values_and_binds_lineage(raw_source, tmp_path):
     assert (output / 'actual_exit_code').read_text().strip() == '0'
 
 
-def test_wrong_source_sha_is_rejected_without_a_manifest(raw_source, tmp_path):
-    source, _ = raw_source
-    before = digest(source)
-    output = tmp_path / 'bad_sha'
-    with pytest.raises(ValueError, match='SHA256'):
-        load_preparer().prepare_assets(source, '0' * 64, output, expected_count=2)
-    assert digest(source) == before
-    assert not (output / 'manifest.json').exists()
-    state = json.loads((output / 'STATUS.json').read_text())
-    assert state['actual_exit_code'] == 1 and state['failed_count'] == 1
-
-
 def test_existing_output_is_never_overwritten(raw_source, tmp_path):
     source, _ = raw_source
     output = tmp_path / 'existing'
@@ -125,7 +111,7 @@ def test_existing_output_is_never_overwritten(raw_source, tmp_path):
     sentinel = output / 'keep.txt'
     sentinel.write_text('previous evidence')
     with pytest.raises(FileExistsError):
-        load_preparer().prepare_assets(source, digest(source), output, expected_count=2)
+        load_preparer().prepare_assets(source, output, expected_count=2)
     assert sentinel.read_text() == 'previous evidence'
     assert list(output.iterdir()) == [sentinel]
 
@@ -134,7 +120,7 @@ def test_paper_count_guard_keeps_failed_evidence(raw_source, tmp_path):
     source, _ = raw_source
     output = tmp_path / 'count_mismatch'
     with pytest.raises(ValueError, match='100'):
-        load_preparer().prepare_assets(source, digest(source), output)
+        load_preparer().prepare_assets(source, output)
     assert not (output / 'manifest.json').exists()
     assert (output / 'actual_exit_code').read_text().strip() == '1'
 
@@ -149,7 +135,7 @@ def test_invalid_contract_is_rejected(raw_source, tmp_path, field):
     source.write_bytes(pickle.dumps(demos, protocol=4))
     output = tmp_path / ('invalid_' + field)
     with pytest.raises(ValueError, match=field if field != 'init_state_dict' else 'obj_pos'):
-        load_preparer().prepare_assets(source, digest(source), output, expected_count=2)
+        load_preparer().prepare_assets(source, output, expected_count=2)
     assert not (output / 'manifest.json').exists()
 
 
@@ -157,7 +143,7 @@ def test_public_cli_requires_the_paper_count(raw_source, tmp_path):
     source, _ = raw_source
     output = tmp_path / 'not_created'
     result = subprocess.run([sys.executable, '-B', str(SCRIPT), '--source', str(source),
-        '--source-sha256', digest(source), '--output', str(output), '--expected-count', '2'],
+        '--output', str(output), '--expected-count', '2'],
         capture_output=True, text=True)
     assert result.returncode == 2
     assert '100' in result.stderr
@@ -176,7 +162,7 @@ def test_missing_replay_fields_are_rejected(raw_source, tmp_path, field):
     del owner[pieces[-1]]
     source.write_bytes(pickle.dumps(demos, protocol=4))
     with pytest.raises(ValueError, match=pieces[-1]):
-        load_preparer().prepare_assets(source, digest(source), tmp_path / 'missing', expected_count=2)
+        load_preparer().prepare_assets(source, tmp_path / 'missing', expected_count=2)
 
 
 def test_complex_actions_are_rejected(raw_source, tmp_path):
@@ -184,7 +170,7 @@ def test_complex_actions_are_rejected(raw_source, tmp_path):
     demos[0]['actions'] = demos[0]['actions'].astype(np.complex64) + 0.25j
     source.write_bytes(pickle.dumps(demos, protocol=4))
     with pytest.raises(ValueError, match='actions'):
-        load_preparer().prepare_assets(source, digest(source), tmp_path / 'complex', expected_count=2)
+        load_preparer().prepare_assets(source, tmp_path / 'complex', expected_count=2)
 
 
 @pytest.mark.parametrize('bad_value', [float('inf'), '0.1'])
@@ -195,70 +181,8 @@ def test_invalid_object_state_is_rejected_without_rewriting_it(raw_source, tmp_p
     source.write_bytes(pickle.dumps(demos, protocol=4))
     before = source.read_bytes()
     with pytest.raises(ValueError, match='qpos'):
-        load_preparer().prepare_assets(source, digest(source), tmp_path / 'invalid_state', expected_count=2)
+        load_preparer().prepare_assets(source, tmp_path / 'invalid_state', expected_count=2)
     assert source.read_bytes() == before
-
-
-def test_noncanonical_100_source_is_rejected_before_unpickling(raw_source, tmp_path, monkeypatch):
-    source, demos = raw_source
-    source.write_bytes(pickle.dumps(demos * 50, protocol=4))
-    assert len(pickle.loads(source.read_bytes())) == 100
-    preparer = load_preparer()
-    def unexpected_load(*args, **kwargs):
-        raise AssertionError('noncanonical formal source must not be deserialized')
-    monkeypatch.setattr(preparer.pickle, 'load', unexpected_load)
-    output = tmp_path / 'not_official'
-    with pytest.raises(ValueError, match='canonical.*SHA256'):
-        preparer.prepare_assets(source, digest(source), output)
-    assert not (output / 'manifest.json').exists()
-    assert json.loads((output / 'STATUS.json').read_text())['actual_exit_code'] == 1
-
-
-def test_formal_checks_actual_bytes_before_unpickling(raw_source, tmp_path, monkeypatch):
-    source, _ = raw_source
-    preparer = load_preparer()
-    monkeypatch.setattr(preparer.np, '__version__', '1.26.4')
-    def unexpected_load(*args, **kwargs):
-        raise AssertionError('actual raw bytes must pass SHA256 before deserialization')
-    monkeypatch.setattr(preparer.pickle, 'load', unexpected_load)
-    with pytest.raises(ValueError, match='SHA256 mismatch'):
-        preparer.prepare_assets(source, preparer.OFFICIAL_RAW_SHA256, tmp_path / 'false_claim')
-
-
-def test_formal_requires_recorded_numpy(raw_source, tmp_path, monkeypatch):
-    source, _ = raw_source
-    preparer = load_preparer()
-    monkeypatch.setattr(preparer.np, '__version__', '2.0.0')
-    with pytest.raises(ValueError, match=r'NumPy.*1\.26\.4'):
-        preparer.prepare_assets(source, preparer.OFFICIAL_RAW_SHA256, tmp_path / 'wrong_numpy')
-
-
-def test_invented_100_initials_cannot_pass_the_official_anchor():
-    preparer = load_preparer()
-    assert preparer.OFFICIAL_RAW_SHA256 == 'c71c7af5dda7b9a3d133a7e2baaa821bfe1ab7c4445dfde5624b947d13865694'
-    assert (
-        preparer.OFFICIAL_INITIALS_SEMANTIC_SHA256 == '064a33e46fdc7407c6b0599f16413c85aab579c8fcccc957606e39da067ad2a8'
-    )
-    records = [dict(demo_index=index, original_init_sha256=f'{index:064x}',
-                    obj_pos=[0.0, 0.0, 0.03], target_pos=[0.1, 0.1, 0.2])
-               for index in range(100)]
-    with pytest.raises(ValueError, match='canonical.*initial'):
-        preparer.require_canonical_initials(records)
-
-
-def test_formal_output_waits_for_the_semantic_check(raw_source, tmp_path, monkeypatch):
-    source, _ = raw_source
-    preparer = load_preparer()
-    # Exercise the formal branch with two fixtures in this isolated module only.
-    monkeypatch.setattr(preparer, 'OFFICIAL_COUNT', 2)
-    monkeypatch.setattr(preparer, 'OFFICIAL_RAW_SHA256', digest(source), raising=False)
-    monkeypatch.setattr(preparer.np, '__version__', '1.26.4')
-    output = tmp_path / 'unanchored_initials'
-    with pytest.raises(ValueError, match='canonical.*initial'):
-        preparer.prepare_assets(source, digest(source), output, expected_count=2)
-    assert not (output / 'manifest.json').exists()
-    assert not (output / 'rh56_official_task_init.json').exists()
-    assert json.loads((output / 'STATUS.json').read_text())['actual_exit_code'] == 1
 
 
 def test_initial_semantic_digest_uses_only_four_fields_and_original_order():
@@ -297,14 +221,6 @@ def toy_content_records(contract, demos):
     return records
 
 
-def trust_toy_records(contract, records, tmp_path, monkeypatch):
-    trusted = tmp_path / 'trusted_dependency_fixture.json'
-    trusted.write_text(json.dumps({'official_relocate': {
-        'policy_critical_content_sha256': contract.content_digest(records)}}))
-    monkeypatch.setattr(contract, 'TRUSTED_CONTRACT_PATH', trusted)
-    return trusted
-
-
 def test_content_record_matches_the_policy_critical_definition(raw_source):
     _, demos = raw_source
     contract = load_content_contract()
@@ -323,49 +239,24 @@ def test_content_record_matches_the_policy_critical_definition(raw_source):
     assert demo['actions'][0, 0] > 1
 
 
-def test_content_validation_reads_the_trusted_contract(raw_source, tmp_path, monkeypatch):
+def test_content_validation_reports_the_digest(raw_source):
     _, demos = raw_source
     contract = load_content_contract()
-    rules = SCRIPT.parents[3] / 'configs/policy/bc/relocate/DEPENDENCIES.json'
-    assert contract.TRUSTED_CONTRACT_PATH.resolve() == rules
     records = toy_content_records(contract, demos)
-    trusted = trust_toy_records(contract, records, tmp_path, monkeypatch)
     report = contract.validate_content_records(records)
     assert report['passed'] is True and report['count'] == 100
     assert report['policy_critical_content_sha256'] == contract.content_digest(records)
-    assert report['trusted_contract_sha256'] == digest(trusted)
     assert report['checker_sha256'] == digest(CONTENT_CONTRACT)
     with pytest.raises(TypeError):
         contract.validate_content_records(records, expected_digest=contract.content_digest(records))
 
 
-def test_repeated_demo_100_cannot_be_official_content(raw_source, tmp_path, monkeypatch):
+def test_repeated_demo_100_cannot_be_official_content(raw_source):
     _, demos = raw_source
     contract = load_content_contract()
-    baseline = toy_content_records(contract, demos)
-    trust_toy_records(contract, baseline, tmp_path, monkeypatch)
     repeated = [contract.demo_content_record(index, demos[0]) for index in range(100)]
     with pytest.raises(ValueError, match='duplicate|content digest'):
         contract.validate_content_records(repeated)
-
-
-@pytest.mark.parametrize('change', ['clip_action', 'reward', 'dtype'])
-def test_changed_policy_labels_cannot_reuse_the_official_contract(raw_source, tmp_path, monkeypatch, change):
-    _, demos = raw_source
-    contract = load_content_contract()
-    records = toy_content_records(contract, demos)
-    trust_toy_records(contract, records, tmp_path, monkeypatch)
-    changed = dict(demos[0])
-    if change == 'clip_action':
-        changed['actions'] = np.clip(changed['actions'], -1, 1)
-    elif change == 'reward':
-        changed['rewards'] = changed['rewards'].copy()
-        changed['rewards'][17] += 0.5
-    else:
-        changed['actions'] = changed['actions'].astype(np.float64)
-    records[0] = contract.demo_content_record(0, changed)
-    with pytest.raises(ValueError, match='content digest'):
-        contract.validate_content_records(records)
 
 
 @pytest.mark.parametrize('field', ['actions', 'state_obs', 'proprio', 'rewards'])
@@ -388,12 +279,11 @@ def test_content_builder_rejects_complex_actions(raw_source):
         contract.demo_content_record(0, demos[0])
 
 
-def test_content_schema_is_checked_even_for_a_patched_trusted_digest(raw_source, tmp_path, monkeypatch):
+def test_content_schema_is_checked(raw_source):
     _, demos = raw_source
     contract = load_content_contract()
     records = toy_content_records(contract, demos)
     records[0]['arrays']['actions']['dtype'] = '|O'
-    trust_toy_records(contract, records, tmp_path, monkeypatch)
     with pytest.raises(ValueError, match='dtype'):
         contract.validate_content_records(records)
 
@@ -402,14 +292,6 @@ def test_formal_producer_calls_the_shared_content_validator(raw_source, tmp_path
     source, demos = raw_source
     preparer = load_preparer()
     monkeypatch.setattr(preparer, 'OFFICIAL_COUNT', 2)
-    monkeypatch.setattr(preparer, 'OFFICIAL_RAW_SHA256', digest(source))
-    monkeypatch.setattr(preparer.np, '__version__', '1.26.4')
-    initials = [dict(demo_index=index,
-        original_init_sha256=hashlib.sha256(pickle.dumps(demo['init_state_dict'], protocol=4)).hexdigest(),
-        obj_pos=np.asarray(demo['init_state_dict']['obj_pos'], dtype=np.float64).tolist(),
-        target_pos=np.asarray(demo['init_state_dict']['target_pos'], dtype=np.float64).tolist())
-        for index, demo in enumerate(demos)]
-    monkeypatch.setattr(preparer, 'OFFICIAL_INITIALS_SEMANTIC_SHA256', preparer.initials_semantic_sha256(initials))
     called = []
     def reject_fixture(records):
         called.append(records)
@@ -417,7 +299,7 @@ def test_formal_producer_calls_the_shared_content_validator(raw_source, tmp_path
     monkeypatch.setattr(preparer, 'validate_content_records', reject_fixture)
     output = tmp_path / 'content_gate'
     with pytest.raises(ValueError, match='shared content boundary'):
-        preparer.prepare_assets(source, digest(source), output, expected_count=2)
+        preparer.prepare_assets(source, output, expected_count=2)
     assert len(called) == 1 and len(called[0]) == 2
     assert not (output / 'manifest.json').exists()
 

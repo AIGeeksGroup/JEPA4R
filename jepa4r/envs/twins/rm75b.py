@@ -3,13 +3,13 @@ URDF, matching the URDF in forward kinematics (2,000 joint configurations), join
 mechanics; it replaces the UR5e in an OGBench Cube workspace scaled by 0.5 about its center (610 mm reach).
 Same paired-observation contract as jepa4r/envs/__init__.py.
 
-Integrated code (cortexbench@9331494, unchanged apart from imports / paths):
-  cube_rm75_env.py   lewm_pcd/envs/cube_rm75_env.py: RM75ManipSpaceEnv (OGBench's robot layer with the RM75-B + the
+Modules:
+  cube_rm75_env.py   RM75ManipSpaceEnv (OGBench's robot layer with the RM75-B + the
                      Inspire EG2-4C2 gripper of jepa4r/envs/twins/hand.py), RM75CubeEnv / RM75CubePCDEnv
                      (swm/OGBCubeRM75-v0 / swm/OGBCubeRM75PCD-v0), base at (0.15, 0, 0), boxes scaled by 0.5 about
                      (0.425, 0, 0.02), point-cloud crop x_min 0.21
   descriptions/      the MJCF models (realman_rm75b/rm75b.xml, inspire_eg2_4c2/eg2_4c2.xml) and their STL meshes
-  verify_rm75.py     lewm_pcd/scripts/checks/verify_rm75.py: the acceptance check against the vendor URDFs (RealMan
+  verify_rm75.py     the acceptance check against the vendor URDFs (RealMan
                      rm_models RM75-B and EG2-4C2), datasheets, the UR5e env and the two point-cloud datasets
 """
 import os
@@ -17,7 +17,7 @@ import tempfile
 from importlib import import_module
 from pathlib import Path
 
-ENV_IDS = {  # cortexbench@9331494:lewm_pcd/envs/__init__.py:12-20 (entry points re-pointed)
+ENV_IDS = {  # gymnasium registrations
     'swm/OGBCubeRM75-v0': 'jepa4r.envs.twins.cube_rm75_env:RM75CubeEnv',
     'swm/OGBCubeRM75PCD-v0': 'jepa4r.envs.twins.cube_rm75_env:RM75CubePCDEnv',
 }

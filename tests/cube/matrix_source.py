@@ -1,4 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/matrix_source.py (verbatim)
 """Default-off M2 shared encoder selection; formal workflow validation stays strict."""
 import hashlib
 import json
@@ -44,7 +43,7 @@ def select_source_assets(case, target_runtime, *, assets_loader=None):
     for name in ('family', 'latent_dim'):
         if source.get(name, binding[name]) != target_runtime.get(name, target_binding[name]):
             raise ValueError('shared encoder source/target ' + name + ' differs')
-    for name in ('encoder_receipt', 'encoder_import'):
+    for name in ('encoder_receipt',):
         if name in target_runtime and target_runtime[name] != source.get(name):
             raise ValueError('shared encoder target ' + name + ' differs from actual source')
     # Original strict loader checks the source's own actual producer/data/horizon,

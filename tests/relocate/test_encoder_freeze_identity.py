@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/scripts/checks/test_encoder_freeze_identity.py (verbatim except: module names
-# / paths of the moved code adapted; lines wrapped at 120 columns)
 """All registered encoder tensors, including nonpersistent buffers, are frozen."""
 import unittest
 import torch

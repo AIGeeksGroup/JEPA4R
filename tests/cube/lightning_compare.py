@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/lightning_compare.py (verbatim except: imports / paths adapted
-# to the package; lines wrapped at 120 columns)
 """Full sealed Lightning-state comparison with explicit run-local metadata aliases."""
 import copy,json,hashlib
 from pathlib import Path

@@ -1,4 +1,3 @@
-# Moved from cortexbench@9331494:lewm_pcd/envs/metaworld/hammer.py (verbatim except: lines wrapped at 120 columns)
 """MetaWorld hammer (a CortexBench task): pick the hammer up and drive the nail into the box with it.
 
 * Layout: metaworld 3.0 ``hammer-v3-goal-observable``; every reset places the hammer anew (x -0.1..0.1, y 0.4..0.5,

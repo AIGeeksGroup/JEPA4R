@@ -1,8 +1,8 @@
 # Sec. 5.6 in the RM75-B digital twin: twin check against the vendor URDF, the twin-trained world model and decoder on
 # the twin's Cube, and the world models and policy heads trained in the twin with its two hands (below). Real-arm runs
-# are not included. A policy head and the decoded look-ahead preview on the twin's Cube have no implementation in the
-# four source branches (their twin Cube only plans with CEM, Tab. S1) and no number in the paper, so no job runs them
-# (docs/reproduce.md, Open Items).
+# are not included. A policy head and the decoded look-ahead preview on the twin's Cube are not implemented (on the
+# twin's Cube the paper's code only plans with CEM, the appendix-only setting of Tab. S1) and the paper gives no number
+# for them, so no job runs them (docs/reproduce.md).
 name: twin
 expected: [paper/expected/twin.yaml]   # no table: the paper reports no twin numbers (Sec. 5.6 "Results" is qualitative)
 
@@ -15,7 +15,7 @@ jobs:
     grid: {env: [rm75b_cube], method: [jepa4r]}
   - stage: train_decoder
     grid: {env: [rm75b_cube], decoder: [page4d]}
-  # the RH56 dexterous hand on the twin (configs/env/rm75b_rh56_relocate.yaml): the OGBench-cube branch's RH56 Relocate,
+  # the RH56 dexterous hand on the twin (configs/env/rm75b_rh56_relocate.yaml): the Relocate workflow on the RH56 twin,
   # JEPA4R and LeWM, BC seeds 100 / 200 / 300 (no number in the paper)
   - stage: collect_wm_data
     grid: {env: [rm75b_rh56_relocate]}
@@ -25,10 +25,9 @@ jobs:
     grid: {env: [rm75b_rh56_relocate], method: [jepa4r, lewm]}
   - stage: train_policy
     grid: {env: [rm75b_rh56_relocate], method: [jepa4r, lewm]}
-  # the EG2-4C2 gripper on the twin, four CortexBench MetaWorld tasks (configs/env/rm75b_mw_*.yaml): the cortexbench
-  # branch's RM75 runs (scripts/run_mw_pipeline.sh with TASK=mw_<task>_rm75: LeWM 2D and JEPA4R world models, 10 epochs;
-  # CortexBench BC seeds 100 / 200 / 300 on the twin's own demos), Random (ViT-B) on bin-picking and button-press as
-  # there (logs/cortexbench/runs/rand_vitb/rm75-*); no number in the paper
+  # the EG2-4C2 gripper on the twin, four CortexBench MetaWorld tasks (configs/env/rm75b_mw_*.yaml): LeWM 2D and
+  # JEPA4R world models, 10 epochs; CortexBench BC seeds 100 / 200 / 300 on the twin's own demos; Random (ViT-B) on
+  # bin-picking and button-press, as in the paper's runs; no number in the paper
   - stage: collect_wm_data
     grid: {env: &rm75_mw [rm75b_mw_bin_pick, rm75b_mw_button, rm75b_mw_drawer, rm75b_mw_assembly]}
   - stage: prepare_policy_data

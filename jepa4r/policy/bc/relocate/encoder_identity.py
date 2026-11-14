@@ -1,4 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/relocate/encoder_identity.py (verbatim)
 """Read every registered encoder parameter/buffer, including nonpersistent ones."""
 import hashlib
 import json

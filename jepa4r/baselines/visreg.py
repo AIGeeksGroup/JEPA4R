@@ -1,7 +1,7 @@
 """VISReg [wu2026visreg]: the authors' released ViT-B/16 weights (cfg.method.weights), frozen.
 
 timm's vit_base_patch16_224, the CLS after the final norm, 768-d, input 224 with ImageNet normalisation:
-jepa4r/policy/bc/jepa_baselines.py load_visreg (cortexbench@9331494, as CortexBench and DQC read it).
+jepa4r/policy/bc/jepa_baselines.py load_visreg (as CortexBench and DQC read it).
 """
 
 

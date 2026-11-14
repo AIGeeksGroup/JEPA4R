@@ -1,36 +1,35 @@
 # LeWM recipe shared by JEPA4R and the LeWM baseline (Sec. 3, Eq. 1; Sec. 4.2; supp. sec:supp-wm).
 # The two are identical except for the encoder (and therefore the observation).
-# Values not stated in the paper come from LeWM's configs as used for the paper runs:
-# cortexbench:lewm_pcd/config/train/lewm.yaml (recipe) and cortexbench:lewm_pcd/config/train/model/lewm.yaml (modules);
-#   the C4 Cube recipe OGBench-cube:lewm_pcd/bench/ogbench/recipes/lewm_pcd.json has the same values except seed 0.
+# Values not stated in the paper are those of LeWM's training and model configs as used in the paper's runs (marked
+# "LeWM"); the Cube 1-4 world models use the same values with seed 0 (per_env in jepa4r.yaml / lewm.yaml).
 kind: jepa_wm
 impl: jepa4r.models.world_model
 latent_dim: 192               # z_t = f_theta(o_t) in R^192
 frameskip: 5                  # clip frames are 5 env steps apart; action block a_t = the 5 actions in between
 history: 3                    # context frames the predictor attends over (Tab. 4c: 2 / 3 / 4)
 num_frames: 4                 # clip length = history + 1 (teacher forcing on o_{1:4})
-projector:                    # inherited from LeWM: module.MLP, 192 -> 2048 (BatchNorm1d, GELU) -> 192
-  hidden_dim: 2048            # cortexbench:lewm_pcd/config/train/model/lewm.yaml:35
-  norm: batchnorm1d           # cortexbench:lewm_pcd/config/train/model/lewm.yaml:37
+projector:                    # inherited from LeWM: MLP 192 -> 2048 (BatchNorm1d, GELU) -> 192 (jepa4r/models/heads.py)
+  hidden_dim: 2048            # LeWM
+  norm: batchnorm1d           # LeWM
 pred_proj:                    # LeWM's projection of the predictor output, the same MLP as the projector
-  hidden_dim: 2048            # cortexbench:lewm_pcd/config/train/model/lewm.yaml:44
-  norm: batchnorm1d           # cortexbench:lewm_pcd/config/train/model/lewm.yaml:46
-action_encoder:               # inherited from LeWM: module.Embedder, input = frameskip x action dim (train.py:76)
-  emb_dim: 192                # cortexbench:lewm_pcd/config/train/model/lewm.yaml:29 (${embed_dim})
+  hidden_dim: 2048            # LeWM
+  norm: batchnorm1d           # LeWM
+action_encoder:               # inherited from LeWM: Embedder (jepa4r/models/heads.py), input = frameskip x action dim
+  emb_dim: 192                # LeWM (the embedding dimension)
 predictor:
   depth: 6                    # six-block transformer
   conditioning: adaln_zero    # action embeddings enter through AdaLN-zero
   causal: true
-  heads: 16                   # cortexbench:lewm_pcd/config/train/model/lewm.yaml:20
-  dim_head: 64                # cortexbench:lewm_pcd/config/train/model/lewm.yaml:22
-  mlp_dim: 2048               # cortexbench:lewm_pcd/config/train/model/lewm.yaml:21
-  dropout: 0.1                # cortexbench:lewm_pcd/config/train/model/lewm.yaml:23
-  emb_dropout: 0.0            # cortexbench:lewm_pcd/config/train/model/lewm.yaml:24
+  heads: 16                   # LeWM
+  dim_head: 64                # LeWM
+  mlp_dim: 2048               # LeWM
+  dropout: 0.1                # LeWM
+  emb_dropout: 0.0            # LeWM
 loss:
   pred: mse                   # 1/(3d) * sum_t ||z_hat_{t+1} - z_{t+1}||^2
   sigreg_weight: 0.09         # lambda
   sigreg_projections: 1024    # random 1-D projections per time step vs a standard Gaussian
-  sigreg_knots: 17            # cortexbench:lewm_pcd/config/train/lewm.yaml:43
+  sigreg_knots: 17            # LeWM
   stop_grad: false            # no stop-gradient, no EMA target encoder
 train:
   framework: stable-worldmodel
@@ -38,11 +37,10 @@ train:
   batch_size: 128             # Tab. 4d: 64 / 256
   optimizer: adamw
   lr: 5.0e-5                  # Tab. 4d: 2.5e-5 / 1e-4
-  weight_decay: 1.0e-3        # cortexbench:lewm_pcd/config/train/lewm.yaml:35
+  weight_decay: 1.0e-3        # LeWM
   precision: bf16
-  gradient_clip: 1.0          # cortexbench:lewm_pcd/config/train/lewm.yaml:23
-  seed: 3072                  # cortexbench:lewm_pcd/config/train/lewm.yaml:12 (split + shuffle generator); Cube1-4:
-                              # per_env
-  train_split: 0.9            # cortexbench:lewm_pcd/config/train/lewm.yaml:11 (random clip split)
-  num_workers: 6              # cortexbench:lewm_pcd/config/train/lewm.yaml:10 (loader only, no effect on the numbers)
+  gradient_clip: 1.0          # LeWM
+  seed: 3072                  # LeWM (split + shuffle generator); Cube 1-4: per_env
+  train_split: 0.9            # LeWM (random clip split)
+  num_workers: 6              # LeWM (loader only, no effect on the numbers)
   checkpoint_every_epoch: true  # the decoder uses the epoch-10 checkpoint (Sec. 4.4)

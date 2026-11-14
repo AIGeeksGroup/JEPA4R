@@ -52,8 +52,7 @@ jepa4r-report                                                                   
 
 ## Values Not Stated in the Paper
 
-The configurations carry the values of the integrated code, each with the file and line it comes from
-(`configs/**/*.yaml` comments; moved files start with a `# Moved from <branch>:<path>` line):
+The configurations carry the values of the code the paper's runs used:
 
 1. Task ids, play datasets, cameras, crop boxes, affine maps, point sampler: `configs/env/*.yaml`.
 2. Collection policies, noise and switch schedules: `jepa4r/envs/{metaworld,ogbench}/` (`jepa4r/data/behaviors.py`
@@ -65,7 +64,7 @@ The configurations carry the values of the integrated code, each with the file a
    default generator, which those runs did not seed, so two trainings with the same seed differ as two seeds do.
 5. DQC (`configs/policy/dqc.yaml`): the paper's "best of ten evaluations" are the evaluations at 100k ... 1M steps;
    the runner also evaluates the untrained agent at step 0 (kept: it shares the RNG of the batch sampling; 0.0 in all
-   18 paper runs, so the best of ten equals GATES.md's best of eleven). BC: `configs/policy/bc.yaml` (eai-vc 76fe35e's
+   18 paper runs, so the best of ten equals the best of all eleven). BC: `configs/policy/bc.yaml` (eai-vc 76fe35e's
    configs, seeds 100 / 200 / 300, episode i at seed + i).
 6. Decoder: `configs/decoder/_base.yaml` (pixel selection, 100 sliced-W2 projections, 14,140 batches of 32 per stage,
    learning rates 3e-4 / 1e-5, split 0.9 of seed 3072); Depth Anything 3 Giant; the cube position is read as the
@@ -74,26 +73,24 @@ The configurations carry the values of the integrated code, each with the file a
 8. Reconstruction data: the UR5e Cube-Single plan-oracle collection (`configs/env/cube_single_recon.yaml`), not Tab. 1's
    Cube-Single data.
 
-## Open Items
+## Notes
 
-- **OGBench Cube 1-4, Adroit Relocate, the RH56 hand twin** (Tab. 1 Cube columns and Sec. 5.3 Cube-Quadruple, Tab. 2
-  Relocate, the twin's hand) run the OGBench-cube branch's workflows (controllers in `jepa4r/policy/gciql` and
-  `jepa4r/policy/bc/relocate`; docs/architecture.md), which keep their own receipts and sha256 pins. Inputs they need
-  from outside this repository: the V-JEPA 2.1 ViT-L/16 weights (Cube; the workflow fetches them), DAPG's Relocate state
-  expert, the official Relocate demonstrations, the native RM75-B + RH56 bundle (its files are listed in
+- **External inputs.** OGBench Cube 1-4 (Tab. 1 Cube columns, Sec. 5.3 Cube-Quadruple), Adroit Relocate (Tab. 2) and
+  the RH56 hand twin run the Cube and Relocate workflows (controllers in `jepa4r/policy/gciql` and
+  `jepa4r/policy/bc/relocate`; docs/architecture.md). Inputs they need from outside this repository: the V-JEPA 2.1
+  ViT-L/16 weights (Cube; the workflow fetches them), DAPG's Relocate state expert, the official Relocate
+  demonstrations, the native RM75-B + RH56 bundle (its files are listed in
   `configs/policy/bc/relocate/rh56_native_bundle_v1.json`) and MuJoCo 2.0 for mujoco-py.
-- **Look-ahead preview** (Sec. 4.3): no commit of the four source branches, no file of their data store and none of
-  the HF releases has preview code, and the paper reports no twin numbers (Sec. 5.6 "Results" is qualitative), so the
-  repository has no preview stage (the skeleton's `eval_preview` stub, which could never run, was removed).
-- **Policy head on the twin's Cube** (`configs/env/rm75b_cube.yaml` `policy`, `policy_data`: `???`): on the twin's Cube
-  the source branches only plan with CEM (`config/eval/cube_rm75_*.yaml`, the setting of Tab. S1, out of scope); the
-  gripper's policy heads trained in the twin are the CortexBench ones of the four `rm75b_mw_*` tasks.
-  `experiments/twin.yaml` has no `prepare_policy_data` / `train_policy` job on `rm75b_cube` (they could never run).
-- **Figures:** not part of this repository, which reproduces the paper's numbers (Scope); the skeleton's
-  `paper/figures/` stubs, which could not run, were removed. The stages still write the data some figures plot
-  (`eval_recon`: `curves.npz`, `rollout_example.npz`).
+- **Look-ahead preview** (Sec. 4.3): not part of this repository; the paper reports no twin numbers (Sec. 5.6
+  "Results" is qualitative).
+- **Policy head on the twin's Cube** (`configs/env/rm75b_cube.yaml` `policy`, `policy_data`: `???`): on the twin's
+  Cube the paper's code only plans with CEM (the appendix-only setting of Tab. S1); the gripper's policy heads trained
+  in the twin are the CortexBench ones of the four `rm75b_mw_*` tasks, so `experiments/twin.yaml` has no policy job on
+  `rm75b_cube`.
+- **Figures:** this repository reproduces the paper's numbers, not its figures; the stages still write the data some
+  figures plot (`eval_recon`: `curves.npz`, `rollout_example.npz`).
 - **Released weights:** VISReg's are shared by the authors on request (`scripts/download_checkpoints.py`).
 - **Random (ViT-B) row of Tab. 2:** the paper lists it with the published numbers (caption: "Published numbers: the
   VC-1 study"), and its values equal the VC-1 study's Table 8 (`paper/expected/tab2_cortexbench.yaml` `published`); the
-  paper runs ran it only on bin-picking (`configs/method/random_vitb.yaml`); the job stays optional, on the five
-  MetaWorld tasks (Relocate's behavior cloning, the OGBench-cube workflow, has no random ViT-B).
+  paper's runs ran it only on bin-picking (`configs/method/random_vitb.yaml`); the job stays optional, on the five
+  MetaWorld tasks (the Relocate workflow's behavior cloning has no random ViT-B).

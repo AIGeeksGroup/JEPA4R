@@ -1,11 +1,8 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/pldm/method.py (verbatim except: imports / paths of the package
-# layout)
 """Current RGB Impala512 PLDM model, objective and optimizer factory."""
 import importlib
 from pathlib import Path
 import sys
 
-AUTHOR_COMMIT = "1bd7e564ecd961205bc18b23067b19e9ca24ac90"
 OBSERVATIONS, ACTIONS, ACTION_DIM, IMAGE_SIZE, LATENT_DIM = 16, 15, 5, 65, 512
 
 

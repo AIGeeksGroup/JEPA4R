@@ -1,6 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:tests/gates/test_aggregation.py (verbatim except: the module's new name; the CEM
-# checks
-# (appendix Tab. S1) left out)
 import unittest
 try:
     from jepa4r.eval import aggregation as gates

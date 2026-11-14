@@ -1,7 +1,3 @@
-# Moved from cortexbench@9331494:lewm_pcd/scripts/checks/verify_rm75.py (verbatim except: imports from the moved twin
-# module; vendor folder, report file and the two point-cloud datasets come from JEPA4R_TWIN_* environment variables that
-# jepa4r.envs.twins.rm75b.check_against_urdf sets from configs/env/rm75b_cube.yaml instead of $STABLEWM_HOME; lines
-# wrapped at 120 columns, no lint exemptions)
 """Acceptance check for the RM75-B + EG2-4C2 OGBench cube env (envs/cube_rm75_env.py): one command, PASS/FAIL per
 claim, measured vs expected. Every reference is outside the env code: the vendor URDFs (loaded with MuJoCo's own URDF
 importer from $STABLEWM_HOME/vendor/realman/, RealMan's rm_models), the vendor dimension drawing and datasheets, the

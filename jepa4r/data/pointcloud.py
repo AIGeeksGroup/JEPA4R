@@ -11,13 +11,13 @@ Steps (config: env_cfg.pointcloud):
   6. normalise with the fixed affine map (on Cube shared with the real arm)   affine
 Output: float32 [1200, 6] = normalised xyz + rgb.
 
-Integrated implementation: the generic single-depth-camera wrapper ``PointCloudWrapper`` (cortexbench
-envs/pcd_wrapper.py) below; the suites subclass it next to their envs (jepa4r.envs.ogbench.ogb_pcd,
+Implementation: the generic single-depth-camera wrapper ``PointCloudWrapper`` of the paper's data (envs/pcd_wrapper.py)
+below; the suites subclass it next to their envs (jepa4r.envs.ogbench.ogb_pcd,
 jepa4r.envs.metaworld.pcd, jepa4r.envs.adroit.pcd, jepa4r.envs.twins.rm75b). ``process`` applies the same
 back-projection, crop, 5 mm voxel de-duplication and stratified draw (``PointCloudWrapper._grid`` / ``_sample``,
 unchanged) to arrays that were rendered elsewhere.
 
-Original module docstring (lewm_pcd/envs/pcd_wrapper.py):
+Original module docstring (envs/pcd_wrapper.py of the paper code):
 Single depth-camera point-cloud wrapper for stable-worldmodel's OGBench manipulation envs.
 
 Adds two keys to the info dict on every ``reset()`` / ``step()``:
@@ -51,7 +51,6 @@ The wrapper owns a private RNG seeded from the reset seed. It never touches the
 env RNG or numpy's global RNG (the OGBench oracle draws from the latter), so the
 trajectories are exactly those a pixel collection with the same seeds produces.
 """
-# Moved from cortexbench@9331494:lewm_pcd/envs/pcd_wrapper.py (lines 34-219; verbatim)
 from __future__ import annotations
 
 from collections.abc import Sequence

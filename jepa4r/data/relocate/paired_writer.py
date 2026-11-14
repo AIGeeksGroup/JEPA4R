@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/relocate/paired_writer.py (verbatim except: imports / paths of the
-# package layout, lines wrapped at 120 columns)
 """Unchanged paired HDF writer shared by the final Relocate collectors."""
 from __future__ import annotations
 from pathlib import Path

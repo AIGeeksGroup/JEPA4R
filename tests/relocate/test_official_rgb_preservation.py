@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/scripts/checks/test_official_rgb_preservation.py (verbatim except: module
-# names / paths of the moved code adapted; lines wrapped at 120 columns)
 """D5 RGB conversion keeps original1536D cache values; only images are replaced."""
 import importlib.util
 from pathlib import Path

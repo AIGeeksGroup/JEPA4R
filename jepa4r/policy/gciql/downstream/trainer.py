@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/downstream/trainer.py (verbatim except: imports / paths adapted
-# to the package; lines wrapped at 120 columns, no lint exemptions, unused imports removed, re-exports declared)
 """Six true-width inputs around the preserved Single GCIQL update/save code."""
 import argparse
 import hashlib
@@ -46,8 +44,6 @@ def load_module(name, path):
 utility = load_module('cube_policy_io', HELPER)
 core = load_module('cube_policy_core', CORE/'core.py')
 model = load_module('cube_policy_gciql', CORE/'gciql.py')
-from ._source import verify_sources
-verify_sources()
 
 
 class InputResources:

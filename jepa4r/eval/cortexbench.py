@@ -4,7 +4,7 @@
 During training the 20 evaluations are the official loop's own (eai-vc 76fe35e train_loop.sample_paths every 5
 epochs and after the last, inside jepa4r/policy/bc/run_bc*.py); jepa4r.policy.bc reads them back from metrics.jsonl
 and aggregates them (best of 20 per run, mean over seeds, mean over tasks). ``evaluate_policy`` runs one such evaluation
-again for a saved policy (best_policy.pickle), as GATES.md E1 / E2 do: the run's eai-vc config, the runtime patches of
+again for a saved policy (best_policy.pickle): the run's eai-vc config, the runtime patches of
 the runner (the scripts without their last two lines, which start a run), 25 episodes from the run's seed.
 Interpreter: JEPA4R_PY_CORTEXBENCH (eai-vc, MuJoCo 2.0 / mujoco-py); JEPA4R_EAI_VC = the eai-vc checkout.
 """

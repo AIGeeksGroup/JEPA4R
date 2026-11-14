@@ -1,4 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/envs/adroit/hdf_binding.py (verbatim except: lines wrapped at 120 columns)
 """Read-only content binding for concrete HDF ExternalLink and VDS dependencies."""
 import hashlib
 import json

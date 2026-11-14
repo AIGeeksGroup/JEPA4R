@@ -1,4 +1,3 @@
-# Moved from cortexbench@9331494:lewm_pcd/envs/expert_policy.py (verbatim except: lines wrapped at 120 columns)
 """``ExpertPolicy`` that also accepts ``swm/OGBCubePCD-v0``.
 
 Upstream ``set_env`` whitelists the env id ('swm/OGBCube-v0' / 'swm/OGBScene-v0').

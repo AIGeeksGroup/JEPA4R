@@ -1,8 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/rh56_adapter/wm_bridge.py (verbatim except: imports / paths adapted to the
-# package; the original train.py / utils.py / config/train are their moved counterparts
-# (jepa4r.models.world_model.run_random_split with original_layout, jepa4r.data.clips,
-# configs/method/relocate/train);
-# lines wrapped at 120 columns)
 """RH56 data-boundary hooks around the unchanged CortexBench LeWM entrypoint.
 
 Task data boundaries, run budgets and checkpoint evidence are adapted here.

@@ -1,4 +1,3 @@
-# Moved from cortexbench@9331494:lewm_pcd/envs/metaworld/env.py (verbatim except: lines wrapped at 120 columns)
 """MetaWorld tasks of CortexBench as stable-worldmodel envs: three-part data collection (scripts/data/collect_mw.py) and
 the planning evaluation (config/eval/mw_<task>_*.yaml). ``MWTaskEnv`` holds what all tasks share, a subclass per task
 the rest (``MWBinPickEnv`` here, ``assembly.MWAssemblyEnv``):

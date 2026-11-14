@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/relocate/workflow.py (verbatim except: imports / paths adapted to the
-# package; lines wrapped at 120 columns, no lint exemptions, unused imports removed)
 """Small env/model dispatcher with persistent stage logs and artifact verification."""
 from __future__ import annotations
 

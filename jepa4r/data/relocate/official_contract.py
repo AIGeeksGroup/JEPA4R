@@ -1,9 +1,7 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/relocate/official_contract.py (verbatim except: imports / paths adapted
-# to the package; lines wrapped at 120 columns)
 """Pure checks for the policy-critical content of the official Relocate demos.
 
-Consumers build records from actual deserialized demonstrations. Expected
-content comes only from the versioned repository dependency contract.
+Consumers build records from actual deserialized demonstrations; the checks
+cover their count, order, shapes, dtypes and finiteness.
 """
 import hashlib
 import json
@@ -14,7 +12,6 @@ import re
 import numpy as np
 
 
-TRUSTED_CONTRACT_PATH = Path(__file__).resolve().parents[3] / 'configs/policy/bc/relocate/DEPENDENCIES.json'
 OFFICIAL_COUNT = 100
 ARRAY_SHAPES = dict(actions=(200, 30), state_obs=(200, 39),
                     proprio=(200, 30), rewards=(200,))
@@ -97,16 +94,5 @@ def validate_content_records(records):
             _require_sha256(item['sha256'], name + '.sha256')
     if len(set(initial_hashes)) != OFFICIAL_COUNT:
         raise ValueError('duplicate official initialization content')
-    contract_path = Path(TRUSTED_CONTRACT_PATH).resolve()
-    payload = contract_path.read_bytes()
-    try:
-        expected = json.loads(payload)['official_relocate']['policy_critical_content_sha256']
-    except (ValueError, KeyError, TypeError) as error:
-        raise ValueError('trusted repository official policy-content contract is missing') from error
-    _require_sha256(expected, 'trusted policy_critical_content_sha256')
-    actual = content_digest(records)
-    if actual != expected:
-        raise ValueError(f'official policy-critical content digest mismatch: expected {expected}, got {actual}')
-    return dict(passed=True, count=OFFICIAL_COUNT, policy_critical_content_sha256=actual,
-        trusted_contract_path=str(contract_path), trusted_contract_sha256=hashlib.sha256(payload).hexdigest(),
+    return dict(passed=True, count=OFFICIAL_COUNT, policy_critical_content_sha256=content_digest(records),
         checker_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest())

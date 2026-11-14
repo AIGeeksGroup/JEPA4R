@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/scripts/checks/test_seed_contract.py (verbatim except: module names / paths
-# of the moved code adapted; lines wrapped at 120 columns, unused imports removed)
 """CPU seed forwarding only; mock construction/Manager, no training."""
 import ast
 import importlib.util

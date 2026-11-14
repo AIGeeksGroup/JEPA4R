@@ -1,5 +1,3 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/rm75_env.py (verbatim except: imports / paths adapted to the
-# package; lines wrapped at 120 columns, no lint exemptions)
 """CortexBench's MetaWorld env on the RM75 (runs in the lewm_mw env, MuJoCo 3): what the official harness's
 env_constructor + MuJoCoPixelObsWrapper give for the Sawyer (metaworld <task>-v2-goal-observable with
 _freeze_rand_vec False, a new layout per seed, the hand at the task's own start, 500-step episodes, 256x256 frames

@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/relocate/clip_evidence.py (verbatim except: lines wrapped at 120
-# columns)
 """Passive clipping evidence; the original clip call alone mutates gradients."""
 from contextlib import contextmanager
 import math

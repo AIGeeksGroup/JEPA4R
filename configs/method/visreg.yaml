@@ -6,8 +6,4 @@ impl: jepa4r.baselines.visreg
 obs: image
 encoder: vit_b16
 weights: visreg/visreg-vit-b-inet1k.pth   # under JEPA4R_CHECKPOINTS: the authors' ViT-B/16 (ImageNet-1K, 400 epochs),
-                                          # shared by
-                                          # them on request, not public
-                                          # (cortexbench@9331494:lewm_pcd/bench/cortexbench/conf/
-                                          # model/visreg_vitb.yaml:4-6); GATES.md 2: sha256 23e6aa5f..., 368,495,235
-                                          # bytes
+                                          # shared by them on request, not public (368,495,235 bytes)

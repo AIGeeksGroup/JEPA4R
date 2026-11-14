@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/cortexbench/surface_geometry.py (verbatim except: lines wrapped at 120
-# columns)
 """Depth back-projection and the unchanged shared visible-surface sampling primitive."""
 import numpy as np
 

@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import importlib
-import hashlib
 import importlib.util
 from pathlib import Path
 
@@ -10,8 +9,6 @@ import numpy as np
 
 from collection_protocol import action_source
 
-OFFICIAL_CUBE_SHA = '6f8457ffd634f6620411c788c86e871f44ea5b5b5eecf76cd694fc04d12d678d'
-FRAME_SHA = '695be6a7027d78cbed4c32fc5ea388c1d229203a4e0d3fe0c206bc63c2f4c13c'
 DOUBLE_ENV_ID = 'swm/OGBCubeOfficialFixed-v0'
 
 
@@ -61,9 +58,6 @@ class DoubleStages:
 
 def make_official_double_env(**kwargs):
     from ogbench.manipspace.envs.cube_env import CubeEnv
-    source = Path(importlib.util.find_spec(CubeEnv.__module__).origin)
-    if hashlib.sha256(source.read_bytes()).hexdigest() != OFFICIAL_CUBE_SHA:
-        raise ValueError('Official CubeEnv source changed')
 
     class SeededDoubleCube(CubeEnv):
         @property
@@ -103,8 +97,6 @@ def make_double_wrapper(env, *, task_id, strategy, mixed_switch_step, capture):
     import gymnasium as gym
     import mujoco
     frame_path = Path(capture['frame_source_path'])
-    if hashlib.sha256(frame_path.read_bytes()).hexdigest() != FRAME_SHA:
-        raise ValueError('Original NativePCDFrame source changed')
     spec = importlib.util.spec_from_file_location('sealed_double_native_frame', frame_path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)

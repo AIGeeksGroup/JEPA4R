@@ -45,14 +45,9 @@ tables:
         label: CLIP (ViT-B)
         source: VC-1 study [majumdar2023vc1]
         values: {mw_assembly: 70.7, mw_bin_pick: 68.0, mw_button: 48.0, mw_drawer: 100.0, mw_hammer: 90.7, mw_mean: 75.5, adroit_relocate: 22.7}
-      # the skeleton kept this row under `values` as "ours or the VC-1 study's -- to confirm": the paper lists it with
-      # the
-      # published rows (caption: "Published numbers: the VC-1 study [...] All other rows are our runs") and its values
-      # are
-      # the VC-1 study's Table 8 random ViT-B entries
-      # (cortexbench@9331494:lewm_pcd/bench/cortexbench/summarize.py:44-45);
-      # the optional random_vitb job of experiments/tab2_cortexbench.yaml stays (the paper runs ran it on bin-picking:
-      # 0.0)
+      # the paper lists this row with the published rows (caption: "Published numbers: the VC-1 study [...] All other
+      # rows are our runs") and its values are the VC-1 study's Table 8 random ViT-B entries; the optional random_vitb
+      # job of experiments/tab2_cortexbench.yaml stays (the paper's runs ran it on bin-picking: 0.0)
       random_vitb:
         label: Random (ViT-B), frozen
         source: VC-1 study [majumdar2023vc1]

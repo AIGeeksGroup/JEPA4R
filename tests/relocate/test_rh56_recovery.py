@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/scripts/checks/test_rh56_recovery.py (verbatim except: module names / paths
-# of the moved code adapted; lines wrapped at 120 columns, unused imports removed)
 """Thin RH56 full-state context contracts, independent of simulation imports."""
 from pathlib import Path
 from types import SimpleNamespace

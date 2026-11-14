@@ -1,5 +1,3 @@
-# Moved from cortexbench@9331494:lewm_pcd/envs/ogb_pcd.py (verbatim except: PointCloudWrapper imported from
-# jepa4r.data.pointcloud; lines wrapped at 120 columns)
 """The repo's single-depth-camera point cloud (envs/pcd_wrapper.py) for OGBench's own puzzle-3x3 and scene envs
 (envs/ogb_puzzle_env.py, envs/ogb_scene_env.py). What differs from the cube's PointCloudWrapper and is overridden here:
 

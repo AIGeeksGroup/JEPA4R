@@ -1,6 +1,3 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/jepa_baselines.py (verbatim except: imports / paths adapted
-# to the package; lines wrapped at 120 columns); OGBench-cube@4fbb0c6:lewm_pcd/bench/cortexbench/jepa_baselines.py (the
-# Relocate runs' copy) has the same code apart from the V-JEPA 2 checkout path (its runs set it: ADROIT_VJEPA_ROOT)
 """CortexBench loaders for the JEPA-family baselines, same interface as lewm_cortex.load_lewm: each returns
 (model, embedding_dim, transforms, metadata); model takes [B, 3, H, W] and returns [B, D], frozen, in eval mode.
 

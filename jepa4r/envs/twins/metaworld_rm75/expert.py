@@ -1,4 +1,3 @@
-# Moved from cortexbench@9331494:lewm_pcd/envs/metaworld/rm75/expert.py (verbatim except: lines wrapped at 120 columns)
 """metaworld 3.0's SawyerBinPickingV3Policy -- the scripted Sawyer expert whose outputs are CortexBench's bin-picking
 demos -- on the RM75, run the way it runs on the Sawyer: every action is a function of the current observation only
 (metaworld's 39-D observation, which also carries the previous step's hand and gripper, obs[18:22]), gain p 25, and the

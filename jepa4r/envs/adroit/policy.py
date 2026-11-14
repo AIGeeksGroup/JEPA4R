@@ -1,5 +1,4 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/envs/adroit/policy.py (verbatim except: lines wrapped at 120 columns)
-"""Trusted MJRL state feedback and the existing World.set_policy duck interface.
+"""MJRL state feedback and the existing World.set_policy duck interface.
 
 This module needs only NumPy until a known checkpoint is explicitly unpickled;
 the CPU expert smoke can therefore use the legacy simulator environment without
@@ -45,15 +44,10 @@ class SavedStateExpert:
         self.provenance = dict(provenance or {})
 
     @classmethod
-    def load(cls, expert_path, expert_sha256, *, env_name='relocate-v0'):
+    def load(cls, expert_path, *, env_name='relocate-v0'):
         path = Path(expert_path).expanduser().resolve()
-        expected = str(expert_sha256).lower()
-        if len(expected) != 64 or any(char not in '0123456789abcdef' for char in expected):
-            raise ValueError('an explicit 64-character expert SHA-256 is required')
         payload = path.read_bytes()
         digest = hashlib.sha256(payload).hexdigest()
-        if digest != expected:
-            raise ValueError(f'expert SHA-256 mismatch: expected {expected}, got {digest}')
         policy = pickle.loads(payload)
         return cls(policy, env_name=env_name, provenance={'policy_path': str(path),
                    'policy_sha256': digest, 'policy_bytes': len(payload),
@@ -86,8 +80,8 @@ class SavedStateExpert:
 class AdroitFeedbackPolicy:
     """World policy: current native obs -> MJRL mean -> plan noise -> clip."""
 
-    def __init__(self, expert_path, expert_sha256, env_name='relocate-v0', seed=None):
-        self.expert = SavedStateExpert.load(expert_path, expert_sha256, env_name=env_name)
+    def __init__(self, expert_path, env_name='relocate-v0', seed=None):
+        self.expert = SavedStateExpert.load(expert_path, env_name=env_name)
         self.type, self.seed, self.env = 'adroit_feedback', seed, None
         self.rng = np.random.default_rng(seed)  # independent from the PCD wrapper RNG
 

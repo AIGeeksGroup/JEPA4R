@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/scripts/checks/test_rh56_data_adapter.py (verbatim except: module names /
-# paths of the moved code adapted; lines wrapped at 120 columns)
 """CPU contracts for the opt-in official-task initialization wrapper."""
 import hashlib
 import ast

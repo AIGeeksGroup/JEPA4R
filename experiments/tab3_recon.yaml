@@ -5,7 +5,8 @@ name: tab3_recon
 expected: [paper/expected/tab3_recon.yaml]
 
 # Data and world model: the UR5e Cube-Single collection of the reconstruction (configs/env/cube_single_recon.yaml; the
-# released runs: HF AIGeeksGroup/JEPA4R branch ogbench-cube-recon), not the C4 data of Tab. 1's cube_single.
+# released runs: HF AIGeeksGroup/JEPA4R, revision ogbench-cube-recon), not the Cube workflow's data of Tab. 1's
+# cube_single.
 jobs:
   - stage: collect_wm_data
     grid: {env: [cube_single_recon]}

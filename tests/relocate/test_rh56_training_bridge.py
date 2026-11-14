@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/scripts/checks/test_rh56_training_bridge.py (verbatim except: module names /
-# paths of the moved code adapted; lines wrapped at 120 columns)
 """Lightweight RH56 boundary tests; no Torch, simulator or training required."""
 import ast
 from contextlib import redirect_stderr

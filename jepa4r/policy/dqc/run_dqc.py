@@ -1,5 +1,3 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/dqc/run_dqc.py (verbatim except: where the dqc checkout is found
-# (JEPA4R_DQC, default <repo>/third_party/dqc); lines wrapped at 120 columns, no lint exemptions)
 """DQC (Decoupled Q-chunking, github.com/ColinQiyangLi/dqc at df89825, in third_party/dqc unchanged) trained and
 evaluated on OGBench puzzle-3x3-play (the official data, 1 M steps). The inputs, everything else equal:
   --obs state  : the original input, the 55-d state vector (the reproduction);

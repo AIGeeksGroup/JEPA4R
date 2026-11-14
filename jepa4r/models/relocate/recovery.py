@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/relocate/recovery.py (verbatim except: imports / paths adapted to the
-# package; lines wrapped at 120 columns, no lint exemptions, unused imports removed)
 """Explicit workers=0 recovery around the original DataLoader/Lightning loop."""
 import hashlib
 import json

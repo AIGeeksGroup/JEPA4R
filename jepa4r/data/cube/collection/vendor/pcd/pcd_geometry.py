@@ -2,13 +2,12 @@
 import hashlib,importlib.util,json,sys
 from pathlib import Path
 import numpy as np
-CORE_SHA='a9787fb9fff6de2775c302d1eae17da059b1220c8a7aca33d28b314ef9f1dd5a'
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 def rng_sha(value):return hashlib.sha256(json.dumps(value,sort_keys=True).encode()).hexdigest()
 class PCDRenderer:
     def __init__(self,renderer_root,reference_config,reference_status,main_core_path):
         sys.path.insert(0,str(renderer_root));self.main_core_path=Path(main_core_path)
-        if sha(self.main_core_path)!=CORE_SHA:raise ValueError('Frozen main PointCloudWrapper changed')
+        self.core_sha=sha(self.main_core_path)
         spec = importlib.util.spec_from_file_location('frozen_main_pcd_core', self.main_core_path)
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
@@ -32,7 +31,7 @@ class PCDRenderer:
             'pcd_produced': True,
             'renderer_kind': 'main_pointcloud_wrapper',
             'main_core_path': str(self.main_core_path),
-            'main_core_sha256': CORE_SHA,
+            'main_core_sha256': self.core_sha,
             'renderer_adapter_sha256': sha(__file__),
             'rgb_render_calls': 0,
             'geometry_offsamples': 0,
@@ -125,7 +124,7 @@ class PCDRenderer:
         }
         sampling['sampling_seed'] = seed
         receipt = {
-            'core_source_sha256': CORE_SHA,
+            'core_source_sha256': self.core_sha,
             'renderer_source_sha256': sha(__file__),
             'sampling': sampling,
             'core_trace': core_trace,

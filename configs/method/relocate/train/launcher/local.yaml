@@ -1,6 +1,4 @@
 # @package _global_
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/config/train/launcher/local.yaml (verbatim); the @package directive stays
-# first: Hydra reads only the leading # @ lines
 # Local launcher configuration (no SLURM)
 
 defaults:

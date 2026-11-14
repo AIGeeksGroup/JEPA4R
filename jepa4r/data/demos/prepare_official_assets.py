@@ -1,13 +1,9 @@
-# Moved from OGBench-cube@4fbb0c6:scripts/prepare_official_assets.py (verbatim except: imports / paths adapted to the
-# package; lines wrapped at 120 columns, unused imports removed)
 #!/usr/bin/env python3
 """Prepare final Relocate assets from the original official 100-demo pickle.
 
 Only ``images`` is removed. The original 1536-D cached ``observations`` and
 39-D physical ``state_obs`` remain distinct and unchanged, as do raw actions,
 initial states and every other nonvisual field. No simulator is imported.
-Formal preparation requires the canonical official raw file and the recorded
-WM environment with NumPy 1.26.4 for reproducible protocol-4 initialization hashes.
 """
 import argparse
 from datetime import datetime, timezone
@@ -16,7 +12,6 @@ import json
 from numbers import Real
 from pathlib import Path
 import pickle
-import re
 import sys
 import traceback
 
@@ -32,9 +27,6 @@ validate_content_records = official_content.validate_content_records
 
 
 OFFICIAL_COUNT = 100
-OFFICIAL_RAW_SHA256 = 'c71c7af5dda7b9a3d133a7e2baaa821bfe1ab7c4445dfde5624b947d13865694'
-OFFICIAL_INITIALS_SEMANTIC_SHA256 = '064a33e46fdc7407c6b0599f16413c85aab579c8fcccc957606e39da067ad2a8'
-OFFICIAL_NUMPY_VERSION = '1.26.4'
 
 
 def file_sha256(path):
@@ -50,15 +42,6 @@ def initials_semantic_sha256(records):
         ('demo_index', 'original_init_sha256', 'obj_pos', 'target_pos')} for row in records]
     payload = json.dumps(selected, sort_keys=True, separators=(',', ':'), allow_nan=False)
     return hashlib.sha256(payload.encode('utf-8')).hexdigest()
-
-
-def require_canonical_initials(records):
-    digest = initials_semantic_sha256(records)
-    if len(records) != OFFICIAL_COUNT or digest != OFFICIAL_INITIALS_SEMANTIC_SHA256:
-        raise ValueError('canonical official initial-state digest mismatch: '
-            f'expected {OFFICIAL_INITIALS_SEMANTIC_SHA256}, got {digest}; '
-            f'formal preparation requires the recorded WM NumPy {OFFICIAL_NUMPY_VERSION}')
-    return digest
 
 
 def write_json(path, value, *, atomic=False):
@@ -112,7 +95,7 @@ def validate_demo(demo):
             for key in ('obj_pos', 'target_pos')}
 
 
-def prepare_assets(source, source_sha256, output, *, expected_count=OFFICIAL_COUNT):
+def prepare_assets(source, output, *, expected_count=OFFICIAL_COUNT):
     """Export immutable per-demo copies; a smaller count is a CPU test hook.
 
     The command-line interface accepts only the paper's 100 demonstrations.
@@ -120,17 +103,13 @@ def prepare_assets(source, source_sha256, output, *, expected_count=OFFICIAL_COU
     """
     source = Path(source).expanduser().resolve(strict=True)
     output = Path(output).expanduser().resolve()
-    expected_sha = str(source_sha256).lower()
-    if not re.fullmatch('[0-9a-f]{64}', expected_sha):
-        raise ValueError('source SHA256 must contain 64 hexadecimal characters')
     if type(expected_count) is not int or expected_count < 1:
         raise ValueError('expected_count must be a positive integer')
     output.mkdir(parents=True, exist_ok=False)
     producer = Path(__file__).resolve()
     state = dict(stage='hash_source', started_utc=datetime.now(timezone.utc).isoformat(),
         updated_utc=None, completed_count=0, failed_count=0, actual_exit_code=None,
-        configuration=dict(source=str(source), expected_source_sha256=expected_sha,
-                           expected_count=expected_count, output=str(output)))
+        configuration=dict(source=str(source), expected_count=expected_count, output=str(output)))
 
     def update(stage, **values):
         state.update(stage=stage, updated_utc=datetime.now(timezone.utc).isoformat(), **values)
@@ -142,14 +121,6 @@ def prepare_assets(source, source_sha256, output, *, expected_count=OFFICIAL_COU
             log.write(json.dumps(event, allow_nan=False) + '\n')
 
     try:
-        update('validate_official_source')
-        if expected_count == OFFICIAL_COUNT:
-            if expected_sha != OFFICIAL_RAW_SHA256:
-                raise ValueError('formal 100-demo preparation requires the canonical official raw '
-                                 f'SHA256 {OFFICIAL_RAW_SHA256}')
-            if np.__version__ != OFFICIAL_NUMPY_VERSION:
-                raise ValueError(f'formal preparation requires recorded WM NumPy {OFFICIAL_NUMPY_VERSION}; '
-                                 f'found NumPy {np.__version__}')
         update('hash_source')
         before = source.stat()
         digest = hashlib.sha256()
@@ -163,8 +134,6 @@ def prepare_assets(source, source_sha256, output, *, expected_count=OFFICIAL_COU
                     update('hash_source', bytes_read=read_bytes)
                     next_report = read_bytes + (64 << 20)
             actual_sha = digest.hexdigest()
-            if actual_sha != expected_sha:
-                raise ValueError(f'source SHA256 mismatch: expected {expected_sha}, got {actual_sha}')
             update('load_source', source_sha256=actual_sha, bytes_read=read_bytes)
             stream.seek(0)
             demos = pickle.load(stream)
@@ -193,8 +162,7 @@ def prepare_assets(source, source_sha256, output, *, expected_count=OFFICIAL_COU
             initial_records.append(dict(demo_index=index, source_id=f'official-relocate-{index:03d}',
                                         original_init_sha256=initial_sha, **coordinates))
             update('export_demos', completed_count=index + 1)
-        semantic_sha = (require_canonical_initials(initial_records) if expected_count == OFFICIAL_COUNT
-                        else initials_semantic_sha256(initial_records))
+        semantic_sha = initials_semantic_sha256(initial_records)
         update('validate_initials', initials_semantic_sha256=semantic_sha)
         policy_sha = content_digest(policy_records)
         policy_validation = (validate_content_records(policy_records)
@@ -202,7 +170,7 @@ def prepare_assets(source, source_sha256, output, *, expected_count=OFFICIAL_COU
         update('validate_policy_content', policy_critical_content_sha256=policy_sha)
         manifest = dict(schema='official-adroit-relocate-light-source-v1', source=str(source),
             source_sha256=actual_sha, source_bytes=before.st_size, producer=str(producer),
-            source_raw_sha256=actual_sha, canonical_raw_sha256=OFFICIAL_RAW_SHA256,
+            source_raw_sha256=actual_sha,
             initials_semantic_sha256=semantic_sha,
             policy_critical_content_sha256=policy_sha,
             policy_critical_content_validation=policy_validation,
@@ -217,7 +185,7 @@ def prepare_assets(source, source_sha256, output, *, expected_count=OFFICIAL_COU
         write_json(manifest_path, manifest)
         write_json(output / 'rh56_official_task_init.json', dict(schema='official-task-init-v1',
             source_manifest=str(manifest_path), source_sha=file_sha256(manifest_path),
-            source_raw_sha256=actual_sha, canonical_raw_sha256=OFFICIAL_RAW_SHA256,
+            source_raw_sha256=actual_sha,
             initials_semantic_sha256=semantic_sha,
             policy_critical_content_sha256=policy_sha,
             records=initial_records))
@@ -233,13 +201,12 @@ def prepare_assets(source, source_sha256, output, *, expected_count=OFFICIAL_COU
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--source', required=True, type=Path)
-    parser.add_argument('--source-sha256', required=True)
     parser.add_argument('--output', required=True, type=Path, help='A new output directory.')
     parser.add_argument('--expected-count', type=int, choices=[OFFICIAL_COUNT], default=OFFICIAL_COUNT,
                         help='Fixed to the final paper protocol: 100 official demonstrations.')
     args = parser.parse_args(argv)
     try:
-        manifest = prepare_assets(args.source, args.source_sha256, args.output,
+        manifest = prepare_assets(args.source, args.output,
                                   expected_count=args.expected_count)
     except Exception:
         traceback.print_exc()

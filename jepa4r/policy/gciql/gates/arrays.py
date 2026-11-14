@@ -1,4 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/gates/arrays.py (verbatim)
 """Full-array comparisons; no model, optimizer, or simulator dependencies."""
 from collections.abc import Mapping
 import hashlib
@@ -9,7 +8,7 @@ import numpy as np
 
 
 def array_identity(array):
-    """The exact ordinary-array identity specified in GATES section0.3."""
+    """The exact identity of an ordinary array: dtype, shape and the sha256 of its bytes."""
     value = np.asarray(array)
     if value.dtype.hasobject:
         raise ValueError('object arrays have no stable byte identity')

@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/scripts/checks/test_rh56_entry.py (verbatim except: module names / paths of
-# the moved code adapted; lines wrapped at 120 columns)
 """Behavioral tests for the opt-in dispatcher; no simulator/learning imports."""
 import contextlib
 import importlib.util

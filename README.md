@@ -8,7 +8,19 @@ Code implementation for the paper:
 >
 > \*Equal contribution. †Project lead. ‡Corresponding author.
 
-<!-- Paper and project-page links, and the citation, are added once the paper is public. -->
+### [Website](https://aigeeksgroup.github.io/JEPA4R/) | [Model](https://huggingface.co/AIGeeksGroup/JEPA4R)
+
+## ✏️ Citation
+
+If you find our code or paper helpful, please consider starring ⭐ us and citing:
+
+```bibtex
+@misc{dong2026jepa4r,
+  title={JEPA4R: Embodied JEPA World Models with 4D Point Planning},
+  author={Dong, Jiarui and Liang, Zhiheng and Li, Yanjun and Zhang, Zeyu and Nam, Heejeong and Chen, Haoyu and Tang, Hao},
+  year={2026}
+}
+```
 
 ---
 
@@ -16,7 +28,7 @@ Code implementation for the paper:
 
 JEPA4R keeps JEPA's architecture and objective but reads single-depth-camera point clouds through a parameter-matched encoder and acts through a policy head on its frozen latents. Because point clouds already expose metric geometry, a world model only has to learn how this geometry changes under actions. Prediction, planning and control all happen in this 4D point latent space, and we call this 4D point planning. A decoder attached to the frozen world model, built on a pretrained PAGE-4D, shows what the model imagines as 4D point clouds.
 
-<!-- Method overview (Fig. 2 of the paper): export to assets/method.png and show it here. -->
+![JEPA4R overview](./assets/method.png)
 
 The framework has four parts:
 
@@ -63,8 +75,8 @@ python -m pip install -e .
 
 Dependencies are specified in `pyproject.toml`. Without installation, `python -m jepa4r <command>` replaces the `jepa4r-*` entry points.
 
-The integrated simulators and policy learners keep the software stacks they were run with, so some stages start their
-work in another interpreter, named by an environment variable (the default is the current Python):
+The simulators and policy learners keep the software stacks the paper's runs used, so some stages start their work
+in another interpreter, named by an environment variable (the default is the current Python):
 
 | Variable | Stack | Used for |
 |---|---|---|
@@ -78,14 +90,14 @@ work in another interpreter, named by an environment variable (the default is th
 | `JEPA4R_PY_ADROIT_SIM` | eai-vc, MuJoCo 2.0 / mujoco-py, gym 0.23, NumPy 1.23.5 | Relocate: collection, behavior cloning |
 | `JEPA4R_PY_RH56_SIM` | MuJoCo 3.12, gym 0.23, NumPy 1.26.4 | RM75-B + RH56 twin: collection, behavior cloning |
 
-The Cube 1-4, Relocate and RH56 workflows (the OGBench-cube branch's; controllers in `jepa4r/policy/gciql` and
-`jepa4r/policy/bc/relocate`) keep their temporary files under `JEPA4R_TMPDIR` / `TMPDIR` when set. Their five
+The Cube 1-4, Relocate and RH56 workflows (controllers in `jepa4r/policy/gciql` and `jepa4r/policy/bc/relocate`) keep
+their temporary files under `JEPA4R_TMPDIR` / `TMPDIR` when set. Their five
 interpreters are the `pyproject.toml` extras `cube-worldmodel`, `cube-policy`, `relocate-wm`, `relocate-adroit` and
 `relocate-rh56` (`python -m pip install -e ".[cube-policy]" --extra-index-url https://download.pytorch.org/whl/cu128`);
-their configurations and pinned manifests are in `configs/{env,method}/{cube,relocate}`, `configs/policy/gciql` and
+their configurations are in `configs/{env,method}/{cube,relocate}`, `configs/policy/gciql` and
 `configs/policy/bc/relocate`.
 
-Upstream checkouts at pinned commits (`third_party/<name>` by default, or the variable) are listed in
+Upstream checkouts at the commits the paper used (`third_party/<name>` by default, or the variable) are listed in
 [docs/architecture.md](docs/architecture.md); stable-worldmodel is vendored in `third_party/stable-worldmodel`
 (`pip install -e third_party/stable-worldmodel`).
 
@@ -106,11 +118,11 @@ checkpoints/
 ```
 
 ```bash
-python scripts/download_checkpoints.py --download    # fetch the public ones, check sizes and sha256
+python scripts/download_checkpoints.py --download    # fetch the public ones and check their sizes
 ```
 
 These paths are the `weights` entries of `configs/method/{visreg,vjepa21}.yaml` and `configs/decoder/*.yaml`. Values
-not given in the paper are taken from the source code of the paper's runs; each carries its source in a comment.
+not given in the paper are those of the code the paper's runs used.
 
 ## 🚀 Training
 
@@ -170,10 +182,10 @@ bash scripts/reproduce_all.sh                           # every table, then the 
 
 The paper's numbers are stored in `paper/expected/` (this repository reproduces the paper's numbers, not its figures). See [docs/reproduce.md](docs/reproduce.md) for the scope and settings, and [docs/architecture.md](docs/architecture.md) for the code layout. The RM75-B digital twin and everything trained in it are included; runs on the real arm are not.
 
-This repository integrates the code of the paper's runs; its equivalence with that code was checked against the released
-checkpoints and the paper's run records (data, model, training and evaluation gates) when it was integrated. What is
-not in it (the twin's look-ahead preview and a policy head on the twin's Cube, which no source branch implements and
-the paper gives no number for; the figures) is listed with the reason in [docs/reproduce.md](docs/reproduce.md).
+This repository contains the code of the paper's runs, checked against the released checkpoints and the paper's run
+records (data, models, training and evaluation). What it does not include (the twin's look-ahead preview and a policy
+head on the twin's Cube, for which the paper gives no number; the figures) is listed in
+[docs/reproduce.md](docs/reproduce.md).
 
 ## 😘 Acknowledgement
 

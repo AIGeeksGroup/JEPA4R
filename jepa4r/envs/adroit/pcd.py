@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/envs/adroit/pcd.py (verbatim except: imports / paths adapted to the package;
-# lines wrapped at 120 columns)
 """Single-camera legacy Adroit surface PCD; real rendering remains a G3 gate.
 
 Depth is OpenGL normalized depth, inverted with model near/far times extent.

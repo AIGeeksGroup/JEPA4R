@@ -1,5 +1,3 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/make_rm75_demos.py (verbatim except: imports / paths adapted
-# to the package; lines wrapped at 120 columns)
 """RM75 CortexBench demos for a task, made the way CortexBench's official ones are: 25 episodes of metaworld's scripted
 expert for the task on the RM75 (EXPERTS: bin-picking, drawer-open and assembly need RM75 versions,
 envs/metaworld/rm75/expert.py; button-press-topdown runs metaworld's script unchanged), each action recorded as the

@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/tests/test_policy_reference.py (verbatim except: imports /
-# paths adapted to the package; lines wrapped at 120 columns)
 from pathlib import Path
 import sys,tempfile,unittest,json,copy
 import numpy as np

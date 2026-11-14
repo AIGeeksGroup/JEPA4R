@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/downstream/__init__.py (verbatim except: lines wrapped at 120
-# columns)
 """Current Cube cache/online protocol binding."""
 def validate_cache_protocol(manifest, config):
     """Tie online camera/preprocessing to the SHA-pinned offline producer protocol."""

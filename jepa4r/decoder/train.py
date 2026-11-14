@@ -5,11 +5,11 @@ stage B  add rank-4 LoRA on q / v of all attention blocks and continue
 Targets: observed clouds of data/wm/<env>; inputs: latents of the frozen world model cfg.decoder.wm (epoch 10).
 Returns {"val_nn_stage_a": cm, "val_nn_stage_b": cm} (paper: 0.87 -> 0.79).
 
-Integrated code (lewm-pcd-recon-page4d@d3c2d07): recon/data.py (PairedFrames, build_dataset, Episodes: one frame for the
-encoder + the point cloud of the same simulator state) and train_recon.py's run (``run_stage``: one stage = one
+From the paper's reconstruction code: the data (PairedFrames, build_dataset, Episodes: one frame for the
+encoder + the point cloud of the same simulator state) and the training run (``run_stage``: one stage = one
 Lightning run of 14,140 batches of 32 frames on the 0.9 / 0.1 frame split of seed 3072, one AdamW per parameter group,
-the trained parts saved per epoch). ``recon_config`` composes each stage's run config (the recon branch's
-config/recon/recon.yaml + data/ogb_pcd.yaml + decoder/page4d.yaml + exp/{frozen,lora}.yaml) from cfg.decoder and
+the trained parts saved per epoch). ``recon_config`` composes each stage's run config (the reconstruction runs'
+recon.yaml + data/ogb_pcd.yaml + decoder/page4d.yaml + exp/{frozen,lora}.yaml) from cfg.decoder and
 cfg.env; ``train`` runs stage A into <out>/stage_a and stage B into <out>/stage_b and reports each stage's last
 validation readout (validate/nn_cm: mean two-sided NN distance, cm, over 100 validation batches), the numbers of Sec.
 4.4.
@@ -30,8 +30,6 @@ except ImportError:  # pragma: no cover
     swm = None
 
 
-# Moved from lewm-pcd-recon-page4d@d3c2d07:lewm_pcd/recon/data.py:PairedFrames, build_dataset, Episodes (lines 17-89;
-# verbatim)
 class PairedFrames(torch.utils.data.Dataset):
     """Row i of ``inputs`` + row i of ``targets``; only ``obs_key`` and ``target`` are kept."""
 
@@ -110,9 +108,6 @@ class Episodes:
         return self._cols[name] if ep is None else self._cols[name][self.rows(ep, stride)]
 
 
-# Moved from lewm-pcd-recon-page4d@d3c2d07:lewm_pcd/train_recon.py:run (lines 18-99; verbatim except: no @hydra.main,
-# renamed run_stage, run_dir argument instead of $STABLEWM_HOME/checkpoints/recon/<subdir>: weights, config.json and
-# config.yaml into <run_dir>/checkpoints; lazy imports)
 def run_stage(cfg, run_dir):
     import lightning as pl
     from lightning.pytorch.loggers import WandbLogger

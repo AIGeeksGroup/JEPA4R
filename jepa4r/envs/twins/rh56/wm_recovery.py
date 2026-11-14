@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/rh56_adapter/wm_recovery.py (verbatim except: imports / paths adapted to the
-# package; lines wrapped at 120 columns, unused imports removed)
 """Bounded RH56 state hooks around the original Trainer/Manager and data loop."""
 from contextlib import contextmanager
 import copy

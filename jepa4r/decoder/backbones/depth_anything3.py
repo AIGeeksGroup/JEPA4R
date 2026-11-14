@@ -3,8 +3,7 @@
 ``DA3Decoder``: Depth Anything 3 Giant (depth-anything/DA3-GIANT): one DINOv2-g ViT with alternating local / global
 attention from layer 13; its dual DPT head's depth and ray map; points = ray origin + depth x ray direction per pixel.
 Generator, affine map, rgb branch, LoRA stage, losses and evaluation are PAGE4DDecoder's (``_BackboneDecoder``).
-Moved unchanged apart from imports / paths from the untracked recon_backbones.py (GATES.md 1.2 item 6); DA3's code:
-the clone at 3d835ec (JEPA4R_DA3, default <repo>/third_party/Depth-Anything-3).
+DA3's code: the clone at 3d835ec (JEPA4R_DA3, default <repo>/third_party/Depth-Anything-3).
 """
 import json
 import os
@@ -25,9 +24,6 @@ DA3_REPO = Path(
 )
 
 
-# Moved from the untracked lewm_pcd/recon_ext/recon_backbones.py of the local cortexbench worktree (not in any branch;
-# GATES.md 1.2 item 6; sha256 25d4bc5cf5d8ee600db02c2523f1a083d590aeaf7ae922213e8f366a310904be):_BackboneDecoder, _load
-# (lines 62-111; verbatim)
 # --------------------------------------------------------------------------------------- shared base, other models
 class _BackboneDecoder(PAGE4DDecoder):
     """PAGE4DDecoder's construction with another backbone: ``build`` (the pretrained modules, named in PRETRAINED),
@@ -79,9 +75,6 @@ def _load(module, sd, what):
     return unexpected
 
 
-# Moved from the untracked lewm_pcd/recon_ext/recon_backbones.py of the local cortexbench worktree (not in any branch;
-# GATES.md 1.2 item 6; sha256 25d4bc5cf5d8ee600db02c2523f1a083d590aeaf7ae922213e8f366a310904be):DA3Decoder (lines
-# 194-274; verbatim except: DA3's clone at DA3_REPO instead of lewm_pcd/third_party)
 # --------------------------------------------------------------------------------------------- Depth Anything 3
 class DA3Decoder(_BackboneDecoder):
     PRETRAINED = ('dino', 'head')  # 'dino': the name the LoRA stage's optimizer matches (config/recon/exp/lora.yaml)

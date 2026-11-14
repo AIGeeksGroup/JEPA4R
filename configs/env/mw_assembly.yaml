@@ -1,22 +1,17 @@
 _base_: _metaworld
 name: mw_assembly
 display: Assembly
-env_id: assembly-v2-goal-observable   # CortexBench task id (demos, evaluation):
-                                      # cortexbench:lewm_pcd/bench/cortexbench/grid.py:41-43
+env_id: assembly-v2-goal-observable   # CortexBench task id (demos, evaluation)
 pointcloud:
-  keep_extra: ['peg']   # fixtures welded to the world but re-placed at reset (scripts/data/config/mw_assembly.yaml;
-                        # pcd_fork.py:23)
+  keep_extra: ['peg']   # fixtures welded to the world but re-placed at reset
 wm_data:
-  env_id: swm/MWAssembly-v0   # collection env (metaworld 3.0 assembly-v3-goal-observable):
-                              # cortexbench:lewm_pcd/scripts/data/config/mw_assembly.yaml:7,10-14
+  env_id: swm/MWAssembly-v0   # collection env (metaworld 3.0 assembly-v3-goal-observable)
   pcd:
     fixtures: ['peg']
-    multisample: true   # point clouds of the paper data: multisampled render (collected before cortexbench 6a498d9);
-                        # GATES.md 1.2 item 1, D1
+    multisample: true   # point clouds of the paper data: multisampled render (jepa4r/envs/metaworld/pcd.py)
   policy: {_target_: jepa4r.envs.metaworld.AssemblyThreePartPolicy}
   sets:
-    - {name: mw_assembly, num_episodes: 10000, shards: 40}          # run_mw_collection.sh:17 (NUM_TRAJ, SHARDS)
-    - {name: mw_assembly_test, num_episodes: 150, world_seed: 2000000}   # run_mw_collection.sh:18 (TEST_TRAJ,
-                                                                         # TEST_SEED)
+    - {name: mw_assembly, num_episodes: 10000, shards: 40}
+    - {name: mw_assembly_test, num_episodes: 150, world_seed: 2000000}
   files: {pointcloud: mw_assembly_pcd.h5, image: mw_assembly.h5}
   split: random_clips

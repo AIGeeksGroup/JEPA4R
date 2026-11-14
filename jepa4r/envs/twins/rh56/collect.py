@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/rh56_adapter/collect.py (verbatim except: imports / paths adapted to the
-# package; lines wrapped at 120 columns)
 """Plan-driven paired collection using the original feedback mix and HDF writer.
 
 No simulator, model or sampling algorithm is changed here. External plans select

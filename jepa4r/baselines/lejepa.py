@@ -1,12 +1,12 @@
 """LeJEPA [balestriero2025lejepa]: trained on our image data for 10 epochs with its own recipe; ViT-tiny/14.
 
-MetaWorld, Scene, Puzzle: cortexbench@9331494:lewm_pcd/scripts/baselines/train_lejepa_mw.py moved here (``main``): the
+MetaWorld, Scene, Puzzle: the training script of the paper runs (``main``): the
 official minimal recipe (galilai-group/lejepa MINIMAL.md) on single frames of the env's image dataset with LeWM's
 encoder (HF ViT-tiny/14 at 224 + Linear(192 -> 512)), 4 views, batch 256, AdamW 2e-3 (weight decay 5e-2), one epoch of
 linear warm-up then cosine to 1e-3, lambda 0.02, projector 512 -> 2048 -> 2048 -> 16 (BatchNorm), SIGReg 17 knots /
 256 directions, bf16, torch seed 0; 10 epochs over every frame (cfg.method.train.recipe). Checkpoints
 weights_epoch_<n>.pt (backbone, head, proj) in outputs/train_wm/<env>/lejepa/<tag>/checkpoints/.
-OGBench Cube: the C4 workflow's LeJEPA (jepa4r/baselines/cube/native).
+OGBench Cube: the Cube workflow's LeJEPA (jepa4r/baselines/cube/native).
 load_frozen_encoder: the CLS through the 512-d head, as CortexBench and DQC read it (jepa_baselines.load_lejepa).
 """
 import argparse
@@ -30,8 +30,6 @@ except ImportError:  # pragma: no cover
     swm = None
 
 
-# Moved from cortexbench@9331494:lewm_pcd/scripts/baselines/train_lejepa_mw.py:SIGReg, Encoder, MWFrames, main (lines
-# 40-160; verbatim except: main(argv), --out (the checkpoint directory; default as before))
 class SIGReg(nn.Module):  # MINIMAL.md as is
     def __init__(self, knots=17):
         super().__init__()

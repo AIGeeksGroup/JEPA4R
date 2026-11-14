@@ -1,7 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/gates/aggregation.py (verbatim except: cem_success / cem_summary, the
-# CEM
-# fragment aggregation of appendix Tab. S1, left out); the aggregation behind the Cube and Relocate metrics
-# (jepa4r.policy.gciql.native_summary, jepa4r.policy.bc.relocate_policy)
 """A1 raw-event aggregation. No training, rollout, or paper-target assumptions."""
 from numbers import Integral, Real
 import math

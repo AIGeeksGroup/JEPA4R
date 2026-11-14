@@ -1,4 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/native_trace.py (verbatim)
 """Passive Native state/action trace; no physics, random draws or encoder calls."""
 import numpy as np
 

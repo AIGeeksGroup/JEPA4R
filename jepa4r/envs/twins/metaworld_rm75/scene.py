@@ -1,5 +1,3 @@
-# Moved from cortexbench@9331494:lewm_pcd/envs/metaworld/rm75/scene.py (verbatim except: imports / paths adapted to the
-# package; lines wrapped at 120 columns)
 """MuJoCo model of a MetaWorld 3.0 task with the RM75-B + EG2-4C2 in place of the Sawyer.
 
 * The task XML is loaded as is; the Sawyer (body 'base' and its subtree), its mocap body, the mocap weld and the two

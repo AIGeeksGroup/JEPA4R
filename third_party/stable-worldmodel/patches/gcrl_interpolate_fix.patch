@@ -1,5 +1,5 @@
---- /tmp/claude-0/-root-autodl-tmp-lewm234d/cc72f966-c504-48b8-8711-5cd251e7d121/scratchpad/gcrl_orig.py	2026-09-13 01:53:35.300679337 +0800
-+++ third_party/stable-worldmodel/stable_worldmodel/wm/gcrl/gcrl.py	2026-09-13 01:53:35.328679950 +0800
+--- a/stable_worldmodel/wm/gcrl/gcrl.py
++++ b/stable_worldmodel/wm/gcrl/gcrl.py
 @@ -12,7 +12,7 @@
          critic_predictor=None,
          extra_encoders=None,

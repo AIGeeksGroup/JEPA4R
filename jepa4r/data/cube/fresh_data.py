@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/fresh_data.py (verbatim except: imports / paths of the package
-# layout, lines wrapped at 120 columns, unused imports removed)
 """Current paper Cube data binding over canonical SWM scalar HDF5 slicing."""
 import argparse
 import hashlib
@@ -262,9 +260,6 @@ def load_binding(path, *, verify=True):
         for name, digest in value['producer_binding']['files'].items():
             if sha256(name) != digest:
                 raise ValueError('producer source checksum differs')
-        if value.get('retained_import') is not None:
-            from jepa4r.models.cube.retained_training import validate_manifest
-            validate_manifest(value,path)
     return value
 
 

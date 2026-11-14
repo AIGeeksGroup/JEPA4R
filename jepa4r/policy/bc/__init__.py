@@ -5,8 +5,8 @@ code on its five evaluation tasks, and so do four MetaWorld tasks on the RM75-B 
 100 epochs on env.policy_data.demos_per_task demonstrations per task (25; 100 on Relocate); success = best of 20
 evaluations (jepa4r/eval/cortexbench.py).
 
-Integrated code (cortexbench@9331494:lewm_pcd/bench/cortexbench/, moved unchanged into this package apart from where
-eai-vc / the embedding configs / V-JEPA 2 are found):
+Modules (the CortexBench harness of the paper runs; eai-vc / the embedding configs / V-JEPA 2 are found through the
+environment variables below):
   run_bc.py        eai-vc 76fe35e's hydra_launcher + train_loop (unchanged on disk) with three runtime patches that do
                    not change the numbers (local embedding configs, metrics.jsonl logging, reuse of the evaluation paths
                    for the logging-only train/* rollouts)
@@ -19,17 +19,16 @@ eai-vc / the embedding configs / V-JEPA 2 are found):
   lewm_cortex.py   the frozen LeWM / JEPA4R encoders (encoder + projector, epoch 10) as CortexBench embeddings
   jepa_baselines.py  PLDM, LeJEPA, VISReg, V-JEPA 2.1 embeddings
   enc_server.py    the frozen encoder in one shared GPU process for run_bc_scene.py (ENC_SOCKET)
-  run_adroit_bc3d.py  run_bc.py on Relocate point clouds (OGBench-cube@4fbb0c6:lewm_pcd/bench/cortexbench/)
-  relocate/        behaviour cloning on Adroit Relocate and the RH56 twin with the OGBench-cube branch's Relocate
-                   controllers (its bench/relocate; its data in jepa4r/data/relocate, its world-model support in
-                   jepa4r/models/relocate), see relocate_stage
-The OGBench-cube branch's copy of run_bc.py / lewm_cortex.py / jepa_baselines.py (its bench/cortexbench) is merged
-into the files here (their headers list what it adds). The embedding configs of the paper runs, one per encoder kind
-(embedding_config fills in each run's checkpoint), and those of the Relocate runs: configs/policy/bc/conf/model/.
+  run_adroit_bc3d.py  run_bc.py on Relocate point clouds
+  relocate/        behaviour cloning on Adroit Relocate and the RH56 twin with the Relocate workflow's controllers
+                   (its data in jepa4r/data/relocate, its world-model support in jepa4r/models/relocate), see
+                   relocate_stage
+run_bc.py, lewm_cortex.py and jepa_baselines.py also serve the Relocate runs (their docstrings list the switches). The
+embedding configs of the paper runs, one per encoder kind (embedding_config fills in each run's checkpoint), and those
+of the Relocate runs: configs/policy/bc/conf/model/.
 ``train`` runs, for each evaluation task of the env and each seed of cfg.policy.eval.seeds, one runner process with the
-arguments the source's job runners gave it (cortexbench@9331494:lewm_pcd/bench/cortexbench/grid.py, scene_grid.py), then
-reports success = mean over tasks of the mean over seeds of each run's highest success among its 20 evaluations (the
-source's summarize.py / summarize_scene.py; GATES.md 3.4).
+arguments the paper's job runners gave it, then reports success = mean over tasks of the mean over seeds of each run's
+highest success among its 20 evaluations, as the paper's summaries compute it.
 Interpreters / paths (environment variables): JEPA4R_PY_CORTEXBENCH (eai-vc + MuJoCo 2.0 + mujoco-py python),
 JEPA4R_PY_COLLECT (MuJoCo 3 + OGBench / metaworld 3.0 python for the scene env and the RM75-B twin's MetaWorld env),
 JEPA4R_EAI_VC (eai-vc checkout), JEPA4R_VJEPA2.
@@ -114,7 +113,7 @@ def evals_of(run_dir):
 
 def aggregate(runs):
     """runs: {task: {seed: [eval records]}} -> the train_policy metrics. Per run the highest eval/success of its 20
-    evaluations; per task the mean over seeds; success = the mean over tasks (GATES.md 3.4)."""
+    evaluations; per task the mean over seeds; success = the mean over tasks."""
     per_task = {
         t: float(sum(max(e['eval/success'] for e in ev) for ev in s.values()) / len(s)) for t, s in runs.items()
     }
@@ -159,16 +158,16 @@ def train(cfg, out_dir) -> dict:
 
 
 # ------------------------------------------------------------------------------------ Adroit Relocate and the RH56 twin
-# The OGBench-cube branch's Relocate harness (moved from its lewm_pcd/bench/relocate; controllers in policy/bc/relocate,
-# data in data/relocate, world-model support in models/relocate): one plan per
-# (env, model) -- collect, data audit, WM training + strict reload, official demonstrations, BC per seed + policy reload
-# -- run by its own executor, which checks every stage's receipt and artifacts. Each skeleton stage runs its share of
-# that plan with the harness's commands unchanged; the artifacts stay at the harness's paths under one run root per
-# (env, method, tag), with the shared collection / demonstrations linked in; the executor's records go to the stage dir.
+# The Relocate workflow (controllers in policy/bc/relocate, data in data/relocate, world-model support in
+# models/relocate): one plan per (env, model) -- collect, data audit, WM training + strict reload, official
+# demonstrations, BC per seed + policy reload -- run by its own executor, which checks every stage's receipt and
+# artifacts. Each stage of this repository runs its share of that plan with the harness's commands unchanged; the
+# artifacts stay at the harness's paths under one run root per (env, method, tag), with the shared collection /
+# demonstrations linked in; the executor's records go to the stage dir.
 RELOCATE_ENVS = {'adroit': 'adroit-relocate', 'rh56': 'rh56-relocate'}       # env.suite -> the harness's --env
 RELOCATE_MODELS = {'jepa4r': 'jepa4r', 'lewm': 'lewm', 'pldm': 'pldm', 'lejepa': 'lejepa', 'visreg': 'visreg',
                    'vjepa21': 'vjepa'}                                         # method -> the harness's --model
-RELOCATE_STAGES = {  # skeleton stage -> the harness's stage names (prefixes)
+RELOCATE_STAGES = {  # stage -> the harness's stage names (prefixes)
     'adroit': {'collect_wm_data': ('collect', 'data-audit'), 'train_wm': ('wm-train', 'wm-reload'),
                'prepare_policy_data': ('official-demos',), 'train_policy': ('bc-seed', 'policy-reload-seed')},
     'rh56': {'collect_wm_data': ('rh56_prepare', 'rh56_collect_', 'rh56_validate_', 'rh56_publish'),
@@ -193,19 +192,17 @@ def official_assets_dir():
 
 def ensure_official_assets():
     """Prepare (once) the light copy of the 100 official Relocate demos and the RH56 task initialisations from the
-    original relocate-v0.pickle (JEPA4R_ADROIT_DEMOS; sha256 pinned in configs/policy/bc/relocate/DEPENDENCIES.json)."""
+    original relocate-v0.pickle (JEPA4R_ADROIT_DEMOS)."""
     from jepa4r.config import paths
 
     official = official_assets_dir()
     if not (official / 'manifest.json').is_file():
         raw = Path(os.environ.get('JEPA4R_ADROIT_DEMOS',
                                   paths()['data'] / 'raw' / 'adroit-expert-v1.0' / 'relocate-v0.pickle'))
-        dependencies = HERE.parents[2] / 'configs' / 'policy' / 'bc' / 'relocate' / 'DEPENDENCIES.json'
-        contract = json.loads(dependencies.read_text())['official_relocate']
         official.parent.mkdir(parents=True, exist_ok=True)
         subprocess.run([os.environ.get('JEPA4R_PY_RELOCATE_WM', sys.executable),
                         str(HERE.parents[1] / 'data' / 'demos' / 'prepare_official_assets.py'), '--source', str(raw),
-                        '--source-sha256', contract['raw_sha256'], '--output', str(official)], check=True)
+                        '--output', str(official)], check=True)
     return official
 
 
@@ -265,7 +262,7 @@ def relocate_run_root(cfg, stage):
 
 
 def relocate_stage(cfg, stage, out_dir):
-    """Run the harness's stages that make up skeleton ``stage`` for (cfg.env, cfg.method); returns the executor's
+    """Run the harness's stages that make up ``stage`` for (cfg.env, cfg.method); returns the executor's
     STATUS.json (records in out_dir/harness_exec)."""
     from types import SimpleNamespace
     from jepa4r.policy.bc.relocate import adroit_workflow, rh56_workflow, workflow

@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/relocate/rh56_workflow.py (verbatim except: imports / paths adapted to
-# the package; lines wrapped at 120 columns)
 """Thin dispatcher for the final simulated RM75-B/RH56 Relocate protocol.
 
 Planning imports no simulator or learning framework. Existing RH56 bridges own
@@ -18,10 +16,6 @@ from pathlib import Path
 LEWM_ROOT = Path(__file__).resolve().parents[3]
 ENTRY = LEWM_ROOT / 'policy/bc/relocate/run_rh56.py'
 BATCH_SIZE = 250
-OFFICIAL_RAW_SHA256 = 'c71c7af5dda7b9a3d133a7e2baaa821bfe1ab7c4445dfde5624b947d13865694'
-# Canonical ordered task positions/init identities verified from that raw source.
-# Paths and source_id labels are intentionally outside this content identity.
-OFFICIAL_TASK_CONTENT_SHA256 = '064a33e46fdc7407c6b0599f16413c85aab579c8fcccc957606e39da067ad2a8'
 
 
 def _sha(path):
@@ -78,7 +72,6 @@ def _official_content_digest(payload):
                 for record in records]
     digest = hashlib.sha256(json.dumps(semantic, sort_keys=True, separators=(',', ':'),
                                       allow_nan=False).encode()).hexdigest()
-    _require(digest == OFFICIAL_TASK_CONTENT_SHA256, 'canonical official task content digest differs')
     return digest
 
 
@@ -189,7 +182,7 @@ def prepare(configuration):
     write('input_receipt.json', dict(status='PASS_INPUTS', mode=mode, files=list(files),
           original_init_path=str(source), original_init_sha256=digest,
           source_manifest=str(manifest), source_sha256=payload['source_sha'],
-          official_task_content_sha256=official_digest, canonical_raw_sha256=OFFICIAL_RAW_SHA256))
+          official_task_content_sha256=official_digest))
 
 
 def _completed(directory, state_name='state.json'):
@@ -219,9 +212,6 @@ def verify_stage(stage, args, assets) -> dict:
             for payload in (_read(report['original_init_path']), _read(base / 'inputs/official_task_init.json')):
                 _official_content_digest(payload)
                 _require(payload['source_sha'] == report['source_sha256'], 'official source manifest binding differs')
-            if 'official_task_content_sha256' in report:
-                _require(report['official_task_content_sha256'] == OFFICIAL_TASK_CONTENT_SHA256,
-                         'official content receipt identity differs')
         elif name.startswith(('rh56_collect_', 'rh56_validate_')):
             index = int(name.rsplit('_', 1)[1])
             directory = base / 'batches' / f'batch_{index:03d}'

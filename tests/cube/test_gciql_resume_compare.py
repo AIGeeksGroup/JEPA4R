@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/tests/test_gciql_resume_compare.py (verbatim except: imports /
-# paths adapted to the package; lines wrapped at 120 columns)
 """Full GCIQL checkpoint sidecar comparisons; no JAX or GPU needed."""
 import copy
 import importlib.util

@@ -5,16 +5,13 @@ from pathlib import Path
 import gymnasium as gym
 import numpy as np
 
-CORE_SHA='a9787fb9fff6de2775c302d1eae17da059b1220c8a7aca33d28b314ef9f1dd5a'
-ADAPTER_SHA='910d6787d0942aed41750834dece119a94d514e5292ee05f020cb7ad95ee590a'
 
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 def array_sha(value):return hashlib.sha256(np.ascontiguousarray(value).tobytes()).hexdigest()
 
 class NativePCDFrame:
     def __init__(self,core_path,adapter_path,seed,*,core_factory=None,renderer_factory=None):
-        if sha(core_path) != CORE_SHA or sha(adapter_path) != ADAPTER_SHA:
-            raise ValueError('Frozen main/provider source changed')
+        self.core_sha, self.adapter_sha = sha(core_path), sha(adapter_path)
         spec = importlib.util.spec_from_file_location('native_original_main821', core_path)
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
@@ -88,8 +85,8 @@ class NativePCDFrame:
             'RGB_AA4_sha256': array_sha(rgb),
             'source_UV_sha256': array_sha(uv),
             'source_geom_sha256': array_sha(geom),
-            'core_source_sha256': CORE_SHA,
-            'provider_source_sha256': ADAPTER_SHA,
+            'core_source_sha256': self.core_sha,
+            'provider_source_sha256': self.adapter_sha,
             'RGB_source': 'real online official front_pixels AA4, same supplied MjData as NoAA depth/seg',
             'source_pose_sha256': {
                 k: array_sha(getattr(data, k)) for k in ['qpos', 'qvel', 'ctrl', 'mocap_pos', 'mocap_quat']

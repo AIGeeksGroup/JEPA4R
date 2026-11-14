@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/d3_mapping.py (verbatim except: imports / paths adapted to the
-# package; lines wrapped at 120 columns)
 """Row-level R4 evidence using the original Cube current/goal input seam."""
 import numpy as np
 from jepa4r.policy.gciql.gates.arrays import array_identity

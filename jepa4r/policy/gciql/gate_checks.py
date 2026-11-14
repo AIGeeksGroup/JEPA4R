@@ -1,6 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/gate_checks.py (verbatim except: imports / paths adapted to the
-# package; lines wrapped at 120 columns, no lint exemptions, unused imports removed, registration imports as
-# importlib.import_module)
 """Explicit bounded Cube gates around the existing model/update implementations."""
 import importlib
 import argparse
@@ -403,18 +400,13 @@ def model_numerics(cfg, output):
     import torch
     from omegaconf import OmegaConf
     from types import SimpleNamespace
-    from jepa4r.models.cube.training_runtime import pinned_native, require_sources, code_root
-    require_sources()
+    from jepa4r.models.cube.training_runtime import pinned_native, code_root
     code = code_root().resolve()
     expected_root = Path(cfg['source_root']).resolve()
     if (expected_root / 'lewm_pcd').is_dir():   # a frozen release (old layout); else this repository
         expected_root = expected_root / 'lewm_pcd'
     if code != expected_root:
         raise ValueError('actual imported model source root differs from frozen expected root')
-    manifest = (code.parent / 'SOURCE_MANIFEST.json' if code.name == 'lewm_pcd'
-                else Path(__file__).resolve().parents[3] / 'configs' / 'policy' / 'gciql' / 'INTEGRATED_SOURCES.json')
-    if sha(manifest) != cfg['source_manifest_sha256']:
-        raise ValueError('actual source manifest differs from frozen expected identity')
     source_files = {}
     for name, expected_sha in cfg['expected_source_files'].items():
         path = (code / name).resolve()

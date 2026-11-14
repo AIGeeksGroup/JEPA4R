@@ -3,33 +3,28 @@ _base_: _base
 suite: metaworld
 impl: jepa4r.envs.metaworld
 camera:
-  name: top_cap2              # the CortexBench MetaWorld camera: cortexbench:lewm_pcd/envs/metaworld/env.py:7-10,27
-                              # (free camera reproducing the fork's top_cap2, pos (0, 0.9, 0.6) -> tablelink);
-                              # bench/cortexbench/pcd_fork.py:16 (CAM = 'top_cap2')
+  name: top_cap2              # the CortexBench MetaWorld camera: a free camera reproducing the CortexBench fork's
+                              # top_cap2, pos (0, 0.9, 0.6) looking at tablelink (jepa4r/envs/metaworld/env.py)
 pointcloud:
-  sampler: {name: stratified, object_fraction: 0.25}   # cortexbench:lewm_pcd/envs/pcd_wrapper.py:191-219;
-                                                       # scripts/data/config/mw_binpick.yaml:32 (cube_fraction: 0.25)
-  crop_box: [[-0.50, 0.30, -0.02], [0.50, 1.00, 0.60]] # cortexbench:lewm_pcd/envs/metaworld/pcd.py:24-25
-  # cortexbench:lewm_pcd/config/train/data/mw_binpick_pcd.yaml:10-12
+  sampler: {name: stratified, object_fraction: 0.25}   # jepa4r/data/pointcloud.py
+  crop_box: [[-0.50, 0.30, -0.02], [0.50, 1.00, 0.60]]
   affine: {center: [0.0, 0.65, 0.2], scale: 4.0}
 policy: bc
 wm_data:                      # supp. sec:supp-data (per task)
   num_episodes: 10000
   episode_len: 200
   mixture: {noisy_expert: 0.5, expert_interrupted_by_random: 0.3, random: 0.2}
-  collector: mw               # cortexbench:lewm_pcd/scripts/data/collect_mw.py (+ collect_cube_pcd_sharded.py,
-                              # run_mw_collection.sh)
-  env_kwargs: {episode_len: 200, mix: [0.5, 0.3, 0.2]}   # scripts/data/config/mw_binpick.yaml:24-26 (backbone / branch
-                                                         # / random)
-  world: {num_envs: 10, max_episode_steps: 200, image_shape: [224, 224]}   # mw_binpick.yaml:19-22
-  pcd:                        # mw_binpick.yaml:28-32 (one depth camera, top_cap2)
+  collector: mw               # jepa4r/stages/collect_wm_data.py (collect_mw), in shards
+  env_kwargs: {episode_len: 200, mix: [0.5, 0.3, 0.2]}   # the three-part plan: backbone / branch / random
+  world: {num_envs: 10, max_episode_steps: 200, image_shape: [224, 224]}
+  pcd:                        # one depth camera, top_cap2
     _target_: jepa4r.envs.metaworld.pcd.MWPointCloudWrapper
     num_points: 1200
     voxel_size: 0.005
     cube_fraction: 0.25
-  seed: 3072                  # mw_binpick.yaml:37; run_mw_collection.sh:17 (shard seeds from default_rng(3072))
-  max_parallel: 10            # run_mw_collection.sh:17 (MAXPAR; no effect on the data)
-  threads: 2                  # run_mw_collection.sh:30 / collect_cube_pcd_sharded.py --threads 2
+  seed: 3072                  # shard seeds drawn from default_rng(3072)
+  max_parallel: 10            # shards run at once (no effect on the data)
+  threads: 2                  # threads per shard
 policy_data:
   source: demos
   demos_per_task: 25          # CortexBench imitation protocol

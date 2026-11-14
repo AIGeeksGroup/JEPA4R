@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/scripts/checks/test_bc_caller_state.py (verbatim except: module names / paths
-# of the moved code adapted; lines wrapped at 120 columns)
 """Caller bookkeeping is sealed separately from the unchanged BC recovery hook."""
 import hashlib
 import json

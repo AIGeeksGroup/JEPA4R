@@ -2,11 +2,11 @@
 Impala on OGBench Cube.
 
 MetaWorld, Scene, Puzzle: stable-worldmodel's own PLDM training (third_party/stable-worldmodel/scripts/train/pldm.py,
-config pldm.yaml, at 6f1e499 with the logger / checkpoint-interval patch), started as
-cortexbench@9331494:lewm_pcd/scripts/run_{mw,scene,puzzle}_baselines.sh started it: the recipe's config overrides
+config pldm.yaml, at 6f1e499 with the logger / checkpoint-interval patch), started as in the paper runs: the recipe's
+config overrides
 (cfg.method.train.recipe) + the env's image dataset + trainer.max_epochs. The checkpoint (config.json +
 weights_epoch_<n>.pt, encoder + projector + predictor) lands in outputs/train_wm/<env>/pldm/<tag>/checkpoints/.
-OGBench Cube (Impala encoder, the C4 workflow's PLDM): jepa4r/baselines/cube/pldm.
+OGBench Cube (Impala encoder, the Cube workflow's PLDM): jepa4r/baselines/cube/pldm.
 load_frozen_encoder: encoder + projector, 192-d, as CortexBench and DQC read it (jepa_baselines.load_pldm).
 Interpreter: JEPA4R_PY_TRAIN (stable-worldmodel, stable-pretraining 0.1.8, Lightning).
 """

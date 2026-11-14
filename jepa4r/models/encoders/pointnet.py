@@ -4,7 +4,7 @@ shared per-point MLP 6 -> 1,080 -> 4,320 (GELU) -> order-invariant max-pool -> L
 in  [B, 1200, 6] (normalised xyz + rgb)    out [B, 192] (the LeWM projector follows)
 Parameters: 6*1080+1080 + 1080*4320+4320 + 4320*192+192 = 5,507,112 (+ norms, if any) ~ 5.51M.
 
-Original module docstring (lewm_pcd/encoders/pointnet_dexart.py):
+Original module docstring:
 PointNet copied from DexArt (Kami-code/dexart-release,
 ``stable_baselines3/networks/pretrain_nets.py``, used by ``PointNetImaginationExtractorGP``):
 
@@ -23,7 +23,6 @@ the max-pool (192-d latent), and widths scaled to match the ViT-tiny encoder's
     medium [64, 64, 128, 256]         -> [672, 672, 1344, 2688]
     large  [64, 64, 128, 128, 256, 256] -> [408, 408, 816, 816, 1632, 1632]
 """
-# Moved from cortexbench@9331494:lewm_pcd/encoders/pointnet_dexart.py (lines 19-75; verbatim)
 from collections.abc import Sequence
 
 import torch
@@ -84,6 +83,6 @@ class DexArtPointNet(nn.Module):
 
 def build(enc_cfg):
     """configs/encoder/pointnet.yaml -> DexArtPointNet (hidden = DexArt mlp_spec [1080, 4320], GELU between layers,
-    max-pool, linear head to out_dim; cortexbench@9331494:lewm_pcd/config/train/model/encoder/dexart.yaml)."""
+    max-pool, linear head to out_dim; LeWM's DexArt encoder config)."""
     return DexArtPointNet(in_dim=int(enc_cfg.in_dim), mlp_spec=[int(h) for h in enc_cfg.hidden],
                           out_dim=int(enc_cfg.out_dim), chunk_points=enc_cfg.get('chunk_points', 300))

@@ -1,48 +1,40 @@
 # OGBench Cube in the RM75-B digital twin (Sec. 5.6 "Robot Setup"): a MuJoCo twin of the RealMan RM75-B arm,
 # built from its vendor URDF, replaces the UR5e in a workspace scaled by 0.5 about its center to fit the arm's
-# 610 mm reach. The world model and decoder used on the real arm are trained only here (the policy head on this Cube
-# and its decoded look-ahead preview have no code in the four source branches and no number in the paper).
+# 610 mm reach. The world model and decoder used on the real arm are trained only here (a policy head on this Cube
+# and its decoded look-ahead preview are not implemented, and the paper gives no number for them).
 # The real-arm deployment itself is not part of this repository.
 _base_: _ogbench
 name: rm75b_cube
 display: Cube (RM75-B twin)
 impl: jepa4r.envs.twins.rm75b
-cube_task: single             # OGBench Cube-Single: cortexbench:lewm_pcd/scripts/data/collect_cube_pcd.py:74
-                              # (env_type='single')
-env_id: swm/OGBCubeRM75-v0    # cortexbench:lewm_pcd/envs/__init__.py:14-16 (RM75CubeEnv); the collection uses its PCD
-                              # variant
+cube_task: single             # OGBench Cube-Single (env_type 'single')
+env_id: swm/OGBCubeRM75-v0    # RM75CubeEnv; the collection uses its PCD variant
 pointcloud:
-  crop_box: [[0.21, -0.50, -0.02], [0.75, 0.50, 0.60]]   # x_min past the RM75 base:
-                                                         # cortexbench:lewm_pcd/envs/cube_rm75_env.py:51-53,
-                                                         # scripts/data/config/ogb_rm75_pcd.yaml:11-12
+  crop_box: [[0.21, -0.50, -0.02], [0.75, 0.50, 0.60]]   # x_min past the RM75 base
 robot:
   name: rm75b
-  model: realman_rm75b/rm75b.xml   # MuJoCo twin built from the vendor URDF: jepa4r/envs/twins/descriptions/
-                                   # (cortexbench:lewm_pcd/envs/cube_rm75_env.py:45)
+  model: realman_rm75b/rm75b.xml   # MuJoCo twin built from the vendor URDF, in jepa4r/envs/twins/descriptions/
   end_effector: eg2_4c2       # paper: Inspire EG2-4C2 gripper; twin: descriptions/inspire_eg2_4c2/eg2_4c2.xml
-                              # (cube_rm75_env.py:46)
   reach_mm: 610
 workspace_scale: 0.5          # OGBench Cube workspace scaled about its center
 twin_check:                   # stage verify_twin: twin vs. vendor URDF
   fk_configurations: 2000     # forward kinematics compared on 2,000 joint configurations
   compare: [forward_kinematics, joint_limits, masses, gripper_mechanics]
-  # the integrated check (cortexbench:lewm_pcd/scripts/checks/verify_rm75.py) also covers the env interface, plan-oracle
-  # behaviour and the two point-cloud datasets (sections C-E)
+  # the check (jepa4r/envs/twins/verify_rm75.py) also covers the env interface, the plan-oracle behaviour and the two
+  # point-cloud datasets (sections C-E)
   vendor_dir: null            # RealMan rm_models folders RM75-B/ and EG2-4C2/ (default:
                               # $JEPA4R_CHECKPOINTS/vendor/realman)
   datasets: {twin: cube_rm75_single_expert_pcd.h5, ur5e_env: cube_single_recon, ur5e: cube_single_expert_pcd.h5}
 policy: ???                   # learner of the cube pick-and-place policy head
 wm_data:
-  recipe: plan_oracle         # stable-worldmodel ExpertPolicy(policy_type='plan_oracle'): collect_cube_pcd.py:91 (as
-                              # cube_single_recon)
-  num_episodes: 10000         # cortexbench:lewm_pcd/scripts/data/config/ogb_pcd.yaml:36 (inherited by
-                              # ogb_rm75_pcd.yaml)
-  episode_len: 200            # ogb_pcd.yaml:20
+  recipe: plan_oracle         # stable-worldmodel ExpertPolicy(policy_type='plan_oracle'), as cube_single_recon
+  num_episodes: 10000
+  episode_len: 200
   mixture: null               # one behaviour (the plan oracle), no mixture
-  collector: paired           # collect_cube_pcd_sharded.py --config-name=ogb_rm75_pcd (run_rm75_pipeline.sh:14-16)
-  env_id: swm/OGBCubeRM75PCD-v0   # scripts/data/config/ogb_rm75_pcd.yaml:7
-  world: {num_envs: 10, max_episode_steps: 200, image_shape: [224, 224]}   # ogb_pcd.yaml:18-21
-  pcd:                        # ogb_pcd.yaml:23-31 with ogb_rm75_pcd.yaml:11-12 (crop x_min 0.21)
+  collector: paired
+  env_id: swm/OGBCubeRM75PCD-v0
+  world: {num_envs: 10, max_episode_steps: 200, image_shape: [224, 224]}
+  pcd:                        # as cube_single_recon, with crop x_min 0.21
     num_points: 1200
     cameras: [front_pixels]
     foreground_only: true
@@ -51,11 +43,11 @@ wm_data:
     cube_fraction: 0.25
     keep_rgb: false
   options: null
-  seed: 3072                  # run_rm75_pipeline.sh:15 (--seed 3072)
+  seed: 3072
   sets:
-    - {name: cube_rm75_single_expert, num_episodes: 10000, shards: 20}   # run_rm75_pipeline.sh:5 (SHARDS 20), 15-16
+    - {name: cube_rm75_single_expert, num_episodes: 10000, shards: 20}
   files: {pointcloud: cube_rm75_single_expert_pcd.h5, image: cube_rm75_single_expert.h5}
   split: random_clips
-  max_parallel: 8             # run_rm75_pipeline.sh:5 (MAXPAR_PIX)
+  max_parallel: 8             # shards run at once (no effect on the data)
   threads: 2
 policy_data: ???

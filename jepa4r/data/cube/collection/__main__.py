@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/collection/__main__.py (verbatim except: imports / paths of the
-# package layout, lines wrapped at 120 columns)
 """Current paper Cube collector: plans by default."""
 import argparse,json
 from . import build_plan,run

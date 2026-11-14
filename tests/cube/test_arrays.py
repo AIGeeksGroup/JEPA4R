@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:tests/gates/test_arrays.py (verbatim except: module names / paths of the moved code
-# adapted)
 import hashlib
 import unittest
 import numpy as np

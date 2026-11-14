@@ -7,8 +7,6 @@ backbone:
   name: page4d
   impl: jepa4r.decoder.backbones.page4d
   decoder_class: PAGE4DDecoder
-  weights: page4d/checkpoint_nomask.pt   # under JEPA4R_CHECKPOINTS: PAGE-4D's released checkpoint_nomask.pt (GATES.md
-                                         # 2:
-                                         # sha256 c7cb75b5..., 6,782,314,015 bytes); lewm-pcd-recon-page4d@d3c2d07:
-                                         # lewm_pcd/config/recon/decoder/page4d.yaml:6
+  weights: page4d/checkpoint_nomask.pt   # under JEPA4R_CHECKPOINTS: PAGE-4D's released checkpoint_nomask.pt
+                                         # (6,782,314,015 bytes)
   attention_blocks: 72        # all of them receive LoRA in stage B (0.88M parameters)

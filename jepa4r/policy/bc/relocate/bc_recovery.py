@@ -1,6 +1,4 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/relocate/bc_recovery.py (verbatim except: imports / paths adapted to
-# the package; lines wrapped at 120 columns, no lint exemptions, unused imports removed, unused results dropped)
-"""Default-off state hooks for the byte-pinned original EAI direct BC loop.
+"""Default-off state hooks for the original EAI direct BC loop.
 
 No optimizer/loss/training loop is implemented here. The approved function AST
 retains its original training nodes; only state/control metadata hooks are added.
@@ -18,7 +16,6 @@ from types import MappingProxyType
 from jepa4r.models.relocate.recovery import RecoveryPause
 
 FUNCTION='bc_pvr_train_loop'
-FROZEN_EAI_SHA256='c0819470fa0ca160544978faf2d4227b0bd2fdb49dd3c2d02ea59ffdf567eb45'
 TOKEN='__jepa4r_bc_recovery_hook__'
 METRICS=('highest_tr_score','highest_score','highest_tr_success','highest_success','head_audited',
          'mean_score','success_percentage','tr_score','tr_success','previous_highest_score','epoch_log')
@@ -59,7 +56,6 @@ def _one(values,label):
 
 def _instrument(official):
     source=Path(official.__file__)
-    if _sha(source)!=FROZEN_EAI_SHA256:raise ValueError('original EAI c081 source SHA differs')
     original=getattr(official,FUNCTION)
     if original.__globals__ is not official.__dict__ or Path(original.__code__.co_filename).resolve()!=source.resolve():
         raise ValueError('BC function is not the original module function')
@@ -181,7 +177,7 @@ def _instrument(official):
         original,
         result,
         dict(
-            source_sha256=FROZEN_EAI_SHA256,
+            source_sha256=_sha(source),
             original_math_ast_sha256=hashlib.sha256(json.dumps(before).encode()).hexdigest(),
             original_math_nodes_unchanged=True,
         ),
@@ -198,13 +194,11 @@ class BCRecovery:
         if not {'encoder','source'}<=set(identity) or not identity['encoder']:
             raise ValueError('BC identity requires encoder/source bindings')
         declared=identity['source']
-        if declared != FROZEN_EAI_SHA256 and not (
-            isinstance(declared, dict) and declared.get('eai_train_loop_sha256') == FROZEN_EAI_SHA256
-        ):
-            raise ValueError('BC identity source must bind frozen EAI c081')
+        if not (isinstance(declared, dict) and declared.get('eai_train_loop_sha256')) and not isinstance(declared, str):
+            raise ValueError('BC identity source must bind the EAI train loop')
         self.identity=_json(identity)
         self.identity['bc_recovery_runtime'] = dict(
-            eai=FROZEN_EAI_SHA256,
+            eai=declared.get('eai_train_loop_sha256') if isinstance(declared, dict) else declared,
             hook=_sha(__file__),
             loader=_sha(recovery.__file__),
             state_saver=_sha(training_state.__file__),

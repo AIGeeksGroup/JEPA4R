@@ -1,5 +1,3 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/run_bc3d.py (verbatim except: imports / paths adapted to the
-# package; lines wrapped at 120 columns, no lint exemptions)
 """One CortexBench MetaWorld imitation run with a point-cloud encoder (the 3D LeWM). This is run_bc.py (the official
 hydra_launcher + train_loop at eai-vc 76fe35e, with its two logging-only patches), with the camera image replaced by
 the same camera's point cloud and nothing else changed:

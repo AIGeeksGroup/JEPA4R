@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/workflow_lewm_encoder.py (verbatim except: imports / paths
-# adapted to the package; lines wrapped at 120 columns)
 """Original LeWM local-checkpoint factory/encode API for fresh workflow weights."""
 from pathlib import Path
 import os

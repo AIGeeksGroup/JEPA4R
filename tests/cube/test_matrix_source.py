@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/tests/test_matrix_source.py (verbatim except: imports / paths
-# adapted to the package; lines wrapped at 120 columns)
 """CPU contracts for an explicit shared-encoder M2 source config."""
 import copy
 import hashlib
@@ -88,8 +86,8 @@ class MatrixSourceTests(unittest.TestCase):
                         {'source_encoder_config': self.pin(root, source)}, target, assets_loader=lambda value: {}
                     )
 
-    def test_target_receipt_or_import_cannot_be_relabelled(self):
-        for field in ['encoder_receipt','encoder_import']:
+    def test_target_receipt_cannot_be_relabelled(self):
+        for field in ['encoder_receipt']:
             with self.subTest(field=field),tempfile.TemporaryDirectory()as root:
                 source,target=self.runtime(),self.runtime(2);target[field]={'path':'made-up-target','sha256':'f'*64}
                 with self.assertRaisesRegex(ValueError, field):

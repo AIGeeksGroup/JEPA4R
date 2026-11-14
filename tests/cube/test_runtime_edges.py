@@ -1,6 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/tests/test_runtime_edges.py (verbatim except: the TMPDIR test
-# follows workflow.child_environment's adaptation; imports / paths of the package layout, lines wrapped at 120 columns,
-# unused imports removed)
 """Regression checks for interpreter and worker IPC setup."""
 from pathlib import Path
 import json,sys

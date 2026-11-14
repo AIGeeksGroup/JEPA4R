@@ -4,7 +4,6 @@
     "visreg": {
       "filename": "visreg-vit-b-inet1k.pth",
       "bytes": 368495235,
-      "sha256": "23e6aa5fe93cc61b3d9ab13e35cb4966580612d39bae39b1991f35c19c8087b8",
       "url": null,
       "family": "visreg_vitb768",
       "latent_dim": 768,
@@ -12,13 +11,11 @@
       "feature": "last_normalized_CLS",
       "inference_precision": "fp32",
       "architecture": "vit_base_patch16_224",
-      "timm_version": "1.0.29",
-      "published_official_sha256": false
+      "timm_version": "1.0.29"
     },
     "vjepa": {
       "filename": "vjepa2_1_vitl_dist_vitG_384.pt",
       "bytes": 5151198524,
-      "sha256": "7ea9b7cb4a75d10644a8a8d42cff9e177b10dca8f02173f0eaf2b0bed82838c6",
       "url": "https://dl.fbaipublicfiles.com/vjepa2/vjepa2_1_vitl_dist_vitG_384.pt",
       "family": "vjepa21_vitl1024",
       "latent_dim": 1024,
@@ -26,29 +23,6 @@
       "feature": "last_normalized_image_patch_mean",
       "inference_precision": "fp16",
       "source_commit": "204698b45b3712590f06245fbfba32d3be539812",
-      "source_files_sha256": {
-        "hubconf.py": "6a61c46a80c82ed10331a19822d58e9a19f062e52845e1787fc810979ff03c7b",
-        "src/hub/backbones.py": "391cdde1e9a1da47cb8094bbea5fbbe8acac0135b27e82f1a6ab19c0b39cc692",
-        "app/vjepa_2_1/models/vision_transformer.py": "d2932eabeba684d8f558302a13cfd4be70a0170ee5112f5a794652d0a29089b9",
-        "app/vjepa_2_1/models/utils/modules.py": "64be6a87bd9f18d385f4e44186db3347d1665e18a1f0511d51d3b305531562e2",
-        "app/vjepa_2_1/models/utils/patch_embed.py": "29e11ab97ab3ccdef107d6a7d0d7b374b58e712076cc3561f07b7e603c9b5165",
-        "app/vjepa_2_1/models/utils/pos_embs.py": "bc0c2f1ef55a7b8511efa4c4724249eccdbb850d7c26bf6082bd780cb15a8bd3",
-        "app/vjepa_2_1/models/utils/masks_dist.py": "71c46e536b5db248de08ab3e40d32b71f2b67d148adec3dda88d92b98ca27c85",
-        "src/models/vision_transformer.py": "9d4fd4e3603311803c105cc5114e2bc12ff28bc11870637dd3969511d9dead74",
-        "src/models/predictor.py": "3d8481bf2544b85ed92b3feb418e3b6d85ca1f81034c931b8c860f2d3d9aac2b",
-        "src/models/ac_predictor.py": "5a520ad92b3f78b231aa153a5bbd9f800f880024974109a04d19aed6a0900643",
-        "src/models/utils/modules.py": "b93f6c7e0747deb216419c000c2878f11a9189024a9adeacfd437e172396dff0",
-        "src/models/utils/patch_embed.py": "1823c40b34410e70eb313360e21678e18a0ee5465b5d47de9f3d967c074f5a9d",
-        "src/models/utils/pos_embs.py": "e6d3b3863ade47b3734a3b443f1bcc93eab02e39bf596ea199517f68ccab443e",
-        "src/utils/tensors.py": "782b58bd2af456e184750e5318ab773105108383f61b280fe4c7a90f46add2c8",
-        "src/utils/distributed.py": "52342428ee4eafaf685471afd91912462057bed59267faec42cf7640d8c08861",
-        "src/utils/logging.py": "0bf5298ecce7e59d90fcb3e4cc68eba988e3e8af4d4a08c91e94bdcd29f76b2e",
-        "src/masks/utils.py": "833f111a0fa5ffdbd3a6412e2dace2517c3c178f49c14f8bb631d9f6a070dfd0",
-        "README.md": "55f8485d734a08d23170322cd13ad5ac2f4d63b3d1fd542b10ec0907042c5bb6",
-        "LICENSE": "cf9b17822d1fcd4ff32ccbe14183386fb3adf6f2ff92dc184130823f7fc28173",
-        "APACHE-LICENSE": "a41e2fae9915ae56028f8dbd0bf27995f1907613cbcd2d81a61b010ad34e9fe9",
-        "requirements.txt": "86df4afafef209576d308aee6a6a2d13523805c1885f3e294f3a9541e6b2be23"
-      },
       "state_dict_key": "ema_encoder",
       "encoder_module": "app.vjepa_2_1.models.vision_transformer",
       "encoder_constructor": "vit_large",
@@ -65,7 +39,29 @@
         "img_temporal_dim_size": 1,
         "interpolate_rope": true
       },
-      "published_official_sha256": false
+      "source_files": [
+        "hubconf.py",
+        "src/hub/backbones.py",
+        "app/vjepa_2_1/models/vision_transformer.py",
+        "app/vjepa_2_1/models/utils/modules.py",
+        "app/vjepa_2_1/models/utils/patch_embed.py",
+        "app/vjepa_2_1/models/utils/pos_embs.py",
+        "app/vjepa_2_1/models/utils/masks_dist.py",
+        "src/models/vision_transformer.py",
+        "src/models/predictor.py",
+        "src/models/ac_predictor.py",
+        "src/models/utils/modules.py",
+        "src/models/utils/patch_embed.py",
+        "src/models/utils/pos_embs.py",
+        "src/utils/tensors.py",
+        "src/utils/distributed.py",
+        "src/utils/logging.py",
+        "src/masks/utils.py",
+        "README.md",
+        "LICENSE",
+        "APACHE-LICENSE",
+        "requirements.txt"
+      ]
     }
   }
 }

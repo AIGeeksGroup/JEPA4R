@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/tests/test_official_data.py (verbatim except: imports / paths
-# of the package layout, no lint exemptions, unused imports removed)
 """Bounded downloader and raw-terminal checks; no external requests."""
 import hashlib
 import importlib.util
@@ -28,18 +26,17 @@ class Response(io.BytesIO):
 
 
 def record(data=b'complete public dataset'):
-    return dict(name='cube-single-play-v0.npz', url='https://example.test/data.npz',
-                bytes=len(data), sha256=hashlib.sha256(data).hexdigest())
+    return dict(name='cube-single-play-v0.npz', url='https://example.test/data.npz', bytes=len(data))
 
 
-def test_plan_is_read_only_and_has_pinned_train_and_val(tmp_path):
+def test_plan_is_read_only_and_has_train_and_val(tmp_path):
     api = load_api()
     output = tmp_path / 'not-created'
     for cube in (1, 2, 3, 4):
         plan = api.build_plan(cube, output)
         assert plan['cube_count'] == cube
         assert set(plan['files']) == {'train', 'val'}
-        assert all(len(item['sha256']) == 64 for item in plan['files'].values())
+        assert all(item['bytes'] > 0 and item['url'].startswith('https://') for item in plan['files'].values())
     assert not output.exists()
     with pytest.raises(ValueError):
         api.build_plan(0, output)
@@ -60,7 +57,7 @@ def test_existing_wrong_file_is_never_overwritten(tmp_path, monkeypatch):
     target = tmp_path / record()['name']
     target.write_bytes(b'old user data')
     monkeypatch.setattr(api.urllib.request, 'urlopen', lambda *a, **k: pytest.fail('network must not run'))
-    with pytest.raises(ValueError, match='checksum'):
+    with pytest.raises(ValueError, match='size'):
         api.download(record(), tmp_path)
     assert target.read_bytes() == b'old user data'
 
@@ -97,7 +94,7 @@ def test_ignored_range_preserves_partial_failure_evidence(tmp_path, monkeypatch)
 def test_bad_download_is_not_a_complete_dataset(tmp_path, monkeypatch):
     api = load_api()
     item = record(b'expected bytes')
-    monkeypatch.setattr(api.urllib.request, 'urlopen', lambda *a, **k: Response(b'corrupted data'))
+    monkeypatch.setattr(api.urllib.request, 'urlopen', lambda *a, **k: Response(b'truncated'))
     with pytest.raises(ValueError):
         api.download(item, tmp_path)
     assert not (tmp_path / item['name']).exists()

@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/tests/test_tiny_resume_budget.py (verbatim except: imports /
-# paths adapted to the package; lines wrapped at 120 columns, no lint exemptions, unused imports removed)
 """Pure CPU control checks before the original Tiny loop can forward/update."""
 from pathlib import Path
 from types import ModuleType,SimpleNamespace

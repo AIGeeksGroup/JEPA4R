@@ -2,13 +2,12 @@
 the backbone (72 on PAGE-4D, 0.88M parameters).
 
 ``add_lora(module, rank)`` wraps every fused qkv projection under ``module`` in ``LoRAQV`` (update restricted to the q
-and v slices); the backbone decoders call it on their attention blocks (recon branch's lora.py, moved unchanged).
+and v slices); the backbone decoders call it on their attention blocks.
 """
 import torch
 from torch import nn
 
 
-# Moved from lewm-pcd-recon-page4d@d3c2d07:lewm_pcd/recon/decoders/lora.py:LoRAQV, add_lora (lines 7-36; verbatim)
 class LoRAQV(nn.Module):
     """LoRA on the fused qkv projection, update restricted to the q and v slices: W x + s * [B_q; 0; B_v] (A x). The
     pretrained qkv weight is untouched; A is random, B is zero, so training starts exactly at the pretrained model."""

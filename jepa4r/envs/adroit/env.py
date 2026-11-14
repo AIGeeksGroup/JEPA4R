@@ -1,4 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/envs/adroit/env.py (verbatim except: lines wrapped at 120 columns)
 """Gymnasium bridge to pinned mj_envs Relocate; no normalized-action rescaling.
 
 Native state dictionaries are flattened into numeric info columns, including

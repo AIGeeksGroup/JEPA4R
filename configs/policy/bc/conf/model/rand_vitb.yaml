@@ -1,4 +1,3 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/conf/model/rand_vitb.yaml (verbatim)
 # The paper's "Random (ViT-B) Frozen" row: vc1_vitb.yaml (vc_models) with no checkpoint
 _target_: vc_models.models.load_model
 model:

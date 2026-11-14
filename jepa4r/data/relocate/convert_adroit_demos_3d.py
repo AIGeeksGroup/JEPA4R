@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/cortexbench/convert_adroit_demos_3d.py (verbatim except: imports /
-# paths of the package layout, lines wrapped at 120 columns, unused imports removed)
 """Official init-state/action replay; replace only images with visible PCD."""
 import argparse
 from copy import deepcopy

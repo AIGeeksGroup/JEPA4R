@@ -9,7 +9,6 @@ from functools import partial
 
 from torch import nn
 
-# Moved from cortexbench@9331494:lewm_pcd/module.py:Embedder, MLP (lines 189-243; verbatim)
 class Embedder(nn.Module):
     def __init__(
         self,

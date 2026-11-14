@@ -1,5 +1,3 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/run_bc_rm75.py (verbatim except: imports / paths adapted to
-# the package; lines wrapped at 120 columns, no lint exemptions)
 """One CortexBench imitation run on the RM75 port of a MetaWorld task (env rm75-<task>-v2-goal-observable, TASKS):
 the official hydra_launcher + train_loop (eai-vc 76fe35e, unchanged on disk) with run_bc.py's runtime patches (embedding
 configs from conf/model, metrics.jsonl logging, the logging-only train/* rollouts reusing the evaluation paths) and

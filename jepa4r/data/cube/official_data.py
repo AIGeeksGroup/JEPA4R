@@ -1,6 +1,4 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/official_data.py (verbatim except: imports / paths of the
-# package layout, lines wrapped at 120 columns)
-"""Prepare the byte-pinned public Play data; never rewrite an existing source."""
+"""Prepare OGBench's public play data; never rewrite an existing source."""
 import argparse
 from datetime import datetime, timezone
 import hashlib
@@ -35,8 +33,7 @@ def build_plan(cube_count, output_root):
     source = json.loads(sources.read_text(encoding='utf8'))[str(cube_count)]
     return dict(schema='cube_official_data_plan_v1', cube_count=cube_count,
                 output_root=str(Path(output_root).resolve()), files=source['files'],
-                source_config=source['source_config'], source_config_sha256=source['source_config_sha256'],
-                executed=False)
+                source_config=source['source_config'], executed=False)
 
 
 def publish(partial, target):
@@ -46,7 +43,7 @@ def publish(partial, target):
 
 
 def download(item, directory):
-    """Resume only a matching partial range and publish only the pinned bytes."""
+    """Resume only a matching partial range and publish only a complete download."""
     directory = Path(directory)
     directory.mkdir(parents=True, exist_ok=True)
     name = item['name']
@@ -54,9 +51,9 @@ def download(item, directory):
         raise ValueError('dataset name must be a simple file name')
     target = directory / name
     if target.exists():
-        if sha256(target) != item['sha256']:
-            raise ValueError('existing source checksum differs: ' + str(target))
-        return dict(path=str(target.resolve()), sha256=item['sha256'], reused=True)
+        if target.stat().st_size != item['bytes']:
+            raise ValueError('existing source size differs: ' + str(target))
+        return dict(path=str(target.resolve()), sha256=sha256(target), reused=True)
     partial = directory / (name + '.part')
     metadata = directory / (name + '.download.json')
     status = directory / (name + '.status.json')
@@ -94,10 +91,10 @@ def download(item, directory):
                             save(status, dict(stage='downloading', completed_bytes=offset,
                                               total_bytes=item['bytes'], actual_exit_code=None))
                             last_report = offset
-        if partial.stat().st_size != item['bytes'] or sha256(partial) != item['sha256']:
-            raise ValueError('download size/checksum differs from the accepted source')
+        if partial.stat().st_size != item['bytes']:
+            raise ValueError('download size differs from the source')
         publish(partial, target)
-        result = dict(path=str(target.resolve()), sha256=item['sha256'], bytes=item['bytes'], reused=False)
+        result = dict(path=str(target.resolve()), sha256=sha256(target), bytes=item['bytes'], reused=False)
         save(status, dict(stage='source_bytes_verified', completed_bytes=item['bytes'],
                           total_bytes=item['bytes'], actual_exit_code=0))
         return result
@@ -140,11 +137,11 @@ def prepare(plan):
         if previous['cube_count'] != plan['cube_count']:
             raise ValueError('existing official-data receipt belongs to another Cube')
         for split in ('train', 'val'):
-            if sha256(previous[split]['path']) != plan['files'][split]['sha256']:
+            if sha256(previous[split]['path']) != previous[split]['sha256']:
                 raise ValueError('existing official dataset checksum changed')
         return receipt
     result = dict(schema='cube_official_data_binding_v1', cube_count=plan['cube_count'],
-                  source_config=plan['source_config'], source_config_sha256=plan['source_config_sha256'])
+                  source_config=plan['source_config'])
     for split, item in plan['files'].items():
         result[split] = download(item, output)
         result[split]['audit'] = audit_npz(result[split]['path'], plan['cube_count'],

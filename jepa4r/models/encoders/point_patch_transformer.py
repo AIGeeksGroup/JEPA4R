@@ -1,6 +1,6 @@
 """PointPatchTransformer of PPRL [gyenes2024pprl] for the Tab. 4b ablation, sized to ~5.51M parameters.
 
-Original module docstring (lewm_pcd/encoders/ppt.py):
+Original module docstring:
 PointPatchTransformer copied from PPRL / PointPatchRL (balazsgyenes/pprl, ``conf/model/ppt.yaml``),
 re-implemented in plain PyTorch (batched, fixed 1200 points) so it needs neither
 parllel nor torch_geometric / torch_cluster.
@@ -22,7 +22,6 @@ Adaptations to LeWM: an affine head Linear(E -> out_dim) (192-d latent), and
 E = 402 instead of 384 so the parameter count matches the ViT-tiny encoder (5.50 M).
 The state vector PPRL concatenates after pooling is not part of this module.
 """
-# Moved from cortexbench@9331494:lewm_pcd/encoders/ppt.py (lines 22-182; verbatim)
 from __future__ import annotations
 
 import math
@@ -207,8 +206,7 @@ class PointPatchTransformer(nn.Module):
 
 
 def build(enc_cfg):
-    """configs/encoder/point_patch_transformer.yaml (hparams =
-    cortexbench@9331494:lewm_pcd/config/train/model/encoder/ppt.yaml)."""
+    """configs/encoder/point_patch_transformer.yaml (hparams = LeWM's PPT encoder config)."""
     h = enc_cfg.hparams
     return PointPatchTransformer(in_dim=int(enc_cfg.in_dim), embed_dim=int(h.embed_dim), depth=int(h.depth),
                                  num_heads=int(h.num_heads), mlp_ratio=h.mlp_ratio, group_size=int(h.group_size),

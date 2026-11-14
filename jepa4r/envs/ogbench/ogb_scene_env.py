@@ -1,5 +1,3 @@
-# Moved from cortexbench@9331494:lewm_pcd/envs/ogb_scene_env.py (verbatim except: lines wrapped at 120 columns, no lint
-# exemptions, unused imports removed, registration imports as importlib.import_module)
 """OGBench's own ``scene-v0`` (the ogbench package, not stable-worldmodel's ``swm/OGBScene-v0`` port) behind the repo's
 stable-worldmodel interface, ``swm/OGBenchScene-v0``, for the scene world-model data (scripts/data/collect_ogb.py) and
 the CortexBench evaluation tasks (bench/cortexbench/scene_env.py).

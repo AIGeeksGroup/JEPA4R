@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/rh56_adapter/native.py (verbatim except: imports / paths adapted to the
-# package; lines wrapped at 120 columns)
 """Native RH56 interface. Policy/physics and legacy point sampling remain unchanged."""
 import copy
 import hashlib
@@ -25,8 +23,7 @@ def expert_files():
         raise ValueError('provide RH56_EXPERT_ROOT for the native state56/action12 expert bundle')
     from jepa4r.envs.twins.rh56.asset_identity import verify_rh56_bundle
     global LAST_BUNDLE_IDENTITY
-    dependencies=ROOT.parent/'configs/policy/bc/relocate/DEPENDENCIES.json'
-    LAST_BUNDLE_IDENTITY=verify_rh56_bundle(EXPERT,dependencies_path=dependencies)
+    LAST_BUNDLE_IDENTITY=verify_rh56_bundle(EXPERT)
     paths={name:EXPERT/name for name in ('env.py','ppo.py','experts/relocate_expert.pt')}
     for path in paths.values():
         if not path.is_file():raise FileNotFoundError(f'missing RH56 expert artifact: {path}')

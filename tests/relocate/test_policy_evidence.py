@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/scripts/checks/test_policy_evidence.py (verbatim except: module names / paths
-# of the moved code adapted; lines wrapped at 120 columns)
 """Real-input policy evidence contracts; no Torch or simulator required."""
 import importlib.util
 from pathlib import Path

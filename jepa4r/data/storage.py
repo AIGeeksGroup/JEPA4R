@@ -28,7 +28,6 @@ try:  # stable-worldmodel / h5py are needed to write datasets, not to import thi
 except ImportError:  # pragma: no cover
     h5py, HDF5Writer, _is_string_col = None, object, None
 
-# Moved from cortexbench@9331494:lewm_pcd/scripts/data/collect_cube_pix.py:GzipHDF5Writer (lines 35-56; verbatim)
 class GzipHDF5Writer(HDF5Writer):
     """HDF5Writer whose datasets use multi-row chunks and gzip for the listed columns (schema creation only;
     episode writing, append validation and bookkeeping are inherited unchanged)."""
@@ -67,8 +66,6 @@ class GzipHDF5Writer(HDF5Writer):
 
 
 
-# Moved from cortexbench@9331494:lewm_pcd/scripts/data/collect_cube_pcd.py:PIX_COLS, PCD_COLS, PairedWriter (lines
-# 40-65; verbatim)
 PIX_COLS = ('pixels', 'render_time')    # swm's AddPixelsWrapper: 2D dataset only
 # prefixes of PointCloudWrapper's keys (pixels/, cam/ only with keep_rgb): 3D dataset only
 PCD_COLS = ('pcd_', 'pixels/', 'cam/')
@@ -98,7 +95,6 @@ class PairedWriter:
 
 
 
-# Moved from cortexbench@9331494:lewm_pcd/scripts/data/collect_cube_pcd_sharded.py:check_paired (lines 32-40; verbatim)
 def check_paired(pcd, pix):
     """The 3D and 2D datasets of one paired collection hold the same episodes, row for row."""
     with h5py.File(pcd, 'r') as a, h5py.File(pix, 'r') as b:
@@ -115,8 +111,6 @@ def check_paired(pcd, pix):
     print(f'{pcd.name} (3D) and {pix.name} (2D) hold the same episodes row for row', flush=True)
 
 
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/scripts/data/merge_h5_shards.py:CHUNK, datasets, append_shard (lines 23-74;
-# verbatim)
 CHUNK = 20_000  # frames per copy step
 
 
@@ -173,8 +167,6 @@ def append_shard(out_path, shard_path, preserve_episode_indices=False):
 
 
 
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/scripts/data/merge_h5_shards.py:main (lines 75-103; verbatim except: argparse
-# replaced by the arguments of merge_shards)
 def merge_shards(out, shards, delete=False, preserve_episode_indices=False):
     out = Path(out)
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -199,8 +191,6 @@ def merge_shards(out, shards, delete=False, preserve_episode_indices=False):
 
 
 
-# Moved from cortexbench@9331494:lewm_pcd/scripts/data/add_eval_columns.py:main (lines 18-42; verbatim except: renamed
-# add_eval_columns)
 def add_eval_columns(path):
     with h5py.File(path, 'a') as f:
         lens, _offs = f['ep_len'][:], f['ep_offset'][:]

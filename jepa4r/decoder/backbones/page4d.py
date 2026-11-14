@@ -2,9 +2,9 @@
 head; ~0.94B parameters, frozen.
 
 ``PAGE4DDecoder`` is the whole decoder with this backbone (set generator -> PAGE-4D's DINOv2 + aggregator + DPT point
-head, frozen, + LoRA in stage B -> affine map, rgb branch, pixel selection): the recon branch's
-recon/decoders/page4d.py, moved unchanged apart from paths. PAGE-4D's code: the clone at c4a39ac (JEPA4R_PAGE4D, default
-<repo>/third_party/PAGE4D); relative ``weights`` / ``init_from`` resolve under JEPA4R_CHECKPOINTS (jepa4r.config.paths).
+head, frozen, + LoRA in stage B -> affine map, rgb branch, pixel selection). PAGE-4D's code: the clone at c4a39ac
+(JEPA4R_PAGE4D, default <repo>/third_party/PAGE4D); relative ``weights`` / ``init_from`` resolve under
+JEPA4R_CHECKPOINTS (jepa4r.config.paths).
 """
 import os
 import sys
@@ -37,9 +37,6 @@ from jepa4r.decoder.losses import chamfer, sliced_wasserstein
 from jepa4r.decoder.set_generator import SetDecoder
 
 
-# Moved from lewm-pcd-recon-page4d@d3c2d07:lewm_pcd/recon/decoders/page4d.py:PRETRAINED, ADAPTER_KEYS, checkpoint_path,
-# load_page4d, PAGE4DDecoder (lines 43-200; verbatim except: relative weights resolve under JEPA4R_CHECKPOINTS instead
-# of $STABLEWM_HOME/checkpoints)
 PRETRAINED = ('dino', 'aggregator', 'head')                             # never updated; only adapters wrap them
 ADAPTER_KEYS = ('.down.', '.up_q.', '.up_v.')
 

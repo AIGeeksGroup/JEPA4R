@@ -1,6 +1,6 @@
 """PointNet++ [qi2017pointnetpp] for the Tab. 4b ablation, sized to ~5.51M parameters.
 
-Original module docstring (lewm_pcd/encoders/pointnet2.py):
+Original module docstring:
 PointNet++ (Qi et al., NeurIPS 2017): the single-scale-grouping classifier of the authors' code
 (charlesq34/pointnet2: models/pointnet2_cls_ssg.py, utils/pointnet_util.py, tf_ops), in plain PyTorch.
 
@@ -32,7 +32,6 @@ are updated once per step as nn.BatchNorm does. In eval mode the running statist
 per group of that many clouds instead: each group is computed in one piece under activation checkpointing, and the
 running statistics are updated once per group.
 """
-# Moved from cortexbench@9331494:lewm_pcd/encoders/pointnet2.py (lines 32-263; verbatim)
 from __future__ import annotations
 
 from collections.abc import Sequence
@@ -269,8 +268,7 @@ class PointNet2(nn.Module):
 
 
 def build(enc_cfg):
-    """configs/encoder/pointnet2.yaml (hparams =
-    cortexbench@9331494:lewm_pcd/config/train/model/encoder/pointnet2.yaml)."""
+    """configs/encoder/pointnet2.yaml (hparams = LeWM's PointNet++ encoder config)."""
     h = enc_cfg.hparams
     return PointNet2(
         in_dim=int(enc_cfg.in_dim),

@@ -3,17 +3,15 @@ a new branch adds rgb, and 1,200 pixels form P_hat_t (selection rule: cfg.decode
 
 The head is built inside each backbone decoder (jepa4r/decoder/backbones: ``frame`` = the affine map, ``rgb`` = the
 colour branch, ``_pick`` = the pixel selection: a fresh random subset of the dense map while training, a fixed one --
-torch.randperm with a seed-0 generator -- otherwise), as in the recon branch; it is not a separate module there. The
-affine map starts as a virtual camera looking at the workspace: ``make_cam`` below, the recon branch's render.py moved
-unchanged (its rasteriser ``render_points`` / ``label`` / ``tile`` draws decoded clouds with the same camera model).
+torch.randperm with a seed-0 generator -- otherwise). The affine map starts as a virtual camera looking at the
+workspace: ``make_cam`` below (the rasteriser ``render_points`` / ``label`` / ``tile`` draws decoded clouds with the
+same camera model).
 """
 import numpy as np
 import torch
 from PIL import Image, ImageDraw
 
 
-# Moved from lewm-pcd-recon-page4d@d3c2d07:lewm_pcd/recon/render.py:BG, make_cam, _shade, render_points, label, tile
-# (lines 11-73; verbatim)
 BG = (0.09, 0.10, 0.12)
 
 

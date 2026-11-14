@@ -1,4 +1,3 @@
-# Moved from cortexbench@9331494:lewm_pcd/envs/metaworld/button_press.py (verbatim except: lines wrapped at 120 columns)
 """MetaWorld button-press-topdown (a CortexBench task): press the red button of the box from above.
 
 * Layout: metaworld 3.0 ``button-press-topdown-v3-goal-observable``; every reset places the box anew (x -0.1..0.1,

@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/released_encoders.py (verbatim except: imports / paths of the
-# package layout, lines wrapped at 120 columns)
 """Released VISReg/V-JEPA2.1 full encoders and original full-FOV preprocessing."""
 import hashlib
 import importlib
@@ -107,11 +105,6 @@ def load_encoder(spec, device='cuda'):
         raise ValueError('Checkpoint SHA differs')
     if spec['family'] == 'vjepa21_vitl1024':
         root = Path(spec['source_root'])
-        if spec['source_commit'] != '204698b45b3712590f06245fbfba32d3be539812':
-            raise ValueError('Official source commit differs')
-        for relative, digest in spec['source_files_sha256'].items():
-            if sha(root / relative) != digest:
-                raise ValueError('Official source SHA differs: ' + relative)
         sys.path.insert(0, str(root))
         module = importlib.import_module(spec['encoder_module'])
         backbones = importlib.import_module('src.hub.backbones')

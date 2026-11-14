@@ -1,6 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/workflow_downstream.py (verbatim except: imports / paths
-# adapted to the package; lines wrapped at 120 columns, no lint exemptions, unused imports removed, registration imports
-# as importlib.import_module)
 """Unified six-model Cube paper protocol over original GCIQL/Native functions.
 
 Planning imports only the standard library. Execution belongs in a fresh child.
@@ -175,28 +172,24 @@ def _assets(config):
         pinned(record)
     receipt_path = pinned(config['encoder_receipt'])
     receipt = read(receipt_path)
-    imported = 'encoder_import' in config
-    if imported:
-        from jepa4r.models.cube.retained_encoder import validate_import
-        validate_import(config['encoder_import'], config)
-    if not imported and (receipt.get('schema') not in ('cube_workflow_encoder_v1', 'cube_fresh_wm_acceptance_v1') or
+    if (receipt.get('schema') not in ('cube_workflow_encoder_v1', 'cube_fresh_wm_acceptance_v1') or
             receipt.get('actual_exit_code') != 0 or
             receipt.get('model') != config['model'] or
             receipt.get('cube_count') != config['cube_count'] or
             receipt.get('mode') != config['mode'] or
             receipt.get('checkpoint') != dict(path=encoder['checkpoint'], sha256=encoder['checkpoint_sha256'])):
         raise ValueError('Encoder receipt does not bind this actual model/Cube/checkpoint/mode')
-    if not imported and not (receipt.get('strict_reload_verified') is True or
+    if not (receipt.get('strict_reload_verified') is True or
             contract['family'] in ('visreg', 'vjepa') and receipt.get('released_weights_verified') is True):
         raise ValueError('Encoder receipt must verify strict reload or official released weights')
-    if not imported and config['model'] not in ('visreg','vjepa'):
+    if config['model'] not in ('visreg','vjepa'):
         _current_training_data(receipt,config['cube_count'],config['mode'])
     if config['mode']=='formal' and contract['family'] not in ('visreg','vjepa') and (
             receipt.get('actual_epochs') != 10 or receipt.get('formal_acceptance_verified') is not True):
         raise ValueError('Formal paper WM requires its actual ten-epoch formal acceptance')
-    for path, digest in ({} if imported else receipt.get('source_binding', {})).items():
+    for path, digest in receipt.get('source_binding', {}).items():
         pinned(dict(path=path, sha256=digest))
-    if not imported and receipt.get('schema') == 'cube_fresh_wm_acceptance_v1':
+    if receipt.get('schema') == 'cube_fresh_wm_acceptance_v1':
         if receipt.get('config') != encoder.get('factory_config') or receipt.get('actual_epochs') != encoder.get(
             'epoch'
         ):
@@ -251,9 +244,6 @@ def prepare_recipe(run_config, encoder_receipt_path, output_path):
     receipt_path = Path(encoder_receipt_path).resolve()
     receipt = read(receipt_path)
     config['encoder_receipt'] = dict(path=str(receipt_path), sha256=sha(receipt_path))
-    imported = read(pinned(run_config['encoder_import'])) if 'encoder_import' in run_config else None
-    if imported is not None:
-        config['encoder_import'] = copy.deepcopy(run_config['encoder_import'])
     model = config['model']
     contract = group_contract(model, config['cube_count'])
     if model in ('visreg', 'vjepa'):
@@ -261,13 +251,8 @@ def prepare_recipe(run_config, encoder_receipt_path, output_path):
             raise ValueError('Official foundation weights/spec/adapter must be explicitly supplied')
         config['encoder_binding'] = copy.deepcopy(run_config['encoder_binding'])
     else:
-        if imported is None:
-            _current_training_data(receipt,config['cube_count'],config['mode'])
-        checkpoint, factory = (
-            (imported['checkpoint'], imported['factory_config'])
-            if imported is not None
-            else (receipt.get('checkpoint'), receipt.get('config'))
-        )
+        _current_training_data(receipt,config['cube_count'],config['mode'])
+        checkpoint, factory = receipt.get('checkpoint'), receipt.get('config')
         if not checkpoint or not factory:
             raise ValueError('Accepted WM receipt needs actual checkpoint and factory config')
         checkpoint_path, factory_path = pinned(checkpoint), pinned(factory)
@@ -324,9 +309,6 @@ def prepare_recipe(run_config, encoder_receipt_path, output_path):
                PACKAGE/'downstream/native.py', PACKAGE/'downstream/native_core.py',
                PACKAGE.parents[2]/'configs/policy/gciql/workflow_agent.json']
     config['implementation_sources'] = {str(path):sha(path) for path in sources}
-    if imported is not None:
-        retained = PACKAGE.parents[1]/'models/cube/retained_encoder.py'
-        config['implementation_sources'][str(retained)] = sha(retained)
     if config.get('r4_mapping'):
         config['implementation_sources'][str(PACKAGE/'d3_mapping.py')] = sha(PACKAGE/'d3_mapping.py')
     if model == 'pldm':

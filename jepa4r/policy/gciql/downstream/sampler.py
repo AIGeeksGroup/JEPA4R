@@ -1,7 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/downstream/sampler.py (verbatim except: DistanceInputs also
-# accepts the 768-D VISReg and 1024-D V-JEPA 2.1 latents that this file's own load_cached_features contract lists; the
-# source accepted only 192/512, which conflicts with the paper's Tab. 1 VISReg / V-JEPA 2.1 Cube rows, and the paper
-# wins; lines wrapped at 120 columns)
 """Thin multi-Cube input projection and per-object ALL-distance reward.
 
 The original GCDataset owns all sampling and RNG. Features are one readonly

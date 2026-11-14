@@ -1,4 +1,3 @@
-# Moved from cortexbench@9331494:lewm_pcd/envs/metaworld/assembly.py (verbatim except: lines wrapped at 120 columns)
 """MetaWorld assembly (a CortexBench task): put the nut (a ring with a handle, body 'RoundNut') over the peg.
 
 * Layout: metaworld 3.0 ``assembly-v3-goal-observable`` (the same XML as CortexBench's v2 fork); every reset places the

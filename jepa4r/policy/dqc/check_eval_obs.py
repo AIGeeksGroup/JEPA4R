@@ -1,5 +1,3 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/dqc/check_eval_obs.py (verbatim except: lines wrapped at 120 columns, no
-# lint exemptions, unused imports removed, registration imports as importlib.import_module)
 """Check: the observation computed in the evaluation (lewm_obs.LeWMObs on the eval env, OGBench's task mode) and the
 training set's observation (extract_feats.py: a data_collection-mode env re-rendering a stored state) agree for the same
 simulator state.
