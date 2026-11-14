@@ -7,10 +7,12 @@ frameskip, keys_to_load, keys_to_cache)``) with LeWM's transforms, moved here fr
 ``get_pcd_preprocessor`` (xyz - center) * scale ++ rgb / 255, ``get_img_preprocessor`` (ImageNet normalisation, 224),
 and a z-score normaliser per non-observation column fitted on the whole dataset file (NaN rows dropped).
 """
+
 from pathlib import Path
 
 import numpy as np
 import torch
+
 
 def get_img_preprocessor(source: str, target: str, img_size: int = 224):
     from stable_pretraining import data as dt
@@ -44,6 +46,7 @@ def get_column_normalizer(dataset, source: str, target: str):
     std = data.std(0, keepdim=True).clone()
     return dt.transforms.WrapTorchTransform(ZScoreNormalizer(mean, std), source=source, target=target)
 
+
 class PointCloudPreprocessor:
     """Build the model input from the stored point-cloud columns.
 
@@ -53,8 +56,16 @@ class PointCloudPreprocessor:
     meaningless for an unordered set, and would need the whole 29 GB column.
     Picklable (class, not closure) so DataLoader workers can be spawned."""
 
-    def __init__(self, source_xyz='pcd_xyz', source_rgb='pcd_rgb', target='pcd',
-                 center=(0.425, 0.0, 0.2), scale=4.0, use_rgb=True, drop_sources=True):
+    def __init__(
+        self,
+        source_xyz="pcd_xyz",
+        source_rgb="pcd_rgb",
+        target="pcd",
+        center=(0.425, 0.0, 0.2),
+        scale=4.0,
+        use_rgb=True,
+        drop_sources=True,
+    ):
         self.source_xyz, self.source_rgb, self.target = source_xyz, source_rgb, target
         self.center = torch.tensor([float(c) for c in center], dtype=torch.float32)
         self.scale = float(scale)
@@ -78,24 +89,35 @@ def get_pcd_preprocessor(**kwargs):
     return PointCloudPreprocessor(**kwargs)
 
 
-OBS_KEYS = {'pointcloud': ['pcd_xyz', 'pcd_rgb'], 'image': ['pixels']}
+OBS_KEYS = {"pointcloud": ["pcd_xyz", "pcd_rgb"], "image": ["pixels"]}
 
 
 def dataset_kwargs(method_cfg, obs, num_preds=1):
     """The ``data.dataset`` block of LeWM's data configs (ogb_pcd for point clouds, dmc for
     pixels): clip length history + num_preds, frameskip 5, the observation columns + action +
     observation (proprioception) loaded, action and observation cached."""
-    return dict(num_steps=int(method_cfg.history) + int(num_preds), frameskip=int(method_cfg.frameskip),
-                keys_to_load=OBS_KEYS[obs] + ['action', 'observation'], keys_to_cache=['action', 'observation'])
+    return dict(
+        num_steps=int(method_cfg.history) + int(num_preds),
+        frameskip=int(method_cfg.frameskip),
+        keys_to_load=OBS_KEYS[obs] + ["action", "observation"],
+        keys_to_cache=["action", "observation"],
+    )
 
 
 def preprocessor_kwargs(env_cfg, obs, img_size=224):
     """The ``data.preprocessor`` block: point clouds use the env's fixed affine (``env.pointcloud.affine``)."""
-    if obs == 'pointcloud':
+    if obs == "pointcloud":
         a = env_cfg.pointcloud.affine
-        return dict(_target_='jepa4r.data.clips.get_pcd_preprocessor', source_xyz='pcd_xyz', source_rgb='pcd_rgb',
-                    target='pcd', center=[float(c) for c in a.center], scale=float(a.scale), use_rgb=True)
-    return dict(_target_='jepa4r.data.clips.get_img_preprocessor', source='pixels', target='pixels', img_size=img_size)
+        return dict(
+            _target_="jepa4r.data.clips.get_pcd_preprocessor",
+            source_xyz="pcd_xyz",
+            source_rgb="pcd_rgb",
+            target="pcd",
+            center=[float(c) for c in a.center],
+            scale=float(a.scale),
+            use_rgb=True,
+        )
+    return dict(_target_="jepa4r.data.clips.get_img_preprocessor", source="pixels", target="pixels", img_size=img_size)
 
 
 class ClipDataset:
@@ -111,16 +133,16 @@ class ClipDataset:
         path = str(Path(data_dir) / files[obs])
         self.dataset = swm.data.load_dataset(path, transform=None, **dataset_kwargs(method_cfg, obs))
         transforms = [hydra.utils.instantiate(preprocessor_kwargs(env_cfg, obs))]
-        for col in ('action', 'observation'):
+        for col in ("action", "observation"):
             transforms.append(get_column_normalizer(self.dataset, col, col))
         self.dataset.transform = spt.data.transforms.Compose(*transforms)
         self.split = split
         self.data = self.dataset
-        if split in ('train', 'val'):
-            gen = torch.Generator().manual_seed(int(env_cfg.wm_data.get('split_seed', 3072)))
-            tr = float(env_cfg.wm_data.get('train_split', 0.9))
+        if split in ("train", "val"):
+            gen = torch.Generator().manual_seed(int(env_cfg.wm_data.get("split_seed", 3072)))
+            tr = float(env_cfg.wm_data.get("train_split", 0.9))
             parts = spt.data.random_split(self.dataset, lengths=[tr, 1 - tr], generator=gen)
-            self.data = parts[0 if split == 'train' else 1]
+            self.data = parts[0 if split == "train" else 1]
 
     def __len__(self):
         return len(self.data)

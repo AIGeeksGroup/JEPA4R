@@ -4,9 +4,10 @@ CortexBench's own construction of VC-1's ViT-B/16 without a checkpoint (vc_model
 configs/policy/bc/conf/model/rand_vitb.yaml, the embedding the CortexBench runs load. Needs the
 eai-vc interpreter (JEPA4R_PY_CORTEXBENCH) where vc_models is installed.
 """
+
 from pathlib import Path
 
-CONF = Path(__file__).resolve().parents[2] / 'configs' / 'policy' / 'bc' / 'conf' / 'model' / 'rand_vitb.yaml'
+CONF = Path(__file__).resolve().parents[2] / "configs" / "policy" / "bc" / "conf" / "model" / "rand_vitb.yaml"
 
 
 def load_frozen_encoder(cfg):

@@ -24,23 +24,23 @@ import mujoco
 import numpy as np
 from gymnasium.spaces import Box
 
-TOP_CAP2_POS = np.array([0.0, 0.9, 0.6])        # CortexBench fork, xyz_base.xml
-BINS = {                                          # where place targets are drawn: the middle of each bin's floor,
-    'left': ((-0.17, 0.68), (-0.06, 0.72)),       # inside top_cap2's view (the cube spawns at x -0.21..-0.03)
-    'right': ((0.06, 0.68), (0.17, 0.72)),        # the goal bin (bin_goal at x 0.12)
+TOP_CAP2_POS = np.array([0.0, 0.9, 0.6])  # CortexBench fork, xyz_base.xml
+BINS = {  # where place targets are drawn: the middle of each bin's floor,
+    "left": ((-0.17, 0.68), (-0.06, 0.72)),  # inside top_cap2's view (the cube spawns at x -0.21..-0.03)
+    "right": ((0.06, 0.68), (0.17, 0.72)),  # the goal bin (bin_goal at x 0.12)
 }
 # bin-picking: random start pose of the hand, kept only if in view
 HAND_INIT = ((-0.20, 0.55, 0.10), (0.20, 0.80, 0.22))
 VIEW_MARGIN = 16  # px: "in view" = the hand's projection is this far inside the 224 x 224 image
-SAMPLE_TYPES = ('backbone', 'branch', 'random')
+SAMPLE_TYPES = ("backbone", "branch", "random")
 
 
 class MWTaskEnv(gym.Env):
     """What every MetaWorld task shares. A subclass sets TASK and HAND_INIT and implements _reset_target and
     _task_info (the task's info keys: its target and object state)."""
 
-    metadata = {'render_modes': ['rgb_array'], 'render_fps': 80}
-    TASK: str = ''
+    metadata = {"render_modes": ["rgb_array"], "render_fps": 80}
+    TASK: str = ""
     HAND_INIT = HAND_INIT
 
     def __init__(
@@ -56,13 +56,13 @@ class MWTaskEnv(gym.Env):
         randomize_hand: bool = True,
         goal_tol_hand: float = 0.04,
         goal_tol_obj: float = 0.03,
-        render_mode: str = 'rgb_array',
+        render_mode: str = "rgb_array",
     ):
         from metaworld.env_dict import ALL_V3_ENVIRONMENTS_GOAL_OBSERVABLE as ENVS
 
-        mw = ENVS[f'{self.TASK}-v3-goal-observable']()
+        mw = ENVS[f"{self.TASK}-v3-goal-observable"]()
         mw._freeze_rand_vec = False  # CortexBench: a new layout every reset
-        mw.seeded_rand_vec = True    # ... drawn from the reset seed, not from the global np.random
+        mw.seeded_rand_vec = True  # ... drawn from the reset seed, not from the global np.random
         self._mw = mw
         self._model, self._data = mw.model, mw.data
         self.render_mode = render_mode
@@ -89,7 +89,7 @@ class MWTaskEnv(gym.Env):
 
     # ------------------------------------------------------------------ camera
     def _top_cap2(self) -> mujoco.MjvCamera:
-        target = self._data.body('tablelink').xpos.copy()
+        target = self._data.body("tablelink").xpos.copy()
         d = target - TOP_CAP2_POS
         dist = float(np.linalg.norm(d))
         cam = mujoco.MjvCamera()
@@ -118,7 +118,7 @@ class MWTaskEnv(gym.Env):
             r.enable_depth_rendering()
         elif segmentation:
             r.enable_segmentation_rendering()
-        r.update_scene(self._data, camera=self._cam if camera in (None, 'top_cap2') else camera)
+        r.update_scene(self._data, camera=self._cam if camera in (None, "top_cap2") else camera)
         img = r.render()
         r.disable_depth_rendering()
         r.disable_segmentation_rendering()
@@ -183,23 +183,25 @@ class MWTaskEnv(gym.Env):
         d = self._data
         t, noise, b0, blen = self._plan
         info = {
-            'qpos': d.qpos.copy(),
-            'qvel': d.qvel.copy(),
-            'mocap_pos': d.mocap_pos[0].copy(),
-            'mocap_quat': d.mocap_quat[0].copy(),
-            'hand_pos': np.asarray(obs[:3], dtype=np.float64).copy(),
-            'gripper': np.float64(obs[3]),
-            'obj_pos': np.asarray(obs[4:7], dtype=np.float64).copy(),
-            'obj_quat': np.asarray(obs[7:11], dtype=np.float64).copy(),
+            "qpos": d.qpos.copy(),
+            "qvel": d.qvel.copy(),
+            "mocap_pos": d.mocap_pos[0].copy(),
+            "mocap_quat": d.mocap_quat[0].copy(),
+            "hand_pos": np.asarray(obs[:3], dtype=np.float64).copy(),
+            "gripper": np.float64(obs[3]),
+            "obj_pos": np.asarray(obs[4:7], dtype=np.float64).copy(),
+            "obj_quat": np.asarray(obs[7:11], dtype=np.float64).copy(),
         }
         info.update(self._task_info())
-        info.update({
-            'sample_type': np.int64(t),
-            'rand_action': np.int64(self._rand_action()),  # 0 / 1 (bool scalars are dropped by the collector)
-            'noise_std': np.float64(noise),
-            'branch_t': np.int64(b0),
-            'branch_len': np.int64(blen),
-        })
+        info.update(
+            {
+                "sample_type": np.int64(t),
+                "rand_action": np.int64(self._rand_action()),  # 0 / 1 (bool scalars are dropped by the collector)
+                "noise_std": np.float64(noise),
+                "branch_t": np.int64(b0),
+                "branch_len": np.int64(blen),
+            }
+        )
         return info
 
     def reset(self, seed=None, options=None):
@@ -219,7 +221,7 @@ class MWTaskEnv(gym.Env):
         self._plan = self._draw_plan(rng)
         self._reset_target(rng, obs)
         info = self._info(obs)
-        info['task_success'] = np.float64(0.0)
+        info["task_success"] = np.float64(0.0)
         return np.asarray(obs, dtype=np.float64), info
 
     def step(self, action):
@@ -227,11 +229,11 @@ class MWTaskEnv(gym.Env):
         obs, reward, _, _, mw_info = self._mw.step(a)
         self._t += 1
         info = self._info(obs)
-        info['task_success'] = np.float64(mw_info['success'])
+        info["task_success"] = np.float64(mw_info["success"])
         terminated = False
         if self._goal is not None:
-            hand_ok = np.linalg.norm(info['hand_pos'] - self._goal[0]) < self.goal_tol_hand
-            obj_ok = np.linalg.norm(info['obj_pos'] - self._goal[1]) < self.goal_tol_obj
+            hand_ok = np.linalg.norm(info["hand_pos"] - self._goal[0]) < self.goal_tol_hand
+            obj_ok = np.linalg.norm(info["obj_pos"] - self._goal[1]) < self.goal_tol_obj
             terminated = bool(hand_ok and obj_ok)
         return np.asarray(obs, dtype=np.float64), float(reward), terminated, False, info
 
@@ -261,15 +263,15 @@ class MWBinPickEnv(MWTaskEnv):
     """bin-picking: pick the cube up from one bin and place it in a bin. Place targets are drawn on the bins' floors
     (the other bin with probability 0.7); info adds ``place_target``."""
 
-    TASK = 'bin-picking'
+    TASK = "bin-picking"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._place_target = np.zeros(3)
 
     def _draw_target(self, rng, cube_xy):
-        here = 'left' if cube_xy[0] < 0 else 'right'
-        other = 'right' if here == 'left' else 'left'
+        here = "left" if cube_xy[0] < 0 else "right"
+        other = "right" if here == "left" else "left"
         name = other if rng.uniform() < 0.7 else here
         (x0, y0), (x1, y1) = BINS[name]
         return np.array([rng.uniform(x0, x1), rng.uniform(y0, y1), 0.02])
@@ -282,4 +284,4 @@ class MWBinPickEnv(MWTaskEnv):
         self._place_target = self._draw_target(rng, obs[4:6])
 
     def _task_info(self):
-        return {'place_target': self._place_target.copy()}
+        return {"place_target": self._place_target.copy()}

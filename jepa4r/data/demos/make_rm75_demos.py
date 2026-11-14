@@ -11,6 +11,7 @@ clouds) come from the same rollouts.
 
     source env.sh && $MW_PY make_rm75_demos.py <task>     (MW_PY: the lewm_mw python, MuJoCo 3 + metaworld 3.0)
 """
+
 import os
 import pickle
 import sys
@@ -22,12 +23,16 @@ from jepa4r.policy.bc.rm75_env import HORIZON, RM75CBEnv  # first: it puts the r
 from jepa4r.envs.twins.metaworld_rm75 import RM75AssemblyPolicy, RM75BinPickingPolicy, RM75DrawerOpenPolicy
 from metaworld.policies import SawyerButtonPressTopdownV3Policy
 
-EXPERTS = {'bin-picking': RM75BinPickingPolicy, 'button-press-topdown': SawyerButtonPressTopdownV3Policy,
-           'drawer-open': RM75DrawerOpenPolicy, 'assembly': RM75AssemblyPolicy}
+EXPERTS = {
+    "bin-picking": RM75BinPickingPolicy,
+    "button-press-topdown": SawyerButtonPressTopdownV3Policy,
+    "drawer-open": RM75DrawerOpenPolicy,
+    "assembly": RM75AssemblyPolicy,
+}
 TASK = sys.argv[1]
-ENV_NAME, N, BASE_SEED = f'rm75-{TASK}-v2-goal-observable', 25, 12345
-DATA = Path(os.environ['JEPA4R_DEMOS_HOME'])  # data/policy/<env>
-OUT2D, OUT3D = DATA / 'metaworld-rm75-expert', DATA / 'metaworld-rm75-expert-pcd'
+ENV_NAME, N, BASE_SEED = f"rm75-{TASK}-v2-goal-observable", 25, 12345
+DATA = Path(os.environ["JEPA4R_DEMOS_HOME"])  # data/policy/<env>
+OUT2D, OUT3D = DATA / "metaworld-rm75-expert", DATA / "metaworld-rm75-expert-pcd"
 
 OUT2D.mkdir(parents=True, exist_ok=True)
 OUT3D.mkdir(parents=True, exist_ok=True)
@@ -37,33 +42,37 @@ while len(demos2d) < N:
     pol = EXPERTS[TASK]()
     env.seed(seed)
     o = env.reset()
-    O, A, R, I, P, infos = [], [], [], [], [], {}
+    obs_seq, A, R, img_seq, P, infos = [], [], [], [], [], {}
     for t in range(HORIZON):
-        I.append(env.rgb())
+        img_seq.append(env.rgb())
         P.append(env.pcd())
         a = np.asarray(pol.get_action(o), dtype=np.float64)
-        O.append(o.copy())
+        obs_seq.append(o.copy())
         o, r, done, info = env.step(a)
         A.append(a)
         R.append(r)
         for k, v in info.items():
             infos.setdefault(k, []).append(v)
-        infos.setdefault('gripper_proprio', []).append(O[-1][:4].copy())
-    if infos['success'][-1] < 1:
+        infos.setdefault("gripper_proprio", []).append(obs_seq[-1][:4].copy())
+    if infos["success"][-1] < 1:
         skipped.append(seed)
         seed += 1
         continue
-    base = {'observations': np.array(O), 'actions': np.array(A), 'rewards': np.array(R),
-            'env_infos': {k: np.array(v) for k, v in infos.items()}}
-    demos2d.append(dict(base, images=np.array(I, dtype=np.uint8)))
+    base = {
+        "observations": np.array(obs_seq),
+        "actions": np.array(A),
+        "rewards": np.array(R),
+        "env_infos": {k: np.array(v) for k, v in infos.items()},
+    }
+    demos2d.append(dict(base, images=np.array(img_seq, dtype=np.uint8)))
     demos3d.append(dict(base, images=np.array(P, dtype=np.float32)))
     print(
-        f'demo {len(demos2d):2d}/{N}: seed {seed}, first success at step {int(np.argmax(infos["success"])) + 1}',
+        f"demo {len(demos2d):2d}/{N}: seed {seed}, first success at step {int(np.argmax(infos['success'])) + 1}",
         flush=True,
     )
     seed += 1
 for d, demos in ((OUT2D, demos2d), (OUT3D, demos3d)):
-    with open(d / f'{ENV_NAME}.pickle', 'wb') as f:
+    with open(d / f"{ENV_NAME}.pickle", "wb") as f:
         pickle.dump(demos, f)
-print('skipped seeds (not successful at step 500):', skipped)
+print("skipped seeds (not successful at step 500):", skipped)
 env.close()

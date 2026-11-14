@@ -13,6 +13,7 @@ so ``encoder`` is where it is read from (jepa4r.policy.frozen.checkpoint) and bo
   bc     nothing cached: CortexBench embeds every frame on the fly (eai-vc's env wrappers with the embedding of
          jepa4r/policy/bc/lewm_cortex.py / jepa_baselines.py)
 """
+
 import importlib
 
 

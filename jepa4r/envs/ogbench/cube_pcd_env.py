@@ -26,10 +26,10 @@ from stable_worldmodel.envs.ogbench.cube_env import CubeEnv
 # lowered towards the table so the cubes stay central in every view
 WORKSPACE_CENTER = np.array([0.425, 0.0, 0.08])
 RING_CAMERAS = {  # azimuth in deg, measured from +x towards +y
-    'pcd_front_left': 45.0,
-    'pcd_back_left': 135.0,
-    'pcd_back_right': 225.0,
-    'pcd_front_right': 315.0,
+    "pcd_front_left": 45.0,
+    "pcd_back_left": 135.0,
+    "pcd_back_right": 225.0,
+    "pcd_front_right": 315.0,
 }
 
 
@@ -66,19 +66,17 @@ class CubePCDEnv(CubeEnv):
         extra = {}
         for name, az_deg in RING_CAMERAS.items():
             az = np.deg2rad(az_deg)
-            pos = T + d * np.array(
-                [np.cos(el) * np.cos(az), np.cos(el) * np.sin(az), np.sin(el)]
-            )
+            pos = T + d * np.array([np.cos(el) * np.cos(az), np.cos(el) * np.sin(az), np.sin(el)])
             extra[name] = {
-                'pos': tuple(float(v) for v in pos),
-                'xyaxes': look_at_xyaxes(pos, T),
+                "pos": tuple(float(v) for v in pos),
+                "xyaxes": look_at_xyaxes(pos, T),
             }
         top = T + np.array([0.0, 0.0, self._pcd_top_height])
-        extra['pcd_top'] = {
-            'pos': tuple(float(v) for v in top),
-            'xyaxes': (0.0, 1.0, 0.0, -1.0, 0.0, 0.0),  # right = +y, up = -x
+        extra["pcd_top"] = {
+            "pos": tuple(float(v) for v in top),
+            "xyaxes": (0.0, 1.0, 0.0, -1.0, 0.0, 0.0),  # right = +y, up = -x
         }
 
         for name, kw in extra.items():
-            arena_mjcf.worldbody.add('camera', name=name, **kw)
+            arena_mjcf.worldbody.add("camera", name=name, **kw)
         self.cameras.update(extra)

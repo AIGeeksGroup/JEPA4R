@@ -5,9 +5,11 @@ action_encoder  action block (5 concatenated actions) -> embedding for the predi
 ``Embedder`` and ``MLP`` are LeWM's ``module.py`` classes moved unchanged; the predictor projection (``pred_proj``) is
 the same MLP as the projector.
 """
+
 from functools import partial
 
 from torch import nn
+
 
 class Embedder(nn.Module):
     def __init__(
@@ -64,14 +66,17 @@ class MLP(nn.Module):
         return self.net(x)
 
 
-
-_NORMS = {'batchnorm1d': nn.BatchNorm1d, 'layernorm': nn.LayerNorm, None: None}
+_NORMS = {"batchnorm1d": nn.BatchNorm1d, "layernorm": nn.LayerNorm, None: None}
 
 
 def _mlp(head_cfg, dim):
-    norm = _NORMS[head_cfg.get('norm')]
-    return MLP(input_dim=dim, hidden_dim=int(head_cfg.hidden_dim), output_dim=dim,
-               norm_fn=partial(norm) if norm is not None else None)
+    norm = _NORMS[head_cfg.get("norm")]
+    return MLP(
+        input_dim=dim,
+        hidden_dim=int(head_cfg.hidden_dim),
+        output_dim=dim,
+        norm_fn=partial(norm) if norm is not None else None,
+    )
 
 
 def build_projector(method_cfg):

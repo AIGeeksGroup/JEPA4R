@@ -15,15 +15,16 @@ differ between Scene and Puzzle):
 Importing this package registers the gymnasium ids the collection configs name; the simulator modules load on first
 use.
 """
+
 from importlib import import_module
 
 # gymnasium registrations
 ENV_IDS = {
-    'swm/OGBCubePCD-v0': ('jepa4r.envs.ogbench.cube_pcd_env:CubePCDEnv', {}),
-    'swm/OGBenchScene-v0': ('jepa4r.envs.ogbench.ogb_scene_env:OGBSceneEnv', {}),
-    'swm/OGBenchPuzzle3x3-v0': ('jepa4r.envs.ogbench.ogb_puzzle_env:OGBPuzzleEnv', {}),
-    'swm/OGBenchPuzzle4x4-v0': ('jepa4r.envs.ogbench.ogb_puzzle_env:OGBPuzzleEnv', {'env_type': '4x4'}),
-    'swm/OGBenchPuzzle4x5-v0': ('jepa4r.envs.ogbench.ogb_puzzle_env:OGBPuzzleEnv', {'env_type': '4x5'}),
+    "swm/OGBCubePCD-v0": ("jepa4r.envs.ogbench.cube_pcd_env:CubePCDEnv", {}),
+    "swm/OGBenchScene-v0": ("jepa4r.envs.ogbench.ogb_scene_env:OGBSceneEnv", {}),
+    "swm/OGBenchPuzzle3x3-v0": ("jepa4r.envs.ogbench.ogb_puzzle_env:OGBPuzzleEnv", {}),
+    "swm/OGBenchPuzzle4x4-v0": ("jepa4r.envs.ogbench.ogb_puzzle_env:OGBPuzzleEnv", {"env_type": "4x4"}),
+    "swm/OGBenchPuzzle4x5-v0": ("jepa4r.envs.ogbench.ogb_puzzle_env:OGBPuzzleEnv", {"env_type": "4x5"}),
 }
 
 
@@ -48,9 +49,9 @@ def make(env_cfg, **kwargs):
     from omegaconf import OmegaConf
 
     wm = env_cfg.wm_data
-    kw = wm.get('env_kwargs')
+    kw = wm.get("env_kwargs")
     kw = OmegaConf.to_container(kw, resolve=True) if OmegaConf.is_config(kw) else dict(kw or {})
     env = gymnasium.make(str(wm.env_id), **{**kw, **kwargs})
     pcd = OmegaConf.to_container(wm.pcd, resolve=True)
-    module, _, name = pcd.pop('_target_', 'jepa4r.data.pointcloud.PointCloudWrapper').rpartition('.')
+    module, _, name = pcd.pop("_target_", "jepa4r.data.pointcloud.PointCloudWrapper").rpartition(".")
     return getattr(import_module(module), name)(env, **pcd)

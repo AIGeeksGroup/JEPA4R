@@ -23,6 +23,7 @@ the max-pool (192-d latent), and widths scaled to match the ViT-tiny encoder's
     medium [64, 64, 128, 256]         -> [672, 672, 1344, 2688]
     large  [64, 64, 128, 128, 256, 256] -> [408, 408, 816, 816, 1632, 1632]
 """
+
 from collections.abc import Sequence
 
 import torch
@@ -30,9 +31,9 @@ from torch import nn
 from torch.utils.checkpoint import checkpoint
 
 DEXART_SPECS = {
-    'smallpn': (64, 256),
-    'mediumpn': (64, 64, 128, 256),
-    'largepn': (64, 64, 128, 128, 256, 256),
+    "smallpn": (64, 256),
+    "mediumpn": (64, 64, 128, 256),
+    "largepn": (64, 64, 128, 128, 256, 256),
 }
 
 
@@ -40,7 +41,7 @@ class DexArtPointNet(nn.Module):
     def __init__(
         self,
         in_dim: int = 6,
-        mlp_spec: Sequence[int] = DEXART_SPECS['smallpn'],
+        mlp_spec: Sequence[int] = DEXART_SPECS["smallpn"],
         out_dim: int = 192,
         chunk_points: int | None = 300,
     ):
@@ -73,8 +74,10 @@ class DexArtPointNet(nn.Module):
         x = x.float()
         if self.chunk_points and x.shape[1] > self.chunk_points:
             use_ckpt = self.training and torch.is_grad_enabled()
-            parts = [checkpoint(self._body_max, xc, use_reentrant=False) if use_ckpt else self._body_max(xc)
-                     for xc in x.split(self.chunk_points, dim=1)]
+            parts = [
+                checkpoint(self._body_max, xc, use_reentrant=False) if use_ckpt else self._body_max(xc)
+                for xc in x.split(self.chunk_points, dim=1)
+            ]
             feat = torch.stack(parts, dim=-1).max(dim=-1).values
         else:
             feat = self._body_max(x)
@@ -84,5 +87,9 @@ class DexArtPointNet(nn.Module):
 def build(enc_cfg):
     """configs/encoder/pointnet.yaml -> DexArtPointNet (hidden = DexArt mlp_spec [1080, 4320], GELU between layers,
     max-pool, linear head to out_dim; LeWM's DexArt encoder config)."""
-    return DexArtPointNet(in_dim=int(enc_cfg.in_dim), mlp_spec=[int(h) for h in enc_cfg.hidden],
-                          out_dim=int(enc_cfg.out_dim), chunk_points=enc_cfg.get('chunk_points', 300))
+    return DexArtPointNet(
+        in_dim=int(enc_cfg.in_dim),
+        mlp_spec=[int(h) for h in enc_cfg.hidden],
+        out_dim=int(enc_cfg.out_dim),
+        chunk_points=enc_cfg.get("chunk_points", 300),
+    )

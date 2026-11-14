@@ -20,4 +20,5 @@ out: outputs/eval_recon/<env>/<decoder>/<tag>/
 
 def run(cfg, out_dir):
     from jepa4r.eval.recon import evaluate
+
     return evaluate(cfg, out_dir)

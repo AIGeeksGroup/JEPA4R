@@ -21,8 +21,8 @@ import runpy
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-VI = os.path.join(os.environ['JEPA4R_EAI_VC'], 'cortexbench', 'mujoco_vc', 'visual_imitation')  # the eai-vc checkout
-CONF_HOME = os.environ.get('JEPA4R_BC_CONF_HOME', HERE)  # <CONF_HOME>/conf/model/NAME.yaml: the embedding configs
+VI = os.path.join(os.environ["JEPA4R_EAI_VC"], "cortexbench", "mujoco_vc", "visual_imitation")  # the eai-vc checkout
+CONF_HOME = os.environ.get("JEPA4R_BC_CONF_HOME", HERE)  # <CONF_HOME>/conf/model/NAME.yaml: the embedding configs
 sys.path.insert(0, VI)
 sys.path.insert(0, HERE)
 
@@ -39,9 +39,9 @@ _official_load = ml.load_pretrained_model
 
 
 def load_pretrained_model(embedding_name, input_type=np.ndarray, *args, **kwargs):
-    config = OmegaConf.load(os.path.join(ml.vc_models_dir_path, 'conf/model', embedding_name + '.yaml'))
+    config = OmegaConf.load(os.path.join(ml.vc_models_dir_path, "conf/model", embedding_name + ".yaml"))
     model, embedding_dim, transforms, metadata = hydra.utils.call(config)
-    if metadata.get('input') != 'pcd':
+    if metadata.get("input") != "pcd":
         return _official_load(embedding_name, input_type, *args, **kwargs)
     return model.eval(), embedding_dim, (lambda pcd: transforms(pcd).unsqueeze(0)), metadata
 
@@ -49,18 +49,18 @@ def load_pretrained_model(embedding_name, input_type=np.ndarray, *args, **kwargs
 for mod in (ml, gw, train_loop):
     mod.load_pretrained_model = load_pretrained_model
 
-SUFFIX = '-v2-goal-observable'
+SUFFIX = "-v2-goal-observable"
 
 
 def get_image(self):
     """The frame's point cloud, (1200, 6) float32 = xyz (m) + rgb 0..255, instead of the RGB frame."""
-    pcm = getattr(self, '_pcm', None)
+    pcm = getattr(self, "_pcm", None)
     if pcm is None:
         if not self.spec.id.endswith(SUFFIX):
-            raise RuntimeError(f'point clouds are implemented for MetaWorld only, not {self.spec.id}')
+            raise RuntimeError(f"point clouds are implemented for MetaWorld only, not {self.spec.id}")
         no_multisampling(self.sim)  # asserts that nothing rendered before (the render context is created next)
-        pcm = self._pcm = MWPointClouds(self.sim, self.spec.id[:-len(SUFFIX)])
-        if getattr(self, '_pcd_seed', None) is not None:
+        pcm = self._pcm = MWPointClouds(self.sim, self.spec.id[: -len(SUFFIX)])
+        if getattr(self, "_pcd_seed", None) is not None:
             pcm.seed(self._pcd_seed)
     xyz, rgb = pcm()
     return np.concatenate([xyz, rgb.astype(np.float32)], axis=1)
@@ -68,7 +68,7 @@ def get_image(self):
 
 def seed(self, seed=None):
     self._pcd_seed = seed
-    if getattr(self, '_pcm', None) is not None:
+    if getattr(self, "_pcm", None) is not None:
         self._pcm.seed(seed)
     return self.env.seed(seed)
 
@@ -77,5 +77,5 @@ gw.MuJoCoPixelObsWrapper.get_image = get_image
 gw.MuJoCoPixelObsWrapper.seed = seed
 
 # run_bc.py: its config lookup and logging patches, then the official hydra_launcher with our argv
-sys.argv = [os.path.join(HERE, 'run_bc.py')] + sys.argv[1:]
-runpy.run_path(os.path.join(HERE, 'run_bc.py'), run_name='__main__')
+sys.argv = [os.path.join(HERE, "run_bc.py")] + sys.argv[1:]
+runpy.run_path(os.path.join(HERE, "run_bc.py"), run_name="__main__")

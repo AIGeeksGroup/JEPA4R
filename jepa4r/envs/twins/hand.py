@@ -12,11 +12,12 @@ and pushing a cube; OGBench Cube in the twin, configs/env/rm75b_cube.yaml) and t
   rh56     jepa4r.envs.twins.rh56: adapter of the external native RM75-B + RH56 simulation bundle (its env.py, robot
            assets and expert are not part of this repository)
 """
+
 from pathlib import Path
 
-DESCRIPTIONS = Path(__file__).resolve().parent / 'descriptions'
+DESCRIPTIONS = Path(__file__).resolve().parent / "descriptions"
 END_EFFECTORS = {  # the twin's GRIPPER_XML (jepa4r/envs/twins/cube_rm75_env.py)
-    'eg2_4c2': DESCRIPTIONS / 'inspire_eg2_4c2' / 'eg2_4c2.xml',
+    "eg2_4c2": DESCRIPTIONS / "inspire_eg2_4c2" / "eg2_4c2.xml",
 }
 
 
@@ -24,14 +25,15 @@ def build(env_cfg):
     """The end effector of ``env_cfg.robot.end_effector``: the EG2-4C2 MJCF element ready to be attached to the arm's
     ``attachment_site`` (twin of the gripper), or the RH56 native-bundle adapter module (twin of the hand)."""
     ee = str(env_cfg.robot.end_effector)
-    if ee == 'eg2_4c2':
+    if ee == "eg2_4c2":
         from dm_control import mjcf
 
-        GRIPPER_XML = END_EFFECTORS['eg2_4c2']
+        GRIPPER_XML = END_EFFECTORS["eg2_4c2"]
         gripper_mjcf = mjcf.from_path(GRIPPER_XML.as_posix(), escape_separators=True)
-        gripper_mjcf.model = 'robotiq'
+        gripper_mjcf.model = "robotiq"
         return gripper_mjcf
-    if ee == 'rh56':  # the hand lives in the external native bundle; its adapter (RH56_EXPERT_ROOT, MuJoCo 3.12.0)
+    if ee == "rh56":  # the hand lives in the external native bundle; its adapter (RH56_EXPERT_ROOT, MuJoCo 3.12.0)
         from jepa4r.envs.twins.rh56 import native
+
         return native
-    raise ValueError(f'unknown end effector {ee!r}; expected one of eg2_4c2, rh56')
+    raise ValueError(f"unknown end effector {ee!r}; expected one of eg2_4c2, rh56")

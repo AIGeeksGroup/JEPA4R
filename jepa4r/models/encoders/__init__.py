@@ -7,6 +7,7 @@ vit                      ViT-tiny/14 for LeWM, PLDM, LeJEPA (5.50M); ViT-B/16, V
 impala                   PLDM on OGBench Cube
 Contract: forward(obs) -> [B, out_dim]; point encoders take [B, N, 6], image encoders [B, 3, 224, 224].
 """
+
 import importlib
 
 

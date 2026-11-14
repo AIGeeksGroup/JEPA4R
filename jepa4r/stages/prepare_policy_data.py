@@ -14,8 +14,10 @@ def run(cfg, out_dir):
     source = cfg.env.policy_data.source
     if source == "official_play":
         from jepa4r.data.official_play import prepare_official_play
+
         return prepare_official_play(cfg, out_dir)
     if source == "demos":
         from jepa4r.data.demos import prepare_demos
+
         return prepare_demos(cfg, out_dir)
     raise ValueError(f"unknown env.policy_data.source {source!r}")

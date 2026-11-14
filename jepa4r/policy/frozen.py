@@ -1,13 +1,14 @@
 """Frozen-encoder interface shared by every policy learner and every encoder row.
 
-    enc = jepa4r.methods.load_frozen_encoder(cfg)   # -> cfg.method.impl.load_frozen_encoder(cfg)
-    enc.obs           "pointcloud" | "image"
-    enc.latent_dim    int
-    enc.encode(batch) -> float tensor [B, D]          no grad, eval mode, on cfg.device
+enc = jepa4r.methods.load_frozen_encoder(cfg)   # -> cfg.method.impl.load_frozen_encoder(cfg)
+enc.obs           "pointcloud" | "image"
+enc.latent_dim    int
+enc.encode(batch) -> float tensor [B, D]          no grad, eval mode, on cfg.device
 
-    checkpoint(cfg)   where the integrated learners (CortexBench, DQC, GCIQL), which load the encoder in their own
-                      interpreter, read it from
+checkpoint(cfg)   where the integrated learners (CortexBench, DQC, GCIQL), which load the encoder in their own
+                  interpreter, read it from
 """
+
 from typing import Any, Protocol
 
 
@@ -31,7 +32,7 @@ def checkpoint(cfg):
 
         if is_cube_workflow(cfg):  # Cube 1-4: the export the Cube workflow's train stage accepted
             return wm_export(cfg)
-        return stage_dir('train_wm', cfg.env.name, m.name, None, str(cfg.tag)) / 'checkpoints'
-    if m.kind == 'pretrained':
-        return paths()['checkpoints'] / str(m.weights)
+        return stage_dir("train_wm", cfg.env.name, m.name, None, str(cfg.tag)) / "checkpoints"
+    if m.kind == "pretrained":
+        return paths()["checkpoints"] / str(m.weights)
     return None

@@ -36,7 +36,7 @@ class RM75TaskEnv(MWTaskEnv):
         randomize_hand: bool = True,
         goal_tol_hand: float = 0.04,
         goal_tol_obj: float = 0.03,
-        render_mode: str = 'rgb_array',
+        render_mode: str = "rgb_array",
     ):
         # MWTaskEnv.__init__ with the RM75 metaworld env (make: goal-observable, _freeze_rand_vec False,
         # seeded_rand_vec)
@@ -69,23 +69,25 @@ class RM75TaskEnv(MWTaskEnv):
         d, mw = self._data, self._mw
         t, noise, b0, blen = self._plan
         info = {
-            'qpos': d.qpos.copy(),
-            'qvel': d.qvel.copy(),
-            'ee_target': np.asarray(mw._ee_target, dtype=np.float64).copy(),
-            'q_cmd': np.asarray(mw._q_ik, dtype=np.float64).copy(),
-            'hand_pos': np.asarray(obs[:3], dtype=np.float64).copy(),
-            'gripper': np.float64(obs[3]),
-            'obj_pos': np.asarray(obs[4:7], dtype=np.float64).copy(),
-            'obj_quat': np.asarray(obs[7:11], dtype=np.float64).copy(),
+            "qpos": d.qpos.copy(),
+            "qvel": d.qvel.copy(),
+            "ee_target": np.asarray(mw._ee_target, dtype=np.float64).copy(),
+            "q_cmd": np.asarray(mw._q_ik, dtype=np.float64).copy(),
+            "hand_pos": np.asarray(obs[:3], dtype=np.float64).copy(),
+            "gripper": np.float64(obs[3]),
+            "obj_pos": np.asarray(obs[4:7], dtype=np.float64).copy(),
+            "obj_quat": np.asarray(obs[7:11], dtype=np.float64).copy(),
         }
         info.update(self._task_info())
-        info.update({
-            'sample_type': np.int64(t),
-            'rand_action': np.int64(self._rand_action()),
-            'noise_std': np.float64(noise),
-            'branch_t': np.int64(b0),
-            'branch_len': np.int64(blen),
-        })
+        info.update(
+            {
+                "sample_type": np.int64(t),
+                "rand_action": np.int64(self._rand_action()),
+                "noise_std": np.float64(noise),
+                "branch_t": np.int64(b0),
+                "branch_len": np.int64(blen),
+            }
+        )
         return info
 
     def set_state(self, qpos, qvel, ee_target=None, q_cmd=None):
@@ -94,8 +96,9 @@ class RM75TaskEnv(MWTaskEnv):
         d.qvel[:] = np.asarray(qvel, dtype=np.float64)
         mujoco.mj_forward(self._model, d)
         mw._q_ik = (np.asarray(q_cmd, dtype=np.float64) if q_cmd is not None else d.qpos[mw._arm_q]).copy()
-        mw._ee_target = (np.asarray(ee_target, dtype=np.float64) if ee_target is not None
-                         else d.site_xpos[mw._hand_site]).copy()
+        mw._ee_target = (
+            np.asarray(ee_target, dtype=np.float64) if ee_target is not None else d.site_xpos[mw._hand_site]
+        ).copy()
         d.ctrl[mw._arm_act] = mw._q_ik  # the servos hold the recorded command, no jump at the next step
         mw._prev_obs = mw._get_curr_obs_combined_no_goal()
 
@@ -111,14 +114,14 @@ class RM75ButtonPressEnv(MWButtonPressEnv, RM75TaskEnv):
 
     def _task_info(self):
         info = super()._task_info()
-        info['button_depth'] = np.float64(self._data.qpos[self._mw._q0])
+        info["button_depth"] = np.float64(self._data.qpos[self._mw._q0])
         return info
 
     def set_state(self, qpos, qvel, ee_target=None, q_cmd=None, box_pos=None):
         if box_pos is not None:  # as MWButtonPressEnv.set_state
             self._model.body_pos[self._box_body] = np.asarray(box_pos, dtype=np.float64)
             mujoco.mj_forward(self._model, self._data)
-            self._mw._target_pos = self._mw._get_site_pos('hole')
+            self._mw._target_pos = self._mw._get_site_pos("hole")
         RM75TaskEnv.set_state(self, qpos, qvel, ee_target, q_cmd)
 
 
@@ -145,5 +148,5 @@ class RM75AssemblyEnv(MWAssemblyEnv, RM75TaskEnv):
             top = np.asarray(peg_pos, dtype=np.float64)
             self._mw._target_pos = top.copy()
             self._model.body_pos[self._peg_body] = top - np.array([0.0, 0.0, 0.05])
-            self._model.site('pegTop').pos = top
+            self._model.site("pegTop").pos = top
         RM75TaskEnv.set_state(self, qpos, qvel, ee_target, q_cmd)

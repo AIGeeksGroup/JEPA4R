@@ -1,4 +1,5 @@
 """Small I/O helpers shared by the stages and the report."""
+
 import json
 from datetime import datetime, timezone
 from pathlib import Path
@@ -31,17 +32,17 @@ def logged(run_dir, tag) -> list:
     import csv
 
     out = []
-    for version in sorted(Path(run_dir).glob('lightning_logs/version_*'), key=lambda p: int(p.name.split('_')[-1])):
-        if list(version.glob('events.out.tfevents.*')):
+    for version in sorted(Path(run_dir).glob("lightning_logs/version_*"), key=lambda p: int(p.name.split("_")[-1])):
+        if list(version.glob("events.out.tfevents.*")):
             from tensorboard.backend.event_processing.event_accumulator import EventAccumulator
 
-            acc = EventAccumulator(str(version), size_guidance={'scalars': 0})
+            acc = EventAccumulator(str(version), size_guidance={"scalars": 0})
             acc.Reload()
-            if tag in acc.Tags()['scalars']:
+            if tag in acc.Tags()["scalars"]:
                 out += [(int(e.step), float(e.value)) for e in acc.Scalars(tag)]
-        elif (version / 'metrics.csv').exists():
-            rows = csv.DictReader(open(version / 'metrics.csv', encoding='utf-8'))
-            out += [(int(r.get('step') or 0), float(r[tag])) for r in rows if r.get(tag) not in (None, '')]
+        elif (version / "metrics.csv").exists():
+            rows = csv.DictReader(open(version / "metrics.csv", encoding="utf-8"))
+            out += [(int(r.get("step") or 0), float(r[tag])) for r in rows if r.get(tag) not in (None, "")]
     return out
 
 

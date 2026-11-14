@@ -14,4 +14,5 @@ The encoder stays frozen; every encoder shares the same heads, data and evaluati
 
 def run(cfg, out_dir):
     from jepa4r.policy import train
+
     return train(cfg, out_dir)

@@ -1,4 +1,5 @@
 """Experiment specifications against the paper's numbers; no simulators, model weights or GPUs required."""
+
 import unittest
 
 from jepa4r.config import REPO_ROOT, compose, run_dir
@@ -26,8 +27,9 @@ class SpecTests(unittest.TestCase):
                 for table in load_expected(REPO_ROOT / rel):
                     for stage, want in required_runs(table):
                         with self.subTest(table=table["name"], run=dict(want)):
-                            self.assertTrue(any(job.stage == stage and set(want) <= set(job.keys.items())
-                                                for job in jobs))
+                            self.assertTrue(
+                                any(job.stage == stage and set(want) <= set(job.keys.items()) for job in jobs)
+                            )
 
     def test_every_expected_file_belongs_to_a_spec(self):
         referenced = {rel for path in SPECS for rel in load_spec(path).get("expected", [])}
@@ -41,8 +43,9 @@ class SpecTests(unittest.TestCase):
 
     def test_ablation_variants_and_filters(self):
         spec = load_spec(REPO_ROOT / "experiments" / "tab4_ablations.yaml")
-        jobs = [job for job in expand(spec, stages=["train_wm"], where={"env": "scene"})
-                if job.keys["method"] == "jepa4r"]
+        jobs = [
+            job for job in expand(spec, stages=["train_wm"], where={"env": "scene"}) if job.keys["method"] == "jepa4r"
+        ]
         configs = {job.keys["tag"]: compose(job.args()) for job in jobs}
         self.assertEqual(set(configs), {"default", "ctx2", "ctx4", "lr2.5e-5", "lr1e-4", "bs64", "bs256"})
         self.assertEqual((configs["ctx2"].method.history, configs["ctx2"].method.num_frames), (2, 3))

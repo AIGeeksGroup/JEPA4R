@@ -8,6 +8,7 @@ cube_position_error      distance between the cube positions read from the two c
                          (rule: cfg.decoder.eval.cube_position: the centroid of the points carrying the cube's colour)
 The paper's metric code (everything in metres; eval_frames / eval_rollout use it directly).
 """
+
 import torch
 
 from jepa4r.decoder.losses import _gather, _nn_index, sliced_wasserstein
@@ -44,7 +45,7 @@ def region_error(pred, gt, centre, radius):
     d = (gt[..., :3] - _gather(pred[..., :3], _nn_index(gt, pred))).norm(dim=-1)
     n = in_gt.sum(-1)
     err = (d * in_gt).sum(-1) / n.clamp_min(1)
-    err[n == 0] = float('nan')
+    err[n == 0] = float("nan")
     return err, in_pred.sum(-1) / n.clamp_min(1)
 
 
@@ -72,11 +73,11 @@ def object_centroid(cloud, signature, min_points=5):
     A surface centroid (visible faces only): compare it with the same readout of the real cloud, not only with the
     simulator's object centre."""
     if signature is None:
-        return cloud.new_full((cloud.size(0), 3), float('nan'))
+        return cloud.new_full((cloud.size(0), 3), float("nan"))
     m = colour_match(cloud, signature).float()
     n = m.sum(-1, keepdim=True)
     c = (cloud[..., :3] * m.unsqueeze(-1)).sum(1) / n.clamp_min(1)
-    c[n.squeeze(-1) < min_points] = float('nan')
+    c[n.squeeze(-1) < min_points] = float("nan")
     return c
 
 
@@ -92,8 +93,12 @@ def nn_stats(pred_xyz, gt_xyz, outlier_cm=3.0) -> dict:
     """Per frame (B, N, 3+) clouds in metres -> cm, as eval_frames computes them: nn, nn_spurious (decoded -> real),
     nn_missing (real -> decoded), outlier_pct (decoded points farther than outlier_cm from every real point, %)."""
     spurious, missing, d_pg = nn_both_sides(pred_xyz, gt_xyz)
-    return {'nn': 50 * (spurious + missing), 'nn_spurious': 100 * spurious, 'nn_missing': 100 * missing,
-            'outlier_pct': 100 * (d_pg > outlier_cm / 100).float().mean(-1)}
+    return {
+        "nn": 50 * (spurious + missing),
+        "nn_spurious": 100 * spurious,
+        "nn_missing": 100 * missing,
+        "outlier_pct": 100 * (d_pg > outlier_cm / 100).float().mean(-1),
+    }
 
 
 @torch.no_grad()

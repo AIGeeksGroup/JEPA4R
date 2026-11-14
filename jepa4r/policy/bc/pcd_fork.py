@@ -11,20 +11,21 @@ context in the same process breaks the first one's rendering (mujoco-py 2.0 / EG
 multisampled RGB CortexBench shows the policy or, with no_multisampling, depth + segmentation. The physics does not
 depend on rendering, so the two passes replay the same trajectory (checked: qpos / qvel bitwise equal).
 """
+
 import numpy as np
 
-CAM = 'top_cap2'
+CAM = "top_cap2"
 GEOM = 5  # mjOBJ_GEOM
 # MWPointClouds: the settings of envs.metaworld.MWPointCloudWrapper, which makes the 3D LeWM's training data
 CROP_BOX = ((-0.50, 0.30, -0.02), (0.50, 1.00, 0.60))
 # fixtures: bodies welded to the world that a reset places anew each episode (found by resetting with two seeds and
 # comparing body poses). They carry the task's state (assembly's target peg, the button's box, the drawer's case), so
 # they are foreground; fixtures that never move (table, walls, bins, the hammer's nail box, the robot's base) are not.
-FIXTURE_ROOTS = {'assembly': {'peg'}, 'button-press-topdown': {'box'}, 'drawer-open': {'drawer'}}
+FIXTURE_ROOTS = {"assembly": {"peg"}, "button-press-topdown": {"box"}, "drawer-open": {"drawer"}}
 
 
 def no_multisampling(sim):
-    assert sim._render_context_offscreen is None, 'call before the first render'
+    assert sim._render_context_offscreen is None, "call before the first render"
     sim.model.vis.quality.offsamples = 0
 
 
@@ -66,7 +67,7 @@ class MWPointClouds:
         self.num_points, self.voxel_size, self.obj_fraction = num_points, voxel_size, obj_fraction
         self.crop = np.asarray(crop_box, dtype=np.float64)
         fixtures = FIXTURE_ROOTS.get(task, set())
-        robot_root = m.body_rootid[m.body_name2id('hand')]
+        robot_root = m.body_rootid[m.body_name2id("hand")]
         self.fg = np.zeros(m.ngeom, dtype=bool)
         self.obj = np.zeros(m.ngeom, dtype=bool)
         for g in range(m.ngeom):
@@ -110,7 +111,11 @@ class MWPointClouds:
             sel = self.rng.choice(obj_idx, n, replace=obj_idx.size < n)
         else:
             n_rob = n - n_obj
-            sel = np.concatenate([self.rng.choice(obj_idx, n_obj, replace=False),
-                                  self.rng.choice(rob_idx, n_rob, replace=rob_idx.size < n_rob)])
+            sel = np.concatenate(
+                [
+                    self.rng.choice(obj_idx, n_obj, replace=False),
+                    self.rng.choice(rob_idx, n_rob, replace=rob_idx.size < n_rob),
+                ]
+            )
         sel = self.rng.permutation(sel)
         return pts[sel].astype(np.float32), cols[sel].astype(np.uint8)

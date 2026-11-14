@@ -18,6 +18,7 @@ robot layer is replaced:
 * MetaWorld addresses the main object's qpos from index 9 (after the Sawyer's 9 joints); the robot's joints come last
   here, so _set_obj_xyz / _set_hammer_xyz use the object's own address.
 """
+
 from __future__ import annotations
 
 import mujoco
@@ -31,9 +32,9 @@ R_T = np.array([[0.0, 1.0, 0.0], [1.0, 0.0, 0.0], [0.0, 0.0, -1.0]])
 HOME = np.array([0.0, 0.2725, 0.0, 1.4912, 0.0, 1.3779, 0.0])  # the cube env's tool-vertical posture
 VLIM = np.radians([180, 180, 225, 225, 225, 225, 225])  # datasheet joint speeds (scripts/checks/verify_rm75.py)
 LEASH = 0.03  # m: a new hand target is set at most this far from the hand
-W_ROT = 0.3               # yaw (the fingers' closing direction, about the vertical)
-W_TILT = 0.03              # tilt of the tool from vertical: cheap, so the tool stays vertical wherever that reaches
-                           # (all 6 targets met exactly) and leans only as much as a position needs
+W_ROT = 0.3  # yaw (the fingers' closing direction, about the vertical)
+W_TILT = 0.03  # tilt of the tool from vertical: cheap, so the tool stays vertical wherever that reaches
+# (all 6 targets met exactly) and leans only as much as a position needs
 TILT_MAX = np.radians(30)  # beyond this the tilt costs as much as the yaw
 
 
@@ -51,20 +52,20 @@ class RM75Mixin:
         model.vis.global_.offwidth, model.vis.global_.offheight = self.width, self.height
         data = mujoco.MjData(model)
         m = model
-        self._arm_j = np.array([m.joint(f'rm75/joint_{i}').id for i in range(1, 8)])
+        self._arm_j = np.array([m.joint(f"rm75/joint_{i}").id for i in range(1, 8)])
         self._arm_q = m.jnt_qposadr[self._arm_j]
         self._arm_v = m.jnt_dofadr[self._arm_j]
         self._lo, self._hi = m.jnt_range[self._arm_j, 0], m.jnt_range[self._arm_j, 1]
-        self._arm_act = np.array([m.actuator(f'rm75/joint_{i}').id for i in range(1, 8)])
-        self._grip_act = m.actuator('rm75/g/fingers_actuator').id
+        self._arm_act = np.array([m.actuator(f"rm75/joint_{i}").id for i in range(1, 8)])
+        self._grip_act = m.actuator("rm75/g/fingers_actuator").id
         self._kv_kp = -m.actuator_biasprm[self._arm_act, 2] / m.actuator_gainprm[self._arm_act, 0]
-        self._grip_j = np.array([j for j in range(m.njnt) if m.joint(j).name.startswith('rm75/g/')])
-        robot = {j for j in range(m.njnt) if m.joint(j).name.startswith('rm75/')}
+        self._grip_j = np.array([j for j in range(m.njnt) if m.joint(j).name.startswith("rm75/g/")])
+        robot = {j for j in range(m.njnt) if m.joint(j).name.startswith("rm75/")}
         obj_j = [j for j in range(m.njnt) if j not in robot]
         self._q0 = int(m.jnt_qposadr[obj_j[0]])  # MetaWorld's index 9
         self._v0 = int(m.jnt_dofadr[obj_j[0]])
-        self._hand_site = m.site('rm75_hand').id
-        self._pads = (m.geom('leftpad_geom').id, m.geom('rightpad_geom').id)
+        self._hand_site = m.site("rm75_hand").id
+        self._pads = (m.geom("leftpad_geom").id, m.geom("rightpad_geom").id)
         self._ik_model, self._ik_d = m, mujoco.MjData(m)
         self.leash = LEASH
         self._q_ik = None
@@ -96,7 +97,7 @@ class RM75Mixin:
             mujoco.mj_jacSite(m, d, jp, jr, self._hand_site)
             J = np.vstack([jp[:, self._arm_v], w[:, None] * jr[:, self._arm_v]])
             e = np.r_[ep, w * er]
-            q = np.clip(q + J.T @ np.linalg.solve(J @ J.T + 0.02 ** 2 * np.eye(6), e), self._lo, self._hi)
+            q = np.clip(q + J.T @ np.linalg.solve(J @ J.T + 0.02**2 * np.eye(6), e), self._lo, self._hi)
         d.qpos[self._arm_q] = q
         mujoco.mj_kinematics(m, d)
         return q, d.site_xpos[self._hand_site].copy(), d.site_xmat[self._hand_site].reshape(3, 3).copy()
@@ -121,10 +122,10 @@ class RM75Mixin:
         pass
 
     def _pad_gap(self):
-        (l, r), d = self._pads, self.data
-        x = self.model.geom_size[l][0]
-        lx = d.geom_xpos[l] + d.geom_xmat[l].reshape(3, 3)[:, 0] * x
-        rx = d.geom_xpos[r] - d.geom_xmat[r].reshape(3, 3)[:, 0] * x
+        (left, right), d = self._pads, self.data
+        x = self.model.geom_size[left][0]
+        lx = d.geom_xpos[left] + d.geom_xmat[left].reshape(3, 3)[:, 0] * x
+        rx = d.geom_xpos[right] - d.geom_xmat[right].reshape(3, 3)[:, 0] * x
         return float(np.linalg.norm(rx - lx))
 
     def _get_curr_obs_combined_no_goal(self):
@@ -179,8 +180,8 @@ class RM75Mixin:
         if np.ndim(pos) == 0 or np.size(pos) == 1:  # button-press-topdown: the button's slide joint
             qpos[self._q0], qvel[self._v0] = float(np.ravel(pos)[0]), 0.0
         else:
-            qpos[self._q0:self._q0 + 3] = np.asarray(pos)[:3]
-            qvel[self._v0:self._v0 + 6] = 0.0
+            qpos[self._q0 : self._q0 + 3] = np.asarray(pos)[:3]
+            qvel[self._v0 : self._v0 + 6] = 0.0
         self.set_state(qpos, qvel)
 
     def _set_hammer_xyz(self, pos):
@@ -194,9 +195,10 @@ def make(task: str, seed: int | None = None, **kwargs):
     """The metaworld <task>-v3-goal-observable env with the RM75, as CortexBench builds its envs: a new layout every
     reset (_freeze_rand_vec False), drawn from the reset seed."""
     from metaworld.env_dict import ALL_V3_ENVIRONMENTS_GOAL_OBSERVABLE as ENVS
-    base = ENVS[f'{task}-v3-goal-observable'].__mro__[1]  # the task class under metaworld's goal-observable wrapper
+
+    base = ENVS[f"{task}-v3-goal-observable"].__mro__[1]  # the task class under metaworld's goal-observable wrapper
     if task not in _CLASSES:
-        _CLASSES[task] = type(f'RM75_{base.__name__}', (RM75Mixin, base), {})
+        _CLASSES[task] = type(f"RM75_{base.__name__}", (RM75Mixin, base), {})
     env = _CLASSES[task](**kwargs)
     # what metaworld's goal-observable wrapper does in its __init__ (env_dict._create_observable_goal_envs)
     env._partially_observable = False

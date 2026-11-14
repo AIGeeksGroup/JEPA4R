@@ -17,9 +17,14 @@ collector (jepa4r/stages/collect_wm_data.py) instantiates it:
   (jepa4r/envs/ogbench/expert_policy.py)
   Cube 1-4, Relocate   the collectors of the Cube and Relocate workflows (jepa4r/data/cube, jepa4r/data/relocate)
 """
+
 BEHAVIOURS = (
-    "expert_low_noise", "expert_high_noise", "expert_then_random", "random",
-    "noisy_expert", "expert_interrupted_by_random",
+    "expert_low_noise",
+    "expert_high_noise",
+    "expert_then_random",
+    "random",
+    "noisy_expert",
+    "expert_interrupted_by_random",
 )
 
 

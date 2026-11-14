@@ -28,11 +28,14 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 # the eai-vc checkout: CORTEXBENCH_EAI_VC_ROOT (set by the Relocate workflow: eai-vc with its train-loop patch), else
 # JEPA4R_EAI_VC (MetaWorld, Scene, the RM75-B tasks), else third_party/eai-vc
-EAI_VC = (os.environ.get('CORTEXBENCH_EAI_VC_ROOT') or os.environ.get('JEPA4R_EAI_VC')
-          or os.path.join(HERE, '..', '..', '..', 'third_party', 'eai-vc'))
-VI = os.path.join(EAI_VC, 'cortexbench', 'mujoco_vc', 'visual_imitation')
+EAI_VC = (
+    os.environ.get("CORTEXBENCH_EAI_VC_ROOT")
+    or os.environ.get("JEPA4R_EAI_VC")
+    or os.path.join(HERE, "..", "..", "..", "third_party", "eai-vc")
+)
+VI = os.path.join(EAI_VC, "cortexbench", "mujoco_vc", "visual_imitation")
 # <CONF_HOME>/conf/model/NAME.yaml: the embedding configs (a run's own, or configs/policy/bc of this repository)
-CONF_HOME = os.environ.get('JEPA4R_BC_CONF_HOME', os.path.join(HERE, '..', '..', '..', 'configs', 'policy', 'bc'))
+CONF_HOME = os.environ.get("JEPA4R_BC_CONF_HOME", os.path.join(HERE, "..", "..", "..", "configs", "policy", "bc"))
 sys.path.insert(0, VI)
 
 import mujoco_vc.gym_wrapper as gw
@@ -44,7 +47,7 @@ _load = ml.load_pretrained_model  # the official one, or run_bc3d.py's point-clo
 
 
 def load_pretrained_model(embedding_name, *args, **kwargs):
-    if not os.path.exists(os.path.join(CONF_HOME, 'conf', 'model', embedding_name + '.yaml')):
+    if not os.path.exists(os.path.join(CONF_HOME, "conf", "model", embedding_name + ".yaml")):
         return _load(embedding_name, *args, **kwargs)
     # the loader reads <vc_models_dir_path>/conf/model/NAME.yaml
     saved, ml.vc_models_dir_path = ml.vc_models_dir_path, CONF_HOME
@@ -60,7 +63,7 @@ for mod in (ml, gw, train_loop):
 
 class JsonlRun:
     def __init__(self, path):
-        self.f = open(path, 'a')
+        self.f = open(path, "a")
 
     def log(self, data=None, step=None, **kwargs):
         rec = {}
@@ -70,39 +73,44 @@ class JsonlRun:
             except (TypeError, ValueError):
                 rec[k] = str(v)
         if step is not None:
-            rec['_step'] = int(step)
-        self.f.write(json.dumps(rec) + '\n')
+            rec["_step"] = int(step)
+        self.f.write(json.dumps(rec) + "\n")
         self.f.flush()
 
     def finish(self):
         self.f.close()
 
 
-train_loop.setup_wandb = lambda config: JsonlRun(os.path.join(os.getcwd(), 'metrics.jsonl'))
+train_loop.setup_wandb = lambda config: JsonlRun(os.path.join(os.getcwd(), "metrics.jsonl"))
 
 _sample_paths = train_loop.sample_paths
 _last = {}
-_config_name = next((arg.split('=', 1)[1] for arg in sys.argv if arg.startswith('--config-name=')), None)
-if '--config-name' in sys.argv:
-    _config_name = sys.argv[sys.argv.index('--config-name') + 1]
+_config_name = next((arg.split("=", 1)[1] for arg in sys.argv if arg.startswith("--config-name=")), None)
+if "--config-name" in sys.argv:
+    _config_name = sys.argv[sys.argv.index("--config-name") + 1]
 
 
 def sample_paths(*args, **kwargs):
-    if kwargs.get('base_seed') == 54321 and 'paths' in _last and not (  # MetaWorld train/* rollouts: logging only
-            _config_name == 'Adroit_BC_config' and os.environ.get('ADROIT_FRESH_EVAL') == '1'):
-        return _last['paths']
+    if (
+        kwargs.get("base_seed") == 54321
+        and "paths" in _last
+        and not (  # MetaWorld train/* rollouts: logging only
+            _config_name == "Adroit_BC_config" and os.environ.get("ADROIT_FRESH_EVAL") == "1"
+        )
+    ):
+        return _last["paths"]
     paths = _sample_paths(*args, **kwargs)
-    _last['paths'] = paths
+    _last["paths"] = paths
     return paths
 
 
 def rollout_from_init_states(*args, **kwargs):  # Adroit / DMC train/* rollouts: logging only
-    return _last['paths']
+    return _last["paths"]
 
 
 train_loop.sample_paths = sample_paths
 train_loop.rollout_from_init_states = rollout_from_init_states
-np.seterr(all='ignore')
+np.seterr(all="ignore")
 
-sys.argv = [os.path.join(VI, 'hydra_launcher.py')] + sys.argv[1:]
-runpy.run_path(os.path.join(VI, 'hydra_launcher.py'), run_name='__main__')
+sys.argv = [os.path.join(VI, "hydra_launcher.py")] + sys.argv[1:]
+runpy.run_path(os.path.join(VI, "hydra_launcher.py"), run_name="__main__")

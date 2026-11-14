@@ -21,26 +21,27 @@ The task mode's info (mode='task') lacks the target fields the oracles read; the
 (the drawer / window handle targets from the current handle position and the opening difference, at the same place as
 OGBench's target sites).
 """
+
 from __future__ import annotations
 
 import os
 
-os.environ.setdefault('MUJOCO_GL', 'egl')
+os.environ.setdefault("MUJOCO_GL", "egl")
 import numpy as np
 
 from . import ogb_scene_env as sd
 
 TASK_NAMES = (
-    'task1_open',
-    'task2_unlock_and_lock',
-    'task3_rearrange_medium',
-    'task4_put_in_drawer',
-    'task5_rearrange_hard',
+    "task1_open",
+    "task2_unlock_and_lock",
+    "task3_rearrange_medium",
+    "task4_put_in_drawer",
+    "task5_rearrange_hard",
 )
-HORIZON = 750           # OGBench scene-v0's max_episode_steps
-TOL = 0.04              # OGBench's success threshold (cube position, drawer, window)
+HORIZON = 750  # OGBench scene-v0's max_episode_steps
+TOL = 0.04  # OGBench's success threshold (cube position, drawer, window)
 DRAWER_IS_OPEN = -0.12  # OGBench set_new_target: the cube goes into the drawer only when qpos < -0.12
-LIFT = {'cube': 0.16, 'button': 0.16, 'drawer': 0.18, 'window': 0.28}  # the oracles' above_threshold
+LIFT = {"cube": 0.16, "button": 0.16, "drawer": 0.18, "window": 0.28}  # the oracles' above_threshold
 
 
 class SceneTaskExpert:
@@ -51,81 +52,87 @@ class SceneTaskExpert:
         self.cur = None
 
     def reset(self):
-        g = self.u.cur_task_info['goal']
+        g = self.u.cur_task_info["goal"]
         self.goal = dict(
-            cube=np.asarray(g['block_xyzs'][0], np.float64),
-            buttons=np.asarray(g['button_states']).astype(int),
-            drawer=float(g['drawer_pos']),
-            window=float(g['window_pos']),
+            cube=np.asarray(g["block_xyzs"][0], np.float64),
+            buttons=np.asarray(g["button_states"]).astype(int),
+            drawer=float(g["drawer_pos"]),
+            window=float(g["window_pos"]),
         )
-        self.goal_in_drawer = bool(self.goal['cube'][1] < -0.3)
+        self.goal_in_drawer = bool(self.goal["cube"][1] < -0.3)
         self.cur = None
         self.log = []
 
     def _state(self):
         d = self.u._data
-        return dict(cube=d.joint('object_joint_0').qpos[:3].copy(), in_drawer=sd.cube_in_drawer(self.u),
-                    buttons=self.u._cur_button_states.astype(int).copy(), drawer=float(d.joint('drawer_slide').qpos[0]),
-                    window=float(d.joint('window_slide').qpos[0]))
+        return dict(
+            cube=d.joint("object_joint_0").qpos[:3].copy(),
+            in_drawer=sd.cube_in_drawer(self.u),
+            buttons=self.u._cur_button_states.astype(int).copy(),
+            drawer=float(d.joint("drawer_slide").qpos[0]),
+            window=float(d.joint("window_slide").qpos[0]),
+        )
 
     def plan(self):
         s, g = self._state(), self.goal
-        if self.goal_in_drawer and not s['in_drawer']:
-            if s['drawer'] > DRAWER_IS_OPEN:
-                return ('button', 0) if s['buttons'][0] == 0 else ('drawer', sd.DRAWER_OPEN)
-            return ('cube', self.u._drawer_center.copy())
-        if abs(s['drawer'] - g['drawer']) > TOL:
-            return ('button', 0) if s['buttons'][0] == 0 else ('drawer', g['drawer'])
-        if abs(s['window'] - g['window']) > TOL:
-            return ('button', 1) if s['buttons'][1] == 0 else ('window', g['window'])
-        if not self.goal_in_drawer and np.linalg.norm(s['cube'] - g['cube']) > TOL:
-            return ('cube', g['cube'].copy())
+        if self.goal_in_drawer and not s["in_drawer"]:
+            if s["drawer"] > DRAWER_IS_OPEN:
+                return ("button", 0) if s["buttons"][0] == 0 else ("drawer", sd.DRAWER_OPEN)
+            return ("cube", self.u._drawer_center.copy())
+        if abs(s["drawer"] - g["drawer"]) > TOL:
+            return ("button", 0) if s["buttons"][0] == 0 else ("drawer", g["drawer"])
+        if abs(s["window"] - g["window"]) > TOL:
+            return ("button", 1) if s["buttons"][1] == 0 else ("window", g["window"])
+        if not self.goal_in_drawer and np.linalg.norm(s["cube"] - g["cube"]) > TOL:
+            return ("cube", g["cube"].copy())
         for i in (0, 1):
-            if s['buttons'][i] != g['buttons'][i]:
-                return ('button', i)
+            if s["buttons"][i] != g["buttons"][i]:
+                return ("button", i)
         return None
 
     def _info(self, info):
         """Fill in the current subtask's target fields (the ones the oracles read from info in collection mode)."""
         kind, tgt = self.cur
         info = dict(info)
-        if kind == 'cube':
-            info['privileged/target_block'] = 0
-            info['privileged/target_block_pos'] = np.asarray(tgt, np.float64)
-            info['privileged/target_block_yaw'] = np.array([0.0])
-        elif kind == 'button':
-            info['privileged/target_button'] = tgt
-            info['privileged/target_button_state'] = self.button_target
-            info['privileged/target_button_top_pos'] = self.u._data.site_xpos[self.u._button_site_ids[tgt]].copy()
-        elif kind == 'drawer':
-            q = float(info['privileged/drawer_pos'][0])
-            info['privileged/target_drawer_handle_pos'] = info['privileged/drawer_handle_pos'] - np.array(
+        if kind == "cube":
+            info["privileged/target_block"] = 0
+            info["privileged/target_block_pos"] = np.asarray(tgt, np.float64)
+            info["privileged/target_block_yaw"] = np.array([0.0])
+        elif kind == "button":
+            info["privileged/target_button"] = tgt
+            info["privileged/target_button_state"] = self.button_target
+            info["privileged/target_button_top_pos"] = self.u._data.site_xpos[self.u._button_site_ids[tgt]].copy()
+        elif kind == "drawer":
+            q = float(info["privileged/drawer_pos"][0])
+            info["privileged/target_drawer_handle_pos"] = info["privileged/drawer_handle_pos"] - np.array(
                 [0.0, tgt - q, 0.0]
             )
-        elif kind == 'window':
-            q = float(info['privileged/window_pos'][0])
-            info['privileged/target_window_handle_pos'] = info['privileged/window_handle_pos'] + np.array(
+        elif kind == "window":
+            q = float(info["privileged/window_pos"][0])
+            info["privileged/target_window_handle_pos"] = info["privileged/window_handle_pos"] + np.array(
                 [tgt - q, 0.0, 0.0]
             )
         return info
 
     def _achieved_and_lifted(self, info):
         kind, tgt = self.cur
-        eff = info['proprio/effector_pos']
+        eff = info["proprio/effector_pos"]
         if eff[2] <= LIFT[kind]:
             return False
-        if kind == 'cube':
-            return bool(np.linalg.norm(np.asarray(tgt) - info['privileged/block_0_pos']) <= 0.02
-                        and info['proprio/gripper_contact'][0] < 0.1)
-        if kind == 'button':
-            return int(info[f'privileged/button_{tgt}_state']) == self.button_target
-        if kind == 'drawer':
+        if kind == "cube":
             return bool(
-                np.linalg.norm(info['privileged/target_drawer_handle_pos'] - info['privileged/drawer_handle_pos'])
+                np.linalg.norm(np.asarray(tgt) - info["privileged/block_0_pos"]) <= 0.02
+                and info["proprio/gripper_contact"][0] < 0.1
+            )
+        if kind == "button":
+            return int(info[f"privileged/button_{tgt}_state"]) == self.button_target
+        if kind == "drawer":
+            return bool(
+                np.linalg.norm(info["privileged/target_drawer_handle_pos"] - info["privileged/drawer_handle_pos"])
                 <= 0.01
             )
         return bool(
-            np.linalg.norm(info['privileged/target_window_handle_pos'] - info['privileged/window_handle_pos']) <= 0.01
+            np.linalg.norm(info["privileged/target_window_handle_pos"] - info["privileged/window_handle_pos"]) <= 0.01
         )
 
     def act(self, ob, t=None):
@@ -138,8 +145,8 @@ class SceneTaskExpert:
             self.cur = self.plan()
             if self.cur is None:
                 return np.zeros(5)
-            if self.cur[0] == 'button':
+            if self.cur[0] == "button":
                 self.button_target = 1 - int(self.u._cur_button_states[self.cur[1]])
-            self.log.append((t, self.cur[0], self.cur[1] if self.cur[0] == 'button' else None))
+            self.log.append((t, self.cur[0], self.cur[1] if self.cur[0] == "button" else None))
             self.oracles[self.cur[0]].reset(ob, self._info(info))
         return np.asarray(self.oracles[self.cur[0]].select_action(ob, self._info(info)), np.float64)

@@ -31,6 +31,7 @@ Success, as CortexBench counts it (info['success'] at step 500):
   * the layouts of the CortexBench env the demos and evaluations use (bench/cortexbench/rm75_env.py: MWTaskEnv's reset
     with seed s, which maps a seed to a different layout; seeds 12345 .. 12504): 159 / 160, seed 12404 fails.
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -47,7 +48,7 @@ CLEARANCE = 0.0003  # m between the wall-side finger and the wall
 # hand from the wall face: finger + clearance + half the opening
 WALL_OFF = FINGER + CLEARANCE + 0.5 * OPEN * (1.0 - PRESHAPE)
 HOLDING = 0.665  # obs[3] below: closed on something (a held cube reads 0.60-0.65; the 45.3 mm preshape 0.685)
-FIRM = 0.615     # obs[3] below: the pads squeeze the cube
+FIRM = 0.615  # obs[3] below: the pads squeeze the cube
 HOLD_WIN, HOLD_ZTOL = 0.04, 0.02  # held cube: xy window / z tolerance (the script: 0.02 / 0.01)
 
 
@@ -152,8 +153,8 @@ class RM75DrawerOpenPolicy:
         return a
 
 
-ASSEMBLY_FIRM = 0.585     # assembly: obs[3] below: the pads squeeze the handle (closed on it the reading is 0.573)
-ASSEMBLY_HOLDING = 0.63   # assembly: obs[3] below: closed on something
+ASSEMBLY_FIRM = 0.585  # assembly: obs[3] below: the pads squeeze the handle (closed on it the reading is 0.573)
+ASSEMBLY_HOLDING = 0.63  # assembly: obs[3] below: closed on something
 
 
 class RM75AssemblyPolicy:
@@ -187,8 +188,11 @@ class RM75AssemblyPolicy:
             to = np.array([hand[0], hand[1], peg[2]])
         else:
             to = peg
-        close = (np.linalg.norm(hand[:2] - wrench[:2]) <= 0.02 and abs(hand[2] - wrench[2]) <= 0.12
-                 and (abs(hand[2] - (wrench[2] + 0.03)) <= 0.005 or grip < ASSEMBLY_HOLDING))
+        close = (
+            np.linalg.norm(hand[:2] - wrench[:2]) <= 0.02
+            and abs(hand[2] - wrench[2]) <= 0.12
+            and (abs(hand[2] - (wrench[2] + 0.03)) <= 0.005 or grip < ASSEMBLY_HOLDING)
+        )
         a = np.zeros(4)
         a[:3] = 10.0 * (to - hand)  # not clipped: the env clips
         a[3] = 0.6 if close else 0.0

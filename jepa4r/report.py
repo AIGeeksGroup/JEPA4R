@@ -21,6 +21,7 @@ Expected-table format::
         tol: 1.0                      # optional absolute tolerance -> ok / x per cell
         decimals: 2                   # optional; default = as many decimals as the paper value shows
 """
+
 import argparse
 import csv
 import json
@@ -39,7 +40,7 @@ RUN_AXES = ("env", "method", "decoder", "tag")
 class Cell:
     paper: float | None
     ours: float | None = None
-    op: str = "~"      # "~": compare by delta; "<=" / ">=": bound; "published": reference only
+    op: str = "~"  # "~": compare by delta; "<=" / ">=": bound; "published": reference only
 
     @property
     def delta(self):
@@ -129,8 +130,7 @@ def load_records(runs_root) -> list[dict]:
 
 
 def _value(records, stage, want, metric):
-    hits = [r for r in records
-            if r.get("stage") == stage and all(r.get(k) == v for k, v in want.items())]
+    hits = [r for r in records if r.get("stage") == stage and all(r.get(k) == v for k, v in want.items())]
     if not hits:
         return None
     value = max(hits, key=lambda r: r.get("timestamp", "")).get("metrics", {}).get(metric)
@@ -140,8 +140,10 @@ def _value(records, stage, want, metric):
 def build_table(table, records):
     """Return (row_names, col_names, {(row, col): Cell}); flat tables use col_names == [None]."""
     stage = table["stage"]
-    cells = {(row, col): Cell(paper, _value(records, stage, want, metric), op)
-             for row, col, metric, want, paper, op in iter_cells(table)}
+    cells = {
+        (row, col): Cell(paper, _value(records, stage, want, metric), op)
+        for row, col, metric, want, paper, op in iter_cells(table)
+    }
     if table.get("rows") is None:
         return list(table["values"]), [None], cells
     values = table["values"]
@@ -208,8 +210,10 @@ def render_markdown(table, rows, cols, cells) -> str:
         for row in rows:
             c = cells[(row, None)]
             delta = "" if c.delta is None else f"{c.delta:+.2f}"
-            lines.append(f"| {_label(table, 'metric', row)} | {_fmt(c.ours, c.paper, dec)}{_mark(c, tol)} "
-                         f"| {_paper_text(c, dec)} | {delta} |")
+            lines.append(
+                f"| {_label(table, 'metric', row)} | {_fmt(c.ours, c.paper, dec)}{_mark(c, tol)} "
+                f"| {_paper_text(c, dec)} | {delta} |"
+            )
     else:
         lines.append("| | " + " | ".join(_label(table, table["cols"], c) for c in cols) + " |")
         lines.append("|---" + "|---:" * len(cols) + "|")
@@ -241,8 +245,9 @@ def render_markdown(table, rows, cols, cells) -> str:
 def csv_rows(table, cells) -> list[list]:
     out = []
     for (row, col), c in cells.items():
-        out.append([table["name"], row, "" if col is None else col, c.paper, c.ours,
-                    c.delta, c.op, c.ok(table.get("tol"))])
+        out.append(
+            [table["name"], row, "" if col is None else col, c.paper, c.ours, c.delta, c.op, c.ok(table.get("tol"))]
+        )
     return out
 
 
@@ -250,8 +255,11 @@ def report(expected=None, outputs=None, out=None, write=True) -> str:
     """Build the paper-vs-reproduction report from the runs under ``outputs`` (default: the outputs root)."""
     outputs_root = Path(outputs) if outputs else paths()["outputs"]
     out_dir = Path(out) if out else outputs_root
-    files = ([Path(f) for f in expected] if expected
-             else sorted(EXPECTED_DIR.glob("*.yaml"), key=lambda p: (not p.stem.startswith("tab"), p.stem)))
+    files = (
+        [Path(f) for f in expected]
+        if expected
+        else sorted(EXPECTED_DIR.glob("*.yaml"), key=lambda p: (not p.stem.startswith("tab"), p.stem))
+    )
     records = load_records(outputs_root)
     parts = [f"# Paper vs. reproduction\n\n{len(records)} metrics.json files under `{outputs_root}`"]
     rows_csv = []

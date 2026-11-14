@@ -10,13 +10,14 @@ generic encoder contract (``(B, 3, H, W) -> (B, embed_dim)``). Behaviour is
 exactly what ``jepa.py`` used to do inline (``interpolate_pos_encoding=True``,
 CLS token); only the state-dict prefix moves from ``encoder.`` to ``encoder.vit.``.
 """
+
 from torch import nn
 
 
 class ViTCLS(nn.Module):
     def __init__(
         self,
-        size: str = 'tiny',
+        size: str = "tiny",
         patch_size: int = 14,
         image_size: int = 224,
         pretrained: bool = False,
@@ -42,6 +43,10 @@ class ViTCLS(nn.Module):
 def build(enc_cfg):
     """configs/encoder/vit_*.yaml -> ViTCLS (stable-pretraining's vit_hf; LeWM's ViT encoder
     config)."""
-    return ViTCLS(size=str(enc_cfg.variant), patch_size=int(enc_cfg.patch_size),
-                  image_size=int(enc_cfg.get('image_size', 224)), pretrained=bool(enc_cfg.get('pretrained', False)),
-                  use_mask_token=False)
+    return ViTCLS(
+        size=str(enc_cfg.variant),
+        patch_size=int(enc_cfg.patch_size),
+        image_size=int(enc_cfg.get("image_size", 224)),
+        pretrained=bool(enc_cfg.get("pretrained", False)),
+        use_mask_token=False,
+    )

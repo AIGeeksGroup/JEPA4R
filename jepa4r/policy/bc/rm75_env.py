@@ -13,15 +13,16 @@ from top_cap2 with multisampling), here with the RM75 env of envs/metaworld/rm75
   (pcd_fork.MWPointClouds): the env is made at 224, the frames come from a 256 renderer of their own. Its sampling RNG
   is seeded by seed().
 Used by make_rm75_demos.py (the demos) and rm75_server.py (the evaluation env behind run_bc_rm75.py's proxy)."""
+
 from __future__ import annotations
 
 import os
 import sys
 
 # the repository (jepa4r/)
-LEWM = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..'))
+LEWM = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
 sys.path.insert(0, LEWM)
-os.environ.setdefault('MUJOCO_GL', 'egl')
+os.environ.setdefault("MUJOCO_GL", "egl")
 
 import mujoco
 import numpy as np
@@ -30,9 +31,13 @@ from jepa4r.envs.metaworld import MWPointCloudWrapper
 from jepa4r.envs.twins.metaworld_rm75 import RM75AssemblyEnv, RM75BinPickEnv, RM75ButtonPressEnv, RM75DrawerEnv
 
 # task -> (env, fixtures: bodies a reset re-places, in the point-cloud foreground as in the task's collection config)
-TASKS = {'bin-picking': (RM75BinPickEnv, ()), 'button-press-topdown': (RM75ButtonPressEnv, ('box',)),
-         'drawer-open': (RM75DrawerEnv, ('drawer',)), 'assembly': (RM75AssemblyEnv, ('peg',))}
-SIZE = 256      # CortexBench's frames
+TASKS = {
+    "bin-picking": (RM75BinPickEnv, ()),
+    "button-press-topdown": (RM75ButtonPressEnv, ("box",)),
+    "drawer-open": (RM75DrawerEnv, ("drawer",)),
+    "assembly": (RM75AssemblyEnv, ("peg",)),
+}
+SIZE = 256  # CortexBench's frames
 PCD_SIZE = 224  # the point cloud's depth camera: the 3D LeWM data's (and pcd_fork.MWPointClouds')
 HORIZON = 500
 
@@ -66,7 +71,7 @@ class RM75CBEnv:
 
     def pcd(self):
         p = self.pcw._point_cloud()
-        return np.concatenate([p['pcd_xyz'], p['pcd_rgb'].astype(np.float32)], axis=1).astype(np.float32)
+        return np.concatenate([p["pcd_xyz"], p["pcd_rgb"].astype(np.float32)], axis=1).astype(np.float32)
 
     def close(self):
         self._rgb.close()

@@ -23,26 +23,26 @@ import numpy as np
 from .env import MWTaskEnv
 from .policy import P_GAIN, ThreePartPolicy
 
-BUTTON_TOP = 0.193            # the button's top above the box origin (metaworld's object position), unpressed
+BUTTON_TOP = 0.193  # the button's top above the box origin (metaworld's object position), unpressed
 # the box's collision extent around its origin in x and y (its front edge: y - 0.12 >= 0.68)
 BOX_HALF = 0.12
 # the hand's targets between presses (in view, 5 cm in front of any box)
 WAYPOINTS = ((-0.20, 0.45, 0.15), (0.20, 0.63, 0.35))
-HOVER_DZ = 0.08               # approach / lift height above the unpressed button top
-HOLD = 4                      # steps the pressed button is held down
+HOVER_DZ = 0.08  # approach / lift height above the unpressed button top
+HOLD = 4  # steps the pressed button is held down
 
 
 class MWButtonPressEnv(MWTaskEnv):
-    TASK = 'button-press-topdown'
+    TASK = "button-press-topdown"
     HAND_INIT = WAYPOINTS  # in view and in front of the box
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._box_body = self._model.body('box').id
-        self._target = ('press', np.zeros(3))
+        self._box_body = self._model.body("box").id
+        self._target = ("press", np.zeros(3))
 
     def box_pos(self):
-        return self._data.body('box').xpos.copy()
+        return self._data.body("box").xpos.copy()
 
     def pressed(self) -> bool:
         return bool(abs(self._mw._target_pos[2] - self._obj_pos()[2]) <= 0.024)
@@ -52,13 +52,13 @@ class MWButtonPressEnv(MWTaskEnv):
             for _ in range(100):
                 p = rng.uniform(WAYPOINTS[0], WAYPOINTS[1])
                 if self.in_view(p):
-                    return ('wp', p)
-            return ('wp', p)
-        return ('press', self.box_pos() + np.array([0.0, 0.0, BUTTON_TOP]))
+                    return ("wp", p)
+            return ("wp", p)
+        return ("press", self.box_pos() + np.array([0.0, 0.0, BUTTON_TOP]))
 
     def new_place_target(self):
         """Called by the policy when a press or a waypoint is done: the next target."""
-        self._target = self._draw_target(self.np_random, self._target[0] == 'press')
+        self._target = self._draw_target(self.np_random, self._target[0] == "press")
 
     def _reset_target(self, rng, obs):
         self._target = self._draw_target(rng, after_press=False)
@@ -66,18 +66,19 @@ class MWButtonPressEnv(MWTaskEnv):
     def _task_info(self):
         kind, xyz = self._target
         return {
-            'box_pos': self.box_pos(),
-            'button_depth': np.float64(self._data.qpos[9]),
-            'pressed': np.int64(self.pressed()),
-            'place_target': np.array([*xyz, 1.0 if kind == 'press' else 0.0]),  # 4th = 1: press the button
+            "box_pos": self.box_pos(),
+            "button_depth": np.float64(self._data.qpos[9]),
+            "pressed": np.int64(self.pressed()),
+            "place_target": np.array([*xyz, 1.0 if kind == "press" else 0.0]),  # 4th = 1: press the button
         }
 
     def set_state(self, qpos, qvel, mocap_pos=None, mocap_quat=None, box_pos=None):
         if box_pos is not None:  # the box is a fixture placed at reset: model data, not qpos
             import mujoco
+
             self._model.body_pos[self._box_body] = np.asarray(box_pos, dtype=np.float64)
             mujoco.mj_forward(self._model, self._data)
-            self._mw._target_pos = self._mw._get_site_pos('hole')
+            self._mw._target_pos = self._mw._get_site_pos("hole")
         super().set_state(qpos, qvel, mocap_pos, mocap_quat)
 
 
@@ -86,32 +87,32 @@ class ButtonThreePartPolicy(ThreePartPolicy):
 
     @staticmethod
     def _new_mem():
-        return {'phase': 'approach', 'n': 0, 'zs': []}
+        return {"phase": "approach", "n": 0, "zs": []}
 
     @staticmethod
     def _oracle(m, env, info):
-        hand = np.asarray(info['hand_pos'], dtype=np.float64)
-        top = np.asarray(info['obj_pos'], dtype=np.float64)  # the button's top (moves down when pressed)
-        top0 = float(info['box_pos'][2]) + BUTTON_TOP      # ... and where it is when released
-        target = np.asarray(info['place_target'], dtype=np.float64)
+        hand = np.asarray(info["hand_pos"], dtype=np.float64)
+        top = np.asarray(info["obj_pos"], dtype=np.float64)  # the button's top (moves down when pressed)
+        top0 = float(info["box_pos"][2]) + BUTTON_TOP  # ... and where it is when released
+        target = np.asarray(info["place_target"], dtype=np.float64)
         grab = 1.0
         if target[3] < 0.5:  # waypoint: over the box and below its top, first back off upwards
-            if hand[1] > float(info['box_pos'][1]) - BOX_HALF - 0.02 and hand[2] < top0 + 0.03:
+            if hand[1] > float(info["box_pos"][1]) - BOX_HALF - 0.02 and hand[2] < top0 + 0.03:
                 desired = np.array([hand[0], hand[1] - 0.05, top0 + HOVER_DZ])
             else:
                 desired = target[:3]
             dist = float(np.linalg.norm(hand - target[:3]))
-            m['zs'].append(dist)  # no progress for 15 steps (e.g. the arm sags a little low near its base): done too
-            stalled = len(m['zs']) >= 15 and m['zs'][-15] - dist < 0.002
+            m["zs"].append(dist)  # no progress for 15 steps (e.g. the arm sags a little low near its base): done too
+            stalled = len(m["zs"]) >= 15 and m["zs"][-15] - dist < 0.002
             if dist < 0.03 or stalled:
-                m['n'] += 1
-                if m['n'] >= 3 or stalled:
+                m["n"] += 1
+                if m["n"] >= 3 or stalled:
                     env.new_place_target()
-                    m['n'], m['phase'], m['zs'] = 0, 'approach', []
+                    m["n"], m["phase"], m["zs"] = 0, "approach", []
             return np.concatenate([(desired - hand) * P_GAIN, [grab]])
-        phase = m['phase']
+        phase = m["phase"]
         above = np.array([top[0], top[1], top0 + HOVER_DZ])
-        if phase == 'approach':
+        if phase == "approach":
             if np.linalg.norm(hand[:2] - top[:2]) > 0.03 and hand[2] < top0 + 0.02:
                 desired = hand + np.array([0.0, 0.0, 0.1])  # rise before moving over the box
             else:
@@ -119,21 +120,21 @@ class ButtonThreePartPolicy(ThreePartPolicy):
             # over the button (the hover height
             if np.linalg.norm(hand[:2] - top[:2]) < 0.015 and hand[2] > top0 + 0.03:
                 # is out of reach for far boxes)
-                phase, m['zs'] = 'press', []
-        if phase == 'press':
+                phase, m["zs"] = "press", []
+        if phase == "press":
             desired = np.array([top[0], top[1], top[2] - 0.05])
-            m['zs'].append(hand[2])
-            stuck = len(m['zs']) >= 12 and m['zs'][-12] - hand[2] < 0.002
-            if info['pressed'] and hand[2] - top[2] < 0.05:  # pressed, and the fingers are on the button top
-                m['n'] += 1
-                if m['n'] >= HOLD:
-                    phase, m['n'] = 'lift', 0
+            m["zs"].append(hand[2])
+            stuck = len(m["zs"]) >= 12 and m["zs"][-12] - hand[2] < 0.002
+            if info["pressed"] and hand[2] - top[2] < 0.05:  # pressed, and the fingers are on the button top
+                m["n"] += 1
+                if m["n"] >= HOLD:
+                    phase, m["n"] = "lift", 0
             elif stuck:
-                phase, m['n'] = 'lift', 0
-        if phase == 'lift':
+                phase, m["n"] = "lift", 0
+        if phase == "lift":
             desired = np.array([hand[0], hand[1], top0 + HOVER_DZ])
             if hand[2] > top0 + HOVER_DZ - 0.02:
                 env.new_place_target()
-                phase, m['zs'] = 'approach', []
-        m['phase'] = phase
+                phase, m["zs"] = "approach", []
+        m["phase"] = phase
         return np.concatenate([(desired - hand) * P_GAIN, [grab]])

@@ -4,6 +4,7 @@ the backbone (72 on PAGE-4D, 0.88M parameters).
 ``add_lora(module, rank)`` wraps every fused qkv projection under ``module`` in ``LoRAQV`` (update restricted to the q
 and v slices); the backbone decoders call it on their attention blocks.
 """
+
 import torch
 from torch import nn
 
@@ -19,8 +20,9 @@ class LoRAQV(nn.Module):
         self.down = nn.Linear(self.dim, rank, bias=False)
         self.up_q = nn.Linear(rank, self.dim, bias=False)
         self.up_v = nn.Linear(rank, self.dim, bias=False)
-        nn.init.kaiming_uniform_(self.down.weight, a=5 ** 0.5)
-        nn.init.zeros_(self.up_q.weight); nn.init.zeros_(self.up_v.weight)
+        nn.init.kaiming_uniform_(self.down.weight, a=5**0.5)
+        nn.init.zeros_(self.up_q.weight)
+        nn.init.zeros_(self.up_v.weight)
 
     def forward(self, x):
         h = self.down(x)
@@ -34,9 +36,10 @@ def add_lora(module, rank):
     """Wrap every attention's fused qkv in the given blocks; returns the wrappers."""
     wrappers = []
     for name, child in list(module.named_children()):
-        if name == 'qkv' and isinstance(child, nn.Linear):
+        if name == "qkv" and isinstance(child, nn.Linear):
             w = LoRAQV(child, rank)
-            setattr(module, name, w); wrappers.append(w)
+            setattr(module, name, w)
+            wrappers.append(w)
         else:
             wrappers += add_lora(child, rank)
     return wrappers
