@@ -56,8 +56,9 @@ def make(env_cfg, **kwargs):
 def check_against_urdf(env_cfg, out_dir=None) -> dict:
     """Stage verify_twin: compare the twin with the vendor URDF (env_cfg.twin_check).
 
-    Runs the moved acceptance script (sections A arm, B gripper, C interface, D behaviour with the plan oracle, E
-    datasets) and returns its table: {"n_pass", "n_fail", "n_info", "checks": {"<section> | <name>": {...}}}."""
+    Runs the acceptance script verify_rm75.py (sections A arm, B gripper, C interface, D behaviour with the plan
+    oracle, E datasets) and returns its table: {"n_pass", "n_fail", "n_info", "checks": {"<section> | <name>":
+    {...}}}."""
     import runpy
 
     from jepa4r.config import paths, stage_dir

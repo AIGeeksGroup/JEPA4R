@@ -12,7 +12,7 @@ def load_frozen(checkpoint, device="cuda"):
     sys.path[:0] = [str(code), str(code / "third_party/stable-worldmodel")]
     import hydra.utils
     from stable_worldmodel.wm.utils import load_pretrained
-    from jepa4r.models.world_model import _retarget  # config.json's LeWM targets (jepa.JEPA, ...) -> the moved classes
+    from jepa4r.models.world_model import _retarget  # config.json's LeWM targets (jepa.JEPA, ...) -> our classes
 
     cache = os.environ.get("CUBE_WORKFLOW_FACTORY_CACHE")
     if not cache:

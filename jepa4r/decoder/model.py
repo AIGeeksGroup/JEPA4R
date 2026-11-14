@@ -8,7 +8,7 @@ From the paper's reconstruction code: FrozenLatent (the frozen world model as ob
 input_pipeline (what the encoder reads, from the world model's run config), load_recon / open_run (a trained run with
 its world model and frames), recon_forward (the training step). World models load through
 jepa4r.models.world_model.load_checkpoint; the released decoder configs name recon.decoders.PAGE4DDecoder /
-recon_backbones.* (DECODER_TARGETS maps them to the moved classes).
+recon_backbones.* (DECODER_TARGETS maps them to the classes in this repository).
 """
 
 import json

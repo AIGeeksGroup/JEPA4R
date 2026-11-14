@@ -496,7 +496,7 @@ def model_numerics(cfg, output):
 
     code = code_root().resolve()
     expected_root = Path(cfg["source_root"]).resolve()
-    if (expected_root / "lewm_pcd").is_dir():  # an earlier copy of this code in its old layout; else this repository
+    if (expected_root / "lewm_pcd").is_dir():  # an earlier copy of this code (under lewm_pcd/); else this repository
         expected_root = expected_root / "lewm_pcd"
     if code != expected_root:
         raise ValueError("actual imported model source root differs from frozen expected root")

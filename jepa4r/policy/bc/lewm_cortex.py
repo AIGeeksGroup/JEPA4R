@@ -30,7 +30,7 @@ IMAGENET = ([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 
 
 def _moved(node):
-    """config.json's 'module.MLP' -> the moved class (jepa4r.models.heads.MLP); everything else unchanged."""
+    """config.json's 'module.MLP' -> this repository's class (jepa4r.models.heads.MLP); everything else unchanged."""
     if isinstance(node, dict):
         return {
             k: ("jepa4r.models.heads.MLP" if (k == "_target_" and v == "module.MLP") else _moved(v))

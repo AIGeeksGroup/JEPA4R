@@ -409,7 +409,7 @@ def run_episode_split(cfg, run_dir, *, resume_checkpoint=None, state_callback=No
     import stable_worldmodel as swm
     from lightning.pytorch.loggers import WandbLogger
 
-    if original_layout:  # the source's own layout, which the moved Cube workflow (jepa4r/models/cube) reads back
+    if original_layout:  # the source's own layout, which the Cube workflow (jepa4r/models/cube) reads back
         run_dir = Path(swm.data.utils.get_cache_dir(sub_folder="checkpoints"), cfg.get("subdir") or "")
     fresh_seed = _prepare_fresh_run(cfg, run_dir, exist_ok=not original_layout)
     #########################
@@ -509,7 +509,7 @@ def run_episode_split(cfg, run_dir, *, resume_checkpoint=None, state_callback=No
 
 
 # --------------------------------------------------------------------------- jepa4r interfaces (adapters)
-# Hydra targets written into config.json by LeWM's train.py (released HF checkpoints, local runs) -> the moved classes.
+# Hydra targets written into config.json by LeWM's train.py (released HF checkpoints, local runs) -> our classes.
 LEGACY_TARGETS = {
     "jepa.JEPA": "jepa4r.models.world_model.JEPA",
     "module.ARPredictor": "jepa4r.models.predictor.ARPredictor",
@@ -529,7 +529,7 @@ _LEGACY_OF = {new: old for old, new in LEGACY_TARGETS.items()}
 
 
 def legacy_config(config):
-    """A model block with the moved targets written back as LeWM's train.py names them, so that config.json has the
+    """A model block with our targets written back as LeWM's train.py names them, so that config.json has the
     layout of the paper runs' checkpoints (the released ones and every loader moved here read those names)."""
     if OmegaConf.is_config(config):
         config = OmegaConf.to_container(config, resolve=True)
