@@ -28,19 +28,19 @@ GEOM = int(mujoco.mjtObj.mjOBJ_GEOM)  # a plain int: comparing an array with the
 
 
 class MWPointCloudWrapper(PointCloudWrapper):
-    def __init__(self, env, cameras=('top_cap2',), crop_box=DEFAULT_CROP_BOX, fixtures=(), multisample=False, **kwargs):
+    def __init__(self, env, cameras=("top_cap2",), crop_box=DEFAULT_CROP_BOX, fixtures=(), multisample=False, **kwargs):
         super().__init__(env, cameras=cameras, crop_box=crop_box, **kwargs)
         self.fixtures = set(fixtures)
         self.multisample = bool(multisample)
 
     def _setup(self, model: mujoco.MjModel) -> None:
-        robot_root = model.body_rootid[model.body('hand').id]
+        robot_root = model.body_rootid[model.body("hand").id]
         fg = np.zeros(model.ngeom, dtype=bool)
         obj = np.zeros(model.ngeom, dtype=bool)
         for g in range(model.ngeom):
             body = model.geom_bodyid[g]
             root = model.body_rootid[body]
-            name = mujoco.mj_id2name(model, mujoco.mjtObj.mjOBJ_BODY, root) or ''
+            name = mujoco.mj_id2name(model, mujoco.mjtObj.mjOBJ_BODY, root) or ""
             if model.body_weldid[body] == 0 and name not in self.fixtures:  # static: table, bins, walls, pedestal
                 continue
             if model.body_mocapid[root] >= 0:  # the mocap body driving the hand
@@ -73,4 +73,4 @@ class MWPointCloudWrapper(PointCloudWrapper):
         else:
             xyz = np.zeros((self.num_points, 3), dtype=np.float32)
             col = np.zeros((self.num_points, 3), dtype=np.uint8)
-        return {'pcd_xyz': xyz, 'pcd_rgb': col}
+        return {"pcd_xyz": xyz, "pcd_rgb": col}

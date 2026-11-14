@@ -51,6 +51,7 @@ The wrapper owns a private RNG seeded from the reset seed. It never touches the
 env RNG or numpy's global RNG (the OGBench oracle draws from the latter), so the
 trajectories are exactly those a pixel collection with the same seeds produces.
 """
+
 from __future__ import annotations
 
 from collections.abc import Sequence
@@ -59,7 +60,7 @@ import gymnasium as gym
 import mujoco
 import numpy as np
 
-DEFAULT_CAMERAS = ('front_pixels',)  # the one depth camera: the official pixel camera (eye-to-hand)
+DEFAULT_CAMERAS = ("front_pixels",)  # the one depth camera: the official pixel camera (eye-to-hand)
 # ManipSpaceEnv._workspace_bounds is x 0.25..0.6, y -0.35..0.35, z 0.02..0.35;
 # widened so the wrist / forearm over the workspace stay in, the base column does not
 DEFAULT_CROP_BOX = ((0.10, -0.50, -0.02), (0.75, 0.50, 0.60))
@@ -97,10 +98,10 @@ class PointCloudWrapper(gym.Wrapper):
         self.num_points = int(num_points)
         self.cameras = tuple(cameras)
         if len(self.cameras) != 1:  # one depth camera (ToF-style); multi-camera fusion is not allowed
-            raise ValueError(f'PointCloudWrapper takes exactly one depth camera, got {list(self.cameras)}')
+            raise ValueError(f"PointCloudWrapper takes exactly one depth camera, got {list(self.cameras)}")
         self.foreground_only = foreground_only
-        self.crop_box = None if crop_box is None else np.asarray(
-            [list(crop_box[0]), list(crop_box[1])], dtype=np.float64
+        self.crop_box = (
+            None if crop_box is None else np.asarray([list(crop_box[0]), list(crop_box[1])], dtype=np.float64)
         )
         self.voxel_size = float(voxel_size)
         self.cube_fraction = float(cube_fraction)
@@ -115,7 +116,7 @@ class PointCloudWrapper(gym.Wrapper):
         for name in self.cameras:
             cid = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_CAMERA, name)
             if cid < 0:
-                raise ValueError(f'camera {name!r} not found in model')
+                raise ValueError(f"camera {name!r} not found in model")
             self._cams[name] = (cid, float(model.cam_fovy[cid]))
 
         fg = np.zeros(model.ngeom, dtype=bool)
@@ -128,8 +129,8 @@ class PointCloudWrapper(gym.Wrapper):
             if model.body_mocapid[root] >= 0:  # target markers (mocap)
                 continue
             fg[g] = True
-            name = mujoco.mj_id2name(model, mujoco.mjtObj.mjOBJ_BODY, root) or ''
-            cube[g] = 'object' in name
+            name = mujoco.mj_id2name(model, mujoco.mjtObj.mjOBJ_BODY, root) or ""
+            cube[g] = "object" in name
         self._geom_fg = fg
         self._geom_cube = cube
         self._model_ref = model
@@ -188,10 +189,10 @@ class PointCloudWrapper(gym.Wrapper):
                 cube.append(self._geom_cube[seg[idx]])
 
             if self.keep_rgb:
-                extra[f'pixels/{name}'] = np.ascontiguousarray(rgb)
-                extra[f'cam/{name}/pos'] = t.astype(np.float32).copy()
-                extra[f'cam/{name}/xmat'] = R.reshape(-1).astype(np.float32).copy()
-                extra[f'cam/{name}/fovy'] = np.float32(fovy)
+                extra[f"pixels/{name}"] = np.ascontiguousarray(rgb)
+                extra[f"cam/{name}/pos"] = t.astype(np.float32).copy()
+                extra[f"cam/{name}/xmat"] = R.reshape(-1).astype(np.float32).copy()
+                extra[f"cam/{name}/fovy"] = np.float32(fovy)
 
         if pts:
             xyz, col = self._sample(
@@ -203,7 +204,7 @@ class PointCloudWrapper(gym.Wrapper):
             xyz = np.zeros((self.num_points, 3), dtype=np.float32)
             col = np.zeros((self.num_points, 3), dtype=np.uint8)
 
-        out = {'pcd_xyz': xyz, 'pcd_rgb': col}
+        out = {"pcd_xyz": xyz, "pcd_rgb": col}
         out.update(extra)
         return out
 
@@ -230,10 +231,12 @@ class PointCloudWrapper(gym.Wrapper):
             sel = self._rng.choice(cube_idx, n, replace=cube_idx.size < n)
         else:
             n_rob = n - n_cube
-            sel = np.concatenate([
-                self._rng.choice(cube_idx, n_cube, replace=False),
-                self._rng.choice(rob_idx, n_rob, replace=rob_idx.size < n_rob),
-            ])
+            sel = np.concatenate(
+                [
+                    self._rng.choice(cube_idx, n_cube, replace=False),
+                    self._rng.choice(rob_idx, n_rob, replace=rob_idx.size < n_rob),
+                ]
+            )
         sel = self._rng.permutation(sel)
         return pts[sel].astype(np.float32), cols[sel].astype(np.uint8)
 
@@ -242,11 +245,11 @@ class _Sampler:
     """The attributes ``PointCloudWrapper._grid`` / ``_sample`` read, without an env."""
 
     def __init__(self, pcd_cfg, rng=None):
-        box = pcd_cfg.get('crop_box')
+        box = pcd_cfg.get("crop_box")
         self.num_points = int(pcd_cfg.num_points)
         self.crop_box = None if box is None else np.asarray([list(box[0]), list(box[1])], dtype=np.float64)
         self.voxel_size = float(pcd_cfg.voxel_size)
-        self.cube_fraction = float(pcd_cfg.get('object_fraction', 0.25))
+        self.cube_fraction = float(pcd_cfg.get("object_fraction", 0.25))
         self._rng = rng if rng is not None else np.random.default_rng()
         self._grids = {}
 

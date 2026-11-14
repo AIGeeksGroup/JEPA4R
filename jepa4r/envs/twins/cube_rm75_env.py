@@ -41,9 +41,9 @@ from stable_worldmodel.envs.ogbench.cube_env import CubeEnv
 
 from jepa4r.envs.ogbench.cube_pcd_env import CubePCDEnv
 
-DESC_DIR = Path(__file__).resolve().parent / 'descriptions'
-ARM_XML = DESC_DIR / 'realman_rm75b' / 'rm75b.xml'
-GRIPPER_XML = DESC_DIR / 'inspire_eg2_4c2' / 'eg2_4c2.xml'
+DESC_DIR = Path(__file__).resolve().parent / "descriptions"
+ARM_XML = DESC_DIR / "realman_rm75b" / "rm75b.xml"
+GRIPPER_XML = DESC_DIR / "inspire_eg2_4c2" / "eg2_4c2.xml"
 
 ARM_BASE_POS = (0.15, 0.0, 0.0)  # base_link origin (bottom of the base) on the table, behind the workspace
 WORKSPACE_SCALE = 0.5  # OGBench boxes about SCALE_CENTER; largest copy the RM75 reaches with the tool down
@@ -65,7 +65,7 @@ class RM75ManipSpaceEnv(ManipSpaceEnv):
         self._home_qpos = np.asarray([0.0, 0.2725, 0.0, 1.4912, 0.0, 1.3779, 0.0])
         self._workspace_scale = workspace_scale
         c = SCALE_CENTER
-        for name in ['_workspace_bounds', '_arm_sampling_bounds', '_object_sampling_bounds', '_target_sampling_bounds']:
+        for name in ["_workspace_bounds", "_arm_sampling_bounds", "_object_sampling_bounds", "_target_sampling_bounds"]:
             box = getattr(self, name)
             setattr(self, name, c[: box.shape[1]] + workspace_scale * (box - c[: box.shape[1]]))
 
@@ -75,39 +75,39 @@ class RM75ManipSpaceEnv(ManipSpaceEnv):
         assets = mjcf_utils.get_assets(ik_mjcf)
         ik_model = mujoco.MjModel.from_xml_string(xml_str, assets)
 
-        self._ik = controllers.DiffIKController(model=ik_model, sites=['attachment_site'])
+        self._ik = controllers.DiffIKController(model=ik_model, sites=["attachment_site"])
 
     def _arm_mjcf(self):
         arm_mjcf = mjcf.from_path(ARM_XML.as_posix(), escape_separators=True)
-        arm_mjcf.find('body', 'base_link').pos = self._arm_base_pos
+        arm_mjcf.find("body", "base_link").pos = self._arm_base_pos
         return arm_mjcf
 
     def build_mjcf_model(self):
         # == ManipSpaceEnv.build_mjcf_model with the RM75-B / EG2-4C2 files.
         # Set scene.
-        arena_mjcf = mjcf.from_path((self._desc_dir / 'floor_wall.xml').as_posix())
-        arena_mjcf.model = 'ur5e_arena'
+        arena_mjcf = mjcf.from_path((self._desc_dir / "floor_wall.xml").as_posix())
+        arena_mjcf.model = "ur5e_arena"
 
         arena_mjcf.statistic.center = (0.3, 0, 0.15)
         arena_mjcf.statistic.extent = 0.7
-        getattr(arena_mjcf.visual, 'global').elevation = -20
-        getattr(arena_mjcf.visual, 'global').azimuth = 180
+        getattr(arena_mjcf.visual, "global").elevation = -20
+        getattr(arena_mjcf.visual, "global").azimuth = 180
         arena_mjcf.statistic.meansize = 0.04
         arena_mjcf.visual.map.znear = 0.1
         arena_mjcf.visual.map.zfar = 10.0
 
         # Add the RM75-B arm (OGBench slot name 'ur5e').
         ur5e_mjcf = self._arm_mjcf()
-        ur5e_mjcf.model = 'ur5e'
+        ur5e_mjcf.model = "ur5e"
 
-        for light in ur5e_mjcf.find_all('light'):
+        for light in ur5e_mjcf.find_all("light"):
             light.remove()
             del light
 
         # Attach the EG2-4C2 gripper (slot name 'robotiq') to the flange.
         gripper_mjcf = mjcf.from_path(GRIPPER_XML.as_posix(), escape_separators=True)
-        gripper_mjcf.model = 'robotiq'
-        mjcf_utils.attach(ur5e_mjcf, gripper_mjcf, 'attachment_site')
+        gripper_mjcf.model = "robotiq"
+        mjcf_utils.attach(ur5e_mjcf, gripper_mjcf, "attachment_site")
 
         # Attach the arm to the scene.
         mjcf_utils.attach(arena_mjcf, ur5e_mjcf)
@@ -117,31 +117,31 @@ class RM75ManipSpaceEnv(ManipSpaceEnv):
         # Cache joint and actuator elements.
         self._arm_jnts = mjcf_utils.safe_find_all(
             ur5e_mjcf,
-            'joint',
+            "joint",
             exclude_attachments=True,
         )
         self._arm_acts = mjcf_utils.safe_find_all(
             ur5e_mjcf,
-            'actuator',
+            "actuator",
             exclude_attachments=True,
         )
-        self._gripper_jnts = mjcf_utils.safe_find_all(gripper_mjcf, 'joint', exclude_attachments=True)
-        self._gripper_acts = mjcf_utils.safe_find_all(gripper_mjcf, 'actuator', exclude_attachments=True)
+        self._gripper_jnts = mjcf_utils.safe_find_all(gripper_mjcf, "joint", exclude_attachments=True)
+        self._gripper_acts = mjcf_utils.safe_find_all(gripper_mjcf, "actuator", exclude_attachments=True)
 
-        if self._ob_type == 'pixels':
+        if self._ob_type == "pixels":
             # Adjust colors for pixel-based tasks.
-            arena_mjcf.find('material', 'ur5e/robotiq/black').rgba = self._colors['purple']
-            arena_mjcf.find('material', 'ur5e/robotiq/pad_gray').rgba = self._colors['purple']
+            arena_mjcf.find("material", "ur5e/robotiq/black").rgba = self._colors["purple"]
+            arena_mjcf.find("material", "ur5e/robotiq/pad_gray").rgba = self._colors["purple"]
             if self._pixel_transparent_arm:
-                arena_mjcf.find('material', 'ur5e/robotiq/metal').rgba[3] = 0.1
-                arena_mjcf.find('material', 'ur5e/robotiq/silicone').rgba[3] = 0.1
-                arena_mjcf.find('material', 'ur5e/robotiq/gray').rgba[3] = 0.1
-                arena_mjcf.find('material', 'ur5e/robotiq/black').rgba[3] = 0.1
-                arena_mjcf.find('material', 'ur5e/robotiq/pad_gray').rgba[3] = 0.5
-                arena_mjcf.find('material', 'ur5e/black').rgba[3] = 0.1
-                arena_mjcf.find('material', 'ur5e/jointgray').rgba[3] = 0.1
-                arena_mjcf.find('material', 'ur5e/linkgray').rgba[3] = 0.1
-                arena_mjcf.find('material', 'ur5e/lightblue').rgba[3] = 0.1
+                arena_mjcf.find("material", "ur5e/robotiq/metal").rgba[3] = 0.1
+                arena_mjcf.find("material", "ur5e/robotiq/silicone").rgba[3] = 0.1
+                arena_mjcf.find("material", "ur5e/robotiq/gray").rgba[3] = 0.1
+                arena_mjcf.find("material", "ur5e/robotiq/black").rgba[3] = 0.1
+                arena_mjcf.find("material", "ur5e/robotiq/pad_gray").rgba[3] = 0.5
+                arena_mjcf.find("material", "ur5e/black").rgba[3] = 0.1
+                arena_mjcf.find("material", "ur5e/jointgray").rgba[3] = 0.1
+                arena_mjcf.find("material", "ur5e/linkgray").rgba[3] = 0.1
+                arena_mjcf.find("material", "ur5e/lightblue").rgba[3] = 0.1
 
         # Add bounding boxes to visualize the workspace and object sampling bounds.
         mjcf_utils.add_bounding_box_site(
@@ -150,7 +150,7 @@ class RM75ManipSpaceEnv(ManipSpaceEnv):
             upper=np.asarray((*self._target_sampling_bounds[1], 0.02)),
             rgba=(0.6, 0.3, 0.3, 0.2),
             group=4,
-            name='object_bounds',
+            name="object_bounds",
         )
         mjcf_utils.add_bounding_box_site(
             arena_mjcf.worldbody,
@@ -158,7 +158,7 @@ class RM75ManipSpaceEnv(ManipSpaceEnv):
             upper=np.asarray(self._arm_sampling_bounds[1]),
             rgba=(0.3, 0.6, 0.3, 0.2),
             group=4,
-            name='arm_bounds',
+            name="arm_bounds",
         )
 
         return arena_mjcf
@@ -172,7 +172,7 @@ class RM75ManipSpaceEnv(ManipSpaceEnv):
         self._arm_actuator_ids = np.asarray([self._model.actuator(name).id for name in actuator_names])
         gripper_actuator_names = [a.full_identifier for a in self._gripper_acts]
         self._gripper_actuator_ids = np.asarray([self._model.actuator(name).id for name in gripper_actuator_names])
-        self._gripper_opening_joint_id = self._model.joint('ur5e/robotiq/right_driver_joint').id
+        self._gripper_opening_joint_id = self._model.joint("ur5e/robotiq/right_driver_joint").id
 
         # Modify PD gains.
         self._model.actuator_gainprm[self._arm_actuator_ids, 0] = np.asarray([4500, 4500, 4500, 4500, 2000, 2000, 500])
@@ -180,8 +180,8 @@ class RM75ManipSpaceEnv(ManipSpaceEnv):
         self._model.actuator_biasprm[self._arm_actuator_ids, 1] = -np.asarray([4500, 4500, 4500, 4500, 2000, 2000, 500])
 
         # Site IDs.
-        self._pinch_site_id = self._model.site('ur5e/robotiq/pinch').id
-        self._attach_site_id = self._model.site('ur5e/attachment_site').id
+        self._pinch_site_id = self._model.site("ur5e/robotiq/pinch").id
+        self._attach_site_id = self._model.site("ur5e/attachment_site").id
 
         pinch_pose = lie.SE3.from_rotation_and_translation(
             rotation=lie.SO3.from_matrix(self._data.site_xmat[self._pinch_site_id].reshape(3, 3)),
@@ -201,12 +201,12 @@ def scale_cube_task(env):
     default cube start / goal position of the variation space, which would otherwise lie outside the scaled
     sampling box, and the task-mode cube positions. Call at the end of an RM75 cube env's __init__."""
     s, c = env._workspace_scale, SCALE_CENTER[:2]
-    for key in ['start_position', 'goal_position']:
-        box = env.variation_space['cube'][key]
+    for key in ["start_position", "goal_position"]:
+        box = env.variation_space["cube"][key]
         value = c + s * (np.asarray(box.init_value, dtype=np.float64) - c)
         box._init_value, box._value = value, value.copy()  # swm Box has no public setter for its initial value
-    for task in getattr(env, 'task_infos', None) or []:
-        for key in ['init_xyzs', 'goal_xyzs']:
+    for task in getattr(env, "task_infos", None) or []:
+        for key in ["init_xyzs", "goal_xyzs"]:
             xyz = np.array(task[key], dtype=np.float64)
             xyz[:, :2] = c + s * (xyz[:, :2] - c)
             task[key] = xyz
@@ -230,11 +230,11 @@ class RM75CubePCDEnv(CubePCDEnv, RM75ManipSpaceEnv):
 
 
 __all__ = [
-    'RM75ManipSpaceEnv',
-    'RM75CubeEnv',
-    'RM75CubePCDEnv',
-    'scale_cube_task',
-    'CROP_BOX',
-    'ARM_XML',
-    'GRIPPER_XML',
+    "RM75ManipSpaceEnv",
+    "RM75CubeEnv",
+    "RM75CubePCDEnv",
+    "scale_cube_task",
+    "CROP_BOX",
+    "ARM_XML",
+    "GRIPPER_XML",
 ]

@@ -11,6 +11,7 @@ Every ``impl`` module exposes
     train(cfg, out_dir) -> dict                 (trained kinds only; stage train_wm)
     load_frozen_encoder(cfg) -> FrozenEncoder   (all kinds; see jepa4r/policy/frozen.py)
 """
+
 import importlib
 
 from .config import stage_dir
@@ -29,14 +30,18 @@ def wm_dir(cfg):
 
 def train(cfg, out_dir) -> dict:
     if not trained_by_us(cfg.method):
-        raise SystemExit(f"method {cfg.method.name!r} ({cfg.method.kind}) is not trained by us; "
-                         "go straight to train_policy")
+        raise SystemExit(
+            f"method {cfg.method.name!r} ({cfg.method.kind}) is not trained by us; go straight to train_policy"
+        )
     if cfg.env.suite in ("adroit", "rh56"):  # Relocate: the Relocate workflow trains all four methods
         from jepa4r.policy.bc import relocate_stage
+
         return {"harness_status": relocate_stage(cfg, "train_wm", out_dir)["status"]}
     from jepa4r.policy.gciql import is_cube_workflow
+
     if is_cube_workflow(cfg):  # Cube 1-4: the Cube workflow trains all four methods
         from jepa4r.policy.gciql import train_world_model
+
         return train_world_model(cfg, out_dir)
     return importlib.import_module(cfg.method.impl).train(cfg, out_dir)
 

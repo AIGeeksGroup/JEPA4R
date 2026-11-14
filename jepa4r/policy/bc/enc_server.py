@@ -8,6 +8,7 @@ socket, '@name' = Linux abstract namespace): 8-byte little-endian length + pickl
 ...))); reply: 8-byte length + pickle(float32 array (B, D)).
     source env.sh && $PY enc_server.py @lewm_scene_enc lewm_scene_pix,lewm_scene_pcd
 """
+
 import os
 import pickle
 import selectors
@@ -24,21 +25,21 @@ from omegaconf import OmegaConf
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))  # lewm_cortex
-CONFS = [Path(os.environ.get('JEPA4R_BC_CONF_HOME', HERE)) / 'conf' / 'model']
+CONFS = [Path(os.environ.get("JEPA4R_BC_CONF_HOME", HERE)) / "conf" / "model"]
 MAX_BATCH = 64
 
 
 def conf(name):
     for d in CONFS:
-        if (d / f'{name}.yaml').exists():
-            return OmegaConf.load(d / f'{name}.yaml')
+        if (d / f"{name}.yaml").exists():
+            return OmegaConf.load(d / f"{name}.yaml")
     raise FileNotFoundError(name)
 
 
 def sock_addr(name):
     """'@name' = a socket in the Linux abstract namespace (no file path; paths on the data disk exceed AF_UNIX's 107
     bytes)."""
-    return '\0' + name[1:] if name.startswith('@') else name
+    return "\0" + name[1:] if name.startswith("@") else name
 
 
 def recv_exact(c, n):
@@ -52,12 +53,12 @@ def recv_exact(c, n):
 
 
 def main():
-    path, names = sys.argv[1], sys.argv[2].split(',')
+    path, names = sys.argv[1], sys.argv[2].split(",")
     models = {}
     for n in names:
         m, dim, _, meta = hydra.utils.call(conf(n))
         models[n] = m.eval().cuda()
-        print(f'loaded {n}: dim {dim}, {meta.get("checkpoint")}', flush=True)
+        print(f"loaded {n}: dim {dim}, {meta.get('checkpoint')}", flush=True)
     srv = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
     srv.bind(sock_addr(path))
     srv.listen(256)
@@ -73,7 +74,7 @@ def main():
                 continue
             c = key.fileobj
             try:
-                n = struct.unpack('<Q', recv_exact(c, 8))[0]
+                n = struct.unpack("<Q", recv_exact(c, 8))[0]
                 name, x = pickle.loads(recv_exact(c, n))
                 reqs.append((c, name, x))
             except (ConnectionError, OSError):
@@ -84,27 +85,31 @@ def main():
             x = torch.from_numpy(np.concatenate([r[2] for r in group]))
             # at most MAX_BATCH at a time, to bound the GPU memory (the demo precompute sends 20 frames per request)
             with torch.no_grad():
-                out = np.concatenate([models[name](x[s: s + MAX_BATCH].cuda()).float().cpu().numpy()
-                                      for s in range(0, len(x), MAX_BATCH)])
+                out = np.concatenate(
+                    [
+                        models[name](x[s : s + MAX_BATCH].cuda()).float().cpu().numpy()
+                        for s in range(0, len(x), MAX_BATCH)
+                    ]
+                )
             i = 0
             for c, _, xi in group:
-                b = pickle.dumps(out[i: i + len(xi)], protocol=4)
+                b = pickle.dumps(out[i : i + len(xi)], protocol=4)
                 i += len(xi)
                 try:
-                    c.sendall(struct.pack('<Q', len(b)) + b)
+                    c.sendall(struct.pack("<Q", len(b)) + b)
                 except OSError:
                     pass
             n_req += len(group)
             n_batch += 1
         if time.time() - t_last > 600:
             print(
-                f'{time.strftime("%F_%T")} {n_req} requests in {n_batch} batches (mean batch '
-                f'{n_req / max(n_batch, 1):.1f}), '
-                f'{len(sel.get_map()) - 1} clients',
+                f"{time.strftime('%F_%T')} {n_req} requests in {n_batch} batches (mean batch "
+                f"{n_req / max(n_batch, 1):.1f}), "
+                f"{len(sel.get_map()) - 1} clients",
                 flush=True,
             )
             n_req, n_batch, t_last = 0, 0, time.time()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

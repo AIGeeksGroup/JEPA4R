@@ -10,7 +10,7 @@ from stable_worldmodel.envs.ogbench.cube_env import CubeEnv
 
 
 class CubePCDEnv(CubeEnv):
-    def render(self, camera='front_pixels', *args, **kwargs):
+    def render(self, camera="front_pixels", *args, **kwargs):
         """Render and let a point-cloud wrapper capture the official goal state.
 
         ``CubeEnv.initialize_episode`` calls ``self.render()`` while the
@@ -20,11 +20,11 @@ class CubePCDEnv(CubeEnv):
         from recursively triggering another capture.
         """
         image = super().render(camera=camera, *args, **kwargs)
-        callback = getattr(self, '_pcd_goal_capture_callback', None)
+        callback = getattr(self, "_pcd_goal_capture_callback", None)
         if (
             callback is not None
-            and getattr(self, '_render_goal', False)
-            and not getattr(self, '_pcd_goal_capture_active', False)
+            and getattr(self, "_render_goal", False)
+            and not getattr(self, "_pcd_goal_capture_active", False)
         ):
             self._pcd_goal_capture_active = True
             try:

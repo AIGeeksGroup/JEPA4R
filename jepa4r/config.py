@@ -16,6 +16,7 @@ Composition order (later wins)::
     defaults.yaml -> selected groups -> method.per_env[<glob on env.name>] -> refs (method.encoder)
     -> command-line ``dotted.key=value`` overrides
 """
+
 import fnmatch
 import os
 from pathlib import Path
@@ -27,8 +28,8 @@ from omegaconf import DictConfig, OmegaConf
 REPO_ROOT = Path(__file__).resolve().parents[1]
 CONFIG_ROOT = REPO_ROOT / "configs"
 
-GROUPS = ("env", "method", "policy", "decoder")          # selectable with group=name
-REFS = {"method.encoder": "encoder"}                      # string keys naming a file of another group
+GROUPS = ("env", "method", "policy", "decoder")  # selectable with group=name
+REFS = {"method.encoder": "encoder"}  # string keys naming a file of another group
 
 # Pipeline stages (jepa4r/stages) and the run keys that identify one run of each.
 RUN_KEYS = {
@@ -38,11 +39,11 @@ RUN_KEYS = {
     "train_policy": ("env", "method"),
     "train_decoder": ("env", "decoder"),
     "eval_recon": ("env", "decoder"),
-    "verify_twin": ("env",),                              # digital twin vs. vendor URDF
-    "count_params": ("method", "decoder"),                # exactly one of them
+    "verify_twin": ("env",),  # digital twin vs. vendor URDF
+    "count_params": ("method", "decoder"),  # exactly one of them
 }
 STAGES = tuple(RUN_KEYS)
-DATA_STAGES = {"collect_wm_data": "wm", "prepare_policy_data": "policy"}   # stage -> data/<subdir>
+DATA_STAGES = {"collect_wm_data": "wm", "prepare_policy_data": "policy"}  # stage -> data/<subdir>
 
 
 def available(group: str) -> list[str]:
@@ -67,7 +68,7 @@ def _parse_value(text: str):
     if text == "":
         return ""
     value = yaml.safe_load(text)
-    if isinstance(value, str):          # YAML 1.1 reads 1e-4 as a string
+    if isinstance(value, str):  # YAML 1.1 reads 1e-4 as a string
         for cast in (int, float):
             try:
                 return cast(value)
@@ -129,6 +130,7 @@ def paths() -> dict[str, Path]:
     data/         collected datasets            outputs/      runs, report, figures
     checkpoints/  third-party pretrained weights
     """
+
     def get(var: str, default: str) -> Path:
         return Path(os.environ.get(var) or REPO_ROOT / default).expanduser()
 
@@ -141,8 +143,13 @@ def paths() -> dict[str, Path]:
 
 def run_key(cfg: DictConfig, stage: str) -> dict:
     """The fields that identify one run of ``stage``; written into every metrics.json."""
-    key = {"stage": stage, "env": None, "method": None, "decoder": None,
-           "tag": None if stage in DATA_STAGES else str(cfg.tag)}
+    key = {
+        "stage": stage,
+        "env": None,
+        "method": None,
+        "decoder": None,
+        "tag": None if stage in DATA_STAGES else str(cfg.tag),
+    }
     for group in RUN_KEYS[stage]:
         if group in cfg:
             key[group] = cfg[group].name

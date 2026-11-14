@@ -18,16 +18,16 @@ def _count(module, trainable_only=False):
 
 
 def run(cfg, out_dir):
-    if 'method' in cfg:
+    if "method" in cfg:
         from jepa4r.models.encoders import build_encoder
         from jepa4r.models.world_model import build_world_model
 
-        if cfg.method.kind != 'jepa_wm':
+        if cfg.method.kind != "jepa_wm":
             encoder = build_encoder(cfg.method.encoder)
-            return {'encoder_params_M': _count(encoder) / 1e6}
-        action_dim = int(cfg.env.action_dim) if 'env' in cfg and 'action_dim' in cfg.env else 5
+            return {"encoder_params_M": _count(encoder) / 1e6}
+        action_dim = int(cfg.env.action_dim) if "env" in cfg and "action_dim" in cfg.env else 5
         model = build_world_model(cfg.method, action_dim)
-        return {'encoder_params_M': _count(model.encoder) / 1e6, 'total_params_M': _count(model) / 1e6}
+        return {"encoder_params_M": _count(model.encoder) / 1e6, "total_params_M": _count(model) / 1e6}
     from jepa4r.decoder.model import count_parameters
 
     return count_parameters(cfg.decoder)

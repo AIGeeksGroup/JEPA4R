@@ -1,4 +1,5 @@
-"""Current RGB Impala512 PLDM model, objective and optimizer factory."""
+"""PLDM on RGB frames with the Impala-512 encoder: model, objective and optimizer factory."""
+
 import importlib
 from pathlib import Path
 import sys
@@ -42,10 +43,18 @@ def build_model(official_source, *, pretrained=False):
             torch.nn.Module.__init__(self)
             self.config = JEPAConfig(
                 backbone=BackboneConfig(arch="impala", channels=3, final_ln=True),
-                predictor=PredictorConfig(predictor_arch="rnnV2",
-                    predictor_subclass="512-512", rnn_layers=1, z_dim=0,
-                    residual=True, predictor_ln=True, tie_backbone_ln=True),
-                action_dim=5, momentum=0)
+                predictor=PredictorConfig(
+                    predictor_arch="rnnV2",
+                    predictor_subclass="512-512",
+                    rnn_layers=1,
+                    z_dim=0,
+                    residual=True,
+                    predictor_ln=True,
+                    tie_backbone_ln=True,
+                ),
+                action_dim=5,
+                momentum=0,
+            )
             self.use_propio_pos = self.use_propio_vel = False
             self.l2 = False
             self.backbone = ImpalaEncoder(input_channels=3, final_ln=True)
@@ -55,25 +64,36 @@ def build_model(official_source, *, pretrained=False):
             self.backbone.output_propio_dim = 0
             self.spatial_repr_dim = self.repr_dim = 512
             self.backbone_ema = None
-            self.predictor = build_predictor(self.config.predictor,
-                repr_dim=512, action_dim=5, pred_propio_dim=0,
-                pred_obs_dim=512, backbone_ln=self.backbone.final_ln)
+            self.predictor = build_predictor(
+                self.config.predictor,
+                repr_dim=512,
+                action_dim=5,
+                pred_propio_dim=0,
+                pred_obs_dim=512,
+                backbone_ln=self.backbone.final_ln,
+            )
 
     class DeviceVICReg(VICRegObjective):
         def __init__(self):
             # Upstream constructor forces cuda; inherited loss methods unchanged.
             torch.nn.Module.__init__(self)
-            self.config = VICRegObjectiveConfig(projector="id", sim_coeff=1.0,
-                std_coeff=3.9843, cov_coeff=6.9238, std_coeff_t=0.24535,
-                cov_coeff_t=0.0, sim_coeff_t=0.74242, adjust_cov=True)
+            self.config = VICRegObjectiveConfig(
+                projector="id",
+                sim_coeff=1.0,
+                std_coeff=3.9843,
+                cov_coeff=6.9238,
+                std_coeff_t=0.24535,
+                cov_coeff_t=0.0,
+                sim_coeff_t=0.74242,
+                adjust_cov=True,
+            )
             self.name_prefix, self.pred_attr = "l1", "state"
             self.projector = Projector(arch="id", embedding=512, random=False)
 
     class DeviceIDM(IDMObjective):
         def __init__(self):
             torch.nn.Module.__init__(self)
-            self.config = IDMObjectiveConfig(coeff=1.072, action_dim=5,
-                arch="512", arch_subclass="a", use_pred=False)
+            self.config = IDMObjectiveConfig(coeff=1.072, action_dim=5, arch="512", arch_subclass="a", use_pred=False)
             self.name_prefix = "l1"
             self.action_predictor = MLP(arch="512", input_dim=1024, output_shape=5)
 
@@ -98,24 +118,38 @@ def build_model(official_source, *, pretrained=False):
             result = self.forward_result(pixels, actions)
             vic = self.vicreg(None, [result])
             idm = self.idm(None, [result])
-            return {"loss": vic.total_loss + idm.total_loss,
-                "prediction_loss": vic.sim_loss, "std_loss": vic.std_loss,
-                "cov_loss": vic.cov_loss, "std_time_loss": vic.std_loss_t,
-                "cov_time_loss": vic.cov_loss_t, "temporal_loss": vic.sim_loss_t,
+            return {
+                "loss": vic.total_loss + idm.total_loss,
+                "prediction_loss": vic.sim_loss,
+                "std_loss": vic.std_loss,
+                "cov_loss": vic.cov_loss,
+                "std_time_loss": vic.std_loss_t,
+                "cov_time_loss": vic.cov_loss_t,
+                "temporal_loss": vic.sim_loss_t,
                 "idm_loss": idm.action_loss,
-                "embedding": result.backbone_output.encodings.transpose(0, 1)}
+                "embedding": result.backbone_output.encodings.transpose(0, 1),
+            }
 
     return ImagePLDM()
 
 
 def build_optimizer(model, *, base_lr=0.0007):
-    """Original Adam/wd; all parameters include the explicitly corrected IDM."""
+    """PLDM's Adam (weight decay 1e-6) over all parameters of the model, the inverse-dynamics (IDM) head included."""
     import torch
+
     return torch.optim.Adam(model.parameters(), lr=base_lr, weight_decay=1e-6)
 
 
 def build_scheduler(optimizer, *, epochs, batch_steps, batch_size=128, base_lr=0.0007):
-    """Native schedule: 10% warmup, B/256 peak scaling, cosine to 0.001 peak."""
+    """PLDM's own schedule: 10% warmup, the peak scaled by B/256, cosine decay to 0.001 of the peak."""
     from pldm.optimizers.schedulers import Scheduler, LRSchedule
-    return Scheduler(schedule=LRSchedule.Cosine, base_lr=base_lr, data_loader=None,
-        epochs=epochs, optimizer=optimizer, batch_steps=batch_steps, batch_size=batch_size)
+
+    return Scheduler(
+        schedule=LRSchedule.Cosine,
+        base_lr=base_lr,
+        data_loader=None,
+        epochs=epochs,
+        optimizer=optimizer,
+        batch_steps=batch_steps,
+        batch_size=batch_size,
+    )

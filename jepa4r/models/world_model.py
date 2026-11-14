@@ -19,6 +19,7 @@ stable-worldmodel / stable-pretraining, in its two original variants:
 Checkpoints: ``<out_dir>/checkpoints/{config.json, weights_epoch_<n>.pt}`` (stable-worldmodel ``save_pretrained``, the
 format of the released HF checkpoints, which ``load_checkpoint`` also reads).
 """
+
 import json
 import os
 from functools import partial
@@ -38,11 +39,12 @@ try:  # Lightning is needed to train, not to import this module (tests import ev
 except ImportError:  # pragma: no cover
     Callback = object
 
+
 def detach_clone(v):
     return v.detach().clone() if torch.is_tensor(v) else v
 
-class JEPA(nn.Module):
 
+class JEPA(nn.Module):
     def __init__(
         self,
         encoder,
@@ -68,7 +70,7 @@ class JEPA(nn.Module):
 
         pixels = info[self.obs_key].float()
         b = pixels.size(0)
-        pixels = rearrange(pixels, "b t ... -> (b t) ...") # flatten for encoding
+        pixels = rearrange(pixels, "b t ... -> (b t) ...")  # flatten for encoding
         pixels_emb = self.encoder(pixels)  # (B*T, D) -- see encoders/ for the contract
         emb = self.projector(pixels_emb)
         info["emb"] = rearrange(emb, "(b t) d -> b t d", b=b)
@@ -89,7 +91,7 @@ class JEPA(nn.Module):
         return preds
 
     ####################
-    ## Inference only ##
+    # Inference only ##
     ####################
 
     def rollout(self, info, action_sequence, history_size: int = 3):
@@ -160,7 +162,7 @@ class JEPA(nn.Module):
         return cost
 
     def get_cost(self, info_dict: dict, action_candidates: torch.Tensor):
-        """ Compute the cost of action candidates given an info dict with goal and initial state."""
+        """Compute the cost of action candidates given an info dict with goal and initial state."""
 
         assert "goal" in info_dict, "goal not in info_dict"
 
@@ -203,19 +205,20 @@ def lejepa_forward(self, batch, stage, cfg):
     act_emb = output["act_emb"]
 
     ctx_emb = emb[:, :ctx_len]
-    ctx_act = act_emb[:, : ctx_len]
+    ctx_act = act_emb[:, :ctx_len]
 
-    tgt_emb = emb[:, n_preds:] # label
-    pred_emb = self.model.predict(ctx_emb, ctx_act) # pred
+    tgt_emb = emb[:, n_preds:]  # label
+    pred_emb = self.model.predict(ctx_emb, ctx_act)  # pred
 
     # LeWM loss
     output["pred_loss"] = (pred_emb - tgt_emb).pow(2).mean()
-    output["sigreg_loss"]= self.sigreg(emb.transpose(0, 1))
+    output["sigreg_loss"] = self.sigreg(emb.transpose(0, 1))
     output["loss"] = output["pred_loss"] + lambd * output["sigreg_loss"]
 
     losses_dict = {f"{stage}/{k}": v.detach() for k, v in output.items() if "loss" in k}
     self.log_dict(losses_dict, on_step=True, sync_dist=True)
     return output
+
 
 class SaveCkptCallback(Callback):
     """Callback to save model checkpoint after each epoch using save_pretrained."""
@@ -239,11 +242,12 @@ class SaveCkptCallback(Callback):
 
     def _save(self, model, epoch):
         from stable_worldmodel.wm.utils import save_pretrained
+
         save_pretrained(
             model,
             run_name=self.run_name,
             config=self.cfg,
-            filename=f'weights_epoch_{epoch}.pt',
+            filename=f"weights_epoch_{epoch}.pt",
             cache_dir=self.cache_dir,
         )
 
@@ -259,15 +263,13 @@ def run_random_split(cfg, run_dir, *, manager_seed=None, original_layout=False):
         manager_seed = int(manager_seed)
         pl.seed_everything(manager_seed, workers=True)
     #########################
-    ##       dataset       ##
+    # dataset       ##
     #########################
 
     dataset_cfg = OmegaConf.to_container(cfg.data.dataset, resolve=True)
     dataset_name = dataset_cfg.pop("name")
     cache_dir = os.environ.get("LOCAL_DATASET_DIR", None)
-    dataset = swm.data.load_dataset(
-        dataset_name, transform=None, cache_dir=cache_dir, **dataset_cfg
-    )
+    dataset = swm.data.load_dataset(dataset_name, transform=None, cache_dir=cache_dir, **dataset_cfg)
     transforms = [hydra.utils.instantiate(cfg.data.preprocessor)]  # pixels or point cloud, see config/train/data
 
     with open_dict(cfg):
@@ -287,18 +289,18 @@ def run_random_split(cfg, run_dir, *, manager_seed=None, original_layout=False):
         dataset, lengths=[cfg.train_split, 1 - cfg.train_split], generator=rnd_gen
     )
 
-    train = torch.utils.data.DataLoader(train_set, **cfg.loader,shuffle=True, drop_last=True, generator=rnd_gen)
+    train = torch.utils.data.DataLoader(train_set, **cfg.loader, shuffle=True, drop_last=True, generator=rnd_gen)
     val = torch.utils.data.DataLoader(val_set, **cfg.loader, shuffle=False, drop_last=False)
 
     ##############################
-    ##       model / optim      ##
+    # model / optim      ##
     ##############################
 
     world_model = hydra.utils.instantiate(cfg.model)
 
     optimizers = {
-        'model_opt': {
-            "modules": 'model',
+        "model_opt": {
+            "modules": "model",
             "optimizer": dict(cfg.optimizer),
             "scheduler": {"type": "LinearWarmupCosineAnnealingLR"},
             "interval": "epoch",
@@ -307,20 +309,20 @@ def run_random_split(cfg, run_dir, *, manager_seed=None, original_layout=False):
 
     data_module = spt.data.DataModule(train=train, val=val)
     world_model = spt.Module(
-        model = world_model,
-        sigreg = SIGReg(**cfg.loss.sigreg.kwargs),
+        model=world_model,
+        sigreg=SIGReg(**cfg.loss.sigreg.kwargs),
         # e.g. jepa_agg.agg_forward
         forward=partial(hydra.utils.get_method(cfg.forward) if cfg.get("forward") else lejepa_forward, cfg=cfg),
         optim=optimizers,
     )
 
     ##########################
-    ##       training       ##
+    # training       ##
     ##########################
 
     if original_layout:  # the original layout, which the Relocate / RH56 workflow reads back
         run_id = cfg.get("subdir") or ""
-        run_dir = Path(swm.data.utils.get_cache_dir(sub_folder='checkpoints'), run_id)
+        run_dir = Path(swm.data.utils.get_cache_dir(sub_folder="checkpoints"), run_id)
     else:
         run_dir = Path(run_dir)
 
@@ -335,7 +337,9 @@ def run_random_split(cfg, run_dir, *, manager_seed=None, original_layout=False):
         OmegaConf.save(cfg, f)
 
     object_dump_callback = SaveCkptCallback(
-        run_name=cfg.output_model_name if original_layout else '', cfg=legacy_config(cfg.model), epoch_interval=1,
+        run_name=cfg.output_model_name if original_layout else "",
+        cfg=legacy_config(cfg.model),
+        epoch_interval=1,
         cache_dir=None if original_layout else run_dir,
     )
 
@@ -360,6 +364,7 @@ def run_random_split(cfg, run_dir, *, manager_seed=None, original_layout=False):
     manager()
     return
 
+
 def _prepare_fresh_run(cfg, run_dir, exist_ok=True):
     import lightning as pl
 
@@ -382,9 +387,7 @@ def _split_datasets(cfg, dataset, transform, cache_dir, rnd_gen):
         raise ValueError("current protocol requires independent validation episodes")
     validation_cfg = OmegaConf.to_container(validation, resolve=True)
     validation_name = validation_cfg.pop("name")
-    validation_set = swm.data.load_dataset(
-        validation_name, transform=transform, cache_dir=cache_dir, **validation_cfg
-    )
+    validation_set = swm.data.load_dataset(validation_name, transform=transform, cache_dir=cache_dir, **validation_cfg)
     return dataset, validation_set
 
 
@@ -407,18 +410,16 @@ def run_episode_split(cfg, run_dir, *, resume_checkpoint=None, state_callback=No
     from lightning.pytorch.loggers import WandbLogger
 
     if original_layout:  # the source's own layout, which the moved Cube workflow (jepa4r/models/cube) reads back
-        run_dir = Path(swm.data.utils.get_cache_dir(sub_folder='checkpoints'), cfg.get("subdir") or "")
+        run_dir = Path(swm.data.utils.get_cache_dir(sub_folder="checkpoints"), cfg.get("subdir") or "")
     fresh_seed = _prepare_fresh_run(cfg, run_dir, exist_ok=not original_layout)
     #########################
-    ##       dataset       ##
+    # dataset       ##
     #########################
 
     dataset_cfg = OmegaConf.to_container(cfg.data.dataset, resolve=True)
     dataset_name = dataset_cfg.pop("name")
     cache_dir = os.environ.get("LOCAL_DATASET_DIR", None)
-    dataset = swm.data.load_dataset(
-        dataset_name, transform=None, cache_dir=cache_dir, **dataset_cfg
-    )
+    dataset = swm.data.load_dataset(dataset_name, transform=None, cache_dir=cache_dir, **dataset_cfg)
     transforms = [hydra.utils.instantiate(cfg.data.preprocessor)]  # pixels or point cloud, see config/train/data
 
     with open_dict(cfg):
@@ -436,18 +437,18 @@ def run_episode_split(cfg, run_dir, *, resume_checkpoint=None, state_callback=No
     rnd_gen = torch.Generator().manual_seed(cfg.seed)
     train_set, val_set = _split_datasets(cfg, dataset, transform, cache_dir, rnd_gen)
 
-    train = torch.utils.data.DataLoader(train_set, **cfg.loader,shuffle=True, drop_last=True, generator=rnd_gen)
+    train = torch.utils.data.DataLoader(train_set, **cfg.loader, shuffle=True, drop_last=True, generator=rnd_gen)
     val = torch.utils.data.DataLoader(val_set, **_validation_loader_kwargs(cfg), shuffle=False, drop_last=False)
 
     ##############################
-    ##       model / optim      ##
+    # model / optim      ##
     ##############################
 
     world_model = hydra.utils.instantiate(cfg.model)
 
     optimizers = {
-        'model_opt': {
-            "modules": 'model',
+        "model_opt": {
+            "modules": "model",
             "optimizer": dict(cfg.optimizer),
             "scheduler": {"type": "LinearWarmupCosineAnnealingLR"},
             "interval": "epoch",
@@ -456,15 +457,15 @@ def run_episode_split(cfg, run_dir, *, resume_checkpoint=None, state_callback=No
 
     data_module = spt.data.DataModule(train=train, val=val)
     world_model = spt.Module(
-        model = world_model,
-        sigreg = SIGReg(**cfg.loss.sigreg.kwargs),
+        model=world_model,
+        sigreg=SIGReg(**cfg.loss.sigreg.kwargs),
         # e.g. jepa_agg.agg_forward
         forward=partial(hydra.utils.get_method(cfg.forward) if cfg.get("forward") else lejepa_forward, cfg=cfg),
         optim=optimizers,
     )
 
     ##########################
-    ##       training       ##
+    # training       ##
     ##########################
 
     run_dir = Path(run_dir)
@@ -480,7 +481,9 @@ def run_episode_split(cfg, run_dir, *, resume_checkpoint=None, state_callback=No
         OmegaConf.save(cfg, f)
 
     object_dump_callback = SaveCkptCallback(
-        run_name=cfg.output_model_name if original_layout else '', cfg=legacy_config(cfg.model), epoch_interval=1,
+        run_name=cfg.output_model_name if original_layout else "",
+        cfg=legacy_config(cfg.model),
+        epoch_interval=1,
         cache_dir=None if original_layout else run_dir,
     )
 
@@ -508,17 +511,17 @@ def run_episode_split(cfg, run_dir, *, resume_checkpoint=None, state_callback=No
 # --------------------------------------------------------------------------- jepa4r interfaces (adapters)
 # Hydra targets written into config.json by LeWM's train.py (released HF checkpoints, local runs) -> the moved classes.
 LEGACY_TARGETS = {
-    'jepa.JEPA': 'jepa4r.models.world_model.JEPA',
-    'module.ARPredictor': 'jepa4r.models.predictor.ARPredictor',
-    'module.Embedder': 'jepa4r.models.heads.Embedder',
-    'module.MLP': 'jepa4r.models.heads.MLP',
-    'encoders.DexArtPointNet': 'jepa4r.models.encoders.pointnet.DexArtPointNet',
-    'encoders.ViTCLS': 'jepa4r.models.encoders.vit.ViTCLS',
-    'encoders.PointNet2': 'jepa4r.models.encoders.pointnet2.PointNet2',
-    'encoders.DGCNN': 'jepa4r.models.encoders.dgcnn.DGCNN',
-    'encoders.PointPatchTransformer': 'jepa4r.models.encoders.point_patch_transformer.PointPatchTransformer',
-    'utils.get_pcd_preprocessor': 'jepa4r.data.clips.get_pcd_preprocessor',
-    'utils.get_img_preprocessor': 'jepa4r.data.clips.get_img_preprocessor',
+    "jepa.JEPA": "jepa4r.models.world_model.JEPA",
+    "module.ARPredictor": "jepa4r.models.predictor.ARPredictor",
+    "module.Embedder": "jepa4r.models.heads.Embedder",
+    "module.MLP": "jepa4r.models.heads.MLP",
+    "encoders.DexArtPointNet": "jepa4r.models.encoders.pointnet.DexArtPointNet",
+    "encoders.ViTCLS": "jepa4r.models.encoders.vit.ViTCLS",
+    "encoders.PointNet2": "jepa4r.models.encoders.pointnet2.PointNet2",
+    "encoders.DGCNN": "jepa4r.models.encoders.dgcnn.DGCNN",
+    "encoders.PointPatchTransformer": "jepa4r.models.encoders.point_patch_transformer.PointPatchTransformer",
+    "utils.get_pcd_preprocessor": "jepa4r.data.clips.get_pcd_preprocessor",
+    "utils.get_img_preprocessor": "jepa4r.data.clips.get_img_preprocessor",
 }
 
 
@@ -533,16 +536,17 @@ def legacy_config(config):
 
     def back(node):
         if isinstance(node, dict):
-            return {k: (_LEGACY_OF.get(v, v) if k == '_target_' else back(v)) for k, v in node.items()}
+            return {k: (_LEGACY_OF.get(v, v) if k == "_target_" else back(v)) for k, v in node.items()}
         if isinstance(node, list):
             return [back(v) for v in node]
         return node
+
     return back(config)
 
 
 def _retarget(node):
     if isinstance(node, dict):
-        return {k: (LEGACY_TARGETS.get(v, v) if k == '_target_' else _retarget(v)) for k, v in node.items()}
+        return {k: (LEGACY_TARGETS.get(v, v) if k == "_target_" else _retarget(v)) for k, v in node.items()}
     if isinstance(node, list):
         return [_retarget(v) for v in node]
     return node
@@ -560,17 +564,29 @@ def instantiate(config):
 def encoder_config(enc_cfg, latent_dim, in_dim=6):
     """configs/encoder/<name>.yaml -> the encoder block of LeWM's config/train/model/encoder/*.yaml."""
     t = LEGACY_TARGETS
-    if enc_cfg.arch == 'pointnet':
-        return {'_target_': t['encoders.DexArtPointNet'], 'in_dim': in_dim, 'mlp_spec': list(enc_cfg.hidden),
-                'out_dim': latent_dim}
-    if enc_cfg.arch == 'vit':
-        return {'_target_': t['encoders.ViTCLS'], 'size': str(enc_cfg.variant), 'patch_size': int(enc_cfg.patch_size),
-                'image_size': int(enc_cfg.get('image_size', 224)), 'pretrained': bool(enc_cfg.get('pretrained', False)),
-                'use_mask_token': False}
+    if enc_cfg.arch == "pointnet":
+        return {
+            "_target_": t["encoders.DexArtPointNet"],
+            "in_dim": in_dim,
+            "mlp_spec": list(enc_cfg.hidden),
+            "out_dim": latent_dim,
+        }
+    if enc_cfg.arch == "vit":
+        return {
+            "_target_": t["encoders.ViTCLS"],
+            "size": str(enc_cfg.variant),
+            "patch_size": int(enc_cfg.patch_size),
+            "image_size": int(enc_cfg.get("image_size", 224)),
+            "pretrained": bool(enc_cfg.get("pretrained", False)),
+            "use_mask_token": False,
+        }
     h = OmegaConf.to_container(enc_cfg.hparams, resolve=True)
-    name = {'pointnet2': 'encoders.PointNet2', 'dgcnn': 'encoders.DGCNN',
-            'point_patch_transformer': 'encoders.PointPatchTransformer'}[enc_cfg.arch]
-    return {'_target_': t[name], 'in_dim': in_dim, **h, 'out_dim': latent_dim}
+    name = {
+        "pointnet2": "encoders.PointNet2",
+        "dgcnn": "encoders.DGCNN",
+        "point_patch_transformer": "encoders.PointPatchTransformer",
+    }[enc_cfg.arch]
+    return {"_target_": t[name], "in_dim": in_dim, **h, "out_dim": latent_dim}
 
 
 def model_config(method_cfg, action_dim=None):
@@ -579,22 +595,38 @@ def model_config(method_cfg, action_dim=None):
     t = LEGACY_TARGETS
 
     def mlp(head):
-        return {'_target_': t['module.MLP'], 'input_dim': d, 'output_dim': d, 'hidden_dim': int(head.hidden_dim),
-                'norm_fn': {'_target_': 'torch.nn.BatchNorm1d', '_partial_': True}}
+        return {
+            "_target_": t["module.MLP"],
+            "input_dim": d,
+            "output_dim": d,
+            "hidden_dim": int(head.hidden_dim),
+            "norm_fn": {"_target_": "torch.nn.BatchNorm1d", "_partial_": True},
+        }
 
     return {
-        '_target_': t['jepa.JEPA'],
-        'obs_key': 'pcd' if method_cfg.obs == 'pointcloud' else 'pixels',
-        'encoder': encoder_config(method_cfg.encoder, d),
-        'predictor': {'_target_': t['module.ARPredictor'], 'num_frames': int(method_cfg.history), 'input_dim': d,
-                      'hidden_dim': d, 'output_dim': d, 'depth': int(p.depth), 'heads': int(p.heads),
-                      'mlp_dim': int(p.mlp_dim), 'dim_head': int(p.dim_head), 'dropout': float(p.dropout),
-                      'emb_dropout': float(p.emb_dropout)},
-        'action_encoder': {'_target_': t['module.Embedder'],
-                           'input_dim': '???' if action_dim is None else int(method_cfg.frameskip) * int(action_dim),
-                           'emb_dim': int(method_cfg.action_encoder.emb_dim)},
-        'projector': mlp(method_cfg.projector),
-        'pred_proj': mlp(method_cfg.pred_proj),
+        "_target_": t["jepa.JEPA"],
+        "obs_key": "pcd" if method_cfg.obs == "pointcloud" else "pixels",
+        "encoder": encoder_config(method_cfg.encoder, d),
+        "predictor": {
+            "_target_": t["module.ARPredictor"],
+            "num_frames": int(method_cfg.history),
+            "input_dim": d,
+            "hidden_dim": d,
+            "output_dim": d,
+            "depth": int(p.depth),
+            "heads": int(p.heads),
+            "mlp_dim": int(p.mlp_dim),
+            "dim_head": int(p.dim_head),
+            "dropout": float(p.dropout),
+            "emb_dropout": float(p.emb_dropout),
+        },
+        "action_encoder": {
+            "_target_": t["module.Embedder"],
+            "input_dim": "???" if action_dim is None else int(method_cfg.frameskip) * int(action_dim),
+            "emb_dim": int(method_cfg.action_encoder.emb_dim),
+        },
+        "projector": mlp(method_cfg.projector),
+        "pred_proj": mlp(method_cfg.pred_proj),
     }
 
 
@@ -609,53 +641,55 @@ def lewm_train_config(cfg):
     from jepa4r.data.clips import dataset_kwargs, preprocessor_kwargs
 
     m, wm = cfg.method, cfg.env.wm_data
-    obs, data_dir = m.obs, stage_dir('collect_wm_data', cfg.env.name)
+    obs, data_dir = m.obs, stage_dir("collect_wm_data", cfg.env.name)
     files = wm.files
-    data = {'dataset': {'name': str(data_dir / files[obs]), **dataset_kwargs(m, obs)},
-            'preprocessor': preprocessor_kwargs(cfg.env, obs)}
-    split = str(wm.get('split', 'random_clips'))
-    if split == 'episodes':  # Cube 1-4: whole validation episodes in their own file
-        data['validation_dataset'] = {'name': str(data_dir / files[f'{obs}_val']), **dataset_kwargs(m, obs)}
+    data = {
+        "dataset": {"name": str(data_dir / files[obs]), **dataset_kwargs(m, obs)},
+        "preprocessor": preprocessor_kwargs(cfg.env, obs),
+    }
+    split = str(wm.get("split", "random_clips"))
+    if split == "episodes":  # Cube 1-4: whole validation episodes in their own file
+        data["validation_dataset"] = {"name": str(data_dir / files[f"{obs}_val"]), **dataset_kwargs(m, obs)}
     t = m.train
     lw = {
-        'output_model_name': str(m.name),
-        'subdir': '',
-        'num_workers': int(t.num_workers),
-        'train_split': float(t.train_split),
-        'seed': int(t.seed),
-        'img_size': 224,
-        'embed_dim': int(m.latent_dim),
-        'pcd_in_dim': 6,
-        'history_size': int(m.history),
-        'num_preds': 1,
-        'trainer': {
-            'max_epochs': int(t.epochs),
-            'devices': 'auto',
-            'accelerator': 'gpu',
-            'precision': str(t.precision),
-            'gradient_clip_val': float(t.gradient_clip),
+        "output_model_name": str(m.name),
+        "subdir": "",
+        "num_workers": int(t.num_workers),
+        "train_split": float(t.train_split),
+        "seed": int(t.seed),
+        "img_size": 224,
+        "embed_dim": int(m.latent_dim),
+        "pcd_in_dim": 6,
+        "history_size": int(m.history),
+        "num_preds": 1,
+        "trainer": {
+            "max_epochs": int(t.epochs),
+            "devices": "auto",
+            "accelerator": "gpu",
+            "precision": str(t.precision),
+            "gradient_clip_val": float(t.gradient_clip),
         },
-        'loader': {
-            'batch_size': int(t.batch_size),
-            'num_workers': int(t.num_workers),
-            'persistent_workers': True,
-            'prefetch_factor': 3,
-            'pin_memory': True,
+        "loader": {
+            "batch_size": int(t.batch_size),
+            "num_workers": int(t.num_workers),
+            "persistent_workers": True,
+            "prefetch_factor": 3,
+            "pin_memory": True,
         },
-        'optimizer': {'type': 'AdamW', 'lr': float(t.lr), 'weight_decay': float(t.weight_decay)},
-        'loss': {
-            'sigreg': {
-                'weight': float(m.loss.sigreg_weight),
-                'kwargs': {'knots': int(m.loss.sigreg_knots), 'num_proj': int(m.loss.sigreg_projections)},
+        "optimizer": {"type": "AdamW", "lr": float(t.lr), "weight_decay": float(t.weight_decay)},
+        "loss": {
+            "sigreg": {
+                "weight": float(m.loss.sigreg_weight),
+                "kwargs": {"knots": int(m.loss.sigreg_knots), "num_proj": int(m.loss.sigreg_projections)},
             }
         },
-        'wandb': {'enabled': False},
-        'data': data,
-        'model': model_config(m),
+        "wandb": {"enabled": False},
+        "data": data,
+        "model": model_config(m),
     }
-    if split == 'episodes':
-        lw['fresh_seed'] = int(t.seed)
-        lw['validation_num_workers'] = int(t.num_workers)
+    if split == "episodes":
+        lw["fresh_seed"] = int(t.seed)
+        lw["validation_num_workers"] = int(t.num_workers)
     return OmegaConf.create(lw), split
 
 
@@ -666,7 +700,7 @@ def train(cfg, out_dir) -> dict:
     cwd = os.getcwd()
     os.chdir(out_dir)  # LeWM ran in its Hydra run dir (hydra.job.chdir): Lightning's default logs stay in the run
     try:
-        if split == 'episodes':
+        if split == "episodes":
             run_episode_split(lw, out_dir)
         else:
             run_random_split(lw, out_dir)
@@ -680,22 +714,22 @@ def training_summary(out_dir) -> dict:
     from jepa4r.utils.io import last_logged
 
     out_dir = Path(out_dir)
-    result = {'checkpoints': sorted(p.name for p in (out_dir / 'checkpoints').glob('weights_epoch_*.pt'))}
-    for key in ('train/loss', 'train/pred_loss', 'train/sigreg_loss', 'val/loss', 'val/pred_loss'):
+    result = {"checkpoints": sorted(p.name for p in (out_dir / "checkpoints").glob("weights_epoch_*.pt"))}
+    for key in ("train/loss", "train/pred_loss", "train/sigreg_loss", "val/loss", "val/pred_loss"):
         value = last_logged(out_dir, key)
         if value is not None:
-            result[key.replace('/', '_')] = value
+            result[key.replace("/", "_")] = value
     return result
 
 
-def load_checkpoint(path, epoch=10, device='cpu', strict=True):
+def load_checkpoint(path, epoch=10, device="cpu", strict=True):
     """A LeWM checkpoint directory (config.json + weights_epoch_<epoch>.pt; the layout of save_pretrained and of the
     released HF checkpoints) -> the JEPA model in eval mode."""
     path = Path(path)
-    if (path / 'checkpoints' / 'config.json').is_file():
-        path = path / 'checkpoints'
-    model = instantiate(json.loads((path / 'config.json').read_text(encoding='utf-8')))
-    state = torch.load(path / f'weights_epoch_{epoch}.pt', map_location=device, weights_only=True)
+    if (path / "checkpoints" / "config.json").is_file():
+        path = path / "checkpoints"
+    model = instantiate(json.loads((path / "config.json").read_text(encoding="utf-8")))
+    state = torch.load(path / f"weights_epoch_{epoch}.pt", map_location=device, weights_only=True)
     model.load_state_dict(state, strict=strict)
     return model.to(device).eval()
 
@@ -704,15 +738,15 @@ def load_world_model(env, method, tag="default", epoch=10):
     """Frozen world model from outputs/train_wm/<env>/<method>/<tag>/ (decoder, imagination)."""
     from jepa4r.config import stage_dir
 
-    return load_checkpoint(stage_dir('train_wm', env, method, None, tag), epoch=epoch)
+    return load_checkpoint(stage_dir("train_wm", env, method, None, tag), epoch=epoch)
 
 
 class FrozenWorldModelEncoder:
     """f_theta (encoder + projector) of a frozen LeWM checkpoint: preprocessed observations [B, ...] -> [B, 192]."""
 
-    def __init__(self, model, obs, device='cpu'):
+    def __init__(self, model, obs, device="cpu"):
         self.model, self.obs, self.device = model.to(device).eval(), obs, device
-        self.latent_dim = int(model.projector.net[-1].out_features) if hasattr(model.projector, 'net') else None
+        self.latent_dim = int(model.projector.net[-1].out_features) if hasattr(model.projector, "net") else None
 
     @torch.no_grad()
     def encode(self, batch):
@@ -725,5 +759,5 @@ def load_frozen_encoder(cfg):
     jepa4r.policy.frozen.checkpoint says: the train_wm run, or on Cube 1-4 the Cube workflow's accepted export)."""
     from jepa4r.policy.frozen import checkpoint
 
-    model = load_checkpoint(checkpoint(cfg), epoch=int(cfg.method.get('policy_epoch', 10)))
-    return FrozenWorldModelEncoder(model, cfg.method.obs, device=str(cfg.get('device', 'cpu')))
+    model = load_checkpoint(checkpoint(cfg), epoch=int(cfg.method.get("policy_epoch", 10)))
+    return FrozenWorldModelEncoder(model, cfg.method.obs, device=str(cfg.get("device", "cpu")))

@@ -8,4 +8,5 @@ out: outputs/train_decoder/<env>/<decoder>/<tag>/ -- stage-A and stage-B checkpo
 
 def run(cfg, out_dir):
     from jepa4r.decoder.train import train
+
     return train(cfg, out_dir)

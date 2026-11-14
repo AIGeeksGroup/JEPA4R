@@ -1,4 +1,5 @@
-"""Unchanged paired HDF writer shared by the final Relocate collectors."""
+"""The paired HDF writer shared by the Relocate collectors (Adroit and the RH56 twin)."""
+
 from __future__ import annotations
 from pathlib import Path
 import h5py
@@ -69,7 +70,7 @@ class AdroitPairedWriter:
             if len(arr) != length or arr.shape[1:] != f[key].shape[1:]:
                 raise ValueError(f"column shape mismatch: {key} {arr.shape} vs {f[key].shape}")
             f[key].resize(offset + length, axis=0)
-            f[key][offset:offset + length] = arr
+            f[key][offset : offset + length] = arr
         n = len(f["ep_len"])
         f["ep_len"].resize(n + 1, axis=0)
         f["ep_len"][n] = length

@@ -1,4 +1,5 @@
 """Configuration composition; no simulators, model weights or GPUs required."""
+
 import importlib
 import os
 import tempfile
@@ -48,9 +49,14 @@ class ComposeTests(unittest.TestCase):
         self.assertEqual(compose(["env=adroit_relocate", "method=jepa4r"]).env.policy_data.demos_per_task, 100)
 
     def test_per_task_overrides_and_encoder_references(self):
-        cases = (("cube_double", "pldm", "impala"), ("scene", "pldm", "vit_tiny14"),
-                 ("cube_single", "vjepa21", "vit_l16"), ("mw_hammer", "vjepa21", "vit_b16"),
-                 ("scene", "jepa4r_dgcnn", "dgcnn"), ("scene", "jepa4r", "pointnet"))
+        cases = (
+            ("cube_double", "pldm", "impala"),
+            ("scene", "pldm", "vit_tiny14"),
+            ("cube_single", "vjepa21", "vit_l16"),
+            ("mw_hammer", "vjepa21", "vit_b16"),
+            ("scene", "jepa4r_dgcnn", "dgcnn"),
+            ("scene", "jepa4r", "pointnet"),
+        )
         for env, method, encoder in cases:
             with self.subTest(env=env, method=method):
                 self.assertEqual(compose([f"env={env}", f"method={method}"]).method.encoder.name, encoder)
@@ -73,10 +79,13 @@ class ComposeTests(unittest.TestCase):
                 self.assertEqual(run_dir(cfg, "collect_wm_data"), root / "data" / "wm" / "scene")
                 self.assertEqual(run_dir(cfg, "train_wm"), root / "outputs" / "train_wm" / "scene" / "jepa4r" / "ctx2")
                 cfg = compose(["env=cube_single", "decoder=page4d"])
-                self.assertEqual(run_dir(cfg, "eval_recon"),
-                                 root / "outputs" / "eval_recon" / "cube_single" / "page4d" / "default")
-                self.assertEqual(run_dir(compose(["method=jepa4r"]), "count_params"),
-                                 root / "outputs" / "count_params" / "jepa4r" / "default")
+                self.assertEqual(
+                    run_dir(cfg, "eval_recon"), root / "outputs" / "eval_recon" / "cube_single" / "page4d" / "default"
+                )
+                self.assertEqual(
+                    run_dir(compose(["method=jepa4r"]), "count_params"),
+                    root / "outputs" / "count_params" / "jepa4r" / "default",
+                )
 
 
 if __name__ == "__main__":

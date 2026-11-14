@@ -74,4 +74,25 @@ line-length = 120
 extend-exclude = ["third_party"]
 
 [tool.ruff.lint]
-select = ["E9", "F"]
+# pycodestyle errors and warnings and pyflakes; layout and spacing follow `ruff format` (checked by tests/test_style.py)
+select = ["E", "W", "F"]
+
+[tool.ruff.lint.per-file-ignores]
+# these modules set environment variables (MUJOCO_GL, JAX / XLA flags) or sys.path (external checkouts, the BC
+# runner's directory) before the imports that read them
+"jepa4r/envs/ogbench/ogb_puzzle_env.py" = ["E402"]
+"jepa4r/envs/ogbench/ogb_scene_env.py" = ["E402"]
+"jepa4r/policy/bc/rm75_env.py" = ["E402"]
+"jepa4r/policy/bc/rm75_server.py" = ["E402"]
+"jepa4r/policy/bc/run_bc.py" = ["E402"]
+"jepa4r/policy/bc/run_bc3d.py" = ["E402"]
+"jepa4r/policy/bc/run_bc_rm75.py" = ["E402"]
+"jepa4r/policy/bc/run_bc_scene.py" = ["E402"]
+"jepa4r/policy/bc/scene_env.py" = ["E402"]
+"jepa4r/policy/bc/scene_server.py" = ["E402"]
+"jepa4r/policy/dqc/check_eval_obs.py" = ["E402"]
+"jepa4r/policy/dqc/lewm_obs.py" = ["E402"]
+"jepa4r/policy/dqc/run_dqc.py" = ["E402"]
+"jepa4r/policy/gciql/downstream/sampler.py" = ["E402"]
+"jepa4r/policy/gciql/downstream/trainer.py" = ["E402"]
+"tests/relocate/test_rh56_input_identity.py" = ["E402"]

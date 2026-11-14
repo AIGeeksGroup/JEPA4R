@@ -24,7 +24,7 @@ SEED_OFFSET = 7_919
 
 class _OGBPointCloudWrapper(PointCloudWrapper):
     def __init__(self, env, crop_box, **kwargs):
-        super().__init__(env, cameras=('front_pixels',), crop_box=crop_box, **kwargs)
+        super().__init__(env, cameras=("front_pixels",), crop_box=crop_box, **kwargs)
 
     def reset(self, *, seed=None, options=None):
         obs, info = self.env.reset(seed=seed, options=options)
@@ -42,7 +42,7 @@ class PuzzlePointCloudWrapper(_OGBPointCloudWrapper):
         u = self.env.unwrapped
         rgb, depth, seg, cap_px, R, t = u.cam.render_flat(u._u._data)
         xyz, col = ogb_puzzle_env.point_cloud(u.cam, rgb, depth, seg, R, t, self._rng)
-        return {'pcd_xyz': xyz, 'pcd_rgb': col, 'cap_visible_px': cap_px}
+        return {"pcd_xyz": xyz, "pcd_rgb": col, "cap_visible_px": cap_px}
 
 
 class ScenePointCloudWrapper(_OGBPointCloudWrapper):
@@ -53,4 +53,4 @@ class ScenePointCloudWrapper(_OGBPointCloudWrapper):
         u = self.env.unwrapped
         rgb, depth, seg, R, t = u.cam.render_flat(u._u._data)
         xyz, col = ogb_scene_env.point_cloud(u.cam, rgb, depth, seg, R, t, self._rng)
-        return {'pcd_xyz': xyz, 'pcd_rgb': col, 'visible_px': u.cam.visible_px(seg)}
+        return {"pcd_xyz": xyz, "pcd_rgb": col, "visible_px": u.cam.visible_px(seg)}

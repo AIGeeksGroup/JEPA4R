@@ -32,6 +32,7 @@ are updated once per step as nn.BatchNorm does. In eval mode the running statist
 per group of that many clouds instead: each group is computed in one piece under activation checkpointing, and the
 running statistics are updated once per group.
 """
+
 from __future__ import annotations
 
 from collections.abc import Sequence
@@ -51,8 +52,17 @@ class ChunkedSharedMLP(nn.Module):
     one chunk is computed once, in one piece; several are processed under activation checkpointing, each layer's
     per-chunk mean and variance combined exactly over the chunks before the layer is applied."""
 
-    def __init__(self, in_dim: int, widths: Sequence[int], bias: bool = True, act: str = 'relu',
-                 eps: float = 1e-5, momentum: float = 0.1, xavier: bool = False, premade: bool = False):
+    def __init__(
+        self,
+        in_dim: int,
+        widths: Sequence[int],
+        bias: bool = True,
+        act: str = "relu",
+        eps: float = 1e-5,
+        momentum: float = 0.1,
+        xavier: bool = False,
+        premade: bool = False,
+    ):
         super().__init__()
         self.lins, self.bns = nn.ModuleList(), nn.ModuleList()
         d = in_dim
@@ -75,7 +85,7 @@ class ChunkedSharedMLP(nn.Module):
         mean, var = stat
         a = bn.weight * torch.rsqrt(var + bn.eps)
         y = torch.addcmul(bn.bias - mean * a, y, a)  # float32
-        return F.relu(y, inplace=True) if self.act == 'relu' else F.leaky_relu(y, 0.2, inplace=True)
+        return F.relu(y, inplace=True) if self.act == "relu" else F.leaky_relu(y, 0.2, inplace=True)
 
     def _update(self, i, mean, var, m):  # nn.BatchNorm's running update (unbiased variance)
         bn = self.bns[i]
@@ -118,7 +128,7 @@ class ChunkedSharedMLP(nn.Module):
             stats = [(bn.running_mean, bn.running_var) for bn in self.bns]
             return [self._out(make, c, stats, reduce) for c, _ in chunks]
         if len(chunks) == 1:  # in one piece, as nn.BatchNorm in training
-            (c, m), = chunks
+            ((c, m),) = chunks
             out, stats = self.piece(make(c), reduce)
             self.update_running(stats, m)
             return [out]
@@ -159,7 +169,7 @@ def ball_query(xyz: torch.Tensor, centres: torch.Tensor, radius: float, nsample:
     ar = torch.arange(N, device=xyz.device)
     out = []
     for s in range(0, centres.shape[1], chunk):
-        d2 = ((centres[:, s:s + chunk, None] - xyz[:, None]) ** 2).sum(-1)  # (B, s, N)
+        d2 = ((centres[:, s : s + chunk, None] - xyz[:, None]) ** 2).sum(-1)  # (B, s, N)
         key = torch.where(d2 < radius * radius, ar, N)
         first = key.topk(nsample, dim=-1, largest=False, sorted=True).values
         out.append(torch.where(first == N, first[..., :1], first))
@@ -179,7 +189,10 @@ def _per_group(mlp, n_clouds, group, make, reduce, positions_per_cloud):
     outs = []
     for b in range(0, n_clouds, group):
         sl = slice(b, min(b + group, n_clouds))
-        fn = lambda sl=sl: mlp.piece(make(sl), reduce)
+
+        def fn(sl=sl):
+            return mlp.piece(make(sl), reduce)
+
         out, stats = checkpoint(fn, use_reentrant=False) if torch.is_grad_enabled() else fn()
         mlp.update_running(stats, (sl.stop - sl.start) * positions_per_cloud)
         outs.append(out)
@@ -191,7 +204,7 @@ class SetAbstraction(nn.Module):
         super().__init__()
         self.npoint, self.radius, self.nsample, self.chunk_elems = npoint, radius, nsample, chunk_elems
         self.bn_group = bn_group
-        self.mlp = ChunkedSharedMLP(3 + in_feat, widths, bias=True, act='relu', xavier=True, premade=True)
+        self.mlp = ChunkedSharedMLP(3 + in_feat, widths, bias=True, act="relu", xavier=True, premade=True)
         self.width = max(widths)
 
     def forward(self, xyz, feat):  # xyz (B, N, 3), feat (B, N, C) or None -> centres (B, S, 3), (B, S, C')
@@ -211,9 +224,14 @@ class SetAbstraction(nn.Module):
             return _gather(per_point, nidx[:, sl]) + per_centre[:, sl, None]
 
         if self.training and self.bn_group and B > self.bn_group:
-            out = _per_group(self.mlp, B, self.bn_group,
-                             lambda b: _gather(per_point[b], nidx[b]) + per_centre[b][:, :, None],
-                             lambda y: y.max(dim=2).values, S * K)
+            out = _per_group(
+                self.mlp,
+                B,
+                self.bn_group,
+                lambda b: _gather(per_point[b], nidx[b]) + per_centre[b][:, :, None],
+                lambda y: y.max(dim=2).values,
+                S * K,
+            )
             return centres, out
         step = max(1, self.chunk_elems // (B * K * self.width))
         chunks = [(slice(s, s + step), B * K * len(range(s, min(s + step, S)))) for s in range(0, S, step)]
@@ -224,14 +242,15 @@ class SetAbstraction(nn.Module):
 class SetAbstractionAll(nn.Module):
     def __init__(self, in_feat, widths, bn_group=None):
         super().__init__()
-        self.mlp = ChunkedSharedMLP(3 + in_feat, widths, bias=True, act='relu', xavier=True)
+        self.mlp = ChunkedSharedMLP(3 + in_feat, widths, bias=True, act="relu", xavier=True)
         self.bn_group = bn_group
 
     def forward(self, xyz, feat):  # one group of all points: [xyz, feat] -> max over the points
         x = torch.cat([xyz, feat], -1)
         if self.training and self.bn_group and x.shape[0] > self.bn_group:
-            return _per_group(self.mlp, x.shape[0], self.bn_group, lambda b: x[b], lambda y: y.max(dim=1).values,
-                              x.shape[1])
+            return _per_group(
+                self.mlp, x.shape[0], self.bn_group, lambda b: x[b], lambda y: y.max(dim=1).values, x.shape[1]
+            )
         return self.mlp(lambda _: x, [(None, x.shape[0] * x.shape[1])], lambda y: y.max(dim=1).values)[0]
 
 
@@ -244,7 +263,7 @@ class PointNet2(nn.Module):
         nsamples: Sequence[int] = (32, 64),
         mlps: Sequence[Sequence[int]] = ((64, 64, 128), (128, 128, 256), (256, 512, 1024)),
         out_dim: int = 192,
-        chunk_elems: int = 2 ** 27,
+        chunk_elems: int = 2**27,
         bn_group: int | None = None,
     ):
         """chunk_elems: positions x the widest layer per chunk in training (memory only; the result does not

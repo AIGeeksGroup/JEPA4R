@@ -40,7 +40,7 @@ import gymnasium as gym
 import mujoco
 import numpy as np
 
-DEFAULT_CAMERAS = ('front_pixels',)  # the one depth camera: the official pixel camera (eye-to-hand)
+DEFAULT_CAMERAS = ("front_pixels",)  # the one depth camera: the official pixel camera (eye-to-hand)
 # ManipSpaceEnv._workspace_bounds is x 0.25..0.6, y -0.35..0.35, z 0.02..0.35;
 # widened so the wrist / forearm over the workspace stay in, the base column does not
 DEFAULT_CROP_BOX = ((0.10, -0.50, -0.02), (0.75, 0.50, 0.60))
@@ -78,10 +78,10 @@ class PointCloudWrapper(gym.Wrapper):
         self.num_points = int(num_points)
         self.cameras = tuple(cameras)
         if len(self.cameras) != 1:  # one depth camera (ToF-style); multi-camera fusion is not allowed
-            raise ValueError(f'PointCloudWrapper takes exactly one depth camera, got {list(self.cameras)}')
+            raise ValueError(f"PointCloudWrapper takes exactly one depth camera, got {list(self.cameras)}")
         self.foreground_only = foreground_only
-        self.crop_box = None if crop_box is None else np.asarray(
-            [list(crop_box[0]), list(crop_box[1])], dtype=np.float64
+        self.crop_box = (
+            None if crop_box is None else np.asarray([list(crop_box[0]), list(crop_box[1])], dtype=np.float64)
         )
         self.voxel_size = float(voxel_size)
         self.cube_fraction = float(cube_fraction)
@@ -96,7 +96,7 @@ class PointCloudWrapper(gym.Wrapper):
         for name in self.cameras:
             cid = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_CAMERA, name)
             if cid < 0:
-                raise ValueError(f'camera {name!r} not found in model')
+                raise ValueError(f"camera {name!r} not found in model")
             self._cams[name] = (cid, float(model.cam_fovy[cid]))
 
         fg = np.zeros(model.ngeom, dtype=bool)
@@ -109,8 +109,8 @@ class PointCloudWrapper(gym.Wrapper):
             if model.body_mocapid[root] >= 0:  # target markers (mocap)
                 continue
             fg[g] = True
-            name = mujoco.mj_id2name(model, mujoco.mjtObj.mjOBJ_BODY, root) or ''
-            cube[g] = 'object' in name
+            name = mujoco.mj_id2name(model, mujoco.mjtObj.mjOBJ_BODY, root) or ""
+            cube[g] = "object" in name
         self._geom_fg = fg
         self._geom_cube = cube
         self._model_ref = model
@@ -136,18 +136,18 @@ class PointCloudWrapper(gym.Wrapper):
         try:
             obs, info = self.env.reset(seed=seed, options=options)
         finally:
-            goal = getattr(unwrapped, '_pcd_goal_capture', None)
+            goal = getattr(unwrapped, "_pcd_goal_capture", None)
             unwrapped._pcd_goal_capture_callback = None
         if seed is not None:
             self._rng = np.random.default_rng(seed)
-        if options.get('render_goal', False):
+        if options.get("render_goal", False):
             if goal is None:
                 raise RuntimeError(
-                    'render_goal=True requested, but the wrapped environment '
-                    'did not expose an official goal point-cloud capture hook'
+                    "render_goal=True requested, but the wrapped environment "
+                    "did not expose an official goal point-cloud capture hook"
                 )
-            info['goal_pcd_xyz'] = goal['pcd_xyz']
-            info['goal_pcd_rgb'] = goal['pcd_rgb']
+            info["goal_pcd_xyz"] = goal["pcd_xyz"]
+            info["goal_pcd_rgb"] = goal["pcd_rgb"]
         info.update(self._point_cloud())
         return obs, info
 
@@ -158,7 +158,8 @@ class PointCloudWrapper(gym.Wrapper):
 
     # ------------------------------------------------------------------- core
     def _point_cloud(self, *, render_fn=None, return_trace=False, empty_crop_fallback=False) -> dict:
-        """Optional frame-render injection and source-index trace; defaults stay unchanged."""
+        """The point cloud of the current frame; render_fn (a supplied render), return_trace (each point's source index)
+        and empty_crop_fallback are optional and off by default."""
         u = self.env.unwrapped
         render = u.render if render_fn is None else render_fn
         traced = render_fn is not None or return_trace or empty_crop_fallback
@@ -173,7 +174,7 @@ class PointCloudWrapper(gym.Wrapper):
             depth = render(camera=name, depth=True)
             seg = render(camera=name, segmentation=True)[..., 0].reshape(-1)
             if traced and (rgb.dtype != np.uint8 or rgb.shape != (*depth.shape, 3)):
-                raise ValueError('Explicit extraction requires aligned real uint8 RGB/depth')
+                raise ValueError("Explicit extraction requires aligned real uint8 RGB/depth")
 
             valid = seg >= 0  # -1 = nothing hit (sky)
             if self.foreground_only:
@@ -190,39 +191,52 @@ class PointCloudWrapper(gym.Wrapper):
                 cols.append(rgb.reshape(-1, 3)[idx])
                 cube.append(self._geom_cube[seg[idx]])
                 if return_trace:
-                    pixel_idx.append(idx); geom_idx.append(seg[idx])
-                    H, W = depth.shape; f = 0.5 * H / np.tan(np.deg2rad(fovy) / 2)
-                    T = np.eye(4); T[:3, :3] = R @ np.diag([1., -1., -1.]); T[:3, 3] = t
-                    camera_trace = {'camera': name, 'height': H, 'width': W,
-                                    'camera_K': np.array([[f, 0., (W-1)/2], [0., f, (H-1)/2], [0., 0., 1.]]),
-                                    'world_from_cv': T}
+                    pixel_idx.append(idx)
+                    geom_idx.append(seg[idx])
+                    H, W = depth.shape
+                    f = 0.5 * H / np.tan(np.deg2rad(fovy) / 2)
+                    T = np.eye(4)
+                    T[:3, :3] = R @ np.diag([1.0, -1.0, -1.0])
+                    T[:3, 3] = t
+                    camera_trace = {
+                        "camera": name,
+                        "height": H,
+                        "width": W,
+                        "camera_K": np.array([[f, 0.0, (W - 1) / 2], [0.0, f, (H - 1) / 2], [0.0, 0.0, 1.0]]),
+                        "world_from_cv": T,
+                    }
 
             if self.keep_rgb:
-                extra[f'pixels/{name}'] = np.ascontiguousarray(rgb)
-                extra[f'cam/{name}/pos'] = t.astype(np.float32).copy()
-                extra[f'cam/{name}/xmat'] = R.reshape(-1).astype(np.float32).copy()
-                extra[f'cam/{name}/fovy'] = np.float32(fovy)
+                extra[f"pixels/{name}"] = np.ascontiguousarray(rgb)
+                extra[f"cam/{name}/pos"] = t.astype(np.float32).copy()
+                extra[f"cam/{name}/xmat"] = R.reshape(-1).astype(np.float32).copy()
+                extra[f"cam/{name}/fovy"] = np.float32(fovy)
 
         if pts:
             sampled = self._sample(
                 np.concatenate(pts, 0),
                 np.concatenate(cols, 0),
                 np.concatenate(cube, 0),
-                **({'return_indices': True, 'empty_crop_fallback': empty_crop_fallback} if traced else {}),
+                **({"return_indices": True, "empty_crop_fallback": empty_crop_fallback} if traced else {}),
             )
             xyz, col = sampled[:2]
             if return_trace:
-                selected = sampled[2].pop('indices')
-                flat = np.concatenate(pixel_idx)[selected]; W = camera_trace['width']
-                extra['pcd_trace'] = {**sampled[2], **camera_trace,
-                                      'source_pixel_uv': np.column_stack([flat % W, flat // W]).astype(np.int32),
-                                      'source_geom_id': np.concatenate(geom_idx)[selected].astype(np.int32)}
+                selected = sampled[2].pop("indices")
+                flat = np.concatenate(pixel_idx)[selected]
+                W = camera_trace["width"]
+                extra["pcd_trace"] = {
+                    **sampled[2],
+                    **camera_trace,
+                    "source_pixel_uv": np.column_stack([flat % W, flat // W]).astype(np.int32),
+                    "source_geom_id": np.concatenate(geom_idx)[selected].astype(np.int32),
+                }
         else:
-            if traced: raise ValueError('Actual foreground empty; explicit extraction cannot fabricate a zero cloud')
+            if traced:
+                raise ValueError("Actual foreground empty; explicit extraction cannot fabricate a zero cloud")
             xyz = np.zeros((self.num_points, 3), dtype=np.float32)
             col = np.zeros((self.num_points, 3), dtype=np.uint8)
 
-        out = {'pcd_xyz': xyz, 'pcd_rgb': col}
+        out = {"pcd_xyz": xyz, "pcd_rgb": col}
         out.update(extra)
         return out
 
@@ -237,10 +251,12 @@ class PointCloudWrapper(gym.Wrapper):
                 or is_cube.dtype != np.bool_
                 or not np.isfinite(pts).all()
             ):
-                raise ValueError('Explicit sampling requires finite XYZ, uint8 RGB and actual cube mask')
+                raise ValueError("Explicit sampling requires finite XYZ, uint8 RGB and actual cube mask")
         n = self.num_points
-        raw_count = len(pts); indices = np.arange(raw_count) if return_indices else None
-        cropped_count = raw_count; fallback = False
+        raw_count = len(pts)
+        indices = np.arange(raw_count) if return_indices else None
+        cropped_count = raw_count
+        fallback = False
         if self.crop_box is not None:
             lo, hi = self.crop_box
             m = np.all((pts >= lo) & (pts <= hi), axis=1)
@@ -249,15 +265,17 @@ class PointCloudWrapper(gym.Wrapper):
                 fallback = True
             else:
                 pts, cols, is_cube = pts[m], cols[m], is_cube[m]
-                if return_indices: indices = indices[m]
+                if return_indices:
+                    indices = indices[m]
         if self.voxel_size > 0 and len(pts):
             q = np.floor(pts / self.voxel_size).astype(np.int32)
             _, keep = np.unique(q, axis=0, return_index=True)
             pts, cols, is_cube = pts[keep], cols[keep], is_cube[keep]
-            if return_indices: indices = indices[keep]
+            if return_indices:
+                indices = indices[keep]
         if len(pts) == 0:
             if return_indices or empty_crop_fallback:
-                raise ValueError('Actual raw/cropped point pool empty; no zero-cloud output in explicit extraction')
+                raise ValueError("Actual raw/cropped point pool empty; no zero-cloud output in explicit extraction")
             return (
                 np.zeros((n, 3), dtype=np.float32),
                 np.zeros((n, 3), dtype=np.uint8),
@@ -270,20 +288,28 @@ class PointCloudWrapper(gym.Wrapper):
             sel = self._rng.choice(cube_idx, n, replace=cube_idx.size < n)
         else:
             n_rob = n - n_cube
-            sel = np.concatenate([
-                self._rng.choice(cube_idx, n_cube, replace=False),
-                self._rng.choice(rob_idx, n_rob, replace=rob_idx.size < n_rob),
-            ])
+            sel = np.concatenate(
+                [
+                    self._rng.choice(cube_idx, n_cube, replace=False),
+                    self._rng.choice(rob_idx, n_rob, replace=rob_idx.size < n_rob),
+                ]
+            )
         sel = self._rng.permutation(sel)
         result = pts[sel].astype(np.float32), cols[sel].astype(np.uint8)
         if return_indices:
             unique = len(np.unique(sel))
-            trace = {'indices': indices[sel], 'raw_foreground_pool': raw_count,
-                     'foreground_cropped_pool': cropped_count, 'voxel_unique_pool': len(pts),
-                     'cube_unique_pool': len(cube_idx), 'other_unique_pool': len(rob_idx),
-                     'sampled_cube_points': int(is_cube[sel].sum()),
-                     'actual_selected_unique_pool_indices': unique, 'repeated_samples': n-unique,
-                     'fallback_used': fallback,
-                     'fallback_reason': 'original_crop_empty_use_actual_foreground' if fallback else None}
+            trace = {
+                "indices": indices[sel],
+                "raw_foreground_pool": raw_count,
+                "foreground_cropped_pool": cropped_count,
+                "voxel_unique_pool": len(pts),
+                "cube_unique_pool": len(cube_idx),
+                "other_unique_pool": len(rob_idx),
+                "sampled_cube_points": int(is_cube[sel].sum()),
+                "actual_selected_unique_pool_indices": unique,
+                "repeated_samples": n - unique,
+                "fallback_used": fallback,
+                "fallback_reason": "original_crop_empty_use_actual_foreground" if fallback else None,
+            }
             return *result, trace
         return result

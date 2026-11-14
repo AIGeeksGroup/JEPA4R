@@ -14,4 +14,5 @@ VISReg / V-JEPA 2.1 (released weights) and Random (ViT-B) have nothing to train.
 
 def run(cfg, out_dir):
     from jepa4r.methods import train
+
     return train(cfg, out_dir)

@@ -1,4 +1,5 @@
 """Small shared file guards and scoped bindings; no training or simulator imports."""
+
 from contextlib import ExitStack, contextmanager
 import hashlib
 import json
@@ -7,8 +8,8 @@ from pathlib import Path
 
 def file_sha256(path):
     digest = hashlib.sha256()
-    with Path(path).open('rb') as stream:
-        for block in iter(lambda: stream.read(8 << 20), b''):
+    with Path(path).open("rb") as stream:
+        for block in iter(lambda: stream.read(8 << 20), b""):
             digest.update(block)
     return digest.hexdigest()
 
@@ -18,10 +19,10 @@ def validate_output_location(output, baseline):
     output, baseline = Path(output).resolve(), Path(baseline).resolve()
     protected = [
         baseline / name
-        for name in ('models', 'data', 'envs', 'policy', 'baselines', 'decoder', 'eval', 'metrics', 'stages', 'utils')
+        for name in ("models", "data", "envs", "policy", "baselines", "decoder", "eval", "metrics", "stages", "utils")
     ]
     if baseline.is_relative_to(output) or any(output.is_relative_to(path) for path in protected):
-        raise ValueError('RH56 output must stay outside protected repository sources')
+        raise ValueError("RH56 output must stay outside protected repository sources")
 
 
 def atomic_json(path, value, *, new=False, **options):
@@ -29,11 +30,11 @@ def atomic_json(path, value, *, new=False, **options):
     path = Path(path)
     text = json.dumps(value, indent=2, **options)
     if new:
-        with path.open('x', encoding='utf-8') as stream:
+        with path.open("x", encoding="utf-8") as stream:
             stream.write(text)
     else:
-        temp = path.with_suffix('.tmp.json')
-        temp.write_text(text, encoding='utf-8')
+        temp = path.with_suffix(".tmp.json")
+        temp.write_text(text, encoding="utf-8")
         temp.replace(path)
 
 

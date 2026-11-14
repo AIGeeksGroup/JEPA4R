@@ -6,6 +6,7 @@
 ``SetDecoder`` is the paper's set decoder; every backbone decoder (jepa4r/decoder/backbones)
 builds it with num_queries = grid^2 and out_dim = the backbone's token width.
 """
+
 import torch
 import torch.nn.functional as F
 from torch import nn

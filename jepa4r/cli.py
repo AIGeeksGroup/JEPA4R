@@ -1,5 +1,6 @@
 """Command line. Installed entry points: ``jepa4r-run``, ``jepa4r-reproduce``, ``jepa4r-report``;
 without installation use ``python -m jepa4r <command>``."""
+
 import importlib
 import sys
 from datetime import datetime, timezone
@@ -84,9 +85,11 @@ def main(argv: list[str] | None = None) -> int:
         return run_stage(command, rest)
     if command == "reproduce":
         from .orchestrate import main as reproduce
+
         return reproduce(rest)
     if command == "report":
         from .report import main as report
+
         return report(rest)
     if command == "config":
         print(OmegaConf.to_yaml(compose(rest)))

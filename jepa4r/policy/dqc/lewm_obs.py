@@ -6,6 +6,7 @@ CortexBench loads them (bench/cortexbench/lewm_cortex.py: 2D pixels / 255 normal
 envs/ogb_puzzle_env.py is loaded by its path: the DQC code (third_party/dqc) has packages named envs and utils too and
 comes first on run_dqc.py's sys.path (the module imports nothing from the repo).
 """
+
 import importlib.util
 import sys
 from pathlib import Path
@@ -16,25 +17,25 @@ import torchvision.transforms as T
 from PIL import Image
 
 LEWM = Path(__file__).resolve().parents[3]  # the repository root (jepa4r/policy/dqc/lewm_obs.py)
-sys.path.insert(0, str(LEWM / 'jepa4r' / 'policy' / 'bc'))  # lewm_cortex, jepa_baselines
+sys.path.insert(0, str(LEWM / "jepa4r" / "policy" / "bc"))  # lewm_cortex, jepa_baselines
 if str(LEWM) not in sys.path:
     sys.path.append(str(LEWM))  # jepa4r (the projector), after the DQC code's packages
 from lewm_cortex import IMAGENET, build_lewm_embedding, load_lewm_pcd
 
-DEV = 'cuda' if torch.cuda.is_available() else 'cpu'
+DEV = "cuda" if torch.cuda.is_available() else "cpu"
 PCD_CENTER, PCD_SCALE = (0.425, 0.0, 0.2), 4.0  # = config/train/data/ogb_pcd.yaml (puzzle_3x3_pcd.yaml keeps it)
 
 
 def load_puzzle():
     """envs/ogb_puzzle_env.py as the module ogb_puzzle_env (by path, see the module docstring)."""
-    if 'ogb_puzzle_env' not in sys.modules:
+    if "ogb_puzzle_env" not in sys.modules:
         spec = importlib.util.spec_from_file_location(
-            'ogb_puzzle_env', LEWM / 'jepa4r' / 'envs' / 'ogbench' / 'ogb_puzzle_env.py'
+            "ogb_puzzle_env", LEWM / "jepa4r" / "envs" / "ogbench" / "ogb_puzzle_env.py"
         )
         mod = importlib.util.module_from_spec(spec)
-        sys.modules['ogb_puzzle_env'] = mod
+        sys.modules["ogb_puzzle_env"] = mod
         spec.loader.exec_module(mod)
-    return sys.modules['ogb_puzzle_env']
+    return sys.modules["ogb_puzzle_env"]
 
 
 class Encoders:
@@ -53,7 +54,7 @@ class Encoders:
     def z2d(self, pix, bs=256):
         out = []
         for i in range(0, len(pix), bs):
-            x = torch.from_numpy(pix[i: i + bs]).to(DEV).permute(0, 3, 1, 2).float() / 255
+            x = torch.from_numpy(pix[i : i + bs]).to(DEV).permute(0, 3, 1, 2).float() / 255
             out.append(self.m2((x - self.mean) / self.std).float().cpu())
         return torch.cat(out).numpy()
 
@@ -61,7 +62,7 @@ class Encoders:
     def z3d(self, xyz, col, bs=64):
         out = []
         for i in range(0, len(xyz), bs):
-            x = torch.stack([self.tf(np.concatenate([a, b], 1)) for a, b in zip(xyz[i: i + bs], col[i: i + bs])])
+            x = torch.stack([self.tf(np.concatenate([a, b], 1)) for a, b in zip(xyz[i : i + bs], col[i : i + bs])])
             out.append(self.m3(x.to(DEV)).float().cpu())
         return torch.cat(out).numpy()
 
@@ -74,11 +75,12 @@ class BaselineEncoder:
     resize of 224 frames to the encoder's input size (identity at 224), encode() the rest on the GPU (/ 255 =
     ToTensor, Normalize, the model)."""
 
-    LOADERS = {'vjepa21': 'load_vjepa21', 'visreg': 'load_visreg', 'lejepa': 'load_lejepa', 'pldm': 'load_pldm'}
-    FILE = ('vjepa21', 'visreg')  # loaders that take a checkpoint file (the others a directory and an epoch)
+    LOADERS = {"vjepa21": "load_vjepa21", "visreg": "load_visreg", "lejepa": "load_lejepa", "pldm": "load_pldm"}
+    FILE = ("vjepa21", "visreg")  # loaders that take a checkpoint file (the others a directory and an epoch)
 
     def __init__(self, name, path, epoch=10):
         import jepa_baselines as jb  # bench/cortexbench, on sys.path above
+
         load = getattr(jb, self.LOADERS[name])
         model, self.dim, tf, _ = load(path) if name in self.FILE else load(path, epoch)
         self.model = model.to(DEV)
@@ -99,7 +101,7 @@ class BaselineEncoder:
     def encode(self, pix, bs=64):
         out = []
         for i in range(0, len(pix), bs):
-            x = torch.from_numpy(np.ascontiguousarray(pix[i: i + bs])).to(DEV).permute(0, 3, 1, 2).float() / 255
+            x = torch.from_numpy(np.ascontiguousarray(pix[i : i + bs])).to(DEV).permute(0, 3, 1, 2).float() / 255
             out.append(self.model((x - self.mean) / self.std).float().cpu())
         return torch.cat(out).numpy()
 
@@ -133,13 +135,13 @@ class LeWMObs:
         self.u = env.unwrapped
         self.cam = self.pdat.Camera(self.u._model, self.u._num_buttons)
         self.enc = Encoders(
-            ckpt_2d=ckpt if kind == 'lewm2d' else None, ckpt_3d=ckpt if kind == 'lewm3d' else None, epoch=epoch
+            ckpt_2d=ckpt if kind == "lewm2d" else None, ckpt_3d=ckpt if kind == "lewm3d" else None, epoch=epoch
         )
         self.rng = np.random.default_rng(12345)
 
     def __call__(self):
         cam, data = self.cam, self.u._data
-        if self.kind == 'lewm2d':
+        if self.kind == "lewm2d":
             cam.r2d.update_scene(data, camera=self.pdat.CAMERA)
             z = self.enc.z2d(cam.r2d.render().copy()[None])[0]
         else:

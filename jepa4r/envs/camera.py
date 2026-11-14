@@ -3,6 +3,7 @@
 The back-projection is the one of the point-cloud wrapper (cortexbench envs/pcd_wrapper.py: ``PointCloudWrapper._grid``
 for the pixel rays of a MuJoCo camera with vertical field of view ``fovy``, then ``p_cam = [x z, y z, -z]`` and
 ``p_world = p_cam R^T + t`` with R = data.cam_xmat, t = data.cam_xpos)."""
+
 import numpy as np
 
 

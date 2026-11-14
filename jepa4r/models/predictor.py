@@ -3,14 +3,17 @@ attention over at most ``history`` (= 3) past latents; z_hat_{t+1} = g_phi(z_{1:
 
 The transformer blocks and ``ARPredictor`` are LeWM's ``module.py`` code moved unchanged.
 """
+
 import torch
 import torch.nn.functional as F
 from einops import rearrange
 from torch import nn
 
+
 def modulate(x, shift, scale):
     """AdaLN-zero modulation"""
     return x * (1 + scale) + shift
+
 
 class FeedForward(nn.Module):
     """FeedForward network used in Transformers"""
@@ -43,11 +46,7 @@ class Attention(nn.Module):
         self.norm = nn.LayerNorm(dim)
         self.attend = nn.Softmax(dim=-1)
         self.to_qkv = nn.Linear(dim, inner_dim * 3, bias=False)
-        self.to_out = (
-            nn.Sequential(nn.Linear(inner_dim, dim), nn.Dropout(dropout))
-            if project_out
-            else nn.Identity()
-        )
+        self.to_out = nn.Sequential(nn.Linear(inner_dim, dim), nn.Dropout(dropout)) if project_out else nn.Identity()
 
     def forward(self, x, causal=True):
         """
@@ -72,17 +71,13 @@ class ConditionalBlock(nn.Module):
         self.mlp = FeedForward(dim, mlp_dim, dropout=dropout)
         self.norm1 = nn.LayerNorm(dim, elementwise_affine=False, eps=1e-6)
         self.norm2 = nn.LayerNorm(dim, elementwise_affine=False, eps=1e-6)
-        self.adaLN_modulation = nn.Sequential(
-            nn.SiLU(), nn.Linear(dim, 6 * dim, bias=True)
-        )
+        self.adaLN_modulation = nn.Sequential(nn.SiLU(), nn.Linear(dim, 6 * dim, bias=True))
 
         nn.init.constant_(self.adaLN_modulation[-1].weight, 0)
         nn.init.constant_(self.adaLN_modulation[-1].bias, 0)
 
     def forward(self, x, c):
-        shift_msa, scale_msa, gate_msa, shift_mlp, scale_mlp, gate_mlp = (
-            self.adaLN_modulation(c).chunk(6, dim=-1)
-        )
+        shift_msa, scale_msa, gate_msa, shift_mlp, scale_mlp, gate_mlp = self.adaLN_modulation(c).chunk(6, dim=-1)
         x = x + gate_msa * self.attn(modulate(self.norm1(x), shift_msa, scale_msa))
         x = x + gate_mlp * self.mlp(modulate(self.norm2(x), shift_mlp, scale_mlp))
         return x
@@ -124,28 +119,14 @@ class Transformer(nn.Module):
         self.norm = nn.LayerNorm(hidden_dim)
         self.layers = nn.ModuleList([])
 
-        self.input_proj = (
-            nn.Linear(input_dim, hidden_dim)
-            if input_dim != hidden_dim
-            else nn.Identity()
-        )
+        self.input_proj = nn.Linear(input_dim, hidden_dim) if input_dim != hidden_dim else nn.Identity()
 
-        self.cond_proj = (
-            nn.Linear(input_dim, hidden_dim)
-            if input_dim != hidden_dim
-            else nn.Identity()
-        )
+        self.cond_proj = nn.Linear(input_dim, hidden_dim) if input_dim != hidden_dim else nn.Identity()
 
-        self.output_proj = (
-            nn.Linear(hidden_dim, output_dim)
-            if hidden_dim != output_dim
-            else nn.Identity()
-        )
+        self.output_proj = nn.Linear(hidden_dim, output_dim) if hidden_dim != output_dim else nn.Identity()
 
         for _ in range(depth):
-            self.layers.append(
-                block_class(hidden_dim, heads, dim_head, mlp_dim, dropout)
-            )
+            self.layers.append(block_class(hidden_dim, heads, dim_head, mlp_dim, dropout))
 
     def forward(self, x, c=None):
 
@@ -213,6 +194,15 @@ def build_predictor(method_cfg):
     values)."""
     p = method_cfg.predictor
     d = int(method_cfg.latent_dim)
-    return ARPredictor(num_frames=int(method_cfg.history), depth=int(p.depth), heads=int(p.heads),
-                       mlp_dim=int(p.mlp_dim), input_dim=d, hidden_dim=int(p.get('hidden_dim') or d), output_dim=d,
-                       dim_head=int(p.dim_head), dropout=float(p.dropout), emb_dropout=float(p.emb_dropout))
+    return ARPredictor(
+        num_frames=int(method_cfg.history),
+        depth=int(p.depth),
+        heads=int(p.heads),
+        mlp_dim=int(p.mlp_dim),
+        input_dim=d,
+        hidden_dim=int(p.get("hidden_dim") or d),
+        output_dim=d,
+        dim_head=int(p.dim_head),
+        dropout=float(p.dropout),
+        emb_dropout=float(p.emb_dropout),
+    )

@@ -22,6 +22,7 @@ Adaptations to LeWM: an affine head Linear(E -> out_dim) (192-d latent), and
 E = 402 instead of 384 so the parameter count matches the ViT-tiny encoder (5.50 M).
 The state vector PPRL concatenates after pooling is not part of this module.
 """
+
 from __future__ import annotations
 
 import math
@@ -32,9 +33,9 @@ import torch.nn.functional as F
 from torch import nn
 
 
-def _pyg_mlp(channels: Sequence[int], act: str = 'relu', norm: bool = True, dropout: float = 0.0) -> nn.Sequential:
+def _pyg_mlp(channels: Sequence[int], act: str = "relu", norm: bool = True, dropout: float = 0.0) -> nn.Sequential:
     """torch_geometric.nn.MLP(channel_list, act, norm, plain_last=True) equivalent."""
-    acts = {'relu': nn.ReLU, 'gelu': nn.GELU}
+    acts = {"relu": nn.ReLU, "gelu": nn.GELU}
     layers = []
     for i in range(len(channels) - 1):
         layers.append(nn.Linear(channels[i], channels[i + 1]))
@@ -51,7 +52,7 @@ def farthest_point_sampling(xyz: torch.Tensor, num: int, random_start: bool) -> 
     """xyz (B, N, 3) -> indices (B, num), same greedy rule as torch_cluster.fps."""
     B, N, _ = xyz.shape
     idx = torch.zeros(B, num, dtype=torch.long, device=xyz.device)
-    dist = torch.full((B, N), float('inf'), device=xyz.device)
+    dist = torch.full((B, N), float("inf"), device=xyz.device)
     far = (
         torch.randint(0, N, (B,), device=xyz.device)
         if random_start
@@ -100,9 +101,9 @@ class Tokenizer(nn.Module):
         random_start=True,
     ):
         super().__init__()
-        self.mlp_1 = _pyg_mlp([point_dim, *mlp_1], act='relu')
-        self.mlp_2 = _pyg_mlp([*mlp_2, embed_dim], act='relu')
-        assert mlp_1[-1] * 2 == mlp_2[0], 'last layer of mlp_1 must be half the first layer of mlp_2'
+        self.mlp_1 = _pyg_mlp([point_dim, *mlp_1], act="relu")
+        self.mlp_2 = _pyg_mlp([*mlp_2, embed_dim], act="relu")
+        assert mlp_1[-1] * 2 == mlp_2[0], "last layer of mlp_1 must be half the first layer of mlp_2"
         self.group_size, self.sampling_ratio, self.random_start = group_size, sampling_ratio, random_start
 
     def forward(self, pos, color=None):  # pos (B, N, 3), color (B, N, C-3) -> tokens (B, G, E), centres (B, G, 3)
@@ -110,10 +111,10 @@ class Tokenizer(nn.Module):
         G = math.ceil(N * self.sampling_ratio)
         centre_idx = farthest_point_sampling(pos, G, self.random_start and self.training)
         ar = torch.arange(B, device=pos.device)[:, None]
-        centres = pos[ar, centre_idx]                                              # (B, G, 3)
+        centres = pos[ar, centre_idx]  # (B, G, 3)
         nn_idx = torch.cdist(centres, pos).topk(self.group_size, dim=-1, largest=False).indices  # (B, G, M)
         arg = torch.arange(B, device=pos.device)[:, None, None]
-        neighborhood = pos[arg, nn_idx] - centres[:, :, None]                      # (B, G, M, 3), local coords
+        neighborhood = pos[arg, nn_idx] - centres[:, :, None]  # (B, G, M, 3), local coords
         if color is not None:
             neighborhood = torch.cat([neighborhood, color[arg, nn_idx]], dim=-1)
         M = self.group_size
@@ -128,7 +129,7 @@ class TransformerBlock(nn.Module):
         super().__init__()
         self.attention = nn.MultiheadAttention(embed_dim, num_heads, dropout=attn_dropout, bias=True, batch_first=True)
         self.mlp = _pyg_mlp(
-            [embed_dim, int(mlp_ratio * embed_dim), embed_dim], act='gelu', norm=False, dropout=mlp_dropout
+            [embed_dim, int(mlp_ratio * embed_dim), embed_dim], act="gelu", norm=False, dropout=mlp_dropout
         )
         self.norm_1 = nn.LayerNorm(embed_dim)
         self.norm_2 = nn.LayerNorm(embed_dim)
@@ -208,7 +209,14 @@ class PointPatchTransformer(nn.Module):
 def build(enc_cfg):
     """configs/encoder/point_patch_transformer.yaml (hparams = LeWM's PPT encoder config)."""
     h = enc_cfg.hparams
-    return PointPatchTransformer(in_dim=int(enc_cfg.in_dim), embed_dim=int(h.embed_dim), depth=int(h.depth),
-                                 num_heads=int(h.num_heads), mlp_ratio=h.mlp_ratio, group_size=int(h.group_size),
-                                 sampling_ratio=float(h.sampling_ratio), random_start=bool(h.random_start),
-                                 out_dim=int(enc_cfg.out_dim))
+    return PointPatchTransformer(
+        in_dim=int(enc_cfg.in_dim),
+        embed_dim=int(h.embed_dim),
+        depth=int(h.depth),
+        num_heads=int(h.num_heads),
+        mlp_ratio=h.mlp_ratio,
+        group_size=int(h.group_size),
+        sampling_ratio=float(h.sampling_ratio),
+        random_start=bool(h.random_start),
+        out_dim=int(enc_cfg.out_dim),
+    )

@@ -12,6 +12,7 @@ data/policy/<env>/ holds the dataset cfg.env.policy_data.dataset and its -val sp
           data/policy/<env>/official/cube<N>/ (OFFICIAL_DATA.json)
 Interpreter: JEPA4R_PY_DQC (any python with ogbench installed).
 """
+
 import os
 import subprocess
 import sys
@@ -28,6 +29,6 @@ def prepare_official_play(cfg, out_dir):
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     name = str(cfg.env.policy_data.dataset)
-    code = 'import sys, ogbench; ogbench.download_datasets([sys.argv[1]], sys.argv[2])'
-    subprocess.run([os.environ.get('JEPA4R_PY_DQC', sys.executable), '-c', code, name, str(out_dir)], check=True)
-    return {'dataset': str(out_dir / f'{name}.npz'), 'val': str(out_dir / f'{name}-val.npz')}
+    code = "import sys, ogbench; ogbench.download_datasets([sys.argv[1]], sys.argv[2])"
+    subprocess.run([os.environ.get("JEPA4R_PY_DQC", sys.executable), "-c", code, name, str(out_dir)], check=True)
+    return {"dataset": str(out_dir / f"{name}.npz"), "val": str(out_dir / f"{name}-val.npz")}

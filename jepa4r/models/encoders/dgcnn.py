@@ -29,6 +29,7 @@ the chunks (ChunkedSharedMLP). In training the BatchNorms normalise over the who
 the authors' network's up to floating-point rounding, and the running statistics are updated once per step as
 nn.BatchNorm does; in eval mode the running statistics are used.
 """
+
 from __future__ import annotations
 
 from collections.abc import Sequence
@@ -49,8 +50,17 @@ class ChunkedSharedMLP(nn.Module):
     one chunk is computed once, in one piece; several are processed under activation checkpointing, each layer's
     per-chunk mean and variance combined exactly over the chunks before the layer is applied."""
 
-    def __init__(self, in_dim: int, widths: Sequence[int], bias: bool = True, act: str = 'relu',
-                 eps: float = 1e-5, momentum: float = 0.1, xavier: bool = False, premade: bool = False):
+    def __init__(
+        self,
+        in_dim: int,
+        widths: Sequence[int],
+        bias: bool = True,
+        act: str = "relu",
+        eps: float = 1e-5,
+        momentum: float = 0.1,
+        xavier: bool = False,
+        premade: bool = False,
+    ):
         super().__init__()
         self.lins, self.bns = nn.ModuleList(), nn.ModuleList()
         d = in_dim
@@ -73,7 +83,7 @@ class ChunkedSharedMLP(nn.Module):
         mean, var = stat
         a = bn.weight * torch.rsqrt(var + bn.eps)
         y = torch.addcmul(bn.bias - mean * a, y, a)  # float32
-        return F.relu(y, inplace=True) if self.act == 'relu' else F.leaky_relu(y, 0.2, inplace=True)
+        return F.relu(y, inplace=True) if self.act == "relu" else F.leaky_relu(y, 0.2, inplace=True)
 
     def _update(self, i, mean, var, m):  # nn.BatchNorm's running update (unbiased variance)
         bn = self.bns[i]
@@ -100,7 +110,7 @@ class ChunkedSharedMLP(nn.Module):
             stats = [(bn.running_mean, bn.running_var) for bn in self.bns]
             return [self._out(make, c, stats, reduce) for c, _ in chunks]
         if len(chunks) == 1:  # in one piece, as nn.BatchNorm in training
-            (c, m), = chunks
+            ((c, m),) = chunks
             x = make(c)
             for i in range(len(self.lins)):
                 y = self._pre(i, x)
@@ -131,7 +141,7 @@ def knn(x: torch.Tensor, k: int, chunk: int = 256) -> torch.Tensor:
         xx = (x * x).sum(-1)
         out = []
         for s in range(0, x.shape[1], chunk):
-            d = xx[:, s:s + chunk, None] - 2 * x[:, s:s + chunk] @ x.transpose(1, 2) + xx[:, None]
+            d = xx[:, s : s + chunk, None] - 2 * x[:, s : s + chunk] @ x.transpose(1, 2) + xx[:, None]
             out.append(d.topk(k, dim=-1, largest=False).indices)
         return torch.cat(out, 1)
 
@@ -149,7 +159,7 @@ def _neighbour_argmax_argmin(v: torch.Tensor, idx: torch.Tensor, chunk_elems: in
     step = max(1, chunk_elems // (B * k * C))
     jmax, jmin = [], []
     for s in range(0, N, step):
-        ix = idx[:, s:s + step]
+        ix = idx[:, s : s + step]
         g = _gather(v, ix)  # (B, n, k, C)
         jmax.append(torch.take_along_dim(ix[..., None], g.argmax(dim=2)[:, :, None], dim=2)[:, :, 0])
         jmin.append(torch.take_along_dim(ix[..., None], g.argmin(dim=2)[:, :, None], dim=2)[:, :, 0])
@@ -163,8 +173,10 @@ def _adjacency(idx: torch.Tensor):
     rows = torch.arange(B * N, device=idx.device).repeat_interleave(k)
     cols = (idx + torch.arange(B, device=idx.device)[:, None, None] * N).reshape(-1)
     ones = torch.ones(rows.numel(), device=idx.device)
-    return (torch.sparse_coo_tensor(torch.stack([rows, cols]), ones, (B * N, B * N)).coalesce(),
-            torch.sparse_coo_tensor(torch.stack([cols, rows]), ones, (B * N, B * N)).coalesce())
+    return (
+        torch.sparse_coo_tensor(torch.stack([rows, cols]), ones, (B * N, B * N)).coalesce(),
+        torch.sparse_coo_tensor(torch.stack([cols, rows]), ones, (B * N, B * N)).coalesce(),
+    )
 
 
 class _NeighbourSum(torch.autograd.Function):
@@ -199,7 +211,7 @@ class DGCNN(nn.Module):
         widths: Sequence[int] = (64, 64, 128, 256),
         emb_dim: int = 1024,
         out_dim: int = 192,
-        chunk_elems: int = 2 ** 27,
+        chunk_elems: int = 2**27,
     ):
         """chunk_elems: positions x the widest channel count per chunk in training (memory only; the result does
         not depend on it)."""
@@ -209,9 +221,9 @@ class DGCNN(nn.Module):
         d = in_dim
         for w in widths:
             # its weights; computed in _edge_conv
-            self.edge.append(ChunkedSharedMLP(2 * d, [w], bias=False, act='leaky'))
+            self.edge.append(ChunkedSharedMLP(2 * d, [w], bias=False, act="leaky"))
             d = w
-        self.conv5 = ChunkedSharedMLP(sum(widths), [emb_dim], bias=False, act='leaky')
+        self.conv5 = ChunkedSharedMLP(sum(widths), [emb_dim], bias=False, act="leaky")
         self.head = nn.Linear(2 * emb_dim, out_dim)
 
     def _chunks(self, B, N, per_point, width):
@@ -234,8 +246,9 @@ class DGCNN(nn.Module):
         train = self.training
         if train:
             with torch.no_grad():
-                deg = torch.zeros(B, N, device=x.device).scatter_add_(1, idx.flatten(1),
-                                                                      torch.ones(B, N * k, device=x.device))
+                deg = torch.zeros(B, N, device=x.device).scatter_add_(
+                    1, idx.flatten(1), torch.ones(B, N * k, device=x.device)
+                )
                 adj = _adjacency(idx)
         step = max(1, self.chunk_elems // (B * N))
         outs = []
@@ -253,8 +266,11 @@ class DGCNN(nn.Module):
                         m = B * N * k
                         alpha, cbar = (deg[..., None] * nbr).sum((0, 1)) / m, ctr.mean((0, 1))
                         u, v = nbr - alpha, ctr - cbar  # centred: their sums over the pairs are both 0
-                        m2 = ((deg[..., None] * u * u).sum((0, 1)) + 2 * (v * _neighbour_sum(u, adj)).sum((0, 1))
-                              + k * (v * v).sum((0, 1)))
+                        m2 = (
+                            (deg[..., None] * u * u).sum((0, 1))
+                            + 2 * (v * _neighbour_sum(u, adj)).sum((0, 1))
+                            + k * (v * v).sum((0, 1))
+                        )
                         mean, var = alpha + cbar, m2 / m  # batch mean and (biased) variance over all pairs
                     else:
                         mean, var = bn.running_mean[g], bn.running_var[g]
@@ -265,7 +281,7 @@ class DGCNN(nn.Module):
             if not train:
                 outs.append(group(x))
                 continue
-            out, mean, var = (checkpoint(group, x, use_reentrant=False) if torch.is_grad_enabled() else group(x))
+            out, mean, var = checkpoint(group, x, use_reentrant=False) if torch.is_grad_enabled() else group(x)
             m = B * N * k
             with torch.no_grad():  # nn.BatchNorm's running update (unbiased variance), this group's channels
                 bn.running_mean[g] = (1 - bn.momentum) * bn.running_mean[g] + bn.momentum * mean.detach()
@@ -296,5 +312,10 @@ class DGCNN(nn.Module):
 def build(enc_cfg):
     """configs/encoder/dgcnn.yaml (hparams = LeWM's DGCNN encoder config)."""
     h = enc_cfg.hparams
-    return DGCNN(in_dim=int(enc_cfg.in_dim), k=int(h.k), widths=list(h.widths), emb_dim=int(h.emb_dim),
-                 out_dim=int(enc_cfg.out_dim))
+    return DGCNN(
+        in_dim=int(enc_cfg.in_dim),
+        k=int(h.k),
+        widths=list(h.widths),
+        emb_dim=int(h.emb_dim),
+        out_dim=int(enc_cfg.out_dim),
+    )

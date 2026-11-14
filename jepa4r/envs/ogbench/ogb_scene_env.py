@@ -40,16 +40,18 @@ image) is left out. Crop box, 5 mm voxels, 1200 points; 25 % for the objects, sp
 object short of points leaves its share to the others; all object points when they are short together), the rest from
 the arm.
 """
+
 from __future__ import annotations
 
 import importlib
 import os
 
-os.environ.setdefault('MUJOCO_GL', 'egl')
+os.environ.setdefault("MUJOCO_GL", "egl")
 import gymnasium
 import mujoco
 import numpy as np
-importlib.import_module('ogbench.manipspace')  # registers scene-v0
+
+importlib.import_module("ogbench.manipspace")  # registers scene-v0
 from gymnasium.spaces import Box
 from ogbench.manipspace import lie
 from ogbench.manipspace.oracles.markov.button_markov import ButtonMarkovOracle
@@ -58,10 +60,10 @@ from ogbench.manipspace.oracles.markov.drawer_markov import DrawerMarkovOracle
 from ogbench.manipspace.oracles.markov.window_markov import WindowMarkovOracle
 from stable_worldmodel.policy import BasePolicy
 
-ENV_NAME = 'scene-v0'
-CAMERA = 'front_pixels'
+ENV_NAME = "scene-v0"
+CAMERA = "front_pixels"
 IMG = 224
-TASKS = ('cube', 'button', 'drawer', 'window')
+TASKS = ("cube", "button", "drawer", "window")
 
 # MetaWorld's three-part plan (envs/metaworld/env.py defaults, scripts/data/config/mw_binpick.yaml)
 EPISODE_STEPS = 200
@@ -69,10 +71,10 @@ MIX = (0.5, 0.3, 0.2)
 NOISE_MAX = 0.2
 BRANCH_TAIL_PROB = 0.5
 BURST_LEN = (10, 30)
-VIEW_MARGIN = 16          # px
-LOOKAHEAD = 3             # random actions: flipped when 3 more steps would leave the image
+VIEW_MARGIN = 16  # px
+LOOKAHEAD = 3  # random actions: flipped when 3 more steps would leave the image
 ACTION_SCALE = np.array([0.05, 0.05, 0.05])  # OGBench: action 1 = the effector target moves 5 cm
-MIN_NORM = 0.4            # OGBench generate_manipspace.py default
+MIN_NORM = 0.4  # OGBench generate_manipspace.py default
 
 # OGBench scene geometry (scene_env.py / drawer.xml)
 DRAWER_OPEN, DRAWER_CLOSED = -0.16, 0.0
@@ -87,15 +89,23 @@ OBJECT_FRACTION = 0.25
 # puzzle's box, y floor at -0.55 to hold the closed drawer
 CROP_BOX = np.array([[0.10, -0.55, -0.02], [0.75, 0.50, 0.60]])
 GEOM = int(mujoco.mjtObj.mjOBJ_GEOM)
-OBJ_NAMES = ('cube', 'button0', 'button1', 'drawer', 'window')
-ROOT2OBJ = {'object_0': 1, 'buttonbox_0': 2, 'buttonbox_1': 3, 'drawer_base': 4, 'window': 5}
+OBJ_NAMES = ("cube", "button0", "button1", "drawer", "window")
+ROOT2OBJ = {"object_0": 1, "buttonbox_0": 2, "buttonbox_1": 3, "drawer_base": 4, "window": 5}
 
 
-def make_env(max_episode_steps=EPISODE_STEPS, mode='data_collection'):
+def make_env(max_episode_steps=EPISODE_STEPS, mode="data_collection"):
     """OGBench's scene-v0 as the collection (data_collection) or the evaluation (task) uses it; not ending at the
     goal."""
-    return gymnasium.make(ENV_NAME, ob_type='states', mode=mode, terminate_at_goal=False,
-                          max_episode_steps=max_episode_steps, width=IMG, height=IMG, visualize_info=False)
+    return gymnasium.make(
+        ENV_NAME,
+        ob_type="states",
+        mode=mode,
+        terminate_at_goal=False,
+        max_episode_steps=max_episode_steps,
+        width=IMG,
+        height=IMG,
+        visualize_info=False,
+    )
 
 
 class Camera:
@@ -117,7 +127,7 @@ class Camera:
         v, u = np.mgrid[0:IMG, 0:IMG]
         self.xn = ((u + 0.5 - IMG / 2) / self.f).reshape(-1)
         self.yn = (-(v + 0.5 - IMG / 2) / self.f).reshape(-1)
-        glass = model.material('window_glass').id
+        glass = model.material("window_glass").id
         obj = np.zeros(model.ngeom, np.int8)
         for g in range(model.ngeom):
             body = model.geom_bodyid[g]
@@ -128,7 +138,7 @@ class Camera:
                 continue
             if model.geom_matid[g] == glass:
                 continue
-            name = mujoco.mj_id2name(model, mujoco.mjtObj.mjOBJ_BODY, root) or ''
+            name = mujoco.mj_id2name(model, mujoco.mjtObj.mjOBJ_BODY, root) or ""
             obj[g] = ROOT2OBJ.get(name, -1)
         self.obj = obj
         self.cube_geoms = np.flatnonzero(obj == 1)
@@ -231,11 +241,11 @@ def point_cloud(cam: Camera, rgb, depth, seg, R, t, rng: np.random.Generator, re
 
 # ------------------------------------------------------------------ state and goals
 def drawer_link_y(u) -> float:
-    return float(u._data.body('drawer_link').xpos[1])
+    return float(u._data.body("drawer_link").xpos[1])
 
 
 def cube_in_drawer(u) -> bool:
-    return bool(u._is_in_drawer(u._data.joint('object_joint_0').qpos[:3]))
+    return bool(u._is_in_drawer(u._data.joint("object_joint_0").qpos[:3]))
 
 
 def place_cube_in_drawer(u, rng):
@@ -243,9 +253,9 @@ def place_cube_in_drawer(u, rng):
     d = u._data
     y = drawer_link_y(u) + rng.uniform(-0.05, 0.05)
     x = 0.33 + rng.uniform(-0.04, 0.04)
-    d.joint('object_joint_0').qpos[:3] = (x, y, CUBE_Z_IN_DRAWER)
-    d.joint('object_joint_0').qpos[3:] = lie.SO3.from_z_radians(rng.uniform(0, 2 * np.pi)).wxyz
-    d.joint('object_joint_0').qvel[:] = 0.0
+    d.joint("object_joint_0").qpos[:3] = (x, y, CUBE_Z_IN_DRAWER)
+    d.joint("object_joint_0").qpos[3:] = lie.SO3.from_z_radians(rng.uniform(0, 2 * np.pi)).wxyz
+    d.joint("object_joint_0").qvel[:] = 0.0
 
 
 def randomize_others(u, task: str, rng):
@@ -253,16 +263,16 @@ def randomize_others(u, task: str, rng):
     stay as drawn. Returns what was set."""
     d = u._data
     out = {}
-    if task != 'drawer':
-        d.joint('drawer_slide').qpos[0] = DRAWER_OPEN if rng.uniform() < 0.5 else DRAWER_CLOSED
-        d.joint('drawer_slide').qvel[0] = 0.0
-    if task != 'window':
-        d.joint('window_slide').qpos[0] = WINDOW_OPEN if rng.uniform() < 0.5 else WINDOW_CLOSED
-        d.joint('window_slide').qvel[0] = 0.0
+    if task != "drawer":
+        d.joint("drawer_slide").qpos[0] = DRAWER_OPEN if rng.uniform() < 0.5 else DRAWER_CLOSED
+        d.joint("drawer_slide").qvel[0] = 0.0
+    if task != "window":
+        d.joint("window_slide").qpos[0] = WINDOW_OPEN if rng.uniform() < 0.5 else WINDOW_CLOSED
+        d.joint("window_slide").qvel[0] = 0.0
     mujoco.mj_forward(u._model, d)
-    if task != 'cube':
-        out['cube_in_drawer'] = rng.uniform() < 0.5
-        if out['cube_in_drawer']:
+    if task != "cube":
+        out["cube_in_drawer"] = rng.uniform() < 0.5
+        if out["cube_in_drawer"]:
             place_cube_in_drawer(u, rng)
     mujoco.mj_forward(u._model, d)
     return out
@@ -273,9 +283,9 @@ def set_task_target(u, task: str):
     np_random, as there)."""
     rng, d, m = u.np_random, u._data, u._model
     u._target_task = task
-    if task == 'cube':
+    if task == "cube":
         u._target_block = 0
-        put_in_drawer = d.joint('drawer_slide').qpos[0] < -0.12 and rng.uniform() < P_PUT_IN_DRAWER
+        put_in_drawer = d.joint("drawer_slide").qpos[0] < -0.12 and rng.uniform() < P_PUT_IN_DRAWER
         if put_in_drawer:
             tar_pos = u._drawer_center.copy()
             tar_pos[:2] = tar_pos[:2] + rng.uniform(-0.005, 0.005, size=2)
@@ -286,15 +296,15 @@ def set_task_target(u, task: str):
         d.mocap_quat[u._cube_target_mocap_ids[0]] = tar_ori
         for gid in u._cube_target_geom_ids_list[0]:
             m.geom(gid).rgba[3] = 0.0  # the target cube is not drawn
-    elif task == 'button':
+    elif task == "button":
         u._target_button = rng.choice(u._num_buttons)
         u._target_button_states[u._target_button] = (u._cur_button_states[u._target_button] + 1) % u._num_button_states
-    elif task == 'drawer':
-        u._target_drawer_pos = DRAWER_OPEN if d.joint('drawer_slide').qpos[0] >= -0.08 else DRAWER_CLOSED
-        m.site('drawer_handle_center_target').pos[1] = u._target_drawer_pos
-    elif task == 'window':
-        u._target_window_pos = WINDOW_OPEN if d.joint('window_slide').qpos[0] <= 0.1 else WINDOW_CLOSED
-        m.site('window_handle_center_target').pos[0] = u._target_window_pos
+    elif task == "drawer":
+        u._target_drawer_pos = DRAWER_OPEN if d.joint("drawer_slide").qpos[0] >= -0.08 else DRAWER_CLOSED
+        m.site("drawer_handle_center_target").pos[1] = u._target_drawer_pos
+    elif task == "window":
+        u._target_window_pos = WINDOW_OPEN if d.joint("window_slide").qpos[0] <= 0.1 else WINDOW_CLOSED
+        m.site("window_handle_center_target").pos[0] = u._target_window_pos
     mujoco.mj_kinematics(m, d)
     return u.compute_observation(), u.compute_ob_info()
 
@@ -302,10 +312,10 @@ def set_task_target(u, task: str):
 def make_oracles(env):
     """The Markov oracles and parameters of OGBench's scene-noisy collection (generate_manipspace.py)."""
     return {
-        'cube': CubeMarkovOracle(env=env, min_norm=MIN_NORM, max_step=100),
-        'button': ButtonMarkovOracle(env=env, min_norm=MIN_NORM),
-        'drawer': DrawerMarkovOracle(env=env, min_norm=MIN_NORM),
-        'window': WindowMarkovOracle(env=env, min_norm=MIN_NORM),
+        "cube": CubeMarkovOracle(env=env, min_norm=MIN_NORM, max_step=100),
+        "button": ButtonMarkovOracle(env=env, min_norm=MIN_NORM),
+        "drawer": DrawerMarkovOracle(env=env, min_norm=MIN_NORM),
+        "window": WindowMarkovOracle(env=env, min_norm=MIN_NORM),
     }
 
 
@@ -355,11 +365,18 @@ class OGBSceneEnv(gymnasium.Env):
     scripts use it; its unwrapped SceneEnv is ``_u``); the oracle (``agent``) acts on ``ob`` / ``ob_info``, OGBench's
     latest observation and info."""
 
-    metadata = {'render_modes': ['rgb_array'], 'render_fps': 20}
+    metadata = {"render_modes": ["rgb_array"], "render_fps": 20}
 
-    def __init__(self, task: str = 'cube', mode: str = 'data_collection', episode_len: int = EPISODE_STEPS,
-                 force_type: int | None = None, render_mode: str = 'rgb_array', **kwargs):
-        assert mode in ('data_collection', 'task'), mode
+    def __init__(
+        self,
+        task: str = "cube",
+        mode: str = "data_collection",
+        episode_len: int = EPISODE_STEPS,
+        force_type: int | None = None,
+        render_mode: str = "rgb_array",
+        **kwargs,
+    ):
+        assert mode in ("data_collection", "task"), mode
         self.mode, self.task, self.tid = mode, task, TASKS.index(task)
         self.episode_len, self.force_type = episode_len, force_type
         self.render_mode = render_mode
@@ -391,25 +408,25 @@ class OGBSceneEnv(gymnasium.Env):
         u, oi = self._u, self._u.compute_ob_info()
         st, noise, b0, blen = self.plan
         return {
-            'task_id': np.int8(self.tid),
-            'sample_type': np.int8(st),
-            'rand_action': np.int8(self.rand_now()),
-            'noise_std': np.float32(noise),
-            'branch_t': np.int16(b0),
-            'branch_len': np.int16(blen),
-            'episode_seed': np.int64(self.episode_seed),
-            'button_states': u._cur_button_states.astype(np.int8).copy(),
-            'drawer_pos': np.float32(oi['privileged/drawer_pos'][0]),
-            'window_pos': np.float32(oi['privileged/window_pos'][0]),
-            'cube_pos': oi['privileged/block_0_pos'].astype(np.float32),
-            'cube_in_drawer': np.int8(cube_in_drawer(u)),
-            'effector_pos': oi['proprio/effector_pos'].astype(np.float32),
-            'effector_yaw': oi['proprio/effector_yaw'].astype(np.float32),
-            'gripper_opening': oi['proprio/gripper_opening'].astype(np.float32),
-            'qpos': u._data.qpos.astype(np.float32).copy(),
-            'qvel': u._data.qvel.astype(np.float32).copy(),
-            'target_success': np.int8(bool(u._success)),
-            'oracle_restart': np.int8(self.restart_now()),
+            "task_id": np.int8(self.tid),
+            "sample_type": np.int8(st),
+            "rand_action": np.int8(self.rand_now()),
+            "noise_std": np.float32(noise),
+            "branch_t": np.int16(b0),
+            "branch_len": np.int16(blen),
+            "episode_seed": np.int64(self.episode_seed),
+            "button_states": u._cur_button_states.astype(np.int8).copy(),
+            "drawer_pos": np.float32(oi["privileged/drawer_pos"][0]),
+            "window_pos": np.float32(oi["privileged/window_pos"][0]),
+            "cube_pos": oi["privileged/block_0_pos"].astype(np.float32),
+            "cube_in_drawer": np.int8(cube_in_drawer(u)),
+            "effector_pos": oi["proprio/effector_pos"].astype(np.float32),
+            "effector_yaw": oi["proprio/effector_yaw"].astype(np.float32),
+            "gripper_opening": oi["proprio/gripper_opening"].astype(np.float32),
+            "qpos": u._data.qpos.astype(np.float32).copy(),
+            "qvel": u._data.qvel.astype(np.float32).copy(),
+            "target_success": np.int8(bool(u._success)),
+            "oracle_restart": np.int8(self.restart_now()),
         }
 
     # -------------------------------------------------------------- gym API
@@ -425,9 +442,9 @@ class OGBSceneEnv(gymnasium.Env):
         # an unseeded reset gets a seed from np_random, so the episode is still recorded and reproducible
         if seed is None:
             seed = int(self.np_random.integers(2**31))
-        if self.mode == 'task':
+        if self.mode == "task":
             np.random.seed(seed % 2**32)  # OGBench's oracles and task mode draw from numpy's global RNG in places
-            self.ob, self.ob_info = self._env.reset(seed=seed, options=dict(task_id=int(options['task_id'])))
+            self.ob, self.ob_info = self._env.reset(seed=seed, options=dict(task_id=int(options["task_id"])))
             self._camera()
             self.episode_seed = seed
             return self.ob, self.ob_info
@@ -450,7 +467,7 @@ class OGBSceneEnv(gymnasium.Env):
         return np.asarray(self.ob, np.float32), self._row_info()
 
     def step(self, action):
-        if self.mode == 'task':
+        if self.mode == "task":
             return self._env.step(action)
         rand = self.rand_now()
         self.ob, reward, terminated, truncated, self.ob_info = self._env.step(action)
@@ -477,7 +494,7 @@ class SceneThreePartPolicy(BasePolicy):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.type = 'three_part'
+        self.type = "three_part"
 
     def get_action(self, info_dict, **kwargs):
         envs = [e.unwrapped for e in self.env.envs]

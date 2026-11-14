@@ -15,6 +15,7 @@ Spec format::
 Every variant becomes ``tag=<name>`` plus its overrides; data stages (collect_*) ignore variants.
 Other top-level keys are free (e.g. YAML anchors). Jobs are de-duplicated, order preserved.
 """
+
 import argparse
 import itertools
 import shlex
@@ -33,8 +34,8 @@ BLOCK_KEYS = {"stage", "grid", "variants", "overrides", "optional"}
 @dataclass(frozen=True)
 class Job:
     stage: str
-    selections: tuple          # ((group, name), ..., ("tag", tag))
-    overrides: tuple = ()      # ((dotted.key, value), ...)
+    selections: tuple  # ((group, name), ..., ("tag", tag))
+    overrides: tuple = ()  # ((dotted.key, value), ...)
     optional: bool = False
 
     def args(self) -> list[str]:
@@ -114,8 +115,7 @@ def is_done(job: Job) -> bool:
     return (job_dir(job) / "DONE").exists()
 
 
-def run_jobs(jobs: list[Job], *, execute: bool = False, force: bool = False,
-             python: str = sys.executable) -> int:
+def run_jobs(jobs: list[Job], *, execute: bool = False, force: bool = False, python: str = sys.executable) -> int:
     """Print every job with its status; with ``execute`` run the pending ones sequentially."""
     n_done = 0
     for i, job in enumerate(jobs, 1):
@@ -136,8 +136,13 @@ def main(argv=None):
     parser.add_argument("--force", action="store_true", help="also re-run finished jobs")
     parser.add_argument("--with-optional", action="store_true", help="include blocks marked optional")
     parser.add_argument("--stage", action="append", choices=STAGES, help="only these stages")
-    parser.add_argument("--where", action="append", default=[], metavar="KEY=VALUE",
-                        help="only jobs whose selection matches, e.g. --where env=scene")
+    parser.add_argument(
+        "--where",
+        action="append",
+        default=[],
+        metavar="KEY=VALUE",
+        help="only jobs whose selection matches, e.g. --where env=scene",
+    )
     args = parser.parse_args(argv)
     where = dict(item.split("=", 1) for item in args.where)
     jobs = []

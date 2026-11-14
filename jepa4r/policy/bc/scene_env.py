@@ -14,15 +14,16 @@ wrapper (envs.ogb_pcd.ScenePointCloudWrapper).
   (window lock)], 8 entries; run_bc_scene.py feeds the policy the first SCENE_PROPRIO_DIMS of them (the source's
   scene_grid.py --proprio: hand6 = the first 6, the robot's own state; none = no proprioception).
 Used by make_scene_demos.py (the demos) and scene_server.py (the evaluation env)."""
+
 from __future__ import annotations
 
 import os
 import sys
 
 # the repository (jepa4r/)
-LEWM = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..'))
+LEWM = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
 sys.path.insert(0, LEWM)
-os.environ.setdefault('MUJOCO_GL', 'egl')
+os.environ.setdefault("MUJOCO_GL", "egl")
 
 import numpy as np
 
@@ -30,20 +31,26 @@ from jepa4r.envs.ogbench.ogb_pcd import SEED_OFFSET, ScenePointCloudWrapper
 from jepa4r.envs.ogbench.ogb_scene_env import OGBSceneEnv
 from jepa4r.envs.ogbench.ogb_scene_expert import HORIZON
 
-TASKS = {f'scene-task{k}-v0': k for k in range(1, 6)}
+TASKS = {f"scene-task{k}-v0": k for k in range(1, 6)}
 
 
 def proprio_of(u) -> np.ndarray:
     oi = u.compute_ob_info()
-    yaw = float(oi['proprio/effector_yaw'][0])
-    return np.concatenate([oi['proprio/effector_pos'], [np.cos(yaw), np.sin(yaw)], oi['proprio/gripper_opening'],
-                           u._cur_button_states.astype(np.float64)]).astype(np.float64)
+    yaw = float(oi["proprio/effector_yaw"][0])
+    return np.concatenate(
+        [
+            oi["proprio/effector_pos"],
+            [np.cos(yaw), np.sin(yaw)],
+            oi["proprio/gripper_opening"],
+            u._cur_button_states.astype(np.float64),
+        ]
+    ).astype(np.float64)
 
 
 class SceneCBEnv:
     def __init__(self, task_id: int):
         self.task_id = int(task_id)
-        self.genv = OGBSceneEnv(mode='task', episode_len=HORIZON)
+        self.genv = OGBSceneEnv(mode="task", episode_len=HORIZON)
         self.pcw = ScenePointCloudWrapper(self.genv)
         self.env = self.genv._env  # OGBench's gymnasium env (the expert's)
         self.u = self.genv._u
@@ -67,15 +74,15 @@ class SceneCBEnv:
         a = np.clip(np.asarray(a, dtype=np.float64), -1.0, 1.0)
         _, reward, _, _, info = self.genv.step(a)
         self.obs = proprio_of(self.u)
-        success = float(bool(info['success']))
-        return self.obs, float(reward), bool(success), {'success': success}
+        success = float(bool(info["success"]))
+        return self.obs, float(reward), bool(success), {"success": success}
 
     def rgb(self):
         return self.genv.render()
 
     def pcd(self):
         p = self.pcw._point_cloud()
-        return np.concatenate([p['pcd_xyz'], p['pcd_rgb'].astype(np.float32)], axis=1).astype(np.float32)
+        return np.concatenate([p["pcd_xyz"], p["pcd_rgb"].astype(np.float32)], axis=1).astype(np.float32)
 
     def close(self):
         self.genv.close()

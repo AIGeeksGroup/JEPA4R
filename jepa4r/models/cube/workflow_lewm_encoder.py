@@ -1,20 +1,22 @@
-"""Original LeWM local-checkpoint factory/encode API for fresh workflow weights."""
+"""LeWM's checkpoint loading and encode API, for the weights the Cube workflow trains (JEPA4R, LeWM)."""
+
 from pathlib import Path
 import os
 import sys
 
-FAMILY, DIM = 'lewm', 192
+FAMILY, DIM = "lewm", 192
 
 
-def load_frozen(checkpoint, device='cuda'):
+def load_frozen(checkpoint, device="cuda"):
     code = Path(__file__).resolve().parents[3]
-    sys.path[:0] = [str(code), str(code/'third_party/stable-worldmodel')]
+    sys.path[:0] = [str(code), str(code / "third_party/stable-worldmodel")]
     import hydra.utils
     from stable_worldmodel.wm.utils import load_pretrained
-    from jepa4r.models.world_model import _retarget   # config.json's LeWM targets (jepa.JEPA, ...) -> the moved classes
-    cache = os.environ.get('CUBE_WORKFLOW_FACTORY_CACHE')
+    from jepa4r.models.world_model import _retarget  # config.json's LeWM targets (jepa.JEPA, ...) -> the moved classes
+
+    cache = os.environ.get("CUBE_WORKFLOW_FACTORY_CACHE")
     if not cache:
-        raise ValueError('An explicit fresh workflow factory cache is required')
+        raise ValueError("An explicit fresh workflow factory cache is required")
     instantiate = hydra.utils.instantiate
     hydra.utils.instantiate = lambda config, *args, **kwargs: instantiate(_retarget(config), *args, **kwargs)
     try:
@@ -25,5 +27,6 @@ def load_frozen(checkpoint, device='cuda'):
 
 def encode(model, inputs):
     import torch
+
     with torch.inference_mode():
-        return model.encode({model.obs_key: inputs[:, None]})['emb'][:, 0]
+        return model.encode({model.obs_key: inputs[:, None]})["emb"][:, 0]

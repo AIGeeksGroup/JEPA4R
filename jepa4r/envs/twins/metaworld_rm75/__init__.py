@@ -24,15 +24,15 @@ from .expert import RM75AssemblyPolicy, RM75BinPickingPolicy, RM75DrawerOpenPoli
 from .policy import RM75AssemblyThreePartPolicy, RM75BinPickThreePartPolicy, RM75DrawerThreePartPolicy
 
 __all__ = [
-    'RM75TaskEnv',
-    'RM75BinPickEnv',
-    'RM75AssemblyEnv',
-    'RM75ButtonPressEnv',
-    'RM75DrawerEnv',
-    'RM75BinPickThreePartPolicy',
-    'RM75DrawerThreePartPolicy',
-    'RM75AssemblyThreePartPolicy',
-    'RM75BinPickingPolicy',
-    'RM75DrawerOpenPolicy',
-    'RM75AssemblyPolicy',
+    "RM75TaskEnv",
+    "RM75BinPickEnv",
+    "RM75AssemblyEnv",
+    "RM75ButtonPressEnv",
+    "RM75DrawerEnv",
+    "RM75BinPickThreePartPolicy",
+    "RM75DrawerThreePartPolicy",
+    "RM75AssemblyThreePartPolicy",
+    "RM75BinPickingPolicy",
+    "RM75DrawerOpenPolicy",
+    "RM75AssemblyPolicy",
 ]

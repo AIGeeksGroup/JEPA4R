@@ -14,6 +14,7 @@ cfg.env; ``train`` runs stage A into <out>/stage_a and stage B into <out>/stage_
 validation readout (validate/nn_cm: mean two-sided NN distance, cm, over 100 validation batches), the numbers of Sec.
 4.4.
 """
+
 import os
 from functools import partial
 from pathlib import Path
@@ -33,9 +34,10 @@ except ImportError:  # pragma: no cover
 class PairedFrames(torch.utils.data.Dataset):
     """Row i of ``inputs`` + row i of ``targets``; only ``obs_key`` and ``target`` are kept."""
 
-    def __init__(self, inputs, targets, obs_key, align_on=('qpos',)):
-        assert np.array_equal(inputs.lengths, targets.lengths) and np.array_equal(inputs.offsets, targets.offsets), \
-            'input and target datasets do not hold the same episodes (ep_len / ep_offset differ)'
+    def __init__(self, inputs, targets, obs_key, align_on=("qpos",)):
+        assert np.array_equal(inputs.lengths, targets.lengths) and np.array_equal(inputs.offsets, targets.offsets), (
+            "input and target datasets do not hold the same episodes (ep_len / ep_offset differ)"
+        )
         for col in align_on:
             a, b = inputs.get_col_data(col), targets.get_col_data(col)
             assert a.shape == b.shape and np.array_equal(a, b), (
@@ -52,17 +54,24 @@ class PairedFrames(torch.utils.data.Dataset):
         return len(self.inputs)
 
     def __getitem__(self, idx):
-        return {self.obs_key: self.inputs[idx][self.obs_key], 'target': self.targets[idx]['target']}
+        return {self.obs_key: self.inputs[idx][self.obs_key], "target": self.targets[idx]["target"]}
 
 
 def build_dataset(cfg, obs_key, input_keys, input_preprocessor):
     """cfg: ``config/recon/data/*.yaml``. One sample = one frame: ``{obs_key: (1, ...), 'target': (1, N, C)}``."""
-    cache_dir = os.environ.get('LOCAL_DATASET_DIR', None)
+    cache_dir = os.environ.get("LOCAL_DATASET_DIR", None)
     target_preprocessor = hydra.utils.instantiate(cfg.target_preprocessor)
 
     def load(name, keys, cache=()):
-        return swm.data.load_dataset(name, transform=None, cache_dir=cache_dir, num_steps=1, frameskip=1,
-                                     keys_to_load=list(keys), keys_to_cache=list(cache))
+        return swm.data.load_dataset(
+            name,
+            transform=None,
+            cache_dir=cache_dir,
+            num_steps=1,
+            frameskip=1,
+            keys_to_load=list(keys),
+            keys_to_cache=list(cache),
+        )
 
     if cfg.target == cfg.input:
         dataset = load(cfg.input, dict.fromkeys([*input_keys, *cfg.target_keys]))
@@ -81,7 +90,7 @@ class Episodes:
     def __init__(self, frames):
         self.frames = frames
         self.lengths = [int(n) for n in frames.lengths]
-        self.first = np.concatenate([[0], np.cumsum(self.lengths)[:-1]])   # index of step 0 of every episode
+        self.first = np.concatenate([[0], np.cumsum(self.lengths)[:-1]])  # index of step 0 of every episode
         self._cols = {}
 
     def __len__(self):
@@ -100,9 +109,9 @@ class Episodes:
         episode, or all rows. ``KeyError`` if the dataset has no such column."""
         if name not in self._cols:
             self._cols[name] = np.asarray(self.frames.get_col_data(name))
-            for d in (self.frames, getattr(self.frames, 'inputs', None), getattr(self.frames, 'targets', None)):
+            for d in (self.frames, getattr(self.frames, "inputs", None), getattr(self.frames, "targets", None)):
                 # reopened lazily; an open handle must not cross a DataLoader fork
-                if getattr(d, 'h5_file', None) is not None:
+                if getattr(d, "h5_file", None) is not None:
                     d.h5_file.close()
                     d.h5_file = None
         return self._cols[name] if ep is None else self._cols[name][self.rows(ep, stride)]
@@ -116,14 +125,14 @@ def run_stage(cfg, run_dir):
     from jepa4r.models.world_model import SaveCkptCallback
 
     ##############################
-    ##   frozen world model     ##
+    # frozen world model     ##
     ##############################
 
     world_model = load_world_model(cfg.ckpt)  # 2D / 3D / 4D checkpoint -> latent1, never updated
     input_keys, input_preprocessor = input_pipeline(cfg)  # as the checkpoint was trained, see its config.yaml
 
     #########################
-    ##       dataset       ##
+    # dataset       ##
     #########################
 
     dataset = build_dataset(cfg.data, world_model.obs_key, input_keys, input_preprocessor)
@@ -137,7 +146,7 @@ def run_stage(cfg, run_dir):
     val = torch.utils.data.DataLoader(val_set, **cfg.loader, shuffle=False, drop_last=False)
 
     ##############################
-    ##      decoder / optim     ##
+    # decoder / optim     ##
     ##############################
 
     decoder = hydra.utils.instantiate(cfg.decoder)
@@ -164,10 +173,10 @@ def run_stage(cfg, run_dir):
     )
 
     ##########################
-    ##       training       ##
+    # training       ##
     ##########################
 
-    ckpt_dir = Path(run_dir) / 'checkpoints'
+    ckpt_dir = Path(run_dir) / "checkpoints"
 
     logger = None
     if cfg.wandb.enabled:
@@ -179,7 +188,10 @@ def run_stage(cfg, run_dir):
         OmegaConf.save(cfg, f)
 
     object_dump_callback = SaveCkptCallback(
-        run_name='', cfg=cfg.decoder, epoch_interval=1, cache_dir=run_dir,
+        run_name="",
+        cfg=cfg.decoder,
+        epoch_interval=1,
+        cache_dir=run_dir,
     )
 
     trainer = pl.Trainer(
@@ -208,74 +220,74 @@ def recon_config(cfg, stage, init_from=None):
     from jepa4r.decoder.model import decoder_kwargs
 
     d, t, env = cfg.decoder, cfg.decoder.train, cfg.env
-    st = t[f'stage_{stage}']
+    st = t[f"stage_{stage}"]
     wm = (
-        stage_dir('train_wm', env.name, str(d.wm.method), None, str(d.wm.tag))
-        / 'checkpoints'
-        / f'weights_epoch_{int(d.wm.epoch)}.pt'
+        stage_dir("train_wm", env.name, str(d.wm.method), None, str(d.wm.tag))
+        / "checkpoints"
+        / f"weights_epoch_{int(d.wm.epoch)}.pt"
     )
-    data = str(stage_dir('collect_wm_data', env.name) / env.wm_data.files.pointcloud)
+    data = str(stage_dir("collect_wm_data", env.name) / env.wm_data.files.pointcloud)
     aff = env.pointcloud.affine
-    groups = {'new': {'modules': str(t.param_groups.new), 'lr': float(st.lr)}}
-    if stage == 'b':
-        groups['lora'] = {'modules': str(t.param_groups.lora), 'lr': float(st.lora_lr)}
+    groups = {"new": {"modules": str(t.param_groups.new), "lr": float(st.lr)}}
+    if stage == "b":
+        groups["lora"] = {"modules": str(t.param_groups.lora), "lr": float(st.lora_lr)}
     return OmegaConf.create(
         {
-            'ckpt': str(wm),
-            'output_model_name': f'{d.name}_stage_{stage}',
-            'subdir': '',
-            'input_keys': None,
-            'input_preprocessor': None,  # as the world model was trained (its run's config.yaml)
-            'num_workers': int(t.num_workers),
-            'train_split': float(t.split),
-            'seed': int(t.seed),
-            'embed_dim': int(d.latent_dim),
-            'num_points': int(d.head.num_points),
-            'trainer': {
-                'max_epochs': int(st.epochs),
-                'limit_train_batches': int(st.steps),
-                'limit_val_batches': int(t.val_batches),
-                'devices': 'auto',
-                'accelerator': 'gpu',
-                'precision': str(t.precision),
-                'gradient_clip_val': float(t.gradient_clip),
+            "ckpt": str(wm),
+            "output_model_name": f"{d.name}_stage_{stage}",
+            "subdir": "",
+            "input_keys": None,
+            "input_preprocessor": None,  # as the world model was trained (its run's config.yaml)
+            "num_workers": int(t.num_workers),
+            "train_split": float(t.split),
+            "seed": int(t.seed),
+            "embed_dim": int(d.latent_dim),
+            "num_points": int(d.head.num_points),
+            "trainer": {
+                "max_epochs": int(st.epochs),
+                "limit_train_batches": int(st.steps),
+                "limit_val_batches": int(t.val_batches),
+                "devices": "auto",
+                "accelerator": "gpu",
+                "precision": str(t.precision),
+                "gradient_clip_val": float(t.gradient_clip),
             },
-            'loader': {
-                'batch_size': int(st.batch_size),
-                'num_workers': int(t.num_workers),
-                'persistent_workers': True,
-                'prefetch_factor': 3,
-                'pin_memory': True,
+            "loader": {
+                "batch_size": int(st.batch_size),
+                "num_workers": int(t.num_workers),
+                "persistent_workers": True,
+                "prefetch_factor": 3,
+                "pin_memory": True,
             },
-            'optimizer': {
-                'type': 'AdamW',
-                'lr': float(t.optimizer.lr),
-                'weight_decay': float(t.optimizer.weight_decay),
-                'betas': [float(b) for b in t.optimizer.betas],
+            "optimizer": {
+                "type": "AdamW",
+                "lr": float(t.optimizer.lr),
+                "weight_decay": float(t.optimizer.weight_decay),
+                "betas": [float(b) for b in t.optimizer.betas],
             },
-            'wandb': {'enabled': False},
-            'data': {
-                'input': data,
-                'target': data,
-                'target_keys': ['pcd_xyz', 'pcd_rgb'],
-                'align_on': ['qpos'],
-                'target_preprocessor': {
-                    '_target_': 'jepa4r.data.clips.get_pcd_preprocessor',
-                    'source_xyz': 'pcd_xyz',
-                    'source_rgb': 'pcd_rgb',
-                    'target': 'target',
-                    'center': [float(c) for c in aff.center],
-                    'scale': float(aff.scale),
-                    'use_rgb': True,
-                    'drop_sources': False,
+            "wandb": {"enabled": False},
+            "data": {
+                "input": data,
+                "target": data,
+                "target_keys": ["pcd_xyz", "pcd_rgb"],
+                "align_on": ["qpos"],
+                "target_preprocessor": {
+                    "_target_": "jepa4r.data.clips.get_pcd_preprocessor",
+                    "source_xyz": "pcd_xyz",
+                    "source_rgb": "pcd_rgb",
+                    "target": "target",
+                    "center": [float(c) for c in aff.center],
+                    "scale": float(aff.scale),
+                    "use_rgb": True,
+                    "drop_sources": False,
                 },
             },
-            'decoder': {
-                '_target_': f'{d.backbone.impl}.{d.backbone.decoder_class}',
-                'weights': str(d.backbone.weights),
-                **decoder_kwargs(cfg, 'frozen' if stage == 'a' else 'lora', init_from),
+            "decoder": {
+                "_target_": f"{d.backbone.impl}.{d.backbone.decoder_class}",
+                "weights": str(d.backbone.weights),
+                **decoder_kwargs(cfg, "frozen" if stage == "a" else "lora", init_from),
             },
-            'optim_groups': groups,
+            "optim_groups": groups,
         }
     )
 
@@ -285,17 +297,17 @@ def train(cfg, out_dir) -> dict:
 
     out_dir, result = Path(out_dir), {}
     init_from = None
-    for stage in ('a', 'b'):
-        run_dir = out_dir / f'stage_{stage}'
-        weights = run_dir / 'checkpoints' / f'weights_epoch_{int(cfg.decoder.train[f"stage_{stage}"].epochs)}.pt'
-        if not weights.exists():   # a finished stage is not trained again
+    for stage in ("a", "b"):
+        run_dir = out_dir / f"stage_{stage}"
+        weights = run_dir / "checkpoints" / f"weights_epoch_{int(cfg.decoder.train[f'stage_{stage}'].epochs)}.pt"
+        if not weights.exists():  # a finished stage is not trained again
             run_dir.mkdir(parents=True, exist_ok=True)
             cwd = os.getcwd()
-            os.chdir(run_dir)      # Lightning's default logs stay in the run (train_recon.py ran in its Hydra run dir)
+            os.chdir(run_dir)  # Lightning's default logs stay in the run (train_recon.py ran in its Hydra run dir)
             try:
                 run_stage(recon_config(cfg, stage, init_from), run_dir)
             finally:
                 os.chdir(cwd)
-        result[f'val_nn_stage_{stage}'] = last_logged(run_dir, 'validate/nn_cm_epoch')
+        result[f"val_nn_stage_{stage}"] = last_logged(run_dir, "validate/nn_cm_epoch")
         init_from = weights
     return result

@@ -13,6 +13,7 @@ Format: 'observations' (T, 8) = proprioception (scene_env.proprio_of), 'actions'
 -> $STABLEWM_HOME/datasets/cortexbench/scene-expert{,-pcd}/scene-task<k>-v0.pickle
     STABLEWM_HOME=<checkout>/lewm_pcd_data <lewm_mw python> make_scene_demos.py [task number ...]
 """
+
 import os
 import pickle
 import sys
@@ -25,31 +26,31 @@ from jepa4r.policy.bc.scene_env import HORIZON, SceneCBEnv  # first: it puts the
 from jepa4r.envs.ogbench.ogb_scene_expert import TASK_NAMES, SceneTaskExpert
 
 N, BASE_SEED = 25, 12345
-DATA = Path(os.environ['JEPA4R_DEMOS_HOME'])  # data/policy/scene
-OUT2D, OUT3D = DATA / 'scene-expert', DATA / 'scene-expert-pcd'
+DATA = Path(os.environ["JEPA4R_DEMOS_HOME"])  # data/policy/scene
+OUT2D, OUT3D = DATA / "scene-expert", DATA / "scene-expert-pcd"
 
 
 def rollout(env, expert, seed, T, render):
     env.seed(seed)
     o = env.reset()
     expert.reset()
-    O, A, R, S, I, P = [], [], [], [], [], []
+    obs_seq, A, R, S, img_seq, P = [], [], [], [], [], []
     first = None
     for t in range(T):
         if render:
-            I.append(env.rgb())
+            img_seq.append(env.rgb())
             P.append(env.pcd())
         a = np.zeros(5) if first is not None else np.asarray(expert.act(o, t), np.float64)
-        O.append(o.copy())
+        obs_seq.append(o.copy())
         o, r, done, info = env.step(a)
         A.append(a)
         R.append(r)
-        S.append(info['success'])
+        S.append(info["success"])
         if done and first is None:
             first = t + 1
             if not render:
                 break
-    return first, dict(O=O, A=A, R=R, S=S, I=I, P=P)
+    return first, dict(O=obs_seq, A=A, R=R, S=S, I=img_seq, P=P)
 
 
 def main():
@@ -73,24 +74,28 @@ def main():
         demos2d, demos3d = [], []
         for s, n in zip(seeds, steps):
             first, d = rollout(env, expert, s, L, render=True)
-            assert first == n, f'seed {s}: success at {first} on replay, {n} before'
-            base = {'observations': np.array(d['O']), 'actions': np.array(d['A']), 'rewards': np.array(d['R']),
-                    'env_infos': {'success': np.array(d['S']), 'gripper_proprio': np.array(d['O'])}}
-            demos2d.append(dict(base, images=np.array(d['I'], dtype=np.uint8)))
-            demos3d.append(dict(base, images=np.array(d['P'], dtype=np.float32)))
-        name = f'scene-task{k}-v0'
+            assert first == n, f"seed {s}: success at {first} on replay, {n} before"
+            base = {
+                "observations": np.array(d["O"]),
+                "actions": np.array(d["A"]),
+                "rewards": np.array(d["R"]),
+                "env_infos": {"success": np.array(d["S"]), "gripper_proprio": np.array(d["O"])},
+            }
+            demos2d.append(dict(base, images=np.array(d["I"], dtype=np.uint8)))
+            demos3d.append(dict(base, images=np.array(d["P"], dtype=np.float32)))
+        name = f"scene-task{k}-v0"
         for d, demos in ((OUT2D, demos2d), (OUT3D, demos3d)):
-            with open(d / f'{name}.pickle', 'wb') as f:
+            with open(d / f"{name}.pickle", "wb") as f:
                 pickle.dump(demos, f)
         print(
-            f'{name} ({TASK_NAMES[k - 1]}): {N} demos, seeds {seeds[0]}..{seeds[-1]}, skipped {skipped}, '
-            f'success step median {int(np.median(steps))} min {min(steps)} max {L} (= demo length), '
-            f'{time.time() - t0:.0f} s',
+            f"{name} ({TASK_NAMES[k - 1]}): {N} demos, seeds {seeds[0]}..{seeds[-1]}, skipped {skipped}, "
+            f"success step median {int(np.median(steps))} min {min(steps)} max {L} (= demo length), "
+            f"{time.time() - t0:.0f} s",
             flush=True,
         )
         env.close()
     os._exit(0)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

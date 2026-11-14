@@ -24,11 +24,11 @@ from stable_worldmodel.policy import BasePolicy
 
 P_GAIN = 25.0
 APPROACH_DZ = 0.10  # approach from this far above the grasp point (metaworld policy: 0.15)
-TRAVEL_Z = 0.15     # carry height (metaworld policy: 0.18)
-LIFT_Z = 0.12       # lift straight up below this before travelling (metaworld policy: 0.15)
-PLACE_Z = 0.07      # lowest reachable hand height (mocap_low z)
+TRAVEL_Z = 0.15  # carry height (metaworld policy: 0.18)
+LIFT_Z = 0.12  # lift straight up below this before travelling (metaworld policy: 0.15)
+PLACE_Z = 0.07  # lowest reachable hand height (mocap_low z)
 GRAB, RELEASE = 0.6, -1.0
-STEP = 0.01         # metaworld moves the hand target by action * 1 cm
+STEP = 0.01  # metaworld moves the hand target by action * 1 cm
 
 
 def _grasp_point(cube, clamp=True):
@@ -39,12 +39,12 @@ def _grasp_point(cube, clamp=True):
 
 
 class ThreePartPolicy(BasePolicy):
-    LOW_Z = PLACE_Z                          # a random action never heads below this hand height
+    LOW_Z = PLACE_Z  # a random action never heads below this hand height
     VIEW_CENTRE = np.array([0.0, 0.70, 0.14])  # random steps leaving the view are reflected towards this point
 
     def __init__(self, seed: int | None = None, **kwargs):
         super().__init__(**kwargs)
-        self.type = 'three_part'
+        self.type = "three_part"
         self.rng = np.random.default_rng(seed)
         self._mem = []
 
@@ -54,20 +54,20 @@ class ThreePartPolicy(BasePolicy):
 
     @staticmethod
     def _new_mem():
-        return {'phase': 'pick', 'n': 0, 'fails': 0}
+        return {"phase": "pick", "n": 0, "fails": 0}
 
     def get_action(self, info_dict, **kwargs):
         envs = [e.unwrapped for e in self.env.envs]
         actions = np.zeros((len(envs), 4), dtype=np.float32)
         for i, env in enumerate(envs):
-            info = {k: v[i][0] for k, v in info_dict.items() if not k.startswith('_')}
-            if int(info['step_idx']) == 0 or self._mem[i] is None:
+            info = {k: v[i][0] for k, v in info_dict.items() if not k.startswith("_")}
+            if int(info["step_idx"]) == 0 or self._mem[i] is None:
                 self._mem[i] = self._new_mem()
-            if bool(info['rand_action']):
-                a = self._random_action(env, np.asarray(info['hand_pos'], dtype=np.float64))
+            if bool(info["rand_action"]):
+                a = self._random_action(env, np.asarray(info["hand_pos"], dtype=np.float64))
             else:
                 a = self._oracle(self._mem[i], env, info)
-                a = a + self.rng.normal(0.0, float(info['noise_std']), 4)
+                a = a + self.rng.normal(0.0, float(info["noise_std"]), 4)
             actions[i] = np.clip(a, -1.0, 1.0)
         return actions
 
@@ -83,16 +83,16 @@ class ThreePartPolicy(BasePolicy):
 
     @staticmethod
     def _oracle(m, env, info):
-        hand = np.asarray(info['hand_pos'], dtype=np.float64)
-        cube = np.asarray(info['obj_pos'], dtype=np.float64)
-        target = np.asarray(info['place_target'], dtype=np.float64)
-        grasp = _grasp_point(cube, clamp=m['fails'] % 2 == 0)  # after a failed grasp, try the unclamped point
+        hand = np.asarray(info["hand_pos"], dtype=np.float64)
+        cube = np.asarray(info["obj_pos"], dtype=np.float64)
+        target = np.asarray(info["place_target"], dtype=np.float64)
+        grasp = _grasp_point(cube, clamp=m["fails"] % 2 == 0)  # after a failed grasp, try the unclamped point
         grab = RELEASE
-        phase = m['phase']
+        phase = m["phase"]
 
-        if phase == 'carry' and np.linalg.norm(hand - cube) > 0.06:  # dropped it (noise, a random burst): pick again
-            phase, m['fails'] = 'pick', m['fails'] + 1
-        if phase == 'pick':
+        if phase == "carry" and np.linalg.norm(hand - cube) > 0.06:  # dropped it (noise, a random burst): pick again
+            phase, m["fails"] = "pick", m["fails"] + 1
+        if phase == "pick":
             if np.linalg.norm(hand[:2] - grasp[:2]) > 0.02:
                 desired = grasp + np.array([0.0, 0.0, APPROACH_DZ])
             elif abs(hand[2] - grasp[2]) > 0.01:
@@ -100,10 +100,10 @@ class ThreePartPolicy(BasePolicy):
                 grab = GRAB if abs(hand[2] - grasp[2]) <= 0.02 else RELEASE
             else:
                 desired, grab = grasp, GRAB
-                m['n'] += 1
-                if m['n'] >= 6:  # fingers closed for a few steps: lift and carry
-                    phase, m['n'] = 'carry', 0
-        if phase == 'carry':
+                m["n"] += 1
+                if m["n"] >= 6:  # fingers closed for a few steps: lift and carry
+                    phase, m["n"] = "carry", 0
+        if phase == "carry":
             grab = GRAB
             if np.linalg.norm(hand[:2] - target[:2]) > 0.02:
                 desired = (
@@ -112,16 +112,16 @@ class ThreePartPolicy(BasePolicy):
             else:
                 desired = np.array([target[0], target[1], PLACE_Z])
                 if hand[2] < PLACE_Z + 0.02:
-                    phase, m['n'] = 'release', 0
-        if phase == 'release':
+                    phase, m["n"] = "release", 0
+        if phase == "release":
             desired, grab = hand.copy(), RELEASE
-            m['n'] += 1
-            if m['n'] >= 6:
+            m["n"] += 1
+            if m["n"] >= 6:
                 env.new_place_target()
-                phase, m['n'], m['fails'] = 'retreat', 0, 0
-        if phase == 'retreat':
+                phase, m["n"], m["fails"] = "retreat", 0, 0
+        if phase == "retreat":
             desired, grab = np.array([hand[0], hand[1], TRAVEL_Z]), RELEASE
             if hand[2] > LIFT_Z:
-                phase = 'pick'
-        m['phase'] = phase
+                phase = "pick"
+        m["phase"] = phase
         return np.concatenate([(desired - hand) * P_GAIN, [grab]])

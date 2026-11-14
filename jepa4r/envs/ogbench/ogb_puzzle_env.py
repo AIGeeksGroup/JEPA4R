@@ -33,27 +33,29 @@ random, the episode's noise level and the oracle's current button.
 This module imports nothing from the repo, so the DQC code (bench/dqc), whose own packages are named envs and utils,
 can load it by its path.
 """
+
 from __future__ import annotations
 
 import importlib
 import os
 
-os.environ.setdefault('MUJOCO_GL', 'egl')
+os.environ.setdefault("MUJOCO_GL", "egl")
 import gymnasium
 import mujoco
 import numpy as np
-importlib.import_module('ogbench.manipspace')  # registers puzzle-3x3-v0
+
+importlib.import_module("ogbench.manipspace")  # registers puzzle-3x3-v0
 from gymnasium.spaces import Box
 from ogbench.manipspace.oracles.markov.button_markov import ButtonMarkovOracle
 from stable_worldmodel.policy import BasePolicy
 
-ENV_NAME = 'puzzle-3x3-v0'  # the default board; make_env(env_type=...) for the others
-CAMERA = 'front_pixels'
+ENV_NAME = "puzzle-3x3-v0"  # the default board; make_env(env_type=...) for the others
+CAMERA = "front_pixels"
 IMG = 224
 EPISODE_STEPS = 1001
-NOISE_MAX = 0.1         # generate_manipspace.py default --noise
-P_RANDOM_ACTION = 0.2   # commands.sh's --p_random_action for puzzle-*-noisy
-MIN_NORM = 0.4          # generate_manipspace.py default --min_norm
+NOISE_MAX = 0.1  # generate_manipspace.py default --noise
+P_RANDOM_ACTION = 0.2  # commands.sh's --p_random_action for puzzle-*-noisy
+MIN_NORM = 0.4  # generate_manipspace.py default --min_norm
 GEOM = int(mujoco.mjtObj.mjOBJ_GEOM)
 
 # point clouds: the parameters of the repo's OGBench cube / MetaWorld
@@ -63,9 +65,17 @@ OBJECT_FRACTION = 0.25
 CROP_BOX = np.array([[0.10, -0.50, -0.02], [0.75, 0.50, 0.60]])  # envs/pcd_wrapper.py's DEFAULT_CROP_BOX
 
 
-def make_env(max_episode_steps=EPISODE_STEPS, env_type='3x3'):
-    return gymnasium.make(f'puzzle-{env_type}-v0', ob_type='states', mode='data_collection', terminate_at_goal=False,
-                          max_episode_steps=max_episode_steps, width=IMG, height=IMG, visualize_info=False)
+def make_env(max_episode_steps=EPISODE_STEPS, env_type="3x3"):
+    return gymnasium.make(
+        f"puzzle-{env_type}-v0",
+        ob_type="states",
+        mode="data_collection",
+        terminate_at_goal=False,
+        max_episode_steps=max_episode_steps,
+        width=IMG,
+        height=IMG,
+        visualize_info=False,
+    )
 
 
 class Camera:
@@ -90,7 +100,7 @@ class Camera:
         # foreground / button geoms
         fg = np.zeros(model.ngeom, bool)
         obj = np.zeros(model.ngeom, bool)
-        self.cap_geom = np.array([model.geom(f'btngeom_{i}').id for i in range(num_buttons)])
+        self.cap_geom = np.array([model.geom(f"btngeom_{i}").id for i in range(num_buttons)])
         for g in range(model.ngeom):
             body = model.geom_bodyid[g]
             if model.body_weldid[body] == 0:  # welded to the world: floor, walls, button bases, robot base
@@ -99,8 +109,8 @@ class Camera:
             if model.body_mocapid[root] >= 0:
                 continue
             fg[g] = True
-            name = mujoco.mj_id2name(model, mujoco.mjtObj.mjOBJ_BODY, root) or ''
-            obj[g] = name.startswith('buttonbox_')
+            name = mujoco.mj_id2name(model, mujoco.mjtObj.mjOBJ_BODY, root) or ""
+            obj[g] = name.startswith("buttonbox_")
         self.fg, self.obj = fg, obj
 
     def close(self):
@@ -162,8 +172,9 @@ def point_cloud(cam: Camera, rgb, depth, seg, R, t, rng: np.random.Generator):
         sel = rng.choice(obj_idx, n, replace=obj_idx.size < n)
     else:
         n_rob = n - n_obj
-        sel = np.concatenate([rng.choice(obj_idx, n_obj, replace=False),
-                              rng.choice(rob_idx, n_rob, replace=rob_idx.size < n_rob)])
+        sel = np.concatenate(
+            [rng.choice(obj_idx, n_obj, replace=False), rng.choice(rob_idx, n_rob, replace=rob_idx.size < n_rob)]
+        )
     sel = rng.permutation(sel)
     return pts[sel].astype(np.float32), cols[sel].astype(np.uint8)
 
@@ -174,10 +185,10 @@ class OGBPuzzleEnv(gymnasium.Env):
     OGBench env is ``_env`` (gymnasium.make'd, as OGBench's own scripts use it; its unwrapped PuzzleEnv is ``_u``); the
     oracle (``agent``) acts on ``ob`` / ``ob_info``, the latest observation and info of OGBench's reset / step."""
 
-    metadata = {'render_modes': ['rgb_array'], 'render_fps': 20}
+    metadata = {"render_modes": ["rgb_array"], "render_fps": 20}
 
     def __init__(
-        self, episode_len: int = EPISODE_STEPS, render_mode: str = 'rgb_array', env_type: str = '3x3', **kwargs
+        self, episode_len: int = EPISODE_STEPS, render_mode: str = "rgb_array", env_type: str = "3x3", **kwargs
     ):
         self.render_mode = render_mode
         self.env_type = env_type
@@ -194,15 +205,15 @@ class OGBPuzzleEnv(gymnasium.Env):
     def _row_info(self) -> dict:
         u, oi = self._u, self._u.compute_ob_info()
         return {
-            'button_states': u._cur_button_states.astype(np.int8).copy(),
-            'effector_pos': np.asarray(oi['proprio/effector_pos'], np.float32),
-            'effector_yaw': np.asarray(oi['proprio/effector_yaw'], np.float32).reshape(1),
-            'gripper_opening': np.asarray(oi['proprio/gripper_opening'], np.float32).reshape(1),
-            'qpos': u._data.qpos.astype(np.float32).copy(),
-            'qvel': u._data.qvel.astype(np.float32).copy(),
-            'rand_action': np.int8(self.rand),
-            'noise_xi': np.float32(self.xi),
-            'target_button': np.int8(self.ob_info['privileged/target_button']),
+            "button_states": u._cur_button_states.astype(np.int8).copy(),
+            "effector_pos": np.asarray(oi["proprio/effector_pos"], np.float32),
+            "effector_yaw": np.asarray(oi["proprio/effector_yaw"], np.float32).reshape(1),
+            "gripper_opening": np.asarray(oi["proprio/gripper_opening"], np.float32).reshape(1),
+            "qpos": u._data.qpos.astype(np.float32).copy(),
+            "qvel": u._data.qvel.astype(np.float32).copy(),
+            "rand_action": np.int8(self.rand),
+            "noise_xi": np.float32(self.xi),
+            "target_button": np.int8(self.ob_info["privileged/target_button"]),
         }
 
     def reset(self, seed=None, options=None):
@@ -247,7 +258,7 @@ class PuzzleNoisyPolicy(BasePolicy):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.type = 'noisy_oracle'
+        self.type = "noisy_oracle"
 
     def get_action(self, info_dict, **kwargs):
         envs = [e.unwrapped for e in self.env.envs]

@@ -22,18 +22,19 @@ Interpreters: JEPA4R_PY_CORTEXBENCH (eai-vc metaworld fork, MuJoCo 2.0) for Meta
 OGBench / metaworld 3.0) for Scene and the RM75-B twin's MetaWorld tasks, JEPA4R_PY_RELOCATE_WM for the Relocate light
 copy (the harness picks its own interpreters).
 """
+
 import os
 import subprocess
 import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-SUFFIX = '-v2-goal-observable'
+SUFFIX = "-v2-goal-observable"
 # BLAS / OpenMP threads the paper's launchers gave each script: make_scene_demos.py ran with OMP_NUM_THREADS=1
 # MKL_NUM_THREADS=1 (the scripted expert's success steps depend on it), the CortexBench scripts (make_rm75_demos.py
 # included) with OMP_NUM_THREADS=2 MKL_NUM_THREADS=2. OPENBLAS_NUM_THREADS is set to the same value so that OpenBLAS
 # (which reads it before OMP_NUM_THREADS) runs as in those launches.
-THREADS = {'make_scene_demos.py': '1', 'convert_demos_3d.py': '2', 'unpack_suite.py': '2', 'make_rm75_demos.py': '2'}
+THREADS = {"make_scene_demos.py": "1", "convert_demos_3d.py": "2", "unpack_suite.py": "2", "make_rm75_demos.py": "2"}
 
 
 def script_env(script, out_dir):
@@ -42,39 +43,42 @@ def script_env(script, out_dir):
     return dict(
         os.environ,
         JEPA4R_DEMOS_HOME=str(out_dir),
-        MUJOCO_GL='egl',
+        MUJOCO_GL="egl",
         OMP_NUM_THREADS=n,
         MKL_NUM_THREADS=n,
         OPENBLAS_NUM_THREADS=n,
-        PYTHONPATH=os.pathsep.join([str(HERE.parents[2]), os.environ.get('PYTHONPATH', '')]),
+        PYTHONPATH=os.pathsep.join([str(HERE.parents[2]), os.environ.get("PYTHONPATH", "")]),
     )
 
 
 def _run(script, args, out_dir, py_var):
-    subprocess.run([os.environ.get(py_var, sys.executable), str(HERE / script), *map(str, args)],
-                   env=script_env(script, out_dir), check=True)
+    subprocess.run(
+        [os.environ.get(py_var, sys.executable), str(HERE / script), *map(str, args)],
+        env=script_env(script, out_dir),
+        check=True,
+    )
 
 
 def prepare_demos(cfg, out_dir):
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     suite = cfg.env.suite
-    if suite == 'metaworld':
-        if not (out_dir / 'metaworld-expert-v1.0' / f'{cfg.env.env_id}.pickle').exists():
-            _run('unpack_suite.py', ['metaworld-expert-v1.0'], out_dir, 'JEPA4R_PY_CORTEXBENCH')
-        _run('convert_demos_3d.py', [str(cfg.env.env_id)[:-len(SUFFIX)]], out_dir, 'JEPA4R_PY_CORTEXBENCH')
-        return {'demos': str(out_dir / 'metaworld-expert-v1.0-pcd' / f'{cfg.env.env_id}.pickle')}
-    if suite == 'metaworld_rm75':  # the RM75-B twin: its own demos (the Sawyer's official ones do not fit the RM75)
-        task = str(cfg.env.env_id)[len('rm75-'):-len(SUFFIX)]
-        _run('make_rm75_demos.py', [task], out_dir, 'JEPA4R_PY_COLLECT')
-        return {'demos': str(out_dir / 'metaworld-rm75-expert-pcd' / f'{cfg.env.env_id}.pickle')}
-    if suite == 'ogbench':  # Scene's five evaluation tasks
-        _run('make_scene_demos.py', [1, 2, 3, 4, 5], out_dir, 'JEPA4R_PY_COLLECT')
-        return {'demos': [str(out_dir / 'scene-expert-pcd' / f'scene-task{k}-v0.pickle') for k in range(1, 6)]}
-    if suite in ('adroit', 'rh56'):  # the Relocate workflow (jepa4r.policy.bc.relocate)
+    if suite == "metaworld":
+        if not (out_dir / "metaworld-expert-v1.0" / f"{cfg.env.env_id}.pickle").exists():
+            _run("unpack_suite.py", ["metaworld-expert-v1.0"], out_dir, "JEPA4R_PY_CORTEXBENCH")
+        _run("convert_demos_3d.py", [str(cfg.env.env_id)[: -len(SUFFIX)]], out_dir, "JEPA4R_PY_CORTEXBENCH")
+        return {"demos": str(out_dir / "metaworld-expert-v1.0-pcd" / f"{cfg.env.env_id}.pickle")}
+    if suite == "metaworld_rm75":  # the RM75-B twin: its own demos (the Sawyer's official ones do not fit the RM75)
+        task = str(cfg.env.env_id)[len("rm75-") : -len(SUFFIX)]
+        _run("make_rm75_demos.py", [task], out_dir, "JEPA4R_PY_COLLECT")
+        return {"demos": str(out_dir / "metaworld-rm75-expert-pcd" / f"{cfg.env.env_id}.pickle")}
+    if suite == "ogbench":  # Scene's five evaluation tasks
+        _run("make_scene_demos.py", [1, 2, 3, 4, 5], out_dir, "JEPA4R_PY_COLLECT")
+        return {"demos": [str(out_dir / "scene-expert-pcd" / f"scene-task{k}-v0.pickle") for k in range(1, 6)]}
+    if suite in ("adroit", "rh56"):  # the Relocate workflow (jepa4r.policy.bc.relocate)
         from jepa4r.policy.bc import ensure_official_assets, relocate_stage
 
         official = ensure_official_assets()  # light copy of the 100 official demos + RH56 initialisations
-        status = relocate_stage(cfg, 'prepare_policy_data', out_dir)
-        return {'official_assets': str(official), 'harness_status': status['status']}
-    raise ValueError(f'no demonstrations for suite {suite!r}')
+        status = relocate_stage(cfg, "prepare_policy_data", out_dir)
+        return {"official_assets": str(official), "harness_status": status["status"]}
+    raise ValueError(f"no demonstrations for suite {suite!r}")

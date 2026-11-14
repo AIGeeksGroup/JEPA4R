@@ -1,7 +1,10 @@
 """Read-only norm observation around the original clip_grad_norm_ call."""
+
 import unittest
 import torch
 from jepa4r.policy.bc.relocate.clip_evidence import observe_gradient_clipping
+
+
 class ClipEvidenceTests(unittest.TestCase):
     def test_original_return_and_all_clipped_gradients_are_bitwise_unchanged(self):
         def parameters():
@@ -20,7 +23,7 @@ class ClipEvidenceTests(unittest.TestCase):
 
         class Model:
             def named_parameters(self):
-                return [('encoder.weight', actual[0]), ('predictor.weight', actual[1])]
+                return [("encoder.weight", actual[0]), ("predictor.weight", actual[1])]
 
         with observe_gradient_clipping(records, model_provider=lambda: Model()):
             value = torch.nn.utils.clip_grad_norm_(iter(actual), 1.0, foreach=False)
@@ -30,15 +33,18 @@ class ClipEvidenceTests(unittest.TestCase):
         for a, b in zip(expected, actual):
             self.assertTrue(torch.equal(a.grad, b.grad))
         self.assertEqual(len(records), 1)
-        self.assertEqual(records[0]['norm_before_original_return'], 13.0)
-        self.assertLessEqual(records[0]['norm_after'], 1.000001)
-        self.assertEqual(records[0]['encoder_norm_before'], 5.0)
-        self.assertGreater(records[0]['encoder_norm_after'], 0.0)
+        self.assertEqual(records[0]["norm_before_original_return"], 13.0)
+        self.assertLessEqual(records[0]["norm_after"], 1.000001)
+        self.assertEqual(records[0]["encoder_norm_before"], 5.0)
+        self.assertGreater(records[0]["encoder_norm_after"], 0.0)
 
     def test_binding_restored_when_original_raises(self):
         original = torch.nn.utils.clip_grad_norm_
-        with self.assertRaisesRegex(ValueError, 'probe'):
+        with self.assertRaisesRegex(ValueError, "probe"):
             with observe_gradient_clipping([]):
-                raise ValueError('probe')
+                raise ValueError("probe")
         self.assertIs(torch.nn.utils.clip_grad_norm_, original)
-if __name__=='__main__':unittest.main()
+
+
+if __name__ == "__main__":
+    unittest.main()

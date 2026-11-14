@@ -11,7 +11,7 @@ def load_frozen_encoder(cfg):
     from jepa4r.baselines import frozen
     from jepa4r.policy.frozen import checkpoint
 
-    if cfg.method.encoder.name != 'vit_b16':
+    if cfg.method.encoder.name != "vit_b16":
         from jepa4r.policy.gciql import load_frozen_vjepa21
 
         return load_frozen_vjepa21(cfg)

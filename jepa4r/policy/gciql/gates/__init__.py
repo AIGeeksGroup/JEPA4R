@@ -1,1 +1,1 @@
-"""Shared, model-independent evidence checks of the Cube and Relocate workflows."""
+"""Shared, model-independent checks of the Cube and Relocate workflows (array comparisons)."""

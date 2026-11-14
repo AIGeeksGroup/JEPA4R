@@ -1,4 +1,5 @@
 import unittest
+
 try:
     from jepa4r.eval import aggregation as gates
 except ImportError:
@@ -6,8 +7,11 @@ except ImportError:
 
 
 def cube_events():
-    return [{'task': task, 'episode_id': i, 'success': i < successes, 'checkpoint': '1m'}
-            for task, successes in enumerate([1, 2, 0, 3, 4], 1) for i in range(50)]
+    return [
+        {"task": task, "episode_id": i, "success": i < successes, "checkpoint": "1m"}
+        for task, successes in enumerate([1, 2, 0, 3, 4], 1)
+        for i in range(50)
+    ]
 
 
 def bc_rounds():
@@ -16,117 +20,155 @@ def bc_rounds():
     for seed, best, final in [(100, 21, 3), (200, 24, 5), (300, 21, 1)]:
         for epoch in epochs:
             successes = best if epoch == 95 else (final if epoch == 99 else 0)
-            result.append({'seed': seed, 'epoch': epoch, 'successes': successes, 'episodes': 25,
-                           'mean_return': 10. if epoch == 10 else 1., 'policy_id': f'{seed}-{epoch}'})
+            result.append(
+                {
+                    "seed": seed,
+                    "epoch": epoch,
+                    "successes": successes,
+                    "episodes": 25,
+                    "mean_return": 10.0 if epoch == 10 else 1.0,
+                    "policy_id": f"{seed}-{epoch}",
+                }
+            )
     return result
 
 
 class AggregationTests(unittest.TestCase):
-    def setUp(self):self.assertIsNotNone(gates, "Shared A1 aggregation is not implemented")
+    def setUp(self):
+        self.assertIsNotNone(gates, "Shared A1 aggregation is not implemented")
 
     def test_cube_a11_and_event_rejections(self):
         result = gates.cube_summary(cube_events())
-        self.assertEqual(result['successes'], 10); self.assertEqual(result['episodes'], 250)
-        self.assertEqual(result['success_percent'], 4.)
-        self.assertEqual([x['success_percent'] for x in result['tasks']], [2., 4., 0., 6., 8.])
-        for bad in [cube_events()[:-1], cube_events()+[cube_events()[0]], [e for e in cube_events() if e['task'] != 5]]:
-            with self.assertRaises(ValueError):gates.cube_summary(bad)
-        bad = cube_events(); bad[0]['success'] = 'false'
-        with self.assertRaises(ValueError):gates.cube_summary(bad)
-        bad = cube_events(); bad[0]['checkpoint'] = 'other'
-        with self.assertRaises(ValueError):gates.cube_summary(bad)
+        self.assertEqual(result["successes"], 10)
+        self.assertEqual(result["episodes"], 250)
+        self.assertEqual(result["success_percent"], 4.0)
+        self.assertEqual([x["success_percent"] for x in result["tasks"]], [2.0, 4.0, 0.0, 6.0, 8.0])
+        for bad in [
+            cube_events()[:-1],
+            cube_events() + [cube_events()[0]],
+            [e for e in cube_events() if e["task"] != 5],
+        ]:
+            with self.assertRaises(ValueError):
+                gates.cube_summary(bad)
+        bad = cube_events()
+        bad[0]["success"] = "false"
+        with self.assertRaises(ValueError):
+            gates.cube_summary(bad)
+        bad = cube_events()
+        bad[0]["checkpoint"] = "other"
+        with self.assertRaises(ValueError):
+            gates.cube_summary(bad)
 
     def test_bc_a12_best_final_ddof_and_saved_policy(self):
         result = gates.bc_summary(bc_rounds())
-        self.assertEqual(result['best_mean_percent'], 88.)
-        self.assertAlmostEqual(result['best_sample_std_pp'], 6.928203230275509)
-        self.assertEqual(result['final_mean_percent'], 12.)
-        self.assertEqual([r['best_percent'] for r in result['seeds']], [84., 96., 84.])
+        self.assertEqual(result["best_mean_percent"], 88.0)
+        self.assertAlmostEqual(result["best_sample_std_pp"], 6.928203230275509)
+        self.assertEqual(result["final_mean_percent"], 12.0)
+        self.assertEqual([r["best_percent"] for r in result["seeds"]], [84.0, 96.0, 84.0])
         events = [
             {
-                'seed': 100,
-                'epoch': 10,
-                'successes': 10,
-                'episodes': 25,
-                'mean_return': 100.0,
-                'policy_id': 'return-best',
+                "seed": 100,
+                "epoch": 10,
+                "successes": 10,
+                "episodes": 25,
+                "mean_return": 100.0,
+                "policy_id": "return-best",
             },
             {
-                'seed': 100,
-                'epoch': 95,
-                'successes': 24,
-                'episodes': 25,
-                'mean_return': 90.0,
-                'policy_id': 'success-best',
+                "seed": 100,
+                "epoch": 95,
+                "successes": 24,
+                "episodes": 25,
+                "mean_return": 90.0,
+                "policy_id": "success-best",
             },
         ]
         saved = gates.select_saved_policy(events)
-        self.assertEqual(saved['epoch'], 10); self.assertEqual(saved['policy_id'], 'return-best')
-        self.assertEqual(saved['success_percent'], 40.)
+        self.assertEqual(saved["epoch"], 10)
+        self.assertEqual(saved["policy_id"], "return-best")
+        self.assertEqual(saved["success_percent"], 40.0)
 
     def test_immediate_return_save_events_and_ties(self):
-        self.assertTrue(hasattr(gates, 'audit_saved_policies'), 'Immediate-save event audit is not implemented')
+        self.assertTrue(hasattr(gates, "audit_saved_policies"), "Immediate-save event audit is not implemented")
         rounds = [
-            {'seed': 100, 'epoch': e, 'successes': n, 'episodes': 25, 'mean_return': reward, 'policy_id': policy}
+            {"seed": 100, "epoch": e, "successes": n, "episodes": 25, "mean_return": reward, "policy_id": policy}
             for e, n, reward, policy in [
-                (5, 0, 80.0, 'p5'),
-                (10, 10, 100.0, 'p10'),
-                (95, 24, 90.0, 'p95'),
-                (99, 3, 100.0, 'p99'),
+                (5, 0, 80.0, "p5"),
+                (10, 10, 100.0, "p10"),
+                (95, 24, 90.0, "p95"),
+                (99, 3, 100.0, "p99"),
             ]
         ]
-        saves = [{'epoch': 5, 'policy_id': 'p5'}, {'epoch': 10, 'policy_id': 'p10'}, {'epoch': 99, 'policy_id': 'p99'}]
-        self.assertTrue(gates.audit_saved_policies(rounds, saves)['passed'])
-        self.assertFalse(gates.audit_saved_policies(rounds, [{'epoch': 95, 'policy_id': 'p95'}])['passed'])
-        self.assertFalse(gates.audit_saved_policies(rounds, saves[:-1])['passed'])
-        self.assertEqual(gates.select_saved_policy(rounds)['policy_id'], 'p99')
-        self.assertEqual(gates.select_saved_policy(list(reversed(rounds)))['epoch'], 99)
+        saves = [{"epoch": 5, "policy_id": "p5"}, {"epoch": 10, "policy_id": "p10"}, {"epoch": 99, "policy_id": "p99"}]
+        self.assertTrue(gates.audit_saved_policies(rounds, saves)["passed"])
+        self.assertFalse(gates.audit_saved_policies(rounds, [{"epoch": 95, "policy_id": "p95"}])["passed"])
+        self.assertFalse(gates.audit_saved_policies(rounds, saves[:-1])["passed"])
+        self.assertEqual(gates.select_saved_policy(rounds)["policy_id"], "p99")
+        self.assertEqual(gates.select_saved_policy(list(reversed(rounds)))["epoch"], 99)
         self.assertFalse(
-            gates.audit_saved_policies(rounds, [{'epoch': 5, 'policy_id': 'p5'}, {'epoch': 10, 'policy_id': 'wrong'}])[
-                'passed'
+            gates.audit_saved_policies(rounds, [{"epoch": 5, "policy_id": "p5"}, {"epoch": 10, "policy_id": "wrong"}])[
+                "passed"
             ]
         )
 
     def test_explicit_semantic_groups_cannot_be_mixed_or_incomplete(self):
         for field, first, other in [
-            ('environment', 'native', 'rh56'),
-            ('method', 'jepa4r', 'lewm'),
-            ('split', 'held_out', 'train_init'),
+            ("environment", "native", "rh56"),
+            ("method", "jepa4r", "lewm"),
+            ("split", "held_out", "train_init"),
         ]:
             rounds = bc_rounds()
-            for event in rounds: event[field] = first
-            self.assertEqual(gates.bc_summary(rounds)['best_mean_percent'], 88.)
+            for event in rounds:
+                event[field] = first
+            self.assertEqual(gates.bc_summary(rounds)["best_mean_percent"], 88.0)
             rounds[0][field] = other
-            with self.assertRaises(ValueError): gates.bc_summary(rounds)
+            with self.assertRaises(ValueError):
+                gates.bc_summary(rounds)
             del rounds[0][field]
-            with self.assertRaises(ValueError): gates.bc_summary(rounds)
+            with self.assertRaises(ValueError):
+                gates.bc_summary(rounds)
 
     def test_real_rh56_episode_role_fields_cannot_mix(self):
-        for field in ('role', 'evaluation_role'):
+        for field in ("role", "evaluation_role"):
             rounds = bc_rounds()
-            for event in rounds: event[field] = 'heldout_eval'
-            self.assertEqual(gates.bc_summary(rounds)['best_mean_percent'], 88.)
-            rounds[0][field] = 'train_initial'
-            with self.assertRaises(ValueError): gates.bc_summary(rounds)
+            for event in rounds:
+                event[field] = "heldout_eval"
+            self.assertEqual(gates.bc_summary(rounds)["best_mean_percent"], 88.0)
+            rounds[0][field] = "train_initial"
+            with self.assertRaises(ValueError):
+                gates.bc_summary(rounds)
             del rounds[0][field]
-            with self.assertRaises(ValueError): gates.bc_summary(rounds)
+            with self.assertRaises(ValueError):
+                gates.bc_summary(rounds)
 
     def test_bc_reject_missing_round_duplicate_seed_and_denominator(self):
-        for bad in [bc_rounds()[:-1], bc_rounds()+[bc_rounds()[0]], [r for r in bc_rounds() if r['seed'] != 300]]:
-            with self.assertRaises(ValueError):gates.bc_summary(bad)
-        bad = bc_rounds(); bad[0]['episodes'] = 24
-        with self.assertRaises(ValueError):gates.bc_summary(bad)
-        bad = bc_rounds(); bad[0]['successes'] = 26
-        with self.assertRaises(ValueError):gates.bc_summary(bad)
-        bad = bc_rounds(); bad[0]['mean_return'] = float('nan')
-        with self.assertRaises(ValueError):gates.select_saved_policy(bad)
+        for bad in [bc_rounds()[:-1], bc_rounds() + [bc_rounds()[0]], [r for r in bc_rounds() if r["seed"] != 300]]:
+            with self.assertRaises(ValueError):
+                gates.bc_summary(bad)
+        bad = bc_rounds()
+        bad[0]["episodes"] = 24
+        with self.assertRaises(ValueError):
+            gates.bc_summary(bad)
+        bad = bc_rounds()
+        bad[0]["successes"] = 26
+        with self.assertRaises(ValueError):
+            gates.bc_summary(bad)
+        bad = bc_rounds()
+        bad[0]["mean_return"] = float("nan")
+        with self.assertRaises(ValueError):
+            gates.select_saved_policy(bad)
 
     def test_a13_cumulative_and_strict_distance_boundaries(self):
         for count in [24, 25]:
-            self.assertFalse(gates.bc_success(count)); self.assertFalse(gates.bc_success(count, environment='rh56'))
-        self.assertTrue(gates.bc_success(26)); self.assertTrue(gates.bc_success(sum([True, False]*26)))
-        self.assertTrue(gates.bc_success(26, environment='rh56', overload=False))
-        self.assertFalse(gates.bc_success(26, environment='rh56', overload=True))
-        with self.assertRaises(ValueError):gates.bc_success(26, environment='unknown')
+            self.assertFalse(gates.bc_success(count))
+            self.assertFalse(gates.bc_success(count, environment="rh56"))
+        self.assertTrue(gates.bc_success(26))
+        self.assertTrue(gates.bc_success(sum([True, False] * 26)))
+        self.assertTrue(gates.bc_success(26, environment="rh56", overload=False))
+        self.assertFalse(gates.bc_success(26, environment="rh56", overload=True))
+        with self.assertRaises(ValueError):
+            gates.bc_success(26, environment="unknown")
 
-if __name__ == '__main__': unittest.main()
+
+if __name__ == "__main__":
+    unittest.main()

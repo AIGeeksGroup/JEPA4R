@@ -14,6 +14,7 @@
   by them), frozen as released: timm's vit_base_patch16_224, the CLS after the final norm (timm's pooled output, what
   the authors' code returns as the embedding), 768-d; the pretraining projector is dropped. Preprocessing as LeWM's.
 """
+
 import json
 import os
 import sys
@@ -26,12 +27,17 @@ from hydra.utils import instantiate
 IMAGENET = ([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 # the official V-JEPA 2 code (github.com/facebookresearch/vjepa2 @ 204698b), cloned here; not tracked, see README.md
 # facebookresearch/vjepa2 @ 204698b
-VJEPA2_REPO = Path(os.environ.get('JEPA4R_VJEPA2') or Path(__file__).resolve().parents[3] / 'third_party' / 'vjepa2')
+VJEPA2_REPO = Path(os.environ.get("JEPA4R_VJEPA2") or Path(__file__).resolve().parents[3] / "third_party" / "vjepa2")
 
 
 def _transforms():
-    return T.Compose([T.Resize((224, 224), interpolation=T.InterpolationMode.BICUBIC, antialias=True), T.ToTensor(),
-                      T.Normalize(*IMAGENET)])
+    return T.Compose(
+        [
+            T.Resize((224, 224), interpolation=T.InterpolationMode.BICUBIC, antialias=True),
+            T.ToTensor(),
+            T.Normalize(*IMAGENET),
+        ]
+    )
 
 
 class PLDMEmbedding(torch.nn.Module):
@@ -44,14 +50,15 @@ class PLDMEmbedding(torch.nn.Module):
         return self.projector(cls)
 
 
-_VIT_SIZES = {'tiny': (192, 12, 3), 'small': (384, 12, 6), 'base': (768, 12, 12), 'large': (1024, 24, 16)}
+_VIT_SIZES = {"tiny": (192, 12, 3), "small": (384, 12, 6), "base": (768, 12, 12), "large": (1024, 24, 16)}
 
 
-def _vit_hf(size='tiny', patch_size=16, image_size=224, pretrained=False, use_mask_token=True, **kwargs):
+def _vit_hf(size="tiny", patch_size=16, image_size=224, pretrained=False, use_mask_token=True, **kwargs):
     """The construction of stable_pretraining.backbone.utils.vit_hf (same ViTConfig, add_pooling_layer=False), built
     with transformers directly: importing stable_pretraining.backbone.utils fails in the cortexbench env, whose timm is
     pinned to 0.6.11 for VC-1."""
     from transformers import ViTConfig, ViTModel
+
     hidden, layers, heads = _VIT_SIZES[size]
     cfg = ViTConfig(
         hidden_size=hidden,
@@ -68,29 +75,32 @@ def _vit_hf(size='tiny', patch_size=16, image_size=224, pretrained=False, use_ma
 
 
 def _build(node):
-    if node.get('_target_') == 'stable_pretraining.backbone.utils.vit_hf':
-        return _vit_hf(**{k: v for k, v in node.items() if k != '_target_'})
+    if node.get("_target_") == "stable_pretraining.backbone.utils.vit_hf":
+        return _vit_hf(**{k: v for k, v in node.items() if k != "_target_"})
     return instantiate(node)
 
 
 def _sub(sd, prefix):
-    return {k[len(prefix):]: v for k, v in sd.items() if k.startswith(prefix)}
+    return {k[len(prefix) :]: v for k, v in sd.items() if k.startswith(prefix)}
 
 
 def load_pldm(checkpoint_dir: str, epoch: int = 10):
     ckdir = Path(checkpoint_dir)
-    cfg = json.loads((ckdir / 'config.json').read_text())
-    encoder, projector = _build(cfg['encoder']), _build(cfg['projector'])
-    sd = torch.load(ckdir / f'weights_epoch_{epoch}.pt', map_location='cpu', weights_only=False)
-    encoder.load_state_dict(_sub(sd, 'encoder.'), strict=True)
-    projector.load_state_dict(_sub(sd, 'projector.'), strict=True)
+    cfg = json.loads((ckdir / "config.json").read_text())
+    encoder, projector = _build(cfg["encoder"]), _build(cfg["projector"])
+    sd = torch.load(ckdir / f"weights_epoch_{epoch}.pt", map_location="cpu", weights_only=False)
+    encoder.load_state_dict(_sub(sd, "encoder."), strict=True)
+    projector.load_state_dict(_sub(sd, "projector."), strict=True)
     model = PLDMEmbedding(encoder, projector).eval()
     for p in model.parameters():
         p.requires_grad_(False)
     with torch.no_grad():
         dim = model(torch.zeros(2, 3, 224, 224)).shape[-1]
-    metadata = {'algo': 'pldm', 'model': 'vit_tiny_patch14 (PLDM encoder + projector)',
-                'checkpoint': str(ckdir / f'weights_epoch_{epoch}.pt')}
+    metadata = {
+        "algo": "pldm",
+        "model": "vit_tiny_patch14 (PLDM encoder + projector)",
+        "checkpoint": str(ckdir / f"weights_epoch_{epoch}.pt"),
+    }
     return model, int(dim), _transforms(), metadata
 
 
@@ -106,16 +116,19 @@ class LeJEPAEmbedding(torch.nn.Module):
 def load_lejepa(checkpoint_dir: str, epoch: int = 10):
     """HF ViT-tiny/14 (LeWM's backbone) CLS through the 512-d head."""
     ckdir = Path(checkpoint_dir)
-    sd = torch.load(ckdir / f'weights_epoch_{epoch}.pt', map_location='cpu', weights_only=False)
-    backbone = _vit_hf(size='tiny', patch_size=14, image_size=224, use_mask_token=False)
+    sd = torch.load(ckdir / f"weights_epoch_{epoch}.pt", map_location="cpu", weights_only=False)
+    backbone = _vit_hf(size="tiny", patch_size=14, image_size=224, use_mask_token=False)
     head = torch.nn.Linear(192, 512)
-    backbone.load_state_dict(sd['backbone'], strict=True)
-    head.load_state_dict(sd['head'], strict=True)
+    backbone.load_state_dict(sd["backbone"], strict=True)
+    head.load_state_dict(sd["head"], strict=True)
     model = LeJEPAEmbedding(backbone, head).eval()
     for p in model.parameters():
         p.requires_grad_(False)
-    metadata = {'algo': 'lejepa', 'model': 'vit_tiny_patch14 + Linear(192,512) (LeJEPA)',
-                'checkpoint': str(ckdir / f'weights_epoch_{epoch}.pt')}
+    metadata = {
+        "algo": "lejepa",
+        "model": "vit_tiny_patch14 + Linear(192,512) (LeJEPA)",
+        "checkpoint": str(ckdir / f"weights_epoch_{epoch}.pt"),
+    }
     return model, 512, _transforms(), metadata
 
 
@@ -125,11 +138,22 @@ def build_vjepa21_encoder(checkpoint):
     if str(VJEPA2_REPO) not in sys.path:
         sys.path.insert(0, str(VJEPA2_REPO))
     from app.vjepa_2_1.models import vision_transformer as vit_encoder
+
     enc = vit_encoder.vit_base(
-        patch_size=16, img_size=(384, 384), num_frames=64, tubelet_size=2, use_sdpa=True, use_SiLU=False,
-        wide_SiLU=True, uniform_power=False, use_rope=True, img_temporal_dim_size=1, interpolate_rope=True)
-    sd = torch.load(checkpoint, map_location='cpu', weights_only=False)['ema_encoder']
-    sd = {k.replace('module.', '').replace('backbone.', ''): v for k, v in sd.items()}  # the hub's _clean_backbone_key
+        patch_size=16,
+        img_size=(384, 384),
+        num_frames=64,
+        tubelet_size=2,
+        use_sdpa=True,
+        use_SiLU=False,
+        wide_SiLU=True,
+        uniform_power=False,
+        use_rope=True,
+        img_temporal_dim_size=1,
+        interpolate_rope=True,
+    )
+    sd = torch.load(checkpoint, map_location="cpu", weights_only=False)["ema_encoder"]
+    sd = {k.replace("module.", "").replace("backbone.", ""): v for k, v in sd.items()}  # the hub's _clean_backbone_key
     enc.load_state_dict(sd, strict=True)
     return enc
 
@@ -160,8 +184,12 @@ def load_vjepa21(checkpoint: str, resolution: int = 384):
             T.Normalize(*IMAGENET),
         ]
     )
-    metadata = {'algo': 'vjepa2.1', 'model': 'vit_base_patch16 (V-JEPA 2.1, distilled from ViT-G, 384)',
-                'checkpoint': str(checkpoint), 'resolution': resolution}
+    metadata = {
+        "algo": "vjepa2.1",
+        "model": "vit_base_patch16 (V-JEPA 2.1, distilled from ViT-G, 384)",
+        "checkpoint": str(checkpoint),
+        "resolution": resolution,
+    }
     return model, 768, transforms, metadata
 
 
@@ -170,12 +198,16 @@ def load_visreg(checkpoint: str):
     backbone loads strictly into timm's vit_base_patch16_224 (num_classes=0: CLS-pooled after the final norm, as the
     authors' stable-pretraining VISReg builds it); input 224, ImageNet normalisation (_transforms)."""
     import timm
-    sd = torch.load(checkpoint, map_location='cpu', weights_only=True)
-    model = timm.create_model('vit_base_patch16_224', pretrained=False, num_classes=0)
-    model.load_state_dict({k: v for k, v in sd.items() if not k.startswith('proj.')}, strict=True)
+
+    sd = torch.load(checkpoint, map_location="cpu", weights_only=True)
+    model = timm.create_model("vit_base_patch16_224", pretrained=False, num_classes=0)
+    model.load_state_dict({k: v for k, v in sd.items() if not k.startswith("proj.")}, strict=True)
     model.eval()
     for p in model.parameters():
         p.requires_grad_(False)
-    metadata = {'algo': 'visreg', 'model': 'vit_base_patch16_224 (VISReg, ImageNet-1K, 400 epochs)',
-                'checkpoint': str(checkpoint)}
+    metadata = {
+        "algo": "visreg",
+        "model": "vit_base_patch16_224 (VISReg, ImageNet-1K, 400 epochs)",
+        "checkpoint": str(checkpoint),
+    }
     return model, 768, _transforms(), metadata
