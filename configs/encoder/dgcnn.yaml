@@ -5,7 +5,7 @@ impl: jepa4r.models.encoders.dgcnn
 in_dim: 6
 out_dim: 192
 hparams:                      # k, widths chosen to match ~5.51M parameters
-  # LeWM's encoder config (DGCNN k 20, original widths x 43/16)
+  # JEPA4R's encoder config (DGCNN k 20, original widths x 43/16)
   k: 20
   widths: [172, 172, 344, 688]
   emb_dim: 2752

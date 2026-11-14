@@ -19,7 +19,7 @@ def code_root():
 
 def load_recipe(method):
     if method not in ("lewm", "jepa4r"):
-        raise ValueError("the LeWM recipes are lewm and jepa4r")
+        raise ValueError("the world-model recipes are lewm and jepa4r")
     recipe = PACKAGE.parents[2] / "configs" / "method" / "cube" / "recipes" / (method + ".json")
     return json.loads(recipe.read_text(encoding="utf8"))
 
@@ -46,8 +46,8 @@ def load_tiny_trainer():
 
 @contextmanager
 def wm_trainer():
-    """LeWM's trainer (its native/lewm_train.py, in jepa4r.models.world_model: run_episode_split with LeWM's own output
-    layout, lejepa_forward, SIGReg), with the module attributes its callers use and patch."""
+    """The world-model trainer (jepa4r.models.world_model: run_episode_split with the original output layout,
+    lejepa_forward, SIGReg), with the module attributes its callers use and patch."""
     from functools import partial
     from types import SimpleNamespace
     import hydra

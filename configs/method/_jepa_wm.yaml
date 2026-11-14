@@ -11,7 +11,7 @@ num_frames: 4                 # clip length = history + 1 (teacher forcing on o_
 projector:                    # inherited from LeWM: MLP 192 -> 2048 (BatchNorm1d, GELU) -> 192 (jepa4r/models/heads.py)
   hidden_dim: 2048            # LeWM
   norm: batchnorm1d           # LeWM
-pred_proj:                    # LeWM's projection of the predictor output, the same MLP as the projector
+pred_proj:                    # projection of the predictor output (inherited from LeWM), the same MLP as the projector
   hidden_dim: 2048            # LeWM
   norm: batchnorm1d           # LeWM
 action_encoder:               # inherited from LeWM: Embedder (jepa4r/models/heads.py), input = frameskip x action dim

@@ -17,7 +17,7 @@ found on xyz only and its edge features use all C channels, as the authors' segm
 extra input channels (tensorflow/sem_seg/model.py: the distances on the coordinates, the edge features on all nine
 channels). The classifier's fully connected layers after the pooling are not part of the encoder.
 
-Adaptations to LeWM: a linear head from the global feature to out_dim (the 192-d latent), and all widths x 43/16
+Adaptations for JEPA4R: a linear head from the global feature to out_dim (the 192-d latent), and all widths x 43/16
 (ratios kept: 172, 172, 344, 688, emb 2752), so that the parameter count matches the pixel model's ViT-tiny
 encoder: 5.50 M (5.50 M).
 
@@ -310,7 +310,7 @@ class DGCNN(nn.Module):
 
 
 def build(enc_cfg):
-    """configs/encoder/dgcnn.yaml (hparams = LeWM's DGCNN encoder config)."""
+    """configs/encoder/dgcnn.yaml (hparams = JEPA4R's DGCNN encoder config)."""
     h = enc_cfg.hparams
     return DGCNN(
         in_dim=int(enc_cfg.in_dim),

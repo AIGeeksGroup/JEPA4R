@@ -7,8 +7,8 @@ defaults:
 wandb:
   enabled: False
   config:
-    entity: lewm
-    project: lewm
+    entity: null   # the logged-in W&B account
+    project: jepa4r
     name: ${output_model_name}
     id: ${subdir}
     resume: allow

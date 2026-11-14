@@ -1,6 +1,6 @@
-"""World-model training on the RH56 twin's data with LeWM's training entry point (jepa4r/models/world_model.py, used
-unchanged) and the Relocate train configs (configs/method/relocate/train: point clouds with the DexArt PointNet for
-route pcd, the RGB frames for route rgb).
+"""World-model training on the RH56 twin's data with the world-model training entry point
+(jepa4r/models/world_model.py, used unchanged) and the Relocate train configs (configs/method/relocate/train: point
+clouds with the DexArt PointNet for route pcd, the RGB frames for route rgb).
 
 The split follows the episodes' own train / val labels (manifest.json of the published data), the action normalizer is
 fitted on the train rows only; batch 128, 10 epochs, seed 3072 (Python, NumPy, Torch and the training manager), BF16 on
@@ -41,7 +41,7 @@ class EpisodePartition:
 
 
 class TrainColumnView:
-    """Feed only the train rows to LeWM's normalizer (get_column_normalizer, unchanged)."""
+    """Feed only the train rows to the trainer's column normalizer (get_column_normalizer, unchanged)."""
 
     def __init__(self, dataset, partition):
         self.dataset, self.partition = dataset, partition
@@ -56,7 +56,8 @@ class TrainColumnView:
 
 @contextmanager
 def install_episode_split(train_module, dataset_path, manifest):
-    """Replace LeWM's random split and normalizer fit for this dataset by the episode split (both restored after)."""
+    """Replace the trainer's random split and normalizer fit for this dataset by the episode split (both restored
+    after)."""
     expected = Path(dataset_path).resolve()
     normalizer = train_module.get_column_normalizer
     splitter = train_module.spt.data.random_split
@@ -127,7 +128,7 @@ def main(argv=None):
     package = Path(args.package_root).resolve()
     sys.path.insert(0, str(package.parent))
     train = importlib.import_module("jepa4r.models.world_model")
-    train.spt = spt  # LeWM's train.py (in world_model.py) imports it lazily
+    train.spt = spt  # the training code in world_model.py imports it lazily
     manifest = json.loads(Path(args.manifest).read_text(encoding="utf-8"))
     if not OmegaConf.has_resolver("eval"):
         OmegaConf.register_new_resolver("eval", eval)
@@ -135,7 +136,7 @@ def main(argv=None):
         ["data=adroit_relocate", "model=lewm"] if args.route == "rgb" else ["data=adroit_relocate_pcd", "model=jepa4r"]
     )
     with initialize_config_dir(version_base=None, config_dir=str(package.parent / "configs/method/relocate/train")):
-        cfg = compose(config_name="lewm", overrides=overrides)
+        cfg = compose(config_name="jepa_wm", overrides=overrides)
     run_name = f"rh56_relocate_{args.route}"
     with open_dict(cfg):
         cfg.seed = args.seed

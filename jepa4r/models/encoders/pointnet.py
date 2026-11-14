@@ -1,7 +1,7 @@
 """PointNet encoder, JEPA4R's default (Sec. 4.2): the DexArt [bao2023dexart] variant widened to match ViT-tiny.
 
 shared per-point MLP 6 -> 1,080 -> 4,320 (GELU) -> order-invariant max-pool -> Linear(4,320 -> 192)
-in  [B, 1200, 6] (normalised xyz + rgb)    out [B, 192] (the LeWM projector follows)
+in  [B, 1200, 6] (normalised xyz + rgb)    out [B, 192] (the projector follows)
 Parameters: 6*1080+1080 + 1080*4320+4320 + 4320*192+192 = 5,507,112 (+ norms, if any) ~ 5.51M.
 
 Original module docstring:
@@ -16,7 +16,7 @@ then max over the points. No normalisation layers, no T-Net, no activation
 after the last per-point layer. Weights: trunc_normal(std 0.02), zero bias.
 DexArt feeds xyz only (C = 3); here C follows the data (6 = xyz + rgb).
 
-Adaptations to LeWM: an affine head ``Linear(mlp_spec[-1] -> out_dim)`` after
+Adaptations for JEPA4R: an affine head ``Linear(mlp_spec[-1] -> out_dim)`` after
 the max-pool (192-d latent), and widths scaled to match the ViT-tiny encoder's
 5.50 M parameters while keeping each variant's depth and width ratios:
     small  [64, 256]                  -> [1080, 4320]
@@ -86,7 +86,7 @@ class DexArtPointNet(nn.Module):
 
 def build(enc_cfg):
     """configs/encoder/pointnet.yaml -> DexArtPointNet (hidden = DexArt mlp_spec [1080, 4320], GELU between layers,
-    max-pool, linear head to out_dim; LeWM's DexArt encoder config)."""
+    max-pool, linear head to out_dim; JEPA4R's DexArt encoder config)."""
     return DexArtPointNet(
         in_dim=int(enc_cfg.in_dim),
         mlp_spec=[int(h) for h in enc_cfg.hidden],

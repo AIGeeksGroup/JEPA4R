@@ -6,9 +6,10 @@ the same camera's point cloud and nothing else changed:
    demos replayed exactly, 'images' = the point cloud of every frame, (500, 1200, 6) = xyz (m) + rgb.
 2. load_pretrained_model: for an embedding whose metadata says input 'pcd' (wm_embeddings.load_jepa4r), the transform
    is the model's own point-cloud preprocessing + unsqueeze(0) instead of the official PIL image wrapper.
-3. Evaluation: MuJoCoPixelObsWrapper.get_image returns the frame's point cloud (pcd_fork.MWPointClouds, the 3D
-   LeWM's training settings; rendered with multisampling off, which segmentation needs). Its point-sampling RNG is
-   seeded through env.seed, which mjrl's do_rollout calls before every episode, so the evaluation is deterministic.
+3. Evaluation: MuJoCoPixelObsWrapper.get_image returns the frame's point cloud (pcd_fork.MWPointClouds, with the
+   settings of the JEPA4R training data; rendered with multisampling off, which segmentation needs). Its
+   point-sampling RNG is seeded through env.seed, which mjrl's do_rollout calls before every episode, so the evaluation
+   is deterministic.
    Everything else (policy input = FLARE fusion of 3 embeddings + proprioception obs[:4], BC, 20 evaluations of 25
    episodes) is the official loop.
 

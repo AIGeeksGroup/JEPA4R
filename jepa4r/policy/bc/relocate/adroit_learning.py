@@ -1,8 +1,9 @@
 """World-model training and behavior cloning of the Adroit Relocate workflow.
 
-train  the world model on the collected Relocate data: JEPA4R / LeWM with LeWM's trainer and the Relocate configs of
-       configs/method/relocate/train (JEPA4R: point clouds with the DexArt PointNet), PLDM with stable-worldmodel's
-       script (jepa4r/baselines/relocate/train_pldm.py), LeJEPA Tiny (jepa4r/baselines/relocate/train_lejepa.py);
+train  the world model on the collected Relocate data: JEPA4R / LeWM with the world-model trainer and the Relocate
+       configs of configs/method/relocate/train (JEPA4R: point clouds with the DexArt PointNet), PLDM with
+       stable-worldmodel's script (jepa4r/baselines/relocate/train_pldm.py), LeJEPA Tiny
+       (jepa4r/baselines/relocate/train_lejepa.py);
        10 epochs, exports under <output>/checkpoints/relocate
 bc     CortexBench's frozen-encoder BC loop (eai-vc, run_bc.py / run_adroit_bc3d.py for point clouds) with the run's
        encoder as the embedding; the Hydra overrides after "--" (seed, demos, epochs, evaluation) as the workflow
@@ -35,7 +36,8 @@ def configure_runtime():
 
 
 def wm_overrides(model):
-    """The Hydra overrides of the Relocate train config (configs/method/relocate/train/lewm.yaml) for JEPA4R / LeWM."""
+    """The Hydra overrides of the Relocate train config (configs/method/relocate/train/jepa_wm.yaml) for JEPA4R /
+    LeWM."""
     return [
         "data=" + ("adroit_relocate_pcd" if model == "jepa4r" else "adroit_relocate"),
         "model=" + model,
@@ -68,7 +70,7 @@ def train(args):
         with hydra.initialize_config_dir(
             version_base=None, config_dir=str(ROOT.parent / "configs/method/relocate/train")
         ):
-            cfg = hydra.compose(config_name="lewm", overrides=overrides)
+            cfg = hydra.compose(config_name="jepa_wm", overrides=overrides)
         spt.set(
             cache_dir=str(args.output / "_cache"),
             cleanup={"checkpoints": False, "logs": False, "callback_artifacts": False},

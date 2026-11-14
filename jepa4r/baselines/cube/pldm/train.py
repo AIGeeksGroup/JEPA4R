@@ -1,6 +1,7 @@
 """PLDM training on Cube (the train stage of the Cube workflow): the PLDM authors' model, objective, optimizer and
 learning-rate schedule (third_party/pldm, method.py) in stable-pretraining's trainer, 10 epochs of batch 128 in BF16,
-on the training views of data_manifest.json; LeWM's SaveCkptCallback exports weights_epoch_<n>.pt every epoch.
+on the training views of data_manifest.json; the world-model trainer's SaveCkptCallback exports weights_epoch_<n>.pt
+every epoch.
 usage: python -m jepa4r.baselines.cube.pldm.train --cube-count <n> --data-manifest <file> --output <dir>"""
 
 import argparse
@@ -87,7 +88,7 @@ def run(args):
     train, val, stats = loaders(
         args.profile, args.data_root, module, args.workers, args.prefetch, data_binding=args.data_binding
     )
-    from jepa4r.models import world_model as exports  # LeWM's utils.py SaveCkptCallback is in world_model.py
+    from jepa4r.models import world_model as exports  # the world-model trainer's SaveCkptCallback
 
     cfg = factory_config(args)
     model = module.build_model(cfg["official_source"], pretrained=False)

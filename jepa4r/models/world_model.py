@@ -9,9 +9,9 @@ Interface used by the rest of the code:
     predict(z_hist [B, T, 192], a_hist [B, T, A*5]) -> z_next [B, 192]           (T <= history)
     rollout(z_ctx [B, 3, 192], action_blocks [B, H, A*5]) -> z_hat [B, H, 192]   (autoregressive; Sec. 4.4)
 
-``JEPA`` is LeWM's ``jepa.py`` (dict interface: ``encode(info)`` fills info['emb'] / info['act_emb'],
-``predict(emb, act_emb)``, ``rollout(info, action_sequence, history_size)``); training is LeWM's ``train.py`` run on
-stable-worldmodel / stable-pretraining, in its two original variants:
+``JEPA`` is taken from LeWM's ``jepa.py`` (dict interface: ``encode(info)`` fills info['emb'] / info['act_emb'],
+``predict(emb, act_emb)``, ``rollout(info, action_sequence, history_size)``); the training code is taken from LeWM's
+``train.py`` and runs on stable-worldmodel / stable-pretraining, in its two original variants:
   run_random_split   one dataset file, random 0.9 / 0.1 clip split with torch.Generator().manual_seed(seed), the same
                      generator shuffling the train loader (+ the Cube workflow's seed hook)
   run_episode_split  Cube 1-4: an independent validation file (whole held-out episodes), seed 0 set
@@ -210,7 +210,7 @@ def lejepa_forward(self, batch, stage, cfg):
     tgt_emb = emb[:, n_preds:]  # label
     pred_emb = self.model.predict(ctx_emb, ctx_act)  # pred
 
-    # LeWM loss
+    # the loss of the LeWM recipe: prediction + SIGReg
     output["pred_loss"] = (pred_emb - tgt_emb).pow(2).mean()
     output["sigreg_loss"] = self.sigreg(emb.transpose(0, 1))
     output["loss"] = output["pred_loss"] + lambd * output["sigreg_loss"]
@@ -509,7 +509,8 @@ def run_episode_split(cfg, run_dir, *, resume_checkpoint=None, state_callback=No
 
 
 # --------------------------------------------------------------------------- jepa4r interfaces (adapters)
-# Hydra targets written into config.json by LeWM's train.py (released HF checkpoints, local runs) -> our classes.
+# Hydra targets written into config.json by the original training code (released HF checkpoints, local runs) -> our
+# classes.
 LEGACY_TARGETS = {
     "jepa.JEPA": "jepa4r.models.world_model.JEPA",
     "module.ARPredictor": "jepa4r.models.predictor.ARPredictor",
@@ -529,7 +530,7 @@ _LEGACY_OF = {new: old for old, new in LEGACY_TARGETS.items()}
 
 
 def legacy_config(config):
-    """A model block with our targets written back as LeWM's train.py names them, so that config.json has the
+    """A model block with our targets written back as the original training code names them, so that config.json has the
     layout of the paper runs' checkpoints (the released ones and every loader moved here read those names)."""
     if OmegaConf.is_config(config):
         config = OmegaConf.to_container(config, resolve=True)
@@ -553,7 +554,7 @@ def _retarget(node):
 
 
 def instantiate(config):
-    """hydra.utils.instantiate of a LeWM model block, old (released) or new targets."""
+    """hydra.utils.instantiate of a world-model block, old (released) or new targets."""
     import hydra
 
     if OmegaConf.is_config(config):
@@ -562,7 +563,8 @@ def instantiate(config):
 
 
 def encoder_config(enc_cfg, latent_dim, in_dim=6):
-    """configs/encoder/<name>.yaml -> the encoder block of LeWM's config/train/model/encoder/*.yaml."""
+    """configs/encoder/<name>.yaml -> the encoder block of the training config (the layout of
+    config/train/model/encoder/*.yaml)."""
     t = LEGACY_TARGETS
     if enc_cfg.arch == "pointnet":
         return {
@@ -590,7 +592,7 @@ def encoder_config(enc_cfg, latent_dim, in_dim=6):
 
 
 def model_config(method_cfg, action_dim=None):
-    """The Hydra model block of this method, in the layout of LeWM's config/train/model/*.yaml."""
+    """The Hydra model block of this method, in the layout of the original config/train/model/*.yaml."""
     d, p = int(method_cfg.latent_dim), method_cfg.predictor
     t = LEGACY_TARGETS
 
@@ -635,8 +637,8 @@ def build_world_model(method_cfg, action_dim):
 
 
 def wm_train_config(cfg):
-    """The configuration LeWM's train.py (config/train/lewm.yaml + data/<task>.yaml + model/<encoder>.yaml) receives,
-    composed from cfg.method (recipe) and cfg.env (dataset files, affine, split)."""
+    """The configuration the training code receives (main config + data/<task>.yaml + model/<encoder>.yaml, as in
+    configs/method/relocate/train), composed from cfg.method (recipe) and cfg.env (dataset files, affine, split)."""
     from jepa4r.config import stage_dir
     from jepa4r.data.clips import dataset_kwargs, preprocessor_kwargs
 
@@ -698,7 +700,8 @@ def train(cfg, out_dir) -> dict:
     lw, split = wm_train_config(cfg)
     out_dir = Path(out_dir)
     cwd = os.getcwd()
-    os.chdir(out_dir)  # LeWM ran in its Hydra run dir (hydra.job.chdir): Lightning's default logs stay in the run
+    # the original training ran in its Hydra run dir (hydra.job.chdir): Lightning's default logs stay in the run
+    os.chdir(out_dir)
     try:
         if split == "episodes":
             run_episode_split(lw, out_dir)
@@ -723,8 +726,8 @@ def training_summary(out_dir) -> dict:
 
 
 def load_checkpoint(path, epoch=10, device="cpu", strict=True):
-    """A LeWM checkpoint directory (config.json + weights_epoch_<epoch>.pt; the layout of save_pretrained and of the
-    released HF checkpoints) -> the JEPA model in eval mode."""
+    """A world-model checkpoint directory (config.json + weights_epoch_<epoch>.pt; the layout of save_pretrained and of
+    the released HF checkpoints) -> the JEPA model in eval mode."""
     path = Path(path)
     if (path / "checkpoints" / "config.json").is_file():
         path = path / "checkpoints"
@@ -742,7 +745,8 @@ def load_world_model(env, method, tag="default", epoch=10):
 
 
 class FrozenWorldModelEncoder:
-    """f_theta (encoder + projector) of a frozen LeWM checkpoint: preprocessed observations [B, ...] -> [B, 192]."""
+    """f_theta (encoder + projector) of a frozen world-model checkpoint: preprocessed observations [B, ...] ->
+    [B, 192]."""
 
     def __init__(self, model, obs, device="cpu"):
         self.model, self.obs, self.device = model.to(device).eval(), obs, device

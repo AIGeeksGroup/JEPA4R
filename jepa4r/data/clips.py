@@ -3,7 +3,7 @@ apart; the action block between consecutive frames concatenates the 5 actions. O
 (JEPA4R) or image (LeWM, PLDM, LeJEPA) from the same rows.
 
 The clip sampler is stable-worldmodel's HDF5 dataset (``swm.data.load_dataset(path, num_steps=history + num_preds,
-frameskip, keys_to_load, keys_to_cache)``) with LeWM's transforms, moved here from ``utils.py``:
+frameskip, keys_to_load, keys_to_cache)``) with the world-model transforms, taken from LeWM's ``utils.py``:
 ``get_pcd_preprocessor`` (xyz - center) * scale ++ rgb / 255, ``get_img_preprocessor`` (ImageNet normalisation, 224),
 and a z-score normaliser per non-observation column fitted on the whole dataset file (NaN rows dropped).
 """
@@ -93,7 +93,7 @@ OBS_KEYS = {"pointcloud": ["pcd_xyz", "pcd_rgb"], "image": ["pixels"]}
 
 
 def dataset_kwargs(method_cfg, obs, num_preds=1):
-    """The ``data.dataset`` block of LeWM's data configs (ogb_pcd for point clouds, dmc for
+    """The ``data.dataset`` block of the world-model data configs (ogb_pcd for point clouds, dmc for
     pixels): clip length history + num_preds, frameskip 5, the observation columns + action +
     observation (proprioception) loaded, action and observation cached."""
     return dict(
@@ -122,8 +122,8 @@ def preprocessor_kwargs(env_cfg, obs, img_size=224):
 
 class ClipDataset:
     def __init__(self, data_dir, method_cfg, split="train", env_cfg=None):
-        """All clips of the env's world-model dataset (split='all'), or the train / validation part of LeWM's random
-        0.9 / 0.1 clip split with ``torch.Generator().manual_seed(seed)`` (the order train.py draws them in)."""
+        """All clips of the env's world-model dataset (split='all'), or the train / validation part of the trainer's
+        random 0.9 / 0.1 clip split with ``torch.Generator().manual_seed(seed)`` (the order train.py draws them in)."""
         import hydra
         import stable_pretraining as spt
         import stable_worldmodel as swm

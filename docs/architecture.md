@@ -145,14 +145,14 @@ code sits where the table above puts it, and the stages of this repository run t
   collect + views, prepare_policy_data = prepare-data, train_wm = train, train_policy = prepare-encoder, camera, bind,
   encode, gciql, evaluate.
   Its configurations: `configs/env/cube` (collection Hydra configs and the list of collection sources, official play
-  data), `configs/method/cube` (LeWM recipes, released VISReg / V-JEPA 2.1 weights), `configs/policy/gciql` (GCIQL
+  data), `configs/method/cube` (the JEPA4R / LeWM recipes, released VISReg / V-JEPA 2.1 weights), `configs/policy/gciql` (GCIQL
   agent settings and the list of its vendored sources). Interpreters `JEPA4R_PY_CUBE_WM` (collection,
   world models; pyproject extra `cube-worldmodel`) and `JEPA4R_PY_CUBE_RL` (encoding, GCIQL, online evaluation; extra
   `cube-policy`); checkouts `JEPA4R_OGBENCH`, `JEPA4R_VJEPA2`.
 - Adroit Relocate and the RM75-B + RH56 twin (`relocate_stage` in `jepa4r/policy/bc`): the runner and the stage plans
   `jepa4r/policy/bc/relocate/{workflow,adroit_workflow,rh56_workflow}.py` (a stage is done when it exited with 0) with
   world-model training and behavior cloning (`adroit_learning.py` and the CortexBench runner of `jepa4r/policy/bc`)
-  and their inputs (`configs/policy/bc/relocate/DEPENDENCIES.json`; the LeWM training configs
+  and their inputs (`configs/policy/bc/relocate/DEPENDENCIES.json`; the world-model training configs
   `configs/method/relocate/train`, the embedding configs `configs/policy/bc/conf/model`); collection and the official
   demonstrations in `jepa4r/data/relocate`, the PLDM and LeJEPA runners in `jepa4r/baselines/relocate`, the RH56
   twin's collection, world-model and BC code in `jepa4r/envs/twins/rh56`. Interpreters

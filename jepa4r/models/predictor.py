@@ -1,7 +1,7 @@
 """Predictor g_phi (Sec. 3): six-block transformer, actions through AdaLN-zero [peebles2023dit], causal
 attention over at most ``history`` (= 3) past latents; z_hat_{t+1} = g_phi(z_{1:t}, a_{1:t}). Inherited from LeWM.
 
-The transformer blocks and ``ARPredictor`` are LeWM's ``module.py`` code moved unchanged.
+The transformer blocks and ``ARPredictor`` are taken unchanged from LeWM's ``module.py``.
 """
 
 import torch
@@ -190,8 +190,7 @@ class ARPredictor(nn.Module):
 
 
 def build_predictor(method_cfg):
-    """ARPredictor with the hyper-parameters of ``method_cfg.predictor`` (LeWM's config/train/model/lewm.yaml
-    values)."""
+    """ARPredictor with the hyper-parameters of ``method_cfg.predictor`` (configs/method/_jepa_wm.yaml)."""
     p = method_cfg.predictor
     d = int(method_cfg.latent_dim)
     return ARPredictor(
