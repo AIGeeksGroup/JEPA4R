@@ -17,12 +17,15 @@ eai-vc / the embedding configs / V-JEPA 2 are found):
                    subprocess of the MuJoCo 3 / metaworld 3.0 python given by MW_PY), on their own demos
                    (make_rm75_demos.py)
   lewm_cortex.py   the frozen LeWM / JEPA4R encoders (encoder + projector, epoch 10) as CortexBench embeddings
-  jepa_baselines.py  PLDM, LeJEPA, VISReg, V-JEPA 2.1 embeddings;  conf/model/*.yaml  the embedding templates of the
-                   paper runs, one per encoder kind (embedding_config fills in each run's checkpoint)
+  jepa_baselines.py  PLDM, LeJEPA, VISReg, V-JEPA 2.1 embeddings
   enc_server.py    the frozen encoder in one shared GPU process for run_bc_scene.py (ENC_SOCKET)
+  run_adroit_bc3d.py  run_bc.py on Relocate point clouds (OGBench-cube@4fbb0c6:lewm_pcd/bench/cortexbench/)
   relocate/        behaviour cloning on Adroit Relocate and the RH56 twin with the OGBench-cube branch's Relocate
-                   controllers (its bench/relocate and bench/cortexbench variant; its data in jepa4r/data/relocate, its
-                   world-model support in jepa4r/models/relocate), see relocate_stage
+                   controllers (its bench/relocate; its data in jepa4r/data/relocate, its world-model support in
+                   jepa4r/models/relocate), see relocate_stage
+The OGBench-cube branch's copy of run_bc.py / lewm_cortex.py / jepa_baselines.py (its bench/cortexbench) is merged
+into the files here (their headers list what it adds). The embedding configs of the paper runs, one per encoder kind
+(embedding_config fills in each run's checkpoint), and those of the Relocate runs: configs/policy/bc/conf/model/.
 ``train`` runs, for each evaluation task of the env and each seed of cfg.policy.eval.seeds, one runner process with the
 arguments the source's job runners gave it (cortexbench@9331494:lewm_pcd/bench/cortexbench/grid.py, scene_grid.py), then
 reports success = mean over tasks of the mean over seeds of each run's highest success among its 20 evaluations (the
@@ -41,6 +44,7 @@ from pathlib import Path
 import yaml
 
 HERE = Path(__file__).resolve().parent
+CONF_MODEL = HERE.parents[2] / 'configs' / 'policy' / 'bc' / 'conf' / 'model'   # the embedding configs
 SUITES = {  # suite -> (hydra config of eai-vc, 2D demo dir, 3D demo dir)   source grid.py:39-44, scene_grid.py:79-80
     'metaworld': ('Metaworld_BC_config', 'metaworld-expert-v1.0', 'metaworld-expert-v1.0-pcd'),
     'ogbench': ('Metaworld_BC_config', 'scene-expert', 'scene-expert-pcd'),
@@ -68,7 +72,7 @@ def embedding_config(cfg):
 
     m = cfg.method
     key = m.name if m.name in TEMPLATES else (m.kind if m.kind in TEMPLATES else m.obs)
-    conf = yaml.safe_load((HERE / 'conf' / 'model' / TEMPLATES[key]).read_text())
+    conf = yaml.safe_load((CONF_MODEL / TEMPLATES[key]).read_text())
     if 'checkpoint_dir' in conf:
         conf['checkpoint_dir'] = str(stage_dir('train_wm', cfg.env.name, m.name, None, str(cfg.tag)) / 'checkpoints')
         conf['epoch'] = int(m.get('policy_epoch', 10))
@@ -189,14 +193,15 @@ def official_assets_dir():
 
 def ensure_official_assets():
     """Prepare (once) the light copy of the 100 official Relocate demos and the RH56 task initialisations from the
-    original relocate-v0.pickle (JEPA4R_ADROIT_DEMOS; sha256 pinned in relocate/DEPENDENCIES.json)."""
+    original relocate-v0.pickle (JEPA4R_ADROIT_DEMOS; sha256 pinned in configs/policy/bc/relocate/DEPENDENCIES.json)."""
     from jepa4r.config import paths
 
     official = official_assets_dir()
     if not (official / 'manifest.json').is_file():
         raw = Path(os.environ.get('JEPA4R_ADROIT_DEMOS',
                                   paths()['data'] / 'raw' / 'adroit-expert-v1.0' / 'relocate-v0.pickle'))
-        contract = json.loads((HERE / 'relocate' / 'DEPENDENCIES.json').read_text())['official_relocate']
+        dependencies = HERE.parents[2] / 'configs' / 'policy' / 'bc' / 'relocate' / 'DEPENDENCIES.json'
+        contract = json.loads(dependencies.read_text())['official_relocate']
         official.parent.mkdir(parents=True, exist_ok=True)
         subprocess.run([os.environ.get('JEPA4R_PY_RELOCATE_WM', sys.executable),
                         str(HERE.parents[1] / 'data' / 'demos' / 'prepare_official_assets.py'), '--source', str(raw),
@@ -208,8 +213,9 @@ def relocate_assets(cfg):
     """The harness's asset / environment JSON (its assets.example.json keys) from this repository's variables:
     JEPA4R_PY_RELOCATE_WM (WM stack), JEPA4R_PY_ADROIT_SIM (eai-vc + MuJoCo 2.0 / mujoco-py), JEPA4R_PY_RH56_SIM
     (MuJoCo 3.12), JEPA4R_SWM (stable-worldmodel 6f1e499 checkout), JEPA4R_EAI_VC_RELOCATE (eai-vc 76fe35e with
-    relocate/patches/eai-vc-train-loop.patch applied), JEPA4R_VJEPA2, JEPA4R_RH56_BUNDLE (the native RM75-B/RH56
-    bundle, rh56_native_bundle_v1.json), MUJOCO_PY_MUJOCO_PATH / MUJOCO_PY_MJKEY_PATH; weights under checkpoints/."""
+    third_party/eai-vc-relocate/eai-vc-train-loop.patch applied), JEPA4R_VJEPA2, JEPA4R_RH56_BUNDLE (the native
+    RM75-B/RH56 bundle, configs/policy/bc/relocate/rh56_native_bundle_v1.json), MUJOCO_PY_MUJOCO_PATH /
+    MUJOCO_PY_MJKEY_PATH; weights under checkpoints/."""
     from jepa4r.config import paths
 
     env = os.environ

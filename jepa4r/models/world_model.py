@@ -184,7 +184,7 @@ class JEPA(nn.Module):
         info_dict = self.rollout(info_dict, action_candidates)
 
         cost = self.criterion(info_dict)
-        
+
         return cost
 
 
@@ -213,7 +213,7 @@ def lejepa_forward(self, batch, stage, cfg):
     # LeWM loss
     output["pred_loss"] = (pred_emb - tgt_emb).pow(2).mean()
     output["sigreg_loss"]= self.sigreg(emb.transpose(0, 1))
-    output["loss"] = output["pred_loss"] + lambd * output["sigreg_loss"]  
+    output["loss"] = output["pred_loss"] + lambd * output["sigreg_loss"]
 
     losses_dict = {f"{stage}/{k}": v.detach() for k, v in output.items() if "loss" in k}
     self.log_dict(losses_dict, on_step=True, sync_dist=True)
@@ -278,7 +278,7 @@ def run_random_split(cfg, run_dir, *, manager_seed=None, original_layout=False):
         dataset_name, transform=None, cache_dir=cache_dir, **dataset_cfg
     )
     transforms = [hydra.utils.instantiate(cfg.data.preprocessor)]  # pixels or point cloud, see config/train/data
-    
+
     with open_dict(cfg):
         for col in cfg.data.dataset.keys_to_load:
             if col.startswith("pixels") or col.startswith("pcd"):
@@ -298,7 +298,7 @@ def run_random_split(cfg, run_dir, *, manager_seed=None, original_layout=False):
 
     train = torch.utils.data.DataLoader(train_set, **cfg.loader,shuffle=True, drop_last=True, generator=rnd_gen)
     val = torch.utils.data.DataLoader(val_set, **cfg.loader, shuffle=False, drop_last=False)
-    
+
     ##############################
     ##       model / optim      ##
     ##############################
@@ -436,7 +436,7 @@ def run_episode_split(cfg, run_dir, *, resume_checkpoint=None, state_callback=No
         dataset_name, transform=None, cache_dir=cache_dir, **dataset_cfg
     )
     transforms = [hydra.utils.instantiate(cfg.data.preprocessor)]  # pixels or point cloud, see config/train/data
-    
+
     with open_dict(cfg):
         for col in cfg.data.dataset.keys_to_load:
             if col.startswith("pixels") or col.startswith("pcd"):
@@ -454,7 +454,7 @@ def run_episode_split(cfg, run_dir, *, resume_checkpoint=None, state_callback=No
 
     train = torch.utils.data.DataLoader(train_set, **cfg.loader,shuffle=True, drop_last=True, generator=rnd_gen)
     val = torch.utils.data.DataLoader(val_set, **_validation_loader_kwargs(cfg), shuffle=False, drop_last=False)
-    
+
     ##############################
     ##       model / optim      ##
     ##############################

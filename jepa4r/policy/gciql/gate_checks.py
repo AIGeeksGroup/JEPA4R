@@ -14,6 +14,15 @@ from pathlib import Path
 import sys
 import traceback
 
+def _tool(name):
+    """A checking tool of these gate observers (lightning_compare, matrix_source, state_replay, tiny_cpu_fixture), kept
+    with the Cube workflow's tests in tests/cube/; the pipeline itself never runs them."""
+    tests = str(Path(__file__).resolve().parents[3] / 'tests' / 'cube')
+    if tests not in sys.path:
+        sys.path.append(tests)
+    return importlib.import_module(name)
+
+
 STAGES = (
     'tiny-step',
     'gciql-step',
@@ -118,7 +127,7 @@ class TinyFixedGate:
             raise ValueError('Cube Tiny smoke retains native batch256 and ten-epoch schedule')
         actual_batch=args.bs
         if self.config.get('numerical_fixture')is not None:
-            from .tiny_cpu_fixture import validate_config
+            validate_config = _tool('tiny_cpu_fixture').validate_config
             actual_batch=validate_config(self.config)
         class Loader:
             dataset = range(owner.config['loader_samples'])
@@ -228,7 +237,7 @@ def run_tiny(cfg, output):
     try:
         with argv(values):
             if cfg.get('numerical_fixture')is not None:
-                from .tiny_cpu_fixture import cpu_fp32
+                cpu_fp32 = _tool('tiny_cpu_fixture').cpu_fp32
                 with cpu_fp32(tiny_train,cfg)as metadata:
                     save(output/'NUMERICAL_FIXTURE.json',metadata)
                     tiny_train.main(gate=gate)
@@ -343,7 +352,7 @@ def compare_resume(cfg):
     import numpy as np
     from jepa4r.policy.gciql.gates.arrays import compare_array_maps, compare_nested
     if cfg['kind']=='lightning':
-        from .lightning_compare import compare
+        compare = _tool('lightning_compare').compare
         expected=read(pinned(cfg['expected_identity']))['identity']
         return compare(cfg['actual_state'],cfg['reference_state'],expected)
     if cfg['kind'] == 'gciql':
@@ -403,7 +412,7 @@ def model_numerics(cfg, output):
     if code != expected_root:
         raise ValueError('actual imported model source root differs from frozen expected root')
     manifest = (code.parent / 'SOURCE_MANIFEST.json' if code.name == 'lewm_pcd'
-                else Path(__file__).resolve().parent / 'INTEGRATED_SOURCES.json')
+                else Path(__file__).resolve().parents[3] / 'configs' / 'policy' / 'gciql' / 'INTEGRATED_SOURCES.json')
     if sha(manifest) != cfg['source_manifest_sha256']:
         raise ValueError('actual source manifest differs from frozen expected identity')
     source_files = {}
@@ -668,7 +677,7 @@ def _matrix_policy_config(case, runtime):
 def _matrix_restore_policy(template, checkpoint, restore_agent, *, to_state_dict=None):
     """Observe every original policy leaf; never change the production restore."""
     import pickle
-    from .state_replay import flatten_state, state_from_arrays
+    flatten_state, state_from_arrays = _tool('state_replay').flatten_state, _tool('state_replay').state_from_arrays
     from jepa4r.policy.gciql.gates.arrays import compare_array_maps
     if to_state_dict is None:
         from flax.serialization import to_state_dict
@@ -713,7 +722,7 @@ def matrix_forward(cfg, output):
     from .downstream.runtime import runtime_environment
     os.environ.update(runtime_environment('native-sr'))
     from . import workflow_downstream as workflow
-    from .matrix_source import select_source_assets
+    select_source_assets = _tool('matrix_source').select_source_assets
     from .downstream._source import install_impls
     install_impls()
     from .downstream.sampler import create_agent

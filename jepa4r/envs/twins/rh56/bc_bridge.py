@@ -408,7 +408,7 @@ def run_bc(args):
     try:
         baseline, eai = Path(args.baseline).resolve(), Path(args.eai_root).resolve()
         vi = eai / 'cortexbench/mujoco_vc/visual_imitation'
-        for path in (baseline.parent, baseline / 'policy/bc/relocate/cortexbench', eai,
+        for path in (baseline.parent, baseline / 'policy/bc', eai,
                      eai / 'vc_models/src', eai / 'cortexbench/mujoco_vc/src', vi):
             sys.path.insert(0, str(path))
         import torch
@@ -436,7 +436,7 @@ def run_bc(args):
         def load_embedding(embedding_name, *unused_args, **unused_kwargs):
             if args.route == 'rgb':
                 model, dimension, transform, metadata = lewm_cortex.load_lewm(
-                    args.checkpoint, epoch=args.epoch, use_projector=True)
+                    args.checkpoint, epoch=args.epoch, use_projector=True, seed_global_rng=True)
                 final_transform = lambda frame: transform(Image.fromarray(np.asarray(frame, dtype=np.uint8))).unsqueeze(
                     0
                 )

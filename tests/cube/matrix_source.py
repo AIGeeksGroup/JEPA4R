@@ -14,7 +14,7 @@ def select_source_assets(case, target_runtime, *, assets_loader=None):
     Returned assets are the original loader result for the selected source.
     """
     if assets_loader is None:
-        from .workflow_downstream import _assets
+        from jepa4r.policy.gciql.workflow_downstream import _assets
         assets_loader = _assets
     pin = case.get('source_encoder_config')
     if pin is None:

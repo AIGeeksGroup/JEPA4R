@@ -156,7 +156,7 @@ def validated_official_source(source,expected_sha,loader):
     """Validate all actual decoded demos before choosing the render budget."""
     from jepa4r.data.relocate import official_contract
     source=Path(source).expanduser().resolve()
-    dependency=Path(__file__).resolve().parents[2]/'policy/bc/relocate/DEPENDENCIES.json'
+    dependency=Path(__file__).resolve().parents[3]/'configs/policy/bc/relocate/DEPENDENCIES.json'
     canonical=json.loads(dependency.read_text(encoding='utf-8'))['official_relocate']['raw_sha256']
     if source.is_dir():
         binding=source.parent/'manifest.json'
@@ -188,7 +188,7 @@ def official(args):
     validation_path=args.output/'content_validation.json'
     with validation_path.open('x',encoding='utf-8') as stream:
         json.dump(dict(content,records=source['records']),stream,indent=2,allow_nan=False)
-    from jepa4r.policy.bc.relocate.cortexbench.run_adroit_bc3d import build_point_clouds
+    from jepa4r.policy.bc.run_adroit_bc3d import build_point_clouds
     from mj_envs.envs.hand_manipulation_suite.relocate_v0 import RelocateEnvV0
     rgb=RelocateEnvV0(); pcd=RelocateEnvV0()
     converted_rgb=[];converted_pcd=[]

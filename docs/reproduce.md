@@ -82,17 +82,18 @@ The configurations carry the values of the integrated code, each with the file a
   `jepa4r/policy/bc/relocate`; docs/architecture.md), which keep their own receipts and sha256 pins. Inputs they need
   from outside this repository: the V-JEPA 2.1 ViT-L/16 weights (Cube; the workflow fetches them), DAPG's Relocate state
   expert, the official Relocate demonstrations, the native RM75-B + RH56 bundle (its files are listed in
-  `jepa4r/policy/bc/relocate/rh56_native_bundle_v1.json`) and MuJoCo 2.0 for mujoco-py.
+  `configs/policy/bc/relocate/rh56_native_bundle_v1.json`) and MuJoCo 2.0 for mujoco-py.
 - **Look-ahead preview** (stage `eval_preview`, Sec. 4.3): no commit of the four source branches has preview code, and
-  the paper reports no twin numbers (Sec. 5.6 "Results" is qualitative); the stage stays `TODO(integrate)`, and its job
-  in `experiments/twin.yaml` is optional (skipped unless `--with-optional`).
+  the paper reports no twin numbers (Sec. 5.6 "Results" is qualitative); the stage stays `TODO(integrate)`, and
+  `experiments/twin.yaml` has no job for it (it could never run).
 - **Policy head on the twin's Cube** (`configs/env/rm75b_cube.yaml` `policy`, `policy_data`: `???`): on the twin's Cube
   the source branches only plan with CEM (`config/eval/cube_rm75_*.yaml`, the setting of Tab. S1, out of scope); the
-  gripper's policy heads trained in the twin are the CortexBench ones of the four `rm75b_mw_*` tasks. The two jobs that
-  would need them (`prepare_policy_data`, `train_policy` on `rm75b_cube`) are optional in `experiments/twin.yaml`.
+  gripper's policy heads trained in the twin are the CortexBench ones of the four `rm75b_mw_*` tasks.
+  `experiments/twin.yaml` has no `prepare_policy_data` / `train_policy` job on `rm75b_cube` (they could never run).
 - **Figures** (`paper/figures/*.py`): not integrated, since this repository reproduces the paper's numbers (Scope); the
   scripts stay `TODO(integrate)`.
 - **Released weights:** VISReg's are shared by the authors on request (`scripts/download_checkpoints.py`).
 - **Random (ViT-B) row of Tab. 2:** the paper lists it with the published numbers (caption: "Published numbers: the
   VC-1 study"), and its values equal the VC-1 study's Table 8 (`paper/expected/tab2_cortexbench.yaml` `published`); the
-  paper runs ran it only on bin-picking (`configs/method/random_vitb.yaml`); the job stays optional.
+  paper runs ran it only on bin-picking (`configs/method/random_vitb.yaml`); the job stays optional, on the five
+  MetaWorld tasks (Relocate's behavior cloning, the OGBench-cube workflow, has no random ViT-B).

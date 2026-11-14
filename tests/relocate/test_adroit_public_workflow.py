@@ -138,7 +138,7 @@ def test_collector_records_the_actual_executed_actions_and_pre_action_states(tmp
             xyz=np.full((1200,3),self.sim.t,np.float32);xyz[:,0]+=np.linspace(0,1,1200)
             return xyz,np.zeros((1200,3),np.uint8)
     fake=types.ModuleType('mj_envs.envs.hand_manipulation_suite.relocate_v0');fake.RelocateEnvV0=Native
-    point = types.ModuleType('jepa4r.policy.bc.relocate.cortexbench.run_adroit_bc3d')
+    point = types.ModuleType('jepa4r.policy.bc.run_adroit_bc3d')
     point.build_point_clouds = lambda sim, task: Sampler(sim)
     monkeypatch.setitem(sys.modules,fake.__name__,fake);monkeypatch.setitem(sys.modules,point.__name__,point)
     monkeypatch.setitem(sys.modules,'torch',SimpleNamespace(no_grad=nullcontext))
@@ -330,7 +330,7 @@ def test_plan_env_preserves_explicit_dependencies_and_fixed_protocol(tmp_path):
     assert paths.index('/swm')<paths.index('/dmc-overlay')
     assert env['OMP_NUM_THREADS']=='1' and env['LD_LIBRARY_PATH']=='/driver:/custom'
     assert env['ADROIT_FRESH_EVAL'] == '1' and env['ADROIT_PCD_CONFIG'] == str(
-        ROOT / 'jepa4r/envs/adroit/adroit_relocate_sampling.json'
+        ROOT / 'configs/policy/bc/relocate/adroit_relocate_sampling.json'
     )
 
 
@@ -400,7 +400,7 @@ def test_official_consumer_requires_all_100_sources_before_smoke_render(tmp_path
     import json
     monkeypatch.syspath_prepend(str(ROOT));data=load('adroit_data')
     assert hasattr(data,'validated_official_source'), 'actual official source-content boundary is missing'
-    canonical = json.loads((ROOT / 'jepa4r/policy/bc/relocate/DEPENDENCIES.json').read_text())['official_relocate'][
+    canonical = json.loads((ROOT / 'configs/policy/bc/relocate/DEPENDENCIES.json').read_text())['official_relocate'][
         'raw_sha256'
     ]
     with pytest.raises(ValueError,match='100'):
@@ -419,7 +419,7 @@ def test_official_consumer_rejects_100_repeated_valid_demo_records(tmp_path,monk
     import json
     monkeypatch.syspath_prepend(str(ROOT));data=load('adroit_data')
     assert hasattr(data,'validated_official_source'), 'actual official source-content boundary is missing'
-    canonical = json.loads((ROOT / 'jepa4r/policy/bc/relocate/DEPENDENCIES.json').read_text())['official_relocate'][
+    canonical = json.loads((ROOT / 'configs/policy/bc/relocate/DEPENDENCIES.json').read_text())['official_relocate'][
         'raw_sha256'
     ]
     demo={'init_state_dict':{'qpos':np.zeros(36)},'actions':np.zeros((200,30)),
@@ -435,7 +435,7 @@ def test_official_consumer_hashes_actual_decoded_values_not_manifest_claims(tmp_
     import json
     monkeypatch.syspath_prepend(str(ROOT));data=load('adroit_data')
     contract=importlib.import_module('jepa4r.data.relocate.official_contract')
-    canonical = json.loads((ROOT / 'jepa4r/policy/bc/relocate/DEPENDENCIES.json').read_text())['official_relocate'][
+    canonical = json.loads((ROOT / 'configs/policy/bc/relocate/DEPENDENCIES.json').read_text())['official_relocate'][
         'raw_sha256'
     ]
     source=tmp_path/'demos';source.mkdir();payload=source/'fixture.pickle';payload.write_bytes(b'pure loader fixture')

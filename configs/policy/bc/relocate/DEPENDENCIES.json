@@ -2,7 +2,7 @@
   "eai_vc": {
     "repository": "https://github.com/facebookresearch/eai-vc",
     "commit": "76fe35e87b1937168f1ec4b236e863451883eaf3",
-    "patch": "patches/eai-vc-train-loop.patch",
+    "patch": "third_party/eai-vc-relocate/eai-vc-train-loop.patch",
     "train_loop_sha256": "c0819470fa0ca160544978faf2d4227b0bd2fdb49dd3c2d02ea59ffdf567eb45"
   },
   "mjrl": {

@@ -37,8 +37,8 @@ wm_data:                      # supp. sec:supp-data
                               # fresh_data.py views)
 policy_data:
   source: official_play       # OGBench's official play data (supp. sec:supp-policy)
-  dataset: cube-quadruple-play-v0 # + its -val split: official_sources.json:73,81 (sha256 and
-                              # bytes pinned there)
+  dataset: cube-quadruple-play-v0 # + its -val split:
+                              # configs/policy/gciql/official_sources.json:73,81 (sha256, bytes)
 harness:                      # jepa4r.policy.gciql.cube_stage (the workflow's run config)
   mode: formal                # workflow.py:465 (default): the paper protocol; smoke = its two-update
                               # diagnostic

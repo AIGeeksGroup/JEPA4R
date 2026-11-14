@@ -200,13 +200,13 @@ class TrainingBoundaryTests(unittest.TestCase):
 
     def test_baseline_fingerprint_ignores_run_outputs_but_detects_learning_changes(self):
         with tempfile.TemporaryDirectory() as temp:
-            root = Path(temp)
+            root = Path(temp) / 'jepa4r'   # the package; its configs are in ../configs
             (root / 'models/encoders').mkdir(parents=True)
             (root / 'models/world_model.py').write_text('original training source\n')
             encoder = root / 'models/encoders' / 'encoder.py'
             encoder.write_text('original encoder\n')
-            (root / 'models/relocate/config/train').mkdir(parents=True)
-            (root / 'models/relocate/config/train/lewm.yaml').write_text('history_size: 3\n')
+            (root.parent / 'configs/policy/bc/relocate/train').mkdir(parents=True)
+            (root.parent / 'configs/policy/bc/relocate/train/lewm.yaml').write_text('history_size: 3\n')
             before = self.wm.tree_sha(root)
             (root / 'outputs').mkdir()
             (root / 'outputs/state.json').write_text('{"phase":"training"}')
@@ -231,7 +231,7 @@ class TrainingBoundaryTests(unittest.TestCase):
             self.assertEqual(sentinel.read_text(), 'keep')
             with self.assertRaisesRegex(ValueError, 'protected'):
                 self.bc.run_bc(SimpleNamespace(out=str(output / 'fresh'), baseline=str(ROOT / 'jepa4r'),
-                                               demo_cache_root=str(ROOT / 'jepa4r/models/relocate/config')))
+                                               demo_cache_root=str(ROOT / 'jepa4r/models/relocate')))
             self.assertFalse((output / 'fresh').exists())
 
     def test_bc_default_paths_and_aliases_are_checkout_relative(self):

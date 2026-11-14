@@ -4,7 +4,7 @@ from pathlib import Path
 import sys,unittest
 import numpy as np
 sys.path.insert(0,str(Path(__file__).resolve().parents[2]))
-from jepa4r.policy.gciql.state_replay import state_from_arrays,flatten_state
+from state_replay import state_from_arrays,flatten_state
 
 
 class StateReplayTests(unittest.TestCase):

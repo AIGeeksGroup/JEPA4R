@@ -12,6 +12,7 @@ import sys
 HERE = Path(__file__).resolve().parent
 LEWM = HERE.parents[3]   # this repository (jepa4r/, third_party/)
 REPO = LEWM
+SOURCES = LEWM / 'configs' / 'policy' / 'gciql' / 'collection' / 'sources.json'   # the pinned collection sources
 OGBENCH = Path(os.environ.get('JEPA4R_OGBENCH') or LEWM / 'third_party/ogbench')   # OGBench a977253 checkout
 ENV_TYPES = ('single', 'double', 'triple', 'quadruple')
 HORIZONS = (200, 500, 1000, 600)
@@ -37,7 +38,7 @@ def _save(path, value):
     temporary.replace(path)
 
 def source_manifest():
-    return json.loads((HERE / 'sources.json').read_text(encoding='utf8'))
+    return json.loads((SOURCES).read_text(encoding='utf8'))
 
 def _safe(root, name):
     name = str(name)
@@ -81,7 +82,7 @@ def materialize(output, *, manifest=None):
         if sha(target) != expected:
             raise ValueError('materialized source differs: ' + str(target))
         files[str(target)] = expected
-    return dict(files=files, reused_files=reused, source_manifest_sha256=sha(HERE / 'sources.json'))
+    return dict(files=files, reused_files=reused, source_manifest_sha256=sha(SOURCES))
 
 def _columns(handle):
     import h5py
@@ -492,7 +493,7 @@ def run(plan, *, resume=False, part_ids=None):
                 raise ValueError('raw data changed after validation: ' + path)
         files = {**binding['files'], **binding['reused_files'], **configs}
         files[str(HERE / '__init__.py')] = sha(HERE / '__init__.py')
-        files[str(HERE / 'sources.json')] = sha(HERE / 'sources.json')
+        files[str(SOURCES)] = sha(SOURCES)
         files[str(root / 'plan.json')] = sha(root / 'plan.json')
         if any((sha(path) != expected_sha for (path, expected_sha) in files.items())):
             raise ValueError('collection source/config changed during execution')
@@ -593,7 +594,7 @@ def build_plan(cube_count, output_root, mode='formal', python=None, collection_s
             )
         preceding += count
     if source_manifest_sha256 is None:
-        source_manifest_sha256 = hashlib.sha256((HERE / 'sources.json').read_bytes()).hexdigest()
+        source_manifest_sha256 = hashlib.sha256((SOURCES).read_bytes()).hexdigest()
     return dict(
         schema='cube_fixed_collection_plan_v1',
         protocol=PROTOCOL,

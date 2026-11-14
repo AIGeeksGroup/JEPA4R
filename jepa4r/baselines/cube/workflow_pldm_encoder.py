@@ -21,7 +21,8 @@ IMPORT_FILES = ('pldm/__init__.py', 'pldm/configs.py', 'pldm/models/__init__.py'
 
 def encoder_source_bindings(source):
     source = Path(source).resolve()
-    manifest = json.loads((Path(__file__).parent/'pldm/source_manifest.json').read_text(encoding='utf8'))
+    manifest = Path(__file__).resolve().parents[3]/'configs/policy/gciql/pldm/source_manifest.json'
+    manifest = json.loads(manifest.read_text(encoding='utf8'))
     if manifest['upstream_commit'] != '1bd7e564ecd961205bc18b23067b19e9ca24ac90':
         raise ValueError('Original PLDM source commit differs')
     result = {}

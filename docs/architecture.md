@@ -3,7 +3,9 @@
 ## Layout
 
 ```text
-configs/        one YAML per task (env/), table row (method/), encoder, policy learner, decoder
+configs/        one YAML per task (env/), table row (method/), encoder, policy learner, decoder; policy/gciql/,
+                policy/bc/ the policy learners' own files (the Cube and Relocate workflows' configurations and
+                pinned manifests, CortexBench's embedding configs)
 experiments/    one specification per paper table: which stage runs on which configurations
 paper/
   expected/     the paper's numbers, compared with finished runs by jepa4r-report
@@ -105,14 +107,14 @@ produced by some job.
 | Existing code | Destination | Upstream |
 |---|---|---|
 | depth → point cloud | `jepa4r/data/pointcloud.py`, `jepa4r/envs/camera.py` | — |
-| simulator wrappers, cameras, experts | `jepa4r/envs/{ogbench,metaworld,adroit}.py` | OGBench, CortexBench |
+| simulator wrappers, cameras, experts | `jepa4r/envs/{ogbench,metaworld,adroit}/` | OGBench, CortexBench |
 | RM75-B twin, hand twin, URDF check, look-ahead preview | `jepa4r/envs/twins/*`, `configs/env/rm75b_cube.yaml`, `jepa4r/stages/{verify_twin,eval_preview}.py` | vendor URDF |
 | data collection with mixtures | `jepa4r/stages/collect_wm_data.py`, `jepa4r/data/{behaviors,storage}.py` | — |
-| official play data, demonstrations | `jepa4r/data/{official_play,demos}.py` | OGBench, CortexBench |
+| official play data, demonstrations | `jepa4r/data/official_play.py`, `jepa4r/data/demos/` | OGBench, CortexBench |
 | LeWM recipe and PointNet | `jepa4r/models/*` | stable-worldmodel, LeWM, DexArt |
 | Tab. 4b encoders | `jepa4r/models/encoders/{pointnet2,dgcnn,point_patch_transformer}.py` | PointNet++, DGCNN, PPRL |
 | PLDM / LeJEPA training, VISReg / V-JEPA 2.1 loading | `jepa4r/baselines/*` | PLDM, LeJEPA, VISReg, V-JEPA 2.1 |
-| GCIQL, DQC, behavior cloning and their evaluation | `jepa4r/policy/{gciql,dqc,bc}.py`, `jepa4r/eval/{ogbench,cortexbench}.py` | OGBench, DQC, CortexBench |
+| GCIQL, DQC, behavior cloning and their evaluation | `jepa4r/policy/{gciql,dqc,bc}/`, `jepa4r/eval/{ogbench,cortexbench}.py` | OGBench, DQC, CortexBench |
 | decoder | `jepa4r/decoder/*` | PAGE-4D, VGGT, Depth Anything 3 |
 | reconstruction metrics, open-loop evaluation | `jepa4r/metrics/pointcloud.py`, `jepa4r/eval/recon.py`, `jepa4r/decoder/imagine.py` | — |
 | plotting and rendering | `paper/figures/*` | — |
@@ -145,19 +147,21 @@ where the table above puts it, and this repository's stages run their shares of 
   weights in `jepa4r/baselines/cube`, the PLDM authors' source (`1bd7e56`) in `third_party/pldm`. collect_wm_data =
   collect + views, prepare_policy_data = prepare-data, train_wm = train, train_policy = prepare-encoder ...
   native-audit.
-  Interpreters `JEPA4R_PY_CUBE_WM` (collection, world models; `jepa4r/policy/gciql/requirements/worldmodel.txt`) and
-  `JEPA4R_PY_CUBE_RL` (encoding, GCIQL, native evaluation; `requirements/policy.txt` there); checkouts
-  `JEPA4R_OGBENCH`, `JEPA4R_VJEPA2`. A file pinned in `jepa4r/policy/gciql/INTEGRATED_SOURCES.json` that changed stops
-  a run, as in the branch.
+  Its configurations and pinned manifests (collection Hydra configs, recipes, the GCIQL agent settings, official data
+  and released weights, the source pins) are in `configs/policy/gciql`. Interpreters `JEPA4R_PY_CUBE_WM` (collection,
+  world models; pyproject extra `cube-worldmodel`) and `JEPA4R_PY_CUBE_RL` (encoding, GCIQL, native evaluation; extra
+  `cube-policy`); checkouts `JEPA4R_OGBENCH`, `JEPA4R_VJEPA2`. A file pinned in
+  `configs/policy/gciql/INTEGRATED_SOURCES.json` that changed stops a run, as in the branch.
 - Adroit Relocate and the RM75-B + RH56 twin (`relocate_stage` in `jepa4r/policy/bc`): the controllers
-  `jepa4r/policy/bc/relocate/{workflow,adroit_workflow,rh56_workflow}.py` with behavior cloning (`cortexbench/`,
-  `bc_*.py`) and their pinned inputs (`DEPENDENCIES.json`, `rh56_native_bundle_v1.json`); collection and the official
+  `jepa4r/policy/bc/relocate/{workflow,adroit_workflow,rh56_workflow}.py` with behavior cloning (`bc_*.py` and the
+  CortexBench runner of `jepa4r/policy/bc`, its copy of which is merged there) and their pinned inputs
+  (`configs/policy/bc/relocate/DEPENDENCIES.json`, `rh56_native_bundle_v1.json`; the LeWM training configs
+  `configs/policy/bc/relocate/train`, the embedding configs `configs/policy/bc/conf/model`); collection and the official
   demonstrations in `jepa4r/data/relocate`, world-model training support in `jepa4r/models/relocate`, the LeJEPA hook
   in `jepa4r/baselines/relocate`, the RH56 bundle check in `jepa4r/envs/twins/rh56`. Interpreters
-  `JEPA4R_PY_RELOCATE_WM` (`jepa4r/policy/bc/relocate/requirements/wm.txt`), `JEPA4R_PY_ADROIT_SIM` (`adroit.txt`
-  there, over the eai-vc stack), `JEPA4R_PY_RH56_SIM` (`rh56.txt` there); checkouts `JEPA4R_SWM` (stable-worldmodel
-  `6f1e499`), `JEPA4R_EAI_VC_RELOCATE` (eai-vc `76fe35e` with
-  `jepa4r/policy/bc/relocate/patches/eai-vc-train-loop.patch`),
+  `JEPA4R_PY_RELOCATE_WM` (pyproject extra `relocate-wm`), `JEPA4R_PY_ADROIT_SIM` (extra `relocate-adroit`, over the
+  eai-vc stack), `JEPA4R_PY_RH56_SIM` (extra `relocate-rh56`); checkouts `JEPA4R_SWM` (stable-worldmodel
+  `6f1e499`), `JEPA4R_EAI_VC_RELOCATE` (eai-vc `76fe35e` with `third_party/eai-vc-relocate/eai-vc-train-loop.patch`),
   `JEPA4R_DMC_IMPORT_OVERLAY`; inputs `JEPA4R_ADROIT_DEMOS` (the official 100 demonstrations), `JEPA4R_RH56_BUNDLE`,
   `MUJOCO_PY_MUJOCO_PATH` / `MUJOCO_PY_MJKEY_PATH`.
 - Temporary files of their children go to `JEPA4R_TMPDIR` (else `TMPDIR`, else `/tmp`).

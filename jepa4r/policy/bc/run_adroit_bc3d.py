@@ -1,5 +1,5 @@
 # Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/cortexbench/run_adroit_bc3d.py (verbatim except: imports / paths
-# adapted to the package; lines wrapped at 120 columns)
+# adapted to the package; lines wrapped at 120 columns); it runs the merged run_bc.py next to it
 """Thin Adroit PCD entry: original run_bc.py and official BC loop unchanged."""
 import importlib.util
 import hashlib
@@ -24,7 +24,7 @@ def task_from_env_id(env_id):
 
 
 def load_backend():
-    path = HERE.parents[3] / 'envs/adroit/pcd.py'
+    path = HERE.parents[1] / 'envs/adroit/pcd.py'
     spec = importlib.util.spec_from_file_location('adroit_pcd_backend', path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -92,7 +92,7 @@ def main(argv=None):
             directory = Path(arg.split('=',1)[1]).expanduser()
             if directory.exists() and any(directory.iterdir()):
                 raise FileExistsError(f'existing BC output: {directory}')
-    eai = Path(os.environ.get('CORTEXBENCH_EAI_VC_ROOT', HERE.parents[4] / 'third_party/eai-vc'))
+    eai = Path(os.environ.get('CORTEXBENCH_EAI_VC_ROOT', HERE.parents[2] / 'third_party/eai-vc'))
     vi = eai / 'cortexbench/mujoco_vc/visual_imitation'
     sys.path.insert(0, str(vi)); sys.path.insert(0, str(HERE))
     import hydra

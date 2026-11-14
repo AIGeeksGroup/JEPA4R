@@ -14,7 +14,7 @@ import re
 import numpy as np
 
 
-TRUSTED_CONTRACT_PATH = Path(__file__).resolve().parents[2] / 'policy/bc/relocate/DEPENDENCIES.json'
+TRUSTED_CONTRACT_PATH = Path(__file__).resolve().parents[3] / 'configs/policy/bc/relocate/DEPENDENCIES.json'
 OFFICIAL_COUNT = 100
 ARRAY_SHAPES = dict(actions=(200, 30), state_obs=(200, 39),
                     proprio=(200, 30), rewards=(200,))

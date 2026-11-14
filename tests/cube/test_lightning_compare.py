@@ -5,7 +5,7 @@ import sys,unittest
 from pathlib import Path
 import numpy as np
 sys.path.insert(0,str(Path(__file__).resolve().parents[2]))
-from jepa4r.policy.gciql import lightning_compare as checker
+import lightning_compare as checker
 from jepa4r.policy.gciql.gates.arrays import compare_nested
 
 class MetadataTests(unittest.TestCase):

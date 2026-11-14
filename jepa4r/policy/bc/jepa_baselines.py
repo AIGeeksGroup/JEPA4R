@@ -1,14 +1,17 @@
 # Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/jepa_baselines.py (verbatim except: imports / paths adapted
-# to the package; lines wrapped at 120 columns)
+# to the package; lines wrapped at 120 columns); OGBench-cube@4fbb0c6:lewm_pcd/bench/cortexbench/jepa_baselines.py (the
+# Relocate runs' copy) has the same code apart from the V-JEPA 2 checkout path (its runs set it: ADROIT_VJEPA_ROOT)
 """CortexBench loaders for the JEPA-family baselines, same interface as lewm_cortex.load_lewm: each returns
 (model, embedding_dim, transforms, metadata); model takes [B, 3, H, W] and returns [B, D], frozen, in eval mode.
 
 * load_pldm: a PLDM checkpoint of the framework (config.json + weights_epoch_N.pt; scripts/run_mw_baselines.sh trains
-  one per MetaWorld task on the same data as LeWM). Taken where PLDM's own encode() takes it: the ViT encoder's CLS
-  (interpolate_pos_encoding=True) through the projector, 192-d, the space its predictor works in, i.e. the same place
-  LeWM is read in CortexBench. Preprocessing as LeWM's: bicubic resize to 224 + ImageNet normalisation.
-* load_lejepa: a LeJEPA trained by scripts/baselines/train_lejepa_mw.py (same data as LeWM): the backbone CLS through
-  the 512-d head, the feature the official recipe probes linearly (not the projector). Preprocessing as LeWM's.
+  one per MetaWorld task on the same data as LeWM, the Relocate workflow on the same mixed RGB data as LeWM). Taken
+  where PLDM's own encode() takes it: the ViT encoder's CLS (interpolate_pos_encoding=True) through the projector,
+  192-d, the space its predictor works in, i.e. the same place LeWM is read in CortexBench. Preprocessing as LeWM's:
+  bicubic resize to 224 + ImageNet normalisation.
+* load_lejepa: a LeJEPA trained by scripts/baselines/train_lejepa_mw.py / train_lejepa_relocate.py (same data as
+  LeWM): the backbone CLS through the 512-d head, the feature the official recipe probes linearly (not the projector).
+  Preprocessing as LeWM's.
 * load_vjepa21: Meta's V-JEPA 2.1 ViT-B (general video JEPA, frozen as released).
 * load_visreg: VISReg ViT-B/16 (arXiv 2606.02572; ImageNet-1K, 400 epochs; the authors' visreg-vit-b-inet1k.pth, shared
   by them), frozen as released: timm's vit_base_patch16_224, the CLS after the final norm (timm's pooled output, what

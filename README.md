@@ -79,8 +79,10 @@ work in another interpreter, named by an environment variable (the default is th
 | `JEPA4R_PY_RH56_SIM` | MuJoCo 3.12, gym 0.23, NumPy 1.26.4 | RM75-B + RH56 twin: collection, behavior cloning |
 
 The Cube 1-4, Relocate and RH56 workflows (the OGBench-cube branch's; controllers in `jepa4r/policy/gciql` and
-`jepa4r/policy/bc/relocate`) keep their temporary files under `JEPA4R_TMPDIR` / `TMPDIR` when set; their package
-lists are in [docs/architecture.md](docs/architecture.md).
+`jepa4r/policy/bc/relocate`) keep their temporary files under `JEPA4R_TMPDIR` / `TMPDIR` when set. Their five
+interpreters are the `pyproject.toml` extras `cube-worldmodel`, `cube-policy`, `relocate-wm`, `relocate-adroit` and
+`relocate-rh56` (`python -m pip install -e ".[cube-policy]" --extra-index-url https://download.pytorch.org/whl/cu128`);
+their configurations and pinned manifests are in `configs/policy/gciql` and `configs/policy/bc/relocate`.
 
 Upstream checkouts at pinned commits (`third_party/<name>` by default, or the variable) are listed in
 [docs/architecture.md](docs/architecture.md); stable-worldmodel is vendored in `third_party/stable-worldmodel`
@@ -170,7 +172,7 @@ The paper's numbers are stored in `paper/expected/`, and `paper/figures/` is whe
 This repository integrates the code of the paper's runs; its equivalence with that code was checked against the released
 checkpoints and the paper's run records (data, model, training and evaluation gates) when it was integrated. What is
 not integrated (the twin's look-ahead preview, a policy head on the twin's Cube, the figures) is listed with the reason
-in [docs/reproduce.md](docs/reproduce.md).
+in [docs/reproduce.md](docs/reproduce.md); no experiment specification runs them.
 
 ## 😘 Acknowledgement
 

@@ -8,7 +8,7 @@ from pathlib import Path
 import tempfile
 import unittest
 from unittest.mock import patch
-from jepa4r.policy.gciql.matrix_source import select_source_assets
+from matrix_source import select_source_assets
 
 
 class MatrixSourceTests(unittest.TestCase):

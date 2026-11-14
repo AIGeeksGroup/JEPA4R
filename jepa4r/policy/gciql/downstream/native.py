@@ -38,7 +38,7 @@ class OnlineEncoder:
         torch.backends.cuda.matmul.allow_tf32 = False
         family = binding['family']
         if family == 'lejepa':
-            from ...bc.relocate.cortexbench import jepa_baselines
+            from ...bc import jepa_baselines
             if sha(jepa_baselines.__file__) != binding['preprocessing']['source_sha256']:
                 raise ValueError('Tiny loader/preprocessing source SHA mismatch')
             epoch = binding['epoch']

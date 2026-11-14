@@ -10,7 +10,9 @@ def config_digest(config):
 def write_cpu_reference(runtime,gate,output,trainer,boundary,runtime_recipe):
     import flax,jax,numpy as np
     from jepa4r.policy.gciql.gates.arrays import compare_array_maps,array_identity
-    from .state_replay import state_from_arrays,flatten_state
+    from .gate_checks import _tool
+    state_replay=_tool('state_replay')
+    state_from_arrays,flatten_state=state_replay.state_from_arrays,state_replay.flatten_state
     from .workflow_downstream import read,pinned,sha,save_new
     if jax.default_backend()!='cpu':raise ValueError('CPU endpoint reference requires an actual CPU process')
     gate,output=Path(gate),Path(output)
@@ -77,7 +79,7 @@ def write_cpu_reference(runtime,gate,output,trainer,boundary,runtime_recipe):
         ),
         action_forward=proof,
         producer_source=bind(Path(__file__)),
-        mapping_source=bind(Path(__file__).with_name('state_replay.py')),
+        mapping_source=bind(Path(state_replay.__file__)),
         producer_source_sha256=sha(__file__),
     )
     target=output/'CPU_REFERENCE.json';save_new(target,reference)

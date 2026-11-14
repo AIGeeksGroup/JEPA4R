@@ -13,7 +13,7 @@ import pickle
 import sys
 from pathlib import Path
 
-BC = Path(__file__).resolve().parents[1] / 'policy' / 'bc'
+BC = Path(__file__).resolve().parents[2] / 'configs' / 'policy' / 'bc'   # conf/model/<embedding>.yaml
 
 
 def _apply_runner_patches(script):

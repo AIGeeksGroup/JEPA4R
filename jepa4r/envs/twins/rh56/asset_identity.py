@@ -22,7 +22,7 @@ def _relative(value):
 
 def verify_rh56_bundle(bundle_root,*,dependencies_path=None):
     dependencies = Path(
-        dependencies_path or Path(__file__).resolve().parents[3] / 'policy/bc/relocate/DEPENDENCIES.json'
+        dependencies_path or Path(__file__).resolve().parents[4] / 'configs/policy/bc/relocate/DEPENDENCIES.json'
     ).resolve()
     pins=json.loads(dependencies.read_text(encoding='utf-8'))['rh56_native_bundle']
     repo=dependencies.parent;manifest=repo.joinpath(*_relative(pins['manifest']).parts).resolve()
