@@ -2,7 +2,6 @@
 name: visreg
 display: VISReg
 kind: pretrained
-impl: jepa4r.baselines.visreg
 obs: image
 encoder: vit_b16
 weights: visreg/visreg-vit-b-inet1k.pth   # under JEPA4R_CHECKPOINTS: the authors' ViT-B/16 (ImageNet-1K, 400 epochs),

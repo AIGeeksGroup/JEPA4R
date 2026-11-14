@@ -1,11 +1,11 @@
 """Frozen world-model latents (LeWM, JEPA4R) of OGBench puzzle states (3x3, 4x4, 4x5), shared by extract_feats.py (the
 training set) and run_dqc.py (the evaluation): the camera and point clouds of the world-model data
-(envs/ogb_puzzle_env.py: front_pixels 224, the opaque arm of ob_type='states'; the images anti-aliased, the point clouds
-from the same camera's depth with 1200 points) and the encoders as CortexBench loads them
+(jepa4r/envs/ogbench/ogb_puzzle_env.py: front_pixels 224, the opaque arm of ob_type='states'; the images anti-aliased,
+the point clouds from the same camera's depth with 1200 points) and the encoders as CortexBench loads them
 (jepa4r/policy/bc/wm_embeddings.py: LeWM pixels / 255 normalised with ImageNet's mean / std; JEPA4R (xyz - center) *
-scale with rgb / 255), their output the projector's 192-d latent.
-envs/ogb_puzzle_env.py is loaded by its path: the DQC code (third_party/dqc) has packages named envs and utils too and
-comes first on run_dqc.py's sys.path (the module imports nothing from the repo).
+scale with rgb / 255), their output the projector's 192-d latent. jepa4r/envs/ogbench/ogb_puzzle_env.py is loaded by its
+path: the DQC code (third_party/dqc) has packages named envs and utils too and comes first on run_dqc.py's sys.path (the
+module imports nothing from the repo).
 """
 
 import importlib.util
@@ -24,11 +24,11 @@ if str(REPO) not in sys.path:
 from wm_embeddings import IMAGENET, build_wm_embedding, load_jepa4r
 
 DEV = "cuda" if torch.cuda.is_available() else "cpu"
-PCD_CENTER, PCD_SCALE = (0.425, 0.0, 0.2), 4.0  # = config/train/data/ogb_pcd.yaml (puzzle_3x3_pcd.yaml keeps it)
+PCD_CENTER, PCD_SCALE = (0.425, 0.0, 0.2), 4.0  # = configs/env/_ogbench.yaml pointcloud.affine
 
 
 def load_puzzle():
-    """envs/ogb_puzzle_env.py as the module ogb_puzzle_env (by path, see the module docstring)."""
+    """jepa4r/envs/ogbench/ogb_puzzle_env.py as the module ogb_puzzle_env (by path, see the module docstring)."""
     if "ogb_puzzle_env" not in sys.modules:
         spec = importlib.util.spec_from_file_location(
             "ogb_puzzle_env", REPO / "jepa4r" / "envs" / "ogbench" / "ogb_puzzle_env.py"
@@ -69,8 +69,8 @@ class Encoders:
 
 
 class BaselineEncoder:
-    """A JEPA-family baseline as CortexBench loads it (bench/cortexbench/jepa_baselines.py: the frozen model and its own
-    transforms, Resize + ToTensor + Normalize applied to a PIL image as run_bc_scene.py does): vjepa21 (a checkpoint
+    """A JEPA-family baseline as CortexBench loads it (jepa4r/policy/bc/jepa_baselines.py: the frozen model and its own
+    transforms, Resize + ToTensor + Normalize applied to a PIL image as run_bc_proxy.py does): vjepa21 (a checkpoint
     file, 768-d at 384), visreg (a checkpoint file, 768-d at 224), lejepa (a checkpoint directory, 512-d), pldm (a
     checkpoint directory, 192-d). prep() is the PIL
     resize of 224 frames to the encoder's input size (identity at 224), encode() the rest on the GPU (/ 255 =
@@ -80,7 +80,7 @@ class BaselineEncoder:
     FILE = ("vjepa21", "visreg")  # loaders that take a checkpoint file (the others a directory and an epoch)
 
     def __init__(self, name, path, epoch=10):
-        import jepa_baselines as jb  # bench/cortexbench, on sys.path above
+        import jepa_baselines as jb  # jepa4r/policy/bc, on sys.path above
 
         load = getattr(jb, self.LOADERS[name])
         model, self.dim, tf, _ = load(path) if name in self.FILE else load(path, epoch)

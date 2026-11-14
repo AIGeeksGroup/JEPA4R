@@ -67,19 +67,3 @@ def __getattr__(name):
     value = getattr(import_module(f"{__name__}.{_EXPORTS[name]}"), name)
     globals()[name] = value
     return value
-
-
-def make(env_cfg, **kwargs):
-    """One collection env (``env_cfg.wm_data.env_id``, a swm/MW*-v0 id) with its point-cloud wrapper
-    (``env_cfg.wm_data.pcd``)."""
-    import gymnasium
-
-    from omegaconf import OmegaConf
-
-    wm = env_cfg.wm_data
-    kw = wm.get("env_kwargs")
-    kw = OmegaConf.to_container(kw, resolve=True) if OmegaConf.is_config(kw) else dict(kw or {})
-    env = gymnasium.make(str(wm.env_id), **{**kw, **kwargs})
-    pcd = OmegaConf.to_container(wm.pcd, resolve=True)
-    module, _, name = pcd.pop("_target_", "jepa4r.data.pointcloud.PointCloudWrapper").rpartition(".")
-    return getattr(import_module(module), name)(env, **pcd)

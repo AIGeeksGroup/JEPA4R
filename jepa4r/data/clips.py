@@ -8,8 +8,6 @@ frameskip, keys_to_load, keys_to_cache)``) with the world-model transforms, take
 and a z-score normaliser per non-observation column fitted on the whole dataset file (NaN rows dropped).
 """
 
-from pathlib import Path
-
 import numpy as np
 import torch
 
@@ -118,34 +116,3 @@ def preprocessor_kwargs(env_cfg, obs, img_size=224):
             use_rgb=True,
         )
     return dict(_target_="jepa4r.data.clips.get_img_preprocessor", source="pixels", target="pixels", img_size=img_size)
-
-
-class ClipDataset:
-    def __init__(self, data_dir, method_cfg, split="train", env_cfg=None):
-        """All clips of the env's world-model dataset (split='all'), or the train / validation part of the trainer's
-        random 0.9 / 0.1 clip split with ``torch.Generator().manual_seed(seed)`` (the order train.py draws them in)."""
-        import hydra
-        import stable_pretraining as spt
-        import stable_worldmodel as swm
-
-        obs = method_cfg.obs
-        files = env_cfg.wm_data.files
-        path = str(Path(data_dir) / files[obs])
-        self.dataset = swm.data.load_dataset(path, transform=None, **dataset_kwargs(method_cfg, obs))
-        transforms = [hydra.utils.instantiate(preprocessor_kwargs(env_cfg, obs))]
-        for col in ("action", "observation"):
-            transforms.append(get_column_normalizer(self.dataset, col, col))
-        self.dataset.transform = spt.data.transforms.Compose(*transforms)
-        self.split = split
-        self.data = self.dataset
-        if split in ("train", "val"):
-            gen = torch.Generator().manual_seed(int(env_cfg.wm_data.get("split_seed", 3072)))
-            tr = float(env_cfg.wm_data.get("train_split", 0.9))
-            parts = spt.data.random_split(self.dataset, lengths=[tr, 1 - tr], generator=gen)
-            self.data = parts[0 if split == "train" else 1]
-
-    def __len__(self):
-        return len(self.data)
-
-    def __getitem__(self, i):
-        return self.data[i]

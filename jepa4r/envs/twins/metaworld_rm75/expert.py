@@ -2,7 +2,7 @@
 demos -- on the RM75, run the way it runs on the Sawyer: every action is a function of the current observation only
 (metaworld's 39-D observation, which also carries the previous step's hand and gripper, obs[18:22]), gain p 25, and the
 move not clipped: metaworld's move() returns p * (target - hand), the env clips it to [-1, 1] when it executes it, and
-the demos record the script's output (bench/cortexbench/make_rm75_demos.py).
+the demos record the script's output (jepa4r/data/demos/make_rm75_demos.py).
 
 The script's rules (pos_cube = cube + 3 cm, its y pulled into [0.675, 0.725]; bin = (0.12, 0.7, 0.02)):
   target: xy > 2 cm from pos_cube -> 15 cm above it | z > 1 cm from it -> pos_cube | xy > 2 cm from the bin -> up to
@@ -28,7 +28,7 @@ Changed for the RM75 / EG2-4C2 (the script's numbers are the Sawyer's: a large, 
 Success, as CortexBench counts it (info['success'] at step 500):
   * metaworld's own layouts (robot.make + seed(s) + reset(), seeds 12345 .. 13344): 1000 / 1000, as the Sawyer with the
     unchanged script on the same seeds; the unchanged rules on the RM75: 49.7 %;
-  * the layouts of the CortexBench env the demos and evaluations use (bench/cortexbench/rm75_env.py: MWTaskEnv's reset
+  * the layouts of the CortexBench env the demos and evaluations use (jepa4r/policy/bc/rm75_env.py: MWTaskEnv's reset
     with seed s, which maps a seed to a different layout; seeds 12345 .. 12504): 159 / 160, seed 12404 fails.
 """
 
@@ -131,7 +131,7 @@ class RM75DrawerOpenPolicy:
     above the handle (beyond 6 cm in xy), p 4 down to it (beyond 4 cm in z), else p 50 towards 6 cm behind it, fingers
     open; the move not clipped (the env clips it). Success, as CortexBench counts it (info['success'] at step 500),
     seeds 12345 .. 13344: 998 / 1000 on the layouts of the CortexBench env the demos and evaluations use
-    (bench/cortexbench/rm75_env.py), 994 / 1000 on metaworld's own; the unchanged script on the RM75 70 / 200 and 68 /
+    (jepa4r/policy/bc/rm75_env.py), 994 / 1000 on metaworld's own; the unchanged script on the RM75 70 / 200 and 68 /
     200 (each of these episodes succeeded on the way, then the drawer came back off its stop), the Sawyer with it 200 /
     200."""
 

@@ -3,7 +3,8 @@
 MetaWorld and Adroit Relocate follow the official CortexBench imitation protocol; OGBench Scene reuses the same
 code on its five evaluation tasks, and so do four MetaWorld tasks on the RM75-B twin (Sec. 5.6), on their own demos.
 100 epochs on env.policy_data.demos_per_task demonstrations per task (25; 100 on Relocate); success = best of 20
-evaluations (jepa4r/eval/cortexbench.py).
+evaluations: the official loop's own (eai-vc 76fe35e train_loop.sample_paths every 5 epochs and after the last,
+inside run_bc*.py), read back from metrics.jsonl (best of 20 per run, mean over seeds, mean over tasks).
 
 Modules (the CortexBench harness of the paper runs; eai-vc / the embedding configs / V-JEPA 2 are found through the
 environment variables below):
@@ -11,14 +12,12 @@ environment variables below):
                    not change the numbers (local embedding configs, metrics.jsonl logging, reuse of the evaluation paths
                    for the logging-only train/* rollouts)
   run_bc3d.py      run_bc.py with the camera image replaced by the same camera's point cloud (pcd_fork.MWPointClouds)
-  run_bc_scene.py  run_bc.py on OGBench scene's five tasks (scene_env.SceneCBEnv in a scene_server.py subprocess of the
-                   MuJoCo 3 / OGBench python), proprioception = the first 6 of 8 entries (SCENE_PROPRIO_DIMS)
-  run_bc_rm75.py   run_bc.py / run_bc3d.py on the RM75-B twin's MetaWorld tasks (rm75_env.RM75CBEnv in a rm75_server.py
-                   subprocess of the MuJoCo 3 / metaworld 3.0 python given by MW_PY), on their own demos
-                   (make_rm75_demos.py)
+  run_bc_proxy.py  run_bc.py / run_bc3d.py on the tasks whose env needs MuJoCo 3, through an env_server.py subprocess
+                   of the python given by MW_PY: OGBench scene's five tasks (scene_env.SceneCBEnv, proprioception = the
+                   first 6 of 8 entries, SCENE_PROPRIO_DIMS) and the RM75-B twin's MetaWorld tasks (rm75_env.RM75CBEnv,
+                   on their own demos, make_rm75_demos.py)
   wm_embeddings.py   the frozen LeWM / JEPA4R encoders (encoder + projector, epoch 10) as CortexBench embeddings
   jepa_baselines.py  PLDM, LeJEPA, VISReg, V-JEPA 2.1 embeddings
-  enc_server.py    the frozen encoder in one shared GPU process for run_bc_scene.py (ENC_SOCKET)
   run_adroit_bc3d.py  run_bc.py on Relocate point clouds
   relocate/        the Relocate workflow on Adroit Relocate and the RH56 twin (collection, world-model training,
                    official demonstrations, behaviour cloning; its data in jepa4r/data/relocate), see relocate_stage
@@ -26,7 +25,7 @@ run_bc.py, wm_embeddings.py and jepa_baselines.py also serve the Relocate runs (
 embedding configs of the paper runs, one per encoder kind (embedding_config fills in each run's checkpoint), and those
 of the Relocate runs: configs/policy/bc/conf/model/.
 ``train`` runs, for each evaluation task of the env and each seed of cfg.policy.eval.seeds, one runner process with the
-arguments the paper's job runners gave it, then reports success = mean over tasks of the mean over seeds of each run's
+arguments of the paper's runs, then reports success = mean over tasks of the mean over seeds of each run's
 highest success among its 20 evaluations, as the paper's summaries compute it.
 Interpreters / paths (environment variables): JEPA4R_PY_CORTEXBENCH (eai-vc + MuJoCo 2.0 + mujoco-py python),
 JEPA4R_PY_COLLECT (MuJoCo 3 + OGBench / metaworld 3.0 python for the scene env and the RM75-B twin's MetaWorld env),
@@ -43,18 +42,17 @@ import yaml
 
 HERE = Path(__file__).resolve().parent
 CONF_MODEL = HERE.parents[2] / "configs" / "policy" / "bc" / "conf" / "model"  # the embedding configs
-SUITES = {  # suite -> (hydra config of eai-vc, 2D demo dir, 3D demo dir)   source grid.py:39-44, scene_grid.py:79-80
+SUITES = {  # suite -> (hydra config of eai-vc, 2D demo dir, 3D demo dir)
     "metaworld": ("Metaworld_BC_config", "metaworld-expert-v1.0", "metaworld-expert-v1.0-pcd"),
     "ogbench": ("Metaworld_BC_config", "scene-expert", "scene-expert-pcd"),
-    # source grid.py:46-48
     "metaworld_rm75": ("Metaworld_BC_config", "metaworld-rm75-expert", "metaworld-rm75-expert-pcd"),
     "adroit": ("Adroit_BC_config", "adroit-expert-v1.0", "adroit-expert-v1.0-pcd"),
 }
 TEMPLATES = {  # method kind / name -> conf/model template of the paper runs (checkpoint filled in per run)
-    "pointcloud": "jepa4r_mw_hammer.yaml",
-    "image": "lewm_mw_hammer.yaml",
-    "pldm": "pldm_mw_hammer.yaml",
-    "lejepa": "lejepa_mw_hammer.yaml",
+    "pointcloud": "jepa4r.yaml",
+    "image": "lewm.yaml",
+    "pldm": "pldm.yaml",
+    "lejepa": "lejepa.yaml",
     "visreg": "visreg_vitb.yaml",
     "vjepa21": "vjepa21_vitb.yaml",
     "random_vitb": "rand_vitb.yaml",
@@ -87,18 +85,17 @@ def embedding_config(cfg):
 
 
 def run_command(cfg, task, seed, run_dir, emb_name, demos):
-    """The command the source's grid.py (MetaWorld, Adroit) / scene_grid.py (Scene, hand6 proprioception) gave one
-    job."""
+    """The command line of one BC run (one task, one seed): the suite's runner script with the eai-vc config, the
+    run's embedding, seed and demos (Scene: the front camera and the robot's proprioception)."""
     suite = cfg.env.suite
     config_name = SUITES[suite][0]
     pcd = cfg.method.obs == "pointcloud"
     py = os.environ.get("JEPA4R_PY_CORTEXBENCH", sys.executable)
-    if suite == "ogbench":
-        launcher = HERE / "run_bc_scene.py"
+    if suite == "ogbench":  # run_bc_proxy.py for image and point-cloud embeddings alike
+        launcher = HERE / "run_bc_proxy.py"
         extra = ["camera=front_pixels", "env_kwargs.add_proprio=True", "env_kwargs.proprio_key=gripper_proprio"]
-    # source grid.py:159-160: run_bc_rm75.py for image and point-cloud embeddings alike
     elif suite == "metaworld_rm75":
-        launcher = HERE / "run_bc_rm75.py"
+        launcher = HERE / "run_bc_proxy.py"
         extra = []
     else:
         launcher = HERE / ("run_bc3d.py" if pcd else "run_bc.py")
@@ -120,8 +117,7 @@ def run_command(cfg, task, seed, run_dir, emb_name, demos):
 
 
 def evals_of(run_dir):
-    """The 20 evaluation records of one run (source grid.py / summarize_scene.py: lines with eval/epoch in
-    metrics.jsonl)."""
+    """The 20 evaluation records of one run (the lines with eval/epoch in its metrics.jsonl)."""
     m = Path(run_dir) / "metrics.jsonl"
     return [json.loads(line) for line in m.read_text().splitlines() if '"eval/epoch"' in line] if m.exists() else []
 
@@ -166,11 +162,11 @@ def train(cfg, out_dir) -> dict:
         env.update(
             SCENE_PROPRIO_DIMS=str(cfg.policy.proprio.dims), MW_PY=os.environ.get("JEPA4R_PY_COLLECT", sys.executable)
         )
-    # source grid.py:177-178: the RM75 env runs in the MuJoCo 3 / metaworld 3.0 python
+    # the RM75 env runs in the MuJoCo 3 / metaworld 3.0 python
     if cfg.env.suite == "metaworld_rm75":
         env.update(MW_PY=os.environ.get("JEPA4R_PY_COLLECT", sys.executable))
     runs = {}
-    for seed in cfg.policy.eval.seeds:  # seed by seed, as the source's grid.py
+    for seed in cfg.policy.eval.seeds:  # seed by seed, as in the paper's runs
         for task in tasks(cfg.env):
             run_dir = out_dir / task / f"s{seed}"
             run_dir.mkdir(parents=True, exist_ok=True)
@@ -272,7 +268,7 @@ def relocate_assets(cfg):
     JEPA4R_PY_RELOCATE_WM (WM stack), JEPA4R_PY_ADROIT_SIM (eai-vc + MuJoCo 2.0 / mujoco-py), JEPA4R_PY_RH56_SIM
     (MuJoCo 3.12), JEPA4R_SWM (stable-worldmodel 6f1e499 checkout), JEPA4R_EAI_VC_RELOCATE (eai-vc 76fe35e with
     third_party/eai-vc-relocate/eai-vc-train-loop.patch applied), JEPA4R_VJEPA2, JEPA4R_RH56_BUNDLE (the native
-    RM75-B/RH56 bundle, configs/policy/bc/relocate/rh56_native_bundle_v1.json), MUJOCO_PY_MUJOCO_PATH /
+    RM75-B/RH56 bundle, configs/policy/bc/relocate/DEPENDENCIES.json), MUJOCO_PY_MUJOCO_PATH /
     MUJOCO_PY_MJKEY_PATH; weights under checkpoints/."""
     from jepa4r.config import paths
 

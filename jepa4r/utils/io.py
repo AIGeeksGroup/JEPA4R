@@ -22,10 +22,6 @@ def write_metrics(out_dir, key: dict, metrics: dict) -> Path:
     return path
 
 
-def read_json(path):
-    return json.loads(Path(path).read_text(encoding="utf-8"))
-
-
 def logged(run_dir, tag) -> list:
     """[(step, value), ...] of one scalar that Lightning's default logger wrote under run_dir/lightning_logs/version_*/
     (TensorBoard event files where tensorboard is installed -- the paper runs' environments --, else metrics.csv)."""

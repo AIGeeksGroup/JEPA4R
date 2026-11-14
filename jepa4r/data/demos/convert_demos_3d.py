@@ -6,10 +6,9 @@ Written in the official pickle format, so that CortexBench's train loop reads it
 clouds, (500, 1200, 6) float32 = xyz in metres (world frame) + rgb 0..255; actions, rewards, observations and env_infos
 are the official ones, except env_infos['gripper_proprio'] (the policy's proprioception), which is taken from the
 replay (identical for the exactly replayed demos, see the printed check) so that it matches the point clouds.
--> $STABLEWM_HOME/datasets/cortexbench/metaworld-expert-v1.0-pcd/<task>-v2-goal-observable.pickle,
-   $STABLEWM_HOME/logs/cortexbench/convert_<task>.json
-
-    source env.sh && $PY convert_demos_3d.py <task>
+-> <JEPA4R_DEMOS_HOME>/metaworld-expert-v1.0-pcd/<task>-v2-goal-observable.pickle and logs/convert_<task>.json there
+(JEPA4R_DEMOS_HOME = the env's data/policy/<env>). The prepare_policy_data stage runs it (jepa4r.data.demos) in
+JEPA4R_PY_CORTEXBENCH: convert_demos_3d.py <task>
 """
 
 import json

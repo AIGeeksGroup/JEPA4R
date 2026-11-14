@@ -1,11 +1,10 @@
 """Point-cloud metrics of Tab. 3 / Tab. 4a, in the world frame (undo the affine normalisation), reported in cm.
 
-nn_stats(pred, gt)       bidirectional nearest-neighbour distances between decoded and observed points
-                         -> per frame: nn = the mean of the two one-sided mean NN distances (decoded -> real,
-                         real -> decoded), outlier_pct (share of decoded points above 3 cm); Tab. 3 reports mean /
-                         median / p90 over the frames
-cube_position_error      distance between the cube positions read from the two clouds
-                         (rule: cfg.decoder.eval.cube_position: the centroid of the points carrying the cube's colour)
+nn_both_sides(pred, gt)  one-sided nearest-neighbour distances between decoded and observed points (decoded -> real,
+                         real -> decoded); per frame nn = the mean of the two, outlier_pct = the share of decoded points
+                         above 3 cm; Tab. 3 reports mean / median / p90 over the frames (jepa4r/eval/recon.py)
+object_centroid          the cube position read from a cloud (rule: cfg.decoder.eval.cube_position: the centroid of
+                         the points carrying the cube's colour, colour_signature); cube_err compares the two readouts
 The paper's metric code (everything in metres; eval_frames / eval_rollout use it directly).
 """
 
@@ -86,26 +85,3 @@ def sliced_w(pred, gt, n_proj=200):
     """Per sample root sliced-Wasserstein distance: how far mass has to move for the decoded points to be
     distributed like the real ones (also sees a region with the right shape but the wrong number of points)."""
     return torch.stack([sliced_wasserstein(p[None], g[None], n_proj).sqrt() for p, g in zip(pred, gt)])
-
-
-@torch.no_grad()
-def nn_stats(pred_xyz, gt_xyz, outlier_cm=3.0) -> dict:
-    """Per frame (B, N, 3+) clouds in metres -> cm, as eval_frames computes them: nn, nn_spurious (decoded -> real),
-    nn_missing (real -> decoded), outlier_pct (decoded points farther than outlier_cm from every real point, %)."""
-    spurious, missing, d_pg = nn_both_sides(pred_xyz, gt_xyz)
-    return {
-        "nn": 50 * (spurious + missing),
-        "nn_spurious": 100 * spurious,
-        "nn_missing": 100 * missing,
-        "outlier_pct": 100 * (d_pg > outlier_cm / 100).float().mean(-1),
-    }
-
-
-@torch.no_grad()
-def cube_position_error(pred, gt, rule, centre=None, signature=None):
-    """Per frame, cm: |centroid of the cube's colour in the decoded cloud - in the real cloud| (eval_frames'
-    object_pos). The colour signature: the median rgb of the real points within 0.85 x rule.radius_cm of the simulator's
-    cube position ``centre`` (B, 3) over all given frames (colour_signature), or ``signature`` if given."""
-    if signature is None:
-        signature, _ = colour_signature(gt, centre, float(rule.radius_cm) / 100 * 0.85)
-    return (object_centroid(pred, signature) - object_centroid(gt, signature)).norm(dim=-1) * 100

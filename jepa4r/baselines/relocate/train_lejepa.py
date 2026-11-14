@@ -1,6 +1,6 @@
-"""LeJEPA on Adroit Relocate: LeJEPA's Tiny trainer (train_lejepa_relocate.py) on the Relocate RGB frames -- ViT-Tiny/14
-at 224, four augmented views, a 512-d downstream head and a 16-d training projector, batch 256, 10 epochs, AdamW
-(lr 2e-3, weight decay 0.05), lambda 0.02, BF16, seed 3072; checkpoints under --output (STABLEWM_HOME).
+"""LeJEPA on Adroit Relocate: LeJEPA's Tiny trainer (jepa4r/baselines/lejepa.py) on the Relocate RGB frames --
+ViT-Tiny/14 at 224, four augmented views, a 512-d downstream head and a 16-d training projector, batch 256, 10 epochs,
+AdamW (lr 2e-3, weight decay 0.05), lambda 0.02, BF16, seed 3072; checkpoints under --output (STABLEWM_HOME).
 usage: python -m jepa4r.baselines.relocate.train_lejepa --dataset <train_rgb.h5> --output <dir>"""
 
 import argparse
@@ -10,7 +10,7 @@ from pathlib import Path
 import sys
 
 PACKAGE_ROOT = Path(__file__).resolve().parents[3]
-NATIVE_SCRIPT = PACKAGE_ROOT / "jepa4r/baselines/relocate/train_lejepa_relocate.py"
+NATIVE_SCRIPT = PACKAGE_ROOT / "jepa4r/baselines/lejepa.py"
 
 
 def make_parser():
@@ -58,7 +58,7 @@ def execute(plan):
     dataset, output = Path(plan["dataset"]), Path(plan["output"])
     if str(PACKAGE_ROOT) not in sys.path:
         sys.path.insert(0, str(PACKAGE_ROOT))
-    native = importlib.import_module("jepa4r.baselines.relocate.train_lejepa_relocate")
+    native = importlib.import_module("jepa4r.baselines.lejepa")
     helpers = importlib.import_module("jepa4r.baselines.relocate.data")
     output.mkdir(parents=True, exist_ok=True)
     old_argv, old_home, old_loader = sys.argv, os.environ.get("STABLEWM_HOME"), native.DataLoader

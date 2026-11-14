@@ -7,7 +7,7 @@ open loop  for cfg.decoder.eval.open_loop.num_episodes episodes: encode the cont
            actions (control), and decode encoder latents of the true frames (true latents); decode every step
 Metrics: jepa4r/metrics/pointcloud.py, in cm in the world frame. Output keys: jepa4r/stages/eval_recon.py.
 
-The paper's evaluation scripts eval_frames.py and eval_rollout.py, as the functions ``eval_frames(argv)`` /
+The paper's two evaluation scripts, as the functions ``eval_frames(argv)`` /
 ``eval_rollout(argv)`` (their command lines unchanged). ``evaluate`` runs both on the
 stage-B decoder of outputs/train_decoder/<env>/<decoder>/<tag>/ and reads the table entries off their outputs:
   eval_frames/metrics.json   errors.<name>.{mean, median, p90} over the frames (nn, outliers_pct, object_pos,
@@ -66,7 +66,7 @@ def eval_frames(argv=None):
     other_data = args.input is not None or args.target is not None
     split = args.split or ("all" if other_data else "val")
     index = np.arange(len(episodes.frames))
-    if split == "val":  # the frames train_recon.py held out
+    if split == "val":  # the frames the decoder training held out
         g = torch.Generator().manual_seed(cfg.seed)
         index = np.asarray(
             spt.data.random_split(episodes.frames, [cfg.train_split, 1 - cfg.train_split], generator=g)[1].indices

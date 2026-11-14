@@ -1,6 +1,6 @@
 """One CortexBench MuJoCo imitation run: eai-vc's cortexbench/mujoco_vc/visual_imitation/hydra_launcher.py +
-train_loop.py (commit 76fe35e, third_party/eai-vc), unchanged on disk, with three runtime patches that do not change the
-reported numbers:
+train_loop.py (commit 76fe35e, the eai-vc checkout at JEPA4R_EAI_VC), unchanged on disk, with runtime patches that do
+not change the reported numbers:
 
 1. Embedding configs: an embedding named NAME is read from conf/model/NAME.yaml next to this file when that file exists
    (the LeWM / JEPA4R encoders and the extra baselines), otherwise from vc_models' own conf/model (VC-1). The official
@@ -16,8 +16,8 @@ reported numbers:
 4. Adroit fresh evaluation (the Relocate runs: --config-name Adroit_BC_config with
    ADROIT_FRESH_EVAL=1): the seed-54321 rollouts are not replaced by the evaluation paths.
 
-    source env.sh && $PY run_bc.py --config-name Metaworld_BC_config env=... embedding=... seed=100 data_dir=... \\
-        hydra.run.dir=...
+The train_policy stage starts it for MetaWorld with an image embedding (jepa4r.policy.bc.run_command gives the command
+line); the Relocate workflow starts it for Relocate.
 """
 
 import json

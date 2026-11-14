@@ -1,10 +1,11 @@
-"""Unpack one CortexBench demo zip ($STABLEWM_HOME/datasets/cortexbench/downloads/<name>.zip, URLs in README.md) into
-$STABLEWM_HOME/datasets/cortexbench/<name>/, taking each <name>/*.pickle once: the MetaWorld zip (and
+"""Unpack one CortexBench demo zip (<JEPA4R_DEMOS_HOME>/downloads/<name>.zip, the archive eai-vc's
+cortexbench/mujoco_vc/README.md downloads, e.g. https://dl.fbaipublicfiles.com/eai-vc/mujoco_vil_datasets/
+metaworld-expert-v1.0.zip) into <JEPA4R_DEMOS_HOME>/<name>/, taking each <name>/*.pickle once: the MetaWorld zip (and
 maybe others) also holds a second, identical copy under checkpoint/maksymets/eaif/datasets/mujoco_vil_datasets/.
 Files are written to _partial_<name>/ next to it and the directory is renamed into place at the end, so a BC job
 never sees a half-written pickle; each written file is fsynced and dropped from the page cache (container cap).
 
-    source env.sh && $PY unpack_suite.py dmc-expert-v1.0
+The prepare_policy_data stage runs it for MetaWorld (jepa4r.data.demos): unpack_suite.py metaworld-expert-v1.0
 """
 
 import os

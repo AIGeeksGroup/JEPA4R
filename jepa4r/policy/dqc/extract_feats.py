@@ -3,17 +3,14 @@ with the world-model data's camera -> the frozen LeWM / JEPA4R encoders -> one 1
 observations, run_dqc.py).
 * The official data stores states only (OGBench's state observation + qpos / qvel / button_states), no images. Each
   step's qpos / qvel / button_states are set back into the simulator (env.set_state) and the frame is rendered as the
-  world-model data is (envs/ogb_puzzle_env.py: the opaque arm of ob_type='states', front_pixels, 224; the images
-  anti-aliased, the point clouds from the same camera's depth with the same rules, 1200 points, the point sampling
-  seeded per frame).
+  world-model data is (jepa4r/envs/ogbench/ogb_puzzle_env.py: the opaque arm of ob_type='states', front_pixels, 224; the
+  images anti-aliased, the point clouds from the same camera's depth with the same rules, 1200 points, the point
+  sampling seeded per frame).
 * Encoders (wm_obs.Encoders, the given checkpoints' epoch): the projector's 192-d output, the world model's latent;
   the world model is not trained further.
 * Only the latents are stored (float32, N x 192, row for row with the npz), written in chunks, restartable.
-    python extract_feats.py --ckpt-lewm $STABLEWM_HOME/checkpoints/puzzle_3x3_pix \
-        --ckpt-jepa4r .../puzzle_3x3_pcd_dexart --out $STABLEWM_HOME/datasets/ogbench/dqc_feats/puzzle_3x3 \
-        --split train --workers 6
-    python extract_feats.py --env-type 4x5 --ckpt-lewm .../puzzle_4x5_pix --ckpt-jepa4r .../puzzle_4x5_pcd_dexart \
-        --out .../dqc_feats/puzzle_4x5 --split train --workers 6
+The train_policy stage runs it for Puzzle (jepa4r.policy.dqc.cache_latents gives the command line: --ckpt-jepa4r or
+--ckpt-lewm <the run's world model>, --env-type <board>, --data <data/policy/puzzle_<board>>, --out, --split train).
 """
 
 import argparse

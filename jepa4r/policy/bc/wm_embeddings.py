@@ -216,11 +216,6 @@ def _pcd_encoder_class(target):
     return getattr(mod, cls)
 
 
-def _dexart_pointnet_class():
-    """encoders.DexArtPointNet (see _pcd_encoder_class)."""
-    return _pcd_encoder_class("encoders.DexArtPointNet")
-
-
 def load_jepa4r(
     checkpoint_dir: str,
     epoch: int = 10,

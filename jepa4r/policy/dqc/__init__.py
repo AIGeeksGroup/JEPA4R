@@ -12,7 +12,6 @@ Modules (the DQC code of the paper runs):
   extract_feats.py, extract_feats_baselines.py   every row of the official play data set back into the simulator,
                    rendered (front_pixels 224; point sampling seeded per frame with (20261011, split, row)) and encoded
                    (epoch 10) -> one latent per row
-  summarize_dqc.py the table of the runs
 ``train``: the latents of the official training set (``cache_latents``), one run_dqc.py run with the board's agent
 settings (``agent_flags``), then the train_policy metrics (``aggregate``): success = the best of the ten evaluations
 during training (steps 100k, 200k, ..., 1M). run_dqc.py, unchanged, also evaluates the untrained agent at step 0: that
@@ -49,7 +48,7 @@ def board(env_cfg):
 
 def task_env(env_cfg):
     """DQC's env name: the play dataset with OGBench's oracle goal representation (the goal = the lights' target state),
-    puzzle-<b>-play-v0 -> puzzle-<b>-play-oraclerep-v0 (run_puzzle_baselines.sh:92)."""
+    puzzle-<b>-play-v0 -> puzzle-<b>-play-oraclerep-v0."""
     head, _, version = str(env_cfg.policy_data.dataset).rpartition("-")
     return f"{head}-oraclerep-{version}"
 
@@ -123,21 +122,8 @@ def _all_done(path):
     return bool(np.load(path).all())
 
 
-def latent_obs(env, encoder, cfg):
-    """The evaluation-time observation of run_dqc.py for this encoder (wm_obs.WMObs / BaselineObs): call it to get
-    [latent, true lights] of the env's current state. Needs the DQC interpreter (JEPA4R_PY_DQC)."""
-    if str(HERE) not in sys.path:
-        sys.path.insert(1, str(HERE))
-    import wm_obs
-
-    kind, epoch = obs_kind(cfg.method), int(cfg.method.get("policy_epoch", 10))
-    if kind in LOADERS:
-        return wm_obs.BaselineObs(env, kind, str(encoder), epoch)
-    return wm_obs.WMObs(env, kind, str(encoder), epoch, lights=True)
-
-
 def run_command(cfg, encoder, feats_dir, run_dir):
-    """The run_dqc.py command of one run (as run_puzzle_pipeline.sh / run_puzzle_baselines.sh gave it)."""
+    """The run_dqc.py command of one run (the paper runs' arguments)."""
     from jepa4r.config import stage_dir
 
     p = cfg.policy
@@ -207,61 +193,3 @@ def train(cfg, out_dir) -> dict:
             )
     records = [json.loads(line) for line in (run_dir / "eval.jsonl").read_text().splitlines() if line.strip()]
     return aggregate(records, int(cfg.policy.eval.num_evals), int(cfg.policy.eval.interval))
-
-
-def evaluate_run(cfg, run_dir, encoder, episodes=None):
-    """Restore a run_dqc.py run (its flags.json + resume.pkl) as run_dqc.py builds and restores it, and evaluate it with
-    run_dqc.py's own ``evaluate`` on OGBench's five tasks (episodes per task: ``episodes`` or cfg.env.eval
-    .episodes_per_task) -> {'success': %, 'success_per_task': {task: %}}. The observation is ``latent_obs`` of the
-    frozen encoder read from ``encoder``. Needs the DQC interpreter (JEPA4R_PY_DQC) and the run's latents (flags.json
-    feats_dir)."""
-    import pickle
-    import random
-
-    if str(HERE) not in sys.path:
-        sys.path.insert(1, str(HERE))
-    import run_dqc  # puts the dqc checkout first on sys.path, as for a run
-
-    import flax
-    import ml_collections
-    import numpy as np
-    from agents import agents
-    from envs.env_utils import make_ogbench_env_and_datasets
-    from utils.datasets import CGCDataset, Dataset
-
-    run_dir = Path(run_dir)
-    fl = json.loads((run_dir / "flags.json").read_text())
-    config = ml_collections.ConfigDict(fl["agent"])
-    env, train_dataset, _ = make_ogbench_env_and_datasets(
-        fl["env_name"], dataset_path=fl["dataset_path"], compact_dataset=True, add_info=True
-    )
-    eval_env = make_ogbench_env_and_datasets(
-        fl["env_name"], dataset_path=fl["dataset_path"], compact_dataset=True, env_only=True, width=224, height=224
-    )
-    kind = fl["obs"].split("_")[0]
-    z = np.load(Path(fl["feats_dir"]) / f"{fl['feats_split']}_z{kind}.npy", mmap_mode="r")
-    train_dataset["observations"] = np.concatenate(
-        [z.astype(np.float32, copy=False), train_dataset["button_states"].astype(np.float32)], axis=1
-    )
-    del z
-    train_dataset = Dataset.create(**train_dataset)
-    eps = 1e-5
-    train_dataset = train_dataset.copy(
-        add_or_replace=dict(actions=np.clip(train_dataset["actions"], -1 + eps, 1 - eps))
-    )
-    random.seed(fl["seed"])
-    np.random.seed(fl["seed"])
-    train_dataset = CGCDataset(Dataset.create(**train_dataset), config)
-    example_batch = train_dataset.sample(1)
-    agent = agents[config["agent_name"]].create(fl["seed"], example_batch, config)
-    with open(run_dir / "resume.pkl", "rb") as f:
-        agent = flax.serialization.from_state_dict(agent, pickle.load(f)["agent"])
-    del train_dataset
-    obs_fn = latent_obs(eval_env, encoder, cfg)
-    n = int(episodes or cfg.env.eval.episodes_per_task)
-    task_infos = env.unwrapped.task_infos
-    per_task = {}
-    for task_id in range(1, len(task_infos) + 1):
-        info = run_dqc.evaluate(agent, eval_env, task_id, n, example_batch["actions"].shape[-1], obs_fn)
-        per_task[task_infos[task_id - 1]["task_name"]] = 100 * float(info["success"])
-    return {"success": sum(per_task.values()) / len(per_task), "success_per_task": per_task}

@@ -2,11 +2,11 @@
 
 * The task XML is loaded as is; the Sawyer (body 'base' and its subtree), its mocap body, the mocap weld and the two
   finger actuators are removed. Everything else (table, walls, objects, fixtures, lights) is unchanged.
-* The arm and gripper are the repo's vendor-based MJCFs (envs/descriptions, the models of envs/cube_rm75_env.py),
-  attached with prefixes rm75/ and rm75/g/. The base stands on a 20 cm pedestal on the table's +x side, facing -x
-  (MOUNT_POS, MOUNT_YAW): from there the hand positions of metaworld's scripted Sawyer experts in the five CortexBench
-  tasks are reachable with the tool pointing down (96-100 % of them); closer to the table (x 0.30) the arm cannot fold
-  enough for assembly's peg on the +x side.
+* The arm and gripper are the repo's vendor-based MJCFs (jepa4r/envs/twins/descriptions, the models of
+  cube_rm75_env.py), attached with prefixes rm75/ and rm75/g/. The base stands on a 20 cm pedestal on the table's +x
+  side, facing -x (MOUNT_POS, MOUNT_YAW): from there the hand positions of metaworld's scripted Sawyer experts in the
+  five CortexBench tasks are reachable with the tool pointing down (96-100 % of them); closer to the table (x 0.30) the
+  arm cannot fold enough for assembly's peg on the +x side.
 * MetaWorld looks the robot up by name; the gripper gets those names, placed so that MetaWorld's conventions hold:
   sites rightEndEffector / leftEndEffector at the two fingertips (MetaWorld's tcp_center = their midpoint), body
   'hand' HAND_ABOVE_TIP above the fingertips (MetaWorld's hand position = the Sawyer 'hand' body, 4.5 cm above its

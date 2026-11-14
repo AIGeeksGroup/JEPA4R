@@ -10,11 +10,3 @@ wm_bridge.py       world-model training (jepa4r/models/world_model.py)
 bc_bridge.py       behavior cloning with CortexBench's BC loop
 The stages and their command lines: jepa4r/policy/bc/relocate/rh56_workflow.py.
 """
-
-
-# The env interface (configs/env/rm75b_rh56_relocate.yaml impl).
-def make(env_cfg, seed=0, **kwargs):
-    """The twin's env (native.NativeBridge: the bundle's env and expert, rendered); loads the simulator now."""
-    from .native import NativeBridge
-
-    return NativeBridge(seed, **kwargs)

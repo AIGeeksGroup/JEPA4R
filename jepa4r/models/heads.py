@@ -6,8 +6,6 @@ action_encoder  action block (5 concatenated actions) -> embedding for the predi
 the same MLP as the projector.
 """
 
-from functools import partial
-
 from torch import nn
 
 
@@ -64,33 +62,3 @@ class MLP(nn.Module):
         x: (B*T, D)
         """
         return self.net(x)
-
-
-_NORMS = {"batchnorm1d": nn.BatchNorm1d, "layernorm": nn.LayerNorm, None: None}
-
-
-def _mlp(head_cfg, dim):
-    norm = _NORMS[head_cfg.get("norm")]
-    return MLP(
-        input_dim=dim,
-        hidden_dim=int(head_cfg.hidden_dim),
-        output_dim=dim,
-        norm_fn=partial(norm) if norm is not None else None,
-    )
-
-
-def build_projector(method_cfg):
-    return _mlp(method_cfg.projector, int(method_cfg.latent_dim))
-
-
-def build_pred_proj(method_cfg):
-    return _mlp(method_cfg.pred_proj, int(method_cfg.latent_dim))
-
-
-def build_action_encoder(method_cfg, action_dim):
-    """``action_dim`` = dimension of one env action; the block concatenates ``frameskip`` of them (as the training
-    code sets it:
-    ``cfg.model.action_encoder.input_dim = frameskip * dataset.get_dim('action')``)."""
-    return Embedder(
-        input_dim=int(method_cfg.frameskip) * int(action_dim), emb_dim=int(method_cfg.action_encoder.emb_dim)
-    )

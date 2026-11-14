@@ -1,8 +1,8 @@
-"""The scene CortexBench env (scene_env.py) as a subprocess of the harness (run_bc_scene.py's SceneProxy), as
-rm75_server.py for the RM75: the harness runs in the cortexbench conda env (mujoco-py 2.0), the scene env needs MuJoCo 3
-+ OGBench. Protocol on stdin / a dup of stdout: 8-byte little-endian length + pickle of plain types (arrays as
-(dtype, shape, bytes)); fd 1 is pointed at stderr so library prints cannot corrupt the stream.
-    $MW_PY scene_server.py     (started by run_bc_scene.py)"""
+"""The CortexBench env of a run_bc_proxy.py run as its subprocess: rm75_env.RM75CBEnv (the RM75-B twin's MetaWorld
+tasks, MuJoCo 3 + metaworld 3.0) or scene_env.SceneCBEnv (OGBench Scene, MuJoCo 3 + OGBench), while the harness runs in
+the cortexbench conda env (mujoco-py 2.0). Protocol on stdin / a dup of stdout: 8-byte little-endian length + pickle of
+plain types (arrays as (dtype, shape, bytes)); fd 1 is pointed at stderr so library prints cannot corrupt the stream.
+    $MW_PY env_server.py rm75|scene     (started by run_bc_proxy.py)"""
 
 import os
 import pickle
@@ -16,7 +16,17 @@ inp = sys.stdin.buffer
 
 import numpy as np
 
-from scene_env import SceneCBEnv, proprio_of as scene_proprio
+if sys.argv[1] == "scene":
+    from scene_env import SceneCBEnv as Env, proprio_of
+
+    def proprio(env):  # the 8 entries of the current state (the harness reads them once before the first reset)
+        return proprio_of(env.u)
+
+else:
+    from rm75_env import RM75CBEnv as Env
+
+    def proprio(env):  # metaworld's _get_obs() of the current state (the harness reads it before any reset)
+        return env.u._mw._get_obs()
 
 
 def send(obj):
@@ -45,7 +55,7 @@ while True:
         break
     cmd, args = msg
     if cmd == "init":
-        env = SceneCBEnv(args)
+        env = Env(args)
         send(None)
     elif cmd == "seed":
         env.seed(args)
@@ -55,8 +65,8 @@ while True:
     elif cmd == "step":
         o, r, d, info = env.step(np.frombuffer(args, dtype=np.float64))
         send((arr(o), r, d, info))
-    elif cmd == "obs":  # proprioception of the current state (the harness reads it once before the first reset)
-        send(arr(scene_proprio(env.u)))
+    elif cmd == "obs":
+        send(arr(proprio(env)))
     elif cmd == "rgb":
         send(arr(env.rgb()))
     elif cmd == "pcd":

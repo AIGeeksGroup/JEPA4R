@@ -1,4 +1,4 @@
-"""One entry per encoder row of Tab. 1 / Tab. 2 (``configs/method/*.yaml``), dispatched via ``cfg.method.impl``.
+"""One entry per encoder row of Tab. 1 / Tab. 2 (``configs/method/*.yaml``).
 
 kind        trained by us  how                                         rows
 jepa_wm     yes            LeWM recipe (Eq. 1) on stable-worldmodel    JEPA4R, LeWM, Tab. 4b encoders
@@ -7,25 +7,19 @@ lejepa      yes            LeJEPA's own recipe on our paired images    LeJEPA
 pretrained  no             authors' released weights                   VISReg, V-JEPA 2.1
 random      no             random initialisation, never trained        Random (ViT-B)
 
-Every ``impl`` module exposes
-    train(cfg, out_dir) -> dict                 (trained kinds only; stage train_wm)
-    load_frozen_encoder(cfg) -> FrozenEncoder   (all kinds; see jepa4r/policy/frozen.py)
+The kinds trained by us are trained in stage train_wm by ``train(cfg, out_dir) -> dict`` of ``cfg.method.impl``. The
+policy learners load every frozen encoder in their own interpreter (jepa4r/policy/{bc,dqc,gciql}; where its weights
+are: jepa4r.policy.frozen.checkpoint).
 """
 
 import importlib
 
-from .config import stage_dir
 
 TRAINED_KINDS = ("jepa_wm", "pldm", "lejepa")
 
 
 def trained_by_us(method_cfg) -> bool:
     return method_cfg.kind in TRAINED_KINDS
-
-
-def wm_dir(cfg):
-    """Directory of the train_wm run that belongs to this config (same env, method and tag)."""
-    return stage_dir("train_wm", cfg.env.name, cfg.method.name, None, str(cfg.tag))
 
 
 def train(cfg, out_dir) -> dict:
@@ -44,7 +38,3 @@ def train(cfg, out_dir) -> dict:
 
         return train_world_model(cfg, out_dir)
     return importlib.import_module(cfg.method.impl).train(cfg, out_dir)
-
-
-def load_frozen_encoder(cfg):
-    return importlib.import_module(cfg.method.impl).load_frozen_encoder(cfg)

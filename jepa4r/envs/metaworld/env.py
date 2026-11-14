@@ -1,5 +1,5 @@
-"""MetaWorld tasks of CortexBench as stable-worldmodel envs: three-part data collection (scripts/data/collect_mw.py) and
-the planning evaluation (config/eval/mw_<task>_*.yaml). ``MWTaskEnv`` holds what all tasks share, a subclass per task
+"""MetaWorld tasks of CortexBench as stable-worldmodel envs for the three-part data collection
+(jepa4r/stages/collect_wm_data.py). ``MWTaskEnv`` holds what all tasks share, a subclass per task
 the rest (``MWBinPickEnv`` here, ``assembly.MWAssemblyEnv``):
 
 * Task: the metaworld 3.0 ``<task>-v3-goal-observable`` env with ``_freeze_rand_vec=False`` as CortexBench's eai-vc gym
@@ -13,8 +13,8 @@ the rest (``MWBinPickEnv`` here, ``assembly.MWAssemblyEnv``):
   The task's three-part policy follows the plan; every row records whether its action is random (``rand_action``),
   so the three parts can be told apart in the data. The backbone chains sub-tasks: whenever the policy completes a
   placement it asks the env for the next target (``new_place_target``).
-* Evaluation: ``set_state`` / ``set_goal_state`` are the eval.py callables; ``terminated`` = hand and object both
-  within tolerance of the goal row's hand and object positions.
+* Evaluation: ``set_state`` / ``set_goal_state`` are stable-worldmodel World callables; ``terminated`` = hand and object
+  both within tolerance of the goal row's hand and object positions.
 """
 
 from __future__ import annotations
@@ -102,7 +102,7 @@ class MWTaskEnv(gym.Env):
 
     def _single_sample_renderer(self) -> mujoco.Renderer:
         """A second renderer without multisampling, for the point cloud (depth, segmentation and the points' colours),
-        as the CortexBench 3D demos (bench/cortexbench/pcd_fork.py): with multisampling an edge pixel's id colour is the
+        as the CortexBench 3D demos (jepa4r/policy/bc/pcd_fork.py): with multisampling an edge pixel's id colour is the
         average of two ids' colours and decodes to an unrelated geom. MuJoCo reads offsamples when a context is made, so
         it is 0 for this one only; the RGB frames keep CortexBench's multisampling."""
         if self._renderer_ss is None:

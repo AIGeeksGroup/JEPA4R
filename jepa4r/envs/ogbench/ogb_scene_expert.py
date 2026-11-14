@@ -1,4 +1,4 @@
-"""Expert for OGBench scene's five evaluation tasks (the CortexBench demos, bench/cortexbench/make_scene_demos.py):
+"""Expert for OGBench scene's five evaluation tasks (the CortexBench demos, jepa4r/data/demos/make_scene_demos.py):
 OGBench's four per-object oracles (the Markov ones, ogb_scene_env.make_oracles, OGBench's collection parameters) chained
 by the task's goal. OGBench ships per-object oracles only, no expert for a whole task. The task env:
 ogb_scene_env.make_env(mode='task', max_episode_steps=HORIZON).

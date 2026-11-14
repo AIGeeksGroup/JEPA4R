@@ -1,22 +1,6 @@
-"""Frozen-encoder interface shared by every policy learner and every encoder row.
-
-enc = jepa4r.methods.load_frozen_encoder(cfg)   # -> cfg.method.impl.load_frozen_encoder(cfg)
-enc.obs           "pointcloud" | "image"
-enc.latent_dim    int
-enc.encode(batch) -> float tensor [B, D]          no grad, eval mode, on cfg.device
-
-checkpoint(cfg)   where the integrated learners (CortexBench, DQC, GCIQL), which load the encoder in their own
-                  interpreter, read it from
+"""Where the frozen encoder of cfg.method is read from. The integrated learners (CortexBench, DQC, GCIQL) load the
+encoder in their own interpreter (no gradient, eval mode) from ``checkpoint(cfg)``.
 """
-
-from typing import Any, Protocol
-
-
-class FrozenEncoder(Protocol):
-    obs: str
-    latent_dim: int
-
-    def encode(self, batch: Any) -> Any: ...
 
 
 def checkpoint(cfg):

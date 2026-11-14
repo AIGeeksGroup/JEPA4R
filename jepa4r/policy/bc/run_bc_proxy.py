@@ -1,32 +1,28 @@
-"""One CortexBench imitation run on an OGBench scene evaluation task (scene-task{1..5}-v0), built as run_bc_rm75.py: the
-official hydra_launcher + train_loop (eai-vc 76fe35e, unchanged on disk) with run_bc.py's runtime patches (embedding
-configs from conf/model, metrics.jsonl logging, the logging-only train/* rollouts reusing the evaluation paths) and
-run_bc3d.py's point-cloud input for a point-cloud embedding; the env is SceneProxy, a gym env that forwards reset / step
-/ seed / frames to scene_server.py, which runs scene_env.SceneCBEnv in the MuJoCo 3 python (MuJoCo 3 + OGBench) given by
-MW_PY. Everything around it is the official loop: MuJoCoPixelObsWrapper (its get_image returns the proxy's frame:
-224x224 RGB, or the (1200, 6) point cloud for a point-cloud embedding), FrozenEmbeddingWrapper (FLARE over 3 frames [+
-proprioception]), mjrl GymEnv, BC 100 epochs, 20 evaluations of 25 episodes, success = info['success'] at the last step
-of the episode (it ends at the goal, so this is OGBench's success rate); at most 750 steps (scene-v0). Proprioception:
-the source's scene_grid.py --proprio hand6 (the default) passes env_kwargs.add_proprio=True,
-env_kwargs.proprio_key=gripper_proprio and SCENE_PROPRIO_DIMS=6, so the evaluation input and the demos' proprioception
-both keep the first 6 of scene_env.proprio_of's 8 entries (effector xyz, cos / sin yaw, gripper opening: the robot's own
-state, without the two locks); --proprio none passes add_proprio=False, proprio_key=None. Demos: make_scene_demos.py.
-With ENC_SOCKET set, the frozen encoder runs in enc_server.py (one GPU process batching for every job, instead of dozens
-of jobs each holding a CUDA context and the GPU switching between them); the preprocessing stays in this process with
-the same config, BC and the evaluation run on the CPU (device=cpu).
-
-    source env.sh && MW_PY=<MuJoCo 3 python> SCENE_PROPRIO_DIMS=6 $PY run_bc_scene.py \\
-        --config-name Metaworld_BC_config env=scene-task1-v0 embedding=lewm_scene seed=100 \\
-        data_dir=$STABLEWM_HOME/datasets/cortexbench/scene-expert/ camera=front_pixels \\
-        env_kwargs.add_proprio=True env_kwargs.proprio_key=gripper_proprio wandb.project=local wandb.entity=local \\
-        hydra.run.dir=<dir>          (3D: embedding=jepa4r_scene, data_dir=.../scene-expert-pcd/)
+"""One CortexBench imitation run on a task whose env needs MuJoCo 3, while the official harness runs MuJoCo 2.0
+(mujoco-py): the RM75-B twin's MetaWorld tasks (env rm75-<task>-v2-goal-observable) and OGBench Scene's five evaluation
+tasks (scene-task{1..5}-v0); the env name selects the suite. The official hydra_launcher + train_loop (eai-vc 76fe35e,
+unchanged on disk) with run_bc.py's runtime patches (embedding configs from conf/model, metrics.jsonl logging, the
+logging-only train/* rollouts reusing the evaluation paths) and run_bc3d.py's point-cloud input for a point-cloud
+embedding; the env is EnvProxy, a gym env that forwards reset / step / seed / frames to env_server.py, which runs
+rm75_env.RM75CBEnv or scene_env.SceneCBEnv in the MuJoCo 3 python given by MW_PY. Everything around it is the official
+loop: MuJoCoPixelObsWrapper (its get_image returns the proxy's frame, or the (1200, 6) point cloud for a point-cloud
+embedding), FrozenEmbeddingWrapper (FLARE over 3 frames + proprioception), mjrl GymEnv, BC 100 epochs, 20 evaluations of
+25 episodes, success = info['success'] at the last step.
+  RM75-B twin  256x256 RGB from top_cap2, proprioception obs[:4] (the official get_proprioception), 500-step episodes;
+               demos: make_rm75_demos.py
+  Scene        224x224 RGB from front_pixels, at most 750 steps (scene-v0; an episode ends at the goal, so the last
+               step's success is OGBench's success rate); proprioception: env_kwargs.add_proprio=True,
+               env_kwargs.proprio_key=gripper_proprio and SCENE_PROPRIO_DIMS=6, so the evaluation input and the demos'
+               proprioception both keep the first 6 of scene_env.proprio_of's 8 entries (effector xyz, cos / sin yaw,
+               gripper opening: the robot's own state, without the two locks); demos: make_scene_demos.py
+Started by the train_policy stage for the twin's MetaWorld tasks and for env=scene (jepa4r.policy.bc.train;
+run_command gives its command line).
 """
 
 import json
 import os
 import pickle
 import runpy
-import socket
 import struct
 import subprocess
 import sys
@@ -36,7 +32,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 VI = os.path.join(os.environ["JEPA4R_EAI_VC"], "cortexbench", "mujoco_vc", "visual_imitation")  # the eai-vc checkout
 CONF_HOME = os.environ.get("JEPA4R_BC_CONF_HOME", HERE)  # <CONF_HOME>/conf/model/NAME.yaml: the embedding configs
 sys.path.insert(0, VI)
-MW_PY = os.environ.get("MW_PY", "")  # the MuJoCo 3 python, for scene_server.py
+MW_PY = os.environ.get("MW_PY", "")  # the MuJoCo 3 python, for env_server.py
 
 import gym
 import hydra
@@ -44,15 +40,38 @@ import mujoco_vc.gym_wrapper as gw
 import mujoco_vc.model_loading as ml
 import mujoco_vc.supported_envs as se
 import numpy as np
-import torch
 import train_loop
 from gym.spaces import Box
 from mjrl.utils.gym_env import GymEnv
 from omegaconf import OmegaConf
 from PIL import Image
 
-TASKS = {f"scene-task{k}-v0": k for k in range(1, 6)}  # = scene_env.TASKS (not imported: that side needs MuJoCo 3)
-HORIZON, PROPRIO_DIM, ACT_DIM = 750, 8, 5
+# env name -> the server's init argument; episode length, proprioception and action sizes; the server's environment
+SUITES = {
+    "rm75": dict(
+        tasks={
+            "rm75-bin-picking-v2-goal-observable": "bin-picking",
+            "rm75-button-press-topdown-v2-goal-observable": "button-press-topdown",
+            "rm75-drawer-open-v2-goal-observable": "drawer-open",
+            "rm75-assembly-v2-goal-observable": "assembly",
+        },
+        horizon=500,
+        obs_dim=39,  # metaworld's _get_obs(); get_proprioception reads its first 4 entries
+        act_dim=4,
+        drop_cuda_devices=False,
+    ),
+    "scene": dict(
+        tasks={f"scene-task{k}-v0": k for k in range(1, 6)},  # = scene_env.TASKS (not imported: it needs MuJoCo 3)
+        horizon=750,
+        obs_dim=8,  # scene_env.proprio_of
+        act_dim=5,
+        drop_cuda_devices=True,
+    ),
+}
+ENV = next((a.split("=", 1)[1] for a in sys.argv[1:] if a.startswith("env=")), "")
+SUITE = "scene" if ENV.startswith("scene-") else "rm75"
+S = SUITES[SUITE]
+TASKS, HORIZON, PROPRIO_DIM, ACT_DIM = S["tasks"], S["horizon"], S["obs_dim"], S["act_dim"]
 for name in TASKS:
     se.ENV_TO_SUITE[name] = "metaworld"  # success and demo reading as MetaWorld's
 EMB = next((a.split("=", 1)[1] for a in sys.argv[1:] if a.startswith("embedding=")), "")
@@ -76,20 +95,23 @@ def _arr(t):
     return np.frombuffer(b, dtype=dt).reshape(shape).copy()
 
 
-class SceneProxy(gym.Env):
-    """gym (0.23) env backed by scene_server.py; spec / _get_obs as the harness uses them for metaworld."""
+class EnvProxy(gym.Env):
+    """gym (0.23) env backed by env_server.py; spec / _get_obs as the harness uses them for metaworld."""
 
     def __init__(self, env_name):
         self.spec = namedtuple("spec", ["id", "max_episode_steps"])(env_name, HORIZON)
         self.observation_space = Box(-np.inf, np.inf, (PROPRIO_DIM,), np.float64)
         self.action_space = Box(-1.0, 1.0, (ACT_DIM,), np.float32)
         self._p = subprocess.Popen(
-            [MW_PY, os.path.join(HERE, "scene_server.py")],
+            [MW_PY, os.path.join(HERE, "env_server.py"), SUITE],
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
-            stderr=open(os.path.join(os.getcwd(), "scene_server.log"), "a"),
+            stderr=open(os.path.join(os.getcwd(), f"{SUITE}_server.log"), "a"),
             cwd=HERE,
-            env={k: v for k, v in os.environ.items() if k != "CUDA_VISIBLE_DEVICES"},
+            # the Scene server starts without CUDA_VISIBLE_DEVICES (as in the paper's Scene runs), the RM75 one with it
+            env={k: v for k, v in os.environ.items() if k != "CUDA_VISIBLE_DEVICES"}
+            if S["drop_cuda_devices"]
+            else None,
         )
         self._call("init", TASKS[env_name])
         self._obs = None
@@ -114,7 +136,7 @@ class SceneProxy(gym.Env):
         self._obs = _arr(o)
         return self._obs, r, d, info
 
-    def _get_obs(self):
+    def _get_obs(self):  # the proprioception the harness reads (also before the first reset)
         if self._obs is None:
             self._obs = _arr(self._call("obs"))
         return self._obs
@@ -133,7 +155,7 @@ _official_get_image = gw.MuJoCoPixelObsWrapper.get_image
 
 
 def get_image(self):
-    if isinstance(self.env, SceneProxy):
+    if isinstance(self.env, EnvProxy):
         return self.env.frame()
     return _official_get_image(self)
 
@@ -142,18 +164,17 @@ gw.MuJoCoPixelObsWrapper.get_image = get_image
 _official_proprio = gw.get_proprioception
 
 
-# the first entries used; 6 = effector xyz, cos / sin yaw, gripper
+# Scene: the first entries used; 6 = effector xyz, cos / sin yaw, gripper
 PROPRIO_USE = int(os.environ.get("SCENE_PROPRIO_DIMS", PROPRIO_DIM))
 
 
 def get_proprioception(env, suite):
     # the proxy's obs is the 8 entries; the first PROPRIO_USE (not called without add_proprio)
-    if isinstance(env, SceneProxy):
+    if isinstance(env, EnvProxy):
         return env._get_obs()[:PROPRIO_USE]
     return _official_proprio(env, suite)
 
 
-gw.get_proprioception = get_proprioception
 _official_precompute = train_loop.precompute_features
 
 
@@ -172,7 +193,9 @@ def precompute_features(paths, *args, **kwargs):
     return paths
 
 
-train_loop.precompute_features = precompute_features
+if SUITE == "scene":
+    gw.get_proprioception = get_proprioception
+    train_loop.precompute_features = precompute_features
 _official_constructor = gw.env_constructor
 
 
@@ -209,7 +232,7 @@ def env_constructor(
             *args,
             **kwargs,
         )
-    e = SceneProxy(env_name)  # the official metaworld branch, with the proxy as the env
+    e = EnvProxy(env_name)  # the official metaworld branch, with the proxy as the env
     e.seed(seed)
     e = gw.MuJoCoPixelObsWrapper(env=e, width=image_width, height=image_height, camera_name=camera_name, device_id=0)
     e = gw.FrozenEmbeddingWrapper(
@@ -231,34 +254,6 @@ gw.env_constructor = env_constructor
 train_loop.env_constructor = env_constructor
 
 _official_load = ml.load_pretrained_model
-ENC_SOCKET = os.environ.get("ENC_SOCKET", "")
-
-
-class RemoteEncoder(torch.nn.Module):
-    """Stand-in for the frozen encoder: sends the preprocessed input to enc_server.py and returns the same encoder's
-    output (no parameters, so .to() does nothing)."""
-
-    def __init__(self, name):
-        super().__init__()
-        self.name = name
-        self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-        # '@name' = abstract namespace
-        self.sock.connect("\0" + ENC_SOCKET[1:] if ENC_SOCKET.startswith("@") else ENC_SOCKET)
-
-    def _recv(self, n):
-        buf = bytearray()
-        while len(buf) < n:
-            b = self.sock.recv(n - len(buf))
-            if not b:
-                raise ConnectionError("enc_server closed the connection")
-            buf += b
-        return bytes(buf)
-
-    def forward(self, x):
-        b = pickle.dumps((self.name, x.detach().cpu().numpy().astype(np.float32)), protocol=4)
-        self.sock.sendall(struct.pack("<Q", len(b)) + b)
-        out = pickle.loads(self._recv(struct.unpack("<Q", self._recv(8))[0]))
-        return torch.from_numpy(out).to(x.device)
 
 
 def load_pretrained_model(embedding_name, input_type=np.ndarray, *args, **kwargs):
@@ -268,7 +263,7 @@ def load_pretrained_model(embedding_name, input_type=np.ndarray, *args, **kwargs
     if path is None:
         return _official_load(embedding_name, input_type, *args, **kwargs)
     model, dim, transforms, metadata = hydra.utils.call(OmegaConf.load(path))
-    model = RemoteEncoder(embedding_name) if ENC_SOCKET else model.eval()
+    model = model.eval()
     if metadata.get("input") == "pcd":
         return model, dim, (lambda pcd: transforms(pcd).unsqueeze(0)), metadata
     return model, dim, (lambda img: transforms(Image.fromarray(img)).unsqueeze(0)), metadata
@@ -315,6 +310,6 @@ train_loop.sample_paths = sample_paths
 np.seterr(all="ignore")
 if __name__ == "__main__":
     if not MW_PY:
-        sys.exit("set MW_PY to the MuJoCo 3 python (MuJoCo 3 + OGBench): it runs the scene env (scene_server.py)")
+        sys.exit("set MW_PY to the MuJoCo 3 python (MuJoCo 3 with metaworld 3.0 / OGBench): it runs env_server.py")
     sys.argv = [os.path.join(VI, "hydra_launcher.py")] + sys.argv[1:]
     runpy.run_path(os.path.join(VI, "hydra_launcher.py"), run_name="__main__")

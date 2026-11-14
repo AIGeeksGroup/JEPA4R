@@ -399,8 +399,8 @@ class RelocateWorkflowTests(unittest.TestCase):
 
 class CortexBenchRunnerTests(unittest.TestCase):
     def test_point_cloud_switch_follows_the_method(self):
-        """The Scene and RM75-B twin runners switch to point-cloud observations by the embedding's loader; for every
-        BC job they run, the switch must be on exactly for the methods that observe point clouds."""
+        """The runner of the Scene and RM75-B twin tasks switches to point-cloud observations by the embedding's loader;
+        for every BC job it runs, the switch must be on exactly for the methods that observe point clouds."""
         import re
 
         from omegaconf import OmegaConf
@@ -410,10 +410,10 @@ class CortexBenchRunnerTests(unittest.TestCase):
         from jepa4r.policy import bc
 
         switches = {}
-        for name in ("run_bc_scene.py", "run_bc_rm75.py"):
+        for name in ("run_bc_proxy.py",):
             source = (REPO / "jepa4r/policy/bc" / name).read_text()
             switches[name] = re.search(r'_target_\.endswith\("([^"]+)"\)', source).group(1)
-        checked = set()
+        checked, suites = set(), set()
         for path in sorted((REPO / "experiments").glob("*.yaml")):
             for job in expand(load_spec(path), with_optional=True):
                 if job.stage != "train_policy":
@@ -433,8 +433,10 @@ class CortexBenchRunnerTests(unittest.TestCase):
                 with self.subTest(job=" ".join(job.args())):
                     self.assertEqual(target.endswith(switches[runner]), cfg.method.obs == "pointcloud")
                 checked.add((runner, str(cfg.method.obs)))
+                suites.add((str(cfg.env.suite), runner))
         self.assertEqual({obs for _, obs in checked}, {"pointcloud", "image"})
         self.assertEqual({runner for runner, _ in checked}, set(switches))
+        self.assertEqual({suite for suite, _ in suites}, {"ogbench", "metaworld_rm75"})
 
 
 if __name__ == "__main__":

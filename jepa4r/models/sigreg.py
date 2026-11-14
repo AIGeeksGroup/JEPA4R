@@ -35,10 +35,3 @@ class SIGReg(torch.nn.Module):
         err = (x_t.cos().mean(-3) - self.phi).square() + x_t.sin().mean(-3).square()
         statistic = (err @ self.weights) * proj.size(-2)
         return statistic.mean()  # average over projections and time
-
-
-def sigreg(z, num_projections=1024):
-    """z: [B, T, D] latents -> scalar loss."""
-    # The training forward (world_model.lejepa_forward) calls SIGReg on emb.transpose(0, 1); the 17 knots are
-    # the value of the LeWM recipe (loss.sigreg.kwargs.knots).
-    return SIGReg(knots=17, num_proj=num_projections).to(z.device)(z.transpose(0, 1))

@@ -1,7 +1,6 @@
 # CortexBench MetaWorld [majumdar2023vc1, yu2019metaworld]: five tasks, imitation protocol.
 _base_: _base
 suite: metaworld
-impl: jepa4r.envs.metaworld
 camera:
   name: top_cap2              # the CortexBench MetaWorld camera: a free camera reproducing the CortexBench fork's
                               # top_cap2, pos (0, 0.9, 0.6) looking at tablelink (jepa4r/envs/metaworld/env.py)

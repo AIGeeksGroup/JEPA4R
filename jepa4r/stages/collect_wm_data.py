@@ -6,18 +6,24 @@ Paper: Sec. 4.1 (one depth camera -> 1,200-point xyzrgb clouds), Sec. 5.2 and su
 in : cfg.env (simulator, camera, pointcloud, wm_data)
 out: data/wm/<env>/ in the jepa4r.data.storage layout. Images and point clouds record the SAME simulator
      rollouts row by row, so states, actions, splits and starts coincide for the 2D and 3D models.
-     wm_data.recipe == "mixture"       -> episodes drawn from wm_data.mixture (jepa4r.data.behaviors)
-     wm_data.recipe == "ogbench_noisy" -> OGBench's noisy recipe and official scale (Puzzle)
-uses: jepa4r.envs.make_env, jepa4r.data.behaviors, jepa4r.data.pointcloud.process, jepa4r.data.storage
+     The behaviour of every episode (wm_data.recipe, wm_data.mixture) is drawn by the task's collection policy
+     (wm_data.policy), with the expert, noise scales and switch schedules of the paper's data:
+       MetaWorld  jepa4r/envs/metaworld/policy.py ThreePartPolicy (+ the task subclasses): a scripted expert's plan
+                  as backbone (0.5) / branch into random actions (0.3) / random (0.2), wm_data.env_kwargs.mix
+       Scene      jepa4r/envs/ogbench/ogb_scene_env.py SceneThreePartPolicy (the same three-part plan)
+       Puzzle     jepa4r/envs/ogbench/ogb_puzzle_env.py PuzzleNoisyPolicy (OGBench's noisy recipe and official scale)
+       UR5e / RM75-B cube (reconstruction, twin): stable-worldmodel's plan-oracle expert (envs/ogbench/expert_policy.py)
+       Cube 1-4, Relocate: the collectors of the Cube and Relocate workflows (jepa4r/data/cube, jepa4r/data/relocate)
+uses: the suites' envs and point-cloud wrappers (jepa4r/envs, jepa4r.data.pointcloud), jepa4r.data.storage
 
 The collection code of the paper's data: one stable-worldmodel ``World.collect`` per shard, each shard in its own
-process (``python -m jepa4r.stages.collect_wm_data <shard.json>``), as the paper's launchers ran them (OGBench's oracles
+process (``python -m jepa4r.stages.collect_wm_data <shard.json>``), as in the paper's runs (OGBench's oracles
 draw from numpy's global RNG):
   collect_paired  collect_cube_pcd.py   OGBench Cube with the plan oracle (UR5e reconstruction data, RM75-B twin)
-  collect_mw      collect_mw.py         MetaWorld three-part plan (backbone / branch / random)
-  collect_ogb     collect_ogb.py        OGBench scene (three-part plan, health check) and puzzle (noisy recipe)
-``run`` then merges the shards in the original order (merge_h5_shards.py), checks that the 2D and 3D files hold the
-same rollouts (check_paired) and flattens the columns (add_eval_columns.py), as the paper's collection
+  collect_mw      MetaWorld three-part plan (backbone / branch / random)
+  collect_ogb     OGBench scene (three-part plan, health check) and puzzle (noisy recipe)
+``run`` then merges the shards in the original order (merge_shards), checks that the 2D and 3D files hold the
+same rollouts (check_paired) and flattens the columns (add_eval_columns), as the paper's collection
 scripts did. Shard seeds: the paper's sharding rule (``shard_seeds``). The workflows' collectors: ``wm_data.collector:
 cube_workflow`` (Cube 1-4: the Cube workflow's collection protocol, jepa4r.policy.gciql.collect_cube), ``adroit`` /
 ``rh56`` (Adroit Relocate / the RH56 twin: the Relocate workflow, jepa4r.policy.bc.relocate_stage).
@@ -55,7 +61,7 @@ def collect_paired(cfg: DictConfig):
     """Run the paired data collection: pixels (2D) and point clouds (3D) of the same rollouts."""
 
     world = swm.World(
-        # RM-75 configs set env_id (config/ogb_rm75_pcd.yaml); default = the UR5e env
+        # the RM75-B twin sets env_id (configs/env/rm75b_cube.yaml wm_data.env_id); default = the UR5e env
         cfg.get("env_id", "swm/OGBCubePCD-v0"),
         **cfg.world,
         env_type="single",
@@ -198,7 +204,7 @@ def collect_ogb(cfg: DictConfig):
 
 
 def shard_seeds(num_traj, shards, seed):
-    """Episode counts and World seeds of the shards (collect_cube_pcd_sharded.py)."""
+    """Episode counts and World seeds of the shards (the paper's sharded launcher)."""
 
     class args:  # the launcher's argparse namespace
         pass
@@ -217,63 +223,8 @@ def shard_seeds(num_traj, shards, seed):
     return counts, seeds
 
 
-def collect_pinned(cfg: DictConfig):
-    """Collection with all three random sources of OGBench Cube fixed: the variation space (cube start /
-    goal) re-seeded at every reset from one process-wide counter starting at ``variation_seed_start``, each env's RNG
-    ``default_rng(env_rng_base + i)``, and numpy's global RNG (the plan oracle's noise) seeded with ``numpy_seed``."""
-    import itertools
-    from functools import partial
-
-    import stable_worldmodel as swm
-    import stable_worldmodel.spaces as swm_spaces
-
-    importlib.import_module("jepa4r.envs.ogbench")  # registers swm/OGBCubePCD-v0
-    importlib.import_module("jepa4r.envs.twins.rm75b")  # registers swm/OGBCubeRM75PCD-v0
-    from jepa4r.data.pointcloud import PointCloudWrapper
-    from jepa4r.envs.ogbench.expert_policy import PCDExpertPolicy
-
-    pin = cfg.pinned_rng
-    np.random.seed(int(pin.numpy_seed))
-
-    # upstream swm CubeEnv.reset() re-seeds its variation space from OS entropy on every
-    # reset (cube start/goal position come from there); give it a deterministic sequence
-    # instead so both configs draw identical episodes. Test-only patch.
-    _orig_reset_vs, _ctr = swm_spaces.reset_variation_space, itertools.count(int(pin.variation_seed_start))
-
-    def _det_reset_vs(variation_space, seed=None, options=None, default_variations=None):
-        return _orig_reset_vs(variation_space, seed=next(_ctr), options=options, default_variations=default_variations)
-
-    swm_spaces.reset_variation_space = _det_reset_vs
-    common = dict(
-        num_envs=int(cfg.world.num_envs),
-        max_episode_steps=int(cfg.world.max_episode_steps),
-        image_shape=list(cfg.world.image_shape),
-        env_type="single",
-        multiview=False,
-        width=224,
-        height=224,
-        visualize_info=False,
-        terminate_at_goal=False,
-        mode="data_collection",
-    )
-    world = swm.World(
-        str(cfg.env_id),
-        ob_type="states",
-        add_pixels=False,
-        pre_wrappers=[partial(PointCloudWrapper, **OmegaConf.to_object(cfg.pcd))],
-        **common,
-    )
-    world.set_policy(PCDExpertPolicy(policy_type="plan_oracle"))
-    # upstream swm CubeEnv.reset() drops the `seed` argument, so the env RNG would be
-    # entropy-seeded; pin it explicitly (same in both configs) to allow a bit-exact test.
-    for i, e in enumerate(world.envs.envs):
-        e.unwrapped.np_random = np.random.default_rng(int(pin.env_rng_base) + i)
-    world.collect(str(cfg.out), episodes=int(cfg.num_traj), seed=int(cfg.world_seed), format="hdf5", progress=False)
-
-
-# --------------------------------------------------------------------------- shard plans (the run_*_collection.sh
-# scripts)
-COLLECTORS = {"paired": collect_paired, "mw": collect_mw, "ogb": collect_ogb, "pinned": collect_pinned}
+# --------------------------------------------------------------------------- shard plans (as in the paper's runs)
+COLLECTORS = {"paired": collect_paired, "mw": collect_mw, "ogb": collect_ogb}
 
 
 def _base(wm):
@@ -288,10 +239,9 @@ def _base(wm):
 
 
 def plan_shards(wm, data_dir):
-    """-> (shard specs, merges [(final file, [shard files])], final files). Mirrors run_mw_collection.sh (40 sharded
-    train shards + one 150-episode test run), run_scene_collection.sh (per task 6 shards, seeds (k+1)*10^6 + i, merged
-    task by task), run_puzzle_collection.sh (8 train shards at 10^6 + i, 2 test shards at 2*10^6 + i) and the paired
-    plan-oracle Cube runs (collect_cube_pcd_sharded.py)."""
+    """-> (shard specs, merges [(final file, [shard files])], final files), as the paper's runs sharded the data:
+    MetaWorld 40 train shards + one 150-episode test run, Scene 6 shards per task (seeds (k+1)*10^6 + i, merged task by
+    task), Puzzle 8 train shards at 10^6 + i and 2 test shards at 2*10^6 + i, and the paired plan-oracle Cube runs."""
     data_dir = Path(data_dir)
     shard_dir = data_dir / "shards"
     collector, base = str(wm.collector), _base(wm)

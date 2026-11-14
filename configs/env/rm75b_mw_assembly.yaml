@@ -1,11 +1,11 @@
 # MetaWorld assembly on the RM75-B digital twin (Sec. 5.6 "Robot Setup": the twin carries either end effector, and for
 # each one JEPA4R's world model and policy heads are trained only on twin data, with the same recipe as in simulation):
 # CortexBench's assembly with the RealMan RM75-B + Inspire EG2-4C2 in place of the Sawyer
-# (jepa4r/envs/twins/metaworld_rm75, jepa4r/policy/bc/run_bc_rm75.py). Task, camera, collection plan, point clouds and
+# (jepa4r/envs/twins/metaworld_rm75, jepa4r/policy/bc/run_bc_proxy.py). Task, camera, collection plan, point clouds and
 # imitation protocol are mw_assembly's; robot, collection env, CortexBench env and demos are the twin's. The paper
 # reports no number for it.
 _base_: mw_assembly
-suite: metaworld_rm75         # CortexBench on the twin: run_bc_rm75.py with the twin's own demos
+suite: metaworld_rm75         # CortexBench on the twin: run_bc_proxy.py with the twin's own demos
 name: rm75b_mw_assembly
 display: Assembly (RM75-B twin)
 env_id: rm75-assembly-v2-goal-observable   # CortexBench task id (demos, evaluation)

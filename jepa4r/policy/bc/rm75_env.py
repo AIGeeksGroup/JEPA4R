@@ -1,18 +1,18 @@
 """CortexBench's MetaWorld env on the RM75 (runs in the MuJoCo 3 + metaworld 3.0 python): what the official harness's
 env_constructor + MuJoCoPixelObsWrapper give for the Sawyer (metaworld <task>-v2-goal-observable with
 _freeze_rand_vec False, a new layout per seed, the hand at the task's own start, 500-step episodes, 256x256 frames
-from top_cap2 with multisampling), here with the RM75 env of envs/metaworld/rm75:
+from top_cap2 with multisampling), here with the RM75 env of jepa4r/envs/twins/metaworld_rm75:
 * reset(): MWTaskEnv.reset with the seed set by seed(): the layout is drawn from that seed (a different layout than
   metaworld's own seed(s) + reset() gives for the same s), the hand at the task's own start;
-* the steps are the RM75 metaworld env's (envs/metaworld/rm75/robot.py: clipped 4-D action, IK, servos), so step(a)
-  returns metaworld's own (obs, reward, info) with info['success'];
+* the steps are the RM75 metaworld env's (jepa4r/envs/twins/metaworld_rm75/robot.py: clipped 4-D action, IK, servos), so
+  step(a) returns metaworld's own (obs, reward, info) with info['success'];
 * rgb(): 256x256 top_cap2, multisampled (the renderer the world-model data used, at CortexBench's size);
 * pcd(): (1200, 6) float32 xyz (m) + rgb 0..255 of the same camera, envs.metaworld.MWPointCloudWrapper with the 3D
   world-model data's settings (1200 points, 5 mm voxels, 25 % object points, the task's re-placed fixtures; depth /
   segmentation without multisampling), rendered at 224x224 as the JEPA4R data and the Sawyer harness's 3D
   (pcd_fork.MWPointClouds): the env is made at 224, the frames come from a 256 renderer of their own. Its sampling RNG
   is seeded by seed().
-Used by make_rm75_demos.py (the demos) and rm75_server.py (the evaluation env behind run_bc_rm75.py's proxy)."""
+Used by make_rm75_demos.py (the demos) and env_server.py (the evaluation env behind run_bc_proxy.py's proxy)."""
 
 from __future__ import annotations
 

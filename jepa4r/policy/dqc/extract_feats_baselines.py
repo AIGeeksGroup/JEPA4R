@@ -6,9 +6,8 @@ loads it (wm_obs.BaselineEncoder: its own transforms, its frozen embedding) -> o
   has its own done file ({split}_done_<name>.npy), so a pass can be resumed or an encoder added later.
 * At most 2 x workers rendered chunks wait for the encoders (Pool.imap alone renders ahead without bound: with V-JEPA
   2.1, slower than the rendering, the waiting 384 frames grew to 66 GB in five minutes).
-    python extract_feats_baselines.py --env-type 4x5 --out $STABLEWM_HOME/datasets/ogbench/dqc_feats/puzzle_4x5 \\
-        --encoder vjepa21=$STABLEWM_HOME/checkpoints/cortexbench_baselines/vjepa2_1_vitb_dist_vitG_384.pt \\
-        [--encoder lejepa=.../checkpoints/lejepa_puzzle_4x5 --encoder pldm=.../checkpoints/pldm_puzzle_4x5] --workers 6
+The train_policy stage runs it for a baseline on Puzzle (jepa4r.policy.dqc.cache_latents gives the command line:
+--encoder <name>=<weights file or checkpoint directory>, --env-type, --data, --out, --split train).
 """
 
 import argparse

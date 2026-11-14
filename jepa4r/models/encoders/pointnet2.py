@@ -28,7 +28,7 @@ activations of a 128 x 4-frame batch do not fit in GPU memory. The centres are t
 activation checkpointing; each BatchNorm's batch statistics are summed over all chunks first (one pass per layer) and
 then applied, so the result is the unchunked network's up to floating-point summation order, and the running statistics
 are updated once per step as nn.BatchNorm does. In eval mode the running statistics are used. With bn_group
-(config/train/model/encoder/pointnet2.yaml: 32; the authors trained PointNet++ with batches of 16) the statistics are
+(configs/encoder/pointnet2.yaml: 32; the authors trained PointNet++ with batches of 16) the statistics are
 per group of that many clouds instead: each group is computed in one piece under activation checkpointing, and the
 running statistics are updated once per group.
 """

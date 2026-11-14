@@ -4,7 +4,7 @@
 # twin's Cube the paper's code only plans with CEM, the appendix-only setting of Tab. S1) and the paper gives no number
 # for them, so no job runs them (docs/reproduce.md).
 name: twin
-expected: [paper/expected/twin.yaml]   # no table: the paper reports no twin numbers (Sec. 5.6 "Results" is qualitative)
+expected: []   # the paper reports no twin numbers (Sec. 5.6 "Results" is qualitative)
 
 jobs:
   - stage: verify_twin
@@ -26,8 +26,8 @@ jobs:
   - stage: train_policy
     grid: {env: [rm75b_rh56_relocate], method: [jepa4r, lewm]}
   # the EG2-4C2 gripper on the twin, four CortexBench MetaWorld tasks (configs/env/rm75b_mw_*.yaml): LeWM and
-  # JEPA4R world models, 10 epochs; CortexBench BC seeds 100 / 200 / 300 on the twin's own demos; Random (ViT-B) on
-  # bin-picking and button-press, as in the paper's runs; no number in the paper
+  # JEPA4R world models, 10 epochs; CortexBench BC seeds 100 / 200 / 300 on the twin's own demos; no number in the
+  # paper
   - stage: collect_wm_data
     grid: {env: &rm75_mw [rm75b_mw_bin_pick, rm75b_mw_button, rm75b_mw_drawer, rm75b_mw_assembly]}
   - stage: prepare_policy_data
@@ -36,5 +36,3 @@ jobs:
     grid: {env: *rm75_mw, method: [jepa4r, lewm]}
   - stage: train_policy
     grid: {env: *rm75_mw, method: [jepa4r, lewm]}
-  - stage: train_policy
-    grid: {env: [rm75b_mw_bin_pick, rm75b_mw_button], method: [random_vitb]}

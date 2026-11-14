@@ -5,13 +5,12 @@
 # the final opposite camera. Run by the Relocate workflow (jepa4r/policy/bc/relocate). The paper reports no number for it.
 _base_: _base
 suite: rh56
-impl: jepa4r.envs.twins.rh56
 name: rm75b_rh56_relocate
 display: Relocate (RM75-B + RH56 twin)
 env_id: rh56-relocate         # the workflow's --env
 robot:
   name: rm75b
-  end_effector: rh56          # jepa4r/envs/twins/hand.py (rh56): the external native RM75-B + RH56 bundle
+  end_effector: rh56          # the Inspire RH56 hand of the external native RM75-B + RH56 bundle (jepa4r/envs/twins/rh56)
 camera:
   name: opposite              # 256 x 256 renders
 pointcloud:

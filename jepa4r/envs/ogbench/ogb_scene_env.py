@@ -1,6 +1,6 @@
 """OGBench's own ``scene-v0`` (the ogbench package, not stable-worldmodel's ``swm/OGBScene-v0`` port) behind the repo's
-stable-worldmodel interface, ``swm/OGBenchScene-v0``, for the scene world-model data (scripts/data/collect_ogb.py) and
-the CortexBench evaluation tasks (bench/cortexbench/scene_env.py).
+stable-worldmodel interface, ``swm/OGBenchScene-v0``, for the scene world-model data (jepa4r/stages/collect_wm_data.py)
+and the CortexBench evaluation tasks (jepa4r/policy/bc/scene_env.py).
 
 Collection (``mode='data_collection'``): one object task per env (``task``: cube, button, drawer or window), each
 collected on its own with MetaWorld's three-part plan (envs/metaworld/env.py, policy.py). At every reset(seed):
@@ -23,7 +23,7 @@ the outward components are flipped (as MetaWorld). 200 steps per episode (MetaWo
 outside the drawer (y <= -0.3 off the drawer's height) is collected again with another seed.
 The seed fixes everything: numpy's global RNG (OGBench's oracles draw from it on reset), OGBench's own reset, the
 episode RNG (``rng``: the other tasks' looks, the plan, the policy's noise and random actions) and the point-cloud
-sampling (envs/ogb_pcd.py). OGBench's oracles draw from numpy's global RNG, so one env per process (num_envs 1).
+sampling (ogb_pcd.py). OGBench's oracles draw from numpy's global RNG, so one env per process (num_envs 1).
 Every row records the state before its action: the plan (sample_type, rand_action, noise_std, branch_t, branch_len,
 oracle_restart = the backbone restarts from the current state after a random burst), the episode seed, the two locks,
 drawer / window openings, the cube (position, in the drawer), the effector (position, yaw), the gripper, qpos / qvel and
@@ -32,7 +32,7 @@ whether the current goal is reached (target_success).
 Evaluation (``mode='task'``): OGBench's task mode, reset(seed, options={'task_id': k}) and step as OGBench's.
 
 Observations: one camera, front_pixels, 224 x 224, the opaque arm of ob_type='states' (``Camera``): render() is the
-anti-aliased RGB of the 2D data; envs/ogb_pcd.ScenePointCloudWrapper back-projects the same camera's depth (rendered
+anti-aliased RGB of the 2D data; ogb_pcd.ScenePointCloudWrapper back-projects the same camera's depth (rendered
 without anti-aliasing) into the 3D data's point cloud (``point_cloud``): geoms welded to the world (table, walls, button
 bases, drawer cabinet, window frame and the fixed pane, robot base) are background; foreground = the moving arm + cube +
 the two button caps + the drawer's moving part + the sliding pane; the window glass (alpha 0.1, nearly invisible in the
@@ -65,7 +65,7 @@ CAMERA = "front_pixels"
 IMG = 224
 TASKS = ("cube", "button", "drawer", "window")
 
-# MetaWorld's three-part plan (envs/metaworld/env.py defaults, scripts/data/config/mw_binpick.yaml)
+# MetaWorld's three-part plan (jepa4r/envs/metaworld/env.py defaults, configs/env/mw_bin_pick.yaml)
 EPISODE_STEPS = 200
 MIX = (0.5, 0.3, 0.2)
 NOISE_MAX = 0.2

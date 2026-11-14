@@ -1,0 +1,10 @@
+# JEPA4R's encoder (DexArt PointNet + projector) as the BC embedding; input: (N, 6) point clouds, see
+# jepa4r/policy/bc/run_bc3d.py. jepa4r.policy.bc.embedding_config fills in per run the env's train_wm checkpoints
+# (checkpoint_dir, epoch = method.policy_epoch, default 10) and the env's point-cloud affine (center, scale), the
+# preprocessor the world model was trained with.
+_target_: wm_embeddings.load_jepa4r
+checkpoint_dir: null
+epoch: 10
+center: null
+scale: null
+use_rgb: true

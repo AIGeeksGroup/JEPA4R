@@ -7,6 +7,5 @@
 name: random_vitb
 display: Random (ViT-B), frozen
 kind: random
-impl: jepa4r.baselines.random_vit
 obs: image
 encoder: vit_b16

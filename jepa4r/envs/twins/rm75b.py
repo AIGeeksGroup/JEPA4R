@@ -5,7 +5,7 @@ Same paired-observation contract as jepa4r/envs/__init__.py.
 
 Modules:
   cube_rm75_env.py   RM75ManipSpaceEnv (OGBench's robot layer with the RM75-B + the
-                     Inspire EG2-4C2 gripper of jepa4r/envs/twins/hand.py), RM75CubeEnv / RM75CubePCDEnv
+                     Inspire EG2-4C2 gripper), RM75CubeEnv / RM75CubePCDEnv
                      (swm/OGBCubeRM75-v0 / swm/OGBCubeRM75PCD-v0), base at (0.15, 0, 0), boxes scaled by 0.5 about
                      (0.425, 0, 0.02), point-cloud crop x_min 0.21
   descriptions/      the MJCF models (realman_rm75b/rm75b.xml, inspire_eg2_4c2/eg2_4c2.xml) and their STL meshes
@@ -15,7 +15,6 @@ Modules:
 
 import os
 import tempfile
-from importlib import import_module
 from pathlib import Path
 
 ENV_IDS = {  # gymnasium registrations
@@ -35,22 +34,6 @@ def register_envs():
 
 
 register_envs()
-
-
-def make(env_cfg, **kwargs):
-    """The twin env ``env_cfg.wm_data.env_id`` with the single-depth-camera PointCloudWrapper (``env_cfg.wm_data.pcd``,
-    crop box x_min 0.21)."""
-    import gymnasium
-
-    from omegaconf import OmegaConf
-
-    wm = env_cfg.wm_data
-    kw = wm.get("env_kwargs")
-    kw = OmegaConf.to_container(kw, resolve=True) if OmegaConf.is_config(kw) else dict(kw or {})
-    env = gymnasium.make(str(wm.env_id), **{**kw, **kwargs})
-    pcd = OmegaConf.to_container(wm.pcd, resolve=True)
-    module, _, name = pcd.pop("_target_", "jepa4r.data.pointcloud.PointCloudWrapper").rpartition(".")
-    return getattr(import_module(module), name)(env, **pcd)
 
 
 def check_against_urdf(env_cfg, out_dir=None) -> dict:

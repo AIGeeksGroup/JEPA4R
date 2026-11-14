@@ -41,7 +41,7 @@ def build_environment(data_root, output_root, environ=None):
 
 
 def load_tiny_trainer():
-    return importlib.import_module("jepa4r.baselines.cube.native.tiny_train")
+    return importlib.import_module("jepa4r.baselines.lejepa")
 
 
 @contextmanager

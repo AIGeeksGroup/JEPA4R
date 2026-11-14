@@ -2,7 +2,6 @@
 name: vjepa21
 display: V-JEPA 2.1
 kind: pretrained
-impl: jepa4r.baselines.vjepa21
 obs: image
 encoder: vit_b16
 weights: cortexbench_baselines/vjepa2_1_vitb_dist_vitG_384.pt   # under JEPA4R_CHECKPOINTS:

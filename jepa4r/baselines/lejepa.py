@@ -1,13 +1,13 @@
 """LeJEPA [balestriero2025lejepa]: trained on our image data for 10 epochs with its own recipe; ViT-tiny/14.
 
-MetaWorld, Scene, Puzzle: the training script of the paper runs (``main``): the
-official minimal recipe (galilai-group/lejepa MINIMAL.md) on single frames of the env's image dataset with LeWM's
-encoder (HF ViT-tiny/14 at 224 + Linear(192 -> 512)), 4 views, batch 256, AdamW 2e-3 (weight decay 5e-2), one epoch of
-linear warm-up then cosine to 1e-3, lambda 0.02, projector 512 -> 2048 -> 2048 -> 16 (BatchNorm), SIGReg 17 knots /
-256 directions, bf16, torch seed 0; 10 epochs over every frame (cfg.method.train.recipe). Checkpoints
-weights_epoch_<n>.pt (backbone, head, proj) in outputs/train_wm/<env>/lejepa/<tag>/checkpoints/.
-OGBench Cube: the Cube workflow's LeJEPA (jepa4r/baselines/cube/native).
-load_frozen_encoder: the CLS through the 512-d head, as CortexBench and DQC read it (jepa_baselines.load_lejepa).
+The training script of the paper runs (``main``): the official minimal recipe (galilai-group/lejepa MINIMAL.md) on
+single frames of the env's image dataset with LeWM's encoder (HF ViT-tiny/14 at 224 + Linear(192 -> 512)), 4 views,
+batch 256, AdamW 2e-3 (weight decay 5e-2), one epoch of linear warm-up then cosine to 1e-3, lambda 0.02, projector
+512 -> 2048 -> 2048 -> 16 (BatchNorm), SIGReg 17 knots / 256 directions, bf16, torch seed 0; 10 epochs over every frame.
+MetaWorld, Scene, Puzzle: ``train`` (stage train_wm, cfg.method.train.recipe); checkpoints weights_epoch_<n>.pt
+(backbone, head, proj) in outputs/train_wm/<env>/lejepa/<tag>/checkpoints/. Cube 1-4 (jepa4r/models/cube/fresh_train.py)
+and Adroit Relocate (jepa4r/baselines/relocate/train_lejepa.py, seed 3072) run the same ``main`` on their data.
+The policies read the CLS through the 512-d head (jepa4r/policy/bc/jepa_baselines.py load_lejepa: CortexBench, DQC).
 """
 
 import argparse
@@ -71,8 +71,8 @@ class Encoder(nn.Module):
         return emb, self.proj(emb).reshape(N, V, -1).transpose(0, 1)
 
 
-class MWFrames(Dataset):
-    """Every frame of a MetaWorld dataset (uint8 [3, 224, 224]), V views by the official augmentations."""
+class Frames(Dataset):
+    """Every frame of an image dataset (uint8 [3, 224, 224]), V views by the official augmentations."""
 
     def __init__(self, name, V):
         self.ds = swm.data.load_dataset(name, transform=None, num_steps=1, frameskip=1, keys_to_load=["pixels"])
@@ -98,10 +98,19 @@ class MWFrames(Dataset):
         return torch.stack([self.aug(img) for _ in range(self.V)])
 
 
+def initialize_training_seed(seed=None):
+    if seed is None:
+        torch.manual_seed(0)
+    else:
+        from lightning import seed_everything
+
+        seed_everything(int(seed), workers=True)
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser()
-    ap.add_argument("--task", required=True, help="mw_binpick / mw_assembly / mw_button / mw_drawer / mw_hammer")
-    ap.add_argument("--dataset", default=None, help="dataset under datasets/ (default: metaworld/<task>.h5)")
+    ap.add_argument("--task", required=True, help="the run's label (the env)")
+    ap.add_argument("--dataset", required=True, help="the image dataset (HDF5)")
     ap.add_argument("--name", default=None, help="checkpoint directory name (default: lejepa_<task>)")
     ap.add_argument("--out", default=None, help="checkpoint directory (default: $STABLEWM_HOME/checkpoints/<name>)")
     ap.add_argument("--epochs", type=int, default=10)
@@ -111,8 +120,9 @@ def main(argv=None):
     ap.add_argument("--lamb", type=float, default=0.02)
     ap.add_argument("--proj-dim", type=int, default=16)
     ap.add_argument("--workers", type=int, default=8)
+    ap.add_argument("--seed", type=int, default=None, help="the training seed (default: torch.manual_seed(0))")
     args = ap.parse_args(argv)
-    torch.manual_seed(0)
+    initialize_training_seed(args.seed)
 
     out = (
         Path(args.out)
@@ -120,10 +130,12 @@ def main(argv=None):
         else Path(os.environ["STABLEWM_HOME"]) / "checkpoints" / (args.name or f"lejepa_{args.task}")
     )
     out.mkdir(parents=True, exist_ok=True)
+    # the arguments in config.json; --out and --seed only when given
+    recorded = {k: v for k, v in vars(args).items() if v is not None or k not in ("out", "seed")}
     (out / "config.json").write_text(
-        json.dumps({"algo": "lejepa", "encoder": "vit_hf tiny p14 224 + Linear(192,512)", **vars(args)}, indent=1)
+        json.dumps({"algo": "lejepa", "encoder": "vit_hf tiny p14 224 + Linear(192,512)", **recorded}, indent=1)
     )
-    ds = MWFrames(args.dataset or f"metaworld/{args.task}.h5", args.V)
+    ds = Frames(args.dataset, args.V)
     train = DataLoader(
         ds,
         batch_size=args.bs,
@@ -201,9 +213,5 @@ def train(cfg, out_dir) -> dict:
     return {"checkpoints": sorted(p.name for p in ckpt.glob("weights_epoch_*.pt"))}
 
 
-def load_frozen_encoder(cfg):
-    from jepa4r.baselines import frozen
-    from jepa4r.policy.bc.jepa_baselines import load_lejepa
-    from jepa4r.policy.frozen import checkpoint
-
-    return frozen(load_lejepa(str(checkpoint(cfg)), int(cfg.method.get("policy_epoch", 10))), cfg)
+if __name__ == "__main__":
+    main()

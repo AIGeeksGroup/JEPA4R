@@ -4,8 +4,8 @@ CD     symmetric Chamfer distance on xyz
 SW_2^2 squared sliced Wasserstein-2 distance on xyz [bonneel2015sliced] (cfg.decoder.loss.sw_projections)
 L_rgb  L1 colour error of nearest-neighbour matched points
 
-The paper's loss code (chamfer = CD + colour term, sliced_wasserstein, nn_distance = the
-validation readout); ``decoder_loss`` adds them up as the backbone decoders' ``loss`` does.
+The paper's loss code: chamfer (CD + colour term) and sliced_wasserstein, added up by the backbone decoders' ``loss``
+(jepa4r/decoder/backbones); nn_distance is the validation readout.
 """
 
 import torch
@@ -82,15 +82,3 @@ def nn_distance(pred, gt, chunk=256):
     a = (pred[..., :3] - _gather(gt[..., :3], _nn_index(pred, gt, chunk))).norm(dim=-1).mean(-1)
     b = (gt[..., :3] - _gather(pred[..., :3], _nn_index(gt, pred, chunk))).norm(dim=-1).mean(-1)
     return 0.5 * (a + b)
-
-
-def decoder_loss(pred, target, loss_cfg):
-    """Eq. 2 for decoded points pred and the observed cloud target (B, N, 6), as PAGE4DDecoder.loss adds the terms up:
-    chamfer (CD on xyz + loss_cfg.rgb_l1 x L1 colour of NN-matched pairs) + loss_cfg.sliced_w2 x SW_2^2
-    (loss_cfg.sw_projections random directions) -> (loss, {'cd', 'col', 'sw'})."""
-    assert float(loss_cfg.chamfer) == 1.0, "the Chamfer term has weight 1 (Eq. 2)"
-    loss, logs = chamfer(pred, target, float(loss_cfg.rgb_l1))
-    if float(loss_cfg.sliced_w2) > 0:
-        sw = sliced_wasserstein(pred, target, int(loss_cfg.sw_projections))
-        loss, logs["sw"] = loss + float(loss_cfg.sliced_w2) * sw, sw.detach()
-    return loss, logs
