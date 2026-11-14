@@ -1,6 +1,7 @@
 # OGBench Cube in the RM75-B digital twin (Sec. 5.6 "Robot Setup"): a MuJoCo twin of the RealMan RM75-B arm,
 # built from its vendor URDF, replaces the UR5e in a workspace scaled by 0.5 about its center to fit the arm's
-# 610 mm reach. The world model, policy head and decoder used on the real arm are trained only here.
+# 610 mm reach. The world model and decoder used on the real arm are trained only here (the policy head on this Cube
+# and its decoded look-ahead preview have no code in the four source branches and no number in the paper).
 # The real-arm deployment itself is not part of this repository.
 _base_: _ogbench
 name: rm75b_cube
@@ -58,6 +59,3 @@ wm_data:
   max_parallel: 8             # run_rm75_pipeline.sh:5 (MAXPAR_PIX)
   threads: 2
 policy_data: ???
-preview:                      # stage eval_preview (Sec. 4.3 look-ahead, Sec. 5.6 results)
-  segment_steps: 25           # each executed 25-step segment is previewed by the decoded imagination
-  num_episodes: 50            # twin evaluation episodes

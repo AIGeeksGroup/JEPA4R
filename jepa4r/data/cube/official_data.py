@@ -31,7 +31,7 @@ def save(path, value):
 def build_plan(cube_count, output_root):
     if type(cube_count) is not int or cube_count not in (1, 2, 3, 4):
         raise ValueError('cube_count must be 1..4')
-    sources = HERE.parents[2] / 'configs' / 'policy' / 'gciql' / 'official_sources.json'
+    sources = HERE.parents[2] / 'configs' / 'env' / 'cube' / 'official_sources.json'
     source = json.loads(sources.read_text(encoding='utf8'))[str(cube_count)]
     return dict(schema='cube_official_data_plan_v1', cube_count=cube_count,
                 output_root=str(Path(output_root).resolve()), files=source['files'],

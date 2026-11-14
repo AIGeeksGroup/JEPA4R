@@ -1,7 +1,7 @@
 # Moved from OGBench-cube@4fbb0c6:lewm_pcd/rh56_adapter/wm_bridge.py (verbatim except: imports / paths adapted to the
 # package; the original train.py / utils.py / config/train are their moved counterparts
 # (jepa4r.models.world_model.run_random_split with original_layout, jepa4r.data.clips,
-# configs/policy/bc/relocate/train);
+# configs/method/relocate/train);
 # lines wrapped at 120 columns)
 """RH56 data-boundary hooks around the unchanged CortexBench LeWM entrypoint.
 
@@ -225,7 +225,7 @@ def checked_resume_checkpoint(output, receipt):
 
 
 BASELINE_FINGERPRINT_SCOPE = (
-    'models/*.py; data/clips.py; models/encoders/**/*.py; ../configs/policy/bc/relocate/train YAML; '
+    'models/*.py; data/clips.py; models/encoders/**/*.py; ../configs/method/relocate/train YAML; '
     'policy/bc/lewm_cortex.py; '
     'excludes datasets, outputs, caches, external dependencies and adapter files'
 )
@@ -243,7 +243,7 @@ def tree_sha(root):
     paths = set((root / 'models').glob('*.py')) | {root / 'data/clips.py'}
     paths.update((root / 'models/encoders').rglob('*.py'))
     for suffix in ('*.yaml', '*.yml'):
-        paths.update((root.parent / 'configs/policy/bc/relocate/train').rglob(suffix))
+        paths.update((root.parent / 'configs/method/relocate/train').rglob(suffix))
     loader = root / 'policy/bc/lewm_cortex.py'
     if loader.is_file():
         paths.add(loader)
@@ -355,7 +355,7 @@ def main(argv=None):
             OmegaConf.register_new_resolver('eval', eval)
         overrides = ['data=adroit_relocate', 'model=lewm'] if args.route == 'rgb' else [
             'data=adroit_relocate_pcd', 'model=lewm_pcd_dexart']
-        train_configs = str(baseline.parent / 'configs/policy/bc/relocate/train')
+        train_configs = str(baseline.parent / 'configs/method/relocate/train')
         with initialize_config_dir(version_base=None, config_dir=train_configs):
             cfg = compose(config_name='lewm', overrides=overrides)
         run_name = f'rh56_relocate_{args.route}_{args.mode}_v1'

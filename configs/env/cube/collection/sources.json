@@ -22,7 +22,7 @@
       "sha256": "87751fad98eb2d508b874d2b698a5aebab477ad843206929f7b351885bc9a64f"
     },
     "code/lewm_pcd/scripts/data/config/launcher/local.yaml": {
-      "repository_path": "configs/policy/gciql/collection/launcher/local.yaml",
+      "repository_path": "configs/env/cube/collection/launcher/local.yaml",
       "sha256": "39c78c057ea44669ca7c6c0cfa3dcd9f4510956eddd613e34bb79cf9af193b5e"
     },
     "code/lewm_pcd/envs/pcd_wrapper.py": {
@@ -374,7 +374,7 @@
       "sha256": "01901061c49eaefb2897fe425f1e52635f102aab04cd0b80d85d762c90d3d414"
     },
     "code/lewm_pcd/scripts/data/config/paper_cube.yaml": {
-      "repository_path": "configs/policy/gciql/collection/paper_cube.yaml",
+      "repository_path": "configs/env/cube/collection/paper_cube.yaml",
       "sha256": "63ff546404006bcd3cb072e5b6233c6bf3ebe5a7738961d3c2e7275b6942ef79"
     }
   },

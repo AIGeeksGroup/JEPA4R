@@ -166,7 +166,7 @@ def main():
             expert_sha256=expert.provenance['policy_sha256'],
             producer_sha256=sha(__file__),synthetic_target=False,artifacts=artifacts+[
                 args.expert,Path(__file__).resolve().parents[3]/'configs/policy/bc/relocate/DEPENDENCIES.json',
-                Path(__file__).resolve().parents[3]/'configs/policy/bc/relocate/adroit_relocate_sampling.json'])
+                Path(__file__).resolve().parents[3]/'configs/env/relocate/adroit_relocate_sampling.json'])
     except Exception as error:
         receipt(args.output/'collection.json',passed=False,actual_exit_code=1,error=repr(error),artifacts=artifacts)
         raise

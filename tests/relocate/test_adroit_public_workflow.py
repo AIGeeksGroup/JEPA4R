@@ -330,7 +330,7 @@ def test_plan_env_preserves_explicit_dependencies_and_fixed_protocol(tmp_path):
     assert paths.index('/swm')<paths.index('/dmc-overlay')
     assert env['OMP_NUM_THREADS']=='1' and env['LD_LIBRARY_PATH']=='/driver:/custom'
     assert env['ADROIT_FRESH_EVAL'] == '1' and env['ADROIT_PCD_CONFIG'] == str(
-        ROOT / 'configs/policy/bc/relocate/adroit_relocate_sampling.json'
+        ROOT / 'configs/env/relocate/adroit_relocate_sampling.json'
     )
 
 

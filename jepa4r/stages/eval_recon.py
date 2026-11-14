@@ -13,9 +13,8 @@ out: outputs/eval_recon/<env>/<decoder>/<tag>/
       other_actions_nn@{15,100,200}   imagination driven by another episode's actions
       imag_cube@{15,100,200}          cube position error of the imagination
       imag_nn_max                     max over env steps of the mean imagination error (paper: within 1.1)
-  curves.npz           env_step, imag_nn, true_nn, imag_cube, true_cube (mean of 64 episodes)
-                       -> paper/figures/fig_openloop.py
-  rollout_example.npz  one episode, observed vs decoded imagined clouds -> paper/figures/fig_teaser_rollout.py
+  curves.npz           env_step, imag_nn, true_nn, imag_cube, true_cube (mean of 64 episodes; the data of Fig. recon)
+  rollout_example.npz  one episode, observed vs decoded imagined clouds (the data of Fig. 1a)
 """
 
 
