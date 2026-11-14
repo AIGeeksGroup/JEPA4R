@@ -1,4 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/rh56_adapter/uint8_gpu.py (verbatim)
 """Experimental, default-off RGB GPU preprocessing through the existing SPT hook.
 
 The historical full-model CPU/GPU numerical-equivalence gate failed. This flag

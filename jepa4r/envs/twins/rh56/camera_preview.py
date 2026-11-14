@@ -1,4 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/rh56_adapter/camera_preview.py (verbatim)
 """The validated opposite camera on render copies; native physics is untouched."""
 import mujoco
 import numpy as np

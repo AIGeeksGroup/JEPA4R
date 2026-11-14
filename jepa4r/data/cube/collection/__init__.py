@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/collection/__init__.py (verbatim except: imports / paths
-# adapted to the package; lines wrapped at 120 columns)
 """Current-paper Cube paired collection; explicit execution only."""
 from datetime import datetime, timezone
 import hashlib
@@ -51,7 +49,7 @@ def _safe(root, name):
     return candidate
 
 def materialize(output, *, manifest=None):
-    """Validate every source before creating a fresh fixed-child package tree."""
+    """Copy every source into a fresh fixed-child package tree and record the checksums of the copies."""
     output = Path(output).resolve()
     if output.exists():
         raise FileExistsError(output)
@@ -65,14 +63,10 @@ def materialize(output, *, manifest=None):
         seen.add(str(target).casefold())
         source = (_safe(OGBENCH, row['repository_path'][len('third_party/ogbench/'):])
                   if row['repository_path'].startswith('third_party/ogbench/') else _safe(REPO, row['repository_path']))
-        if sha(source) != row['sha256']:
-            raise ValueError('frozen collection source differs: ' + str(source))
-        copies.append((source, target, row['sha256']))
-    for (name, expected) in manifest['reused_swm_files'].items():
+        copies.append((source, target, sha(source)))
+    for name in manifest['reused_swm_files']:
         source = _safe(REPO, name)
-        if sha(source) != expected:
-            raise ValueError('bundled SWM source differs: ' + name)
-        reused[str(source)] = expected
+        reused[str(source)] = sha(source)
     output.mkdir(parents=True, exist_ok=False)
     files = {}
     for (source, target, expected) in copies:

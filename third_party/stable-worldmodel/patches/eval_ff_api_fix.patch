@@ -1,5 +1,5 @@
---- /tmp/claude-0/-root-autodl-tmp-lewm234d/cc72f966-c504-48b8-8711-5cd251e7d121/scratchpad/eval_ff_orig.py	2026-09-13 01:57:26.592371222 +0800
-+++ third_party/stable-worldmodel/scripts/plan/eval_ff.py	2026-09-13 01:57:26.616371482 +0800
+--- a/scripts/plan/eval_ff.py
++++ b/scripts/plan/eval_ff.py
 @@ -157,16 +157,16 @@
      world.set_policy(policy)
  

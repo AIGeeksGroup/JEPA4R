@@ -1,4 +1,3 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/dqc/extract_feats_baselines.py (verbatim except: no lint exemptions)
 """extract_feats.py for the JEPA-family baselines: OGBench's puzzle-<env-type>-play data -> every state re-rendered with
 the LeWM data's camera (the 2D frame LeWM 2D sees: front_pixels, 224) -> each given baseline encoder as CortexBench
 loads it (lewm_obs.BaselineEncoder: its own transforms, its frozen embedding) -> one latent per step, for run_dqc.py

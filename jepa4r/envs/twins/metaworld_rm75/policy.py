@@ -1,5 +1,3 @@
-# Moved from cortexbench@9331494:lewm_pcd/envs/metaworld/rm75/policy.py (verbatim except: imports / paths adapted to the
-# package; lines wrapped at 120 columns)
 """The three-part collection policies for the RM75. RM75DrawerThreePartPolicy (drawer-open) and
 RM75AssemblyThreePartPolicy (assembly): at the end of this file.
 

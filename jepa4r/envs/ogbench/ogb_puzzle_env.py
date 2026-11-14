@@ -1,5 +1,3 @@
-# Moved from cortexbench@9331494:lewm_pcd/envs/ogb_puzzle_env.py (verbatim except: lines wrapped at 120 columns, no lint
-# exemptions, unused imports removed, registration imports as importlib.import_module)
 """OGBench's own ``puzzle-3x3-v0`` (the ogbench package; stable-worldmodel has no puzzle env) behind the repo's
 stable-worldmodel interface, ``swm/OGBenchPuzzle3x3-v0``, for the puzzle world-model data (scripts/data/collect_ogb.py);
 the larger boards the same way with ``env_type`` ('4x4': ``swm/OGBenchPuzzle4x4-v0``, 16 buttons; '4x5':

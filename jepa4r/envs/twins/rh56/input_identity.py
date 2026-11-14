@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/rh56_adapter/input_identity.py (verbatim except: imports / paths adapted to
-# the package; lines wrapped at 120 columns)
 """Validate original BC source and RH producer partitions before learning."""
 import hashlib
 import json
@@ -13,14 +11,10 @@ def sha(path):
     return digest.hexdigest()
 
 
-def require_bc_source(eai_root,dependencies_path=None):
-    dependencies=Path(dependencies_path or
-                      Path(__file__).resolve().parents[4]/'configs/policy/bc/relocate/DEPENDENCIES.json')
-    expected=json.loads(dependencies.read_text())['eai_vc']['train_loop_sha256']
+def require_bc_source(eai_root):
     path=Path(eai_root).resolve()/'cortexbench/mujoco_vc/visual_imitation/train_loop.py'
-    actual=sha(path)
-    if actual!=expected:raise ValueError('EAI BC source SHA differs from DEPENDENCIES pin')
-    return dict(path=str(path),sha256=actual,dependencies_sha256=sha(dependencies))
+    if not path.is_file():raise FileNotFoundError('EAI BC train loop missing: '+str(path))
+    return dict(path=str(path),sha256=sha(path))
 
 
 def _tuple(row,index):

@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/pldm/shared_data.py (verbatim except: imports / paths of the
-# package layout, no lint exemptions, unused imports removed)
 """Current manifest counts around the RGB16/A15 PLDM data path."""
 
 

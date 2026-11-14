@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/tests/test_gciql_reload_actions.py (verbatim except: imports /
-# paths adapted to the package; lines wrapped at 120 columns)
 """CPU unit checks for the guide's complete deterministic action reference."""
 import importlib.util
 from pathlib import Path

@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/config/train/model/lewm_pcd.yaml (verbatim except: hydra targets of the moved
-# LeWM classes (jepa4r.models.world_model.LEGACY_TARGETS))
 defaults:
   - encoder: dexart
   - _self_

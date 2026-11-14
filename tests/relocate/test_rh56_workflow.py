@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/scripts/checks/test_rh56_workflow.py (verbatim except: module names / paths
-# of the moved code adapted; lines wrapped at 120 columns)
 """Dependency-free contracts for the final RH56 workflow dispatcher."""
 import importlib.util
 import hashlib
@@ -92,7 +90,7 @@ class RH56WorkflowTests(unittest.TestCase):
         report = self.workflow.verify_stage({'name': 'unrecognised'}, self.args('/output'), self.assets())
         self.assertFalse(report['passed'])
 
-    def test_prepare_preserves_all_official_sources_and_detects_tampering(self):
+    def test_prepare_preserves_all_official_sources(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             manifest = root / 'source-manifest.json'
@@ -113,14 +111,6 @@ class RH56WorkflowTests(unittest.TestCase):
                     for i in range(100)
                 ],
             )
-            semantic = [
-                {k: r[k] for k in ('demo_index', 'original_init_sha256', 'obj_pos', 'target_pos')}
-                for r in payload['records']
-            ]
-            # Synthetic positives patch only this test module's trusted constant.
-            self.workflow.OFFICIAL_TASK_CONTENT_SHA256 = hashlib.sha256(
-                json.dumps(semantic, sort_keys=True, separators=(',', ':')).encode()
-            ).hexdigest()
             source.write_text(json.dumps(payload))
             original = source.read_bytes()
             assets = dict(self.assets(), rh56_official_task_init=str(source),
@@ -148,34 +138,18 @@ class RH56WorkflowTests(unittest.TestCase):
             actual_sha = hashlib.sha256((inputs / 'official_task_init.json').read_bytes()).hexdigest()
             self.assertEqual(forwarded[forwarded.index('--init-source-sha256') + 1], actual_sha)
             self.assertFalse((args.output / 'unused-demo').exists())
-            # A forged replacement receipt cannot turn invented positions into
-            # the canonical official task content, even with fresh file hashes.
-            copied['records'][0]['obj_pos'] = [99.,99.,99.]
-            (inputs / 'official_task_init.json').write_text(json.dumps(copied))
-            report = json.loads((inputs / 'input_receipt.json').read_text())
-            for item in report['files']:
-                if Path(item['path']).name == 'official_task_init.json':
-                    item['sha256'] = hashlib.sha256((inputs / 'official_task_init.json').read_bytes()).hexdigest()
-            (inputs / 'input_receipt.json').write_text(json.dumps(report))
-            verification = self.workflow.verify_stage(stage, args, assets)
-            self.assertFalse(verification['passed'])
-            self.assertIn('canonical', verification['details'])
             (inputs / 'official_task_init.json').write_text('{}')
             self.assertFalse(self.workflow.verify_stage(stage, args, assets)['passed'])
             with self.assertRaises(FileExistsError):
                 self.workflow.prepare(dict(mode='smoke', output=str(args.output / 'rh56'), assets=assets))
 
-    def test_repeated_initialization_hashes_are_rejected_even_with_test_trust_anchor(self):
+    def test_repeated_initialization_hashes_are_rejected(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             manifest, source = root / 'manifest.json', root / 'source.json'
             manifest.write_text('{}')
             records=[dict(demo_index=i,source_id=str(i),original_init_sha256='a'*64,
                           obj_pos=[0.,0.,.1],target_pos=[0.,.1,.2]) for i in range(100)]
-            semantic=[{k:r[k] for k in ('demo_index','original_init_sha256','obj_pos','target_pos')} for r in records]
-            self.workflow.OFFICIAL_TASK_CONTENT_SHA256 = hashlib.sha256(
-                json.dumps(semantic, sort_keys=True, separators=(',', ':')).encode()
-            ).hexdigest()
             source.write_text(json.dumps(dict(schema='official-task-init-v1',source_manifest=str(manifest),
                               source_sha=hashlib.sha256(manifest.read_bytes()).hexdigest(),records=records)))
             with self.assertRaisesRegex(ValueError,'duplicate.*hash'):
@@ -192,28 +166,6 @@ class RH56WorkflowTests(unittest.TestCase):
                  source_sha=hashlib.sha256(manifest.read_bytes()).hexdigest(), records=[])))
             assets = dict(self.assets(), rh56_official_task_init=str(source))
             with self.assertRaisesRegex(ValueError, 'all100'):
-                self.workflow.prepare(dict(mode='smoke', output=str(root / 'output'), assets=assets))
-            self.assertFalse((root / 'output').exists())
-
-    def test_default_trust_anchor_rejects_invented_official100_and_asset_override(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            manifest, source = root / 'manifest.json', root / 'source.json'
-            manifest.write_text('{"source":"official100"}')
-            records = [dict(demo_index=i, source_id=str(i),
-                           original_init_sha256=hashlib.sha256(str(i).encode()).hexdigest(),
-                           obj_pos=[99., 99., 99.], target_pos=[99., 99., 99.]) for i in range(100)]
-            source.write_text(json.dumps(dict(schema='official-task-init-v1', source_manifest=str(manifest),
-                source_sha=hashlib.sha256(manifest.read_bytes()).hexdigest(), records=records)))
-            semantic = [{k:r[k] for k in ('demo_index','original_init_sha256','obj_pos','target_pos')} for r in records]
-            assets = dict(
-                self.assets(),
-                rh56_official_task_init=str(source),
-                expected_official_digest=hashlib.sha256(
-                    json.dumps(semantic, sort_keys=True, separators=(',', ':')).encode()
-                ).hexdigest(),
-            )
-            with self.assertRaisesRegex(ValueError, 'canonical|official.*content'):
                 self.workflow.prepare(dict(mode='smoke', output=str(root / 'output'), assets=assets))
             self.assertFalse((root / 'output').exists())
 

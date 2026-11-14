@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/relocate/lejepa_recovery.py (verbatim except: imports / paths adapted
-# to the package; lines wrapped at 120 columns, unused imports removed)
 """State-only hook for the original Native LeJEPA manual training loop."""
 import gzip
 import hashlib

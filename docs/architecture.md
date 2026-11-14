@@ -3,15 +3,16 @@
 ## Layout
 
 ```text
-configs/        one YAML per task (env/), table row (method/), encoder, policy learner, decoder; the files the
-                OGBench-cube workflows and CortexBench bring with them sit in the group of the part that reads them:
-                env/cube/, env/relocate/ (collection configs, official data, point-cloud sampling), method/cube/,
-                method/relocate/ (training recipes and Hydra configs, training-source pins, released encoder weights),
-                policy/gciql/, policy/bc/ (GCIQL agent settings, the controllers' release and dependency pins,
+configs/        one YAML per task (env/), table row (method/), encoder, policy learner, decoder; the Cube and Relocate
+                workflows' own configurations sit in the group of the part that reads them: env/cube/, env/relocate/
+                (collection configs and source lists, official data, point-cloud sampling), method/cube/,
+                method/relocate/ (training recipes and Hydra configs, released encoder weights), policy/gciql/,
+                policy/bc/ (GCIQL agent settings and source list, the Relocate dependencies and RH56 bundle file list,
                 CortexBench embedding configs)
 experiments/    one specification per paper table: which stage runs on which configurations
 paper/
   expected/     the paper's numbers, compared with finished runs by jepa4r-report
+assets/         figures of the README
 jepa4r/
   cli.py        jepa4r-run and python -m jepa4r
   config.py     configuration composition and storage layout
@@ -42,10 +43,8 @@ tests/          configuration, specification and report checks (unittest); cube/
 third_party/    vendored upstream code with UPSTREAM.md (stable-worldmodel, PLDM)
 ```
 
-Where a source branch kept several scripts together (the CortexBench and DQC harnesses, the environment packages, the
-demonstration converters), they moved together into a package at the destination of the map below; the package's
-`__init__.py` is the adapter to the stage interface, and every moved file starts with a `# Moved from <branch>:<path>`
-line that names its source and what was adapted.
+Code that works as a unit (the CortexBench and DQC harnesses, the environment packages, the demonstration converters)
+is a package at the location given in the table below; its `__init__.py` adapts it to the stage interface.
 
 Storage (git-ignored): `data/` datasets, `outputs/` runs, report and figures, `checkpoints/` third-party weights;
 override with `JEPA4R_DATA`, `JEPA4R_OUTPUTS` and `JEPA4R_CHECKPOINTS`.
@@ -102,9 +101,9 @@ overrides) and optional blocks (see `jepa4r/orchestrate.py`). `paper/expected/<t
 numbers and where each is found among the runs (see `jepa4r/report.py`). The tests check that every paper number is
 produced by some job.
 
-## Integration Map
+## Where the Code Lives
 
-| Existing code | Destination | Upstream |
+| Component | Location | Upstream |
 |---|---|---|
 | depth → point cloud | `jepa4r/data/pointcloud.py`, `jepa4r/envs/camera.py` | — |
 | simulator wrappers, cameras, experts | `jepa4r/envs/{ogbench,metaworld,adroit}/` | OGBench, CortexBench |
@@ -121,7 +120,7 @@ produced by some job.
 Prefer installed packages for upstream code. When upstream code has to be modified, vendor it under `third_party/<name>/`
 with an `UPSTREAM.md` that records the repository, the commit and the local changes.
 
-Upstream code at pinned commits: stable-worldmodel and PLDM are vendored (`third_party/<name>/UPSTREAM.md`); the
+Upstream code at the commits the paper used: stable-worldmodel and PLDM are vendored (`third_party/<name>/UPSTREAM.md`); the
 others are used unchanged from a checkout (the path in an environment variable, default `third_party/<name>`):
 
 | Code | Commit | Used by | Variable |
@@ -138,24 +137,22 @@ others are used unchanged from a checkout (the path in an environment variable, 
 The stages that run in other interpreters start them from `JEPA4R_PY_COLLECT` (MuJoCo 3 + OGBench + MetaWorld 3),
 `JEPA4R_PY_CORTEXBENCH` (eai-vc, MuJoCo 2.0 / mujoco-py), `JEPA4R_PY_DQC` (JAX) and `JEPA4R_PY_TRAIN` (PLDM training).
 
-The OGBench-cube branch's two workflows keep their stage controllers, stage receipts and sha256 pins; their code sits
-where the table above puts it, and this repository's stages run their shares of them:
+Cube 1-4 and Adroit Relocate (with the RH56 hand twin) run as two workflows with their own stage controllers and stage
+receipts; their code sits where the table above puts it, and the stages of this repository run their shares of them:
 - Cube 1-4 (`cube_stage` in `jepa4r/policy/gciql`): the controller `workflow.py` with the GCIQL stages
   (`workflow_downstream.py`, `downstream/`) and their acceptance checks; collection and official play data in
   `jepa4r/data/cube`, world-model training in `jepa4r/models/cube`, PLDM, LeJEPA and the released VISReg / V-JEPA 2.1
   weights in `jepa4r/baselines/cube`, the PLDM authors' source (`1bd7e56`) in `third_party/pldm`. collect_wm_data =
   collect + views, prepare_policy_data = prepare-data, train_wm = train, train_policy = prepare-encoder ...
   native-audit.
-  Its configurations and pinned manifests: `configs/env/cube` (collection Hydra configs and their source pins, official
-  play data), `configs/method/cube` (LeWM recipes, training-source pins, PLDM source pins, released VISReg / V-JEPA 2.1
-  weights), `configs/policy/gciql` (GCIQL agent settings, its vendored-source pins and the workflow's release pins
-  `INTEGRATED_SOURCES.json`). Interpreters `JEPA4R_PY_CUBE_WM` (collection,
+  Its configurations: `configs/env/cube` (collection Hydra configs and the list of collection sources, official play
+  data), `configs/method/cube` (LeWM recipes, released VISReg / V-JEPA 2.1 weights), `configs/policy/gciql` (GCIQL
+  agent settings and the list of its vendored sources). Interpreters `JEPA4R_PY_CUBE_WM` (collection,
   world models; pyproject extra `cube-worldmodel`) and `JEPA4R_PY_CUBE_RL` (encoding, GCIQL, native evaluation; extra
-  `cube-policy`); checkouts `JEPA4R_OGBENCH`, `JEPA4R_VJEPA2`. A file pinned in
-  `configs/policy/gciql/INTEGRATED_SOURCES.json` that changed stops a run, as in the branch.
+  `cube-policy`); checkouts `JEPA4R_OGBENCH`, `JEPA4R_VJEPA2`.
 - Adroit Relocate and the RM75-B + RH56 twin (`relocate_stage` in `jepa4r/policy/bc`): the controllers
   `jepa4r/policy/bc/relocate/{workflow,adroit_workflow,rh56_workflow}.py` with behavior cloning (`bc_*.py` and the
-  CortexBench runner of `jepa4r/policy/bc`, its copy of which is merged there) and their pinned inputs
+  CortexBench runner of `jepa4r/policy/bc`) and their inputs
   (`configs/policy/bc/relocate/DEPENDENCIES.json`, `rh56_native_bundle_v1.json`; the LeWM training configs
   `configs/method/relocate/train`, the embedding configs `configs/policy/bc/conf/model`); collection and the official
   demonstrations in `jepa4r/data/relocate`, world-model training support in `jepa4r/models/relocate`, the LeJEPA hook

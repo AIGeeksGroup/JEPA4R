@@ -1,5 +1,3 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/make_scene_demos.py (verbatim except: imports / paths
-# adapted to the package; lines wrapped at 120 columns, no lint exemptions)
 """Expert demos for OGBench scene's five evaluation tasks, built as make_rm75_demos.py (the format of CortexBench's
 official demos): 25 per task at seeds 12345 + i (as the official ones); expert = envs.ogb_scene_expert.SceneTaskExpert
 (OGBench's per-object oracles chained by the goal), env = the evaluation's own scene_env.SceneCBEnv (the same reset, the

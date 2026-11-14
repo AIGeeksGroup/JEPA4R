@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/rh56_adapter/data_tools.py (verbatim except: imports / paths adapted to the
-# package; lines wrapped at 120 columns)
 """Validate direct RH56 batches and publish paired header-only VDS inputs.
 
 The actual paired writer and numerical collection contract are unchanged. There

@@ -1,4 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/cortexbench/conf/model/lejepa_relocate.yaml (verbatim)
 # Native Adroit Relocate checkpoint; retain the existing 512-D LeJEPA head readout.
 _target_: jepa_baselines.load_lejepa
 checkpoint_dir: ${oc.env:RELOCATE_LEJEPA_CHECKPOINT}

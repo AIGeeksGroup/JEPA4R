@@ -3,29 +3,27 @@
 Wrapper that renders rgb + depth + segmentation from the CortexBench camera, exposes proprioception and success, and
 provides the expert control used by the data mixtures.
 
-Integrated modules (moved from cortexbench@9331494:lewm_pcd/envs/metaworld/, unchanged except pcd.py's multisample
-flag; one module per task because their module-level constants -- WAYPOINTS, HOLD, GRASP_OFF, ... -- differ):
+Modules (one per task because their module-level constants -- WAYPOINTS, HOLD, GRASP_OFF, ... -- differ; pcd.py's
+multisample flag selects the render of the paper data, see configs/env/mw_*.yaml):
   env            MWTaskEnv (metaworld 3.0 <task>-v3-goal-observable, free camera reproducing CortexBench's top_cap2,
                  per-episode three-part plan) and MWBinPickEnv
   policy         ThreePartPolicy (backbone / branch / random) for bin-picking
   assembly, button_press, drawer, hammer   MW<Task>Env + <Task>ThreePartPolicy
   pcd            MWPointCloudWrapper (jepa4r.data.pointcloud.PointCloudWrapper with the task's fixtures)
 World-model data use metaworld 3.0 (conda env lewm_mw); the CortexBench demos and BC evaluation use eai-vc's metaworld
-fork on MuJoCo 2.0 (jepa4r.data.demos, jepa4r.policy.bc). The RM75-B + EG2-4C2 variants of four tasks (the source's
-envs/metaworld/rm75: the RM75-B digital twin, Sec. 5.6) are in jepa4r.envs.twins.metaworld_rm75; their env ids are
-registered here, as in the source.
+fork on MuJoCo 2.0 (jepa4r.data.demos, jepa4r.policy.bc). The RM75-B + EG2-4C2 variants of four tasks (the
+RM75-B digital twin, Sec. 5.6) are in jepa4r.envs.twins.metaworld_rm75; their env ids are registered here.
 """
 from importlib import import_module
 
-# cortexbench@9331494:lewm_pcd/envs/metaworld/__init__.py:25-29 (Sawyer tasks; entry points re-pointed)
+# Sawyer tasks
 ENV_IDS = {
     'swm/MWBinPick-v0': 'jepa4r.envs.metaworld.env:MWBinPickEnv',
     'swm/MWAssembly-v0': 'jepa4r.envs.metaworld.assembly:MWAssemblyEnv',
     'swm/MWButtonPress-v0': 'jepa4r.envs.metaworld.button_press:MWButtonPressEnv',
     'swm/MWDrawer-v0': 'jepa4r.envs.metaworld.drawer:MWDrawerEnv',
     'swm/MWHammer-v0': 'jepa4r.envs.metaworld.hammer:MWHammerEnv',
-    # cortexbench@9331494:lewm_pcd/envs/metaworld/__init__.py:30-34 (RealMan RM75-B + EG2-4C2 instead of the Sawyer;
-    # entry points re-pointed to jepa4r.envs.twins.metaworld_rm75)
+    # RealMan RM75-B + EG2-4C2 instead of the Sawyer (jepa4r.envs.twins.metaworld_rm75)
     'swm/MWBinPickRM75-v0': 'jepa4r.envs.twins.metaworld_rm75:RM75BinPickEnv',
     'swm/MWButtonPressRM75-v0': 'jepa4r.envs.twins.metaworld_rm75:RM75ButtonPressEnv',
     'swm/MWDrawerRM75-v0': 'jepa4r.envs.twins.metaworld_rm75:RM75DrawerEnv',

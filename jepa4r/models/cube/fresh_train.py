@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/fresh_train.py (verbatim except: imports / paths adapted to the
-# package; lines wrapped at 120 columns, unused imports removed)
 """Explicit fresh-data dispatch into original trainers; default is plan-only."""
 import argparse
 from contextlib import contextmanager, redirect_stderr, redirect_stdout
@@ -295,13 +293,12 @@ def _source_binding(method, cubes):
         'jepa4r/models/cube/fresh_train.py',
         'jepa4r/data/cube/fresh_data.py',
         'jepa4r/models/cube/training_runtime.py',
-        'configs/method/cube/SOURCE_MANIFEST.json',
     ]
     if method == 'pldm':
         names += [
             'jepa4r/baselines/cube/pldm/' + name
             for name in ('train.py', 'shared_data.py', 'method.py')
-        ] + ['configs/method/cube/pldm/source_manifest.json']
+        ]
     else:
         names += (
             ['jepa4r/baselines/cube/native/tiny_train.py']

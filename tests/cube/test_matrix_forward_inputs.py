@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/tests/test_matrix_forward_inputs.py (verbatim except: imports /
-# paths adapted to the package; lines wrapped at 120 columns)
 """M2 target rows retain their own real-source contract with a shared encoder."""
 import copy
 import json

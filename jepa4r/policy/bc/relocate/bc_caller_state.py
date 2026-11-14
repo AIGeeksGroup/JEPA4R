@@ -1,4 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/relocate/bc_caller_state.py (verbatim)
 """SHA-bound caller bookkeeping beside the original-loop BC checkpoints."""
 import hashlib
 import json

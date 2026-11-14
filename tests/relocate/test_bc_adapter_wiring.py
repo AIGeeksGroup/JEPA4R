@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/scripts/checks/test_bc_adapter_wiring.py (verbatim except: module names /
-# paths of the moved code adapted; lines wrapped at 120 columns, unused imports removed)
 """Native adapter + actual EAI/MJRL loop, using explicit CPU synthetic I/O only."""
 import json
 import os

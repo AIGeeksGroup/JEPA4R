@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/relocate/wm_recovery.py (verbatim except: imports / paths adapted to
-# the package; lines wrapped at 120 columns)
 """Opt-in recovery wiring for the existing Adroit SPT Manager and loader."""
 from contextlib import contextmanager
 import hashlib

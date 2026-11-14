@@ -1,4 +1,3 @@
-# Moved from cortexbench@9331494:lewm_pcd/envs/cube_pcd_env.py (verbatim)
 """``swm/OGBCube-v0`` plus four extra fixed cameras around the workspace.
 
 The point cloud comes from one depth camera (:class:`envs.PointCloudWrapper`

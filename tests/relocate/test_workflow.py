@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:tests/test_workflow.py (verbatim except: module names / paths of the moved code
-# adapted; lines wrapped at 120 columns)
 import importlib.util
 import json
 from pathlib import Path
@@ -8,7 +6,7 @@ import sys
 
 
 ROOT = Path(__file__).resolve().parents[2]
-# the release's run.py dispatched to this workflow's main; the skeleton has no run.py
+# the release's run.py dispatched to this workflow's main; this repository has no run.py
 ENTRY = 'import sys; from jepa4r.policy.bc.relocate.workflow import main; raise SystemExit(main(sys.argv[1:]))'
 
 

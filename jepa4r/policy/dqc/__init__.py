@@ -3,7 +3,7 @@
 Offline goal-conditioned RL on the official play data, 1e6 steps. Input: frozen latent and button lights;
 goal: target lights. Ten evaluations during training (five tasks x 50 episodes); report the best.
 
-Integrated code (cortexbench@9331494:lewm_pcd/bench/dqc/, moved into this package unchanged apart from paths):
+Modules (the DQC harness of the paper runs):
   run_dqc.py       dqc df89825's training loop (the checkout, unchanged, at JEPA4R_DQC or third_party/dqc) with the
                    frozen encoder's latent + the true lights as observation; restartable (resume.pkl); metrics to
                    train.jsonl / eval.jsonl; the agent settings of the run in flags.json
@@ -18,7 +18,7 @@ settings (``agent_flags``), then the train_policy metrics (``aggregate``): succe
 during training (steps 100k, 200k, ..., 1M). run_dqc.py, unchanged, also evaluates the untrained agent at step 0: that
 evaluation draws from numpy's global RNG, which also drives the batch sampling, so it stays in the run (dropping it
 would change the training) and is listed in ``evals`` but not counted. In all 18 Puzzle runs of the paper it is 0.0,
-so the best of ten equals the best of the eleven records (GATES.md 3.4).
+so the best of ten equals the best of the eleven records.
 Interpreter: JEPA4R_PY_DQC (JAX 0.6.2 / flax 0.10.7, MuJoCo 3 + OGBench, torch for the encoders).
 """
 import fnmatch

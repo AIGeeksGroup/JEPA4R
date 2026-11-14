@@ -1,5 +1,3 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/rm75_server.py (verbatim except: lines wrapped at 120
-# columns, no lint exemptions)
 """The RM75 CortexBench env (rm75_env.py) as a subprocess of the harness (run_bc_rm75.py's RM75Proxy): the harness runs
 in the cortexbench conda env (mujoco-py 2.0 for the official envs), the RM75 env needs MuJoCo 3 (lewm_mw). Protocol on
 stdin / a dup of stdout: 8-byte little-endian length + pickle of plain types (arrays as (dtype, shape, bytes)); fd 1 is

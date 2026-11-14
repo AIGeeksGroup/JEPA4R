@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/scripts/baselines/adroit/train_lejepa.py (verbatim except: imports / paths
-# adapted to the package; lines wrapped at 120 columns)
 """Final Relocate data/output adapter; original learning methods are delegated.
 
 An explicit smoke/formal mode is required to execute; preparation is read-only.

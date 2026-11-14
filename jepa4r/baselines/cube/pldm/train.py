@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/pldm/train.py (verbatim except: imports / paths adapted to the
-# package; lines wrapped at 120 columns, no lint exemptions, unused imports removed, unused results dropped)
 """Current Cube PLDM training/strict acceptance, mandatory current manifest."""
 import argparse
 from contextlib import redirect_stderr, redirect_stdout
@@ -15,7 +13,6 @@ import traceback
 from .shared_data import contract, data_profile, loaders
 from jepa4r.models.cube.training_runtime import build_environment, code_root
 
-SOURCE_FREEZE = Path(__file__).resolve().parents[4] / 'configs' / 'method' / 'cube' / 'pldm' / 'source_manifest.json'
 # the PLDM authors' source (its vendor/source/ entries)
 VENDOR = Path(__file__).resolve().parents[4] / 'third_party/pldm'
 
@@ -62,7 +59,6 @@ def binding(args,stats=None):
         persistent_workers=False,
         gradient_clip_val=None,
         action_statistics=stats,
-        source_freeze_sha256=sha(args.root / SOURCE_FREEZE),
         runner_sha256=sha(Path(__file__)),
         shared_data_sha256=sha(args.root / 'shared_data.py'),
     )
@@ -285,11 +281,6 @@ def accept(args):
 
 
 def require_sources(root, data_binding):
-    for name, digest in read(root / SOURCE_FREEZE)['files'].items():
-        vendored = name.startswith('vendor/source/')
-        path = (VENDOR / name[len('vendor/source/'):] if vendored else root / name).resolve()
-        if not path.is_relative_to(VENDOR if vendored else root) or sha(path) != digest:
-            raise ValueError('current PLDM source mismatch: ' + name)
     from jepa4r.data.cube.fresh_data import load_binding
     load_binding(data_binding)
 

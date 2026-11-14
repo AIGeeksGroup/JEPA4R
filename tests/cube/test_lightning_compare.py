@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/tests/test_lightning_compare.py (verbatim except: imports /
-# paths adapted to the package; lines wrapped at 120 columns, no lint exemptions, unused imports removed)
 """Normalize only independent run paths and explicit checkpoint sentinels."""
 import sys,unittest
 from pathlib import Path

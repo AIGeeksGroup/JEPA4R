@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/tests/test_gate_checks.py (verbatim except: imports / paths
-# adapted to the package; lines wrapped at 120 columns)
 """Smoke-only gate entry plans are read-only and bounded before heavy imports."""
 import json
 from pathlib import Path

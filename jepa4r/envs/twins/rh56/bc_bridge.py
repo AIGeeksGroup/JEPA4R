@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/rh56_adapter/bc_bridge.py (verbatim except: imports / paths adapted to the
-# package; lines wrapped at 120 columns, no lint exemptions, unused results dropped)
 """Thin RH56 boundary around the unmodified CortexBench frozen-PVR BC loop.
 
 No BC optimizer, loss, feature-fusion or rollout algorithm is implemented here.
@@ -581,7 +579,7 @@ def run_bc(args):
         from contextlib import nullcontext
         bc_context = nullcontext(None)
         if recovery_enabled:
-            from jepa4r.policy.bc.relocate.bc_recovery import install_bc_recovery, RecoveryPause, FROZEN_EAI_SHA256
+            from jepa4r.policy.bc.relocate.bc_recovery import install_bc_recovery, RecoveryPause
             from jepa4r.policy.bc.relocate.bc_caller_state import (
                 save_caller_state,
                 load_caller_state,
@@ -603,7 +601,7 @@ def run_bc(args):
                     loader_sha256=_sha(lewm_cortex.__file__),
                 ),
                 source=dict(
-                    eai_train_loop_sha256=FROZEN_EAI_SHA256,
+                    eai_train_loop_sha256=official_source_binding['sha256'],
                     adapter_sha256=_sha(__file__),
                     caller_state_sha256=_sha(bc_caller_state.__file__),
                     recovery_sha256=_sha(bc_recovery.__file__),

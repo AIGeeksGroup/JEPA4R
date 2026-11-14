@@ -1,4 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/scripts/run_rh56.py (verbatim except: imports / paths adapted to the package)
 """Explicit opt-in entry for native RH56 Relocate; existing Adroit entries stay unchanged."""
 import argparse
 from contextlib import contextmanager

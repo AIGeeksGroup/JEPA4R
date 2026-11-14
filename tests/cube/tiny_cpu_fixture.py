@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/tiny_cpu_fixture.py (verbatim except: lines wrapped at 120
-# columns)
 """Numerical-only device routing for the original Tiny factories and main loop."""
 from contextlib import contextmanager,nullcontext
 import hashlib,inspect,json

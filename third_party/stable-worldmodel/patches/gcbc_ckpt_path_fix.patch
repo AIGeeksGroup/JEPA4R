@@ -1,5 +1,5 @@
---- /tmp/claude-0/-root-autodl-tmp-lewm234d/cc72f966-c504-48b8-8711-5cd251e7d121/scratchpad/gcbc_orig.py	2026-09-13 01:53:35.296679250 +0800
-+++ third_party/stable-worldmodel/scripts/train/gcbc.py	2026-09-13 07:05:06.583985819 +0800
+--- a/scripts/train/gcbc.py
++++ b/scripts/train/gcbc.py
 @@ -323,7 +323,7 @@
      save_ckpt_callback = SaveCkptCallback(
          run_name=cfg.output_model_name,

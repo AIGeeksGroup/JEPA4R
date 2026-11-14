@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/tests/test_tiny_cpu_fixture.py (verbatim except: imports /
-# paths adapted to the package; lines wrapped at 120 columns)
 """Explicit numerical-only CPU routing preserves original factory arithmetic."""
 import importlib.util,sys,unittest
 from pathlib import Path

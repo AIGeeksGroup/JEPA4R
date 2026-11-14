@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/scripts/checks/test_adroit_public_workflow.py (verbatim except: module names
-# / paths of the moved code adapted; lines wrapped at 120 columns)
 """Focused contract checks for the public native Relocate workflow."""
 import importlib.util
 import importlib
@@ -304,16 +302,19 @@ def test_pldm_reload_uses_the_original_native_preprocessor():
     assert calls==[('pixels','pixels',224)]
 
 
-def test_pinned_expert_rejects_sha_mismatch_before_unpickle(tmp_path,monkeypatch):
+def test_expert_provenance_records_the_actual_bytes(tmp_path,monkeypatch):
+    import hashlib
     monkeypatch.syspath_prepend(str(ROOT))
     collector=importlib.import_module('jepa4r.data.relocate.adroit_collect')
-    assert hasattr(collector,'load_pinned_expert'), 'trusted expert SHA boundary is missing'
     spec=importlib.util.spec_from_file_location('reviewed_state_expert',ROOT/'jepa4r/envs/adroit/policy.py')
-    policy=importlib.util.module_from_spec(spec);spec.loader.exec_module(policy);calls=[]
-    monkeypatch.setattr(policy.pickle,'loads',lambda payload:calls.append(payload))
-    source=tmp_path/'wrong-expert.pickle';source.write_bytes(b'untrusted bytes')
-    with pytest.raises(ValueError,match='SHA-256 mismatch'):collector.load_pinned_expert(source)
-    assert calls==[]
+    policy=importlib.util.module_from_spec(spec);spec.loader.exec_module(policy)
+    monkeypatch.setattr(policy.pickle,'loads',lambda payload:object())
+    def keep_provenance(self,policy_object,env_name,provenance):self.provenance=provenance
+    monkeypatch.setattr(policy.SavedStateExpert,'__init__',keep_provenance)
+    source=tmp_path/'expert.pickle';source.write_bytes(b'expert bytes')
+    expert=policy.SavedStateExpert.load(source)
+    assert expert.provenance['policy_sha256']==hashlib.sha256(b'expert bytes').hexdigest()
+    assert hasattr(collector,'load_expert')
 
 
 def test_plan_env_preserves_explicit_dependencies_and_fixed_protocol(tmp_path):
@@ -334,12 +335,12 @@ def test_plan_env_preserves_explicit_dependencies_and_fixed_protocol(tmp_path):
     )
 
 
-def test_frozen_encoder_sha_is_verified_without_constructing_a_model(tmp_path):
+def test_frozen_encoder_size_is_verified_without_constructing_a_model(tmp_path):
     learning=load('adroit_learning')
-    assert hasattr(learning,'verify_frozen_checkpoint'), 'fixed released-weight source gate is missing'
-    path=tmp_path/'same-size-random.pth';path.write_bytes(b'abc')
-    with pytest.raises(ValueError,match='SHA-256'):
-        learning.verify_frozen_checkpoint('visreg',path,{'visreg':{'bytes':3,'sha256':'0'*64}})
+    path=tmp_path/'released.pth';path.write_bytes(b'abc')
+    with pytest.raises(ValueError,match='byte count'):
+        learning.verify_frozen_checkpoint('visreg',path,{'visreg':{'bytes':4}})
+    assert learning.verify_frozen_checkpoint('visreg',path,{'visreg':{'bytes':3}})['bytes']==3
     assert learning.verify_frozen_checkpoint('pldm',tmp_path/'not-a-fixed-weight') is None
 
 
@@ -397,31 +398,16 @@ def test_stage_receipt_cannot_substitute_unrelated_or_missing_weight_artifacts(t
 
 @pytest.mark.parametrize('count',[1,99])
 def test_official_consumer_requires_all_100_sources_before_smoke_render(tmp_path,count,monkeypatch):
-    import json
     monkeypatch.syspath_prepend(str(ROOT));data=load('adroit_data')
     assert hasattr(data,'validated_official_source'), 'actual official source-content boundary is missing'
-    canonical = json.loads((ROOT / 'configs/policy/bc/relocate/DEPENDENCIES.json').read_text())['official_relocate'][
-        'raw_sha256'
-    ]
     with pytest.raises(ValueError,match='100'):
-        data.validated_official_source(tmp_path/'raw.pickle',canonical,lambda *a:(count,None,canonical))
-
-
-def test_official_consumer_rejects_noncanonical_raw_sha_before_loading(tmp_path,monkeypatch):
-    monkeypatch.syspath_prepend(str(ROOT));data=load('adroit_data')
-    assert hasattr(data,'validated_official_source'), 'actual official source-content boundary is missing'
-    def forbidden(*a):raise AssertionError('noncanonical source must not be loaded')
-    with pytest.raises(ValueError,match='raw SHA'):
-        data.validated_official_source(tmp_path/'raw.pickle','0'*64,forbidden)
+        data.validated_official_source(tmp_path/'raw.pickle','a'*64,lambda *a:(count,None,'a'*64))
 
 
 def test_official_consumer_rejects_100_repeated_valid_demo_records(tmp_path,monkeypatch):
-    import json
     monkeypatch.syspath_prepend(str(ROOT));data=load('adroit_data')
     assert hasattr(data,'validated_official_source'), 'actual official source-content boundary is missing'
-    canonical = json.loads((ROOT / 'configs/policy/bc/relocate/DEPENDENCIES.json').read_text())['official_relocate'][
-        'raw_sha256'
-    ]
+    canonical='a'*64
     demo={'init_state_dict':{'qpos':np.zeros(36)},'actions':np.zeros((200,30)),
         'state_obs':np.zeros((200,39)),'env_infos':{'proprio':np.zeros((200,30))},'rewards':np.zeros(200)}
     source=tmp_path/'raw.pickle';source.write_bytes(b'test loader fixture')
@@ -430,39 +416,27 @@ def test_official_consumer_rejects_100_repeated_valid_demo_records(tmp_path,monk
         data.validated_official_source(source,canonical,loader)
 
 
-@pytest.mark.parametrize('change',['clip_actions','state_obs','proprio','rewards','dtype'])
-def test_official_consumer_hashes_actual_decoded_values_not_manifest_claims(tmp_path,monkeypatch,change):
+def test_official_consumer_hashes_actual_decoded_values_not_manifest_claims(tmp_path,monkeypatch):
     import json
     monkeypatch.syspath_prepend(str(ROOT));data=load('adroit_data')
     contract=importlib.import_module('jepa4r.data.relocate.official_contract')
-    canonical = json.loads((ROOT / 'configs/policy/bc/relocate/DEPENDENCIES.json').read_text())['official_relocate'][
-        'raw_sha256'
-    ]
     source=tmp_path/'demos';source.mkdir();payload=source/'fixture.pickle';payload.write_bytes(b'pure loader fixture')
-    manifest=source.parent/'manifest.json';manifest.write_text(json.dumps({'source_sha256':canonical}))
+    manifest=source.parent/'manifest.json';manifest.write_text(json.dumps({'source_sha256':'a'*64}))
     demos=[]
     for index in range(100):
         actions=np.zeros((200,30));actions[0,0]=1.6
         demos.append({'init_state_dict':{'qpos':np.full(36,float(index))},'actions':actions,
             'state_obs':np.zeros((200,39)),'env_infos':{'proprio':np.zeros((200,30))},'rewards':np.zeros(200)})
-    records=[contract.demo_content_record(i,demo) for i,demo in enumerate(demos)]
-    trusted=tmp_path/'test-contract.json'
-    trusted.write_text(
-        json.dumps({'official_relocate': {'policy_critical_content_sha256': contract.content_digest(records)}})
-    )
-    monkeypatch.setattr(contract,'TRUSTED_CONTRACT_PATH',trusted)
     reads=[]
     def read(index):reads.append(index);return demos[index],{'path':str(payload)}
     loader=lambda *a:(100,read,data.sha(manifest))
     result=data.validated_official_source(source,data.sha(manifest),loader)
     assert result['content']['count']==100 and reads==list(range(100))
-    assert demos[7]['actions'][0,0]==1.6
-    if change=='clip_actions':demos[7]['actions']=np.clip(demos[7]['actions'],-1,1)
-    elif change=='dtype':demos[7]['actions']=demos[7]['actions'].astype(np.float32)
-    elif change=='proprio':demos[7]['env_infos']['proprio'][0,0]=1
-    else:demos[7][change].flat[0]=1
-    with pytest.raises(ValueError,match='digest mismatch'):
-        data.validated_official_source(source,data.sha(manifest),loader)
+    records=[contract.demo_content_record(i,demo) for i,demo in enumerate(demos)]
+    assert result['content']['policy_critical_content_sha256']==contract.content_digest(records)
+    demos[7]['actions']=np.clip(demos[7]['actions'],-1,1)
+    changed=data.validated_official_source(source,data.sha(manifest),loader)
+    assert changed['content']['policy_critical_content_sha256']!=result['content']['policy_critical_content_sha256']
 
 
 def test_stage_receipt_covers_exact_expected_paths_and_accepts_extra_audits(tmp_path):

@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/foundation_assets.py (verbatim except: imports / paths adapted
-# to the package; lines wrapped at 120 columns)
 """Plan/prepare released encoder bytes and fresh bindings; never load a model."""
 import argparse
 import copy
@@ -59,6 +57,9 @@ def build_plan(model,cube_count,mode,assets_root,output_root,weights=None):
 def download(plan):
     """Explicit owned-partial resume; complete existing files are never replaced."""
     target=Path(plan['weights']);entry=plan['asset']
+    if not entry.get('url'):   # VISReg: the authors share the weights on request; there is no public download
+        raise FileNotFoundError(f"{plan['model']} weights have no public download: place {entry['filename']} "
+                                f"({entry['bytes']} bytes) at {target} or pass --weights")
     if plan['explicit_weights'] is not None:
         raise ValueError('Automatic download may only write the dedicated assets-root target')
     if target.exists():
@@ -67,7 +68,7 @@ def download(plan):
     part=target.with_name(target.name+'.part')
     owner=target.with_name(target.name+'.request.json')
     status=target.with_name(target.name+'.download.json')
-    request=dict(model=plan['model'],url=entry['url'],bytes=entry['bytes'],sha256=entry['sha256'],target=str(target))
+    request=dict(model=plan['model'],url=entry['url'],bytes=entry['bytes'],target=str(target))
     if owner.exists():
         if json.loads(owner.read_text())!=request:
             raise ValueError('Existing partial belongs to another release')
@@ -98,8 +99,8 @@ def download(plan):
                             raise ValueError('Download exceeds exact release size')
                         state.update(completed_bytes=offset,updated_at=time.time());_save(status,state)
                     stream.flush();os.fsync(stream.fileno())
-        if offset!=entry['bytes'] or sha(part)!=entry['sha256']:
-            raise ValueError('Downloaded release bytes/SHA mismatch; partial retained')
+        if offset!=entry['bytes']:
+            raise ValueError('Downloaded release size mismatch; partial retained')
         if target.exists():raise FileExistsError(target)
         part.rename(target)
         state.update(actual_exit_code=0,completed_bytes=offset,completed_at=time.time())
@@ -113,13 +114,11 @@ def download(plan):
 def _source_binding(entry):
     files={str(path):sha(path)
            for path in (Path(__file__),HERE/'released_encoders.py',LEWM/'configs/method/cube/released_models.json')}
-    if 'source_files_sha256' in entry:
-        root=VJEPA2
-        for relative,digest in entry['source_files_sha256'].items():
-            path=root/relative
-            if not path.is_file() or sha(path)!=digest:
-                raise ValueError('Released official model source missing/changed: '+str(path))
-            files[str(path)]=digest
+    for relative in entry.get('source_files',()):
+        path=VJEPA2/relative
+        if not path.is_file():
+            raise ValueError('Released official model source missing: '+str(path))
+        files[str(path)]=sha(path)
     return files
 
 
@@ -142,8 +141,9 @@ def prepare(plan,download=False):
             raise FileNotFoundError('Released weights missing; provide --weights or explicitly --download: '+str(path))
         path=globals()['download'](plan)
     before=path.stat()
-    if before.st_size!=entry['bytes'] or sha(path)!=entry['sha256']:
-        raise ValueError('Released checkpoint bytes/SHA/hash differs: '+str(path))
+    if before.st_size!=entry['bytes']:
+        raise ValueError('Released checkpoint size differs: '+str(path))
+    checkpoint_sha256=sha(path)
     if not zipfile.is_zipfile(path):raise ValueError('Released checkpoint is not a complete Torch ZIP archive')
     with zipfile.ZipFile(path) as archive:
         if archive.testzip() is not None:raise ValueError('Released checkpoint archive CRC failed')
@@ -152,11 +152,11 @@ def prepare(plan,download=False):
         raise ValueError('Released checkpoint changed during byte validation')
     sources=_source_binding(entry)
     spec={key:copy.deepcopy(entry[key]) for key in ('family','native_size','feature','inference_precision')}
-    spec.update(checkpoint=str(path),checkpoint_sha256=entry['sha256'],output_dim=entry['latent_dim'],
+    spec.update(checkpoint=str(path),checkpoint_sha256=checkpoint_sha256,output_dim=entry['latent_dim'],
                 diagnostic_only=False,official_pretrained=True)
     for key in (
         'source_commit',
-        'source_files_sha256',
+        'source_files',
         'state_dict_key',
         'encoder_module',
         'encoder_constructor',
@@ -172,7 +172,7 @@ def prepare(plan,download=False):
         family=plan['model'],
         latent_dim=entry['latent_dim'],
         checkpoint=str(path),
-        checkpoint_sha256=entry['sha256'],
+        checkpoint_sha256=checkpoint_sha256,
         adapter=dict(path=str(adapter), sha256=sha(adapter)),
         spec=dict(path=str(spec_path), sha256=sha(spec_path)),
         preprocessing=dict(
@@ -185,15 +185,13 @@ def prepare(plan,download=False):
         cube_count=plan['cube_count'],
         mode=plan['mode'],
         actual_exit_code=0,
-        checkpoint=dict(path=str(path), sha256=entry['sha256']),
+        checkpoint=dict(path=str(path), sha256=checkpoint_sha256),
         checkpoint_bytes=entry['bytes'],
         released_weights_verified=True,
         strict_reload_verified=False,
         model_loaded=False,
         numeric_acceptance=False,
-        verification_scope='exact released checkpoint size/SHA256/archive CRC and official source files; no model '
-                           'import',
-        published_official_sha256=entry.get('published_official_sha256', False),
+        verification_scope='released checkpoint size and archive CRC, official source files present; no model import',
         source_url=entry['url'],
         source_binding=sources,
         encoder_binding=binding,

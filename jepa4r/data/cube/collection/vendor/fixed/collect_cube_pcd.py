@@ -20,7 +20,6 @@ as the paper's ``ogbench/cube_single_expert`` collection. The only changes:
 
 import logging
 import hashlib
-import inspect
 import os
 from contextlib import ExitStack
 from functools import partial
@@ -48,7 +47,6 @@ logger = logging.getLogger(__name__)
 PIX_COLS = ('pixels', 'render_time')    # swm's AddPixelsWrapper: 2D dataset only
 # prefixes of PointCloudWrapper's keys (pixels/, cam/ only with keep_rgb): 3D dataset only
 PCD_COLS = ('pcd_', 'pixels/', 'cam/')
-_CUBE_RESET_SHA256 = '9afaa8310271973f60e9625a67ac1ee003b1ab4a1f18dbd87125ad27c5005fa3'
 
 
 class FixedTaskPlanPolicy(FixedTaskPlanPolicyMixin, PCDExpertPolicy):
@@ -73,9 +71,6 @@ def _with_seeded_cube_reset(env):
     raw = env.unwrapped
     if not isinstance(raw, CubeEnv) or raw._env_type != 'single':
         raise ValueError('fixed-task collection requires the single-cube CubeEnv')
-    digest = hashlib.sha256(inspect.getsource(CubeEnv.reset).encode()).hexdigest()
-    if digest != _CUBE_RESET_SHA256:
-        raise RuntimeError(f'upstream CubeEnv.reset changed: {digest}')
     # Override only this collector's instance; outer TimeLimit/PCD wrappers still reset normally.
     raw.reset = MethodType(_seeded_cube_reset, raw)
     return env
@@ -282,7 +277,6 @@ def run(cfg: DictConfig):
                 'protocol_sha256': hashlib.sha256(
                     Path(__file__).with_name('collection_protocol.py').read_bytes()
                 ).hexdigest(),
-                'upstream_cube_reset_sha256': _CUBE_RESET_SHA256,
                 'imported_swm_path': swm.__file__,
                 'resolved_config': OmegaConf.to_container(cfg, resolve=True),
                 **(

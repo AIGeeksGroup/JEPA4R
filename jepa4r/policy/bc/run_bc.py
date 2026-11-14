@@ -1,7 +1,3 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/run_bc.py (verbatim except: imports / paths adapted to the
-# package; lines wrapped at 120 columns, no lint exemptions), merged with
-# OGBench-cube@4fbb0c6:lewm_pcd/bench/cortexbench/run_bc.py (the Relocate runs' copy): its eai-vc root variable and its
-# Adroit fresh-evaluation guard (4. below)
 """One CortexBench MuJoCo imitation run: eai-vc's cortexbench/mujoco_vc/visual_imitation/hydra_launcher.py +
 train_loop.py (commit 76fe35e, third_party/eai-vc), unchanged on disk, with three runtime patches that do not change the
 reported numbers:
@@ -17,7 +13,7 @@ reported numbers:
    env and numpy with base_seed + episode before every episode, and nothing in BC training draws from numpy or from the
    policy rollouts, so the evaluation episodes, the trained policy and eval/* are the same; only the logging-only
    train/* values change (they repeat eval/*). This halves the rollout time.
-4. Adroit fresh evaluation (the OGBench-cube branch's Relocate runs: --config-name Adroit_BC_config with
+4. Adroit fresh evaluation (the Relocate runs: --config-name Adroit_BC_config with
    ADROIT_FRESH_EVAL=1): the seed-54321 rollouts are not replaced by the evaluation paths.
 
     source env.sh && $PY run_bc.py --config-name Metaworld_BC_config env=... embedding=... seed=100 data_dir=... \\

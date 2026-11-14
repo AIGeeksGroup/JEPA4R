@@ -6,7 +6,6 @@ torch's global RNG at every call). The world model calls it on the latents order
 """
 import torch
 
-# Moved from cortexbench@9331494:lewm_pcd/module.py:SIGReg (lines 10-36; verbatim)
 class SIGReg(torch.nn.Module):
     """Sketch Isotropic Gaussian Regularizer (single-GPU!)"""
 
@@ -38,6 +37,6 @@ class SIGReg(torch.nn.Module):
 
 def sigreg(z, num_projections=1024):
     """z: [B, T, D] latents -> scalar loss."""
-    # The training forward (world_model.lejepa_forward) calls SIGReg on emb.transpose(0, 1); the 17 knots are the
-    # value of cortexbench@9331494:lewm_pcd/config/train/lewm.yaml (loss.sigreg.kwargs.knots).
+    # The training forward (world_model.lejepa_forward) calls SIGReg on emb.transpose(0, 1); the 17 knots are
+    # LeWM's value (loss.sigreg.kwargs.knots).
     return SIGReg(knots=17, num_proj=num_projections).to(z.device)(z.transpose(0, 1))

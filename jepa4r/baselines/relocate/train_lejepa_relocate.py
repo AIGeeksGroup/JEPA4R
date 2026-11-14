@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/scripts/baselines/train_lejepa_relocate.py (verbatim except: lines wrapped at
-# 120 columns)
 """Tiny LeJEPA on final Relocate RGB data.
 
 The native recipe keeps four augmented views, a 512D downstream head, a

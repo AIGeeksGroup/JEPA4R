@@ -7,8 +7,8 @@ open loop  for cfg.decoder.eval.open_loop.num_episodes episodes: encode the cont
            actions (control), and decode encoder latents of the true frames (true latents); decode every step
 Metrics: jepa4r/metrics/pointcloud.py, in cm in the world frame. Output keys: jepa4r/stages/eval_recon.py.
 
-Integrated code (lewm-pcd-recon-page4d@d3c2d07): scripts/recon/eval_frames.py and eval_rollout.py, moved as the
-functions ``eval_frames(argv)`` / ``eval_rollout(argv)`` (their command lines unchanged). ``evaluate`` runs both on the
+The paper's evaluation scripts eval_frames.py and eval_rollout.py, as the functions ``eval_frames(argv)`` /
+``eval_rollout(argv)`` (their command lines unchanged). ``evaluate`` runs both on the
 stage-B decoder of outputs/train_decoder/<env>/<decoder>/<tag>/ and reads the table entries off their outputs:
   eval_frames/metrics.json   errors.<name>.{mean, median, p90} over the frames (nn, outliers_pct, object_pos,
                              nn_shuffled)
@@ -37,8 +37,6 @@ except ImportError:  # pragma: no cover
     swm = None
 
 
-# Moved from lewm-pcd-recon-page4d@d3c2d07:lewm_pcd/scripts/recon/eval_frames.py:main (lines 36-129; verbatim except:
-# main() -> eval_frames(argv), parse_args(argv))
 def eval_frames(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--recon', required=True, help='<run> or <run>/weights_epoch_N.pt under checkpoints/recon/')
@@ -177,8 +175,6 @@ def eval_frames(argv=None):
         )
 
 
-# Moved from lewm-pcd-recon-page4d@d3c2d07:lewm_pcd/scripts/recon/eval_rollout.py:KINDS, parse_episodes, main (lines
-# 36-173; verbatim except: main() -> eval_rollout(argv), parse_args(argv))
 KINDS = {'true': '#eb6834', 'pred': '#2a78d6', 'wrong': '#1baf7a', 'hold': '#8a8984'}
 
 

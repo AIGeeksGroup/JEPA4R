@@ -1,5 +1,4 @@
-"""Data of the Adroit Relocate workflow (OGBench-cube@4fbb0c6, lewm_pcd/bench/relocate; its stages are driven by
-jepa4r/policy/bc/relocate/adroit_workflow.py).
+"""Data of the Adroit Relocate workflow (its stages are driven by jepa4r/policy/bc/relocate/adroit_workflow.py).
 
   adroit_collect.py         mixed feedback-expert trajectories (collect stage), written by paired_writer.py
   adroit_data.py            data checks and the replay of the official demonstrations (data-audit, official-demos)

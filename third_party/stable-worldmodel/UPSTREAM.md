@@ -7,13 +7,14 @@
 Vendored here (bytes of the upstream commit unless listed under local changes): the library package
 `stable_worldmodel/` (all 120 files), `LICENSE`, `README.md`, `pyproject.toml`, and the PLDM training script with its
 configs, `scripts/train/pldm.py`, `scripts/train/config/{pldm.yaml, data/ogb.yaml, launcher/local.yaml}` (the PLDM
-baseline of Tab. 1 / Tab. 2 is the framework's own training, `jepa4r/baselines/pldm.py`). The same file set (unmodified)
-is bundled by the OGBench-cube branch (`OGBench-cube@4fbb0c6:lewm_pcd/third_party/stable-worldmodel`, `SOURCE.json`).
+baseline of Tab. 1 / Tab. 2 is the framework's own training, `jepa4r/baselines/pldm.py`). The Cube and Relocate
+workflows use the same file set, unmodified (`JEPA4R_SWM`).
 Install with `pip install -e third_party/stable-worldmodel` (or put this directory on `PYTHONPATH`).
 
 ## Local changes
 
-The four patches of `cortexbench@9331494:lewm_pcd/scripts/baselines/*.patch`, kept in `patches/`. None changes a number:
+The four patches of the paper's runs, kept in `patches/` (apply with `patch -p1` in the stable-worldmodel root). None
+changes a number:
 
 | Patch | File | Applied here | Change |
 |---|---|---|---|
@@ -22,4 +23,4 @@ The four patches of `cortexbench@9331494:lewm_pcd/scripts/baselines/*.patch`, ke
 | `eval_ff_api_fix.patch` | `scripts/plan/eval_ff.py` | no (file not vendored) | API fix of the planning evaluation script; no paper number uses it |
 | `gcbc_ckpt_path_fix.patch` | `scripts/train/gcbc.py` | no (file not vendored) | checkpoint path of the GCBC training script; no paper number uses it |
 
-GATES.md G1 pins this dependency as "stable-worldmodel @ 6f1e499 + 4 patched files" (the four above).
+The paper's training stack is "stable-worldmodel @ 6f1e499 + 4 patched files" (the four above).

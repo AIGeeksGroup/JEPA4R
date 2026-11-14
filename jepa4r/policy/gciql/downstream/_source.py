@@ -1,7 +1,4 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/downstream/_source.py (verbatim except: imports / paths adapted
-# to the package; lines wrapped at 120 columns)
-"""Current pinned source roots shared by policy, official environment and PCD."""
-import hashlib
+"""Source roots shared by policy, official environment and PCD."""
 import importlib.util
 import json
 import os
@@ -24,14 +21,7 @@ def source_path(relative):
     path=root.joinpath(*(target.parts[2:] if root is OGBENCH_ROOT else target.parts)).resolve()
     if not path.is_relative_to(root.resolve()):raise ValueError('Source resolves outside current package')
     return path
-def verify_sources():
-    manifest=json.loads((LEWM/'configs/policy/gciql/downstream/source_manifest.json').read_text())
-    for relative,record in manifest['files'].items():
-        if hashlib.sha256(source_path(relative).read_bytes()).hexdigest()!=record['sha256']:
-            raise ValueError('Current source changed: '+relative)
-    return manifest
 def install_impls():
-    verify_sources()
     existing=sys.modules.get('ogbench')
     if existing is not None and not Path(existing.__file__).resolve().is_relative_to(OGBENCH_ROOT):
         raise RuntimeError('Conflicting OGBench environment package import')

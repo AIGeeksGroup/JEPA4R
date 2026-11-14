@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/relocate/adroit_workflow.py (verbatim except: imports / paths adapted
-# to the package; lines wrapped at 120 columns)
 """Native Adroit Relocate stage connections; planning never executes a process."""
 import hashlib
 import json
@@ -180,12 +178,9 @@ def plan(args, assets):
             required=checkpoint_files+[train_input,data/'audit.json']
             if name=='wm-reload':required=required+[output/'wm/train.json']
         elif name=='official-demos':
-            stage['expected']['policy_critical_content_sha256'] = json.loads(dependencies.read_text(encoding='utf-8'))[
-                'official_relocate'
-            ]['policy_critical_content_sha256']
             required = (
                 [official / route / 'relocate-v0.pickle' for route in ('rgb', 'pcd')]
-                + [official / 'content_validation.json', dependencies, ROOT / 'data/relocate/official_contract.py']
+                + [official / 'content_validation.json', ROOT / 'data/relocate/official_contract.py']
                 + official_inputs
             )
         elif name.startswith('bc-seed'):

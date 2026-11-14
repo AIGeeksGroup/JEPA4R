@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/collection/camera.py (verbatim except: imports / paths of the
-# package layout, lines wrapped at 120 columns)
 """Plan or execute an independently measured current Cube camera binding."""
 import argparse
 import hashlib

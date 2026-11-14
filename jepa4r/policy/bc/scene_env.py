@@ -1,5 +1,3 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/scene_env.py (verbatim except: imports / paths adapted to
-# the package; lines wrapped at 120 columns, no lint exemptions)
 """OGBench scene's five evaluation tasks as an env of CortexBench's (eai-vc) imitation harness (runs in the lewm_mw env,
 MuJoCo 3 + OGBench); built as rm75_env.py: the harness (MuJoCo 2.0) reaches it through run_bc_scene.py's proxy and the
 scene_server.py subprocess, and the env is the repo's (envs.ogb_scene_env.OGBSceneEnv, mode='task') with its point-cloud

@@ -6,15 +6,13 @@ nn_stats(pred, gt)       bidirectional nearest-neighbour distances between decod
                          median / p90 over the frames
 cube_position_error      distance between the cube positions read from the two clouds
                          (rule: cfg.decoder.eval.cube_position: the centroid of the points carrying the cube's colour)
-The recon branch's recon/metrics.py moved unchanged (everything in metres; eval_frames / eval_rollout use it directly).
+The paper's metric code (everything in metres; eval_frames / eval_rollout use it directly).
 """
 import torch
 
 from jepa4r.decoder.losses import _gather, _nn_index, sliced_wasserstein
 
 
-# Moved from lewm-pcd-recon-page4d@d3c2d07:lewm_pcd/recon/metrics.py:to_metres, nn_both_sides, colour_error,
-# region_error, colour_signature, colour_match, object_centroid, sliced_w (lines 11-82; verbatim)
 def to_metres(cloud, center, scale):
     """target frame -> metres (inverse of ``utils.PointCloudPreprocessor``); colour channels untouched."""
     c = torch.as_tensor(center, dtype=cloud.dtype, device=cloud.device)

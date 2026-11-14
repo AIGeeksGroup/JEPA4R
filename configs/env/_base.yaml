@@ -1,6 +1,6 @@
 # Shared by every simulated task.
 # Paper: Sec. 4.1 "Point clouds from one depth camera", Sec. 5.2, supp. sec:supp-data.
-# ??? = value still to be filled from the existing implementation (OmegaConf raises if it is read).
+# ??? = no value here: the suite or task file sets it (OmegaConf raises if it is read).
 impl: ???                     # module with make(env_cfg) -> env; set by the suite base file
 env_id: ???                   # simulator task id in the benchmark package (not given in the paper)
 image_size: [224, 224]        # 2D JEPAs read 224x224 images (Sec. 3)
@@ -21,14 +21,13 @@ wm_data:                      # world-model training data (stage collect_wm_data
   num_episodes: 10000
   episode_len: 200
   mixture: ???                # {behaviour: proportion}, see jepa4r/data/behaviors.py
-  # Integrated collection (jepa4r/stages/collect_wm_data.py), set per suite / task:
-  #   collector   paired | mw | ogb | c4_cube | adroit | rh56   (the original collection script, see collect_wm_data)
-  #   env_id, env_kwargs, world, pcd, policy, health_check   the original per-shard Hydra config of that script
+  # Collection settings (jepa4r/stages/collect_wm_data.py), set per suite / task:
+  #   collector   paired | mw | ogb | cube_workflow | adroit | rh56   (the collection code, see collect_wm_data)
+  #   env_id, env_kwargs, world, pcd, policy, health_check   the per-shard collection config
   #   seed, sets  [{name, num_episodes, shards | world_seed | seed_base | tasks + seed_base_step}]  (train / test files)
   #   files       {pointcloud: <set>_pcd.h5, image: <set>.h5 [, <obs>_val: ...]}  the world-model training files
-  #   split       random_clips (LeWM random 0.9 / 0.1 clip split) | episodes (independent validation file, C4 Cube1-4)
+  #   split       random_clips (LeWM random 0.9 / 0.1 clip split) | episodes (independent validation file, Cube 1-4)
 policy_data: ???              # data for the policy head (stage prepare_policy_data)
-# harness: the integrated workflow's run settings, on the envs it runs (Relocate / RH56:
-# jepa4r.policy.bc.relocate_stage,
+# harness: run settings of the workflows that run an env end to end (Relocate / RH56: jepa4r.policy.bc.relocate_stage,
 #   mode + seed; Cube 1-4: jepa4r.policy.gciql.cube_stage, mode + workers + prefetch)
 policy: ???                   # default policy learner, a file in configs/policy

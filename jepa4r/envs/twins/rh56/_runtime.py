@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/rh56_adapter/_runtime.py (verbatim except: the protected source directories
-# are those of the jepa4r package; lines wrapped at 120 columns)
 """Small shared file guards and scoped bindings; no training or simulator imports."""
 from contextlib import ExitStack, contextmanager
 import hashlib

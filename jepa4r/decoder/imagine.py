@@ -1,7 +1,7 @@
 """Open-loop imagination (Sec. 4.4): encode the context frames at env steps 0, 5, 10, roll g_phi forward over the
 action blocks (frameskip 5) up to env step 200, and decode every predicted latent -> decoded 4D rollout.
 
-The recon branch's recon/rollout.py moved unchanged: training_setup (frameskip, history, action statistics of the world
+The paper's rollout code: training_setup (frameskip, history, action statistics of the world
 model's training data), action_blocks (z-scored blocks of frameskip actions), open_loop (the planner's rollout in
 latent space). ``imagine`` decodes such a rollout.
 """
@@ -17,8 +17,6 @@ except ImportError:  # pragma: no cover
     swm = None
 
 
-# Moved from lewm-pcd-recon-page4d@d3c2d07:lewm_pcd/recon/rollout.py:training_setup, action_blocks, open_loop (lines
-# 16-50; verbatim)
 def training_setup(ckpt):
     """(frameskip, history_size, action mean, action std) of the run a world-model checkpoint belongs to."""
     path = Path(swm.data.utils.get_cache_dir(sub_folder='checkpoints'), ckpt)

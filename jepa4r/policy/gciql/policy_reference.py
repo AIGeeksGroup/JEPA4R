@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/policy_reference.py (verbatim except: imports / paths adapted
-# to the package; lines wrapped at 120 columns)
 """Device-labelled CPU endpoint reference, independently replayed from raw NPZ."""
 import hashlib,json,importlib.metadata
 from pathlib import Path

@@ -1,31 +1,29 @@
 _base_: _ogbench
 name: puzzle_4x4
 display: Puzzle 4x4
-env_id: puzzle-4x4-v0         # OGBench board: cortexbench:lewm_pcd/envs/ogb_puzzle_env.py:48, 64-65 (make_env env_type)
+env_id: puzzle-4x4-v0         # OGBench board
 pointcloud:
-  crop_box: [[0.10, -0.50, -0.02], [0.75, 0.50, 0.60]]   # cortexbench:lewm_pcd/envs/ogb_puzzle_env.py:61 (CROP_BOX)
+  crop_box: [[0.10, -0.50, -0.02], [0.75, 0.50, 0.60]]
 policy: dqc
 wm_data:
   recipe: ogbench_noisy       # Puzzle follows OGBench's noisy recipe and official scale
   num_episodes: 1000
   episode_len: 1001
   mixture: null
-  collector: ogb              # cortexbench:lewm_pcd/scripts/data/collect_ogb.py + run_puzzle_collection.sh
-  env_id: swm/OGBenchPuzzle4x4-v0   # run_puzzle_pipeline.sh:82 (ENV_ID); scripts/data/config/ogb_puzzle_pcd.yaml:14
-  world: {num_envs: 1, max_episode_steps: 1001, image_shape: [224, 224]}   # ogb_puzzle_pcd.yaml:18-21
+  collector: ogb              # jepa4r/stages/collect_wm_data.py (collect_ogb)
+  env_id: swm/OGBenchPuzzle4x4-v0
+  world: {num_envs: 1, max_episode_steps: 1001, image_shape: [224, 224]}
   env_kwargs: {}
-  pcd: {_target_: jepa4r.envs.ogbench.ogb_pcd.PuzzlePointCloudWrapper}        # ogb_puzzle_pcd.yaml:25-26
-  policy: {_target_: jepa4r.envs.ogbench.ogb_puzzle_env.PuzzleNoisyPolicy}    # ogb_puzzle_pcd.yaml:28-29
-  health_check: false         # ogb_puzzle_pcd.yaml:35
+  pcd: {_target_: jepa4r.envs.ogbench.ogb_pcd.PuzzlePointCloudWrapper}
+  policy: {_target_: jepa4r.envs.ogbench.ogb_puzzle_env.PuzzleNoisyPolicy}
+  health_check: false
   sets:                       # episode i at seed seed_base + i, shard s collects i = s, s + K, ...
-    # run_puzzle_pipeline.sh:29 (ENV_TYPE=4x4 SHARDS=4; 4 shard logs in the data store)
     - {name: puzzle_4x4_noisy1000, num_episodes: 1000, shards: 4, seed_base: 1000000}
-    - {name: puzzle_4x4_noisy_test, num_episodes: 20, shards: 2, seed_base: 2000000}   # run_puzzle_collection.sh:19,38
+    - {name: puzzle_4x4_noisy_test, num_episodes: 20, shards: 2, seed_base: 2000000}
   files: {pointcloud: puzzle_4x4_noisy1000_pcd.h5, image: puzzle_4x4_noisy1000.h5}
   split: random_clips
-  max_parallel: 6            # run_puzzle_collection.sh:37-39 (both sets' shards at once)
-  threads: 1                  # run_puzzle_collection.sh:27 (OMP_NUM_THREADS=1)
+  max_parallel: 6            # both sets' shards at once (no effect on the data)
+  threads: 1                  # OMP_NUM_THREADS per shard
 policy_data:
   source: official_play       # OGBench's official play data (supp. sec:supp-policy)
-  dataset: puzzle-4x4-play-v0   # + its -val split; cortexbench:lewm_pcd/scripts/run_puzzle_baselines.sh:93,
-                                # bench/dqc/README.md:9,40
+  dataset: puzzle-4x4-play-v0   # + its -val split

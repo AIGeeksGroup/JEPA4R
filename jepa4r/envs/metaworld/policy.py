@@ -1,4 +1,3 @@
-# Moved from cortexbench@9331494:lewm_pcd/envs/metaworld/policy.py (verbatim except: lines wrapped at 120 columns)
 """Three-part collection policy for the MetaWorld envs: follows each episode's plan (sample type, noise level, random
 steps). ``ThreePartPolicy`` is the bin-picking one; a task subclass replaces the backbone controller (``_oracle``, its
 memory ``_new_mem``) and the lowest hand height of random actions (``LOW_Z``), e.g. assembly.AssemblyThreePartPolicy.

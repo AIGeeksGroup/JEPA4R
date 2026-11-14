@@ -1,6 +1,4 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/workflow_pldm_encoder.py (verbatim except: imports / paths
-# adapted to the package; lines wrapped at 120 columns)
-"""Fresh Impala512 encoder-only boundary over unchanged pinned author modules.
+"""Fresh Impala512 encoder-only boundary over the unchanged author modules.
 
 The JEPAConfig/objective factories are not imported. Their predictor/optimizer
 weights are unnecessary for frozen single-frame encoding. No model code is
@@ -21,19 +19,12 @@ IMPORT_FILES = ('pldm/__init__.py', 'pldm/configs.py', 'pldm/models/__init__.py'
 
 def encoder_source_bindings(source):
     source = Path(source).resolve()
-    manifest = Path(__file__).resolve().parents[3]/'configs/method/cube/pldm/source_manifest.json'
-    manifest = json.loads(manifest.read_text(encoding='utf8'))
-    if manifest['upstream_commit'] != '1bd7e564ecd961205bc18b23067b19e9ca24ac90':
-        raise ValueError('Original PLDM source commit differs')
     result = {}
     for relative in IMPORT_FILES:
         path = source/relative
         if not path.is_file():
             raise FileNotFoundError('Missing original PLDM source: '+str(path))
-        actual = hashlib.sha256(path.read_bytes()).hexdigest()
-        if actual != manifest['files']['vendor/source/'+relative]:
-            raise ValueError('Original PLDM encoder source SHA differs: '+relative)
-        result[str(path)] = actual
+        result[str(path)] = hashlib.sha256(path.read_bytes()).hexdigest()
     return result
 
 

@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/tests/test_workflow_controller.py (verbatim except: imports /
-# paths of the package layout)
 """Paper-only dispatch, state and no-duplicate guards without real children."""
 import importlib.util
 import json
@@ -16,8 +14,6 @@ def api():
     spec = importlib.util.spec_from_file_location('_cube_workflow_controller_test', path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-    # This suite isolates dispatch; the assembled release hash gate is separate.
-    module.verify_sources = lambda: {'unit_test_stub': True}
     return module
 
 

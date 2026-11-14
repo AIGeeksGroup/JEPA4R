@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/tests/test_native_trace.py (verbatim except: imports / paths
-# adapted to the package; lines wrapped at 120 columns)
 """Trace alignment does not require an encoder or simulator installation."""
 from pathlib import Path
 import sys

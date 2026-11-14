@@ -2,7 +2,7 @@
 and the PLDM / LeJEPA encoder; ViT-B/16 is used for Random (ViT-B). Released VISReg / V-JEPA 2.1 weights are
 loaded by their own modules in jepa4r/baselines.
 
-Original module docstring (lewm_pcd/encoders/vit.py):
+Original module docstring:
 Pixel baseline encoder: the LeWM ViT, returning its CLS token.
 
 Wraps ``stable_pretraining.backbone.utils.vit_hf`` so that it satisfies the
@@ -10,8 +10,6 @@ generic encoder contract (``(B, 3, H, W) -> (B, embed_dim)``). Behaviour is
 exactly what ``jepa.py`` used to do inline (``interpolate_pos_encoding=True``,
 CLS token); only the state-dict prefix moves from ``encoder.`` to ``encoder.vit.``.
 """
-# Moved from cortexbench@9331494:lewm_pcd/encoders/vit.py (lines 8-34; verbatim except: `import stable_pretraining as
-# spt` moved into ViTCLS.__init__ (lazy import))
 from torch import nn
 
 
@@ -42,8 +40,8 @@ class ViTCLS(nn.Module):
 
 
 def build(enc_cfg):
-    """configs/encoder/vit_*.yaml -> ViTCLS (stable-pretraining's vit_hf; LeWM's encoder block,
-    cortexbench@9331494:lewm_pcd/config/train/model/encoder/vit.yaml)."""
+    """configs/encoder/vit_*.yaml -> ViTCLS (stable-pretraining's vit_hf; LeWM's ViT encoder
+    config)."""
     return ViTCLS(size=str(enc_cfg.variant), patch_size=int(enc_cfg.patch_size),
                   image_size=int(enc_cfg.get('image_size', 224)), pretrained=bool(enc_cfg.get('pretrained', False)),
                   use_mask_token=False)

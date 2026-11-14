@@ -1,4 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/scripts/baselines/adroit/data.py (verbatim)
 """Relocate HDF handle lifecycle only; native indices, arrays and RNG are preserved."""
 from contextlib import contextmanager
 from pathlib import Path

@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/relocate/adroit_collect.py (verbatim except: imports / paths adapted to
-# the package; lines wrapped at 120 columns)
 """Fresh feedback-expert mixed trajectories with the final visible-surface sampler."""
 import argparse
 import hashlib
@@ -10,15 +8,13 @@ import time
 from .adroit_data import receipt,sha
 
 
-def load_pinned_expert(path):
+def load_expert(path):
     # Reuse the existing class without importing simulator registrations.
     import importlib.util
     source=Path(__file__).resolve().parents[2]/'envs/adroit/policy.py'
     spec=importlib.util.spec_from_file_location('_adroit_saved_state_expert',source)
     module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
-    dependencies=Path(__file__).resolve().parents[3]/'configs/policy/bc/relocate/DEPENDENCIES.json'
-    expected=json.loads(dependencies.read_text(encoding='utf-8'))['adroit_state_expert']['sha256']
-    return module.SavedStateExpert.load(path,expected,env_name='relocate-v0')
+    return module.SavedStateExpert.load(path,env_name='relocate-v0')
 
 
 def episode_plan(rng,length=200):
@@ -154,7 +150,7 @@ def main():
     if min(args.train_episodes,args.test_episodes)<1:raise ValueError('positive split sizes required')
     if args.train_episodes>=2000000:raise ValueError('train/test seed ranges would overlap')
     args.output.mkdir(parents=True,exist_ok=False)
-    expert=load_pinned_expert(args.expert);policy=expert.policy
+    expert=load_expert(args.expert);policy=expert.policy
     artifacts=[];counts={}
     try:
         for split,count,seed in (('train',args.train_episodes,args.seed),('test',args.test_episodes,args.seed+2000000)):

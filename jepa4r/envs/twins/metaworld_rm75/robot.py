@@ -1,4 +1,3 @@
-# Moved from cortexbench@9331494:lewm_pcd/envs/metaworld/rm75/robot.py (verbatim)
 """MetaWorld 3.0 task envs with the RM75-B + EG2-4C2 (scene.py). make(task) returns the task's own metaworld env class
 with RM75Mixin in front, so MetaWorld's object resets, observations, rewards and success checks run unchanged; only the
 robot layer is replaced:

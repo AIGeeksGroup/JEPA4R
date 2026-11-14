@@ -2,8 +2,8 @@
 (cfg.method.encoder / cfg.method.weights after the per-env override).
 
 ViT-B/16 (MetaWorld, Scene, Puzzle): single frames through the image path at 384, the mean of the last layer's patch
-tokens, 768-d: jepa4r/policy/bc/jepa_baselines.py load_vjepa21 (cortexbench@9331494; facebookresearch/vjepa2 @ 204698b
-at JEPA4R_VJEPA2). ViT-L/16 on Cube: the C4 workflow's loader (jepa4r/baselines/cube/released_encoders.py).
+tokens, 768-d: jepa4r/policy/bc/jepa_baselines.py load_vjepa21 (facebookresearch/vjepa2 @ 204698b at
+JEPA4R_VJEPA2). ViT-L/16 on Cube: the Cube workflow's loader (jepa4r/baselines/cube/released_encoders.py).
 """
 
 

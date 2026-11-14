@@ -1,6 +1,3 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/dqc/extract_feats.py (verbatim except: --ckpt-2d / --ckpt-3d optional,
-# only the given encoders' latents computed and written; each frame's point sampling is seeded on its own, so the
-# latents do not depend on which encoders run; lines wrapped at 120 columns)
 """OGBench's puzzle-3x3-play data (--env-type 4x4 / 4x5: puzzle-4x4-play / puzzle-4x5-play) -> every state re-rendered
 with the LeWM data's camera -> the frozen LeWM 2D / 3D encoders -> one 192-d latent per step (DQC's training
 observations, run_dqc.py).

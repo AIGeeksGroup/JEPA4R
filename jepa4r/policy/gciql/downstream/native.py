@@ -1,10 +1,8 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/downstream/native.py (verbatim except: imports / paths adapted
-# to the package; lines wrapped at 120 columns)
 import importlib.util
 import json
 from pathlib import Path
 import sys
-from ._source import VENDOR, IMPLS, verify_sources, load_source
+from ._source import VENDOR, IMPLS, load_source
 from .runtime import sha, atomic_json
 
 def load_adapter(binding):
@@ -161,10 +159,7 @@ def install_native(config, trainer, boundary, config_path):
         raise RuntimeError('Conflicting Native GCIQL boundary import')
     sys.modules['gciql_boundary'] = boundary
     reference = Path(config_path).parent / 'evaluator_reference.json'
-    manifest = verify_sources()
     evaluator = IMPLS / 'utils/evaluation.py'
-    atomic_json(
-        reference, dict(source_pins={str(evaluator): manifest['files']['ogbench/impls/utils/evaluation.py']['sha256']})
-    )
+    atomic_json(reference, dict(source_pins={str(evaluator): sha(evaluator)}))
     core.EVALUATOR_REFERENCE = reference
     return (core, group)

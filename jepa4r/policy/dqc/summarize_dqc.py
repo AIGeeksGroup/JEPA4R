@@ -1,4 +1,3 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/dqc/summarize_dqc.py (verbatim except: lines wrapped at 120 columns)
 """The DQC table of the puzzle boards: each input's success rate (OGBench's 5 tasks x 50 episodes, %) by OGBench's
 measure (the mean of the evaluations at 800 k, 900 k and 1 M steps) and the highest evaluation of the run (every
 100 k steps), from logs/dqc/puzzle_<board>/<input>/eval.jsonl.

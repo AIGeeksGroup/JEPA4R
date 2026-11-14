@@ -1,4 +1,3 @@
-# Moved from cortexbench@9331494:lewm_pcd/envs/ogb_scene_expert.py (verbatim except: lines wrapped at 120 columns)
 """Expert for OGBench scene's five evaluation tasks (the CortexBench demos, bench/cortexbench/make_scene_demos.py):
 OGBench's four per-object oracles (the Markov ones, ogb_scene_env.make_oracles, OGBench's collection parameters) chained
 by the task's goal. OGBench ships per-object oracles only, no expert for a whole task. The task env:

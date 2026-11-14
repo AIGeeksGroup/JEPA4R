@@ -1,23 +1,22 @@
 # OGBench Cube-Single data of the latent-space reconstruction (Sec. 4.4, Sec. 5.4, Tab. 3, Tab. 4a): the UR5e collection
-# with stable-worldmodel's plan-oracle expert of the cortexbench / lewm-pcd-recon-page4d branches, and the JEPA4R world
-# model trained on it (released as HF AIGeeksGroup/JEPA4R, branch ogbench-cube-recon, jepa4r/world_model). Tab. 1's
-# Cube-Single uses other data (the C4 mixture) and other world models: configs/env/cube_single.yaml.
+# with stable-worldmodel's plan-oracle expert, and the JEPA4R world model trained on it (released on HF as
+# AIGeeksGroup/JEPA4R, revision ogbench-cube-recon, jepa4r/world_model). Tab. 1's Cube-Single uses other data (the Cube
+# workflow's mixture) and other world models: configs/env/cube_single.yaml.
 _base_: _ogbench
 name: cube_single_recon
 display: Cube-Single (reconstruction data)
-env_id: swm/OGBCube-v0        # stable-worldmodel's OGBench cube, env_type single:
-                              # cortexbench:lewm_pcd/scripts/data/collect_cube_pcd.py:70-75
+env_id: swm/OGBCube-v0        # stable-worldmodel's OGBench cube, env_type single
 pointcloud:
-  crop_box: [[0.10, -0.50, -0.02], [0.75, 0.50, 0.60]]   # cortexbench:lewm_pcd/scripts/data/config/ogb_pcd.yaml:28
+  crop_box: [[0.10, -0.50, -0.02], [0.75, 0.50, 0.60]]
 wm_data:
-  recipe: plan_oracle         # stable-worldmodel ExpertPolicy(policy_type='plan_oracle'): collect_cube_pcd.py:91
+  recipe: plan_oracle         # stable-worldmodel ExpertPolicy(policy_type='plan_oracle')
   num_episodes: 10000
-  episode_len: 200            # ogb_pcd.yaml:20 (max_episode_steps)
+  episode_len: 200
   mixture: null
-  collector: paired           # cortexbench:lewm_pcd/scripts/data/collect_cube_pcd.py + collect_cube_pcd_sharded.py
-  env_id: swm/OGBCubePCD-v0   # collect_cube_pcd.py:70 (default env_id)
-  world: {num_envs: 10, max_episode_steps: 200, image_shape: [224, 224]}   # ogb_pcd.yaml:18-21
-  pcd:                        # ogb_pcd.yaml:23-31 (PointCloudWrapper arguments)
+  collector: paired           # jepa4r/stages/collect_wm_data.py (collect_paired), in shards
+  env_id: swm/OGBCubePCD-v0
+  world: {num_envs: 10, max_episode_steps: 200, image_shape: [224, 224]}
+  pcd:                        # PointCloudWrapper arguments
     num_points: 1200
     cameras: [front_pixels]
     foreground_only: true
@@ -25,15 +24,13 @@ wm_data:
     voxel_size: 0.005
     cube_fraction: 0.25
     keep_rgb: false
-  options: null               # ogb_pcd.yaml:38
-  seed: 3072                  # ogb_pcd.yaml:34; GATES.md 3.1 (UR5e row)
-  sets:                       # logs/cube_ur5e_pipeline.log: "launched 20 shards (500..500 episodes each)" / test
-                              # "launched 10 shards"
+  options: null
+  seed: 3072
+  sets:                       # 20 shards of 500 episodes; test: 1,000 episodes in 10 shards at seed 2,000,000
     - {name: cube_single_expert, num_episodes: 10000, shards: 20}
-    # GATES.md 3.1: test 1,000, seed 2,000,000
     - {name: cube_single_expert_test, num_episodes: 1000, shards: 10, seed: 2000000}
   files: {pointcloud: cube_single_expert_pcd.h5}   # 3D only (the paper run kept only the point clouds; the paired
                                                    # collector also writes the 2D file of the same rollouts)
   split: random_clips
-  max_parallel: 8             # run_rm75_pipeline.sh:5 (MAXPAR_PIX; no effect on the data)
+  max_parallel: 8             # shards run at once (no effect on the data)
   threads: 2

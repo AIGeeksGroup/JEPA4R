@@ -14,8 +14,8 @@ jobs:
     grid: {env: *envs, method: [pldm, lejepa, lewm, jepa4r]}
   - stage: train_policy
     grid: {env: *envs, method: [pldm, lejepa, visreg, vjepa21, lewm, jepa4r]}
-  # run only if the Random (ViT-B) row is ours rather than the VC-1 study's; MetaWorld only (Relocate's behaviour
-  # cloning, the OGBench-cube workflow, has no random ViT-B)
+  # run only if the Random (ViT-B) row is ours rather than the VC-1 study's; MetaWorld only (the Relocate workflow's
+  # behaviour cloning has no random ViT-B)
   - stage: train_policy
     optional: true
     grid: {env: [mw_assembly, mw_bin_pick, mw_button, mw_drawer, mw_hammer], method: [random_vitb]}

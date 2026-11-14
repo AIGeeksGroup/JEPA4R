@@ -1,6 +1,3 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/dqc/lewm_obs.py (verbatim except: paths of lewm_cortex / jepa_baselines
-# (jepa4r/policy/bc), the repository root and ogb_puzzle_env.py (jepa4r/envs/ogbench); lines wrapped at 120 columns, no
-# lint exemptions)
 """Frozen LeWM latents of OGBench puzzle states (3x3, 4x4, 4x5), shared by extract_feats.py (the training set) and
 run_dqc.py (the evaluation): the camera and point clouds of the LeWM data (envs/ogb_puzzle_env.py: front_pixels 224, the
 opaque arm of ob_type='states'; 2D anti-aliased, 3D the same camera's depth with 1200 points) and the encoders as

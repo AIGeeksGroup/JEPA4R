@@ -8,16 +8,14 @@ obs: image
 encoder: vit_tiny14
 train:
   epochs: 10
-  recipe:                     # LeJEPA's own hyper-parameters (official minimal recipe): the defaults of
-                              # cortexbench@9331494:lewm_pcd/scripts/baselines/train_lejepa_mw.py:111-116
-                              # (jepa4r/baselines/lejepa.py)
+  recipe:                     # LeJEPA's own hyper-parameters (official minimal recipe), the defaults of
+                              # jepa4r/baselines/lejepa.py
     views: 4
     batch_size: 256
     lr: 2.0e-3
     lamb: 0.02                # SIGReg weight lambda
     proj_dim: 16
     workers: 8                # loader only
-    # Cube 1-4 train in the Cube workflow with the same defaults:
-    # OGBench-cube:lewm_pcd/bench/ogbench/native/tiny_train.py:88-94
+    # Cube 1-4 train in the Cube workflow (jepa4r/baselines/cube/native) with the same defaults;
     # fixed in the script: AdamW weight decay 5e-2, one epoch of linear warm-up then cosine to 1e-3, projector
     # 512 -> 2048 -> 2048 -> 16 with BatchNorm, SIGReg 17 knots / 256 directions, bf16, images 224, torch seed 0

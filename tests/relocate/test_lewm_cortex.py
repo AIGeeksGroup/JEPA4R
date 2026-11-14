@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/scripts/checks/test_lewm_cortex.py (verbatim except: module names / paths of
-# the moved code adapted; lines wrapped at 120 columns)
 import torch
 
 from jepa4r.policy.bc.lewm_cortex import _remap_vit_state_dict_for_runtime

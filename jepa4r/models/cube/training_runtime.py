@@ -1,8 +1,5 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/training_runtime.py (verbatim except: imports / paths adapted
-# to the package; lines wrapped at 120 columns, registration imports as importlib.import_module)
 """Current recipe/source loading and local runtime paths for Cube training."""
 from contextlib import contextmanager
-import hashlib
 import importlib
 import importlib.util
 import json
@@ -20,32 +17,9 @@ def code_root():
     raise FileNotFoundError('current model code and shared SWM runtime are missing')
 
 
-def _sha(path):
-    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
-
-
-def verify_sources():
-    manifest = PACKAGE.parents[2] / 'configs' / 'method' / 'cube' / 'SOURCE_MANIFEST.json'
-    manifest = json.loads(manifest.read_text(encoding='utf8'))
-    mismatches = []
-    for root, entries in [(PACKAGE, manifest['package_files']), (code_root(), manifest['project_files'])]:
-        for name, digest in entries.items():
-            path = (root / name).resolve()
-            if not path.is_relative_to(root) or _sha(path) != digest:
-                mismatches.append(name)
-    return dict(checked_files=len(manifest['package_files']) + len(manifest['project_files']), mismatches=mismatches)
-
-
-def require_sources():
-    result = verify_sources()
-    if result['mismatches']:
-        raise ValueError('current training source mismatch: ' + ', '.join(result['mismatches']))
-
-
 def load_recipe(method):
     if method not in ('lewm_rgb', 'lewm_pcd'):
         raise ValueError('current LeWM RGB/PCD recipe required')
-    require_sources()
     recipe = PACKAGE.parents[2] / 'configs' / 'method' / 'cube' / 'recipes' / (method + '.json')
     return json.loads(recipe.read_text(encoding='utf8'))
 
@@ -64,7 +38,6 @@ def build_environment(data_root, output_root, environ=None):
 
 
 def load_tiny_trainer():
-    require_sources()
     return importlib.import_module('jepa4r.baselines.cube.native.tiny_train')
 
 
@@ -81,7 +54,6 @@ def _load(name, path, package=False):
 def pinned_native():
     """The native LeWM trainer native/lewm_train.py, moved to jepa4r.models.world_model (run_episode_split with the
     source's own output layout, lejepa_forward, SIGReg), with the module attributes its callers use and patch."""
-    require_sources()
     from functools import partial
     from types import SimpleNamespace
     import hydra

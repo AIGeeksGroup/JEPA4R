@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:tests/test_paired_writer.py (verbatim except: module names / paths of the moved code
-# adapted; lines wrapped at 120 columns)
 import importlib.util
 from pathlib import Path
 

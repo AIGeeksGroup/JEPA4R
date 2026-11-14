@@ -31,11 +31,11 @@ def train(cfg, out_dir) -> dict:
     if not trained_by_us(cfg.method):
         raise SystemExit(f"method {cfg.method.name!r} ({cfg.method.kind}) is not trained by us; "
                          "go straight to train_policy")
-    if cfg.env.suite in ("adroit", "rh56"):  # Relocate: the OGBench-cube branch's harness trains all four methods
+    if cfg.env.suite in ("adroit", "rh56"):  # Relocate: the Relocate workflow trains all four methods
         from jepa4r.policy.bc import relocate_stage
         return {"harness_status": relocate_stage(cfg, "train_wm", out_dir)["status"]}
     from jepa4r.policy.gciql import is_cube_workflow
-    if is_cube_workflow(cfg):  # Cube 1-4: the OGBench-cube branch's Cube workflow trains all four methods
+    if is_cube_workflow(cfg):  # Cube 1-4: the Cube workflow trains all four methods
         from jepa4r.policy.gciql import train_world_model
         return train_world_model(cfg, out_dir)
     return importlib.import_module(cfg.method.impl).train(cfg, out_dir)

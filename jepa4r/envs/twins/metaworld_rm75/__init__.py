@@ -1,5 +1,3 @@
-# Moved from cortexbench@9331494:lewm_pcd/envs/metaworld/rm75/__init__.py (verbatim except: lines wrapped at 120
-# columns)
 """MetaWorld tasks of CortexBench on the lab robot: RealMan RM75-B arm + Inspire EG2-4C2 gripper instead of MetaWorld's
 Sawyer, as envs/cube_rm75_env.py does for the OGBench cube. Only the robot layer changes; the task (layout, observation,
 reward, success), the camera, the collection plan and the eval hooks are envs.metaworld's.

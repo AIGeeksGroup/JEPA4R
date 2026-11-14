@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/tests/test_matrix_policy.py (verbatim except: imports / paths
-# adapted to the package; lines wrapped at 120 columns)
 """M2 verifies the full saved policy tree before and after the original restore."""
 import copy
 from pathlib import Path

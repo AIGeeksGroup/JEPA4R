@@ -1,11 +1,9 @@
 # Latent-space reconstruction D_psi (Sec. 4.4, Eq. 2), trained post hoc on the frozen world model.
 # Tab. 4a keeps everything here fixed and swaps only `backbone`.
-# Values not stated in the paper: the recon branch's run configs RC =
-# lewm-pcd-recon-page4d@d3c2d07:lewm_pcd/config/recon/
-# {recon.yaml, data/ogb_pcd.yaml, decoder/page4d.yaml, exp/frozen.yaml, exp/lora.yaml}, as saved with every paper run
-# (HF AIGeeksGroup/JEPA4R ogbench-cube-recon, rm75b-twin-cube: decoder/<run>/config.yaml) and P4 =
-# .../recon/decoders/page4d.py.
-# The integrated code: jepa4r/decoder (training), jepa4r/eval/recon.py (evaluation).
+# Values not stated in the paper are those of the reconstruction runs' configs, as saved with every paper run (HF
+# AIGeeksGroup/JEPA4R, revisions ogbench-cube-recon and rm75b-twin-cube: decoder/<run>/config.yaml), and of the PAGE-4D
+# decoder (jepa4r/decoder/backbones/page4d.py); key names of those configs in parentheses.
+# Code: jepa4r/decoder (training), jepa4r/eval/recon.py (evaluation).
 impl: jepa4r.decoder.train
 wm:                           # the frozen world model whose latents are decoded
   method: jepa4r
@@ -13,66 +11,65 @@ wm:                           # the frozen world model whose latents are decoded
   epoch: 10
 latent_dim: 192
 set_generator:                # new: replaces the image input of the backbone
-  num_queries: 256            # learnable queries -> 16 x 16 token grid (RC decoder/page4d.yaml:4, grid: 16)
+  num_queries: 256            # learnable queries -> 16 x 16 token grid
   token_dim: 1024             # = the backbone's token width (PAGE-4D, VGGT: ViT-L; da3.yaml overrides it)
-  num_blocks: 3               # residual MLP blocks, modulated by z_t through FiLM (P4:65, gen_depth)
-  dim: 512                    # width inside the blocks (P4:65, gen_dim)
-  hidden: 1024                # hidden width of each block's MLP (P4:65, gen_hidden)
-  query_dim: 128              # width of the learnable queries (P4:65)
+  num_blocks: 3               # residual MLP blocks, modulated by z_t through FiLM (gen_depth)
+  dim: 512                    # width inside the blocks (gen_dim)
+  hidden: 1024                # hidden width of each block's MLP (gen_hidden)
+  query_dim: 128              # width of the learnable queries
 head:
   point_map_size: [224, 224]
   affine: learnable           # moves the point map into the target frame (the world-model frame, env.pointcloud.affine)
   init_view: [35.0, 30.0, 1.25]   # the affine map starts as a virtual camera: azimuth, elevation (deg), distance (m)
-                                  # (P4:66, view)
   rgb_branch: true
   num_points: 1200            # pixels that form P_hat_t
   pixel_selection: random_train_fixed_eval   # a fresh random subset of the 224 x 224 map per training step, a fixed one
-                                             # (torch.randperm with a seed-0 generator) otherwise (P4:185-189, _pick)
+                                             # (torch.randperm with a seed-0 generator) otherwise
 loss:                         # Eq. 2: CD + SW_2^2 (both on xyz) + 0.1 * L1 colour of NN-matched points
   chamfer: 1.0
-  sliced_w2: 1.0              # RC decoder/page4d.yaml:12 (sw_weight)
-  sw_projections: 100         # RC decoder/page4d.yaml:13
-  rgb_l1: 0.1                 # RC decoder/page4d.yaml:11 (color_weight)
+  sliced_w2: 1.0              # sw_weight
+  sw_projections: 100
+  rgb_l1: 0.1                 # color_weight
 train:                        # linear-probe-then-fine-tune order [kumar2022lpft]
-  split: 0.9                  # random 0.9 / 0.1 frame split of data/wm/<env> (RC recon.yaml:22)
-  seed: 3072                  # split and shuffling generator (RC recon.yaml:23)
-  val_batches: 100            # validation readout of each stage (RC recon.yaml:30, limit_val_batches)
-  optimizer: {lr: 3.0e-4, weight_decay: 1.0e-4, betas: [0.9, 0.95]}   # AdamW, per group lr below (RC recon.yaml:43-47)
-  precision: bf16             # RC recon.yaml:33
-  gradient_clip: 1.0          # RC recon.yaml:34
-  num_workers: 6              # loader only (RC recon.yaml:21)
-  param_groups:               # one AdamW per group (RC exp/frozen.yaml:6, exp/lora.yaml:9-10)
+  split: 0.9                  # random 0.9 / 0.1 frame split of data/wm/<env>
+  seed: 3072                  # split and shuffling generator
+  val_batches: 100            # validation readout of each stage (limit_val_batches)
+  optimizer: {lr: 3.0e-4, weight_decay: 1.0e-4, betas: [0.9, 0.95]}   # AdamW, per group lr below
+  precision: bf16
+  gradient_clip: 1.0
+  num_workers: 6              # loader only
+  param_groups:               # one AdamW per group
     new: 'model\.(generator|frame|rgb)'
     lora: 'model\.(dino|aggregator).*\.qkv$'
   stage_a:                    # new parameters only (5.75M), backbone frozen
-    epochs: 1                 # RC recon.yaml:28
-    steps: 14140              # batches of the stage (RC recon.yaml:29, limit_train_batches)
-    lr: 3.0e-4                # RC exp/frozen.yaml:6
-    batch_size: 32            # frames (RC recon.yaml:37)
+    epochs: 1
+    steps: 14140              # batches of the stage (limit_train_batches)
+    lr: 3.0e-4
+    batch_size: 32            # frames
   stage_b:                    # + LoRA on the q / v projections of all attention blocks
-    lora_rank: 4              # RC exp/lora.yaml:6
+    lora_rank: 4
     lora_targets: [q, v]
     epochs: 1
     steps: 14140
-    lr: 3.0e-4                # the new parts, starting from stage A (RC exp/lora.yaml:9)
-    lora_lr: 1.0e-5           # the LoRA adapters (RC exp/lora.yaml:10)
+    lr: 3.0e-4                # the new parts, starting from stage A
+    lora_lr: 1.0e-5           # the LoRA adapters
     batch_size: 32
 eval:
   per_frame:
     num_frames: 4096          # validation frames
     outlier_cm: 3.0           # Outl.: share of points with NN distance above 3 cm
-    split: val                # the decoder run's own validation split (scripts/recon/eval_frames.py)
-    seed: 0                   # choice of the frames among them: default_rng(0) (eval_frames.py --seed)
+    split: val                # the decoder run's own validation split
+    seed: 0                   # choice of the frames among them: default_rng(0)
   open_loop:
-    num_episodes: 64          # episodes 0..63 of data/wm/<env> (scripts/recon/eval_rollout.py --episodes 0:64)
+    num_episodes: 64          # episodes 0..63 of data/wm/<env>
     context_env_steps: [0, 5, 10]
     horizon_env_steps: 200
     report_env_steps: [15, 100, 200]
     batch: 8                  # episodes per batch, no effect on the numbers
   cube_position:              # how the cube position is read from a point cloud (not given in the paper)
     column: privileged_block_0_pos   # the simulator's cube position: where the cube's colour is measured
-                                     # (eval_frames.py --regions)
     radius_cm: 3
     readout: colour_centroid  # centroid of the points carrying the cube's colour (median rgb of the real points within
-                              # 0.85 x radius of the simulator position), decoded vs real cloud (recon/metrics.py)
-  effector_region: {column: proprio_effector_pos, radius_cm: 6}   # the second region of eval_frames.py --regions
+                              # 0.85 x radius of the simulator position), decoded vs real cloud
+                              # (jepa4r/metrics/pointcloud.py)
+  effector_region: {column: proprio_effector_pos, radius_cm: 6}   # the second measured region

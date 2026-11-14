@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/state_replay.py (verbatim except: imports / paths adapted to
-# the package; lines wrapped at 120 columns)
 """Restore every named numeric leaf of an independently exported state tree."""
 import numpy as np
 from jepa4r.policy.gciql.gates.arrays import array_identity

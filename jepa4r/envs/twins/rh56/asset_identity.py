@@ -1,6 +1,4 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/relocate/asset_identity.py (verbatim except: imports / paths adapted to
-# the package; lines wrapped at 120 columns)
-"""Read trusted RH56 manifest pins before importing the external native bundle."""
+"""Check the external native RH56 bundle against its file list before importing it."""
 import hashlib
 import json
 from pathlib import Path,PurePosixPath
@@ -20,18 +18,13 @@ def _relative(value):
     return name
 
 
-def verify_rh56_bundle(bundle_root,*,dependencies_path=None):
-    dependencies = Path(
-        dependencies_path or Path(__file__).resolve().parents[4] / 'configs/policy/bc/relocate/DEPENDENCIES.json'
+def verify_rh56_bundle(bundle_root,*,manifest_path=None):
+    manifest = Path(
+        manifest_path or Path(__file__).resolve().parents[4] / 'configs/policy/bc/relocate/rh56_native_bundle_v1.json'
     ).resolve()
-    pins=json.loads(dependencies.read_text(encoding='utf-8'))['rh56_native_bundle']
-    repo=dependencies.parent;manifest=repo.joinpath(*_relative(pins['manifest']).parts).resolve()
-    if not manifest.is_relative_to(repo):raise ValueError('trusted manifest relative path escapes repository')
-    if _sha(manifest)!=pins['manifest_sha256']:raise ValueError('trusted bundle manifest SHA mismatch')
     payload=json.loads(manifest.read_text(encoding='utf-8'))
-    if payload.get('schema')!=pins['schema']:raise ValueError('trusted bundle schema mismatch')
     files=payload['files']
-    if not files or len(files)!=pins['file_count']:raise ValueError('trusted bundle file count mismatch')
+    if not files or len(files)!=payload['file_count']:raise ValueError('bundle file list count mismatch')
     root=Path(bundle_root).expanduser().resolve();seen=set();checked=[]
     for row in files:
         relative=_relative(row['relative_path']);name=relative.as_posix()
@@ -40,15 +33,15 @@ def verify_rh56_bundle(bundle_root,*,dependencies_path=None):
         if not path.is_relative_to(root):raise ValueError('bundle member escapes the selected root')
         if not path.is_file():raise FileNotFoundError(path)
         before=path.stat()
-        if before.st_size!=row['bytes'] or _sha(path)!=row['sha256']:
-            raise ValueError('RH56 bundle member SHA/bytes mismatch: '+name)
+        if before.st_size!=row['bytes']:
+            raise ValueError('RH56 bundle member size mismatch: '+name)
+        digest=_sha(path)
         after=path.stat()
         if (before.st_size,before.st_mtime_ns)!=(after.st_size,after.st_mtime_ns):
             raise ValueError('RH56 bundle member changed while verifying: '+name)
-        checked.append(dict(relative_path=name,bytes=row['bytes'],sha256=row['sha256']))
+        checked.append(dict(relative_path=name,bytes=row['bytes'],sha256=digest))
     if not {'env.py','ppo.py','experts/relocate_expert.pt'}<=seen:
-        raise ValueError('trusted manifest lacks required native expert members')
+        raise ValueError('bundle file list lacks required native expert members')
     canonical=json.dumps(sorted(checked,key=lambda row:row['relative_path']),sort_keys=True,separators=(',',':'))
-    return dict(passed=True,bundle_root=str(root),verified_files=len(checked),
-        manifest_path=str(manifest),manifest_sha256=pins['manifest_sha256'],
-        dependencies_sha256=_sha(dependencies),content_identity_sha256=hashlib.sha256(canonical.encode()).hexdigest())
+    return dict(passed=True,bundle_root=str(root),verified_files=len(checked),manifest_path=str(manifest),
+        manifest_sha256=_sha(manifest),content_identity_sha256=hashlib.sha256(canonical.encode()).hexdigest())

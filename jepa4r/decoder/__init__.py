@@ -7,7 +7,6 @@ head.py           learnable affine map of the 224x224 point map + rgb branch + 1
 lora.py           stage-B rank-4 LoRA on q / v of all attention blocks
 losses.py         Chamfer + sliced W2^2 (xyz) + 0.1 * L1 rgb of NN-matched points
 model.py          assembles the decoder;  train.py  stage A / stage B;  imagine.py  open-loop rollouts
-Integrated code: lewm-pcd-recon-page4d@d3c2d07:lewm_pcd/{recon/*, train_recon.py} and the untracked VGGT / Depth
-Anything 3 adapters (GATES.md 1.2 item 6); each backbone module holds the whole decoder with that backbone, as the
-recon branch builds it (head.py: where the head lives).
+Each backbone module holds the whole decoder with that backbone, as the paper's reconstruction code builds it (head.py:
+where the head lives).
 """

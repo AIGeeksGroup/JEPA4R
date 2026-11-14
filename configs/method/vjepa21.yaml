@@ -7,15 +7,11 @@ obs: image
 encoder: vit_b16
 weights: cortexbench_baselines/vjepa2_1_vitb_dist_vitG_384.pt   # under JEPA4R_CHECKPOINTS:
                                                                 # https://dl.fbaipublicfiles.com/vjepa2/
-                                                                 # vjepa2_1_vitb_dist_vitG_384.pt
-                                                                 # (cortexbench@9331494:lewm_pcd/bench/
-                                                                 # cortexbench/README.md:96); GATES.md 2: sha256
-                                                                 # 848a77c3..., 1,664,223,428 bytes
+                                                                # vjepa2_1_vitb_dist_vitG_384.pt (1,664,223,428 bytes)
 per_env:
-  "cube_*": {encoder: vit_l16, weights: vjepa/vjepa2_1_vitl_dist_vitG_384.pt}   # on Cube, V-JEPA 2.1 uses ViT-L/16 (its
-                              # own checkpoint): OGBench-cube:lewm_pcd/bench/ogbench/released_models.json:19-21
-                              # (filename,
+  "cube_*": {encoder: vit_l16, weights: vjepa/vjepa2_1_vitl_dist_vitG_384.pt}   # on Cube, V-JEPA 2.1 uses ViT-L/16
+                              # (its own checkpoint,
                               # https://dl.fbaipublicfiles.com/vjepa2/vjepa2_1_vitl_dist_vitG_384.pt, 5,151,198,524
-                              # bytes,
-                              # sha256 7ea9b7cb...); the Cube workflow keeps it at checkpoints/vjepa/<filename>
-                              # (foundation_assets.py:47); FP16 forward, mean of 576 patch tokens (released_encoders.py)
+                              # bytes); the Cube workflow keeps it at checkpoints/vjepa/<filename>
+                              # (configs/method/cube/released_models.json); FP16 forward, mean of 576 patch tokens
+                              # (jepa4r/baselines/cube/released_encoders.py)

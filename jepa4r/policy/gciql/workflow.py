@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/workflow.py (verbatim except: imports / paths adapted to the
-# package; lines wrapped at 120 columns, unused imports removed)
 """One paper-only Cube workflow. Describe by default; execute explicitly."""
 import argparse
 from datetime import datetime, timezone
@@ -52,16 +50,6 @@ def save(path, value, *, new=False):
         temporary = path.with_name(path.name+'.tmp')
         temporary.write_bytes(data)
         temporary.replace(path)
-
-
-def verify_sources():
-    manifest = REPO/'configs/policy/gciql/INTEGRATED_SOURCES.json'   # the moved files, paths relative to REPO
-    value = read(manifest)
-    for name, expected in value['files'].items():
-        path = (REPO/name).resolve()
-        if not path.is_relative_to(REPO.resolve()) or sha(path) != expected:
-            raise ValueError('release source checksum differs: '+name)
-    return dict(manifest_sha256=sha(manifest),files=len(value['files']))
 
 
 def normalize(value):
@@ -303,8 +291,6 @@ def _verify_artifacts(path, checked=None, verified=None):
     checked.add(path)
     value=read(path)
     if value.get('schema')=='cube_current_training_v1':
-        # The existing loader verifies retained same-byte aliases while keeping
-        # original producer paths intact as historical provenance.
         from jepa4r.data.cube.fresh_data import load_binding
         load_binding(path)
         return
@@ -429,7 +415,6 @@ def execute(plan, *, resume=False):
         raise ValueError('input machine configuration changed after planning')
     if digest(config) != plan['config_sha256']:
         raise ValueError('run config changed after planning')
-    source=verify_sources()
     root=Path(config['output_root'])
     run_file=root/'control'/'RUN.json'
     if root.exists():
@@ -450,11 +435,8 @@ def execute(plan, *, resume=False):
             failed_count=0,
             actual_exit_code=None,
             config_sha256=plan['config_sha256'],
-            source_binding=source,
         )
     )
-    if state['source_binding'] != source:
-        raise ValueError('source release changed; do not resume into old outputs')
     for row in plan['stages']:
         name=row['stage']
         if name in state['completed']:
@@ -530,7 +512,7 @@ def execute(plan, *, resume=False):
         if not completion.exists():
             save(completion,dict(schema='cube_pipeline_completion_v1',actual_exit_code=0,
                  mode=config['mode'],model=config['model'],cube_count=config['cube_count'],
-                 formal_acceptance=config['mode']=='formal',stages=state['completed'],source_binding=source),new=True)
+                 formal_acceptance=config['mode']=='formal',stages=state['completed']),new=True)
     return 0
 
 

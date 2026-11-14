@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/tests/test_collection_resume.py (verbatim except: imports /
-# paths adapted to the package; lines wrapped at 120 columns, unused imports removed)
 """Shard scheduling/recovery contracts; simulator and HDF QC are isolated."""
 import json
 from pathlib import Path
@@ -181,8 +179,7 @@ class CollectionResumeTests(unittest.TestCase):
             target.write_text(json.dumps(dict(actual_exit_code=0, cube_count=1, mode='smoke')))
             return SimpleNamespace(returncode=0)
 
-        with patch.object(workflow, 'verify_sources', lambda: {'test': True}), \
-                patch.object(workflow.subprocess, 'run', child):
+        with patch.object(workflow.subprocess, 'run', child):
             self.assertEqual(workflow.execute(plan), 7)
             self.assertEqual(workflow.execute(plan, resume=True), 0)
         self.assertIn('--resume', commands[1])

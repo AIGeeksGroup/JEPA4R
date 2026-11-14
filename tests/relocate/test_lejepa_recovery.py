@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/scripts/checks/test_lejepa_recovery.py (verbatim except: module names / paths
-# of the moved code adapted; lines wrapped at 120 columns, unused imports removed)
 """CPU mechanics for the native manual-loop recovery hook; no GPU/model training case."""
 from pathlib import Path
 import tempfile

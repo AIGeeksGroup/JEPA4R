@@ -1,21 +1,18 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/lewm_cortex.py (verbatim except: imports / paths adapted to
-# the package; lines wrapped at 120 columns), merged with OGBench-cube@4fbb0c6:lewm_pcd/bench/cortexbench/lewm_cortex.py
-# (the Relocate / RH56 runs' copy): its ViT state-dict remap, its random_init / seed for load_lewm_pcd and, behind
-# seed_global_rng, its seeding of the global RNG in load_lewm
 """vc_models entry point for LeWM encoders in CortexBench (the frozen-PVR imitation protocol of eai-vc).
 
 CortexBench loads an encoder through `hydra.utils.call(<vc_models conf/model/NAME.yaml>)`, which must return
 (model, embedding_dim, transforms, metadata); the model maps a batch of preprocessed frames (B, 3, 224, 224) to one
 vector per frame. For LeWM that vector is the encoder's CLS token passed through the projector: the 192-d latent the
 LeWM predictor and planner work in. The model is rebuilt exactly as stable_worldmodel's load_pretrained does it
-(hydra-instantiate the checkpoint's config.json, then load weights_epoch_N.pt); needs lewm_pcd/ on PYTHONPATH.
+(hydra-instantiate the checkpoint's config.json, then load weights_epoch_N.pt); needs the repository root on PYTHONPATH
+(jepa4r.policy.bc sets it).
 
 Preprocessing: LeWM was trained on full 224 x 224 renders with ImageNet normalisation, so the 256 x 256 CortexBench
 frames are resized (not centre-cropped, which would narrow the field of view the model was trained on) to 224 and
 normalised the same way. random_init=True gives the same architecture with untrained weights (the analogue of the
 paper's 'Random (ViT) Frozen' rows).
 
-The OGBench-cube branch's Relocate and RH56 runs load the 2D LeWM with the global torch RNG seeded by `seed`
+The Relocate and RH56 runs load the 2D LeWM with the global torch RNG seeded by `seed`
 (seed_global_rng=True: configs/policy/bc/conf/model/lewm_adroit_relocate_2d.yaml, jepa4r/envs/twins/rh56/bc_bridge.py);
 the other callers leave the caller's RNG as it was (the default).
 """
@@ -123,7 +120,7 @@ def build_lewm_embedding(
     assert cfg['encoder']['_target_'] in ('encoders.ViTCLS', 'encoders.vit.ViTCLS'), cfg['encoder']['_target_']
     # the initial (random_init: final) weights come from `seed`; the caller's global RNG is left as it was (CortexBench
     # loads the encoder again right before its BC dataloader draws the shuffle order, which must follow the run's seed),
-    # unless seed_global_rng (the OGBench-cube copy: torch.manual_seed(seed) on the global RNG)
+    # unless seed_global_rng (the Relocate runs: torch.manual_seed(seed) on the global RNG)
     with contextlib.nullcontext() if seed_global_rng else torch.random.fork_rng(devices=[]):
         torch.manual_seed(seed)
         encoder = ViTCLS(**enc_cfg)
@@ -174,8 +171,8 @@ class PcdTransform:
         return torch.cat([xyz, x[:, 3:6] / 255.0], dim=-1) if self.use_rgb else xyz
 
 
-# the 3D LeWM encoders (lewm_pcd/encoders, config/train/model/encoder/{dexart,ms2,ppt,pointnet2,dgcnn}.yaml):
-# the _target_ in a checkpoint's config.json -> (file in lewm_pcd/encoders, class, name for the metadata)
+# the 3D LeWM encoders (LeWM's encoder configs dexart, ms2, ppt, pointnet2, dgcnn):
+# the _target_ in a checkpoint's config.json -> (file in jepa4r/models/encoders, class, name for the metadata)
 PCD_ENCODERS = {
     'encoders.DexArtPointNet': ('pointnet.py', 'DexArtPointNet', 'DexArt PointNet'),
     'encoders.pointnet_dexart.DexArtPointNet': ('pointnet.py', 'DexArtPointNet', 'DexArt PointNet'),

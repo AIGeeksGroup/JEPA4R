@@ -1,5 +1,3 @@
-# Moved from cortexbench@9331494:lewm_pcd/envs/metaworld/rm75/env.py (verbatim except: imports / paths adapted to the
-# package; lines wrapped at 120 columns)
 """envs.metaworld's MetaWorld task envs (top_cap2 camera, three-part collection plan, eval hooks) on the RM75 metaworld
 env (robot.py) instead of the Sawyer one. Only what depends on the robot changes:
 

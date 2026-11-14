@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/downstream/vendor/boundary.py (verbatim except: imports / paths
-# adapted to the package; lines wrapped at 120 columns, unused imports removed)
 import copy
 import csv
 import json

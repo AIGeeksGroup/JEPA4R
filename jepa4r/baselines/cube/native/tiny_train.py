@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/native/tiny_train.py (verbatim except: imports / paths of the
-# package layout, lines wrapped at 120 columns)
 """Current Tiny/14 training using the canonical recipe and native loop."""
 import argparse
 import json

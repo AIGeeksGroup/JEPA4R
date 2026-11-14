@@ -1,6 +1,6 @@
 """DGCNN [wang2019dgcnn] for the Tab. 4b ablation, sized to ~5.51M parameters.
 
-Original module docstring (lewm_pcd/encoders/dgcnn.py):
+Original module docstring:
 DGCNN (Wang et al., ACM TOG 2019), the authors' PyTorch classifier (WangYueFt/dgcnn, pytorch/model.py, class
 DGCNN), in plain PyTorch with the same layers.
 
@@ -29,7 +29,6 @@ the chunks (ChunkedSharedMLP). In training the BatchNorms normalise over the who
 the authors' network's up to floating-point rounding, and the running statistics are updated once per step as
 nn.BatchNorm does; in eval mode the running statistics are used.
 """
-# Moved from cortexbench@9331494:lewm_pcd/encoders/dgcnn.py (lines 29-288; verbatim)
 from __future__ import annotations
 
 from collections.abc import Sequence
@@ -295,7 +294,7 @@ class DGCNN(nn.Module):
 
 
 def build(enc_cfg):
-    """configs/encoder/dgcnn.yaml (hparams = cortexbench@9331494:lewm_pcd/config/train/model/encoder/dgcnn.yaml)."""
+    """configs/encoder/dgcnn.yaml (hparams = LeWM's DGCNN encoder config)."""
     h = enc_cfg.hparams
     return DGCNN(in_dim=int(enc_cfg.in_dim), k=int(h.k), widths=list(h.widths), emb_dim=int(h.emb_dim),
                  out_dim=int(enc_cfg.out_dim))

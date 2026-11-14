@@ -1,6 +1,6 @@
 """Frozen 3D reconstruction backbones for the decoder; ``build_backbone(bb_cfg, **kwargs)`` imports ``bb_cfg.impl``.
 
-Each module holds the whole decoder with its backbone, as the recon branch builds it (set generator -> the backbone's
+Each module holds the whole decoder with its backbone, as the paper's code builds it (set generator -> the backbone's
 frozen layers, the generated tokens replacing the output of its patch embedding (+ LoRA in stage B) -> affine map, rgb
 branch, pixel selection): page4d.PAGE4DDecoder (default), vggt.VGGTDecoder, depth_anything3.DA3Decoder (Tab. 4a).
 ``build(bb_cfg, **kwargs)`` returns it with the released weights ``bb_cfg.weights`` (frozen, reloaded, never written

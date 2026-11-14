@@ -4,14 +4,12 @@ CD     symmetric Chamfer distance on xyz
 SW_2^2 squared sliced Wasserstein-2 distance on xyz [bonneel2015sliced] (cfg.decoder.loss.sw_projections)
 L_rgb  L1 colour error of nearest-neighbour matched points
 
-The recon branch's losses.py moved unchanged (chamfer = CD + colour term, sliced_wasserstein, nn_distance = the
+The paper's loss code (chamfer = CD + colour term, sliced_wasserstein, nn_distance = the
 validation readout); ``decoder_loss`` adds them up as the backbone decoders' ``loss`` does.
 """
 import torch
 
 
-# Moved from lewm-pcd-recon-page4d@d3c2d07:lewm_pcd/recon/losses.py:_fp32, _nn_index, _gather, chamfer,
-# sliced_wasserstein, nn_distance (lines 10-71; verbatim)
 def _fp32(*tensors):
     return [t.float() for t in tensors]
 

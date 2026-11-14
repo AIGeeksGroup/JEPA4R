@@ -1,8 +1,7 @@
 """VGGT [wang2025vggt] backbone for Tab. 4a.
 
 PAGE-4D is VGGT's architecture re-trained on dynamic scenes, so ``VGGTDecoder`` is PAGE4DDecoder unchanged with
-VGGT-1B's released weights (its point head: a point map in the camera frame). Moved unchanged apart from imports from
-the untracked recon_backbones.py (GATES.md 1.2 item 6).
+VGGT-1B's released weights (its point head: a point map in the camera frame).
 """
 import torch
 
@@ -10,9 +9,6 @@ import jepa4r.decoder.backbones.page4d as p4
 from jepa4r.decoder.backbones.page4d import PAGE4DDecoder, checkpoint_path
 
 
-# Moved from the untracked lewm_pcd/recon_ext/recon_backbones.py of the local cortexbench worktree (not in any branch;
-# GATES.md 1.2 item 6; sha256 25d4bc5cf5d8ee600db02c2523f1a083d590aeaf7ae922213e8f366a310904be):load_vggt, VGGTDecoder
-# (lines 42-60; verbatim)
 def load_vggt(weights):
     """PAGE-4D's model class (= VGGT plus a dynamics-mask head that the decoder drops) with VGGT-1B's released
     weights."""

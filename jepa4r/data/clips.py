@@ -12,8 +12,6 @@ from pathlib import Path
 import numpy as np
 import torch
 
-# Moved from cortexbench@9331494:lewm_pcd/utils.py (lines 6-32; verbatim except: stable_pretraining imported inside the
-# functions)
 def get_img_preprocessor(source: str, target: str, img_size: int = 224):
     from stable_pretraining import data as dt
 
@@ -46,7 +44,6 @@ def get_column_normalizer(dataset, source: str, target: str):
     std = data.std(0, keepdim=True).clone()
     return dt.transforms.WrapTorchTransform(ZScoreNormalizer(mean, std), source=source, target=target)
 
-# Moved from cortexbench@9331494:lewm_pcd/utils.py:PointCloudPreprocessor, get_pcd_preprocessor (lines 62-93; verbatim)
 class PointCloudPreprocessor:
     """Build the model input from the stored point-cloud columns.
 
@@ -85,8 +82,8 @@ OBS_KEYS = {'pointcloud': ['pcd_xyz', 'pcd_rgb'], 'image': ['pixels']}
 
 
 def dataset_kwargs(method_cfg, obs, num_preds=1):
-    """The ``data.dataset`` block of LeWM's configs (cortexbench@9331494:lewm_pcd/config/train/data/ogb_pcd.yaml for
-    point clouds, dmc.yaml for pixels): clip length history + num_preds, frameskip 5, the observation columns + action +
+    """The ``data.dataset`` block of LeWM's data configs (ogb_pcd for point clouds, dmc for
+    pixels): clip length history + num_preds, frameskip 5, the observation columns + action +
     observation (proprioception) loaded, action and observation cached."""
     return dict(num_steps=int(method_cfg.history) + int(num_preds), frameskip=int(method_cfg.frameskip),
                 keys_to_load=OBS_KEYS[obs] + ['action', 'observation'], keys_to_cache=['action', 'observation'])

@@ -10,17 +10,17 @@ out: data/wm/<env>/ in the jepa4r.data.storage layout. Images and point clouds r
      wm_data.recipe == "ogbench_noisy" -> OGBench's noisy recipe and official scale (Puzzle)
 uses: jepa4r.envs.make_env, jepa4r.data.behaviors, jepa4r.data.pointcloud.process, jepa4r.data.storage
 
-Integrated collection code (cortexbench@9331494:lewm_pcd/scripts/data/): one stable-worldmodel ``World.collect`` per
-shard, each shard in its own process (``python -m jepa4r.stages.collect_wm_data <shard.json>``), as the original
-launchers ran them (OGBench's oracles draw from numpy's global RNG):
+The collection code of the paper's data: one stable-worldmodel ``World.collect`` per shard, each shard in its own
+process (``python -m jepa4r.stages.collect_wm_data <shard.json>``), as the paper's launchers ran them (OGBench's oracles
+draw from numpy's global RNG):
   collect_paired  collect_cube_pcd.py   OGBench Cube with the plan oracle (UR5e reconstruction data, RM75-B twin)
   collect_mw      collect_mw.py         MetaWorld three-part plan (backbone / branch / random)
   collect_ogb     collect_ogb.py        OGBench scene (three-part plan, health check) and puzzle (noisy recipe)
 ``run`` then merges the shards in the original order (merge_h5_shards.py), checks that the 2D and 3D files hold the
-same rollouts (check_paired) and flattens the columns (add_eval_columns.py), as run_*_collection.sh /
-run_rm75_pipeline.sh did. Shard seeds: collect_cube_pcd_sharded.py's rule (``shard_seeds``). The OGBench-cube branch's
-collectors: ``wm_data.collector: c4_cube`` (Cube1-4: its collection protocol, jepa4r.policy.gciql.collect_cube),
-``adroit`` / ``rh56`` (Adroit Relocate / the RH56 twin: its Relocate harness, jepa4r.policy.bc.relocate_stage).
+same rollouts (check_paired) and flattens the columns (add_eval_columns.py), as the paper's collection
+scripts did. Shard seeds: the paper's sharding rule (``shard_seeds``). The workflows' collectors: ``wm_data.collector:
+cube_workflow`` (Cube 1-4: the Cube workflow's collection protocol, jepa4r.policy.gciql.collect_cube), ``adroit`` /
+``rh56`` (Adroit Relocate / the RH56 twin: the Relocate workflow, jepa4r.policy.bc.relocate_stage).
 """
 import importlib
 import json
@@ -38,8 +38,6 @@ from jepa4r.data.storage import GzipHDF5Writer, PairedWriter, add_eval_columns, 
 
 logger = logging.getLogger(__name__)
 
-# Moved from cortexbench@9331494:lewm_pcd/scripts/data/collect_cube_pcd.py:run (lines 67-103; verbatim except: no
-# @hydra.main, renamed collect_paired, output paths from cfg.out / cfg.out_pix, imports)
 def collect_paired(cfg: DictConfig):
     from functools import partial
 
@@ -88,8 +86,6 @@ def collect_paired(cfg: DictConfig):
     logger.info(f'🎉🎉🎉 Completed paired data collection -> 3D {out} + 2D {out_pix} 🎉🎉🎉')
 
 
-# Moved from cortexbench@9331494:lewm_pcd/scripts/data/collect_mw.py:pix_name, run (lines 42-78; verbatim except: no
-# @hydra.main, renamed collect_mw, output paths from cfg.out (/ cfg.out_pix), imports)
 def pix_name(pcd_name: str) -> str:
     """The 2D dataset named after the 3D one: ``metaworld/x_pcd.h5`` -> ``metaworld/x.h5``,
     ``.../x_pcd.shard007.h5`` -> ``.../x.shard007.h5``."""
@@ -131,8 +127,6 @@ def collect_mw(cfg: DictConfig):
     logger.info(f'Completed paired data collection (world seed {world_seed}) -> 3D {out} + 2D {out_pix}')
 
 
-# Moved from cortexbench@9331494:lewm_pcd/scripts/data/collect_ogb.py:RETRY_STRIDE, MAX_TRIES, _Episodes (lines 36-53;
-# verbatim)
 RETRY_STRIDE = 10_000_000
 MAX_TRIES = 50
 
@@ -153,9 +147,6 @@ class _Episodes:
 
 
 
-# Moved from cortexbench@9331494:lewm_pcd/scripts/data/collect_ogb.py:run (lines 61-98; verbatim except: no @hydra.main,
-# renamed collect_ogb, output paths from cfg.out (/ cfg.out_pix), imports; pix_name is collect_mw's (the source copies
-# it))
 def collect_ogb(cfg: DictConfig):
     import hydra
     import stable_worldmodel as swm
@@ -204,8 +195,6 @@ def shard_seeds(num_traj, shards, seed):
     class args:  # the launcher's argparse namespace
         pass
     args.num_traj, args.shards, args.seed = num_traj, shards, seed
-    # Moved from cortexbench@9331494:lewm_pcd/scripts/data/collect_cube_pcd_sharded.py:main (shard seeds) (lines 74-83;
-    # the shard-seed lines of main(), as a function; sys.exit kept)
     base, rem = divmod(args.num_traj, args.shards)
     counts = [base + (1 if i < rem else 0) for i in range(args.shards)]
     rng = np.random.default_rng(args.seed)
@@ -219,13 +208,8 @@ def shard_seeds(num_traj, shards, seed):
     return counts, seeds
 
 
-# Moved from cortexbench@9331494:lewm_pcd/scripts/checks/check_equivalence.py (lines 19-46, 'pcd' mode; adapted: the
-# three
-# pinned random sources, the env, the point-cloud wrapper arguments, the number of envs / episodes, the World seed and
-# the
-# output path are arguments instead of constants; the 'paper' pixel mode is not needed)
 def collect_pinned(cfg: DictConfig):
-    """Collection with all three random sources of OGBench Cube fixed (GATES.md D4): the variation space (cube start /
+    """Collection with all three random sources of OGBench Cube fixed: the variation space (cube start /
     goal) re-seeded at every reset from one process-wide counter starting at ``variation_seed_start``, each env's RNG
     ``default_rng(env_rng_base + i)``, and numpy's global RNG (the plan oracle's noise) seeded with ``numpy_seed``."""
     import itertools
@@ -366,10 +350,10 @@ def run_shards(specs, max_parallel, threads, log_dir):
 
 def run(cfg, out_dir):
     wm = cfg.env.wm_data
-    if wm.collector in ('adroit', 'rh56'):  # the OGBench-cube branch's Relocate harness: collect + data audit / publish
+    if wm.collector in ('adroit', 'rh56'):  # the Relocate workflow: collect + data audit / publish
         from jepa4r.policy.bc import relocate_stage
         return {'harness_status': relocate_stage(cfg, 'collect_wm_data', out_dir)['status']}
-    if wm.collector == 'c4_cube':
+    if wm.collector == 'cube_workflow':
         from jepa4r.policy.gciql import collect_cube
         return collect_cube(cfg, out_dir)
     out_dir = Path(out_dir)

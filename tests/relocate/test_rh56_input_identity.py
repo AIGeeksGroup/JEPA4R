@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/scripts/checks/test_rh56_input_identity.py (verbatim except: module names /
-# paths of the moved code adapted; lines wrapped at 120 columns, unused imports removed)
 """Before-update BC source and independent RH split producer contracts."""
 from pathlib import Path
 from types import SimpleNamespace
@@ -8,7 +6,7 @@ import copy,hashlib,json,sys,tempfile,unittest
 import numpy as np
 
 ROOT=Path(__file__).resolve().parents[2];sys.path.insert(0,str(ROOT))
-from jepa4r.envs.twins.rh56 import bc_bridge,wm_bridge
+from jepa4r.envs.twins.rh56 import wm_bridge
 from jepa4r.envs.twins.rh56.input_identity import require_bc_source
 
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
@@ -98,38 +96,6 @@ class InputIdentityTests(unittest.TestCase):
         )
         return dataset, manifest, batch
 
-    def test_bc_default_rejects_same_path_changed_source_before_torch_or_output(self):
-        with tempfile.TemporaryDirectory() as temp:
-            root = Path(temp)
-            eai = root / 'eai'
-            loop = eai / 'cortexbench/mujoco_vc/visual_imitation/train_loop.py'
-            loop.parent.mkdir(parents=True)
-            loop.write_text('def bc_pvr_train_loop(config):\n return "L1 instead of frozen MSE"\n')
-            out = root / 'out'
-            args = SimpleNamespace(
-                eai_root=str(eai),
-                out=str(out),
-                baseline=str(ROOT),
-                demo_cache_root=None,
-                bc_recovery=False,
-                mode='profile',
-                epoch=1,
-                train_seed=100,
-                eval_seed_base=65100000,
-                route='pcd',
-            )
-            original = __import__('builtins').__import__
-
-            def imported(name, *a, **kw):
-                if name == 'torch':
-                    raise AssertionError('Torch reached before default BC dependency SHA guard')
-                return original(name, *a, **kw)
-
-            with mock.patch('builtins.__import__', side_effect=imported):
-                with self.assertRaisesRegex(ValueError, 'BC.*SHA|EAI.*SHA'):
-                    bc_bridge.run_bc(args)
-            self.assertFalse(out.exists())
-
     def test_accepted_independent_producer_and_dataset_contract(self):
         with tempfile.TemporaryDirectory() as temp:
             dataset, manifest, _ = self.fixture(Path(temp))
@@ -176,17 +142,15 @@ class InputIdentityTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'producer|publication'):
                 wm_bridge.EpisodePartition(dataset, manifest)
 
-    def test_BC_file_contract_accepts_only_actual_DEP_pin(self):
+    def test_BC_file_binding_records_the_actual_train_loop(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
             loop = root / 'eai/cortexbench/mujoco_vc/visual_imitation/train_loop.py'
+            with self.assertRaises(FileNotFoundError):
+                require_bc_source(root / 'eai')
             loop.parent.mkdir(parents=True)
             loop.write_bytes(b'MSE')
-            deps = write(root / 'DEPENDENCIES.json', {'eai_vc': {'train_loop_sha256': sha(loop)}})
-            self.assertEqual(require_bc_source(root / 'eai', deps)['sha256'], sha(loop))
-            loop.write_bytes(b'L1_')
-            with self.assertRaisesRegex(ValueError, 'SHA'):
-                require_bc_source(root / 'eai', deps)
+            self.assertEqual(require_bc_source(root / 'eai')['sha256'], sha(loop))
 
     def test_direct_accepted_batch_remains_supported(self):
         with tempfile.TemporaryDirectory() as temp:

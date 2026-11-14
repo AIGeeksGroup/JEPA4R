@@ -3,7 +3,7 @@
 256 learnable queries -> 3 residual MLP blocks modulated by z_t through FiLM [perez2018film]
 -> 16 x 16 grid of 1,024-d tokens (cfg.decoder.set_generator).
 
-``SetDecoder`` is the recon branch's set_decoder.py moved unchanged; every backbone decoder (jepa4r/decoder/backbones)
+``SetDecoder`` is the paper's set decoder; every backbone decoder (jepa4r/decoder/backbones)
 builds it with num_queries = grid^2 and out_dim = the backbone's token width.
 """
 import torch
@@ -11,8 +11,6 @@ import torch.nn.functional as F
 from torch import nn
 
 
-# Moved from lewm-pcd-recon-page4d@d3c2d07:lewm_pcd/recon/decoders/set_decoder.py:FiLMBlock, SetDecoder (lines 8-50;
-# verbatim)
 class FiLMBlock(nn.Module):
     """Residual per-element MLP modulated by the latent (FiLM)."""
 

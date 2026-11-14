@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/tests/test_pldm_gate_capture.py (verbatim except: imports /
-# paths adapted to the package; lines wrapped at 120 columns)
 """The numeric observer reads the actual original PLDM forward-result once."""
 from pathlib import Path
 from types import SimpleNamespace

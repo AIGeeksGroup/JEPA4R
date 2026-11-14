@@ -4,20 +4,14 @@ Offline goal-conditioned RL on OGBench's official play data for 1e6 steps. Input
 goal: target state of the objects. Evaluation: 50 episodes on each of the five official tasks
 (jepa4r/eval/ogbench.py).
 
-Integrated code: the OGBench-cube branch's Cube 1-4 workflow ("Current paper Cube workflow.",
-OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench), placed along the Integration Map (docs/architecture.md): GCIQL, its
-native evaluation and acceptance stages and the controller here; collection and official play data in jepa4r/data/cube,
-world-model training in jepa4r/models/cube, PLDM, LeJEPA and the released VISReg / V-JEPA 2.1 weights in
-jepa4r/baselines/cube. The controller (workflow.py) runs fifteen stages as child processes (python -m <module>); each
-closes with a receipt that the next stage and any resume verify, and every run binds the sha256 of its sources
-(configs/policy/gciql/INTEGRATED_SOURCES.json, configs/method/cube/SOURCE_MANIFEST.json,
-configs/env/cube/collection/sources.json, configs/policy/gciql/downstream/source_manifest.json,
-configs/method/cube/pldm/source_manifest.json; a run refuses a pinned file that changed, as the branch's release
-did). downstream/vendor/ holds the branch's frozen GCIQL copies (pinned in
-configs/policy/gciql/downstream/source_manifest.json); here they are wrapped at 120 columns, with LF line ends,
-without unused imports and with the names downstream/trainer.py sets at run time declared, otherwise unchanged (the
-same AST). The stages of this repository run the workflow's stages for
-(cfg.env, cfg.method), in the workflow's own order:
+The Cube 1-4 workflow of the paper's Cube runs: GCIQL, its native evaluation and acceptance stages and the controller
+here; collection and official play data in jepa4r/data/cube, world-model training in jepa4r/models/cube, PLDM, LeJEPA
+and the released VISReg / V-JEPA 2.1 weights in jepa4r/baselines/cube (docs/architecture.md). The controller
+(workflow.py) runs fifteen stages as child processes (python -m <module>); each closes with a receipt that the next
+stage and any resume verify. downstream/vendor/ holds frozen GCIQL copies (listed in
+configs/policy/gciql/downstream/source_manifest.json), unchanged apart from formatting and the names
+downstream/trainer.py sets at run time declared. The stages of this repository run the workflow's stages for (cfg.env,
+cfg.method), in the workflow's own order:
 
   stage                workflow stages                                                  run root (the workflow's
   collect_wm_data      collect, views                                                   output_root)
@@ -31,7 +25,7 @@ same AST). The stages of this repository run the workflow's stages for
 
 Shared inputs of every run root of an env: official play data data/policy/<env>/official/cube<N>, the paired collection
 data/wm/<env>/collected/<mode>/cube<N> and its training views data/wm/<env>/views/<mode>/cube<N>, the released weights
-checkpoints/<visreg|vjepa>/ (prepare-encoder downloads a missing file from the URL pinned in
+checkpoints/<visreg|vjepa>/ (prepare-encoder downloads a missing file from the URL in
 configs/method/cube/released_models.json).
 cfg.env.harness.mode: formal (the paper protocol: 1e6 GCIQL updates, 250 native episodes) or smoke (the workflow's
 two-update diagnostic). Interpreters: JEPA4R_PY_CUBE_WM (world model, collection, camera; the paper runs: Python 3.10,
@@ -58,11 +52,11 @@ SHARED_MODEL = 'lewm_pcd'   # the model named in the method-independent run root
 
 
 def is_cube_workflow(cfg):
-    """An env this workflow runs: Cube 1-4 (configs/env/cube_*.yaml with wm_data.collector c4_cube; not the
+    """An env this workflow runs: Cube 1-4 (configs/env/cube_*.yaml with wm_data.collector cube_workflow; not the
     reconstruction env cube_single_recon)."""
     from omegaconf import OmegaConf
 
-    return OmegaConf.select(cfg, 'env.wm_data.collector') == 'c4_cube'
+    return OmegaConf.select(cfg, 'env.wm_data.collector') == 'cube_workflow'
 
 
 def cube_count(cfg):
@@ -146,7 +140,7 @@ def collect_cube(cfg, out_dir):
 
 
 def prepare_official(cfg, out_dir):
-    """prepare_policy_data on Cube 1-4: the byte-pinned public play data (official_data.py,
+    """prepare_policy_data on Cube 1-4: OGBench's public play data (official_data.py,
     configs/env/cube/official_sources.json)."""
     state = cube_stage(cfg, 'prepare_policy_data', out_dir)
     official = json.loads((Path(workflow_config(cfg, 'prepare_policy_data')['official_root']) / 'OFFICIAL_DATA.json')

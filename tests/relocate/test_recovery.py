@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/scripts/checks/test_recovery.py (verbatim except: module names / paths of the
-# moved code adapted; lines wrapped at 120 columns, unused imports removed)
 """CPU tests for original Lightning stateful-loader recovery; CUDA must be hidden."""
 import os
 from pathlib import Path

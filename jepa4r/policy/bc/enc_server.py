@@ -1,5 +1,3 @@
-# Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/enc_server.py (verbatim except: imports / paths adapted to
-# the package; lines wrapped at 120 columns)
 """Shared GPU process for the frozen encoders: every evaluation job (run_bc_scene.py with ENC_SOCKET set) sends its
 preprocessed input here; the requests are batched, encoded in one CUDA context and returned to each job. Encoder,
 preprocessing and weights are exactly the jobs' own (the same conf/model config, the same lewm_cortex loader); only the

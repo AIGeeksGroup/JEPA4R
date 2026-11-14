@@ -1,34 +1,32 @@
 # OGBench Puzzle: decoupled Q-chunking (DQC) [li2025dqc], offline goal-conditioned RL (supp. sec:supp-policy).
-# Values not stated in the paper are those of the paper runs
-# (cortexbench@9331494:lewm_pcd/scripts/run_puzzle_pipeline.sh,
-# run_puzzle_baselines.sh; recorded in every run's flags.json); every other agent setting is dqc df89825's default
-# (agents/dqc.py:339-383). The integrated harness: jepa4r/policy/dqc.
+# Values not stated in the paper are those of the paper's runs (recorded in every run's flags.json); every other agent
+# setting is dqc df89825's default (agents/dqc.py:339-383). The harness: jepa4r/policy/dqc.
 name: dqc
 impl: jepa4r.policy.dqc
 data: official_play           # env.policy_data
-train_steps: 1000000          # run_puzzle_baselines.sh:93 (--offline_steps=1000000)
-seed: 100001                  # run_dqc.py:62 (--seed default, every paper run)
-save_every: 25000             # restart checkpoint (resume.pkl), no effect on the numbers: run_puzzle_baselines.sh:94
+train_steps: 1000000          # --offline_steps
+seed: 100001                  # run_dqc.py's --seed default (every paper run)
+save_every: 25000             # restart checkpoint (resume.pkl), no effect on the numbers
 inputs: [latent, button_lights]
-goal: button_lights           # target state of the lights (OGBench's oraclerep goal; run_dqc.py --env_name)
-frame_stack: 1                # one row = the current frame's latent + the lights (run_dqc.py:125-131, lewm_obs.LeWMObs)
+goal: button_lights           # target state of the lights (OGBench's oraclerep goal)
+frame_stack: 1                # one row = the current frame's latent + the lights (jepa4r/policy/dqc/lewm_obs.py)
 hparams:                      # DQC settings for puzzle (run_dqc.py --agent.<key>=<value>)
-  agent:                      # run_puzzle_baselines.sh:91-92, run_puzzle_pipeline.sh:145-146
+  agent:
     num_qs: 2
     policy_chunk_size: 5      # action chunk h_a
     use_chunk_critic: true
     distill_method: expectile
     implicit_backup_type: quantile
   per_env:                    # glob on env.name, merged over agent
-    puzzle_3x3: {backup_horizon: 40, q_agg: min, kappa_b: 0.93, kappa_d: 0.8}           # run_puzzle_baselines.sh:86-87
-    "puzzle_4x[45]": {backup_horizon: 25, q_agg: mean, kappa_b: 0.9, kappa_d: 0.5}      # run_puzzle_baselines.sh:88-89
+    puzzle_3x3: {backup_horizon: 40, q_agg: min, kappa_b: 0.93, kappa_d: 0.8}
+    "puzzle_4x[45]": {backup_horizon: 25, q_agg: mean, kappa_b: 0.9, kappa_d: 0.5}
   # dqc defaults: lr 3e-4, batch 4096, actor / value 4 x 1024 with LayerNorm, discount 0.999, tau 0.005, flow 10 steps,
   # best-of-32, goal sampling current 0.2 / trajectory 0.5 / random 0.3 (agents/dqc.py:343-380)
-latents:                      # extract_feats.py / extract_feats_baselines.py
-  workers: 6                  # rendering processes, no effect on the numbers (run_puzzle_pipeline.sh:128)
+latents:                      # jepa4r/policy/dqc/extract_feats.py, extract_feats_baselines.py
+  workers: 6                  # rendering processes, no effect on the numbers
 eval:
   num_evals: 10               # ten evaluations during training: steps 100k, 200k, ..., 1M
-  interval: 100000            # run_puzzle_baselines.sh:93 (--eval_interval); run_dqc.py also evaluates the untrained
+  interval: 100000            # --eval_interval; run_dqc.py also evaluates the untrained
                               # agent at step 0 (kept: it draws from the RNG of the batch sampling; not counted)
-  episodes: 50                # per task, five tasks (run_puzzle_baselines.sh:94, --eval_episodes)
+  episodes: 50                # per task, five tasks (--eval_episodes)
   report: best                # Puzzle reports the best of the ten

@@ -1,4 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/relocate/policy_evidence.py (verbatim)
 """Real-input references for corresponding in-memory and independently loaded policies."""
 from contextlib import contextmanager
 import hashlib

@@ -8,13 +8,10 @@ import torch.nn.functional as F
 from einops import rearrange
 from torch import nn
 
-# Moved from cortexbench@9331494:lewm_pcd/module.py:modulate (lines 6-9; verbatim)
 def modulate(x, shift, scale):
     """AdaLN-zero modulation"""
     return x * (1 + scale) + shift
 
-# Moved from cortexbench@9331494:lewm_pcd/module.py:FeedForward, Attention, ConditionalBlock, Block, Transformer (lines
-# 38-188; verbatim)
 class FeedForward(nn.Module):
     """FeedForward network used in Transformers"""
 
@@ -167,7 +164,6 @@ class Transformer(nn.Module):
         return x
 
 
-# Moved from cortexbench@9331494:lewm_pcd/module.py:ARPredictor (lines 244-285; verbatim)
 class ARPredictor(nn.Module):
     """Autoregressive predictor for next-step embedding prediction."""
 

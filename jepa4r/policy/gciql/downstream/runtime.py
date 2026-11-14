@@ -1,12 +1,10 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/downstream/runtime.py (verbatim except: lines wrapped at 120
-# columns, no lint exemptions, unused imports removed)
 import hashlib
 import importlib.util
 import json
 from pathlib import Path
 import sys
 from . import validate_cache_protocol
-from ._source import VENDOR, install_impls, verify_sources
+from ._source import VENDOR, install_impls
 
 def runtime_environment(stage, action='train', cuda_visible_devices='0'):
     """The original launcher's backend/RNG bindings, before importing JAX/Torch."""
@@ -71,7 +69,6 @@ def install(config):
 
     def prepare(cfg, shared_datasets=None):
         samplers, resources, binding = original_prepare(cfg, shared_datasets)
-        binding['source_manifest'] = verify_sources()
         binding['runtime'].update(
             encoder_family=config['encoder_family'],
             latent_dim=config['latent_dim'],

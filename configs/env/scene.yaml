@@ -2,30 +2,29 @@
 _base_: _ogbench
 name: scene
 display: Scene
-env_id: scene-v0              # OGBench scene-v0: cortexbench:lewm_pcd/envs/ogb_scene_env.py:59 (ENV_NAME)
+env_id: scene-v0              # OGBench scene-v0
 pointcloud:
-  crop_box: [[0.10, -0.55, -0.02], [0.75, 0.50, 0.60]]   # cortexbench:lewm_pcd/envs/ogb_scene_env.py:85 (CROP_BOX)
+  crop_box: [[0.10, -0.55, -0.02], [0.75, 0.50, 0.60]]
 policy: bc                    # Scene reuses the CortexBench imitation code on its five evaluation tasks
 wm_data:                      # supp. sec:supp-data
   num_episodes: 10000
   episode_len: 200
   mixture: {noisy_expert: 0.5, expert_interrupted_by_random: 0.3, random: 0.2}
-  collector: ogb              # cortexbench:lewm_pcd/scripts/data/collect_ogb.py + run_scene_collection.sh
-  env_id: swm/OGBenchScene-v0   # scripts/data/config/ogb_scene_pcd.yaml:14
-  world: {num_envs: 1, max_episode_steps: 200, image_shape: [224, 224]}   # ogb_scene_pcd.yaml:18-21
-  env_kwargs: {}              # env.task is set per collection task (run_scene_collection.sh:26)
-  pcd: {_target_: jepa4r.envs.ogbench.ogb_pcd.ScenePointCloudWrapper}          # ogb_scene_pcd.yaml:26-27
-  policy: {_target_: jepa4r.envs.ogbench.ogb_scene_env.SceneThreePartPolicy}   # ogb_scene_pcd.yaml:29-30
-  health_check: true          # ogb_scene_pcd.yaml:36 (an episode whose cube left the view is collected again)
+  collector: ogb              # jepa4r/stages/collect_wm_data.py (collect_ogb)
+  env_id: swm/OGBenchScene-v0
+  world: {num_envs: 1, max_episode_steps: 200, image_shape: [224, 224]}
+  env_kwargs: {}              # env.task is set per collection task
+  pcd: {_target_: jepa4r.envs.ogbench.ogb_pcd.ScenePointCloudWrapper}
+  policy: {_target_: jepa4r.envs.ogbench.ogb_scene_env.SceneThreePartPolicy}
+  health_check: true          # an episode whose cube left the view is collected again
   sets:                       # 4 object tasks x 2500 episodes; task k at seed (k+1)*10^6 + i, 6 shards, merged task by
                               # task
     - {name: scene_wm10000, num_episodes: 2500, shards: 6, tasks: [cube, button, drawer, window],
        seed_base_step: 1000000}
-                              # run_scene_collection.sh:15 (N, SHARDS, NAME), 22-26 (tasks, base), 37-39 (merge order)
   files: {pointcloud: scene_wm10000_pcd.h5, image: scene_wm10000.h5}
   split: random_clips
-  max_parallel: 12            # run_scene_collection.sh:15 (MAXPAR)
-  threads: 1                  # run_scene_collection.sh:27 (OMP_NUM_THREADS=1)
+  max_parallel: 12            # shards run at once (no effect on the data)
+  threads: 1                  # OMP_NUM_THREADS per shard
 policy_data:
   source: demos
   demos_per_task: 25

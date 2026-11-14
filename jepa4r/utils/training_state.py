@@ -1,4 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/training_state.py (verbatim)
 """Complete state for explicit fixed-batch smoke recovery; no training formula."""
 import copy
 import hashlib

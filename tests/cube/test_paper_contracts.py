@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/tests/test_paper_contracts.py (verbatim except: imports / paths
-# adapted to the package; lines wrapped at 120 columns)
 """Public model and Cube contracts; no model or simulator execution."""
 from pathlib import Path
 import sys

@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/bench/ogbench/downstream/native_core.py (verbatim except: lines wrapped at
-# 120 columns, no lint exemptions, unused imports removed, names the caller sets declared)
 from __future__ import annotations
 import copy
 import hashlib

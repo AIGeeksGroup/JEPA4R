@@ -1,5 +1,3 @@
-# Moved from OGBench-cube@4fbb0c6:lewm_pcd/scripts/baselines/adroit/train_pldm.py (verbatim except: imports / paths
-# adapted to the package; lines wrapped at 120 columns)
 """Final Relocate data/output adapter; original learning methods are delegated.
 
 An explicit smoke/formal mode is required to execute; preparation is read-only.
@@ -12,7 +10,6 @@ import importlib
 import json
 import os
 from pathlib import Path
-import subprocess
 import sys
 import time
 import traceback
@@ -20,7 +17,6 @@ import types
 
 
 LEWM_ROOT = Path(__file__).resolve().parents[3]
-FRAMEWORK_COMMIT = '6f1e499e9cc0c898d326112f485c1062c3d20f24'
 RECIPE = {'backbone': 'vit_hf_tiny_patch14', 'image_size': 224,
           'seed': 3072,
           'selected_frames': 4, 'frameskip': 5, 'raw_span': 20,
@@ -97,7 +93,6 @@ def build_plan(args, parser):
         'expected_visual_frames': 2000000,
         'source_row_schema': 'pre_action_rows_with_outgoing_action',
         'framework_root': str(framework),
-        'reference_commit': FRAMEWORK_COMMIT,
         'native_script': str(script),
         'native_source_sha256_lf': sha_lf(script),
         'native_config_sha256_lf': sha_lf(config),
@@ -133,27 +128,6 @@ def logger_compatible_tree(source, filename):
         'applied': bool(calls), 'replacement': 'logger.info -> logging.getLogger(__name__).info',
         'disk_source_changed': False, 'checkpoint_interval_changed': False,
         'scope': 'private module AST only; native forward/model/loss/optimizers untouched'}
-
-
-def framework_revision(framework):
-    framework = Path(framework).resolve()
-    if not (framework / '.git').exists():
-        manifest_path = framework / 'SOURCE.json'
-        if not manifest_path.is_file():
-            raise RuntimeError('execution requires a pinned Git checkout or verified bundled source manifest')
-        manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
-        if (manifest.get('repository') != 'https://github.com/galilai-group/stable-worldmodel'
-                or manifest.get('commit') != FRAMEWORK_COMMIT or not manifest.get('files')):
-            raise RuntimeError('bundled source identity differs from the pinned framework')
-        for record in manifest['files']:
-            path = (framework / record['path']).resolve()
-            if (not path.is_relative_to(framework) or not path.is_file()
-                    or hashlib.sha256(path.read_bytes()).hexdigest() != record['sha256']):
-                raise RuntimeError('bundled source digest differs: ' + record['path'])
-        return manifest['commit']
-    result = subprocess.run(['git', '-C', str(framework), 'rev-parse', 'HEAD'],
-                            capture_output=True, text=True, check=True)
-    return result.stdout.strip()
 
 
 def load_native(path):
@@ -207,8 +181,6 @@ def execute(plan):
     torch = importlib.import_module('torch')
     if not torch.cuda.is_available():
         raise RuntimeError('PLDM execution requires CUDA; preparation does not authorize CPU training')
-    if framework_revision(framework) != FRAMEWORK_COMMIT:
-        raise RuntimeError('the framework Git revision differs from the recorded PLDM reference')
     if sha_lf(plan['native_script']) != plan['native_source_sha256_lf']:
         raise RuntimeError('native PLDM source changed after preparation')
     previous_path = list(sys.path)
