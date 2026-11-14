@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Prepare final Relocate assets from the original official 100-demo pickle.
+"""Prepare the Relocate demo assets from the official 100-demo pickle.
 
 Only ``images`` is removed. The original 1536-D cached ``observations`` and
 39-D physical ``state_obs`` remain distinct and unchanged, as do raw actions,

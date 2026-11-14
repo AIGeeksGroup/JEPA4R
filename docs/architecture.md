@@ -38,8 +38,8 @@ jepa4r/
   decoder/      set generator, backbones/, head, LoRA, losses, training, imagination
   metrics/      point-cloud metrics in centimeters
 scripts/        reproduce_all.sh, download_checkpoints.py
-tests/          configuration, specification and report checks (unittest); cube/, relocate/ the two workflows' own
-                suites (pytest)
+tests/          configuration, specification, report and code-style checks (unittest); cube/, relocate/ the two
+                workflows' own suites (pytest)
 third_party/    vendored upstream code with UPSTREAM.md (stable-worldmodel, PLDM)
 ```
 
