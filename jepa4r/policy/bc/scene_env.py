@@ -1,6 +1,6 @@
 """OGBench scene's five evaluation tasks as an env of CortexBench's (eai-vc) imitation harness (runs in the
-MuJoCo 3 + OGBench python); built as rm75_env.py: the harness (MuJoCo 2.0) reaches it through run_bc_scene.py's proxy
-and the scene_server.py subprocess, and the env is the repo's (envs.ogb_scene_env.OGBSceneEnv, mode='task') with its
+MuJoCo 3 + OGBench python); built as rm75_env.py: the harness (MuJoCo 2.0) reaches it through run_bc_proxy.py's proxy
+and the env_server.py subprocess, and the env is the repo's (envs.ogb_scene_env.OGBSceneEnv, mode='task') with its
 point-cloud wrapper (envs.ogb_pcd.ScenePointCloudWrapper).
 * reset(): OGBench's task-mode reset (the task_id fixed) with the seed set by seed(): random arm, the cube / drawer /
   window within +-1 cm of the task's initial state;
@@ -11,9 +11,9 @@ point-cloud wrapper (envs.ogb_pcd.ScenePointCloudWrapper).
 * pcd(): (1200, 6) float32 xyz (m) + rgb 0..255, JEPA4R data's recipe (ScenePointCloudWrapper's point cloud), its
   sampling RNG seeded with the seed + 7919 at every reset; a cloud is drawn only when the harness asks for a frame;
 * proprioception (proprio_of): [effector xyz, cos yaw, sin yaw, gripper opening, button 0 (drawer lock), button 1
-  (window lock)], 8 entries; run_bc_scene.py feeds the policy the first SCENE_PROPRIO_DIMS of them (the source's
-  scene_grid.py --proprio: hand6 = the first 6, the robot's own state; none = no proprioception).
-Used by make_scene_demos.py (the demos) and scene_server.py (the evaluation env)."""
+  (window lock)], 8 entries; run_bc_proxy.py feeds the policy the first SCENE_PROPRIO_DIMS of them (6 in the
+  paper's runs: the robot's own state).
+Used by make_scene_demos.py (the demos) and env_server.py (the evaluation env)."""
 
 from __future__ import annotations
 

@@ -4,9 +4,14 @@ import unittest
 
 from jepa4r.config import REPO_ROOT, compose, run_dir
 from jepa4r.orchestrate import expand, load_spec
-from jepa4r.report import EXPECTED_DIR, load_expected, required_runs
+from jepa4r.report import EXPECTED_DIR, iter_cells, load_expected
 
 SPECS = sorted((REPO_ROOT / "experiments").glob("*.yaml"))
+
+
+def required_runs(table) -> set:
+    """{(stage, ((key, value), ...))} -- the runs needed to fill a table."""
+    return {(table["stage"], tuple(sorted(want.items()))) for _, _, _, want, _, _ in iter_cells(table)}
 
 
 class SpecTests(unittest.TestCase):
@@ -22,7 +27,7 @@ class SpecTests(unittest.TestCase):
         for path in SPECS:
             spec = load_spec(path)
             jobs = expand(spec, with_optional=True)
-            self.assertTrue(spec.get("expected"), path.name)
+            self.assertIn("expected", spec, path.name)
             for rel in spec["expected"]:
                 for table in load_expected(REPO_ROOT / rel):
                     for stage, want in required_runs(table):

@@ -8,6 +8,8 @@ display: Cube-Single (reconstruction data)
 env_id: swm/OGBCube-v0        # stable-worldmodel's OGBench cube, env_type single
 pointcloud:
   crop_box: [[0.10, -0.50, -0.02], [0.75, 0.50, 0.60]]
+policy: null                  # no policy head on the reconstruction data (Tab. 3 / Tab. 4a decode the world model)
+policy_data: null
 wm_data:
   recipe: plan_oracle         # stable-worldmodel ExpertPolicy(policy_type='plan_oracle')
   num_episodes: 10000

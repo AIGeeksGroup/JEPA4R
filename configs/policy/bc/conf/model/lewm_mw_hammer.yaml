@@ -1,8 +1,0 @@
-# LeWM encoder (ViT-tiny + projector, the latent the predictor and planner use) trained on the full MetaWorld
-# hammer three-part data (LeWM's mw_hammer data; run mw_hammer_pix, epoch 10). See
-# jepa4r/policy/bc/wm_embeddings.py
-_target_: wm_embeddings.load_lewm
-checkpoint_dir: ${oc.env:STABLEWM_HOME}/checkpoints/mw_hammer_pix
-epoch: 10
-use_projector: true
-random_init: false

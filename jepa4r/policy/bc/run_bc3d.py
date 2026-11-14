@@ -2,7 +2,7 @@
 hydra_launcher + train_loop at eai-vc 76fe35e, with its two logging-only patches), with the camera image replaced by
 the same camera's point cloud and nothing else changed:
 
-1. Demos: data_dir = $STABLEWM_HOME/datasets/cortexbench/metaworld-expert-v1.0-pcd (convert_demos_3d.py): the official
+1. Demos: data_dir = data/policy/<env>/metaworld-expert-v1.0-pcd (convert_demos_3d.py): the official
    demos replayed exactly, 'images' = the point cloud of every frame, (500, 1200, 6) = xyz (m) + rgb.
 2. load_pretrained_model: for an embedding whose metadata says input 'pcd' (wm_embeddings.load_jepa4r), the transform
    is the model's own point-cloud preprocessing + unsqueeze(0) instead of the official PIL image wrapper.
@@ -13,8 +13,7 @@ the same camera's point cloud and nothing else changed:
    Everything else (policy input = FLARE fusion of 3 embeddings + proprioception obs[:4], BC, 20 evaluations of 25
    episodes) is the official loop.
 
-    source env.sh && $PY run_bc3d.py --config-name Metaworld_BC_config env=... embedding=jepa4r_mw_binpick seed=100 \
-        data_dir=$STABLEWM_HOME/datasets/cortexbench/metaworld-expert-v1.0-pcd/ ...
+The train_policy stage starts it for MetaWorld with a point-cloud embedding (jepa4r.policy.bc.run_command).
 """
 
 import os

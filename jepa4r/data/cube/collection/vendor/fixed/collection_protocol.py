@@ -37,7 +37,6 @@ MIXED_SWITCH_STEPS = {
     STRATEGY_EXPERT_RANDOM_BRANCH45: 45,
 }
 SUPPORTED_STRATEGIES = frozenset((*STRATEGY_WEIGHTS, *STRATEGY_ALIASES))
-GOAL_ATOL = 1e-7  # meters, accommodates the float32 info representation only
 
 
 def mixed_switch_step_for_strategy(strategy: str, mixed_switch_step=None) -> int:
@@ -51,16 +50,6 @@ def mixed_switch_step_for_strategy(strategy: str, mixed_switch_step=None) -> int
     if mixed_switch_step <= 0:
         raise ValueError("mixed_switch_step must be positive")
     return mixed_switch_step
-
-
-def strategy_counts(num_episodes: int) -> dict[str, int]:
-    """Return exact per-strategy episode quotas for the requested 2:4:2:2 mix."""
-    if isinstance(num_episodes, bool) or not isinstance(num_episodes, int):
-        raise TypeError("num_episodes must be an integer")
-    total_weight = sum(STRATEGY_WEIGHTS.values())
-    if num_episodes <= 0 or num_episodes % total_weight:
-        raise ValueError(f"num_episodes must be a positive multiple of {total_weight}")
-    return {strategy: num_episodes * weight // total_weight for strategy, weight in STRATEGY_WEIGHTS.items()}
 
 
 def action_source(strategy: str, step_idx: int, mixed_switch_step=None) -> str:

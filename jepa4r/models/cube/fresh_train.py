@@ -1,6 +1,6 @@
 """train stage of the Cube workflow: each method's own trainer on the training views of the collected data (JEPA4R /
 LeWM: the world-model trainer with the recipes of configs/method/cube/recipes; PLDM:
-jepa4r/baselines/cube/pldm/train.py; LeJEPA: jepa4r/baselines/cube/native/tiny_train.py), 10 epochs; the last epoch's
+jepa4r/baselines/cube/pldm/train.py; LeJEPA: jepa4r/baselines/lejepa.py), 10 epochs; the last epoch's
 export is recorded in WM_EXPORT.json.
 usage: python -m jepa4r.models.cube.fresh_train --method <m> --data-manifest <file> --output <dir> [--execute]"""
 

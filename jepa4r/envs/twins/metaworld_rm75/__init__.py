@@ -1,5 +1,5 @@
 """MetaWorld tasks of CortexBench on the lab robot: RealMan RM75-B arm + Inspire EG2-4C2 gripper instead of MetaWorld's
-Sawyer, as envs/cube_rm75_env.py does for the OGBench cube. Only the robot layer changes; the task (layout, observation,
+Sawyer, as cube_rm75_env.py does for the OGBench cube. Only the robot layer changes; the task (layout, observation,
 reward, success), the camera, the collection plan and the eval hooks are envs.metaworld's.
 
     scene.py   the task's MuJoCo model with the RM75 in place of the Sawyer (on a pedestal on the table's +x side)
@@ -14,7 +14,7 @@ reward, success), the camera, the collection plan and the eval hooks are envs.me
                collects with ButtonThreePartPolicy unchanged
     expert.py  metaworld's scripted experts made for the RM75 (the CortexBench demos): RM75BinPickingPolicy,
                RM75DrawerOpenPolicy, RM75AssemblyPolicy; button-press-topdown's demos use metaworld's script unchanged
-               (bench/cortexbench/make_rm75_demos.py)
+               (jepa4r/data/demos/make_rm75_demos.py)
 
 Needs metaworld 3.0 (a MuJoCo 3 python) like envs.metaworld; the env id is registered in envs/metaworld/__init__.py.
 """

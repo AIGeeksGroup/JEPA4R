@@ -16,6 +16,6 @@ train:
     lamb: 0.02                # SIGReg weight lambda
     proj_dim: 16
     workers: 8                # loader only
-    # Cube 1-4 train in the Cube workflow (jepa4r/baselines/cube/native) with the same defaults;
+    # Cube 1-4 train in the Cube workflow with the same script (jepa4r/baselines/lejepa.py) and defaults;
     # fixed in the script: AdamW weight decay 5e-2, one epoch of linear warm-up then cosine to 1e-3, projector
     # 512 -> 2048 -> 2048 -> 16 with BatchNorm, SIGReg 17 knots / 256 directions, bf16, images 224, torch seed 0

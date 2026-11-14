@@ -7,7 +7,7 @@ config overrides
 (cfg.method.train.recipe) + the env's image dataset + trainer.max_epochs. The checkpoint (config.json +
 weights_epoch_<n>.pt, encoder + projector + predictor) lands in outputs/train_wm/<env>/pldm/<tag>/checkpoints/.
 OGBench Cube (Impala encoder, the Cube workflow's PLDM): jepa4r/baselines/cube/pldm.
-load_frozen_encoder: encoder + projector, 192-d, as CortexBench and DQC read it (jepa_baselines.load_pldm).
+The policies read encoder + projector, 192-d (jepa4r/policy/bc/jepa_baselines.py load_pldm: CortexBench, DQC).
 Interpreter: JEPA4R_PY_TRAIN (stable-worldmodel, stable-pretraining 0.1.8, Lightning).
 """
 
@@ -20,7 +20,7 @@ SWM = Path(__file__).resolve().parents[2] / "third_party" / "stable-worldmodel"
 
 
 def overrides(cfg):
-    """The Hydra overrides of scripts/train/pldm.py for this env (run_mw_baselines.sh:48-49)."""
+    """The Hydra overrides of scripts/train/pldm.py for this env, as in the paper's runs."""
     from jepa4r.config import stage_dir
 
     data = stage_dir("collect_wm_data", cfg.env.name) / cfg.env.wm_data.files.image
@@ -59,14 +59,3 @@ def train(cfg, out_dir) -> dict:
             check=True,
         )
     return training_summary(out_dir)
-
-
-def load_frozen_encoder(cfg):
-    from jepa4r.baselines import frozen
-    from jepa4r.policy.bc.jepa_baselines import load_pldm
-    from jepa4r.policy.frozen import checkpoint
-    from jepa4r.policy.gciql import is_cube_workflow, load_frozen_pldm
-
-    if is_cube_workflow(cfg):  # Cube 1-4: Impala, 512-d (the Cube workflow's encoder boundary)
-        return load_frozen_pldm(cfg)
-    return frozen(load_pldm(str(checkpoint(cfg)), int(cfg.method.get("policy_epoch", 10))), cfg)

@@ -16,7 +16,7 @@ Changed, all in RM75ManipSpaceEnv:
     base at ``arm_base_pos``. The xy centre does not move, so the cameras and the point-cloud normaliser stay
     valid. The point-cloud crop box does not: its x_min has to follow the base (0.10 -> 0.21, ``CROP_BOX``; set in
     the RM-75 collection / eval configs). Any other (arm_base_pos, workspace_scale) pair has to be re-checked
-    (reachability of the far corners, plan-oracle success: scripts/checks/verify_rm75.py section D);
+    (reachability of the far corners, plan-oracle success: jepa4r/envs/twins/verify_rm75.py section D);
   * 7-joint home posture, IK model and seven PD gains. The IK is OGBench's DiffIKController, unchanged: with 7
     joints its damped-least-squares step is the minimum-norm one, so the elbow swivel is left free (its qpos0
     null-space option, gain 1 on every joint, drives the RM75 into its joint limits and is not used).
@@ -27,7 +27,7 @@ keys, gripper-opening convention (0 open .. 1 closed), cameras, variation space 
 every collection script uses. Caveat: ``proprio/gripper_contact`` is |pad force| / 50 N; the EG2-4C2 grips with
 at most ~20 N (datasheet), so a grasp reads ~0.42 instead of the Robotiq's ~1.0, and swm's markov oracle (grasped =
 contact > 0.5; ExpertPolicy's default policy_type) stalls on this robot.
-Acceptance checks against the vendor URDFs / datasheets / the UR5e env: scripts/checks/verify_rm75.py.
+Acceptance checks against the vendor URDFs / datasheets / the UR5e env: jepa4r/envs/twins/verify_rm75.py.
 """
 
 from pathlib import Path

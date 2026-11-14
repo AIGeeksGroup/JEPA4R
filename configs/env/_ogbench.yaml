@@ -1,7 +1,6 @@
 # OGBench manipulation [park2025ogbench]: Cube (1-4 cubes), Scene, Puzzle.
 _base_: _base
 suite: ogbench
-impl: jepa4r.envs.ogbench
 camera:
   name: front_pixels          # the camera behind OGBench's pixel observations
 pointcloud:

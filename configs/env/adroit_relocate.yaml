@@ -2,7 +2,6 @@
 # (jepa4r/policy/bc/relocate): every stage of this env runs its share of the workflow's plan.
 _base_: _base
 suite: adroit
-impl: jepa4r.envs.adroit
 name: adroit_relocate
 display: Relocate
 env_id: swm/AdroitRelocate-v0 # AdroitEnv on mj_envs relocate-v0

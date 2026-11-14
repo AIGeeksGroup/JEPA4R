@@ -10,8 +10,9 @@ seeds with rendering (asserting the same success steps).
 Format: 'observations' (T, 8) = proprioception (scene_env.proprio_of), 'actions' (T, 5), 'rewards', 'env_infos'
 ('success', 'gripper_proprio' = the proprioception), 'images' = the frame before each action: 2D (T, 224, 224, 3) uint8,
 3D (T, 1200, 6) float32 point clouds; 2D and 3D from the same episodes.
--> $STABLEWM_HOME/datasets/cortexbench/scene-expert{,-pcd}/scene-task<k>-v0.pickle
-    STABLEWM_HOME=<data dir> <MuJoCo 3 python> make_scene_demos.py [task number ...]
+-> <JEPA4R_DEMOS_HOME>/scene-expert{,-pcd}/scene-task<k>-v0.pickle (JEPA4R_DEMOS_HOME = data/policy/scene). The
+prepare_policy_data stage runs it (jepa4r.data.demos) in JEPA4R_PY_COLLECT (MuJoCo 3 + OGBench): make_scene_demos.py
+[task number ...]
 """
 
 import os

@@ -1,7 +1,6 @@
 # Shared by every simulated task.
 # Paper: Sec. 4.1 "Point clouds from one depth camera", Sec. 5.2, supp. sec:supp-data.
 # ??? = no value here: the suite or task file sets it (OmegaConf raises if it is read).
-impl: ???                     # module with make(env_cfg) -> env; set by the suite base file
 env_id: ???                   # simulator task id in the benchmark package (not given in the paper)
 image_size: [224, 224]        # 2D JEPAs read 224x224 images (Sec. 3)
 camera:
@@ -20,7 +19,7 @@ wm_data:                      # world-model training data (stage collect_wm_data
   recipe: mixture             # mixture | ogbench_noisy
   num_episodes: 10000
   episode_len: 200
-  mixture: ???                # {behaviour: proportion}, see jepa4r/data/behaviors.py
+  mixture: ???                # {behaviour: proportion}, drawn by each task's collection policy (collect_wm_data.py)
   # Collection settings (jepa4r/stages/collect_wm_data.py), set per suite / task:
   #   collector   paired | mw | ogb | cube_workflow | adroit | rh56   (the collection code, see collect_wm_data)
   #   env_id, env_kwargs, world, pcd, policy, health_check   the per-shard collection config

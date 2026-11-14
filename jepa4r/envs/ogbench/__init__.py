@@ -16,8 +16,6 @@ Importing this package registers the gymnasium ids the collection configs name; 
 use.
 """
 
-from importlib import import_module
-
 # gymnasium registrations
 ENV_IDS = {
     "swm/OGBCubePCD-v0": ("jepa4r.envs.ogbench.cube_pcd_env:CubePCDEnv", {}),
@@ -39,19 +37,3 @@ def register_envs():
 
 
 register_envs()
-
-
-def make(env_cfg, **kwargs):
-    """One env of ``env_cfg.wm_data.env_id`` (gymnasium.make with ``env_cfg.wm_data.env_kwargs``), wrapped with its
-    single-depth-camera point cloud (``env_cfg.wm_data.pcd``: the ``_target_`` wrapper class and its arguments)."""
-    import gymnasium
-
-    from omegaconf import OmegaConf
-
-    wm = env_cfg.wm_data
-    kw = wm.get("env_kwargs")
-    kw = OmegaConf.to_container(kw, resolve=True) if OmegaConf.is_config(kw) else dict(kw or {})
-    env = gymnasium.make(str(wm.env_id), **{**kw, **kwargs})
-    pcd = OmegaConf.to_container(wm.pcd, resolve=True)
-    module, _, name = pcd.pop("_target_", "jepa4r.data.pointcloud.PointCloudWrapper").rpartition(".")
-    return getattr(import_module(module), name)(env, **pcd)

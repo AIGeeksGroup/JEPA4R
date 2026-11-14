@@ -1,5 +1,5 @@
 """Paths of the code the Cube policy stages run: the vendored GCIQL agent, the OGBench checkout with its impls, and
-the point-cloud code of the paired collection."""
+the point-cloud code of the paired collection (its PointCloudWrapper: jepa4r/data/pointcloud.py)."""
 
 import os
 from pathlib import Path
@@ -10,6 +10,7 @@ REPO = Path(__file__).resolve().parents[4]  # this repository
 OGBENCH_ROOT = Path(os.environ.get("JEPA4R_OGBENCH") or REPO / "third_party/ogbench")  # OGBench a977253 checkout
 IMPLS = OGBENCH_ROOT / "impls"
 PCD_ROOT = REPO / "jepa4r/data/cube/collection/vendor/pcd"
+PCD_WRAPPER = REPO / "jepa4r/data/pointcloud.py"
 
 
 def install_impls():

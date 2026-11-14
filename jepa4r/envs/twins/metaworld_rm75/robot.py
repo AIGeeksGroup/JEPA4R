@@ -30,7 +30,7 @@ GAP_OPEN = 0.0662
 # tool down, fingers closing along world y: gripper x -> +y, gripper z (approach) -> -z
 R_T = np.array([[0.0, 1.0, 0.0], [1.0, 0.0, 0.0], [0.0, 0.0, -1.0]])
 HOME = np.array([0.0, 0.2725, 0.0, 1.4912, 0.0, 1.3779, 0.0])  # the cube env's tool-vertical posture
-VLIM = np.radians([180, 180, 225, 225, 225, 225, 225])  # datasheet joint speeds (scripts/checks/verify_rm75.py)
+VLIM = np.radians([180, 180, 225, 225, 225, 225, 225])  # datasheet joint speeds (jepa4r/envs/twins/verify_rm75.py)
 LEASH = 0.03  # m: a new hand target is set at most this far from the hand
 W_ROT = 0.3  # yaw (the fingers' closing direction, about the vertical)
 W_TILT = 0.03  # tilt of the tool from vertical: cheap, so the tool stays vertical wherever that reaches

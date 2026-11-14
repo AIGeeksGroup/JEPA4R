@@ -9,7 +9,7 @@ From the paper's reconstruction code: the data (PairedFrames, build_dataset, Epi
 encoder + the point cloud of the same simulator state) and the training run (``run_stage``: one stage = one
 Lightning run of 14,140 batches of 32 frames on the 0.9 / 0.1 frame split of seed 3072, one AdamW per parameter group,
 the trained parts saved per epoch). ``recon_config`` composes each stage's run config (the reconstruction runs'
-recon.yaml + data/ogb_pcd.yaml + decoder/page4d.yaml + exp/{frozen,lora}.yaml) from cfg.decoder and
+config as saved with every paper run: base, data, decoder and stage (frozen / LoRA) parts) from cfg.decoder and
 cfg.env; ``train`` runs stage A into <out>/stage_a and stage B into <out>/stage_b and reports each stage's last
 validation readout (validate/nn_cm: mean two-sided NN distance, cm, over 100 validation batches), the numbers of Sec.
 4.4.
@@ -215,7 +215,7 @@ def run_stage(cfg, run_dir):
 
 
 def recon_config(cfg, stage, init_from=None):
-    """The run config of one stage ('a' or 'b') as train_recon.py received it."""
+    """The run config of one stage ('a' or 'b') as the original training script received it."""
     from jepa4r.config import stage_dir
     from jepa4r.decoder.model import decoder_kwargs
 
@@ -303,7 +303,8 @@ def train(cfg, out_dir) -> dict:
         if not weights.exists():  # a finished stage is not trained again
             run_dir.mkdir(parents=True, exist_ok=True)
             cwd = os.getcwd()
-            os.chdir(run_dir)  # Lightning's default logs stay in the run (train_recon.py ran in its Hydra run dir)
+            # Lightning's default logs stay in the run (the original training ran in its Hydra run dir)
+            os.chdir(run_dir)
             try:
                 run_stage(recon_config(cfg, stage, init_from), run_dir)
             finally:

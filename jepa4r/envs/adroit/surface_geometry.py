@@ -2,9 +2,6 @@
 
 import numpy as np
 
-CAM = "vil_camera"
-GEOM = 5
-
 
 def _depth_to_xyz(sim, depth, size, cid):
     m, d = sim.model, sim.data
@@ -13,25 +10,14 @@ def _depth_to_xyz(sim, depth, size, cid):
     z = near / (1.0 - depth.astype(np.float64) * (1.0 - near / far))  # metric distance along the view axis
     f = 0.5 * size / np.tan(np.deg2rad(m.cam_fovy[cid]) / 2)
     v, u = np.mgrid[0:size, 0:size].astype(np.float64)
-    c = (size - 1) / 2.0  # pixel centres, as envs/pcd_wrapper.py: (u + 0.5 - W / 2) / f
+    c = (size - 1) / 2.0  # pixel centres, as PointCloudWrapper._grid: (u + 0.5 - W / 2) / f
     pts_cam = np.stack([(u - c) * z / f, -(v - c) * z / f, -z], axis=-1)  # MuJoCo camera: x right, y up, looks along -z
     R, p = d.cam_xmat[cid].reshape(3, 3), d.cam_xpos[cid]
     return pts_cam @ R.T + p
 
 
-def render_xyz_geom(sim, size=256, cam=CAM, rgb=False):
-    cid = sim.model.camera_name2id(cam)
-    img, depth = sim.render(width=size, height=size, depth=True, camera_name=cam, device_id=0)
-    seg = sim.render(width=size, height=size, camera_name=cam, segmentation=True, device_id=0)
-    # OpenGL rows are bottom-up; CortexBench flips its frames the same way
-    img, depth, seg = img[::-1], depth[::-1], seg[::-1]
-    xyz = _depth_to_xyz(sim, depth, size, cid)
-    geom = np.where(seg[..., 0] == GEOM, seg[..., 1], -1)
-    return (xyz, geom, img) if rgb else (xyz, geom)
-
-
 class SurfaceSampler:
-    def _sample(self, pts, cols, is_obj):  # envs/pcd_wrapper.PointCloudWrapper._sample, unchanged
+    def _sample(self, pts, cols, is_obj):  # jepa4r.data.pointcloud.PointCloudWrapper._sample, unchanged
         n = self.num_points
         lo, hi = self.crop
         m = np.all((pts >= lo) & (pts <= hi), axis=1)

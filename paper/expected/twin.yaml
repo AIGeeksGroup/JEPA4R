@@ -1,4 +1,0 @@
-# Paper numbers of Sec. 5.6 in the RM75-B digital twin: none. Sec. 5.6 "Results" is qualitative (main.tex, read
-# 2026-11-12 and 2026-11-13; the \est macro does not occur), so this file holds no table; experiments/twin.yaml still
-# reproduces everything trained in the twin.
-tables: []

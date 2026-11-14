@@ -11,8 +11,8 @@ Common columns: ``action`` [A] float32 (NaN in the row after the last action whe
 recipe columns (``sample_type``, ``rand_action``, ``noise_std``, ``branch_t``, ``branch_len``, ``episode_seed``, ...).
 The train / validation split of the world models is drawn at training time (jepa4r.data.clips; whole held-out episode
 files for Cube1-4).
-Readers: data/clips.py (world-model clips), policy/features.py (latent caching),
-decoder/train.py and eval/recon.py (point-cloud targets).
+Readers: the world-model trainers (stable-worldmodel's HDF5 dataset, jepa4r.data.clips), decoder/train.py and
+eval/recon.py (point-cloud targets).
 """
 
 import os
@@ -136,7 +136,7 @@ def append_shard(out_path, shard_path, preserve_episode_indices=False):
         co, cs = datasets(fo), datasets(fs)
         if "ep_idx" in cs and not preserve_episode_indices:
             raise ValueError(
-                f"{shard_path} already has ep_idx (shard-local episode numbers); run add_eval_columns.py only after "
+                f"{shard_path} already has ep_idx (shard-local episode numbers); add the evaluation columns only after "
                 "merging"
             )
         if co != cs:
@@ -220,28 +220,3 @@ def add_eval_columns(path):
             del f[g]  # drop the group link; the datasets live on under their flat names
         print(f"flattened {len(nested)} nested datasets ({added} new links); removed groups {groups}")
         print("top-level columns:", sorted(k for k in f.keys()))
-
-
-def open_dataset(path, split="train"):
-    """A world-model / policy HDF5 dataset for reading (h5py). ``path`` is the file, or a data directory plus the
-    file name convention of the collection (``<dir>/<split>.h5``)."""
-    path = Path(path)
-    if path.is_dir():
-        path = path / f"{split}.h5"
-    return h5py.File(path, "r")
-
-
-class Writer:
-    def __init__(self, path, env_cfg):
-        """The writer of the paired collection: 2D file ``path`` (gzip pixels) and 3D file ``path`` with ``_pcd``,
-        both never appended to (``mode='error'``), as collect_cube_pcd.py / collect_mw.py / collect_ogb.py open them."""
-        path = Path(path)
-        pcd = path.with_name(path.stem + "_pcd" + path.suffix)
-        self.paired = PairedWriter(GzipHDF5Writer(path, mode="error"), GzipHDF5Writer(pcd, mode="error", gzip_cols=()))
-
-    def __enter__(self):
-        self.paired.__enter__()
-        return self.paired
-
-    def __exit__(self, *exc):
-        return self.paired.__exit__(*exc)

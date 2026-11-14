@@ -1,5 +1,5 @@
 """Point clouds of the current and goal frames, rendered online, through PointCloudWrapper's own extraction
-(envs/pcd_wrapper.py, loaded from its file; no copy of it here)."""
+(jepa4r/data/pointcloud.py, envs/pcd_wrapper.py of the collection's runtime tree; loaded from its file)."""
 
 import importlib.util
 

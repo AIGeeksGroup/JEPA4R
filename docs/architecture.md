@@ -23,18 +23,18 @@ jepa4r/
   envs/         wrappers with paired rgb / depth / segmentation: ogbench/ (Cube, Scene, Puzzle: envs, point clouds,
                 experts), metaworld/ (the five tasks, point clouds, three-part collection policies), adroit/
                 (Relocate: environment, point clouds, collection policy); twins/ RM75-B digital twin (cube_rm75_env.py,
-                verify_rm75.py, descriptions/), its hand (hand.py), four MetaWorld tasks on it (metaworld_rm75/) and the
-                RM75-B + RH56 Relocate twin (rh56/)
-  data/         point-cloud pipeline, collection behaviors, storage, clips, official play data, demos/ (CortexBench
+                verify_rm75.py, descriptions/ with the EG2-4C2 gripper), four MetaWorld tasks on it (metaworld_rm75/)
+                and the RM75-B + RH56 Relocate twin (rh56/)
+  data/         point-cloud pipeline, storage, clips, official play data, demos/ (CortexBench
                 and Scene demonstrations); cube/, relocate/ (collection and data of the Cube 1-4 and Relocate workflows)
   models/       encoders, projector and action encoder, predictor, SIGReg, JEPA world model; cube/ (world-model
                 training of the Cube workflow)
-  baselines/    PLDM, LeJEPA, VISReg, V-JEPA 2.1, random ViT-B; cube/, relocate/ (their training and loaders in the two
-                workflows)
-  policy/       frozen-encoder interface, latent caching, gciql/ (GCIQL on Cube 1-4, its online evaluation and the Cube
+  baselines/    PLDM and LeJEPA training; cube/, relocate/ (their training in the two workflows, the Cube workflow's
+                VISReg / V-JEPA 2.1 loader)
+  policy/       where the frozen encoders are read from, gciql/ (GCIQL on Cube 1-4, its online evaluation and the Cube
                 workflow's controller), dqc/ (DQC), bc/ (CortexBench behavior cloning; relocate/ the Relocate workflow
                 on Adroit and the RH56 twin)
-  eval/         OGBench, CortexBench and reconstruction evaluation
+  eval/         reconstruction evaluation, aggregation of the policy evaluations
   decoder/      set generator, backbones/, head, LoRA, losses, training, imagination
   metrics/      point-cloud metrics in centimeters
 scripts/        reproduce_all.sh, download_checkpoints.py
@@ -90,8 +90,8 @@ key `{stage, env, method, decoder, tag}`, and finally writes `DONE`. `jepa4r-rep
 - `_base_: name` inherits from a file of the same group; files starting with `_` are bases only.
 - `per_env: {"cube_*": {...}}` in a method patches it for matching tasks (PLDM: Impala on Cube; V-JEPA 2.1: ViT-L/16
   on Cube).
-- `impl:` names the module that implements a configuration (`make(env_cfg)`, `build(enc_cfg)`,
-  `train(cfg, out_dir)`, ...), so dispatch needs no registry.
+- `impl:` names the module that implements a configuration (`train(cfg, out_dir)` of a policy learner or of a method
+  trained by us, `build(enc_cfg)` of an encoder, the decoder backbone's module), so dispatch needs no registry.
 - `???` marks a value that is not given in the paper; reading it raises an error.
 - `tag` names a variant (default `default`); the ablation variants are declared in the experiment specifications.
 
@@ -104,15 +104,15 @@ produced by some job.
 
 | Component | Location | Upstream |
 |---|---|---|
-| depth → point cloud | `jepa4r/data/pointcloud.py`, `jepa4r/envs/camera.py` | — |
+| depth → point cloud | `jepa4r/data/pointcloud.py` (+ the suites' wrappers in `jepa4r/envs/`) | — |
 | simulator wrappers, cameras, experts | `jepa4r/envs/{ogbench,metaworld,adroit}/` | OGBench, CortexBench |
 | RM75-B twin, hand twin, URDF check | `jepa4r/envs/twins/*`, `configs/env/rm75b_cube.yaml`, `jepa4r/stages/verify_twin.py` | vendor URDF |
-| data collection with mixtures | `jepa4r/stages/collect_wm_data.py`, `jepa4r/data/{behaviors,storage}.py` | — |
+| data collection with mixtures | `jepa4r/stages/collect_wm_data.py`, the collection policies in `jepa4r/envs/`, `jepa4r/data/storage.py` | — |
 | official play data, demonstrations | `jepa4r/data/official_play.py`, `jepa4r/data/demos/` | OGBench, CortexBench |
 | LeWM recipe and PointNet | `jepa4r/models/*` | stable-worldmodel, LeWM, DexArt |
 | Tab. 4b encoders | `jepa4r/models/encoders/{pointnet2,dgcnn,point_patch_transformer}.py` | PointNet++, DGCNN, PPRL |
-| PLDM / LeJEPA training, VISReg / V-JEPA 2.1 loading | `jepa4r/baselines/*` | PLDM, LeJEPA, VISReg, V-JEPA 2.1 |
-| GCIQL, DQC, behavior cloning and their evaluation | `jepa4r/policy/{gciql,dqc,bc}/`, `jepa4r/eval/{ogbench,cortexbench}.py` | OGBench, DQC, CortexBench |
+| PLDM / LeJEPA training, VISReg / V-JEPA 2.1 loading | `jepa4r/baselines/*`, `jepa4r/policy/bc/jepa_baselines.py` | PLDM, LeJEPA, VISReg, V-JEPA 2.1 |
+| GCIQL, DQC, behavior cloning and their evaluation | `jepa4r/policy/{gciql,dqc,bc}/`, `jepa4r/eval/aggregation.py` | OGBench, DQC, CortexBench |
 | decoder | `jepa4r/decoder/*` | PAGE-4D, VGGT, Depth Anything 3 |
 | reconstruction metrics, open-loop evaluation | `jepa4r/metrics/pointcloud.py`, `jepa4r/eval/recon.py`, `jepa4r/decoder/imagine.py` | — |
 

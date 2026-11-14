@@ -18,8 +18,7 @@ The training loop is dqc's main.py with three changes:
      checkpoint given by --ckpt). The original computes an observation every step; here only when the policy uses it
      (the steps of an action chunk do not reach the policy): the same results, less rendering;
   3. no wandb: metrics go to jsonl files.
-    python run_dqc.py --obs jepa4r --ckpt $STABLEWM_HOME/checkpoints/puzzle_3x3_pcd_dexart \\
-        --feats_dir $STABLEWM_HOME/datasets/ogbench/dqc_feats/puzzle_3x3 --run_dir <dir> [--agent.xxx=...]
+The train_policy stage runs it for Puzzle (jepa4r.policy.dqc.run_command gives the command line).
 """
 
 import json

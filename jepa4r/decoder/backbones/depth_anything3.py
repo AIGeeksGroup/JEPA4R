@@ -104,7 +104,7 @@ def _load(module, sd, what):
 
 # --------------------------------------------------------------------------------------------- Depth Anything 3
 class DA3Decoder(_BackboneDecoder):
-    PRETRAINED = ("dino", "head")  # 'dino': the name the LoRA stage's optimizer matches (config/recon/exp/lora.yaml)
+    PRETRAINED = ("dino", "head")  # 'dino': the name the LoRA stage's optimizer matches (the LoRA stage config)
 
     def build(self, weights):
         sys.path.insert(0, str(DA3_REPO / "src"))
@@ -199,8 +199,3 @@ class DA3Decoder(_BackboneDecoder):
             if self.rgb is not None:
                 xyz = torch.cat([xyz, torch.sigmoid(self.rgb(fused)).flatten(2).transpose(1, 2)], dim=-1)
         return xyz, conf.flatten(1)
-
-
-def build(bb_cfg, **kwargs):
-    """The decoder with this backbone (kwargs: jepa4r.decoder.model.decoder_kwargs)."""
-    return DA3Decoder(weights=str(bb_cfg.weights), **kwargs)

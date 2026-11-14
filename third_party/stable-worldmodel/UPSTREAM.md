@@ -4,14 +4,21 @@
 - Commit: `6f1e499e9cc0c898d326112f485c1062c3d20f24` ("Freeze TD-MPC2 running scale during validation (#322)")
 - License: MIT (`LICENSE`, unchanged)
 
-Vendored here (bytes of the upstream commit unless listed under local changes): the library package
-`stable_worldmodel/` (all 120 files), `LICENSE`, `README.md`, `pyproject.toml`, and the PLDM training script with its
-configs, `scripts/train/pldm.py`, `scripts/train/config/{pldm.yaml, data/ogb.yaml, launcher/local.yaml}` (the PLDM
-baseline of Tab. 1 / Tab. 2 is the framework's own training, `jepa4r/baselines/pldm.py`). The Cube and Relocate
-workflows use the same file set, unmodified (`JEPA4R_SWM`).
+Vendored here (bytes of the upstream commit unless listed under local changes): the 67 modules of the library
+package `stable_worldmodel/` that this repository imports (of 120; the removed ones are listed under local changes),
+`LICENSE`, `README.md`, `pyproject.toml`, and the PLDM training script with its configs, `scripts/train/pldm.py`,
+`scripts/train/config/{pldm.yaml, data/ogb.yaml, launcher/local.yaml}` (the PLDM baseline of Tab. 1 / Tab. 2 is the
+framework's own training, `jepa4r/baselines/pldm.py`). The Cube and Relocate workflows use the same file set
+(`JEPA4R_SWM`).
 Install with `pip install -e third_party/stable-worldmodel` (or put this directory on `PYTHONPATH`).
 
 ## Local changes
+
+Removed: the 53 modules that no code of this repository imports, directly or through the package's own imports --
+the environments other than OGBench's (`envs/{ale, craftax, dmcontrol, gymnasium_control, gymnasium_robotics, pusht,
+two_room, rocket_landing, piecewise}/`, `envs/{image_positioning, quantizer, robocasa, simple_point_maze}.py`), TD-MPC2
+(`wm/tdmpc2/`), `wm/probes.py`, `wm/lewm/module.py` and `wm/prejepa/module.py` -- and, in `envs/__init__.py`, their
+`swm/*` registrations and the import of `envs/ale`. Every other file is the upstream one, except for the patches below.
 
 The four patches of the paper's runs, kept in `patches/` (apply with `patch -p1` in the stable-worldmodel root). None
 changes a number:

@@ -83,7 +83,7 @@ def _read_actual_camera(plan):
     os.environ.setdefault("PYOPENGL_PLATFORM", "egl")
     os.environ.setdefault("EGL_PLATFORM", "surfaceless")
     import mujoco
-    from double_collection import local_pitch_quaternion
+    from triple_collection import local_pitch_quaternion
 
     cube = plan["cube_count"]
     common = dict(
@@ -103,11 +103,9 @@ def _read_actual_camera(plan):
         _with_seeded_cube_reset(env)
         options = reset_options_for_task(fixed_task_info(env, 1))
     else:
-        if cube == 2:
-            from double_collection import make_official_double_env as factory
-        else:
-            from triple_collection import make_official_triple_env as factory
-        env = factory(**common, mode="task", permute_blocks=False)
+        from triple_collection import make_official_triple_env
+
+        env = make_official_triple_env(**common, mode="task", permute_blocks=False)
         options = {"task_id": 1, "render_goal": False}
     try:
         env.reset(seed=plan["reset_seed"], options=options)

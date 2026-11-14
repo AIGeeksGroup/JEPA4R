@@ -244,8 +244,3 @@ class PAGE4DDecoder(nn.Module):
 
     def to_points(self, output, n=1200):
         return self._pick(output, n, fixed=True)
-
-
-def build(bb_cfg, **kwargs):
-    """The decoder with this backbone (kwargs: jepa4r.decoder.model.decoder_kwargs)."""
-    return PAGE4DDecoder(weights=str(bb_cfg.weights), **kwargs)

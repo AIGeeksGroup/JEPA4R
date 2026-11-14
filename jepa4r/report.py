@@ -111,11 +111,6 @@ def iter_cells(table):
             yield (row, col, metric, want, *_expect(value))
 
 
-def required_runs(table) -> set:
-    """{(stage, ((key, value), ...))} -- the runs needed to fill a table."""
-    return {(table["stage"], tuple(sorted(want.items()))) for _, _, _, want, _, _ in iter_cells(table)}
-
-
 # --------------------------------------------------------------------------- runs
 def load_records(runs_root) -> list[dict]:
     records = []

@@ -87,6 +87,7 @@ def main(argv=None):
             directory = Path(arg.split("=", 1)[1]).expanduser()
             if directory.exists() and any(directory.iterdir()):
                 raise FileExistsError(f"existing BC output: {directory}")
+    # the eai-vc checkout (the Relocate workflow sets CORTEXBENCH_EAI_VC_ROOT; default third_party/eai-vc)
     eai = Path(os.environ.get("CORTEXBENCH_EAI_VC_ROOT", HERE.parents[2] / "third_party/eai-vc"))
     vi = eai / "cortexbench/mujoco_vc/visual_imitation"
     sys.path.insert(0, str(vi))

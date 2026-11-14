@@ -1,5 +1,6 @@
-"""The repo's single-depth-camera point cloud (envs/pcd_wrapper.py) for OGBench's own puzzle-3x3 and scene envs
-(envs/ogb_puzzle_env.py, envs/ogb_scene_env.py). What differs from the cube's PointCloudWrapper and is overridden here:
+"""The repo's single-depth-camera point cloud (jepa4r.data.pointcloud.PointCloudWrapper) for OGBench's own puzzle-3x3
+and scene envs (ogb_puzzle_env.py, ogb_scene_env.py). What differs from the cube's PointCloudWrapper and is overridden
+here:
 
 * the depth camera's renders come from the env's front_pixels ``Camera`` (``render_flat``: colour, depth and
   segmentation without multisampling, so an edge pixel cannot decode to an unrelated geom id; the 2D frame keeps the

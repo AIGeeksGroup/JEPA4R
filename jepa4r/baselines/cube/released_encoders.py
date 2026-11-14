@@ -11,11 +11,6 @@ from torchvision.transforms import InterpolationMode
 from torchvision.transforms.functional import resize
 
 
-class RawRGBIdentity:
-    def __call__(self, rows):
-        return rows
-
-
 class FrozenImageEncoder(torch.nn.Module):
     def __init__(self, encoder, spec):
         super().__init__()

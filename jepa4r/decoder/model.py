@@ -1,8 +1,7 @@
 """PointCloudDecoder: set generator -> frozen backbone (+ LoRA in stage B) -> head; z [B, 192] -> P_hat [B, 1200, 6].
 
-build_decoder(decoder_cfg, **kwargs)     the decoder of cfg.decoder.backbone (jepa4r/decoder/backbones)
-decoder_kwargs(cfg, train, init_from)    its constructor arguments from cfg.decoder and the target frame of cfg.env
-load_decoder(env, decoder, tag, stage)   a trained decoder of outputs/train_decoder/<env>/<decoder>/<tag>/stage_<a|b>/
+decoder_kwargs(cfg, train, init_from)    the constructor arguments of the decoder of cfg.decoder.backbone
+                                         (jepa4r/decoder/backbones) from cfg.decoder and the target frame of cfg.env
 load_decoder_checkpoint(path)            any decoder run (config.json + weights_epoch_<n>.pt), incl. the released ones
 From the paper's reconstruction code: FrozenLatent (the frozen world model as observation -> per-frame latent),
 input_pipeline (what the encoder reads, from the world model's run config), load_recon / open_run (a trained run with
@@ -169,21 +168,6 @@ def decoder_kwargs(cfg, train="frozen", init_from=None):
         target_center=[float(c) for c in aff.center],
         target_scale=float(aff.scale),
         view=[float(v) for v in head.init_view],
-    )
-
-
-def build_decoder(decoder_cfg, **kwargs):
-    from jepa4r.decoder.backbones import build_backbone
-
-    return build_backbone(decoder_cfg.backbone, **kwargs)
-
-
-def load_decoder(env, decoder, tag="default", stage="b"):
-    """Checkpoint from outputs/train_decoder/<env>/<decoder>/<tag>/."""
-    from jepa4r.config import stage_dir
-
-    return load_decoder_checkpoint(
-        stage_dir("train_decoder", env, None, decoder, tag) / f"stage_{stage}" / "checkpoints"
     )
 
 

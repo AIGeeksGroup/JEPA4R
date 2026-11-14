@@ -1,8 +1,8 @@
 """GCIQL [park2025ogbench] on OGBench Cube (supp. sec:supp-policy, configs/policy/gciql.yaml).
 
 Offline goal-conditioned RL on OGBench's official play data for 1e6 steps. Input: frozen latent and robot state;
-goal: target state of the objects. Evaluation: 50 episodes on each of the five official tasks
-(jepa4r/eval/ogbench.py).
+goal: target state of the objects. Evaluation: 50 episodes on each of the five official tasks (the workflow's
+evaluate stage).
 
 The Cube 1-4 workflow of the paper's Cube runs: the controller (workflow.py) and the policy stages
 (workflow_downstream.py, downstream/) here; collection and official play data in jepa4r/data/cube, world-model training
@@ -52,7 +52,6 @@ STAGES = {
     "prepare_policy_data": ("prepare-data",),
     "train_wm": ("collect", "views", "train"),
     "train_policy": ("prepare-data", "prepare-encoder", "camera", "bind", "encode", "gciql", "evaluate"),
-    "cache_latents": ("prepare-data", "prepare-encoder", "camera", "bind", "encode"),  # features.py
 }
 SHARED_MODEL = "jepa4r"  # the model named in the method-independent run roots (the stages they run ignore it)
 
@@ -195,85 +194,8 @@ def train(cfg, out_dir) -> dict:
     }
 
 
-def load_frozen_vjepa21(cfg):
-    """V-JEPA 2.1 ViT-L/16 on Cube: the workflow's released-encoder loader (released_encoders.py) on the encoder spec
-    its prepare-encoder stage wrote (CUDA, FP16 forward, the mean of the 576 patch tokens, 1024-d); encode() takes the
-    raw uint8 RGB [B, 3, 224, 224]."""
-    from types import SimpleNamespace
-
-    from jepa4r.baselines.cube.released_encoders import load_encoder
-
-    model = load_encoder(
-        run_root(cfg, "train_policy") / "encoder" / "encoder_spec.json", device=str(cfg.get("device", "cuda"))
-    )
-    return SimpleNamespace(obs="image", latent_dim=int(model.output_dim), encode=model.encode_uint8, model=model)
-
-
 def wm_export(cfg):
     """The world-model export of train_wm (the run root's wm/WM_EXPORT.json): the directory of weights_epoch_<n>.pt
     and config.json from which the workflow's encode and evaluate stages read the frozen encoder."""
     export = json.loads((run_root(cfg, "train_wm") / "wm" / "WM_EXPORT.json").read_text())
     return Path(export["checkpoint"]).parent
-
-
-def load_frozen_pldm(cfg):
-    """PLDM's Impala encoder on Cube (512-d): the workflow's encoder loader (workflow_pldm_encoder.py) on the run's
-    export; encode() takes the raw uint8 RGB [B, 224, 224, 3] (resized to 65x65 there, PLDM's input)."""
-    from types import SimpleNamespace
-
-    from jepa4r.baselines.cube import workflow_pldm_encoder as adapter
-
-    export = json.loads((run_root(cfg, "train_wm") / "wm" / "WM_EXPORT.json").read_text())
-    model = adapter.load_frozen(Path(export["checkpoint"]), device=str(cfg.get("device", "cuda")))
-    return SimpleNamespace(
-        obs="image", latent_dim=adapter.DIM, model=model, encode=lambda pixels: adapter.encode_uint8(model, pixels)
-    )
-
-
-def cache_latents(cfg, encoder, out_path):
-    """features.cache_latents on Cube: the workflow's encode stage for (cfg.env, cfg.method) -- every official play
-    row set back into the simulator, rendered and encoded with the run's frozen encoder (the export of train_wm, or
-    the released weights of prepare-encoder). The cache stays in the run root (downstream/cache/<split>/
-    episode_<i>/latent.npy), so out_path is not written; ``encoder``, when given, must be that encoder.
-    -> {split: the cache directory}"""
-    from jepa4r.methods import trained_by_us
-
-    if encoder is not None and trained_by_us(cfg.method) and Path(encoder).resolve() != wm_export(cfg).resolve():
-        raise ValueError(f"the Cube workflow encodes with its own export {wm_export(cfg)}, not {encoder}")
-    cube_stage(cfg, "cache_latents")
-    cache = run_root(cfg, "train_policy") / "downstream" / "cache"
-    return {split: str(cache / split) for split in ("train", "val")}
-
-
-def latent_obs(env, encoder, cfg):
-    """features.LatentObs on Cube: the online evaluation's current policy input. ``env`` is the workflow's
-    OnlineVisualEnv (downstream/native_core.py: the official CubeEnv, its camera and the run's OnlineEncoder); the
-    callable returns [latent of the current render, the first 19 entries of the state] (make_policy_inputs)."""
-    import numpy as np
-
-    from jepa4r.policy.gciql.downstream import native_core
-
-    def observation():
-        latent = env.encoder.encode(env.current_raw())
-        state = np.asarray(env.unwrapped.compute_observation(), dtype=np.float32)
-        return native_core.make_policy_inputs(latent, latent, state, state)[0]
-
-    return observation
-
-
-def evaluate_run(cfg, policy=None, encoder=None):
-    """eval/ogbench.evaluate_policy on Cube: the workflow's online evaluation (stage evaluate; 5 tasks x 50 episodes,
-    online encoding of the current and goal views) of the run root ``policy`` (default: this config's). Runs the
-    remaining train_policy stages first if the evaluation has not run.
-    -> {"success": %, "success_per_task": {task: %}, "episodes": n}"""
-    root = Path(policy) if policy else run_root(cfg, "train_policy")
-    if not native_events(root):
-        if root.resolve() != run_root(cfg, "train_policy").resolve():
-            raise FileNotFoundError(f"no online evaluation in {root}")
-        cube_stage(cfg, "train_policy")
-    summary = native_summary(cfg, root)
-    return {
-        "success": summary["success_percent"],
-        "success_per_task": {f"task{row['task']}": row["success_percent"] for row in summary["tasks"]},
-        "episodes": summary["episodes"],
-    }

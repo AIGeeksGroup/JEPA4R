@@ -187,21 +187,3 @@ class ARPredictor(nn.Module):
         x = self.dropout(x)
         x = self.transformer(x, c)
         return x
-
-
-def build_predictor(method_cfg):
-    """ARPredictor with the hyper-parameters of ``method_cfg.predictor`` (configs/method/_jepa_wm.yaml)."""
-    p = method_cfg.predictor
-    d = int(method_cfg.latent_dim)
-    return ARPredictor(
-        num_frames=int(method_cfg.history),
-        depth=int(p.depth),
-        heads=int(p.heads),
-        mlp_dim=int(p.mlp_dim),
-        input_dim=d,
-        hidden_dim=int(p.get("hidden_dim") or d),
-        output_dim=d,
-        dim_head=int(p.dim_head),
-        dropout=float(p.dropout),
-        emb_dropout=float(p.emb_dropout),
-    )

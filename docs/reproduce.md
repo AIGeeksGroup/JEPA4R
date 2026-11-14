@@ -21,7 +21,7 @@ baseline recipes) are implemented, because the main-text numbers depend on them.
 | Tab. 3a/b; 12.31 cm shuffled control; decoder stage A → B (0.87 → 0.79 cm); within 1.1 cm over 200 steps (UR5e Cube-Single reconstruction data, `cube_single_recon`) | `tab3_recon` | collect_wm_data, train_wm, train_decoder, eval_recon | `paper/expected/tab3_recon.yaml` |
 | Tab. 4a decoder backbone (Cube); 4b encoder, 4c temporal window, 4d hyper-parameters (Scene) | `tab4_ablations` | all of the above | `paper/expected/tab4_ablations.yaml` |
 | 5.51M PointNet vs. 5.50M ViT-tiny, ~18.0M JEPA4R, 5.75M decoder, 0.88M LoRA, ~0.94B PAGE-4D | `params` | count_params | `paper/expected/params.yaml` |
-| Sec. 5.6 in the RM75-B twin: twin vs. vendor URDF (2,000 joint configurations, limits, masses, gripper); twin-trained world models, policy heads (EG2-4C2 gripper: four CortexBench MetaWorld tasks; RH56 hand: Relocate) and decoder; the paper reports no twin numbers | `twin` | verify_twin, collect_wm_data, prepare_policy_data, train_wm, train_policy, train_decoder | `paper/expected/twin.yaml` (no table: the paper reports no twin numbers) |
+| Sec. 5.6 in the RM75-B twin: twin vs. vendor URDF (2,000 joint configurations, limits, masses, gripper); twin-trained world models, policy heads (EG2-4C2 gripper: four CortexBench MetaWorld tasks; RH56 hand: Relocate) and decoder; the paper reports no twin numbers | `twin` | verify_twin, collect_wm_data, prepare_policy_data, train_wm, train_policy, train_decoder | none (the paper reports no twin numbers) |
 
 ```bash
 jepa4r-reproduce experiments/tab1_ogbench.yaml                                  # list jobs and status
@@ -55,8 +55,8 @@ jepa4r-report                                                                   
 The configurations carry the values of the code the paper's runs used:
 
 1. Task ids, play datasets, cameras, crop boxes, affine maps, point sampler: `configs/env/*.yaml`.
-2. Collection policies, noise and switch schedules: `jepa4r/envs/{metaworld,ogbench}/` (`jepa4r/data/behaviors.py`
-   lists them); shard plans and seeds: `jepa4r/stages/collect_wm_data.py`.
+2. Collection policies, noise and switch schedules: `jepa4r/envs/{metaworld,ogbench}/` (`jepa4r/stages/collect_wm_data.py`
+   lists them, with the shard plans and seeds).
 3. How the policy learners observe their data: CortexBench embeds every frame on the fly (`jepa4r/policy/bc`);
    DQC re-renders every row of OGBench's play data and encodes it (`jepa4r/policy/dqc`).
 4. Projector, action encoder, predictor widths, weight decay, gradient clipping, split: `configs/method/_jepa_wm.yaml`.
@@ -83,7 +83,7 @@ The configurations carry the values of the code the paper's runs used:
   `configs/policy/bc/relocate/DEPENDENCIES.json`) and MuJoCo 2.0 for mujoco-py.
 - **Look-ahead preview** (Sec. 4.3): not part of this repository; the paper reports no twin numbers (Sec. 5.6
   "Results" is qualitative).
-- **Policy head on the twin's Cube** (`configs/env/rm75b_cube.yaml` `policy`, `policy_data`: `???`): on the twin's
+- **Policy head on the twin's Cube** (`configs/env/rm75b_cube.yaml` `policy`, `policy_data`: `null`): on the twin's
   Cube the paper's code only plans with CEM (the appendix-only setting of Tab. S1); the gripper's policy heads trained
   in the twin are the CortexBench ones of the four `rm75b_mw_*` tasks, so `experiments/twin.yaml` has no policy job on
   `rm75b_cube`.

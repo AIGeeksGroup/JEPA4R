@@ -23,28 +23,21 @@ def write(p, value):
     p.write_text(json.dumps(value, indent=2) + "\n")
 
 
-def method_module(method):
-    return importlib.import_module(".method", __package__)
-
-
 def factory_config(args):
     return dict(_target_=__package__ + ".method.build_model", official_source=str(VENDOR), pretrained=False)
 
 
-def native_module(method, module, model, profile_name, data_binding=None):
+def native_module(module, model, profile_name, data_binding=None):
     """A stable-pretraining Module whose optimizer is built here; its training_step stays the method's own."""
     import stable_pretraining as spt
 
     class MethodModule(spt.Module):
         def configure_optimizers(self):
-            if method == "pldm":
-                opt = module.build_optimizer(self.model)
-                self.native_author_schedule = module.build_scheduler(
-                    opt, epochs=10, batch_steps=contract(profile_name, data_binding)["train_batches"], batch_size=128
-                )
-                return opt
-            opt, scheduler = module.make_optimizer_and_scheduler(self.model.parameters())
-            return [opt], [dict(scheduler=scheduler, interval="step")]
+            opt = module.build_optimizer(self.model)
+            self.native_author_schedule = module.build_scheduler(
+                opt, epochs=10, batch_steps=contract(profile_name, data_binding)["train_batches"], batch_size=128
+            )
+            return opt
 
     def pldm_forward(self, batch, stage):
         out = self.model(batch["pixels"], batch["actions"])
@@ -53,7 +46,7 @@ def native_module(method, module, model, profile_name, data_binding=None):
                 self.log(stage + "/" + key, value, on_step=True, on_epoch=True, sync_dist=True)
         return out
 
-    return MethodModule(model=model, forward=pldm_forward if method == "pldm" else module.forward, optim=None)
+    return MethodModule(model=model, forward=pldm_forward, optim=None)
 
 
 def author_schedule_before_step(pl_module, step):
@@ -84,7 +77,7 @@ def run(args):
     if spt.__version__ != "0.1.8":
         raise ValueError("stable-pretraining 0.1.8 is required")
     pl.seed_everything(0, workers=True)
-    module = method_module(args.method)
+    module = importlib.import_module(".method", __package__)
     train, val, stats = loaders(
         args.profile, args.data_root, module, args.workers, args.prefetch, data_binding=args.data_binding
     )
@@ -92,7 +85,7 @@ def run(args):
 
     cfg = factory_config(args)
     model = module.build_model(cfg["official_source"], pretrained=False)
-    world = native_module(args.method, module, model, args.profile, args.data_binding)
+    world = native_module(module, model, args.profile, args.data_binding)
     label = args.profile + "_" + args.method + "_seed0"
     export_root = args.output / "checkpoints" / label
     export_root.mkdir(parents=True, exist_ok=False)
@@ -102,8 +95,7 @@ def run(args):
         """PLDM's learning-rate schedule, applied before every optimizer step."""
 
         def on_before_optimizer_step(self, trainer, pl_module, optimizer):
-            if args.method == "pldm":
-                author_schedule_before_step(pl_module, trainer.global_step)
+            author_schedule_before_step(pl_module, trainer.global_step)
 
     callbacks = [exports.SaveCkptCallback(label, OmegaConf.create(cfg), epoch_interval=1), AuthorSchedule()]
     trainer = pl.Trainer(**trainer_options(callbacks))
@@ -131,3 +123,7 @@ def main():
         with redirect_stdout(log), redirect_stderr(log):
             run(args)
     return 0
+
+
+if __name__ == "__main__":
+    main()

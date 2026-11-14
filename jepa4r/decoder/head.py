@@ -4,13 +4,11 @@ a new branch adds rgb, and 1,200 pixels form P_hat_t (selection rule: cfg.decode
 The head is built inside each backbone decoder (jepa4r/decoder/backbones: ``frame`` = the affine map, ``rgb`` = the
 colour branch, ``_pick`` = the pixel selection: a fresh random subset of the dense map while training, a fixed one --
 torch.randperm with a seed-0 generator -- otherwise). The affine map starts as a virtual camera looking at the
-workspace: ``make_cam`` below (the rasteriser ``render_points`` / ``label`` / ``tile`` draws decoded clouds with the
-same camera model).
+workspace: ``make_cam`` below.
 """
 
 import numpy as np
 import torch
-from PIL import Image, ImageDraw
 
 
 BG = (0.09, 0.10, 0.12)
@@ -34,54 +32,3 @@ def make_cam(az_deg=45.0, el_deg=40.0, dist=1.2, target=(0.36, 0.0, 0.2), fovy_d
         size=size,
         device=device,
     )
-
-
-def _shade(col, z):  # cheap depth cue so the geometry reads in a still image
-    return col * (1.0 - 0.45 * (z - z.min()) / (z.max() - z.min() + 1e-6)).unsqueeze(-1)
-
-
-@torch.no_grad()
-def render_points(cloud, cam, point_radius=0.006):
-    """cloud (N, 3 or 6) metres (+ rgb in [0, 1]; grey without colour) -> (size, size, 3) float image."""
-    S, dev = cam["size"], cam["device"]
-    cloud = torch.as_tensor(cloud, dtype=torch.float32, device=dev)
-    rgb = cloud[:, 3:6].clamp(0, 1) if cloud.size(-1) > 3 else torch.full_like(cloud[:, :3], 0.75)
-    pc = cloud[:, :3] @ cam["R"].T + cam["t"]
-    keep = pc[:, 2] > 1e-3
-    pc, rgb = pc[keep], rgb[keep]
-    img = torch.tensor(BG, device=dev).expand(S, S, 3).clone()
-    if pc.numel() == 0:
-        return img.cpu().numpy()
-    z = pc[:, 2]
-    u, v = cam["f"] * pc[:, 0] / z + cam["c"], cam["f"] * pc[:, 1] / z + cam["c"]
-    rad = (cam["f"] * point_radius / z).clamp(0.7, 12.0)
-    rgb = _shade(rgb, z)
-
-    # every disc's pixels at once, then one z-buffer resolve
-    r = int(rad.max().ceil().item())
-    off = torch.arange(-r, r + 1, device=dev)
-    dy, dx = (o.reshape(-1) for o in torch.meshgrid(off, off, indexing="ij"))
-    ui, vi = u.round().long()[:, None] + dx, v.round().long()[:, None] + dy
-    ok = ((dx * dx + dy * dy)[None] <= rad.pow(2)[:, None]) & (ui >= 0) & (ui < S) & (vi >= 0) & (vi < S)
-    flat = (vi * S + ui).clamp_(0, S * S - 1)
-    zz = z[:, None].expand_as(flat)
-    depth = torch.full((S * S,), 1e9, device=dev).scatter_reduce_(0, flat[ok], zz[ok], reduce="amin")
-    win = ok & (zz <= depth[flat])
-    img.view(-1, 3).scatter_(
-        0, flat[win].unsqueeze(-1).expand(-1, 3), rgb[:, None, :].expand(-1, flat.size(1), -1)[win]
-    )
-    return img.clamp(0, 1).cpu().numpy()
-
-
-def label(width, text, height=26):
-    im = Image.new("RGB", (width, height), (22, 24, 31))
-    ImageDraw.Draw(im).text((8, height // 2), text, fill=(232, 236, 244), anchor="lm")
-    return np.asarray(im, np.float32) / 255.0
-
-
-def tile(rows, pad=4, bg=0.16):
-    """list of rows, each a list of (h, w, 3) images of equal height -> one image."""
-    rows = [np.concatenate([np.pad(i, ((0, 0), (pad, pad), (0, 0)), constant_values=bg) for i in r], 1) for r in rows]
-    w = max(r.shape[1] for r in rows)
-    rows = [np.pad(r, ((pad, pad), (0, w - r.shape[1]), (0, 0)), constant_values=bg) for r in rows]
-    return np.concatenate(rows, 0)

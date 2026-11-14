@@ -30,7 +30,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 SUFFIX = "-v2-goal-observable"
-# BLAS / OpenMP threads the paper's launchers gave each script: make_scene_demos.py ran with OMP_NUM_THREADS=1
+# BLAS / OpenMP threads each script ran with in the paper's runs: make_scene_demos.py ran with OMP_NUM_THREADS=1
 # MKL_NUM_THREADS=1 (the scripted expert's success steps depend on it), the CortexBench scripts (make_rm75_demos.py
 # included) with OMP_NUM_THREADS=2 MKL_NUM_THREADS=2. OPENBLAS_NUM_THREADS is set to the same value so that OpenBLAS
 # (which reads it before OMP_NUM_THREADS) runs as in those launches.

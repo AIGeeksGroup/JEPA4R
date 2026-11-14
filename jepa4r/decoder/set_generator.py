@@ -55,17 +55,3 @@ class SetDecoder(nn.Module):
         h = self.out_norm(h)
         with torch.autocast(device_type=h.device.type, enabled=False):
             return self.out(h.float())
-
-
-def build_set_generator(decoder_cfg):
-    """SetDecoder with cfg.decoder.set_generator, as the backbone decoders build it (PAGE4DDecoder.__init__)."""
-    sg = decoder_cfg.set_generator
-    return SetDecoder(
-        latent_dim=int(decoder_cfg.latent_dim),
-        num_queries=int(sg.num_queries),
-        out_dim=int(sg.token_dim),
-        dim=int(sg.dim),
-        hidden=int(sg.hidden),
-        depth=int(sg.num_blocks),
-        query_dim=int(sg.query_dim),
-    )

@@ -6,7 +6,6 @@
 _base_: _ogbench
 name: rm75b_cube
 display: Cube (RM75-B twin)
-impl: jepa4r.envs.twins.rm75b
 cube_task: single             # OGBench Cube-Single (env_type 'single')
 env_id: swm/OGBCubeRM75-v0    # RM75CubeEnv; the collection uses its PCD variant
 pointcloud:
@@ -25,7 +24,7 @@ twin_check:                   # stage verify_twin: twin vs. vendor URDF
   vendor_dir: null            # RealMan rm_models folders RM75-B/ and EG2-4C2/ (default:
                               # $JEPA4R_CHECKPOINTS/vendor/realman)
   datasets: {twin: cube_rm75_single_expert_pcd.h5, ur5e_env: cube_single_recon, ur5e: cube_single_expert_pcd.h5}
-policy: ???                   # learner of the cube pick-and-place policy head
+policy: null                  # no policy head on the twin's Cube (docs/reproduce.md)
 wm_data:
   recipe: plan_oracle         # stable-worldmodel ExpertPolicy(policy_type='plan_oracle'), as cube_single_recon
   num_episodes: 10000
@@ -50,4 +49,4 @@ wm_data:
   split: random_clips
   max_parallel: 8             # shards run at once (no effect on the data)
   threads: 2
-policy_data: ???
+policy_data: null

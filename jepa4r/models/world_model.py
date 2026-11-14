@@ -270,7 +270,7 @@ def run_random_split(cfg, run_dir, *, manager_seed=None, original_layout=False):
     dataset_name = dataset_cfg.pop("name")
     cache_dir = os.environ.get("LOCAL_DATASET_DIR", None)
     dataset = swm.data.load_dataset(dataset_name, transform=None, cache_dir=cache_dir, **dataset_cfg)
-    transforms = [hydra.utils.instantiate(cfg.data.preprocessor)]  # pixels or point cloud, see config/train/data
+    transforms = [hydra.utils.instantiate(cfg.data.preprocessor)]  # pixels or point cloud (jepa4r.data.clips)
 
     with open_dict(cfg):
         for col in cfg.data.dataset.keys_to_load:
@@ -409,7 +409,7 @@ def run_episode_split(cfg, run_dir, *, resume_checkpoint=None, state_callback=No
     import stable_worldmodel as swm
     from lightning.pytorch.loggers import WandbLogger
 
-    if original_layout:  # the source's own layout, which the Cube workflow (jepa4r/models/cube) reads back
+    if original_layout:  # the original layout, which the Cube workflow (jepa4r/models/cube) reads back
         run_dir = Path(swm.data.utils.get_cache_dir(sub_folder="checkpoints"), cfg.get("subdir") or "")
     fresh_seed = _prepare_fresh_run(cfg, run_dir, exist_ok=not original_layout)
     #########################
@@ -420,7 +420,7 @@ def run_episode_split(cfg, run_dir, *, resume_checkpoint=None, state_callback=No
     dataset_name = dataset_cfg.pop("name")
     cache_dir = os.environ.get("LOCAL_DATASET_DIR", None)
     dataset = swm.data.load_dataset(dataset_name, transform=None, cache_dir=cache_dir, **dataset_cfg)
-    transforms = [hydra.utils.instantiate(cfg.data.preprocessor)]  # pixels or point cloud, see config/train/data
+    transforms = [hydra.utils.instantiate(cfg.data.preprocessor)]  # pixels or point cloud (jepa4r.data.clips)
 
     with open_dict(cfg):
         for col in cfg.data.dataset.keys_to_load:
@@ -564,7 +564,7 @@ def instantiate(config):
 
 def encoder_config(enc_cfg, latent_dim, in_dim=6):
     """configs/encoder/<name>.yaml -> the encoder block of the training config (the layout of
-    config/train/model/encoder/*.yaml)."""
+    the paper code's training configs)."""
     t = LEGACY_TARGETS
     if enc_cfg.arch == "pointnet":
         return {
@@ -592,7 +592,7 @@ def encoder_config(enc_cfg, latent_dim, in_dim=6):
 
 
 def model_config(method_cfg, action_dim=None):
-    """The Hydra model block of this method, in the layout of the original config/train/model/*.yaml."""
+    """The Hydra model block of this method, in the layout of the paper code's model configs."""
     d, p = int(method_cfg.latent_dim), method_cfg.predictor
     t = LEGACY_TARGETS
 
@@ -735,33 +735,3 @@ def load_checkpoint(path, epoch=10, device="cpu", strict=True):
     state = torch.load(path / f"weights_epoch_{epoch}.pt", map_location=device, weights_only=True)
     model.load_state_dict(state, strict=strict)
     return model.to(device).eval()
-
-
-def load_world_model(env, method, tag="default", epoch=10):
-    """Frozen world model from outputs/train_wm/<env>/<method>/<tag>/ (decoder, imagination)."""
-    from jepa4r.config import stage_dir
-
-    return load_checkpoint(stage_dir("train_wm", env, method, None, tag), epoch=epoch)
-
-
-class FrozenWorldModelEncoder:
-    """f_theta (encoder + projector) of a frozen world-model checkpoint: preprocessed observations [B, ...] ->
-    [B, 192]."""
-
-    def __init__(self, model, obs, device="cpu"):
-        self.model, self.obs, self.device = model.to(device).eval(), obs, device
-        self.latent_dim = int(model.projector.net[-1].out_features) if hasattr(model.projector, "net") else None
-
-    @torch.no_grad()
-    def encode(self, batch):
-        x = torch.as_tensor(batch).to(self.device).float()
-        return self.model.projector(self.model.encoder(x))
-
-
-def load_frozen_encoder(cfg):
-    """FrozenEncoder (jepa4r/policy/frozen.py) = f_theta of the epoch-10 checkpoint, for train_policy (read where
-    jepa4r.policy.frozen.checkpoint says: the train_wm run, or on Cube 1-4 the Cube workflow's accepted export)."""
-    from jepa4r.policy.frozen import checkpoint
-
-    model = load_checkpoint(checkpoint(cfg), epoch=int(cfg.method.get("policy_epoch", 10)))
-    return FrozenWorldModelEncoder(model, cfg.method.obs, device=str(cfg.get("device", "cpu")))

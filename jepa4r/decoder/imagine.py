@@ -3,7 +3,7 @@ action blocks (frameskip 5) up to env step 200, and decode every predicted laten
 
 The paper's rollout code: training_setup (frameskip, history, action statistics of the world
 model's training data), action_blocks (z-scored blocks of frameskip actions), open_loop (the planner's rollout in
-latent space). ``imagine`` decodes such a rollout.
+latent space); jepa4r/eval/recon.py decodes the rollout.
 """
 
 from pathlib import Path
@@ -55,16 +55,3 @@ def open_loop(world_model, latents, blocks, context, history):
             nxt = world_model.predict(torch.stack(emb[lo:], 1), act[:, lo : k + 1])[:, -1]
         emb.append(nxt)
     return torch.stack(emb, 1)
-
-
-@torch.no_grad()
-def imagine(world_model, decoder, context_obs, action_blocks, history=3, num_points=1200):
-    """world_model: FrozenLatent (jepa4r.decoder.model) of the frozen JEPA; context_obs: the encoder input of the
-    context frames [C, ...] (env steps 0, 5, 10); action_blocks: normalised blocks [K - 1, frameskip x A] of the episode
-    (``action_blocks``) -> decoded clouds [K - C, num_points, 6] of the predicted frames (env steps 5C, ..., 5(K - 1)),
-    in the decoder's target frame (jepa4r.metrics.pointcloud.to_metres -> metres)."""
-    ctx = world_model(context_obs[None])  # (1, C, D)
-    k = action_blocks.size(0) + 1
-    latents = torch.cat([ctx, ctx.new_zeros(1, k - ctx.size(1), ctx.size(2))], 1)  # open_loop reads only the context
-    pred = open_loop(world_model.world_model, latents, action_blocks[None], ctx.size(1), history)[0, ctx.size(1) :]
-    return decoder.to_points(decoder(pred), num_points)

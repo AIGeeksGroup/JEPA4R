@@ -1,11 +1,12 @@
-"""The repo's single-depth-camera point cloud (envs/pcd_wrapper.py: crop, 5 mm voxel de-duplication, stratified draw
-with a guaranteed object share, shuffle) for the MetaWorld envs. Two things differ and are overridden here:
+"""The repo's single-depth-camera point cloud (jepa4r.data.pointcloud.PointCloudWrapper: crop, 5 mm voxel
+de-duplication, stratified draw with a guaranteed object share, shuffle) for the MetaWorld envs. Two things differ and
+are overridden here:
 
 * the depth camera is the free camera reproducing CortexBench's top_cap2, so its pose is read from the renderer
   (MWTaskEnv.camera_pose) instead of data.cam_xpos / cam_xmat;
 * foreground = every geom whose body is not welded to the world (arm links, gripper, the task's objects), plus the
   task's ``fixtures``: bodies welded to the world that a reset places anew and that carry the task state (assembly's
-  peg); the rules of the CortexBench 3D demos (bench/cortexbench/pcd_fork.py). Table, bins, walls and the robot
+  peg); the rules of the CortexBench 3D demos (jepa4r/policy/bc/pcd_fork.py). Table, bins, walls and the robot
   pedestal are background. The object share (``cube_fraction``) is drawn from the foreground outside the robot:
   the cube in bin-picking, the nut and the peg in assembly.
 * depth, segmentation and the points' colours come from a renderer without multisampling (MWTaskEnv.render(multisample=

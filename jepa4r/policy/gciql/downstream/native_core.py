@@ -13,7 +13,7 @@ from typing import Any
 
 import numpy as np
 
-from ._source import PCD_ROOT, VENDOR, install_impls
+from ._source import PCD_ROOT, PCD_WRAPPER, VENDOR, install_impls
 
 ROOT = VENDOR
 LATENT_DIM = 192
@@ -222,7 +222,7 @@ class OnlineVisualEnv:
             sys.path.insert(0, str(PCD_ROOT))
             from native_pcd_frame import NativePCDFrame
 
-            path = PCD_ROOT / "pcd_wrapper.py"
+            path = PCD_WRAPPER
             spec = importlib.util.spec_from_file_location("_sr_pcd_main", path)
             module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(module)

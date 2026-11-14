@@ -12,7 +12,6 @@ _EXPORTS = {
     "AdroitEnv": "env",
     "AdroitFeedbackPolicy": "policy",
     "SavedStateExpert": "policy",
-    "AdroitPointCloudWrapper": "pcd",
 }
 __all__ = list(_EXPORTS)
 
@@ -23,12 +22,3 @@ def __getattr__(name):
     value = getattr(import_module("." + _EXPORTS[name], __name__), name)
     globals()[name] = value
     return value
-
-
-# The env interface (configs/env/adroit_relocate.yaml impl): the native Adroit env of env_cfg.env_id.
-def make(env_cfg, **kwargs):
-    """gymnasium env ``env_cfg.env_id`` (registered above: AdroitEnv on mj_envs relocate-v0, paired rgb / depth /
-    segmentation from env_cfg.camera.name); the collection, BC and evaluation run in the Relocate harness."""
-    import gymnasium as gym
-
-    return gym.make(str(env_cfg.env_id), **kwargs)

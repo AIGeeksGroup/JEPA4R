@@ -1,8 +1,8 @@
 """OGBench's own ``puzzle-3x3-v0`` (the ogbench package; stable-worldmodel has no puzzle env) behind the repo's
-stable-worldmodel interface, ``swm/OGBenchPuzzle3x3-v0``, for the puzzle world-model data (scripts/data/collect_ogb.py);
-the larger boards the same way with ``env_type`` ('4x4': ``swm/OGBenchPuzzle4x4-v0``, 16 buttons; '4x5':
-``swm/OGBenchPuzzle4x5-v0``, 20 buttons; OGBench's puzzle-4x4-v0 / puzzle-4x5-v0, everything else as for 3x3; the
-3x3 defaults are unchanged).
+stable-worldmodel interface, ``swm/OGBenchPuzzle3x3-v0``, for the puzzle world-model data
+(jepa4r/stages/collect_wm_data.py); the larger boards the same way with ``env_type`` ('4x4':
+``swm/OGBenchPuzzle4x4-v0``, 16 buttons; '4x5': ``swm/OGBenchPuzzle4x5-v0``, 20 buttons; OGBench's puzzle-4x4-v0 /
+puzzle-4x5-v0, everything else as for 3x3; the 3x3 defaults are unchanged).
 
 Collection policy as OGBench's official puzzle-3x3-noisy-v0 (data_gen_scripts/commands.sh and generate_manipspace.py):
   * mode='data_collection': the 9 button colours random at each episode start, random arm;
@@ -23,15 +23,16 @@ observation:
   * one camera, front_pixels (the official visual datasets' camera), 224x224 (``Camera``):
       2D  pixels: multisampled (anti-aliased) RGB, render();
       3D  pcd_xyz / pcd_rgb: the same camera's depth image back-projected (rendered without multisampling, so edge
-          pixels do not decode to wrong geom ids) by envs/ogb_pcd.PuzzlePointCloudWrapper (``point_cloud``), with the
-          rules of envs/pcd_wrapper.py: geoms welded to the world (table, walls, button bases, robot base) are
-          background; foreground = the moving robot + the buttons' moving parts (the caps, which carry the colour); crop
-          box, 5 mm voxels, 1200 points, 25 % of them from the buttons (all visible button points when there are fewer).
+          pixels do not decode to wrong geom ids) by ogb_pcd.PuzzlePointCloudWrapper (``point_cloud``), with the rules
+          of jepa4r.data.pointcloud.PointCloudWrapper: geoms welded to the world (table, walls, button bases, robot
+          base) are background; foreground = the moving robot + the buttons' moving parts (the caps, which carry the
+          colour); crop box, 5 mm voxels, 1200 points, 25 % of them from the buttons (all visible button points when
+          there are fewer).
 Every row also stores the ground truth for probes and evaluation: the 9 button states, effector position / yaw, gripper
 opening, qpos / qvel, each button cap's visible pixel count (0 when the arm hides it), whether the step's action is
 random, the episode's noise level and the oracle's current button.
-This module imports nothing from the repo, so the DQC code (bench/dqc), whose own packages are named envs and utils,
-can load it by its path.
+This module imports nothing from the repo, so the DQC code (third_party/dqc), whose own packages are named envs and
+utils, can load it by its path.
 """
 
 from __future__ import annotations
@@ -62,7 +63,7 @@ GEOM = int(mujoco.mjtObj.mjOBJ_GEOM)
 NUM_POINTS = 1200
 VOXEL = 0.005
 OBJECT_FRACTION = 0.25
-CROP_BOX = np.array([[0.10, -0.50, -0.02], [0.75, 0.50, 0.60]])  # envs/pcd_wrapper.py's DEFAULT_CROP_BOX
+CROP_BOX = np.array([[0.10, -0.50, -0.02], [0.75, 0.50, 0.60]])  # jepa4r.data.pointcloud.DEFAULT_CROP_BOX
 
 
 def make_env(max_episode_steps=EPISODE_STEPS, env_type="3x3"):
@@ -146,7 +147,7 @@ class Camera:
 
 def point_cloud(cam: Camera, rgb, depth, seg, R, t, rng: np.random.Generator):
     """Back-project the depth -> foreground -> crop -> voxel dedup -> stratified sample (buttons 25 %) -> shuffle. As
-    envs/pcd_wrapper.py's _sample."""
+    PointCloudWrapper._sample (jepa4r/data/pointcloud.py)."""
     valid = seg >= 0
     valid &= cam.fg[np.where(valid, seg, 0)]
     idx = np.flatnonzero(valid)

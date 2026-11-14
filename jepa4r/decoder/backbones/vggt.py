@@ -29,8 +29,3 @@ class VGGTDecoder(PAGE4DDecoder):
             super().__init__(*args, weights=weights, **kwargs)
         finally:
             p4.load_page4d = loader
-
-
-def build(bb_cfg, **kwargs):
-    """The decoder with this backbone (kwargs: jepa4r.decoder.model.decoder_kwargs)."""
-    return VGGTDecoder(weights=str(bb_cfg.weights), **kwargs)

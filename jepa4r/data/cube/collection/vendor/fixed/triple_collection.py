@@ -1,4 +1,5 @@
-"""Fixed-task collection on OGBench's TripleCube: a copy of the DoubleCube adapter with the same plan oracle."""
+"""Fixed-task collection on OGBench's TripleCube with its plan oracle; its fixed-task wrapper, environment and plan
+policy also run the Double (double_collection.py) and Quadruple (quadruple_collection.py) collections."""
 
 from __future__ import annotations
 
@@ -111,7 +112,9 @@ def register_triple_environment():
         gym.register(TRIPLE_ENV_ID, entry_point=make_official_triple_env, max_episode_steps=1000)
 
 
-def make_triple_wrapper(env, *, task_id, strategy, mixed_switch_step, capture, num_cubes=3, stages_type=TripleStages):
+def make_triple_wrapper(
+    env, *, task_id, strategy, mixed_switch_step, capture, num_cubes=3, stages_type=TripleStages, episode_steps=1000
+):
     import gymnasium as gym
     import mujoco
 
@@ -133,7 +136,7 @@ def make_triple_wrapper(env, *, task_id, strategy, mixed_switch_step, capture, n
 
         def reset(self, *, seed=None, options=None):
             if seed is None:
-                raise ValueError("Fixed Triple collection requires an explicit reset seed")
+                raise ValueError("Fixed-task collection requires an explicit reset seed")
             if self.frame is not None:
                 self.frame.close()
             _, _ = self.env.reset(seed=int(seed), options={"task_id": task_id, "render_goal": False})
@@ -184,7 +187,9 @@ def make_triple_wrapper(env, *, task_id, strategy, mixed_switch_step, capture, n
             blocks = np.stack([info[f"privileged/block_{i}_pos"] for i in range(num_cubes)])
             block, subgoal = self.stages.stages[self.stages.index]
             source = (
-                2 if self.steps == 1000 else int(action_source(strategy, self.steps, mixed_switch_step) == "random")
+                2
+                if self.steps == episode_steps
+                else int(action_source(strategy, self.steps, mixed_switch_step) == "random")
             )
             info.update(
                 {
