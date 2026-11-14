@@ -411,15 +411,19 @@ def relocate_policy(cfg, out_dir):
     rule -- per seed the highest success of its 20 evaluations, the mean over seeds (Tab. 2) -- checked by the
     raw-event aggregation (jepa4r.eval.aggregation.bc_summary: every seed and evaluation round present once, each with
     its episode count), whose summary (per seed best, final and their means, the sample standard deviation of the bests)
-    goes to out_dir/bc_summary.json. formal: seeds 100 / 200 / 300, the 20 rounds of 25 episodes at epochs 5 .. 95, 99;
-    smoke: seed 100, one round of one episode at epoch 0 (the harness's smoke plan)."""
+    goes to out_dir/bc_summary.json. cfg.env.harness.mode full (the paper budgets): seeds 100 / 200 / 300, the 20
+    rounds of 25 episodes at epochs 5 .. 95, 99; smoke: seed 100, one round of one episode at epoch 0 (the harness's
+    smoke plan)."""
     from jepa4r.eval.aggregation import BC_EPOCHS, bc_summary
 
     status = relocate_stage(cfg, "train_policy", out_dir)
     root = relocate_run_root(cfg, "train_policy")
-    formal = str(cfg.env.harness.mode) == "formal"
-    seeds = tuple(int(s) for s in cfg.policy.eval.seeds) if formal else (100,)
-    episodes = 25 if formal else 1
+    mode = str(cfg.env.harness.mode)
+    if mode not in ("full", "smoke"):  # the Relocate workflow's modes (its --mode)
+        raise ValueError(f"{cfg.env.name}: env.harness.mode must be full or smoke, got {mode!r}")
+    full = mode == "full"
+    seeds = tuple(int(s) for s in cfg.policy.eval.seeds) if full else (100,)
+    episodes = 25 if full else 1
     runs, rounds = {}, []
     for seed in seeds:  # the harness's BC record: bc-seed<s>/run/ (Native), rh56/bc_seed<s>/ (RH56)
         run = root / (f"bc-seed{seed}/run" if cfg.env.suite == "adroit" else f"rh56/bc_seed{seed}")
@@ -435,9 +439,9 @@ def relocate_policy(cfg, out_dir):
         raise RuntimeError(
             f"{cfg.env.name} train_policy: harness {status['status']} but no BC evaluation records under {root}"
         )
-    summary = bc_summary(rounds, seeds=seeds, epochs=BC_EPOCHS if formal else (0,), episodes_per_round=episodes)
+    summary = bc_summary(rounds, seeds=seeds, epochs=BC_EPOCHS if full else (0,), episodes_per_round=episodes)
     (Path(out_dir) / "bc_summary.json").write_text(json.dumps(summary, indent=2))
     metrics = aggregate(runs)
     if abs(metrics["success"] - summary["best_mean_percent"]) > 1e-9:
-        raise RuntimeError(f"{cfg.env.name} train_policy: the Tab. 2 rule and the A1 aggregation disagree")
+        raise RuntimeError(f"{cfg.env.name} train_policy: the Tab. 2 rule and the raw-event aggregation disagree")
     return metrics

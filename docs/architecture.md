@@ -163,5 +163,19 @@ receipts; their code sits where the table above puts it, and the stages of this 
   `JEPA4R_DMC_IMPORT_OVERLAY`; inputs `JEPA4R_ADROIT_DEMOS` (the official 100 demonstrations), `JEPA4R_RH56_BUNDLE`,
   `MUJOCO_PY_MUJOCO_PATH` / `MUJOCO_PY_MJKEY_PATH`.
 - Temporary files of their children go to `JEPA4R_TMPDIR` (else `TMPDIR`, else `/tmp`).
+- Names in their code, kept as the paper's runs used them:
+  - run modes (`env.harness.mode`): Cube 1-4 `formal` (the paper protocol) or `smoke`; Relocate and RH56 `full` (the
+    paper budgets) or `smoke`. `smoke` runs the stages at a small size to check them (a few episodes, two GCIQL
+    updates instead of the training, one evaluation episode);
+  - receipt: the JSON record a stage writes when it completes (what it produced, with checksums); the next stage and a
+    resumed run check it before going on;
+  - evidence: records of the checks made while a stage runs (a policy's outputs on real inputs before and after
+    reloading, gradient norms around clipping, optimizer state), kept next to the results;
+  - native: as the environment or method itself has it: the online evaluation in the simulator (Cube `native-sr`),
+    Relocate with the Adroit hand (as opposed to the RH56 twin), a method's own trainer;
+  - `lewm_rgb` / `lewm_pcd`: the Cube workflow's names for LeWM and JEPA4R (`method=lewm` / `method=jepa4r`), and
+    LeWM's config and loader names for the point-cloud model (`model=lewm_pcd`, `load_lewm_pcd`); `code/lewm_pcd/` is
+    the directory layout the collection copies its scripts into to run them;
+  - harness: such a workflow as a stage of this repository runs it (`env.harness`, outputs under `.../harness/`).
 - Their own test suites are `tests/cube` and `tests/relocate` (pytest, in the workflows' interpreters; packages
   without `__init__.py`, so `python -m unittest discover -s tests` leaves them out).
