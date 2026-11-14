@@ -82,7 +82,7 @@ def main():
     ):
         raise FileExistsError('use a fresh output shard')
     count, read_demo, digest = load_sources(args.input,args.source_sha256)
-    from jepa4r.policy.bc.relocate.cortexbench.run_adroit_bc3d import build_point_clouds
+    from jepa4r.policy.bc.run_adroit_bc3d import build_point_clouds
     from mj_envs.envs.hand_manipulation_suite.relocate_v0 import RelocateEnvV0 as Native
     assert args.start_demo >= 0 and args.max_demos > 0 and args.start_demo + args.max_demos <= count
     args.output.parent.mkdir(parents=True, exist_ok=True)

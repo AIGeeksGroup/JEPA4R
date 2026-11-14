@@ -326,7 +326,8 @@ def test_content_record_matches_the_policy_critical_definition(raw_source):
 def test_content_validation_reads_the_trusted_contract(raw_source, tmp_path, monkeypatch):
     _, demos = raw_source
     contract = load_content_contract()
-    assert contract.TRUSTED_CONTRACT_PATH.resolve() == SCRIPT.parents[3] / 'jepa4r/policy/bc/relocate/DEPENDENCIES.json'
+    rules = SCRIPT.parents[3] / 'configs/policy/bc/relocate/DEPENDENCIES.json'
+    assert contract.TRUSTED_CONTRACT_PATH.resolve() == rules
     records = toy_content_records(contract, demos)
     trusted = trust_toy_records(contract, records, tmp_path, monkeypatch)
     report = contract.validate_content_records(records)

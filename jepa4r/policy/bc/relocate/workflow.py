@@ -203,12 +203,12 @@ def asset_fingerprints(assets):
 
 def _source_identity(configuration):
     digest = hashlib.sha256(json.dumps(configuration, sort_keys=True).encode())
-    for path in sorted((ROOT / 'jepa4r').rglob('*')):
+    for path in sorted([*(ROOT / 'jepa4r').rglob('*'), *(ROOT / 'configs').rglob('*')]):   # code and its configs
         if (path.is_file() and path.suffix in ('.py', '.yaml', '.json')
                 and '__pycache__' not in path.parts and '.git' not in path.parts):
             digest.update(path.relative_to(ROOT).as_posix().encode())
             digest.update(path.read_bytes())
-    for name in ('jepa4r/policy/bc/relocate/DEPENDENCIES.json',):
+    for name in ('configs/policy/bc/relocate/DEPENDENCIES.json',):
         digest.update(name.encode())
         digest.update((ROOT / name).read_bytes())
     return digest.hexdigest()

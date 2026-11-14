@@ -14,7 +14,8 @@ class PLDMManifestTests(unittest.TestCase):
     def setUp(self):
         self.root=Path(adapter.__file__).parent/'pldm'
         self.vendor=Path(adapter.__file__).resolve().parents[3]/'third_party/pldm'
-        self.manifest=json.loads((self.root/'source_manifest.json').read_text())
+        manifest=Path(adapter.__file__).resolve().parents[3]/'configs/policy/gciql/pldm/source_manifest.json'
+        self.manifest=json.loads(manifest.read_text())
 
     def test_current_real_upstream_manifest_and_all_import_sources_pass(self):
         bound=adapter.encoder_source_bindings(self.vendor)

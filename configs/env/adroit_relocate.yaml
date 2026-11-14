@@ -12,8 +12,9 @@ camera:
                               # "size")
 pointcloud:
   keep_extra: [visible_goal_marker]   # Sec. 4.1: on Relocate the visible goal marker is a task object
-  sampler: adroit_relocate_sampling   # jepa4r/envs/adroit/adroit_relocate_sampling.json = OGBench-cube:lewm_pcd/config/
-                                      # adroit_relocate_sampling.json: foreground only, object quota 0.25, visible green
+  sampler: adroit_relocate_sampling   # configs/policy/bc/relocate/adroit_relocate_sampling.json =
+                                      # OGBench-cube:lewm_pcd/config/adroit_relocate_sampling.json: foreground only,
+                                      # object quota 0.25, visible green
                                       # target cap 300, empty-robot background fill
   crop_box: [[-0.6, -0.8, -0.25], [0.6, 0.6, 1.1]]   # the same file (crop_box)
   # OGBench-cube:lewm_pcd/config/train/data/adroit_relocate_pcd.yaml:18-19

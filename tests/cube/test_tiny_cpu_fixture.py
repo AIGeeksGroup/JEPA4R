@@ -5,7 +5,7 @@ import importlib.util,sys,unittest
 from pathlib import Path
 from types import SimpleNamespace
 sys.path.insert(0,str(Path(__file__).resolve().parents[2]))
-from jepa4r.policy.gciql import tiny_cpu_fixture as fixture
+import tiny_cpu_fixture as fixture
 
 
 class ConfigTests(unittest.TestCase):

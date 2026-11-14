@@ -216,7 +216,7 @@ def _tiny_default_off_ast_sha256(text):
 
 def test_projected_algorithms_match_original_function_bytes():
     package = LEWM / 'jepa4r/policy/gciql'
-    signatures = json.loads((package / 'ALGORITHM_SIGNATURES.json').read_text())
+    signatures = json.loads((Path(__file__).parent / 'ALGORITHM_SIGNATURES.json').read_text())
     for record in signatures['functions']:
         text = (package / record['file']).read_text(encoding='utf8')
         tree = ast.parse(text)
@@ -253,10 +253,10 @@ def test_projected_algorithms_match_original_function_bytes():
     ],
 )
 def test_tiny_default_off_signature_rejects_real_training_changes(before, after):
-    package = LEWM / 'jepa4r/policy/gciql'
     text = (LEWM / 'jepa4r/baselines/cube/native/tiny_train.py').read_text()
     assert text.count(before) == 1
-    expected = json.loads((package / 'ALGORITHM_SIGNATURES.json').read_text())['tiny_default_off_main_ast_v1']['sha256']
+    signatures = json.loads((Path(__file__).parent / 'ALGORITHM_SIGNATURES.json').read_text())
+    expected = signatures['tiny_default_off_main_ast_v1']['sha256']
     assert _tiny_default_off_ast_sha256(text.replace(before, after)) != expected
 
 

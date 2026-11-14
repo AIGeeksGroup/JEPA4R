@@ -16,7 +16,7 @@ def source_path(relative):
     name=PurePosixPath(relative)
     if name.is_absolute() or '..' in name.parts or '\\' in relative or ':' in relative:
         raise ValueError('Source keys must be safe POSIX relative names')
-    manifest=json.loads((VENDOR/'source_manifest.json').read_text())
+    manifest=json.loads((LEWM/'configs/policy/gciql/downstream/source_manifest.json').read_text())
     target=PurePosixPath(manifest['files'][relative]['path'])
     if target.is_absolute() or '..' in target.parts:
         raise ValueError('Source manifest path escapes current package')
@@ -25,7 +25,7 @@ def source_path(relative):
     if not path.is_relative_to(root.resolve()):raise ValueError('Source resolves outside current package')
     return path
 def verify_sources():
-    manifest=json.loads((VENDOR/'source_manifest.json').read_text())
+    manifest=json.loads((LEWM/'configs/policy/gciql/downstream/source_manifest.json').read_text())
     for relative,record in manifest['files'].items():
         if hashlib.sha256(source_path(relative).read_bytes()).hexdigest()!=record['sha256']:
             raise ValueError('Current source changed: '+relative)

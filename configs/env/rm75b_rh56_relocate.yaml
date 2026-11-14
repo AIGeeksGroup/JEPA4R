@@ -2,7 +2,7 @@
 # effector; the real task is picking an object with the RH56 hand). The OGBench-cube branch simulates it as Relocate:
 # Adroit Relocate's 100 official object / target positions moved onto the RM75-B + RH56 MuJoCo model of an external
 # native bundle (its env, robot assets and expert; its files are listed in
-# jepa4r/policy/bc/relocate/rh56_native_bundle_v1.json), the final opposite camera. The paper reports
+# configs/policy/bc/relocate/rh56_native_bundle_v1.json), the final opposite camera. The paper reports
 # no number for it. Values from OGBench-cube:<path>:<line>.
 _base_: _base
 suite: rh56

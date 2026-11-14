@@ -214,8 +214,9 @@ def test_cli_simulator_override_is_explicitly_forwarded_to_backend(tmp_path, mon
 
 def test_source_identity_binds_the_effective_dependency_trust_rules(tmp_path, monkeypatch):
     api = workflow()
-    (tmp_path / 'jepa4r/policy/bc/relocate').mkdir(parents=True)   # the moved code root and rules file
-    rules = tmp_path / 'jepa4r/policy/bc/relocate/DEPENDENCIES.json'
+    (tmp_path / 'jepa4r/policy/bc/relocate').mkdir(parents=True)   # the moved code root
+    (tmp_path / 'configs/policy/bc/relocate').mkdir(parents=True)   # and its rules file
+    rules = tmp_path / 'configs/policy/bc/relocate/DEPENDENCIES.json'
     rules.write_text('{"trusted":"first"}', encoding='utf-8')
     monkeypatch.setattr(api, 'ROOT', tmp_path)
     before = api._source_identity({})

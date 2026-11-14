@@ -43,7 +43,7 @@ def normalise(state):
 def compare(actual_record,reference_record,expected_identity):
     import torch
     from jepa4r.utils.training_state import validate_identity
-    from .gate_checks import pinned,_state_cpu_arrays
+    from jepa4r.policy.gciql.gate_checks import pinned,_state_cpu_arrays
     def load(record):
         path=pinned(record);meta=json.loads(path.with_suffix('.ckpt.json').read_text())
         if (meta.get('schema')!='sealed-lightning-recovery-v1'or meta.get('phase')!='complete'or

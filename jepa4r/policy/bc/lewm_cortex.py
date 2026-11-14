@@ -1,5 +1,7 @@
 # Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/lewm_cortex.py (verbatim except: imports / paths adapted to
-# the package; lines wrapped at 120 columns)
+# the package; lines wrapped at 120 columns), merged with OGBench-cube@4fbb0c6:lewm_pcd/bench/cortexbench/lewm_cortex.py
+# (the Relocate / RH56 runs' copy): its ViT state-dict remap, its random_init / seed for load_lewm_pcd and, behind
+# seed_global_rng, its seeding of the global RNG in load_lewm
 """vc_models entry point for LeWM encoders in CortexBench (the frozen-PVR imitation protocol of eai-vc).
 
 CortexBench loads an encoder through `hydra.utils.call(<vc_models conf/model/NAME.yaml>)`, which must return
@@ -12,8 +14,13 @@ Preprocessing: LeWM was trained on full 224 x 224 renders with ImageNet normalis
 frames are resized (not centre-cropped, which would narrow the field of view the model was trained on) to 224 and
 normalised the same way. random_init=True gives the same architecture with untrained weights (the analogue of the
 paper's 'Random (ViT) Frozen' rows).
+
+The OGBench-cube branch's Relocate and RH56 runs load the 2D LeWM with the global torch RNG seeded by `seed`
+(seed_global_rng=True: configs/policy/bc/conf/model/lewm_adroit_relocate_2d.yaml, jepa4r/envs/twins/rh56/bc_bridge.py);
+the other callers leave the caller's RNG as it was (the default).
 """
 
+import contextlib
 import json
 from pathlib import Path
 
@@ -77,30 +84,65 @@ class LeWMEmbedding(nn.Module):
         return self.projector(self.encoder(x))
 
 
-def build_lewm_embedding(checkpoint_dir, epoch=10, use_projector=True, random_init=False, seed=0):
+def _remap_vit_state_dict_for_runtime(state_dict, target_keys):
+    """Adapt Transformers 5.x ViT names to the legacy 4.x runtime when needed."""
+    if set(state_dict) == set(target_keys):
+        return state_dict
+
+    replacements = (
+        ("vit.layers.", "vit.encoder.layer."),
+        (".attention.q_proj.", ".attention.attention.query."),
+        (".attention.k_proj.", ".attention.attention.key."),
+        (".attention.v_proj.", ".attention.attention.value."),
+        (".attention.o_proj.", ".attention.output.dense."),
+        (".mlp.fc1.", ".intermediate.dense."),
+        (".mlp.fc2.", ".output.dense."),
+    )
+    remapped = {}
+    for key, value in state_dict.items():
+        new_key = key
+        for source, target in replacements:
+            new_key = new_key.replace(source, target)
+        if new_key in remapped:
+            raise RuntimeError(f"duplicate remapped checkpoint key: {new_key}")
+        remapped[new_key] = value
+
+    if set(remapped) != set(target_keys):
+        missing = sorted(set(target_keys) - set(remapped))
+        unexpected = sorted(set(remapped) - set(target_keys))
+        raise RuntimeError(f"checkpoint key mismatch after ViT remap: missing={missing}, unexpected={unexpected}")
+    return remapped
+
+
+def build_lewm_embedding(
+    checkpoint_dir, epoch=10, use_projector=True, random_init=False, seed=0, seed_global_rng=False
+):
     ckdir = Path(checkpoint_dir)
     cfg = json.loads((ckdir / 'config.json').read_text())
     enc_cfg = {k: v for k, v in cfg['encoder'].items() if k != '_target_'}
     assert cfg['encoder']['_target_'] in ('encoders.ViTCLS', 'encoders.vit.ViTCLS'), cfg['encoder']['_target_']
     # the initial (random_init: final) weights come from `seed`; the caller's global RNG is left as it was (CortexBench
-    # loads the encoder again right before its BC dataloader draws the shuffle order, which must follow the run's seed)
-    with torch.random.fork_rng(devices=[]):
+    # loads the encoder again right before its BC dataloader draws the shuffle order, which must follow the run's seed),
+    # unless seed_global_rng (the OGBench-cube copy: torch.manual_seed(seed) on the global RNG)
+    with contextlib.nullcontext() if seed_global_rng else torch.random.fork_rng(devices=[]):
         torch.manual_seed(seed)
         encoder = ViTCLS(**enc_cfg)
         projector = instantiate(_moved(cfg['projector'])) if use_projector else None  # module.MLP (jepa4r.models.heads)
     if not random_init:
         sd = torch.load(ckdir / f'weights_epoch_{epoch}.pt', map_location='cpu')
-        encoder.load_state_dict({k[len('encoder.'):]: v for k, v in sd.items() if k.startswith('encoder.')})
+        encoder_state = {k[len('encoder.'):]: v for k, v in sd.items() if k.startswith('encoder.')}
+        encoder.load_state_dict(_remap_vit_state_dict_for_runtime(encoder_state, encoder.state_dict()), strict=True)
         if projector is not None:
             projector.load_state_dict({k[len('projector.'):]: v for k, v in sd.items() if k.startswith('projector.')})
     return LeWMEmbedding(encoder, projector).eval()
 
 
 def load_lewm(
-    checkpoint_dir: str, epoch: int = 10, use_projector: bool = True, random_init: bool = False, seed: int = 0
+    checkpoint_dir: str, epoch: int = 10, use_projector: bool = True, random_init: bool = False, seed: int = 0,
+    seed_global_rng: bool = False
 ):
     ckdir = Path(checkpoint_dir)
-    model = build_lewm_embedding(ckdir, epoch, use_projector, random_init, seed)
+    model = build_lewm_embedding(ckdir, epoch, use_projector, random_init, seed, seed_global_rng)
     with torch.no_grad():
         dim = model(torch.zeros(2, 3, 224, 224)).shape[-1]
     transforms = T.Compose([
@@ -170,11 +212,13 @@ def _dexart_pointnet_class():
 
 
 def load_lewm_pcd(
-    checkpoint_dir: str, epoch: int = 10, center=(0.0, 0.65, 0.2), scale: float = 4.0, use_rgb: bool = True
+    checkpoint_dir: str, epoch: int = 10, center=(0.0, 0.65, 0.2), scale: float = 4.0, use_rgb: bool = True,
+    random_init: bool = False, seed: int = 0
 ):
     """The 3D LeWM's encoder (the one its config.json names: DexArt PointNet, ManiSkill PointNet,
     PointPatchTransformer, PointNet++ or DGCNN) + projector: one (N, 6) point cloud -> the 192-d LeWM latent.
     center / scale / use_rgb must be the checkpoint's data.preprocessor (checked against its config.yaml if present).
+    random_init uses the checkpoint's architecture with fixed seeded weights, without reading its weights file.
     CortexBench's load_pretrained_model wraps transforms for images (PIL); run_bc3d.py replaces that wrapper for
     models whose metadata says input 'pcd'."""
     ckdir = Path(checkpoint_dir)
@@ -188,13 +232,26 @@ def load_lewm_pcd(
             and bool(pre['use_rgb']) == bool(use_rgb), f'preprocessor mismatch: checkpoint {pre}'
     encoder = _pcd_encoder_class(target)(**{k: v for k, v in cfg['encoder'].items() if k != '_target_'})
     projector = instantiate(_moved(cfg['projector']))  # module.MLP (jepa4r.models.heads)
-    sd = torch.load(ckdir / f'weights_epoch_{epoch}.pt', map_location='cpu')
+    if random_init:
+        # Match pretrained construction's RNG consumption while using one fixed
+        # random representation for both offline demos and online observations.
+        with torch.random.fork_rng(devices=[]):
+            torch.manual_seed(seed)
+            random_encoder = _pcd_encoder_class(target)(**{k: v for k, v in cfg['encoder'].items() if k != '_target_'})
+            random_projector = instantiate(_moved(cfg['projector']))
+        sd = {f'encoder.{key}': value for key, value in random_encoder.state_dict().items()}
+        sd.update({f'projector.{key}': value for key, value in random_projector.state_dict().items()})
+    else:
+        sd = torch.load(ckdir / f'weights_epoch_{epoch}.pt', map_location='cpu')
     encoder.load_state_dict({k[len('encoder.'):]: v for k, v in sd.items() if k.startswith('encoder.')})
     projector.load_state_dict({k[len('projector.'):]: v for k, v in sd.items() if k.startswith('projector.')})
     model = LeWMEmbedding(encoder, projector).eval()
     with torch.no_grad():
         dim = model(torch.zeros(2, 1200, 6 if use_rgb else 3)).shape[-1]
-    metadata = {'algo': 'lewm', 'input': 'pcd', 'model': f'{PCD_ENCODERS[target][2]} (LeWM 3D encoder + projector)',
-                'data': _train_data(ckdir),
-                'checkpoint': str(ckdir / f'weights_epoch_{epoch}.pt')}
+    metadata = {'algo': 'random' if random_init else 'lewm', 'input': 'pcd',
+                'model': f'{PCD_ENCODERS[target][2]} (LeWM 3D encoder + projector)',
+                'data': [] if random_init else _train_data(ckdir),
+                'checkpoint': None if random_init else str(ckdir / f'weights_epoch_{epoch}.pt')}
+    if random_init:
+        metadata['initialization_seed'] = seed
     return model, int(dim), PcdTransform(center, scale, use_rgb), metadata

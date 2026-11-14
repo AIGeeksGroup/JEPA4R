@@ -14,7 +14,8 @@ Integrated code (moved unchanged apart from paths: data/policy/<env>/ = JEPA4R_D
                         versions for bin-picking, drawer-open, assembly) on a MetaWorld task of the RM75-B twin, seeds
                         12345 + i (an episode not successful at step 500 is skipped) -> metaworld-rm75-expert{,-pcd}/
   prepare_official_assets.py  OGBench-cube@4fbb0c6:scripts/prepare_official_assets.py: the 100 official Relocate demos
-                        (relocate-v0.pickle, sha256 pinned in policy/bc/relocate/DEPENDENCIES.json; JEPA4R_ADROIT_DEMOS)
+                        (relocate-v0.pickle, sha256 pinned in configs/policy/bc/relocate/DEPENDENCIES.json;
+                        JEPA4R_ADROIT_DEMOS)
                         -> a light copy (raw labels and non-visual fields kept) + the RH56 task initialisations
   Adroit Relocate / RH56   the Relocate harness's official-demos / rh56_official_demo stage
                            (jepa4r.policy.bc.relocate_stage)

@@ -2,7 +2,7 @@
 # the moved code adapted; lines wrapped at 120 columns)
 import torch
 
-from jepa4r.policy.bc.relocate.cortexbench.lewm_cortex import _remap_vit_state_dict_for_runtime
+from jepa4r.policy.bc.lewm_cortex import _remap_vit_state_dict_for_runtime
 
 
 def test_remap_vit_state_dict_matches_legacy_transformers_keys():

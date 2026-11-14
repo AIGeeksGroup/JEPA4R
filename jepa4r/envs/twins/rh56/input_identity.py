@@ -14,7 +14,8 @@ def sha(path):
 
 
 def require_bc_source(eai_root,dependencies_path=None):
-    dependencies=Path(dependencies_path or Path(__file__).resolve().parents[3]/'policy/bc/relocate/DEPENDENCIES.json')
+    dependencies=Path(dependencies_path or
+                      Path(__file__).resolve().parents[4]/'configs/policy/bc/relocate/DEPENDENCIES.json')
     expected=json.loads(dependencies.read_text())['eai_vc']['train_loop_sha256']
     path=Path(eai_root).resolve()/'cortexbench/mujoco_vc/visual_imitation/train_loop.py'
     actual=sha(path)

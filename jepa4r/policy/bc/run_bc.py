@@ -1,5 +1,7 @@
 # Moved from cortexbench@9331494:lewm_pcd/bench/cortexbench/run_bc.py (verbatim except: imports / paths adapted to the
-# package; lines wrapped at 120 columns, no lint exemptions)
+# package; lines wrapped at 120 columns, no lint exemptions), merged with
+# OGBench-cube@4fbb0c6:lewm_pcd/bench/cortexbench/run_bc.py (the Relocate runs' copy): its eai-vc root variable and its
+# Adroit fresh-evaluation guard (4. below)
 """One CortexBench MuJoCo imitation run: eai-vc's cortexbench/mujoco_vc/visual_imitation/hydra_launcher.py +
 train_loop.py (commit 76fe35e, third_party/eai-vc), unchanged on disk, with three runtime patches that do not change the
 reported numbers:
@@ -15,6 +17,8 @@ reported numbers:
    env and numpy with base_seed + episode before every episode, and nothing in BC training draws from numpy or from the
    policy rollouts, so the evaluation episodes, the trained policy and eval/* are the same; only the logging-only
    train/* values change (they repeat eval/*). This halves the rollout time.
+4. Adroit fresh evaluation (the OGBench-cube branch's Relocate runs: --config-name Adroit_BC_config with
+   ADROIT_FRESH_EVAL=1): the seed-54321 rollouts are not replaced by the evaluation paths.
 
     source env.sh && $PY run_bc.py --config-name Metaworld_BC_config env=... embedding=... seed=100 data_dir=... \\
         hydra.run.dir=...
@@ -26,8 +30,13 @@ import runpy
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-VI = os.path.join(os.environ['JEPA4R_EAI_VC'], 'cortexbench', 'mujoco_vc', 'visual_imitation')  # the eai-vc checkout
-CONF_HOME = os.environ.get('JEPA4R_BC_CONF_HOME', HERE)  # <CONF_HOME>/conf/model/NAME.yaml: the embedding configs
+# the eai-vc checkout: CORTEXBENCH_EAI_VC_ROOT (set by the Relocate workflow: eai-vc with its train-loop patch), else
+# JEPA4R_EAI_VC (MetaWorld, Scene, the RM75-B tasks), else third_party/eai-vc
+EAI_VC = (os.environ.get('CORTEXBENCH_EAI_VC_ROOT') or os.environ.get('JEPA4R_EAI_VC')
+          or os.path.join(HERE, '..', '..', '..', 'third_party', 'eai-vc'))
+VI = os.path.join(EAI_VC, 'cortexbench', 'mujoco_vc', 'visual_imitation')
+# <CONF_HOME>/conf/model/NAME.yaml: the embedding configs (a run's own, or configs/policy/bc of this repository)
+CONF_HOME = os.environ.get('JEPA4R_BC_CONF_HOME', os.path.join(HERE, '..', '..', '..', 'configs', 'policy', 'bc'))
 sys.path.insert(0, VI)
 
 import mujoco_vc.gym_wrapper as gw
@@ -77,10 +86,14 @@ train_loop.setup_wandb = lambda config: JsonlRun(os.path.join(os.getcwd(), 'metr
 
 _sample_paths = train_loop.sample_paths
 _last = {}
+_config_name = next((arg.split('=', 1)[1] for arg in sys.argv if arg.startswith('--config-name=')), None)
+if '--config-name' in sys.argv:
+    _config_name = sys.argv[sys.argv.index('--config-name') + 1]
 
 
 def sample_paths(*args, **kwargs):
-    if kwargs.get('base_seed') == 54321 and 'paths' in _last:  # MetaWorld train/* rollouts: logging only
+    if kwargs.get('base_seed') == 54321 and 'paths' in _last and not (  # MetaWorld train/* rollouts: logging only
+            _config_name == 'Adroit_BC_config' and os.environ.get('ADROIT_FRESH_EVAL') == '1'):
         return _last['paths']
     paths = _sample_paths(*args, **kwargs)
     _last['paths'] = paths

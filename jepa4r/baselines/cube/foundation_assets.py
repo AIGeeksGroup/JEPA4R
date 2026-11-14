@@ -25,7 +25,7 @@ def sha(path):
 
 
 def asset(model):
-    registry=json.loads((HERE/'released_models.json').read_text(encoding='utf8'))['models']
+    registry=json.loads((LEWM/'configs/policy/gciql/released_models.json').read_text(encoding='utf8'))['models']
     if model not in ('visreg','vjepa'):
         raise ValueError('Released model must be visreg or vjepa')
     return copy.deepcopy(registry[model])
@@ -111,7 +111,8 @@ def download(plan):
 
 
 def _source_binding(entry):
-    files={str(path):sha(path) for path in (Path(__file__),HERE/'released_encoders.py',HERE/'released_models.json')}
+    files={str(path):sha(path)
+           for path in (Path(__file__),HERE/'released_encoders.py',LEWM/'configs/policy/gciql/released_models.json')}
     if 'source_files_sha256' in entry:
         root=VJEPA2
         for relative,digest in entry['source_files_sha256'].items():

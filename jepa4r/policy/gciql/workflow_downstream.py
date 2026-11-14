@@ -285,7 +285,7 @@ def prepare_recipe(run_config, encoder_receipt_path, output_path):
                        checkpoint=str(checkpoint_path), checkpoint_sha256=checkpoint['sha256'],
                        factory_config=factory, epoch=epoch)
         if model == 'lejepa':
-            pre_source = PACKAGE.parent/'bc/relocate/cortexbench/jepa_baselines.py'
+            pre_source = PACKAGE.parent/'bc/jepa_baselines.py'
         elif model == 'pldm':
             cfg = read(factory_path)
             if (
@@ -321,7 +321,8 @@ def prepare_recipe(run_config, encoder_receipt_path, output_path):
     sources = [Path(__file__), PACKAGE.parents[1]/'models/cube/workflow_lewm_encoder.py',
                PACKAGE.parents[1]/'baselines/cube/workflow_pldm_encoder.py', PACKAGE/'downstream/sampler.py',
                PACKAGE/'downstream/trainer.py', PACKAGE/'downstream/runtime.py',
-               PACKAGE/'downstream/native.py', PACKAGE/'downstream/native_core.py', PACKAGE/'workflow_agent.json']
+               PACKAGE/'downstream/native.py', PACKAGE/'downstream/native_core.py',
+               PACKAGE.parents[2]/'configs/policy/gciql/workflow_agent.json']
     config['implementation_sources'] = {str(path):sha(path) for path in sources}
     if imported is not None:
         retained = PACKAGE.parents[1]/'models/cube/retained_encoder.py'
@@ -531,7 +532,7 @@ def _extract_official(config, root):
 
 def _runtime_config(config, root, data, manifest_sha):
     # Reuse the exact existing agent hyperparameters, not a parallel agent factory.
-    template = read(PACKAGE/'workflow_agent.json')
+    template = read(PACKAGE.parents[2]/'configs/policy/gciql/workflow_agent.json')
     contract = group_contract(config['model'], config['cube_count'])
     result = dict(
         protocol='cube_all_distance_v1',

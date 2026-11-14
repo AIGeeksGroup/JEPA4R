@@ -25,7 +25,8 @@ def _sha(path):
 
 
 def verify_sources():
-    manifest = json.loads((PACKAGE / 'SOURCE_MANIFEST.json').read_text(encoding='utf8'))
+    manifest = PACKAGE.parents[2] / 'configs' / 'policy' / 'gciql' / 'SOURCE_MANIFEST.json'
+    manifest = json.loads(manifest.read_text(encoding='utf8'))
     mismatches = []
     for root, entries in [(PACKAGE, manifest['package_files']), (code_root(), manifest['project_files'])]:
         for name, digest in entries.items():
@@ -45,7 +46,8 @@ def load_recipe(method):
     if method not in ('lewm_rgb', 'lewm_pcd'):
         raise ValueError('current LeWM RGB/PCD recipe required')
     require_sources()
-    return json.loads((PACKAGE / 'recipes' / (method + '.json')).read_text(encoding='utf8'))
+    recipe = PACKAGE.parents[2] / 'configs' / 'policy' / 'gciql' / 'recipes' / (method + '.json')
+    return json.loads(recipe.read_text(encoding='utf8'))
 
 
 def build_environment(data_root, output_root, environ=None):

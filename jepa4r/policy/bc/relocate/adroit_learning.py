@@ -167,7 +167,7 @@ def validate_metrics(metrics,epochs):
 def configure_runtime():
     extra=os.environ.get('ADROIT_WM_EXTRA_SITE')
     if extra:sys.path.append(extra)
-    paths=[ROOT.parent,ROOT/'policy/bc/relocate/cortexbench']
+    paths=[ROOT.parent,ROOT/'policy/bc']
     eai=os.environ.get('CORTEXBENCH_EAI_VC_ROOT')
     if eai:paths.extend([Path(eai)/'cortexbench',Path(eai)/'vc_models',
         Path(eai)/'cortexbench/mujoco_vc/visual_imitation'])
@@ -189,7 +189,7 @@ def reload_preprocessor(model,cfg,instantiate,pldm_native=None):
 def verify_frozen_checkpoint(model,path,pins=None):
     if model not in ('visreg','vjepa'):return None
     if pins is None:
-        pins = json.loads((ROOT / 'policy/bc/relocate/DEPENDENCIES.json').read_text(encoding='utf-8'))[
+        pins = json.loads((ROOT.parent / 'configs/policy/bc/relocate/DEPENDENCIES.json').read_text(encoding='utf-8'))[
             'frozen_encoders'
         ]
     expected=pins[model];path=Path(path)
@@ -286,7 +286,8 @@ def train(args):
                 os.environ['RELOCATE_' + ('PCD' if args.model == 'jepa4r' else 'RGB') + '_TRAIN'] = str(
                     args.data_root / ('train_' + ('pcd' if args.model == 'jepa4r' else 'rgb') + '.h5')
                 )
-                with hydra.initialize_config_dir(version_base=None,config_dir=str(ROOT/'models/relocate/config/train')):
+                train_configs=str(ROOT.parent/'configs/policy/bc/relocate/train')
+                with hydra.initialize_config_dir(version_base=None,config_dir=train_configs):
                     cfg=hydra.compose(config_name='lewm',overrides=overrides)
                 spt.set(
                     cache_dir=str(args.output / '_cache'),
@@ -425,7 +426,7 @@ def reload_wm(args):
         import h5py
         from PIL import Image
         from jepa4r.baselines.relocate.train_lejepa_relocate import Encoder
-        from jepa4r.policy.bc.relocate.cortexbench.jepa_baselines import _transforms
+        from jepa4r.policy.bc.jepa_baselines import _transforms
         model=Encoder().eval();other=Encoder().eval()
         for name in ('backbone','head','proj'):
             getattr(model,name).load_state_dict(state[name],strict=True)
@@ -643,7 +644,7 @@ def bc(args):
     torch.optim.Adam=Adam;train_loop.sample_paths=sample_paths
     sys.argv = [
         str(
-            ROOT / 'policy/bc/relocate/cortexbench' / ('run_adroit_bc3d.py' if args.model == 'jepa4r' else 'run_bc.py')
+            ROOT / 'policy/bc' / ('run_adroit_bc3d.py' if args.model == 'jepa4r' else 'run_bc.py')
         ),
         *tail,
         'embedding=' + selector,
@@ -728,7 +729,7 @@ def bc(args):
             artifacts=[metrics_path, policy, demos, weight, demos.parents[1] / 'report.json']
             + replay_artifacts
             + (
-                [ROOT / 'policy/bc/relocate/DEPENDENCIES.json']
+                [ROOT.parent / 'configs/policy/bc/relocate/DEPENDENCIES.json']
                 if args.model in ('visreg', 'vjepa')
                 else [args.checkpoint / 'config.json']
             ),

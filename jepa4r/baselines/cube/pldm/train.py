@@ -15,7 +15,7 @@ import traceback
 from .shared_data import contract, data_profile, loaders
 from jepa4r.models.cube.training_runtime import build_environment, code_root
 
-SOURCE_FREEZE = 'source_manifest.json'
+SOURCE_FREEZE = Path(__file__).resolve().parents[4] / 'configs' / 'policy' / 'gciql' / 'pldm' / 'source_manifest.json'
 # the PLDM authors' source (its vendor/source/ entries)
 VENDOR = Path(__file__).resolve().parents[4] / 'third_party/pldm'
 

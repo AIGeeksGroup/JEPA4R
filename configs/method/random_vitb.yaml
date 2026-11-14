@@ -6,7 +6,7 @@
 # with
 # the published numbers (Tab. 2 caption: "Published numbers: the VC-1 study"; paper/expected/tab2_cortexbench.yaml
 # `published`). experiments/tab2_cortexbench.yaml keeps the job optional; the embedding is CortexBench's
-# (jepa4r/policy/bc/conf/model/rand_vitb.yaml).
+# (configs/policy/bc/conf/model/rand_vitb.yaml).
 name: random_vitb
 display: Random (ViT-B), frozen
 kind: random

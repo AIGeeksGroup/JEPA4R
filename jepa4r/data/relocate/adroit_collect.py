@@ -16,7 +16,7 @@ def load_pinned_expert(path):
     source=Path(__file__).resolve().parents[2]/'envs/adroit/policy.py'
     spec=importlib.util.spec_from_file_location('_adroit_saved_state_expert',source)
     module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
-    dependencies=Path(__file__).resolve().parents[2]/'policy/bc/relocate/DEPENDENCIES.json'
+    dependencies=Path(__file__).resolve().parents[3]/'configs/policy/bc/relocate/DEPENDENCIES.json'
     expected=json.loads(dependencies.read_text(encoding='utf-8'))['adroit_state_expert']['sha256']
     return module.SavedStateExpert.load(path,expected,env_name='relocate-v0')
 
@@ -53,7 +53,7 @@ def collect_split(root,split,count,seed,policy):
     import h5py
     import numpy as np
     import torch
-    from jepa4r.policy.bc.relocate.cortexbench.run_adroit_bc3d import build_point_clouds
+    from jepa4r.policy.bc.run_adroit_bc3d import build_point_clouds
     from mj_envs.envs.hand_manipulation_suite.relocate_v0 import RelocateEnvV0
     paths=[root/(split+'_'+route+'.h5') for route in ('rgb','pcd')]
     env=RelocateEnvV0(); sampler=build_point_clouds(env.sim,'relocate-v0')
@@ -165,8 +165,8 @@ def main():
             test_episodes=args.test_episodes,episode_length=200,mixed_counts=counts,
             expert_sha256=expert.provenance['policy_sha256'],
             producer_sha256=sha(__file__),synthetic_target=False,artifacts=artifacts+[
-                args.expert,Path(__file__).resolve().parents[2]/'policy/bc/relocate/DEPENDENCIES.json',
-                Path(__file__).resolve().parents[2]/'envs/adroit/adroit_relocate_sampling.json'])
+                args.expert,Path(__file__).resolve().parents[3]/'configs/policy/bc/relocate/DEPENDENCIES.json',
+                Path(__file__).resolve().parents[3]/'configs/policy/bc/relocate/adroit_relocate_sampling.json'])
     except Exception as error:
         receipt(args.output/'collection.json',passed=False,actual_exit_code=1,error=repr(error),artifacts=artifacts)
         raise

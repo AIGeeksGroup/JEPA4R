@@ -8,7 +8,7 @@
     {
       "file": "../../models/world_model.py",
       "name": "lejepa_forward",
-      "sha256": "0a0cd586895f23cba25c2811cb4cdb096a5b83affa0a8c585e0260b7187d56f0"
+      "sha256": "897bf5efa424d716807f5eeeb436566bd2b4aa467b3b786b6ce38d7ab9765269"
     },
     {
       "file": "../../baselines/cube/native/tiny_train.py",

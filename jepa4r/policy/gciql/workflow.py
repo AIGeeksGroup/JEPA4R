@@ -55,7 +55,7 @@ def save(path, value, *, new=False):
 
 
 def verify_sources():
-    manifest = PACKAGE/'INTEGRATED_SOURCES.json'   # the moved files, paths relative to this repository
+    manifest = REPO/'configs/policy/gciql/INTEGRATED_SOURCES.json'   # the moved files, paths relative to REPO
     value = read(manifest)
     for name, expected in value['files'].items():
         path = (REPO/name).resolve()
