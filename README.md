@@ -103,6 +103,29 @@ Upstream checkouts at the commits the paper used (`third_party/<name>` by defaul
 
 ### Pretrained Checkpoints
 
+#### Released JEPA4R world models and policies
+
+Released world models and their paired policies are indexed in [released_checkpoints.json](released_checkpoints.json). Each release is pinned to an immutable revision in the same Hugging Face model repository, with its original checkpoint paths, configuration files, file sizes and SHA-256 hashes. Retain each snapshot's internal directory layout.
+
+| Task | Checkpoint snapshot | Policy |
+|---|---|---|
+| `cube_single` | [ogbench-cube-single](https://huggingface.co/AIGeeksGroup/JEPA4R/tree/dd98a32be6ab70424111bab6880cf8e77800ea8f) | GCIQL, seed 0, 1M updates |
+| `cube_double` | [ogbench-cube-double](https://huggingface.co/AIGeeksGroup/JEPA4R/tree/308eabf452824d14c0afead1cb0f44d639443c59) | GCIQL, seed 0, 1M updates |
+| `cube_triple` | [ogbench-cube-triple](https://huggingface.co/AIGeeksGroup/JEPA4R/tree/a79e26db61ea9a1ae3ed901f78e487c67bb0144e) | GCIQL, seed 0, 1M updates |
+| `cube_quadruple` | [ogbench-cube-quadruple](https://huggingface.co/AIGeeksGroup/JEPA4R/tree/51f91e8eeafff9a0ca6be952f50bbd895c057c61) | GCIQL, seed 0, 1M updates |
+| `adroit_relocate` | [adroit-relocate](https://huggingface.co/AIGeeksGroup/JEPA4R/tree/09885959b46fcf58623acdde376eaa6a020af244) | Reward-best BC, seeds 100 / 200 / 300 |
+| `rm75b_rh56_relocate` | [rh56-relocate-pcd](https://huggingface.co/AIGeeksGroup/JEPA4R/tree/11d2802382e0aa5a66897676d7754d58d8f6c65f) | Reward-best BC, seeds 100 / 200 / 300 |
+
+The Native Adroit release is the Oct6 three-seed JEPA4R checkpoint lineage for the paper's 88.0% result. The RH56 task `rm75b_rh56_relocate` is named `rh56_relocate` in the original release index; its existing PCD checkpoint snapshot is reused unchanged.
+
+Download a task snapshot using its pinned revision, for example:
+
+```bash
+hf download AIGeeksGroup/JEPA4R --revision dd98a32be6ab70424111bab6880cf8e77800ea8f --local-dir checkpoints/cube_single
+```
+
+#### Third-party pretrained assets
+
 Place third-party weights under `checkpoints/` (or set `JEPA4R_CHECKPOINTS`):
 
 ```text
