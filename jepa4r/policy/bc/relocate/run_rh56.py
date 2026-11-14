@@ -80,7 +80,7 @@ def make_plan(args, forwarded, argument_parser):
 
 def check_runtime_inputs(plan):
     package = Path(plan["environment"]["RH56_PACKAGE_ROOT"])
-    if not (package / "models/world_model.py").is_file():  # LeWM's train.py
+    if not (package / "models/world_model.py").is_file():  # the world-model training code
         raise FileNotFoundError(f"no models/world_model.py under {package}")
     if plan["stage"] in ("collect", "official-init", "bc"):
         expert = plan["environment"].get("RH56_EXPERT_ROOT")

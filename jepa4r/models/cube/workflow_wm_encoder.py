@@ -1,5 +1,5 @@
-"""Checkpoint loading and encoding of the JEPA world models the Cube workflow trains (JEPA4R, LeWM), with LeWM's
-loader."""
+"""Checkpoint loading and encoding of the JEPA world models the Cube workflow trains (JEPA4R, LeWM), with
+stable-worldmodel's load_pretrained."""
 
 from pathlib import Path
 import os
@@ -13,7 +13,7 @@ def load_frozen(checkpoint, device="cuda"):
     sys.path[:0] = [str(code), str(code / "third_party/stable-worldmodel")]
     import hydra.utils
     from stable_worldmodel.wm.utils import load_pretrained
-    from jepa4r.models.world_model import _retarget  # config.json's LeWM targets (jepa.JEPA, ...) -> our classes
+    from jepa4r.models.world_model import _retarget  # config.json's original targets (jepa.JEPA, ...) -> ours
 
     cache = os.environ.get("CUBE_WORKFLOW_FACTORY_CACHE")
     if not cache:

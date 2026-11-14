@@ -16,7 +16,7 @@ Input (B, N, C): xyz in the first 3 channels, the other C - 3 (rgb) as point fea
 takes the same way (its classifier with normals). Its fully connected classification layers are not part of the
 encoder.
 
-Adaptations to LeWM: a linear head from the global feature to out_dim (the 192-d latent), and the MLP widths x 2.5
+Adaptations for JEPA4R: a linear head from the global feature to out_dim (the 192-d latent), and the MLP widths x 2.5
 (ratios kept), so that the parameter count matches the pixel model's ViT-tiny encoder: 5.51 M (5.50 M). The radii
 are the authors' (their objects are normalised to the unit sphere; the JEPA4R point clouds, (xyz - centre) x 4, have
 about that extent).
@@ -287,7 +287,7 @@ class PointNet2(nn.Module):
 
 
 def build(enc_cfg):
-    """configs/encoder/pointnet2.yaml (hparams = LeWM's PointNet++ encoder config)."""
+    """configs/encoder/pointnet2.yaml (hparams = JEPA4R's PointNet++ encoder config)."""
     h = enc_cfg.hparams
     return PointNet2(
         in_dim=int(enc_cfg.in_dim),

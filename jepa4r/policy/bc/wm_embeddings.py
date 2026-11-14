@@ -70,7 +70,7 @@ class ViTCLS(nn.Module):
 
 
 def _train_data(ckdir):
-    """The dataset a LeWM checkpoint was trained on (the hydra config.yaml train.py writes next to it), for metadata."""
+    """The dataset a world-model checkpoint was trained on (the hydra config.yaml written next to it), for metadata."""
     p = Path(ckdir) / "config.yaml"
     if not p.exists():
         return []
@@ -183,7 +183,7 @@ class PcdTransform:
         return torch.cat([xyz, x[:, 3:6] / 255.0], dim=-1) if self.use_rgb else xyz
 
 
-# the JEPA4R point-cloud encoders (LeWM's encoder configs dexart, ms2, ppt, pointnet2, dgcnn):
+# the JEPA4R point-cloud encoders (encoder configs dexart, ms2, ppt, pointnet2, dgcnn):
 # the _target_ in a checkpoint's config.json -> (file in jepa4r/models/encoders, class, name for the metadata)
 PCD_ENCODERS = {
     "encoders.DexArtPointNet": ("pointnet.py", "DexArtPointNet", "DexArt PointNet"),

@@ -2,7 +2,7 @@
 
 projector       encoder output -> z_t in R^192
 action_encoder  action block (5 concatenated actions) -> embedding for the predictor's AdaLN-zero
-``Embedder`` and ``MLP`` are LeWM's ``module.py`` classes moved unchanged; the predictor projection (``pred_proj``) is
+``Embedder`` and ``MLP`` are taken unchanged from LeWM's ``module.py``; the predictor projection (``pred_proj``) is
 the same MLP as the projector.
 """
 
@@ -88,7 +88,8 @@ def build_pred_proj(method_cfg):
 
 
 def build_action_encoder(method_cfg, action_dim):
-    """``action_dim`` = dimension of one env action; the block concatenates ``frameskip`` of them (LeWM train.py:
+    """``action_dim`` = dimension of one env action; the block concatenates ``frameskip`` of them (as the training
+    code sets it:
     ``cfg.model.action_encoder.input_dim = frameskip * dataset.get_dim('action')``)."""
     return Embedder(
         input_dim=int(method_cfg.frameskip) * int(action_dim), emb_dim=int(method_cfg.action_encoder.emb_dim)

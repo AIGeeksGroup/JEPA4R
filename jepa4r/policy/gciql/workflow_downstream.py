@@ -99,7 +99,7 @@ def prepare_recipe(run_config, encoder_record, output_path):
             binding["adapter"] = str(pre_source)
         else:
             binding["adapter"] = str(REPO / "jepa4r/models/cube/workflow_wm_encoder.py")
-            pre_source = REPO / "jepa4r/data/clips.py"  # LeWM's utils.py preprocessors
+            pre_source = REPO / "jepa4r/data/clips.py"  # the world-model preprocessors
         binding["preprocessing"] = dict(
             source_path=str(pre_source),
             device="cpu",

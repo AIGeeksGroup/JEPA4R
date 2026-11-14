@@ -5,7 +5,7 @@ impl: jepa4r.models.encoders.point_patch_transformer
 in_dim: 6
 out_dim: 192
 hparams:                      # patches, depth, width chosen to match ~5.51M parameters
-  # LeWM's encoder config (PPRL PointPatchTransformer defaults, embed_dim 402)
+  # JEPA4R's encoder config (PPRL PointPatchTransformer defaults, embed_dim 402)
   embed_dim: 402
   depth: 3
   num_heads: 6

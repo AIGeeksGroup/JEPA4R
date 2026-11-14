@@ -6,7 +6,7 @@ camera_preview.py  the opposite camera
 collect.py         the paired RGB / point-cloud collection (world-model data and BC demonstrations)
 official_init.py   the BC demonstrations from Adroit Relocate's official initialisations
 data_tools.py      the published dataset over the collection batches
-wm_bridge.py       world-model training with LeWM's trainer
+wm_bridge.py       world-model training (jepa4r/models/world_model.py)
 bc_bridge.py       behavior cloning with CortexBench's BC loop
 The stages and their command lines: jepa4r/policy/bc/relocate/rh56_workflow.py.
 """

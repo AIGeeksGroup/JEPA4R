@@ -1,7 +1,7 @@
 """SIGReg [balestriero2025lejepa] anti-collapse regulariser (Eq. 1): compares 1,024 random one-dimensional
 projections of each time step's latents with a standard Gaussian; weight lambda = 0.09.
 
-The module is LeWM's ``SIGReg`` moved unchanged (17 knots on [0, 3], Epps-Pulley statistic, projections drawn from
+The module is ``SIGReg`` taken unchanged from LeWM (17 knots on [0, 3], Epps-Pulley statistic, projections drawn from
 torch's global RNG at every call). The world model calls it on the latents ordered time-first, ``(T, B, D)``.
 """
 
@@ -40,5 +40,5 @@ class SIGReg(torch.nn.Module):
 def sigreg(z, num_projections=1024):
     """z: [B, T, D] latents -> scalar loss."""
     # The training forward (world_model.lejepa_forward) calls SIGReg on emb.transpose(0, 1); the 17 knots are
-    # LeWM's value (loss.sigreg.kwargs.knots).
+    # the value of the LeWM recipe (loss.sigreg.kwargs.knots).
     return SIGReg(knots=17, num_proj=num_projections).to(z.device)(z.transpose(0, 1))

@@ -18,7 +18,7 @@ Defaults are PPRL's:
   pooling    : SequencePooling = LN -> softmax(Linear(E, 1)) attention -> weighted sum
   init       : trunc_normal(0.02) on Linear weights, LN weight 1 / bias 0
 
-Adaptations to LeWM: an affine head Linear(E -> out_dim) (192-d latent), and
+Adaptations for JEPA4R: an affine head Linear(E -> out_dim) (192-d latent), and
 E = 402 instead of 384 so the parameter count matches the ViT-tiny encoder (5.50 M).
 The state vector PPRL concatenates after pooling is not part of this module.
 """
@@ -183,7 +183,7 @@ class PointPatchTransformer(nn.Module):
         )
         self.pooling = SequencePooling(embed_dim)
         self.apply(self._init_weights)
-        self.head = nn.Linear(embed_dim, out_dim)  # LeWM latent adaptation
+        self.head = nn.Linear(embed_dim, out_dim)  # adaptation to the 192-d latent
 
     @staticmethod
     def _init_weights(m):
@@ -207,7 +207,7 @@ class PointPatchTransformer(nn.Module):
 
 
 def build(enc_cfg):
-    """configs/encoder/point_patch_transformer.yaml (hparams = LeWM's PPT encoder config)."""
+    """configs/encoder/point_patch_transformer.yaml (hparams = JEPA4R's PPT encoder config)."""
     h = enc_cfg.hparams
     return PointPatchTransformer(
         in_dim=int(enc_cfg.in_dim),

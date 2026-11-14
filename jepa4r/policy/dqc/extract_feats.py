@@ -3,8 +3,9 @@ with the world-model data's camera -> the frozen LeWM / JEPA4R encoders -> one 1
 observations, run_dqc.py).
 * The official data stores states only (OGBench's state observation + qpos / qvel / button_states), no images. Each
   step's qpos / qvel / button_states are set back into the simulator (env.set_state) and the frame is rendered as the
-  LeWM data is (envs/ogb_puzzle_env.py: the opaque arm of ob_type='states', front_pixels, 224; the images anti-aliased,
-  the point clouds from the same camera's depth with the same rules, 1200 points, the point sampling seeded per frame).
+  world-model data is (envs/ogb_puzzle_env.py: the opaque arm of ob_type='states', front_pixels, 224; the images
+  anti-aliased, the point clouds from the same camera's depth with the same rules, 1200 points, the point sampling
+  seeded per frame).
 * Encoders (wm_obs.Encoders, the given checkpoints' epoch): the projector's 192-d output, the world model's latent;
   the world model is not trained further.
 * Only the latents are stored (float32, N x 192, row for row with the npz), written in chunks, restartable.
