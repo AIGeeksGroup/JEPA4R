@@ -14,6 +14,7 @@ from pathlib import Path
 
 import h5py
 import mujoco
+from gymnasium.utils import seeding
 import numpy as np
 
 from ogbench.manipspace.oracles.plan.cube_plan import CubePlanOracle
@@ -304,9 +305,17 @@ check(
 
 
 def rollouts(env, episodes, seed):
-    np.random.seed(seed)
+    # Each episode from its own seed: numpy's generator (the oracle's noise), the env's generator (its targets) and its
+    # variation space (the cube's start and goal pose). stable-worldmodel's CubeEnv.reset does not pass its seed on and
+    # re-seeds the variation space from the OS, so without this every run would draw other episodes.
+    space = env.unwrapped.variation_space
+    space_seed, current = space.seed, [seed]
+    space.seed = lambda _=None: space_seed(current[0])
     ok, lifted, viol, selfc, vmax = [], [], 0, 0, 0
     for ep in range(episodes):
+        current[0] = seed + ep
+        np.random.seed(seed + ep)
+        env.unwrapped.np_random = seeding.np_random(seed + ep)[0]
         ob, info = env.reset(seed=seed + ep)
         m, dd = env._model, env._data
         robot = np.array([m.body(b).name.startswith("ur5e/") for b in range(m.nbody)])
@@ -329,6 +338,7 @@ def rollouts(env, episodes, seed):
                 maxz = 0.0
                 ob, info = env.set_new_target(p_stack=0.0)
                 oracle.reset(ob, info)
+    space.seed = space_seed
     return np.mean(ok), np.mean(lifted), len(ok), viol, selfc, vmax
 
 
