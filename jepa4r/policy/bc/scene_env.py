@@ -7,7 +7,7 @@ point-cloud wrapper (envs.ogb_pcd.ScenePointCloudWrapper).
 * step(a): OGBench's step; the episode ends at the goal (done = info['success'], OGBench's default terminate_at_goal),
   so the harness's "success at the last step" is OGBench's success rate; at most 750 steps (scene-v0's
   max_episode_steps);
-* rgb(): front_pixels 224x224, anti-aliased (OGBSceneEnv.render: the renderer and the size of the LeWM data);
+* rgb(): front_pixels 224x224, anti-aliased (OGBSceneEnv.render: the renderer and the size of the world-model data);
 * pcd(): (1200, 6) float32 xyz (m) + rgb 0..255, JEPA4R data's recipe (ScenePointCloudWrapper's point cloud), its
   sampling RNG seeded with the seed + 7919 at every reset; a cloud is drawn only when the harness asks for a frame;
 * proprioception (proprio_of): [effector xyz, cos yaw, sin yaw, gripper opening, button 0 (drawer lock), button 1

@@ -397,5 +397,45 @@ class RelocateWorkflowTests(unittest.TestCase):
         np.testing.assert_allclose(points, expected, rtol=0, atol=1e-14)
 
 
+class CortexBenchRunnerTests(unittest.TestCase):
+    def test_point_cloud_switch_follows_the_method(self):
+        """The Scene and RM75-B twin runners switch to point-cloud observations by the embedding's loader; for every
+        BC job they run, the switch must be on exactly for the methods that observe point clouds."""
+        import re
+
+        from omegaconf import OmegaConf
+
+        from jepa4r.config import compose
+        from jepa4r.orchestrate import expand, load_spec
+        from jepa4r.policy import bc
+
+        switches = {}
+        for name in ("run_bc_scene.py", "run_bc_rm75.py"):
+            source = (REPO / "jepa4r/policy/bc" / name).read_text()
+            switches[name] = re.search(r'_target_\.endswith\("([^"]+)"\)', source).group(1)
+        checked = set()
+        for path in sorted((REPO / "experiments").glob("*.yaml")):
+            for job in expand(load_spec(path), with_optional=True):
+                if job.stage != "train_policy":
+                    continue
+                cfg = compose(job.args())
+                if (
+                    str(cfg.env.suite) not in ("ogbench", "metaworld_rm75")
+                    or OmegaConf.select(cfg, "policy.name") != "bc"
+                ):
+                    continue
+                task = bc.tasks(cfg.env)[0]
+                command = bc.run_command(cfg, task, int(cfg.policy.eval.seeds[0]), "/RUN", "EMB", "/DEMOS")
+                runner = next((Path(arg).name for arg in command if str(arg).endswith(".py")), None)
+                if runner not in switches:
+                    continue
+                target = str(bc.embedding_config(cfg)["_target_"])
+                with self.subTest(job=" ".join(job.args())):
+                    self.assertEqual(target.endswith(switches[runner]), cfg.method.obs == "pointcloud")
+                checked.add((runner, str(cfg.method.obs)))
+        self.assertEqual({obs for _, obs in checked}, {"pointcloud", "image"})
+        self.assertEqual({runner for runner, _ in checked}, set(switches))
+
+
 if __name__ == "__main__":
     unittest.main()

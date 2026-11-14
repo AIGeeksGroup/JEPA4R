@@ -1,9 +1,9 @@
 """Frozen world-model latents (LeWM, JEPA4R) of OGBench puzzle states (3x3, 4x4, 4x5), shared by extract_feats.py (the
-training set) and run_dqc.py (the evaluation): the camera and point clouds of the LeWM data (envs/ogb_puzzle_env.py:
-front_pixels 224, the opaque arm of ob_type='states'; the images anti-aliased, the point clouds from the same camera's
-depth with 1200 points) and the encoders as CortexBench loads them (jepa4r/policy/bc/wm_embeddings.py: LeWM pixels / 255
-normalised with ImageNet's mean / std; JEPA4R (xyz - center) * scale with rgb / 255), their output the projector's
-192-d latent.
+training set) and run_dqc.py (the evaluation): the camera and point clouds of the world-model data
+(envs/ogb_puzzle_env.py: front_pixels 224, the opaque arm of ob_type='states'; the images anti-aliased, the point clouds
+from the same camera's depth with 1200 points) and the encoders as CortexBench loads them
+(jepa4r/policy/bc/wm_embeddings.py: LeWM pixels / 255 normalised with ImageNet's mean / std; JEPA4R (xyz - center) *
+scale with rgb / 255), their output the projector's 192-d latent.
 envs/ogb_puzzle_env.py is loaded by its path: the DQC code (third_party/dqc) has packages named envs and utils too and
 comes first on run_dqc.py's sys.path (the module imports nothing from the repo).
 """
@@ -108,9 +108,9 @@ class BaselineEncoder:
 
 
 class BaselineObs:
-    """The evaluation-time observation for a baseline encoder: the current frame of the LeWM data's camera (the image
-    WMObs gives LeWM) -> BaselineEncoder -> its latent, the true lights appended, as
-    extract_feats_baselines.py builds the training set's observations."""
+    """The evaluation-time observation for a baseline encoder: the current frame of the world-model data's camera (the
+    image WMObs gives LeWM) -> BaselineEncoder -> its latent, the true lights appended, as extract_feats_baselines.py
+    builds the training set's observations."""
 
     def __init__(self, env, kind, path, epoch):
         torch.set_num_threads(2)

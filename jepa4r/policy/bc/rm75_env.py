@@ -6,9 +6,9 @@ from top_cap2 with multisampling), here with the RM75 env of envs/metaworld/rm75
   metaworld's own seed(s) + reset() gives for the same s), the hand at the task's own start;
 * the steps are the RM75 metaworld env's (envs/metaworld/rm75/robot.py: clipped 4-D action, IK, servos), so step(a)
   returns metaworld's own (obs, reward, info) with info['success'];
-* rgb(): 256x256 top_cap2, multisampled (the renderer the LeWM data used, at CortexBench's size);
+* rgb(): 256x256 top_cap2, multisampled (the renderer the world-model data used, at CortexBench's size);
 * pcd(): (1200, 6) float32 xyz (m) + rgb 0..255 of the same camera, envs.metaworld.MWPointCloudWrapper with the 3D
-  LeWM data's settings (1200 points, 5 mm voxels, 25 % object points, the task's re-placed fixtures; depth /
+  world-model data's settings (1200 points, 5 mm voxels, 25 % object points, the task's re-placed fixtures; depth /
   segmentation without multisampling), rendered at 224x224 as the JEPA4R data and the Sawyer harness's 3D
   (pcd_fork.MWPointClouds): the env is made at 224, the frames come from a 256 renderer of their own. Its sampling RNG
   is seeded by seed().

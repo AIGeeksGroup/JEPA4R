@@ -12,11 +12,11 @@ The goal is always the 9 lights' goal state (OGBench's oraclerep); algorithm, hy
 The training loop is dqc's main.py with three changes:
   1. restartable: every --save_every steps the full state (the agent with its optimiser and RNG, numpy / python RNG
      states, the step) goes to disk; on SIGTERM it is saved once more before exiting;
-  2. LeWM inputs: the training set's observations are extract_feats.py's latents (+ the lights); in the evaluation, each
-     time the policy needs an action, the current frame of the LeWM data's camera (front_pixels, 224, the opaque arm of
-     ob_type='states') goes through the same frozen encoder (wm_obs.WMObs, the checkpoint given by --ckpt). The
-     original computes an observation every step; here only when the policy uses it (the steps of an action chunk do
-     not reach the policy): the same results, less rendering;
+  2. World-model inputs: the training set's observations are extract_feats.py's latents (+ the lights); in the
+     evaluation, each time the policy needs an action, the current frame of the world-model data's camera
+     (front_pixels, 224, the opaque arm of ob_type='states') goes through the same frozen encoder (wm_obs.WMObs, the
+     checkpoint given by --ckpt). The original computes an observation every step; here only when the policy uses it
+     (the steps of an action chunk do not reach the policy): the same results, less rendering;
   3. no wandb: metrics go to jsonl files.
     python run_dqc.py --obs jepa4r --ckpt $STABLEWM_HOME/checkpoints/puzzle_3x3_pcd_dexart \\
         --feats_dir $STABLEWM_HOME/datasets/ogbench/dqc_feats/puzzle_3x3 --run_dir <dir> [--agent.xxx=...]
@@ -58,10 +58,10 @@ flags.DEFINE_string(
 flags.DEFINE_string("run_dir", None, "Output directory (checkpoint, logs).")
 flags.DEFINE_string("env_name", "puzzle-3x3-play-oraclerep-v0", "")
 flags.DEFINE_string("dataset_path", str(DATA / "official" / "puzzle-3x3-play-v0.npz"), "")
-flags.DEFINE_string("feats_dir", None, "extract_feats.py's output directory (LeWM inputs).")
+flags.DEFINE_string("feats_dir", None, "extract_feats.py's output directory (world-model inputs).")
 flags.DEFINE_string("feats_split", "train", "Prefix of the latent files (train or val).")
-flags.DEFINE_string("ckpt", None, "Checkpoint directory of the LeWM encoder (LeWM inputs; extract_feats.py's).")
-flags.DEFINE_integer("wm_epoch", 10, "Epoch of the LeWM weights.")
+flags.DEFINE_string("ckpt", None, "Checkpoint directory of the world-model encoder (extract_feats.py's).")
+flags.DEFINE_integer("wm_epoch", 10, "Epoch of the world-model weights.")
 flags.DEFINE_integer("seed", 100001, "")
 flags.DEFINE_integer("offline_steps", 1000000, "")
 flags.DEFINE_integer("log_interval", 5000, "")
@@ -138,8 +138,8 @@ def main(_):
     flag_dict["agent"] = config.to_dict()
     (run_dir / "flags.json").write_text(json.dumps(flag_dict, indent=1))
 
-    # env and data (as main.py). The LeWM inputs render into a 224 offscreen buffer: the rendering size only, not the
-    # simulation.
+    # env and data (as main.py). The world-model inputs render into a 224 offscreen buffer: the rendering size only,
+    # not the simulation.
     env_kwargs = dict(width=224, height=224) if encoded else {}
     env, train_dataset, _ = make_ogbench_env_and_datasets(
         FLAGS.env_name, dataset_path=FLAGS.dataset_path, compact_dataset=True, add_info=True

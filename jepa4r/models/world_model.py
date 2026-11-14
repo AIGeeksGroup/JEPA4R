@@ -590,7 +590,7 @@ def encoder_config(enc_cfg, latent_dim, in_dim=6):
 
 
 def model_config(method_cfg, action_dim=None):
-    """The Hydra model block of LeWM's config/train/model/lewm.yaml / jepa4r.yaml for this method."""
+    """The Hydra model block of this method, in the layout of LeWM's config/train/model/*.yaml."""
     d, p = int(method_cfg.latent_dim), method_cfg.predictor
     t = LEGACY_TARGETS
 
