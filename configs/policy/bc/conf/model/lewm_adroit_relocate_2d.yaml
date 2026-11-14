@@ -1,8 +1,0 @@
-_target_: lewm_cortex.load_lewm
-checkpoint_dir: ${oc.env:RELOCATE_RGB_CHECKPOINT}
-epoch: 10
-use_projector: true
-random_init: false
-seed: 0
-# the Relocate runs' loader seeds the global RNG with `seed` (lewm_cortex.load_lewm: seed_global_rng)
-seed_global_rng: true

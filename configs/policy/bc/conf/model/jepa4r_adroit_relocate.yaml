@@ -1,4 +1,4 @@
-_target_: lewm_cortex.load_lewm_pcd
+_target_: wm_embeddings.load_jepa4r
 checkpoint_dir: ${oc.env:RELOCATE_PCD_CHECKPOINT}
 epoch: 10
 center: [0.0, -0.2, 0.25]

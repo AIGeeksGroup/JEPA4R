@@ -10,8 +10,8 @@ import os
 from pathlib import Path
 
 INPUTS = [
-    ("lewm2d", "LeWM 2D"),
-    ("lewm3d", "LeWM 3D"),
+    ("lewm", "LeWM"),
+    ("jepa4r", "JEPA4R"),
     ("vjepa21", "V-JEPA 2.1 (frozen)"),
     ("visreg", "VISReg (frozen)"),
     ("lejepa", "LeJEPA"),

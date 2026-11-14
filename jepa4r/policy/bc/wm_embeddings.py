@@ -12,8 +12,8 @@ frames are resized (not centre-cropped, which would narrow the field of view the
 normalised the same way. random_init=True gives the same architecture with untrained weights (the analogue of the
 paper's 'Random (ViT) Frozen' rows).
 
-The Relocate and RH56 runs load the 2D LeWM with the global torch RNG seeded by `seed`
-(seed_global_rng=True: configs/policy/bc/conf/model/lewm_adroit_relocate_2d.yaml, jepa4r/envs/twins/rh56/bc_bridge.py);
+The Relocate and RH56 runs load LeWM with the global torch RNG seeded by `seed`
+(seed_global_rng=True: configs/policy/bc/conf/model/lewm_adroit_relocate.yaml, jepa4r/envs/twins/rh56/bc_bridge.py);
 the other callers leave the caller's RNG as it was (the default).
 """
 
@@ -119,9 +119,7 @@ def _remap_vit_state_dict_for_runtime(state_dict, target_keys):
     return remapped
 
 
-def build_lewm_embedding(
-    checkpoint_dir, epoch=10, use_projector=True, random_init=False, seed=0, seed_global_rng=False
-):
+def build_wm_embedding(checkpoint_dir, epoch=10, use_projector=True, random_init=False, seed=0, seed_global_rng=False):
     ckdir = Path(checkpoint_dir)
     cfg = json.loads((ckdir / "config.json").read_text())
     enc_cfg = {k: v for k, v in cfg["encoder"].items() if k != "_target_"}
@@ -151,7 +149,7 @@ def load_lewm(
     seed_global_rng: bool = False,
 ):
     ckdir = Path(checkpoint_dir)
-    model = build_lewm_embedding(ckdir, epoch, use_projector, random_init, seed, seed_global_rng)
+    model = build_wm_embedding(ckdir, epoch, use_projector, random_init, seed, seed_global_rng)
     with torch.no_grad():
         dim = model(torch.zeros(2, 3, 224, 224)).shape[-1]
     transforms = T.Compose(
@@ -172,7 +170,7 @@ def load_lewm(
 
 # ---------------------------------------------------------------- 3D (point cloud) LeWM
 class PcdTransform:
-    """(N, 6) numpy point cloud [xyz in metres, rgb 0..255] -> (N, 6) float tensor, as the 3D LeWM's training
+    """(N, 6) numpy point cloud [xyz in metres, rgb 0..255] -> (N, 6) float tensor, as JEPA4R's training
     preprocessor (utils.PointCloudPreprocessor): (xyz - center) * scale ; rgb / 255."""
 
     def __init__(self, center, scale, use_rgb=True):
@@ -185,7 +183,7 @@ class PcdTransform:
         return torch.cat([xyz, x[:, 3:6] / 255.0], dim=-1) if self.use_rgb else xyz
 
 
-# the 3D LeWM encoders (LeWM's encoder configs dexart, ms2, ppt, pointnet2, dgcnn):
+# the JEPA4R point-cloud encoders (LeWM's encoder configs dexart, ms2, ppt, pointnet2, dgcnn):
 # the _target_ in a checkpoint's config.json -> (file in jepa4r/models/encoders, class, name for the metadata)
 PCD_ENCODERS = {
     "encoders.DexArtPointNet": ("pointnet.py", "DexArtPointNet", "DexArt PointNet"),
@@ -206,7 +204,7 @@ PCD_ENCODERS = {
 
 
 def _pcd_encoder_class(target):
-    """A 3D LeWM encoder class (PCD_ENCODERS) loaded from its file, without importing the encoders package (its
+    """A point-cloud encoder class (PCD_ENCODERS) loaded from its file, without importing the encoders package (its
     __init__ imports encoders.vit -> stable_pretraining, which fails under the timm 0.6.11 CortexBench pins)."""
     import importlib.util
 
@@ -223,7 +221,7 @@ def _dexart_pointnet_class():
     return _pcd_encoder_class("encoders.DexArtPointNet")
 
 
-def load_lewm_pcd(
+def load_jepa4r(
     checkpoint_dir: str,
     epoch: int = 10,
     center=(0.0, 0.65, 0.2),
@@ -232,7 +230,7 @@ def load_lewm_pcd(
     random_init: bool = False,
     seed: int = 0,
 ):
-    """The 3D LeWM's encoder (the one its config.json names: DexArt PointNet, ManiSkill PointNet,
+    """JEPA4R's encoder (the one its config.json names: DexArt PointNet, ManiSkill PointNet,
     PointPatchTransformer, PointNet++ or DGCNN) + projector: one (N, 6) point cloud -> the 192-d LeWM latent.
     center / scale / use_rgb must be the checkpoint's data.preprocessor (checked against its config.yaml if present).
     random_init uses the checkpoint's architecture with fixed seeded weights, without reading its weights file.
@@ -272,7 +270,7 @@ def load_lewm_pcd(
     metadata = {
         "algo": "random" if random_init else "lewm",
         "input": "pcd",
-        "model": f"{PCD_ENCODERS[target][2]} (LeWM 3D encoder + projector)",
+        "model": f"{PCD_ENCODERS[target][2]} (JEPA4R encoder + projector)",
         "data": [] if random_init else _train_data(ckdir),
         "checkpoint": None if random_init else str(ckdir / f"weights_epoch_{epoch}.pt"),
     }

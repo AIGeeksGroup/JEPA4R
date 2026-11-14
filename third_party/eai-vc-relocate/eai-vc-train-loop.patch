@@ -1,112 +1,14 @@
 --- a/cortexbench/mujoco_vc/visual_imitation/train_loop.py
 +++ b/cortexbench/mujoco_vc/visual_imitation/train_loop.py
-@@ -3,6 +3,9 @@
- # Copyright (c) Meta Platforms, Inc. and affiliates.
- # This source code is licensed under the CC-BY-NC license found in the
- # LICENSE file in the root directory of this source tree.
-+
-+import json
-+from datetime import datetime, timezone
- 
- from mjrl.utils.gym_env import GymEnv
- from mjrl.samplers.core import sample_paths
-@@ -25,6 +28,20 @@
- import torchvision.transforms as T
- 
- 
-+def _device_audit(event: str, **payload) -> None:
-+    path = os.environ.get("CORTEXBENCH_BC_DEVICE_EVENTS")
-+    if not path:
-+        return
-+    record = {
-+        "timestamp": datetime.now(timezone.utc).isoformat(),
-+        "event": event,
-+        **payload,
-+    }
-+    os.makedirs(os.path.dirname(path), exist_ok=True)
-+    with open(path, "a", encoding="utf-8") as handle:
-+        handle.write(json.dumps(record, sort_keys=True) + "\n")
-+
-+
- def set_seed(seed=None):
-     """
-     Set all seeds to make results reproducible
-@@ -97,6 +114,13 @@
-     # construct the environment and policy
-     env_kwargs = config["env_kwargs"]
-     e = env_constructor(**env_kwargs, fuse_embeddings=fuse_embeddings_flare)
-+    embedding_devices = sorted({str(parameter.device) for parameter in e.env.embedding.parameters()})
-+    _device_audit(
-+        "encoder_loaded",
-+        parameter_devices=embedding_devices,
-+        parameter_device=embedding_devices[0] if len(embedding_devices) == 1 else None,
-+        requested_device=str(config["device"]),
-+    )
-     policy = BatchNormMLP(
-         env_spec=e.spec,
-         hidden_sizes=eval(config["bc_kwargs"]["hidden_sizes"]),
-@@ -152,10 +176,20 @@
- 
+@@ -153,6 +153,7 @@
      highest_tr_score, highest_score = -np.inf, -np.inf
      highest_tr_success, highest_success = 0.0, 0.0
-+    head_audited = False
      for epoch in tqdm(range(config["epochs"])):
 +        is_new_best_eval = False
          # move the policy to correct device
          policy.model.to(config["device"])
          policy.model.train()
-+        head_devices = sorted({str(parameter.device) for parameter in policy.model.parameters()})
-+        if not head_audited:
-+            _device_audit(
-+                "bc_head_device",
-+                parameter_devices=head_devices,
-+                parameter_device=head_devices[0] if len(head_devices) == 1 else None,
-+                requested_device=str(config["device"]),
-+            )
-         # update policy for one BC epoch
-         running_loss = 0.0
-         for mb_idx, batch in enumerate(dataloader):
-@@ -164,7 +198,24 @@
-             tar = batch["actions"].float().to(config["device"])
-             pred = policy.model(feat)
-             loss = loss_func(pred, tar.detach())
-+            if not bool(torch.isfinite(loss).item()):
-+                _device_audit("loss_nonfinite", epoch=epoch, minibatch=mb_idx)
-+                raise RuntimeError("BC loss is non-finite")
-             loss.backward()
-+            gradient_finite = all(
-+                parameter.grad is None or bool(torch.isfinite(parameter.grad).all().item())
-+                for parameter in policy.model.parameters()
-+            )
-+            if not gradient_finite:
-+                _device_audit("gradient_nonfinite", epoch=epoch, minibatch=mb_idx)
-+                raise RuntimeError("BC gradient is non-finite")
-+            if not head_audited:
-+                _device_audit(
-+                    "bc_head_gradient",
-+                    parameter_device=str(next(policy.model.parameters()).device),
-+                    gradient_finite=gradient_finite,
-+                )
-+                head_audited = True
-             optimizer.step()
-             running_loss = running_loss + loss.to("cpu").data.numpy().ravel()[0]
-         # log average loss for the epoch
-@@ -179,6 +230,14 @@
-         if (epoch % config["eval_frequency"] == 0 and epoch > 0) or (
-             epoch == config["epochs"] - 1
-         ):
-+            _device_audit(
-+                "mujoco_sample_paths",
-+                rollout_device="cpu",
-+                num_cpu=int(config["num_cpu"]),
-+                online_embedding_parameter_devices=sorted(
-+                    {str(parameter.device) for parameter in e.env.embedding.parameters()}
-+                ),
-+            )
-             paths = sample_paths(
-                 num_traj=config["eval_num_traj"],
-                 env=e,
-@@ -188,6 +247,7 @@
+@@ -188,6 +189,7 @@
                  base_seed=config["seed"],
                  num_cpu=config["num_cpu"],
              )
@@ -114,7 +16,7 @@
              (
                  mean_score,
                  success_percentage,
-@@ -200,6 +260,7 @@
+@@ -200,6 +202,7 @@
                  highest_score=highest_score,
                  highest_success=highest_success,
              )
@@ -122,7 +24,7 @@
              epoch_log = {}
              epoch_log["eval/epoch"] = epoch
              epoch_log["eval/score_mean"] = mean_score
-@@ -254,7 +315,7 @@
+@@ -254,7 +257,7 @@
              print(tabulate(sorted(epoch_log.items())))
  
          # save policy and logging

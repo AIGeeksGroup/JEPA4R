@@ -1,266 +1,106 @@
-"""Plan or fetch the released VISReg / V-JEPA 2.1 weights of a Cube run and record the files it uses; loads no
-model."""
+"""The released VISReg / V-JEPA 2.1 weights of a Cube run (the prepare-encoder stage): the checkpoint (downloaded from
+configs/method/cube/released_models.json when it has a public URL, else placed by hand or given with --weights), its
+encoder_spec.json and ENCODER.json (the binding the policy stages load the encoder from).
+usage: python -m jepa4r.baselines.cube.foundation_assets --model <visreg|vjepa> --cube-count <n> --assets-root <dir>
+       --output <dir> [--weights <file>] [--download]"""
 
 import argparse
 import copy
-import hashlib
 import json
 import os
 from pathlib import Path
-import time
 import urllib.request
-import zipfile
 
 HERE = Path(__file__).resolve().parent
-LEWM = HERE.parents[2]  # this repository
-VJEPA2 = Path(os.environ.get("JEPA4R_VJEPA2") or LEWM / "third_party/vjepa2")  # V-JEPA 2 204698b checkout
-
-
-def sha(path):
-    digest = hashlib.sha256()
-    with Path(path).open("rb") as stream:
-        for block in iter(lambda: stream.read(8 << 20), b""):
-            digest.update(block)
-    return digest.hexdigest()
+REPO = HERE.parents[2]  # this repository
+VJEPA2 = Path(os.environ.get("JEPA4R_VJEPA2") or REPO / "third_party/vjepa2")  # V-JEPA 2 204698b checkout
 
 
 def asset(model):
-    registry = json.loads((LEWM / "configs/method/cube/released_models.json").read_text(encoding="utf8"))["models"]
+    registry = json.loads((REPO / "configs/method/cube/released_models.json").read_text(encoding="utf8"))["models"]
     if model not in ("visreg", "vjepa"):
-        raise ValueError("Released model must be visreg or vjepa")
+        raise ValueError("the released encoders are visreg and vjepa")
     return copy.deepcopy(registry[model])
 
 
-def _save(path, value, *, exclusive=False):
+def _save(path, value):
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    if exclusive:
-        with path.open("x", encoding="utf8") as stream:
-            json.dump(value, stream, indent=2, sort_keys=True)
-            stream.write("\n")
-    else:
-        temporary = path.with_suffix(path.suffix + ".tmp")
-        temporary.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf8")
-        temporary.replace(path)
+    path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf8")
 
 
-def build_plan(model, cube_count, mode, assets_root, output_root, weights=None):
-    if type(cube_count) is not int or cube_count not in (1, 2, 3, 4) or mode not in ("smoke", "formal"):
-        raise ValueError("Explicit Cube1..4 and smoke/formal mode required")
-    entry = asset(model)
-    assets_root, output_root = Path(assets_root).resolve(), Path(output_root).resolve()
-    resolved = Path(weights).resolve() if weights is not None else assets_root / model / entry["filename"]
-    if resolved.is_relative_to(output_root):
-        raise ValueError("Receipt output must be separate from weight storage")
-    return dict(
-        schema="cube_released_asset_plan_v1",
-        model=model,
-        cube_count=cube_count,
-        mode=mode,
-        asset=entry,
-        assets_root=str(assets_root),
-        output_root=str(output_root),
-        explicit_weights=str(Path(weights).resolve()) if weights is not None else None,
-        weights=str(resolved),
-        execute=False,
-        numeric_acceptance=False,
-        model_loaded=False,
-    )
-
-
-def download(plan):
-    """Download the weights: resumes only a partial download this request started; a complete file is never replaced."""
-    target = Path(plan["weights"])
-    entry = plan["asset"]
+def download(model, entry, target):
+    """Download the weights to ``target``; a partial download (<target>.part) is resumed."""
     if not entry.get("url"):  # VISReg: the authors share the weights on request; there is no public download
         raise FileNotFoundError(
-            f"{plan['model']} weights have no public download: place {entry['filename']} "
-            f"({entry['bytes']} bytes) at {target} or pass --weights"
+            f"{model} weights have no public download: place {entry['filename']} ({entry['bytes']} bytes) at {target} "
+            "or pass --weights"
         )
-    if plan["explicit_weights"] is not None:
-        raise ValueError("Automatic download may only write the dedicated assets-root target")
-    if target.exists():
-        raise FileExistsError("Preserve completed weights: " + str(target))
     target.parent.mkdir(parents=True, exist_ok=True)
     part = target.with_name(target.name + ".part")
-    owner = target.with_name(target.name + ".request.json")
-    status = target.with_name(target.name + ".download.json")
-    request = dict(model=plan["model"], url=entry["url"], bytes=entry["bytes"], target=str(target))
-    if owner.exists():
-        if json.loads(owner.read_text()) != request:
-            raise ValueError("Existing partial belongs to another release")
-    else:
-        if part.exists():
-            raise FileExistsError("Unowned partial must be inspected, not overwritten")
-        _save(owner, request, exclusive=True)
     offset = part.stat().st_size if part.exists() else 0
-    if offset > entry["bytes"]:
-        raise ValueError("Owned partial exceeds released byte count")
-    state = dict(started_at=time.time(), actual_exit_code=None, completed_bytes=offset, request=request)
-    _save(status, state)
-    try:
-        if offset < entry["bytes"]:
-            headers = {"User-Agent": "JEPA4R-released-assets/1"}
-            if offset:
-                headers["Range"] = "bytes=" + str(offset) + "-"
-            with urllib.request.urlopen(urllib.request.Request(entry["url"], headers=headers), timeout=60) as response:
-                code = getattr(response, "status", 200)
-                if offset and (
-                    code != 206
-                    or not response.headers.get("Content-Range", "").startswith("bytes " + str(offset) + "-")
-                ):
-                    raise ValueError("Server did not honor owned partial Range; preserve partial")
-                with part.open("ab" if offset else "xb") as stream:
-                    for block in iter(lambda: response.read(8 << 20), b""):
-                        stream.write(block)
-                        offset += len(block)
-                        if offset > entry["bytes"]:
-                            raise ValueError("Download exceeds exact release size")
-                        state.update(completed_bytes=offset, updated_at=time.time())
-                        _save(status, state)
-                    stream.flush()
-                    os.fsync(stream.fileno())
-        if offset != entry["bytes"]:
-            raise ValueError("Downloaded release size mismatch; partial retained")
-        if target.exists():
-            raise FileExistsError(target)
-        part.rename(target)
-        state.update(actual_exit_code=0, completed_bytes=offset, completed_at=time.time())
-        _save(status, state)
-    except BaseException as error:
-        state.update(actual_exit_code=1, error=repr(error), updated_at=time.time())
-        _save(status, state)
-        raise
+    if offset < entry["bytes"]:
+        headers = {"User-Agent": "JEPA4R-released-assets/1"}
+        if offset:
+            headers["Range"] = f"bytes={offset}-"
+        with urllib.request.urlopen(urllib.request.Request(entry["url"], headers=headers), timeout=60) as response:
+            if offset and getattr(response, "status", 200) != 206:
+                raise ValueError("the server did not resume the partial download")
+            with part.open("ab") as stream:
+                for block in iter(lambda: response.read(8 << 20), b""):
+                    stream.write(block)
+    if part.stat().st_size != entry["bytes"]:
+        raise ValueError(f"downloaded {part.stat().st_size} bytes of {model}, expected {entry['bytes']}")
+    part.rename(target)
     return target
 
 
-def _source_binding(entry):
-    files = {
-        str(path): sha(path)
-        for path in (Path(__file__), HERE / "released_encoders.py", LEWM / "configs/method/cube/released_models.json")
-    }
-    for relative in entry.get("source_files", ()):
-        path = VJEPA2 / relative
-        if not path.is_file():
-            raise ValueError("Released official model source missing: " + str(path))
-        files[str(path)] = sha(path)
-    return files
-
-
-def prepare(plan, download=False):
-    expected = build_plan(
-        plan["model"],
-        plan["cube_count"],
-        plan["mode"],
-        plan["assets_root"],
-        plan["output_root"],
-        plan["explicit_weights"],
-    )
-    if plan != expected:
-        raise ValueError("Released asset plan differs from the selected immutable release")
-    output = Path(plan["output_root"])
-    if output.exists():
-        raise FileExistsError(output)
-    path = Path(plan["weights"])
-    entry = plan["asset"]
+def prepare(model, cube_count, assets_root, output_root, weights=None, download_missing=False):
+    entry = asset(model)
+    path = Path(weights).resolve() if weights is not None else Path(assets_root).resolve() / model / entry["filename"]
     if not path.is_file():
-        if not download:
-            raise FileNotFoundError(
-                "Released weights missing; provide --weights or explicitly --download: " + str(path)
-            )
-        path = globals()["download"](plan)
-    before = path.stat()
-    if before.st_size != entry["bytes"]:
-        raise ValueError("Released checkpoint size differs: " + str(path))
-    checkpoint_sha256 = sha(path)
-    if not zipfile.is_zipfile(path):
-        raise ValueError("Released checkpoint is not a complete Torch ZIP archive")
-    with zipfile.ZipFile(path) as archive:
-        if archive.testzip() is not None:
-            raise ValueError("Released checkpoint archive CRC failed")
-    after = path.stat()
-    if (before.st_size, before.st_mtime_ns, before.st_ctime_ns) != (
-        after.st_size,
-        after.st_mtime_ns,
-        after.st_ctime_ns,
-    ):
-        raise ValueError("Released checkpoint changed during byte validation")
-    sources = _source_binding(entry)
+        if not download_missing:
+            raise FileNotFoundError(f"the released weights are missing: {path} (pass --weights, or --download)")
+        download(model, entry, path)
+    if path.stat().st_size != entry["bytes"]:
+        raise ValueError(f"{path}: {path.stat().st_size} bytes, expected {entry['bytes']}")
     spec = {key: copy.deepcopy(entry[key]) for key in ("family", "native_size", "feature", "inference_precision")}
-    spec.update(
-        checkpoint=str(path),
-        checkpoint_sha256=checkpoint_sha256,
-        output_dim=entry["latent_dim"],
-        diagnostic_only=False,
-        official_pretrained=True,
-    )
-    for key in (
-        "source_commit",
-        "source_files",
-        "state_dict_key",
-        "encoder_module",
-        "encoder_constructor",
-        "constructor_kwargs",
-        "timm_version",
-    ):
+    spec.update(checkpoint=str(path), output_dim=entry["latent_dim"])
+    for key in ("source_commit", "source_files", "state_dict_key", "encoder_module", "encoder_constructor"):
+        if key in entry:
+            spec[key] = copy.deepcopy(entry[key])
+    for key in ("constructor_kwargs", "timm_version"):
         if key in entry:
             spec[key] = copy.deepcopy(entry[key])
     if "source_commit" in entry:
         spec["source_root"] = str(VJEPA2)
-    output.mkdir(parents=True, exist_ok=False)
+    output = Path(output_root)
     spec_path = output / "encoder_spec.json"
-    _save(spec_path, spec, exclusive=True)
+    _save(spec_path, spec)
     adapter = HERE / "released_encoders.py"
     binding = dict(
-        family=plan["model"],
+        family=model,
         latent_dim=entry["latent_dim"],
         checkpoint=str(path),
-        checkpoint_sha256=checkpoint_sha256,
-        adapter=dict(path=str(adapter), sha256=sha(adapter)),
-        spec=dict(path=str(spec_path), sha256=sha(spec_path)),
-        preprocessing=dict(
-            source_path=str(adapter), source_sha256=sha(adapter), device="cuda", input_dtype="uint8", layout="HWC224"
-        ),
+        adapter=str(adapter),
+        spec=str(spec_path),
+        preprocessing=dict(source_path=str(adapter), device="cuda", input_dtype="uint8", layout="HWC224"),
     )
-    receipt = dict(
-        schema="cube_workflow_encoder_v1",
-        model=plan["model"],
-        cube_count=plan["cube_count"],
-        mode=plan["mode"],
-        actual_exit_code=0,
-        checkpoint=dict(path=str(path), sha256=checkpoint_sha256),
-        checkpoint_bytes=entry["bytes"],
-        released_weights_verified=True,
-        strict_reload_verified=False,
-        model_loaded=False,
-        numeric_acceptance=False,
-        verification_scope="released checkpoint size and archive CRC, official source files present; no model import",
-        source_url=entry["url"],
-        source_binding=sources,
-        encoder_binding=binding,
-        created_at=time.time(),
-    )
-    receipt_path = output / "ENCODER.json"
-    _save(receipt_path, receipt, exclusive=True)
-    _save(output / "actual_exit_code.json", dict(actual_exit_code=0), exclusive=True)
-    return dict(receipt_path=str(receipt_path), encoder_binding=binding, model_loaded=False, numeric_acceptance=False)
+    _save(output / "ENCODER.json", dict(model=model, cube_count=cube_count, encoder_binding=binding))
+    return binding
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--model", choices=("visreg", "vjepa"), required=True)
     parser.add_argument("--cube-count", type=int, choices=(1, 2, 3, 4), required=True)
-    parser.add_argument("--mode", choices=("smoke", "formal"), required=True)
     parser.add_argument("--assets-root", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--weights", type=Path)
-    parser.add_argument("--execute", action="store_true")
     parser.add_argument("--download", action="store_true")
     args = parser.parse_args(argv)
-    plan = build_plan(args.model, args.cube_count, args.mode, args.assets_root, args.output, args.weights)
-    print(json.dumps(plan, indent=2))
-    if args.execute:
-        print(json.dumps(prepare(plan, download=args.download), indent=2))
+    binding = prepare(args.model, args.cube_count, args.assets_root, args.output, args.weights, args.download)
+    print(json.dumps(binding, indent=2))
     return 0
 
 

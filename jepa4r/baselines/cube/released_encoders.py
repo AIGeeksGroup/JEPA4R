@@ -1,6 +1,5 @@
 """The released VISReg / V-JEPA 2.1 encoders (full models) with their own preprocessing of the full image."""
 
-import hashlib
 import importlib
 import json
 import sys
@@ -10,14 +9,6 @@ from types import SimpleNamespace
 import torch
 from torchvision.transforms import InterpolationMode
 from torchvision.transforms.functional import resize
-
-
-def sha(path):
-    h = hashlib.sha256()
-    with Path(path).open("rb") as f:
-        for block in iter(lambda: f.read(8 << 20), b""):
-            h.update(block)
-    return h.hexdigest()
 
 
 class RawRGBIdentity:
@@ -95,15 +86,13 @@ class FrozenImageEncoder(torch.nn.Module):
 
 
 def load_encoder(spec, device="cuda"):
-    """Load explicit local assets; never invoke hub or an automatic download."""
+    """The released encoder of an encoder spec (encoder_spec.json) from its local checkpoint; nothing is downloaded."""
     if isinstance(spec, (str, Path)):
         spec = json.loads(Path(spec).read_text())
     spec = dict(spec)
     if spec["family"] not in ("visreg_vitb768", "vjepa21_vitl1024"):
         raise ValueError("Unknown encoder family")
     checkpoint = Path(spec["checkpoint"])
-    if sha(checkpoint) != spec["checkpoint_sha256"]:
-        raise ValueError("Checkpoint SHA differs")
     if spec["family"] == "vjepa21_vitl1024":
         root = Path(spec["source_root"])
         sys.path.insert(0, str(root))
@@ -113,7 +102,7 @@ def load_encoder(spec, device="cuda"):
             Path(module.__file__).resolve() != (root / "app/vjepa_2_1/models/vision_transformer.py").resolve()
             or Path(backbones.__file__).resolve() != (root / "src/hub/backbones.py").resolve()
         ):
-            raise ValueError("Official source namespace collision")
+            raise ValueError("V-JEPA 2 was imported from another checkout than spec['source_root']")
         model = getattr(module, spec["encoder_constructor"])(**spec["constructor_kwargs"])
         payload = torch.load(checkpoint, map_location="cpu", weights_only=True, mmap=True)
         state = backbones._clean_backbone_key(payload["ema_encoder"].copy())

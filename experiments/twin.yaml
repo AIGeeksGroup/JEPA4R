@@ -25,7 +25,7 @@ jobs:
     grid: {env: [rm75b_rh56_relocate], method: [jepa4r, lewm]}
   - stage: train_policy
     grid: {env: [rm75b_rh56_relocate], method: [jepa4r, lewm]}
-  # the EG2-4C2 gripper on the twin, four CortexBench MetaWorld tasks (configs/env/rm75b_mw_*.yaml): LeWM 2D and
+  # the EG2-4C2 gripper on the twin, four CortexBench MetaWorld tasks (configs/env/rm75b_mw_*.yaml): LeWM and
   # JEPA4R world models, 10 epochs; CortexBench BC seeds 100 / 200 / 300 on the twin's own demos; Random (ViT-B) on
   # bin-picking and button-press, as in the paper's runs; no number in the paper
   - stage: collect_wm_data

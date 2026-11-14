@@ -2,12 +2,6 @@
 
 from __future__ import annotations
 
-import hashlib
-import json
-import os
-import tempfile
-from datetime import datetime, timezone
-from pathlib import Path
 
 import numpy as np
 
@@ -106,10 +100,6 @@ def fixed_task_info(env, task_id: int) -> dict:
     return env.task_infos[task_id - 1]
 
 
-def goal_matches(recorded, expected) -> bool:
-    return bool(np.allclose(recorded, expected, rtol=0.0, atol=GOAL_ATOL))
-
-
 def seeded_fixed_task_reset(
     env,
     *,
@@ -173,141 +163,6 @@ def validate_fixed_paired_schema(
         raise ValueError(f"pcd_rgb shape must be {expected_pcd}, got {rgb.shape}")
     if rgb.dtype != np.uint8:
         raise ValueError(f"pcd_rgb dtype must be uint8, got {rgb.dtype}")
-
-
-def episode_record(episode: dict, *, expected_actions: int, expected_num_cubes: int = 2) -> dict:
-    """Validate a paired episode before either writer receives it."""
-    lengths = {key: len(value) for key, value in episode.items()}
-    if len(set(lengths.values())) != 1:
-        raise ValueError(f"paired episode column length mismatch: {lengths}")
-    frames = len(episode["step_idx"])
-    if frames != expected_actions + 1:
-        raise ValueError(f"expected horizon {expected_actions}, got {frames - 1}")
-    if not np.array_equal(episode["step_idx"], np.arange(frames)):
-        raise ValueError("episode step indices are not contiguous from reset")
-    actions = np.asarray(episode["action"])
-    if not np.isfinite(actions[:-1]).all() or not np.isnan(actions[-1]).all():
-        raise ValueError("actions require finite executed rows and a terminal NaN sentinel")
-    for key in ("qpos", "qvel", "pcd_xyz", "pcd_rgb"):
-        if key in episode and not np.isfinite(episode[key]).all():
-            raise ValueError(f"non-finite {key}")
-    seeds = np.asarray(episode["collection_reset_seed"])
-    if not np.all(seeds == seeds[0]):
-        raise ValueError("reset seed changed within an episode")
-    double_task = "collection_goal_xyzs" in episode
-    fixed_keys = (
-        ("collection_goal_xyzs", "collection_init_xyzs")
-        if double_task
-        else ("privileged/target_block_pos", "privileged/target_block_yaw")
-    )
-    for key in fixed_keys:
-        values = np.asarray(episode[key])
-        if not np.all(values == values[0]):
-            raise ValueError(f"fixed target changed within an episode: {key}")
-    initial = np.concatenate([np.asarray(episode[key][0], dtype="<f8").reshape(-1) for key in ("qpos", "qvel")])
-    record = {
-        "frames": frames,
-        "actions": expected_actions,
-        "reset_seed": int(seeds[0]),
-        "initial_state_sha256": hashlib.sha256(initial.tobytes()).hexdigest(),
-        "success_ever": bool(np.any(episode["success"])),
-        "terminated": bool(episode["terminated"][-1]),
-        "truncated": bool(episode["truncated"][-1]),
-        "termination_reason": "terminated" if episode["terminated"][-1] else "horizon",
-        "target_position": np.asarray(episode["privileged/target_block_pos"][0]).tolist(),
-        "target_yaw": np.asarray(episode["privileged/target_block_yaw"][0]).tolist(),
-    }
-    if double_task:
-        from double_collection import whole_success
-
-        if (
-            isinstance(expected_num_cubes, bool)
-            or not isinstance(expected_num_cubes, int)
-            or expected_num_cubes not in (2, 3, 4)
-        ):
-            raise ValueError("expected_num_cubes must be 2, 3 or 4")
-        goals = np.asarray(episode["collection_goal_xyzs"])
-        label = {2: "Double", 3: "Triple", 4: "Quadruple"}[expected_num_cubes]
-        if goals.shape != (frames, expected_num_cubes, 3) or not np.isfinite(goals).all():
-            raise ValueError(f"{label} collection requires full (frames,{expected_num_cubes},3) fixed goals")
-        initial_xyzs = np.asarray(episode["collection_init_xyzs"])
-        if initial_xyzs.shape != goals.shape or not np.isfinite(initial_xyzs).all():
-            raise ValueError(f"{label} collection requires full finite initial XYZ")
-        blocks = np.stack([episode[f"privileged/block_{i}_pos"] for i in range(expected_num_cubes)], axis=1)
-        computed = np.array([whole_success(xyzs, goal) for xyzs, goal in zip(blocks, goals)])
-        if not np.array_equal(computed, np.asarray(episode["success"], dtype=bool)):
-            quantifier = {2: "both", 3: "all three", 4: "all four"}[expected_num_cubes]
-            raise ValueError(f"{label} success differs from {quantifier} fixed cube goals")
-        if not np.array_equal(np.asarray(episode["collection_action_source"])[-1:], [2]):
-            raise ValueError(f"{label} terminal row must have terminal control source")
-        record.update(
-            goal_xyzs=goals[0].tolist(),
-            task_id=int(episode["collection_task_id"][0]),
-            success_final=bool(computed[-1]),
-            reset_actions=np.asarray(episode["collection_reset_actions"][0]).tolist(),
-            last_stage=int(episode["collection_stage"][-1]),
-            plan_revisions=int(episode["collection_plan_revision"][-1]),
-        )
-    return record
-
-
-class CollectionManifest:
-    """Fresh per-file provenance and atomic progress updates for the paired run."""
-
-    def __init__(self, paths, config):
-        self.paths = [Path(path) for path in paths]
-        existing = [str(path) for path in self.paths if path.exists()]
-        if existing:
-            raise FileExistsError(f"refusing to overwrite manifests: {existing}")
-        self.state = {
-            "config": config,
-            "started_at": datetime.now(timezone.utc).isoformat(),
-            "episodes": [],
-            "completed": 0,
-            "failed": 0,
-        }
-        for path in self.paths:
-            path.parent.mkdir(parents=True, exist_ok=True)
-            with path.open("x", encoding="utf-8") as stream:
-                json.dump(self.state, stream)
-        self.update("collecting", exit_code=None, error=None)
-
-    def add_episode(self, record):
-        if any(
-            item["reset_seed"] == record["reset_seed"] or item["initial_state_sha256"] == record["initial_state_sha256"]
-            for item in self.state["episodes"]
-        ):
-            raise ValueError("duplicate reset seed or full initial state")
-        self.state["episodes"].append(record)
-        self.state["completed"] = len(self.state["episodes"])
-        self.update("collecting", exit_code=None, error=None)
-
-    def update(self, stage, *, exit_code, error, pix_written=None, pcd_written=None):
-        self.state.update(
-            stage=stage,
-            updated_at=datetime.now(timezone.utc).isoformat(),
-            exit_code=exit_code,
-            error=error,
-            failed=int(stage == "failed"),
-        )
-        if pix_written is not None:
-            self.state["pix_episodes_written"] = pix_written
-            self.state["pcd_episodes_written"] = pcd_written
-        for path in self.paths:
-            with tempfile.NamedTemporaryFile(
-                mode="w",
-                encoding="utf-8",
-                dir=path.parent,
-                prefix=path.name + ".",
-                suffix=".tmp",
-                delete=False,
-            ) as stream:
-                json.dump(self.state, stream, indent=2)
-                stream.write("\n")
-                stream.flush()
-                os.fsync(stream.fileno())
-                temporary = stream.name
-            os.replace(temporary, path)
 
 
 class FixedTaskPlanPolicyMixin:

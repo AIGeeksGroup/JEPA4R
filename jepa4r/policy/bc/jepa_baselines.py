@@ -1,4 +1,4 @@
-"""CortexBench loaders for the JEPA-family baselines, same interface as lewm_cortex.load_lewm: each returns
+"""CortexBench loaders for the JEPA-family baselines, same interface as wm_embeddings.load_lewm: each returns
 (model, embedding_dim, transforms, metadata); model takes [B, 3, H, W] and returns [B, D], frozen, in eval mode.
 
 * load_pldm: a PLDM checkpoint of the framework (config.json + weights_epoch_N.pt; scripts/run_mw_baselines.sh trains

@@ -16,11 +16,11 @@ Modules (data/policy/<env>/ = JEPA4R_DEMOS_HOME):
   prepare_official_assets.py  the 100 official Relocate demos
                         (relocate-v0.pickle, JEPA4R_ADROIT_DEMOS)
                         -> a light copy (raw labels and non-visual fields kept) + the RH56 task initialisations
-  Adroit Relocate / RH56   the Relocate harness's official-demos / rh56_official_demo stage
+  Adroit Relocate / RH56   the Relocate workflow's official-demos / rh56_official_demo stage
                            (jepa4r.policy.bc.relocate_stage)
 Interpreters: JEPA4R_PY_CORTEXBENCH (eai-vc metaworld fork, MuJoCo 2.0) for MetaWorld, JEPA4R_PY_COLLECT (MuJoCo 3 +
 OGBench / metaworld 3.0) for Scene and the RM75-B twin's MetaWorld tasks, JEPA4R_PY_RELOCATE_WM for the Relocate light
-copy (the harness picks its own interpreters).
+copy (the workflow picks its own interpreters).
 """
 
 import os
@@ -79,6 +79,5 @@ def prepare_demos(cfg, out_dir):
         from jepa4r.policy.bc import ensure_official_assets, relocate_stage
 
         official = ensure_official_assets()  # light copy of the 100 official demos + RH56 initialisations
-        status = relocate_stage(cfg, "prepare_policy_data", out_dir)
-        return {"official_assets": str(official), "harness_status": status["status"]}
+        return {"official_assets": str(official), "workflow": relocate_stage(cfg, "prepare_policy_data", out_dir)}
     raise ValueError(f"no demonstrations for suite {suite!r}")

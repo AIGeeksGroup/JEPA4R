@@ -23,7 +23,7 @@ class AdroitPairedWriter:
 
     def __enter__(self):
         if self.pixel_path.exists() or self.pcd_path.exists():
-            raise FileExistsError("paired smoke output already exists; use a new output directory")
+            raise FileExistsError("paired output already exists; use a new output directory")
         self.pixel_path.parent.mkdir(parents=True, exist_ok=True)
         self.pcd_path.parent.mkdir(parents=True, exist_ok=True)
         self._files = (h5py.File(self.pixel_path, "w"), h5py.File(self.pcd_path, "w"))

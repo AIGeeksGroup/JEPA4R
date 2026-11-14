@@ -1,73 +1,29 @@
-"""Training of the Cube baselines PLDM and LeJEPA (train stage) and the check of a finished run (accept); both need
-the manifest of the training data."""
+"""PLDM training on Cube (the train stage of the Cube workflow): the PLDM authors' model, objective, optimizer and
+learning-rate schedule (third_party/pldm, method.py) in stable-pretraining's trainer, 10 epochs of batch 128 in BF16,
+on the training views of data_manifest.json; LeWM's SaveCkptCallback exports weights_epoch_<n>.pt every epoch.
+usage: python -m jepa4r.baselines.cube.pldm.train --cube-count <n> --data-manifest <file> --output <dir>"""
 
 import argparse
 from contextlib import redirect_stderr, redirect_stdout
-from datetime import datetime, timezone
-import hashlib
 import importlib
 import json
 import os
 from pathlib import Path
-import sys
-import traceback
-from .shared_data import contract, data_profile, loaders
-from jepa4r.models.cube.training_runtime import build_environment, code_root
 
-# the PLDM authors' source (its vendor/source/ entries)
-VENDOR = Path(__file__).resolve().parents[4] / "third_party/pldm"
+from .shared_data import contract, loaders
+from jepa4r.models.cube.training_runtime import build_environment
 
-
-def read(p):
-    return json.loads(Path(p).read_text(encoding="utf8"))
-
-
-def sha(p):
-    return hashlib.sha256(Path(p).read_bytes()).hexdigest()
+VENDOR = Path(__file__).resolve().parents[4] / "third_party/pldm"  # the PLDM authors' source
 
 
 def write(p, value):
     p = Path(p)
     p.parent.mkdir(parents=True, exist_ok=True)
-    tmp = p.with_suffix(p.suffix + ".tmp")
-    tmp.write_text(json.dumps(value, indent=2) + "\n")
-    tmp.replace(p)
-
-
-def now():
-    return datetime.now(timezone.utc).isoformat()
+    p.write_text(json.dumps(value, indent=2) + "\n")
 
 
 def method_module(method):
     return importlib.import_module(".method", __package__)
-
-
-def counts(args):
-    return contract(args.profile, getattr(args, "data_binding", None))
-
-
-def binding(args, stats=None):
-    profile = data_profile(args.profile, getattr(args, "data_binding", None))
-    return dict(
-        method=args.method,
-        method_sha256=sha(args.root / "method.py"),
-        profile=profile,
-        manifest_sha256=profile["manifest_sha256"],
-        contract=counts(args),
-        batch_size=128,
-        precision="bf16-mixed",
-        epochs=10,
-        seed=0,
-        train_workers=args.workers,
-        validation_workers=args.workers,
-        prefetch_factor=args.prefetch if args.workers else None,
-        pin_memory=True,
-        persistent_workers=False,
-        gradient_clip_val=None,
-        action_statistics=stats,
-        runner_sha256=sha(Path(__file__)),
-        shared_data_sha256=sha(args.root / "shared_data.py"),
-    )
 
 
 def factory_config(args):
@@ -104,8 +60,8 @@ def author_schedule_before_step(pl_module, step):
     return int(step)
 
 
-def trainer_options(phase, callbacks):
-    options = dict(
+def trainer_options(callbacks):
+    return dict(
         max_epochs=10,
         accelerator="gpu",
         devices=1,
@@ -117,239 +73,42 @@ def trainer_options(phase, callbacks):
         logger=False,
         enable_checkpointing=True,
     )
-    if phase == "gate":
-        options.update(max_epochs=1, limit_train_batches=2, limit_val_batches=2)
-    return options
 
 
-def run(args, *, resume_checkpoint=None, state_callback=None):
-    import torch
+def run(args):
     import lightning as pl
     import stable_pretraining as spt
     from omegaconf import OmegaConf
 
     if spt.__version__ != "0.1.8":
-        raise ValueError("existing SPT0.1.8 runtime required; do not upgrade live env")
+        raise ValueError("stable-pretraining 0.1.8 is required")
     pl.seed_everything(0, workers=True)
     module = method_module(args.method)
     train, val, stats = loaders(
-        args.profile,
-        args.data_root,
-        module,
-        args.workers,
-        args.prefetch,
-        **({"data_binding": args.data_binding} if getattr(args, "data_binding", None) is not None else {}),
+        args.profile, args.data_root, module, args.workers, args.prefetch, data_binding=args.data_binding
     )
-    code_root()  # checks the code root (this repository)
     from jepa4r.models import world_model as exports  # LeWM's utils.py SaveCkptCallback is in world_model.py
 
-    expected = binding(args, stats)
     cfg = factory_config(args)
     model = module.build_model(cfg["official_source"], pretrained=False)
-    world = native_module(args.method, module, model, args.profile, getattr(args, "data_binding", None))
-    label = args.profile + "_" + args.method + "_" + args.phase + "_seed0_" + args.run_tag
+    world = native_module(args.method, module, model, args.profile, args.data_binding)
+    label = args.profile + "_" + args.method + "_seed0"
     export_root = args.output / "checkpoints" / label
     export_root.mkdir(parents=True, exist_ok=False)
-    write(export_root / "experiment.json", dict(binding=expected, model=cfg, argv=sys.argv))
-    if stats is not None:
-        write(args.output / "action_statistics.json", stats)
+    write(args.output / "action_statistics.json", stats)
 
-    class Evidence(pl.pytorch.callbacks.Callback):
-        def __init__(self):
-            self.last_schedule_index = None
+    class AuthorSchedule(pl.pytorch.callbacks.Callback):
+        """PLDM's learning-rate schedule, applied before every optimizer step."""
 
         def on_before_optimizer_step(self, trainer, pl_module, optimizer):
             if args.method == "pldm":
-                self.last_schedule_index = author_schedule_before_step(pl_module, trainer.global_step)
+                author_schedule_before_step(pl_module, trainer.global_step)
 
-        def on_after_backward(self, trainer, pl_module):
-            if args.phase == "gate":
-                gradients = [p.grad for p in pl_module.model.parameters() if p.requires_grad]
-                if not any(x is not None for x in gradients) or any(
-                    x is not None and not bool(torch.isfinite(x).all()) for x in gradients
-                ):
-                    raise ValueError("gate missing/nonfinite gradients")
-
-        def on_train_batch_end(self, trainer, pl_module, outputs, batch, batch_idx):
-            if args.phase == "gate":
-                if not bool(torch.isfinite(outputs["loss"]).all()):
-                    raise ValueError("gate loss is nonfinite")
-                with (args.output / "finite_losses.jsonl").open("a") as f:
-                    f.write(
-                        json.dumps(dict(phase="train", step=int(trainer.global_step), loss=float(outputs["loss"])))
-                        + "\n"
-                    )
-
-        def on_validation_batch_end(self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx=0):
-            if args.phase == "gate":
-                if not bool(torch.isfinite(outputs["loss"]).all()):
-                    raise ValueError("gate validation loss nonfinite")
-                with (args.output / "finite_losses.jsonl").open("a") as f:
-                    f.write(
-                        json.dumps(
-                            dict(
-                                phase="val",
-                                step=int(trainer.global_step),
-                                sanity=trainer.sanity_checking,
-                                loss=float(outputs["loss"]),
-                            )
-                        )
-                        + "\n"
-                    )
-
-        def on_save_checkpoint(self, trainer, pl_module, checkpoint):
-            checkpoint["baseline_binding"] = expected
-            checkpoint["native_method_schedule"] = dict(
-                method=args.method,
-                last_before_optimizer_step=self.last_schedule_index,
-                total_updates=counts(args)["total_updates"],
-                warmup_updates=counts(args)["total_updates"] // 10,
-            )
-
-        def state_dict(self):
-            return dict(last_schedule_index=self.last_schedule_index)
-
-        def load_state_dict(self, state):
-            self.last_schedule_index = state.get("last_schedule_index")
-
-    callbacks = [exports.SaveCkptCallback(label, OmegaConf.create(cfg), epoch_interval=1), Evidence()]
-    if state_callback is not None:
-        callbacks.append(state_callback)
-    options = trainer_options(args.phase, callbacks)
-    trainer = pl.Trainer(**options)
+    callbacks = [exports.SaveCkptCallback(label, OmegaConf.create(cfg), epoch_interval=1), AuthorSchedule()]
+    trainer = pl.Trainer(**trainer_options(callbacks))
     data = spt.data.DataModule(train=train, val=val)
-    write(
-        args.output / "result/actual_protocol.json",
-        dict(
-            binding=expected,
-            loader_counts=counts(args),
-            actual_train_batches=len(train),
-            actual_validation_batches=len(val),
-            export_root=str(export_root),
-            model_config=cfg,
-            trainer_options={k: v for k, v in options.items() if k != "callbacks"},
-            optimizer="native method builder",
-            scheduler="native PLDM before optimizer; native LeJEPA step after optimizer",
-        ),
-    )
-    spt.Manager(trainer=trainer, module=world, data=data, ckpt_path=resume_checkpoint, seed=0)()
-    preprocessing = train.dataset.gpu_transform.last_contract
-    if preprocessing is None:
-        raise ValueError("RGB preprocessing was not applied before the model")
-    return dict(
-        stage="baseline_train_completed",
-        export_root=str(export_root),
-        training_returned=True,
-        preprocessing_contract=preprocessing,
-    )
-
-
-def validate_protocol(args, protocol):
-    """Check that a run's recorded protocol matches this data profile, method, sample counts and model config."""
-    recorded = protocol.get("binding", {})
-    if (
-        recorded != binding(args, recorded.get("action_statistics"))
-        or protocol.get("model_config") != factory_config(args)
-        or protocol.get("loader_counts") != counts(args)
-    ):
-        raise ValueError("training protocol differs from current profile/method/source binding")
-
-
-def accept(args):
-    """Accept a finished run: reload its checkpoint on the CPU through the model factory and check its counters and
-    bindings; no optimizer update, no data scan, no validation rerun."""
-    protocol = read(args.training_output / "result/actual_protocol.json")
-    validate_protocol(args, protocol)
-    import torch
-
-    expected = 2 if args.phase == "gate" else counts(args)["total_updates"]
-    if (args.training_output / "actual_exit_code").read_text().strip() != "0":
-        raise ValueError("own trainer actual0 required")
-    log = (args.training_output / "stdout.log").read_text(errors="replace")
-    import re
-
-    runs = set(re.findall(r"/[^\s\x1b]*?/runs/\d{8}/\d{6}/[0-9a-f]+", log))
-    runs = {x.rstrip("/.,:") for x in runs if Path(x, "run_meta.json").exists()}
-    if len(runs) != 1:
-        raise ValueError("one own native run required")
-    run = Path(runs.pop())
-    fullpath = run / "checkpoints/last.ckpt"
-    full = torch.load(fullpath, map_location="cpu", weights_only=False)
-    if (
-        full.get("global_step") != expected
-        or Path(full["spt_run_dir"]) != run
-        or full.get("baseline_binding") != protocol["binding"]
-    ):
-        raise ValueError("own checkpoint counter/run/binding differs")
-    if args.method == "pldm" and full["native_method_schedule"]["last_before_optimizer_step"] != expected - 1:
-        raise ValueError("native PLDM before-step schedule counter differs")
-    if args.method == "lejepa" and full["lr_schedulers"][0]["last_epoch"] != expected:
-        raise ValueError("native LeJEPA scheduler counter differs")
-    steps = [float(x["step"]) for opt in full["optimizer_states"] for x in opt["state"].values() if "step" in x]
-    if not steps or set(steps) != {expected}:
-        raise ValueError("Adam counters differ")
-
-    def finite(x):
-        if isinstance(x, torch.Tensor):
-            return not x.is_floating_point() or bool(torch.isfinite(x).all())
-        if isinstance(x, dict):
-            return all(finite(v) for v in x.values())
-        if isinstance(x, (tuple, list)):
-            return all(finite(v) for v in x)
-        return True
-
-    if not finite(full["state_dict"]) or not finite(full["optimizer_states"]):
-        raise ValueError("nonfinite model/optimizer")
-    export = Path(protocol["export_root"])
-    epochs = [1] if args.phase == "gate" else list(range(1, 11))
-    paths = [export / f"weights_epoch_{e}.pt" for e in epochs]
-    if set(export.glob("weights_epoch_*.pt")) != set(paths):
-        raise ValueError("own exact epoch exports differ")
-    bare = torch.load(paths[-1], map_location="cpu", weights_only=True)
-    extracted = {k[6:]: v for k, v in full["state_dict"].items() if k.startswith("model.")}
-    if bare.keys() != extracted.keys() or any(not torch.equal(bare[k], extracted[k]) for k in bare):
-        raise ValueError("full/bare differ")
-    model = method_module(args.method).build_model(protocol["model_config"]["official_source"], pretrained=False)
-    result = model.load_state_dict(bare, strict=True)
-    if (
-        result.missing_keys
-        or result.unexpected_keys
-        or any(not torch.equal(model.state_dict()[k], bare[k]) for k in bare)
-    ):
-        raise ValueError("strict factory reload differs")
-    if args.phase == "gate":
-        records = [json.loads(x) for x in (args.training_output / "finite_losses.jsonl").read_text().splitlines()]
-        if len([x for x in records if x["phase"] == "train"]) != 2 or not any(
-            x["phase"] == "val" and not x["sanity"] and x["step"] > 0 for x in records
-        ):
-            raise ValueError("real post-update gate validation missing")
-    else:
-        val = full["loops"]["fit_loop"]["epoch_loop.val_loop.batch_progress"]
-        summary = read(run / "summary.json")
-        if (
-            full["epoch"] not in (9, 10)
-            or val["total"]["completed"] != counts(args)["validation_batches"]
-            or summary["metrics"]["validate/loss_epoch"]["count"] < 10
-        ):
-            raise ValueError("ten complete native train/validation epochs required")
-    return dict(
-        stage="baseline_" + args.phase + "_accepted",
-        global_step=expected,
-        Adam_steps=sorted(set(steps)),
-        own_run=str(run),
-        full_checkpoint=dict(path=str(fullpath), sha256=sha(fullpath)),
-        epoch_exports=[dict(epoch=e, path=str(p), sha256=sha(p)) for e, p in zip(epochs, paths)],
-        strict_factory_reload=True,
-        full_bare_exact=True,
-        binding=protocol["binding"],
-        extra_optimizer_updates=0,
-    )
-
-
-def require_sources(root, data_binding):
-    from jepa4r.data.cube.fresh_data import load_binding
-
-    load_binding(data_binding)
+    spt.Manager(trainer=trainer, module=world, data=data, seed=0)()
+    return export_root
 
 
 def main():
@@ -357,40 +116,17 @@ def main():
     parser.add_argument("--cube-count", type=int, choices=(1, 2, 3, 4), required=True)
     parser.add_argument("--data-manifest", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--phase", choices=("gate", "formal"), required=True)
-    parser.add_argument("--mode", choices=("train", "accept"), required=True)
-    parser.add_argument("--training-output", type=Path)
-    parser.add_argument("--run-tag", default="current")
     parser.add_argument("--workers", type=int, default=20)
     parser.add_argument("--prefetch", type=int, default=2)
     args = parser.parse_args()
-    if args.workers < 0 or args.prefetch < 1:
-        parser.error("workers must be nonnegative and prefetch positive")
-    args.root = Path(__file__).resolve().parent
     args.profile = "cube" + str(args.cube_count)
     args.data_binding = args.data_manifest.resolve()
     args.data_root = args.data_binding.parent
     args.method = "pldm"
     args.output = args.output.resolve()
-    require_sources(args.root, args.data_binding)
-    data_profile(args.profile, args.data_binding)
     args.output.mkdir(parents=True, exist_ok=False)
     os.environ.update(build_environment(args.data_root, args.output))
-    state = dict(
-        stage="pldm_" + args.mode + "_running", started_at=now(), updated_at=now(), actual_exit_code=None, argv=sys.argv
-    )
-    write(args.output / "status.json", state)
     with (args.output / "stdout.log").open("x", encoding="utf8", buffering=1) as log:
         with redirect_stdout(log), redirect_stderr(log):
-            try:
-                if args.mode == "accept" and args.training_output is None:
-                    raise ValueError("explicit own training output required")
-                state.update(run(args) if args.mode == "train" else accept(args))
-                state["actual_exit_code"] = 0
-            except BaseException:
-                state.update(stage="pldm_failed", actual_exit_code=1, error=traceback.format_exc())
-                traceback.print_exc()
-    state["finished_at"] = state["updated_at"] = now()
-    write(args.output / "status.json", state)
-    (args.output / "actual_exit_code").write_text(str(state["actual_exit_code"]) + "\n")
-    return state["actual_exit_code"]
+            run(args)
+    return 0

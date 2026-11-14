@@ -19,7 +19,7 @@ wm_data:                      # supp. sec:supp-data
   num_episodes: 10000
   episode_len: 200            # the relocate-v0 horizon
   mixture: {noisy_expert: 0.5, expert_interrupted_by_random: 0.3, random: 0.2}
-  collector: adroit           # the workflow's collect and data-audit stages (jepa4r/data/relocate)
+  collector: adroit           # the workflow's collect stage (jepa4r/data/relocate)
   seed: 42                    # the workflow's default seed
   sets:                       # train 10,000, test 150
     - {name: train, num_episodes: 10000}
@@ -29,6 +29,5 @@ wm_data:                      # supp. sec:supp-data
 policy_data:
   source: demos
   demos_per_task: 100         # 100 demonstrations on Relocate (supp. sec:supp-policy)
-harness:                      # jepa4r.policy.bc.relocate_stage (the workflow's --mode / --seed)
-  mode: full                  # full = the paper budgets; smoke = its bounded check
-  seed: 42                    # the workflow's default seed
+workflow:                     # jepa4r.policy.bc.relocate_stage
+  seed: 42                    # the collection's seed (train episodes seed + i, test seed + 2000000 + i)

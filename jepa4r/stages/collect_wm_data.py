@@ -396,10 +396,10 @@ def run_shards(specs, max_parallel, threads, log_dir):
 
 def run(cfg, out_dir):
     wm = cfg.env.wm_data
-    if wm.collector in ("adroit", "rh56"):  # the Relocate workflow: collect + data audit / publish
+    if wm.collector in ("adroit", "rh56"):  # the Relocate workflow: collection (+ publication on RH56)
         from jepa4r.policy.bc import relocate_stage
 
-        return {"harness_status": relocate_stage(cfg, "collect_wm_data", out_dir)["status"]}
+        return {"workflow": relocate_stage(cfg, "collect_wm_data", out_dir)}
     if wm.collector == "cube_workflow":
         from jepa4r.policy.gciql import collect_cube
 

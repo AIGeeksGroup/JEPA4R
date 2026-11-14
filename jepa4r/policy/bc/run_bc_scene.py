@@ -2,7 +2,7 @@
 official hydra_launcher + train_loop (eai-vc 76fe35e, unchanged on disk) with run_bc.py's runtime patches (embedding
 configs from conf/model, metrics.jsonl logging, the logging-only train/* rollouts reusing the evaluation paths) and
 run_bc3d.py's point-cloud input for a point-cloud embedding; the env is SceneProxy, a gym env that forwards reset / step
-/ seed / frames to scene_server.py, which runs scene_env.SceneCBEnv in the lewm_mw python (MuJoCo 3 + OGBench) given by
+/ seed / frames to scene_server.py, which runs scene_env.SceneCBEnv in the MuJoCo 3 python (MuJoCo 3 + OGBench) given by
 MW_PY. Everything around it is the official loop: MuJoCoPixelObsWrapper (its get_image returns the proxy's frame:
 224x224 RGB, or the (1200, 6) point cloud for a point-cloud embedding), FrozenEmbeddingWrapper (FLARE over 3 frames [+
 proprioception]), mjrl GymEnv, BC 100 epochs, 20 evaluations of 25 episodes, success = info['success'] at the last step
@@ -15,11 +15,11 @@ With ENC_SOCKET set, the frozen encoder runs in enc_server.py (one GPU process b
 of jobs each holding a CUDA context and the GPU switching between them); the preprocessing stays in this process with
 the same config, BC and the evaluation run on the CPU (device=cpu).
 
-    source env.sh && MW_PY=<lewm_mw python> SCENE_PROPRIO_DIMS=6 $PY run_bc_scene.py \\
-        --config-name Metaworld_BC_config env=scene-task1-v0 embedding=lewm_scene_pix seed=100 \\
+    source env.sh && MW_PY=<MuJoCo 3 python> SCENE_PROPRIO_DIMS=6 $PY run_bc_scene.py \\
+        --config-name Metaworld_BC_config env=scene-task1-v0 embedding=lewm_scene seed=100 \\
         data_dir=$STABLEWM_HOME/datasets/cortexbench/scene-expert/ camera=front_pixels \\
         env_kwargs.add_proprio=True env_kwargs.proprio_key=gripper_proprio wandb.project=local wandb.entity=local \\
-        hydra.run.dir=<dir>          (3D: embedding=lewm_scene_pcd, data_dir=.../scene-expert-pcd/)
+        hydra.run.dir=<dir>          (3D: embedding=jepa4r_scene, data_dir=.../scene-expert-pcd/)
 """
 
 import json
@@ -36,7 +36,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 VI = os.path.join(os.environ["JEPA4R_EAI_VC"], "cortexbench", "mujoco_vc", "visual_imitation")  # the eai-vc checkout
 CONF_HOME = os.environ.get("JEPA4R_BC_CONF_HOME", HERE)  # <CONF_HOME>/conf/model/NAME.yaml: the embedding configs
 sys.path.insert(0, VI)
-MW_PY = os.environ.get("MW_PY", "")  # the lewm_mw python, for scene_server.py
+MW_PY = os.environ.get("MW_PY", "")  # the MuJoCo 3 python, for scene_server.py
 
 import gym
 import hydra
@@ -315,6 +315,6 @@ train_loop.sample_paths = sample_paths
 np.seterr(all="ignore")
 if __name__ == "__main__":
     if not MW_PY:
-        sys.exit("set MW_PY to the lewm_mw python (MuJoCo 3 + OGBench): it runs the scene env (scene_server.py)")
+        sys.exit("set MW_PY to the MuJoCo 3 python (MuJoCo 3 + OGBench): it runs the scene env (scene_server.py)")
     sys.argv = [os.path.join(VI, "hydra_launcher.py")] + sys.argv[1:]
     runpy.run_path(os.path.join(VI, "hydra_launcher.py"), run_name="__main__")

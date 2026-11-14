@@ -1,4 +1,4 @@
-"""CortexBench's MetaWorld env on the RM75 (runs in the lewm_mw env, MuJoCo 3): what the official harness's
+"""CortexBench's MetaWorld env on the RM75 (runs in the MuJoCo 3 + metaworld 3.0 python): what the official harness's
 env_constructor + MuJoCoPixelObsWrapper give for the Sawyer (metaworld <task>-v2-goal-observable with
 _freeze_rand_vec False, a new layout per seed, the hand at the task's own start, 500-step episodes, 256x256 frames
 from top_cap2 with multisampling), here with the RM75 env of envs/metaworld/rm75:
@@ -6,10 +6,10 @@ from top_cap2 with multisampling), here with the RM75 env of envs/metaworld/rm75
   metaworld's own seed(s) + reset() gives for the same s), the hand at the task's own start;
 * the steps are the RM75 metaworld env's (envs/metaworld/rm75/robot.py: clipped 4-D action, IK, servos), so step(a)
   returns metaworld's own (obs, reward, info) with info['success'];
-* rgb(): 256x256 top_cap2, multisampled (the renderer the 2D LeWM data used, at CortexBench's size);
+* rgb(): 256x256 top_cap2, multisampled (the renderer the LeWM data used, at CortexBench's size);
 * pcd(): (1200, 6) float32 xyz (m) + rgb 0..255 of the same camera, envs.metaworld.MWPointCloudWrapper with the 3D
   LeWM data's settings (1200 points, 5 mm voxels, 25 % object points, the task's re-placed fixtures; depth /
-  segmentation without multisampling), rendered at 224x224 as the 3D LeWM data and the Sawyer harness's 3D
+  segmentation without multisampling), rendered at 224x224 as the JEPA4R data and the Sawyer harness's 3D
   (pcd_fork.MWPointClouds): the env is made at 224, the frames come from a 256 renderer of their own. Its sampling RNG
   is seeded by seed().
 Used by make_rm75_demos.py (the demos) and rm75_server.py (the evaluation env behind run_bc_rm75.py's proxy)."""
@@ -20,8 +20,8 @@ import os
 import sys
 
 # the repository (jepa4r/)
-LEWM = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
-sys.path.insert(0, LEWM)
+REPO = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
+sys.path.insert(0, REPO)
 os.environ.setdefault("MUJOCO_GL", "egl")
 
 import mujoco
@@ -38,7 +38,7 @@ TASKS = {
     "assembly": (RM75AssemblyEnv, ("peg",)),
 }
 SIZE = 256  # CortexBench's frames
-PCD_SIZE = 224  # the point cloud's depth camera: the 3D LeWM data's (and pcd_fork.MWPointClouds')
+PCD_SIZE = 224  # the point cloud's depth camera: JEPA4R data's (and pcd_fork.MWPointClouds')
 HORIZON = 500
 
 

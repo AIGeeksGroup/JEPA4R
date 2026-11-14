@@ -16,7 +16,7 @@ reward, success), the camera, the collection plan and the eval hooks are envs.me
                RM75DrawerOpenPolicy, RM75AssemblyPolicy; button-press-topdown's demos use metaworld's script unchanged
                (bench/cortexbench/make_rm75_demos.py)
 
-Needs metaworld 3.0 (conda env ``lewm_mw``) like envs.metaworld; the env id is registered in envs/metaworld/__init__.py.
+Needs metaworld 3.0 (a MuJoCo 3 python) like envs.metaworld; the env id is registered in envs/metaworld/__init__.py.
 """
 
 from .env import RM75AssemblyEnv, RM75BinPickEnv, RM75ButtonPressEnv, RM75DrawerEnv, RM75TaskEnv

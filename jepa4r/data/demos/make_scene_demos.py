@@ -11,7 +11,7 @@ Format: 'observations' (T, 8) = proprioception (scene_env.proprio_of), 'actions'
 ('success', 'gripper_proprio' = the proprioception), 'images' = the frame before each action: 2D (T, 224, 224, 3) uint8,
 3D (T, 1200, 6) float32 point clouds; 2D and 3D from the same episodes.
 -> $STABLEWM_HOME/datasets/cortexbench/scene-expert{,-pcd}/scene-task<k>-v0.pickle
-    STABLEWM_HOME=<checkout>/lewm_pcd_data <lewm_mw python> make_scene_demos.py [task number ...]
+    STABLEWM_HOME=<data dir> <MuJoCo 3 python> make_scene_demos.py [task number ...]
 """
 
 import os

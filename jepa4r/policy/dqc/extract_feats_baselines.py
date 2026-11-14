@@ -1,6 +1,6 @@
 """extract_feats.py for the JEPA-family baselines: OGBench's puzzle-<env-type>-play data -> every state re-rendered with
-the LeWM data's camera (the 2D frame LeWM 2D sees: front_pixels, 224) -> each given baseline encoder as CortexBench
-loads it (lewm_obs.BaselineEncoder: its own transforms, its frozen embedding) -> one latent per step, for run_dqc.py
+the LeWM data's camera (the image LeWM sees: front_pixels, 224) -> each given baseline encoder as CortexBench
+loads it (wm_obs.BaselineEncoder: its own transforms, its frozen embedding) -> one latent per step, for run_dqc.py
 --obs vjepa21 / lejepa / pldm. One rendering pass serves all the given encoders.
 * Only the latents are stored (float32, N x D, row for row with the npz), written in chunks, restartable; each encoder
   has its own done file ({split}_done_<name>.npy), so a pass can be resumed or an encoder added later.
@@ -21,7 +21,7 @@ from pathlib import Path
 import numpy as np
 
 import extract_feats as ef  # this script's directory is on sys.path
-from lewm_obs import BaselineEncoder
+from wm_obs import BaselineEncoder
 
 _SIZES = {}
 
@@ -32,7 +32,7 @@ def _init_worker(env_type, sizes):
 
 
 def _render_chunk(args):
-    """Set a run of states back into the simulator one by one and render each 2D frame; return it at every input size
+    """Set a run of states back into the simulator one by one and render each image; return it at every input size
     the encoders take (prep_frames: the PIL resize of their transforms)."""
     start, qpos, qvel, bstates = args
     pdat, u, cam = ef._W["pdat"], ef._W["u"], ef._W["cam"]

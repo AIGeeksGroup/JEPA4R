@@ -1,31 +1,31 @@
 {
   "schema": "paper_cube_collection_sources_v1",
   "files": {
-    "code/lewm_pcd/scripts/data/collect_cube_pcd.py": {
+    "code/collection/scripts/data/collect_cube_pcd.py": {
       "repository_path": "jepa4r/data/cube/collection/vendor/fixed/collect_cube_pcd.py"
     },
-    "code/lewm_pcd/scripts/data/collection_protocol.py": {
+    "code/collection/scripts/data/collection_protocol.py": {
       "repository_path": "jepa4r/data/cube/collection/vendor/fixed/collection_protocol.py"
     },
-    "code/lewm_pcd/scripts/data/double_collection.py": {
+    "code/collection/scripts/data/double_collection.py": {
       "repository_path": "jepa4r/data/cube/collection/vendor/fixed/double_collection.py"
     },
-    "code/lewm_pcd/scripts/data/triple_collection.py": {
+    "code/collection/scripts/data/triple_collection.py": {
       "repository_path": "jepa4r/data/cube/collection/vendor/fixed/triple_collection.py"
     },
-    "code/lewm_pcd/scripts/data/quadruple_collection.py": {
+    "code/collection/scripts/data/quadruple_collection.py": {
       "repository_path": "jepa4r/data/cube/collection/vendor/fixed/quadruple_collection.py"
     },
-    "code/lewm_pcd/scripts/data/config/launcher/local.yaml": {
+    "code/collection/scripts/data/config/launcher/local.yaml": {
       "repository_path": "configs/env/cube/collection/launcher/local.yaml"
     },
-    "code/lewm_pcd/envs/pcd_wrapper.py": {
+    "code/collection/envs/pcd_wrapper.py": {
       "repository_path": "jepa4r/data/cube/collection/vendor/pcd/pcd_wrapper.py"
     },
-    "code/lewm_pcd/envs/cube_pcd_env.py": {
+    "code/collection/envs/cube_pcd_env.py": {
       "repository_path": "jepa4r/data/cube/collection/vendor/pcd/cube_pcd_env.py"
     },
-    "code/lewm_pcd/envs/expert_policy.py": {
+    "code/collection/envs/expert_policy.py": {
       "repository_path": "jepa4r/envs/ogbench/expert_policy.py"
     },
     "external/native_pcd_frame.py": {
@@ -274,13 +274,13 @@
     "collection_adapters/camera_pullback.py": {
       "repository_path": "jepa4r/data/cube/collection/vendor/fixed/camera_pullback.py"
     },
-    "code/lewm_pcd/envs/__init__.py": {
+    "code/collection/envs/__init__.py": {
       "repository_path": "jepa4r/data/cube/collection/vendor/pcd/envs_init.py"
     },
-    "code/lewm_pcd/scripts/data/collect_cube_pix.py": {
+    "code/collection/scripts/data/collect_cube_pix.py": {
       "repository_path": "jepa4r/data/cube/collection/vendor/fixed/writers.py"
     },
-    "code/lewm_pcd/scripts/data/config/paper_cube.yaml": {
+    "code/collection/scripts/data/config/paper_cube.yaml": {
       "repository_path": "configs/env/cube/collection/paper_cube.yaml"
     }
   },

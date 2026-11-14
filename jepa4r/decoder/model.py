@@ -54,7 +54,8 @@ class FrozenLatent(nn.Module):
 
     @torch.no_grad()
     def forward(self, obs):
-        """obs (B, T, ...) -> latent1 (B, T, D); ``JEPA.encode`` for 2D / 3D, inherited unchanged by the 4D model."""
+        """obs (B, T, ...) -> latent1 (B, T, D); ``JEPA.encode`` for images or point clouds, inherited unchanged by
+        the 4D model."""
         return self.world_model.encode({self.obs_key: obs})["emb"]
 
 

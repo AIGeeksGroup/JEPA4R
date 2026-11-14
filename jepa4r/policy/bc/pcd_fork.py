@@ -16,7 +16,7 @@ import numpy as np
 
 CAM = "top_cap2"
 GEOM = 5  # mjOBJ_GEOM
-# MWPointClouds: the settings of envs.metaworld.MWPointCloudWrapper, which makes the 3D LeWM's training data
+# MWPointClouds: the settings of envs.metaworld.MWPointCloudWrapper, which makes JEPA4R's training data
 CROP_BOX = ((-0.50, 0.30, -0.02), (0.50, 1.00, 0.60))
 # fixtures: bodies welded to the world that a reset places anew each episode (found by resetting with two seeds and
 # comparing body poses). They carry the task's state (assembly's target peg, the button's box, the drawer's case), so
@@ -54,7 +54,7 @@ def render_xyz_geom(sim, size=256, cam=CAM, rgb=False):
 
 
 class MWPointClouds:
-    """The 3D LeWM's point cloud of the current frame, made the way envs.metaworld.MWPointCloudWrapper (on
+    """JEPA4R's point cloud of the current frame, made the way envs.metaworld.MWPointCloudWrapper (on
     envs/pcd_wrapper.py) made its training data: one depth camera (top_cap2, 224 x 224) back-projected; foreground =
     geoms of bodies not welded to the world (arm, gripper, objects; not the mocap) plus this task's re-placed fixtures;
     crop box; 5 mm voxel de-duplication; a stratified draw of num_points with obj_fraction from the task objects

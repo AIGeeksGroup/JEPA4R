@@ -1,6 +1,6 @@
 """The scene CortexBench env (scene_env.py) as a subprocess of the harness (run_bc_scene.py's SceneProxy), as
 rm75_server.py for the RM75: the harness runs in the cortexbench conda env (mujoco-py 2.0), the scene env needs MuJoCo 3
-+ OGBench (lewm_mw). Protocol on stdin / a dup of stdout: 8-byte little-endian length + pickle of plain types (arrays as
++ OGBench. Protocol on stdin / a dup of stdout: 8-byte little-endian length + pickle of plain types (arrays as
 (dtype, shape, bytes)); fd 1 is pointed at stderr so library prints cannot corrupt the stream.
     $MW_PY scene_server.py     (started by run_bc_scene.py)"""
 

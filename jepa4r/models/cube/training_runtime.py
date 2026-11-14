@@ -6,7 +6,6 @@ import importlib.util
 import json
 import os
 from pathlib import Path
-import sys
 
 PACKAGE = Path(__file__).resolve().parent
 
@@ -15,12 +14,12 @@ def code_root():
     for parent in PACKAGE.parents:
         if (parent / "jepa4r/models/world_model.py").is_file() and (parent / "third_party/stable-worldmodel").is_dir():
             return parent
-    raise FileNotFoundError("current model code and shared SWM runtime are missing")
+    raise FileNotFoundError("this repository's model code and stable-worldmodel are missing")
 
 
 def load_recipe(method):
-    if method not in ("lewm_rgb", "lewm_pcd"):
-        raise ValueError("current LeWM RGB/PCD recipe required")
+    if method not in ("lewm", "jepa4r"):
+        raise ValueError("the LeWM recipes are lewm and jepa4r")
     recipe = PACKAGE.parents[2] / "configs" / "method" / "cube" / "recipes" / (method + ".json")
     return json.loads(recipe.read_text(encoding="utf8"))
 
@@ -45,20 +44,10 @@ def load_tiny_trainer():
     return importlib.import_module("jepa4r.baselines.cube.native.tiny_train")
 
 
-def _load(name, path, package=False):
-    spec = importlib.util.spec_from_file_location(
-        name, path, submodule_search_locations=[str(path.parent)] if package else None
-    )
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[name] = module
-    spec.loader.exec_module(module)
-    return module
-
-
 @contextmanager
-def pinned_native():
-    """The native LeWM trainer native/lewm_train.py, moved to jepa4r.models.world_model (run_episode_split with the
-    source's own output layout, lejepa_forward, SIGReg), with the module attributes its callers use and patch."""
+def wm_trainer():
+    """LeWM's trainer (its native/lewm_train.py, in jepa4r.models.world_model: run_episode_split with LeWM's own output
+    layout, lejepa_forward, SIGReg), with the module attributes its callers use and patch."""
     from functools import partial
     from types import SimpleNamespace
     import hydra

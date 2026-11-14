@@ -3,15 +3,15 @@ the official hydra_launcher + train_loop (eai-vc 76fe35e, unchanged on disk) wit
 configs from conf/model, metrics.jsonl logging, the logging-only train/* rollouts reusing the evaluation paths) and
 run_bc3d.py's point-cloud input for a point-cloud embedding, and with the env constructed differently for the RM75:
 RM75Proxy, a gym env that forwards reset / step / seed / frames to rm75_server.py, which runs rm75_env.RM75CBEnv in the
-lewm_mw python (MuJoCo 3 + metaworld 3.0; the harness's env has MuJoCo 2.0) given by MW_PY. Everything around it is the
+MuJoCo 3 python (MuJoCo 3 + metaworld 3.0; the harness's env has MuJoCo 2.0) given by MW_PY. Everything around it is the
 official loop: MuJoCoPixelObsWrapper (its get_image returns the proxy's frame: 256x256 RGB, or the (1200, 6) point cloud
 for a point-cloud embedding), FrozenEmbeddingWrapper (FLARE over 3 frames + proprioception obs[:4]), mjrl GymEnv, BC 100
 epochs, 20 evaluations of 25 episodes, success = info['success'] at the last of 500 steps. Demos: make_rm75_demos.py.
 
-    source env.sh && MW_PY=<lewm_mw python> $PY run_bc_rm75.py --config-name Metaworld_BC_config \
-        env=rm75-bin-picking-v2-goal-observable embedding=lewm_mw_binpick_rm75_pix seed=100 \
+    source env.sh && MW_PY=<MuJoCo 3 python> $PY run_bc_rm75.py --config-name Metaworld_BC_config \
+        env=rm75-bin-picking-v2-goal-observable embedding=lewm_mw_binpick_rm75 seed=100 \
         data_dir=$STABLEWM_HOME/datasets/cortexbench/metaworld-rm75-expert/ wandb.project=local wandb.entity=local \
-        hydra.run.dir=<dir>          (3D: embedding=lewm_mw_binpick_rm75_pcd, data_dir=.../metaworld-rm75-expert-pcd/)
+        hydra.run.dir=<dir>          (3D: embedding=jepa4r_mw_binpick_rm75, data_dir=.../metaworld-rm75-expert-pcd/)
 """
 
 import json
@@ -27,7 +27,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 VI = os.path.join(os.environ["JEPA4R_EAI_VC"], "cortexbench", "mujoco_vc", "visual_imitation")  # the eai-vc checkout
 CONF_HOME = os.environ.get("JEPA4R_BC_CONF_HOME", HERE)  # <CONF_HOME>/conf/model/NAME.yaml: the embedding configs
 sys.path.insert(0, VI)
-MW_PY = os.environ.get("MW_PY", "")  # the lewm_mw python, for rm75_server.py
+MW_PY = os.environ.get("MW_PY", "")  # the MuJoCo 3 python, for rm75_server.py
 
 import gym
 import hydra
@@ -239,6 +239,6 @@ train_loop.sample_paths = sample_paths
 np.seterr(all="ignore")
 if __name__ == "__main__":  # importable (diagnostics) without launching a run
     if not MW_PY:
-        sys.exit("set MW_PY to the lewm_mw python (MuJoCo 3 + metaworld 3.0): it runs the RM75 env (rm75_server.py)")
+        sys.exit("set MW_PY to the MuJoCo 3 python (MuJoCo 3 + metaworld 3.0): it runs the RM75 env (rm75_server.py)")
     sys.argv = [os.path.join(VI, "hydra_launcher.py")] + sys.argv[1:]
     runpy.run_path(os.path.join(VI, "hydra_launcher.py"), run_name="__main__")

@@ -3,16 +3,16 @@
 Offline goal-conditioned RL on the official play data, 1e6 steps. Input: frozen latent and button lights;
 goal: target lights. Ten evaluations during training (five tasks x 50 episodes); report the best.
 
-Modules (the DQC harness of the paper runs):
+Modules (the DQC code of the paper runs):
   run_dqc.py       dqc df89825's training loop (the checkout, unchanged, at JEPA4R_DQC or third_party/dqc) with the
                    frozen encoder's latent + the true lights as observation; restartable (resume.pkl); metrics to
                    train.jsonl / eval.jsonl; the agent settings of the run in flags.json
-  lewm_obs.py      the frozen encoders as CortexBench loads them (jepa4r/policy/bc/lewm_cortex.py, jepa_baselines.py)
-                   and the evaluation-time observations (LeWMObs, BaselineObs)
+  wm_obs.py        the frozen encoders as CortexBench loads them (jepa4r/policy/bc/wm_embeddings.py, jepa_baselines.py)
+                   and the evaluation-time observations (WMObs, BaselineObs)
   extract_feats.py, extract_feats_baselines.py   every row of the official play data set back into the simulator,
                    rendered (front_pixels 224; point sampling seeded per frame with (20261011, split, row)) and encoded
                    (epoch 10) -> one latent per row
-  check_eval_obs.py, summarize_dqc.py   the original consistency check and table
+  summarize_dqc.py the table of the runs
 ``train``: the latents of the official training set (``cache_latents``), one run_dqc.py run with the board's agent
 settings (``agent_flags``), then the train_policy metrics (``aggregate``): success = the best of the ten evaluations
 during training (steps 100k, 200k, ..., 1M). run_dqc.py, unchanged, also evaluates the untrained agent at step 0: that
@@ -30,13 +30,13 @@ import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-LOADERS = ("vjepa21", "visreg", "lejepa", "pldm")  # lewm_obs.BaselineEncoder.LOADERS (run_dqc.py --obs <name>)
+LOADERS = ("vjepa21", "visreg", "lejepa", "pldm")  # wm_obs.BaselineEncoder.LOADERS (run_dqc.py --obs <name>)
 
 
 def obs_kind(method_cfg):
-    """run_dqc.py --obs of an encoder row: lewm3d / lewm2d (LeWM recipe on point clouds / images) or the baseline."""
+    """run_dqc.py --obs of an encoder row: jepa4r / lewm (LeWM recipe on point clouds / images) or the baseline."""
     if method_cfg.kind == "jepa_wm":
-        return "lewm3d" if method_cfg.obs == "pointcloud" else "lewm2d"
+        return "jepa4r" if method_cfg.obs == "pointcloud" else "lewm"
     if method_cfg.name in LOADERS:
         return str(method_cfg.name)
     raise ValueError(f"no DQC input for method {method_cfg.name!r}")
@@ -91,7 +91,7 @@ def cache_latents(cfg, encoder, out_path):
     if kind in LOADERS:
         script, args, z = "extract_feats_baselines.py", ["--encoder", f"{kind}={encoder}"], kind
     else:
-        script, args, z = "extract_feats.py", [f"--ckpt-{kind[-2:]}", str(encoder)], kind[-2:]
+        script, args, z = "extract_feats.py", [f"--ckpt-{kind}", str(encoder)], kind
     done = out_path / (f"train_done_{kind}.npy" if kind in LOADERS else "train_done.npy")
     if not done.exists() or not _all_done(done):
         cmd = [
@@ -124,16 +124,16 @@ def _all_done(path):
 
 
 def latent_obs(env, encoder, cfg):
-    """The evaluation-time observation of run_dqc.py for this encoder (lewm_obs.LeWMObs / BaselineObs): call it to get
+    """The evaluation-time observation of run_dqc.py for this encoder (wm_obs.WMObs / BaselineObs): call it to get
     [latent, true lights] of the env's current state. Needs the DQC interpreter (JEPA4R_PY_DQC)."""
     if str(HERE) not in sys.path:
         sys.path.insert(1, str(HERE))
-    import lewm_obs
+    import wm_obs
 
     kind, epoch = obs_kind(cfg.method), int(cfg.method.get("policy_epoch", 10))
     if kind in LOADERS:
-        return lewm_obs.BaselineObs(env, kind, str(encoder), epoch)
-    return lewm_obs.LeWMObs(env, kind, str(encoder), epoch, lights=True)
+        return wm_obs.BaselineObs(env, kind, str(encoder), epoch)
+    return wm_obs.WMObs(env, kind, str(encoder), epoch, lights=True)
 
 
 def run_command(cfg, encoder, feats_dir, run_dir):
@@ -149,7 +149,7 @@ def run_command(cfg, encoder, feats_dir, run_dir):
         obs_kind(cfg.method),
         "--ckpt",
         str(encoder),
-        "--lewm_epoch",
+        "--wm_epoch",
         str(int(cfg.method.get("policy_epoch", 10))),
         "--feats_dir",
         str(feats_dir),
@@ -239,9 +239,7 @@ def evaluate_run(cfg, run_dir, encoder, episodes=None):
         fl["env_name"], dataset_path=fl["dataset_path"], compact_dataset=True, env_only=True, width=224, height=224
     )
     kind = fl["obs"].split("_")[0]
-    z = np.load(
-        Path(fl["feats_dir"]) / f"{fl['feats_split']}_z{kind if kind in LOADERS else kind[-2:]}.npy", mmap_mode="r"
-    )
+    z = np.load(Path(fl["feats_dir"]) / f"{fl['feats_split']}_z{kind}.npy", mmap_mode="r")
     train_dataset["observations"] = np.concatenate(
         [z.astype(np.float32, copy=False), train_dataset["button_states"].astype(np.float32)], axis=1
     )

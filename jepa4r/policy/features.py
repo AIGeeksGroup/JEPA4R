@@ -7,11 +7,11 @@ LatentObs      env wrapper that encodes observations on the fly during evaluatio
 The integrated learners load the frozen encoder in their own interpreter (JAX for DQC / GCIQL, eai-vc for CortexBench),
 so ``encoder`` is where it is read from (jepa4r.policy.frozen.checkpoint) and both dispatch to the learner's package
 (cfg.policy.impl):
-  dqc    jepa4r/policy/dqc: extract_feats.py / extract_feats_baselines.py (cache), lewm_obs.LeWMObs / BaselineObs
-  gciql  jepa4r/policy/gciql: the Cube workflow's encode / cache-audit stages (cache) and its native evaluation's
+  dqc    jepa4r/policy/dqc: extract_feats.py / extract_feats_baselines.py (cache), wm_obs.WMObs / BaselineObs
+  gciql  jepa4r/policy/gciql: the Cube workflow's encode stage (cache) and its online evaluation's
          OnlineVisualEnv + OnlineEncoder (on the fly)
   bc     nothing cached: CortexBench embeds every frame on the fly (eai-vc's env wrappers with the embedding of
-         jepa4r/policy/bc/lewm_cortex.py / jepa_baselines.py)
+         jepa4r/policy/bc/wm_embeddings.py / jepa_baselines.py)
 """
 
 import importlib

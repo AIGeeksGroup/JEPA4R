@@ -28,7 +28,6 @@ wm_data:                      # supp. sec:supp-data
 policy_data:
   source: official_play       # OGBench's official play data (supp. sec:supp-policy)
   dataset: cube-double-play-v0 # + its -val split (URLs and sizes: configs/env/cube/official_sources.json)
-harness:                      # jepa4r.policy.gciql.cube_stage (the workflow's run config)
-  mode: formal                # the paper protocol (default); smoke = its two-update diagnostic
+workflow:                     # jepa4r.policy.gciql.cube_stage (the workflow's run config)
   workers: 2                  # the workflow's default
   prefetch: 2                 # the workflow's default

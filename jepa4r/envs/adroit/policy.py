@@ -7,7 +7,6 @@ reflection at the Cartesian workspace bounds has no joint-space counterpart here
 from __future__ import annotations
 
 from collections.abc import Mapping
-import hashlib
 from itertools import chain
 from pathlib import Path
 import pickle
@@ -47,16 +46,12 @@ class SavedStateExpert:
     @classmethod
     def load(cls, expert_path, *, env_name="relocate-v0"):
         path = Path(expert_path).expanduser().resolve()
-        payload = path.read_bytes()
-        digest = hashlib.sha256(payload).hexdigest()
-        policy = pickle.loads(payload)
+        policy = pickle.loads(path.read_bytes())
         return cls(
             policy,
             env_name=env_name,
             provenance={
                 "policy_path": str(path),
-                "policy_sha256": digest,
-                "policy_bytes": len(payload),
                 "policy_module": type(policy).__module__,
                 "policy_type": type(policy).__name__,
             },

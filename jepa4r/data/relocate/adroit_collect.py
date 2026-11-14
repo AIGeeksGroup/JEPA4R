@@ -1,12 +1,8 @@
 """Collection of mixed feedback-expert trajectories on Adroit Relocate, with the visible-surface point sampler."""
 
 import argparse
-import hashlib
 import json
 from pathlib import Path
-import time
-
-from .adroit_data import receipt, sha
 
 
 def load_expert(path):
@@ -40,18 +36,8 @@ def mixed_action(policy, env, rng, noise, random_action):
         action = rng.uniform(-1, 1, 30)
     else:
         result = policy.get_action(np.asarray(env.get_obs(), np.float32))
-        action = np.asarray(result[1]["evaluation"], np.float32)
-        if action.shape != (30,) or not np.isfinite(action).all():
-            raise ValueError("invalid expert evaluation mean")
-        action = action + rng.normal(0, noise, 30)
+        action = np.asarray(result[1]["evaluation"], np.float32) + rng.normal(0, noise, 30)
     return np.clip(action, -1, 1).astype(np.float32)
-
-
-def fingerprint(state):
-    import numpy as np
-
-    text = json.dumps(state, sort_keys=True, allow_nan=False, default=lambda value: np.asarray(value).tolist())
-    return hashlib.sha256(text.encode()).hexdigest()
 
 
 def collect_split(root, split, count, seed, policy):
@@ -88,7 +74,6 @@ def collect_split(root, split, count, seed, policy):
             )
             f.create_dataset("ep_len", shape=(0,), maxshape=(None,), dtype="int64")
             f.create_dataset("ep_offset", shape=(0,), maxshape=(None,), dtype="int64")
-        seen = set()
         for episode in range(count):
             episode_seed = seed + episode
             np.random.seed(episode_seed)
@@ -96,18 +81,8 @@ def collect_split(root, split, count, seed, policy):
             obs = np.asarray(env.reset(), np.float32).copy()
             sampler.seed(episode_seed)
             initial = env.get_env_state()
-            digest = fingerprint(initial)
-            if digest in seen:
-                raise ValueError("duplicate native initial state")
-            seen.add(digest)
             initials.append(
-                dict(
-                    initial,
-                    seed=episode_seed,
-                    reset_observation=obs.copy(),
-                    initial_state_sha256=digest.encode(),
-                    original_episode_index=episode,
-                )
+                dict(initial, seed=episode_seed, reset_observation=obs.copy(), original_episode_index=episode)
             )
             kind, noise, start, span = episode_plan(plans)
             counts[kind] += 1
@@ -116,14 +91,10 @@ def collect_split(root, split, count, seed, policy):
                 before = env.get_env_state()
                 xyz, rgb = sampler()
                 pixels = env.sim.render(width=256, height=256, camera_name="vil_camera", device_id=0)[::-1].copy()
-                for key, value in before.items():
-                    np.testing.assert_array_equal(value, env.get_env_state()[key])
                 random_action = kind == 2 or (kind == 1 and start <= step < start + span)
                 with torch.no_grad():
                     action = mixed_action(policy, env, actions_rng, noise, random_action)
                 action = np.asarray(action, np.float32).copy()
-                if action.shape != (30,) or not np.isfinite(action).all() or np.max(np.abs(action)) > 1:
-                    raise ValueError("mixed executed action violates normalized 30D contract")
                 next_obs, reward, done, info = env.step(action.copy())
                 rows.append(
                     dict(
@@ -134,7 +105,6 @@ def collect_split(root, split, count, seed, policy):
                         proprio=obs[:30].copy(),
                         seed=np.int64(episode_seed),
                         step_idx=np.int64(step),
-                        initial_state_sha256=digest.encode(),
                         sample_type=np.uint8(kind),
                         rand_action=np.uint8(random_action),
                         noise_std=np.float32(noise),
@@ -157,8 +127,6 @@ def collect_split(root, split, count, seed, policy):
                     if (route == "rgb" and key.startswith("pcd_")) or (route == "pcd" and key == "pixels"):
                         continue
                     array = np.asarray([row[key] for row in rows])
-                    if array.dtype.kind in "fc" and not np.isfinite(array).all():
-                        raise ValueError("nonfinite " + key)
                     if key not in f:
                         f.create_dataset(
                             key,
@@ -174,16 +142,6 @@ def collect_split(root, split, count, seed, policy):
                     f[key].resize((episode + 1,))
                     f[key][episode] = value
                 f.flush()
-            state = {
-                "stage": split,
-                "completed": episode + 1,
-                "failed": 0,
-                "updated_at": time.time(),
-                "actual_exit_code": None,
-            }
-            temporary = root / "collection-state.tmp"
-            temporary.write_text(json.dumps(state))
-            temporary.replace(root / "collection-state.json")
         initial_path = root / ("initial_states_" + split + ".npz")
         np.savez(initial_path, **{key: np.asarray([item[key] for item in initials]) for key in initials[0]})
         nonvisual = root / (split + "_nonvisual.h5")
@@ -209,46 +167,23 @@ def main():
     parser.add_argument("--test-episodes", type=int, required=True)
     parser.add_argument("--seed", type=int, default=42)
     args = parser.parse_args()
-    if min(args.train_episodes, args.test_episodes) < 1:
-        raise ValueError("positive split sizes required")
     if args.train_episodes >= 2000000:
         raise ValueError("train/test seed ranges would overlap")
     args.output.mkdir(parents=True, exist_ok=False)
-    expert = load_expert(args.expert)
-    policy = expert.policy
-    artifacts = []
+    policy = load_expert(args.expert).policy
     counts = {}
-    try:
-        for split, count, seed in (
-            ("train", args.train_episodes, args.seed),
-            ("test", args.test_episodes, args.seed + 2000000),
-        ):
-            paths, composition = collect_split(args.output, split, count, seed, policy)
-            artifacts.extend(paths)
-            counts[split] = composition
-        receipt(
-            args.output / "collection.json",
-            passed=True,
-            actual_exit_code=0,
-            train_episodes=args.train_episodes,
-            test_episodes=args.test_episodes,
-            episode_length=200,
-            mixed_counts=counts,
-            expert_sha256=expert.provenance["policy_sha256"],
-            producer_sha256=sha(__file__),
-            synthetic_target=False,
-            artifacts=artifacts
-            + [
-                args.expert,
-                Path(__file__).resolve().parents[3] / "configs/policy/bc/relocate/DEPENDENCIES.json",
-                Path(__file__).resolve().parents[3] / "configs/env/relocate/adroit_relocate_sampling.json",
-            ],
-        )
-    except Exception as error:
-        receipt(
-            args.output / "collection.json", passed=False, actual_exit_code=1, error=repr(error), artifacts=artifacts
-        )
-        raise
+    for split, count, seed in (
+        ("train", args.train_episodes, args.seed),
+        ("test", args.test_episodes, args.seed + 2000000),
+    ):
+        _, counts[split] = collect_split(args.output, split, count, seed, policy)
+    summary = dict(
+        train_episodes=args.train_episodes,
+        test_episodes=args.test_episodes,
+        episode_length=200,
+        mixed_counts=counts,  # per split: backbone / branch / random episodes
+    )
+    (args.output / "collection.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
 
 
 if __name__ == "__main__":
