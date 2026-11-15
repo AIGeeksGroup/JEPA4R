@@ -4,7 +4,7 @@ Code implementation for the paper:
 
 > **JEPA4R: Embodied JEPA World Models with 4D Point Planning**
 >
-> Jiarui Dong\*, Zhiheng Liang\*, Yanjun Li\*, Zeyu Zhang\*†, Heejeong Nam, Haoyu Chen, and Hao Tang‡
+> [Jiarui Dong](https://github.com/gktdgktd)\*, [Zhiheng Liang](https://github.com/zhihengfun)\*, [Yanjun Li](https://github.com/yanjun711)\*, [Zeyu Zhang](https://steve-zeyu-zhang.github.io/)\*†, [Heejeong Nam](https://hazel-heejeong-nam.github.io/), [Haoyu Chen](https://mikecheninoulu.github.io/), and [Hao Tang](https://ha0tang.github.io/)‡
 >
 > \*Equal contribution. †Project lead. ‡Corresponding author.
 
