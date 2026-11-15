@@ -58,7 +58,8 @@ class PairedFrames(torch.utils.data.Dataset):
 
 
 def build_dataset(cfg, obs_key, input_keys, input_preprocessor):
-    """cfg: ``config/recon/data/*.yaml``. One sample = one frame: ``{obs_key: (1, ...), 'target': (1, N, C)}``."""
+    """cfg: the ``data`` part of a stage's run config (``recon_config``). One sample = one frame:
+    ``{obs_key: (1, ...), 'target': (1, N, C)}``."""
     cache_dir = os.environ.get("LOCAL_DATASET_DIR", None)
     target_preprocessor = hydra.utils.instantiate(cfg.target_preprocessor)
 

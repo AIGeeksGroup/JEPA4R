@@ -10,7 +10,7 @@ as the paper's ``ogbench/cube_single_expert`` collection. The only changes:
     camera's depth into ``pcd_xyz`` / ``pcd_rgb``, the 3D observation (ToF-style
     depth: no stereo, no multi-camera fusion);
   * every episode is written twice: all columns but the point cloud to the 2D
-    dataset ``pix_dataset_name`` (the layout of ``collect_cube_pix.py``), all
+    dataset ``pix_dataset_name`` (the layout of ``writers.py``), all
     columns but ``pixels`` / ``render_time`` to the 3D dataset ``dataset_name``
     (~18 KB / frame, as before). States, actions etc. are those of the same
     episodes, row for row, so the two datasets correspond one to one. Separate
@@ -32,7 +32,7 @@ from omegaconf import DictConfig, OmegaConf
 
 import stable_worldmodel as swm
 from stable_worldmodel.data.formats.hdf5 import HDF5Writer
-from collect_cube_pix import GzipHDF5Writer  # the 2D dataset's on-disk layout (this script's directory is on sys.path)
+from collect_cube_pix import GzipHDF5Writer  # writers.py, under this name in the collection tree (on sys.path)
 from envs import PCDExpertPolicy, PointCloudWrapper
 from collection_protocol import (
     STRATEGY_NOISE,

@@ -45,8 +45,9 @@ class DexArtPointNet(nn.Module):
         out_dim: int = 192,
         chunk_points: int | None = 300,
     ):
-        """chunk_points: see encoders.pointnet_ms2 -- point chunks + activation checkpointing
-        while training; per-point MLP + max-pool make it identical to the unchunked forward."""
+        """chunk_points: the points go through the per-point MLP and max-pool in chunks of this many (with
+        activation checkpointing while training) and the chunk maxima are max-pooled; per-point MLP + max make it
+        identical to the unchunked forward."""
         super().__init__()
         self.chunk_points = chunk_points
         layers, d = [], in_dim
