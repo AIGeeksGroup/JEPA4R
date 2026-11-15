@@ -77,8 +77,8 @@ def _on_term(signum, frame):
 
 
 def evaluate(agent, env, task_id, num_eval_episodes, action_dim, obs_fn=None):
-    """utils/evaluation.py's evaluate (goal_conditioned=True, no video, whole chunks) with obs_fn added: it computes
-    the observation whenever the policy needs an action."""
+    """dqc's utils/evaluation.py evaluate (goal_conditioned=True, no video, whole chunks) with obs_fn added: it
+    computes the observation whenever the policy needs an action."""
     actor_fn = supply_rng(agent.sample_actions, rng=jax.random.PRNGKey(np.random.randint(0, 2**32)))
     stats = defaultdict(list)
     for _ in range(num_eval_episodes):

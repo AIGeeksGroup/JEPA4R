@@ -183,13 +183,11 @@ class PcdTransform:
         return torch.cat([xyz, x[:, 3:6] / 255.0], dim=-1) if self.use_rgb else xyz
 
 
-# the JEPA4R point-cloud encoders (encoder configs dexart, ms2, ppt, pointnet2, dgcnn):
+# the JEPA4R point-cloud encoders (configs/encoder: pointnet, point_patch_transformer, pointnet2, dgcnn):
 # the _target_ in a checkpoint's config.json -> (file in jepa4r/models/encoders, class, name for the metadata)
 PCD_ENCODERS = {
     "encoders.DexArtPointNet": ("pointnet.py", "DexArtPointNet", "DexArt PointNet"),
     "encoders.pointnet_dexart.DexArtPointNet": ("pointnet.py", "DexArtPointNet", "DexArt PointNet"),
-    "encoders.ManiSkillPointNet": ("pointnet_ms2.py", "ManiSkillPointNet", "ManiSkill PointNet"),
-    "encoders.pointnet_ms2.ManiSkillPointNet": ("pointnet_ms2.py", "ManiSkillPointNet", "ManiSkill PointNet"),
     "encoders.PointPatchTransformer": ("point_patch_transformer.py", "PointPatchTransformer", "PointPatchTransformer"),
     "encoders.ppt.PointPatchTransformer": (
         "point_patch_transformer.py",
@@ -225,8 +223,8 @@ def load_jepa4r(
     random_init: bool = False,
     seed: int = 0,
 ):
-    """JEPA4R's encoder (the one its config.json names: DexArt PointNet, ManiSkill PointNet,
-    PointPatchTransformer, PointNet++ or DGCNN) + projector: one (N, 6) point cloud -> the 192-d latent.
+    """JEPA4R's encoder (the one its config.json names: DexArt PointNet, PointPatchTransformer, PointNet++ or
+    DGCNN) + projector: one (N, 6) point cloud -> the 192-d latent.
     center / scale / use_rgb must be the checkpoint's data.preprocessor (checked against its config.yaml if present).
     random_init uses the checkpoint's architecture with fixed seeded weights, without reading its weights file.
     CortexBench's load_pretrained_model wraps transforms for images (PIL); run_bc3d.py replaces that wrapper for
