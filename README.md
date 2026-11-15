@@ -7,8 +7,8 @@ Code implementation for the paper:
 > [Jiarui Dong](https://github.com/gktdgktd)\*, [Zhiheng Liang](https://github.com/zhihengfun)\*, [Yanjun Li](https://github.com/yanjun711)\*, [Zeyu Zhang](https://steve-zeyu-zhang.github.io/)\*†, [Heejeong Nam](https://hazel-heejeong-nam.github.io/), [Haoyu Chen](https://mikecheninoulu.github.io/), and [Hao Tang](https://ha0tang.github.io/)‡
 >
 > \*Equal contribution. †Project lead. ‡Corresponding author.
-
-### [Website](https://aigeeksgroup.github.io/JEPA4R/) | [Model](https://huggingface.co/AIGeeksGroup/JEPA4R)
+>
+> #### [Paper]() | [Website](https://aigeeksgroup.github.io/JEPA4R/) | [Models](https://huggingface.co/AIGeeksGroup/JEPA4R)
 
 ## ✏️ Citation
 
