@@ -1,0 +1,34 @@
+# The Inspire RH56 dexterous hand on the RM75-B digital twin (Sec. 5.6 "Robot Setup": the twin carries either end
+# effector; the real task is picking an object with the RH56 hand), simulated as Relocate: Adroit Relocate's 100
+# official object / target positions moved onto the RM75-B + RH56 MuJoCo model of an external native bundle (its env,
+# robot assets and expert: env.py, ppo.py, experts/relocate_expert.pt; configs/policy/bc/relocate/DEPENDENCIES.json),
+# the final opposite camera. Run by the Relocate workflow (jepa4r/policy/bc/relocate). The paper reports no number for it.
+_base_: _base
+suite: rh56
+name: rm75b_rh56_relocate
+display: Relocate (RM75-B + RH56 twin)
+env_id: rh56-relocate         # the workflow's --env
+robot:
+  name: rm75b
+  end_effector: rh56          # the Inspire RH56 hand of the external native RM75-B + RH56 bundle (jepa4r/envs/twins/rh56)
+camera:
+  name: opposite              # 256 x 256 renders
+pointcloud:
+  keep_extra: [visible_goal_marker]
+  sampler: rh56_native        # object quota 0.25, green cap 300
+  crop_box: [[-0.6, -0.8, -0.25], [0.6, 0.6, 1.1]]
+  affine: {center: [0.0, -0.2, 0.25], scale: 4.0}   # composed by jepa4r/envs/twins/rh56/wm_bridge.py
+policy: bc
+wm_data:
+  num_episodes: 9000          # + 1,000 validation episodes
+  episode_len: 200            # native early termination allowed
+  mixture: {noisy_expert: 0.5, expert_interrupted_by_random: 0.3, random: 0.2}
+  collector: rh56             # the workflow's rh56_prepare / rh56_collect / rh56_publish
+  sets:                       # seed = base + index
+    - {name: train, num_episodes: 9000, seed_base: 61000000}
+    - {name: val, num_episodes: 1000, seed_base: 62000000}
+  files: {pointcloud: paired_pcd.h5, image: paired_rgb.h5}
+  split: episodes             # whole-episode train / val (jepa4r/envs/twins/rh56/wm_bridge.py)
+policy_data:
+  source: demos
+  demos_per_task: 100

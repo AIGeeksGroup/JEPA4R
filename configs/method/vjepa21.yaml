@@ -1,0 +1,16 @@
+# V-JEPA 2.1 [murlabadia2026vjepa21]: the authors' released weights, frozen and evaluated by us.
+name: vjepa21
+display: V-JEPA 2.1
+kind: pretrained
+obs: image
+encoder: vit_b16
+weights: cortexbench_baselines/vjepa2_1_vitb_dist_vitG_384.pt   # under JEPA4R_CHECKPOINTS:
+                                                                # https://dl.fbaipublicfiles.com/vjepa2/
+                                                                # vjepa2_1_vitb_dist_vitG_384.pt (1,664,223,428 bytes)
+per_env:
+  "cube_*": {encoder: vit_l16, weights: vjepa/vjepa2_1_vitl_dist_vitG_384.pt}   # on Cube, V-JEPA 2.1 uses ViT-L/16
+                              # (its own checkpoint,
+                              # https://dl.fbaipublicfiles.com/vjepa2/vjepa2_1_vitl_dist_vitG_384.pt, 5,151,198,524
+                              # bytes); the Cube workflow keeps it at checkpoints/vjepa/<filename>
+                              # (configs/method/cube/released_models.json); FP16 forward, mean of 576 patch tokens
+                              # (jepa4r/baselines/cube/released_encoders.py)

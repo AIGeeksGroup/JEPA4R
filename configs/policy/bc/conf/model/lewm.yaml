@@ -1,0 +1,8 @@
+# LeWM's encoder (ViT-tiny + projector, the latent its predictor and planner use) as the BC embedding, see
+# jepa4r/policy/bc/wm_embeddings.py. jepa4r.policy.bc.embedding_config fills in per run the env's train_wm
+# checkpoints (checkpoint_dir, epoch = method.policy_epoch, default 10).
+_target_: wm_embeddings.load_lewm
+checkpoint_dir: null
+epoch: 10
+use_projector: true
+random_init: false

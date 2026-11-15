@@ -1,0 +1,30 @@
+# Also the task of every Tab. 4b-d ablation.
+_base_: _ogbench
+name: scene
+display: Scene
+env_id: scene-v0              # OGBench scene-v0
+pointcloud:
+  crop_box: [[0.10, -0.55, -0.02], [0.75, 0.50, 0.60]]
+policy: bc                    # Scene reuses the CortexBench imitation code on its five evaluation tasks
+wm_data:                      # supp. sec:supp-data
+  num_episodes: 10000
+  episode_len: 200
+  mixture: {noisy_expert: 0.5, expert_interrupted_by_random: 0.3, random: 0.2}
+  collector: ogb              # jepa4r/stages/collect_wm_data.py (collect_ogb)
+  env_id: swm/OGBenchScene-v0
+  world: {num_envs: 1, max_episode_steps: 200, image_shape: [224, 224]}
+  env_kwargs: {}              # env.task is set per collection task
+  pcd: {_target_: jepa4r.envs.ogbench.ogb_pcd.ScenePointCloudWrapper}
+  policy: {_target_: jepa4r.envs.ogbench.ogb_scene_env.SceneThreePartPolicy}
+  health_check: true          # an episode whose cube left the view is collected again
+  sets:                       # 4 object tasks x 2500 episodes; task k at seed (k+1)*10^6 + i, 6 shards, merged task by
+                              # task
+    - {name: scene_wm10000, num_episodes: 2500, shards: 6, tasks: [cube, button, drawer, window],
+       seed_base_step: 1000000}
+  files: {pointcloud: scene_wm10000_pcd.h5, image: scene_wm10000.h5}
+  split: random_clips
+  max_parallel: 12            # shards run at once (no effect on the data)
+  threads: 1                  # OMP_NUM_THREADS per shard
+policy_data:
+  source: demos
+  demos_per_task: 25

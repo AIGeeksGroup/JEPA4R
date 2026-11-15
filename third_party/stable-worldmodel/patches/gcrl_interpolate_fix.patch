@@ -1,0 +1,11 @@
+--- a/stable_worldmodel/wm/gcrl/gcrl.py
++++ b/stable_worldmodel/wm/gcrl/gcrl.py
+@@ -12,7 +12,7 @@
+         critic_predictor=None,
+         extra_encoders=None,
+         history_size=3,
+-        interpolate_pos_encoding=True,
++        interpolate_pos_encoding=False,  # patched: transformers 4.50 Dinov2Model.forward has no such kwarg and always interpolates internally, so this is numerically identical for the DINOv2 backbones used here
+         log_std_min=-5.0,
+         log_std_max=2.0,
+     ):

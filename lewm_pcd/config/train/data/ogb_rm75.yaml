@@ -1,7 +1,0 @@
-# ogb.yaml (official pixel data config) on the RM-75 dataset
-defaults:
-  - ogb
-  - _self_
-
-dataset:
-  name: ogbench/cube_rm75_single_expert.h5

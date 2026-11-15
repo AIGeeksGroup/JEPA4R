@@ -1,0 +1,32 @@
+# CortexBench Adroit Relocate [rajeswaran2018dapg], the dexterous-hand task, run by the Relocate workflow
+# (jepa4r/policy/bc/relocate): every stage of this env runs its share of the workflow's plan.
+_base_: _base
+suite: adroit
+name: adroit_relocate
+display: Relocate
+env_id: swm/AdroitRelocate-v0 # AdroitEnv on mj_envs relocate-v0
+camera:
+  name: vil_camera            # 256 x 256 renders
+pointcloud:
+  keep_extra: [visible_goal_marker]   # Sec. 4.1: on Relocate the visible goal marker is a task object
+  sampler: adroit_relocate_sampling   # configs/env/relocate/adroit_relocate_sampling.json: foreground only, object
+                                      # quota 0.25, visible green target cap 300, empty-robot background fill
+  crop_box: [[-0.6, -0.8, -0.25], [0.6, 0.6, 1.1]]   # the same file (crop_box)
+  affine: {center: [0.0, -0.2, 0.25], scale: 4.0}
+policy: bc
+wm_data:                      # supp. sec:supp-data
+  num_episodes: 10000
+  episode_len: 200            # the relocate-v0 horizon
+  mixture: {noisy_expert: 0.5, expert_interrupted_by_random: 0.3, random: 0.2}
+  collector: adroit           # the workflow's collect stage (jepa4r/data/relocate)
+  seed: 42                    # the workflow's default seed
+  sets:                       # train 10,000, test 150
+    - {name: train, num_episodes: 10000}
+    - {name: test, num_episodes: 150}
+  files: {pointcloud: train_pcd.h5, image: train_rgb.h5}
+  split: random_clips         # the trainer's random 0.9 / 0.1 clip split (seed 3072)
+policy_data:
+  source: demos
+  demos_per_task: 100         # 100 demonstrations on Relocate (supp. sec:supp-policy)
+workflow:                     # jepa4r.policy.bc.relocate_stage
+  seed: 42                    # the collection's seed (train episodes seed + i, test seed + 2000000 + i)

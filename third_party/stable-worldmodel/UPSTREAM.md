@@ -1,0 +1,33 @@
+# stable-worldmodel (vendored)
+
+- Repository: https://github.com/galilai-group/stable-worldmodel
+- Commit: `6f1e499e9cc0c898d326112f485c1062c3d20f24` ("Freeze TD-MPC2 running scale during validation (#322)")
+- License: MIT (`LICENSE`, unchanged)
+
+Vendored here (bytes of the upstream commit unless listed under local changes): the 67 modules of the library
+package `stable_worldmodel/` that this repository imports (of 120; the removed ones are listed under local changes),
+`LICENSE`, `README.md`, `pyproject.toml`, and the PLDM training script with its configs, `scripts/train/pldm.py`,
+`scripts/train/config/{pldm.yaml, data/ogb.yaml, launcher/local.yaml}` (the PLDM baseline of Tab. 1 / Tab. 2 is the
+framework's own training, `jepa4r/baselines/pldm.py`). The Cube and Relocate workflows use the same file set
+(`JEPA4R_SWM`).
+Install with `pip install -e third_party/stable-worldmodel` (or put this directory on `PYTHONPATH`).
+
+## Local changes
+
+Removed: the 53 modules that no code of this repository imports, directly or through the package's own imports --
+the environments other than OGBench's (`envs/{ale, craftax, dmcontrol, gymnasium_control, gymnasium_robotics, pusht,
+two_room, rocket_landing, piecewise}/`, `envs/{image_positioning, quantizer, robocasa, simple_point_maze}.py`), TD-MPC2
+(`wm/tdmpc2/`), `wm/probes.py`, `wm/lewm/module.py` and `wm/prejepa/module.py` -- and, in `envs/__init__.py`, their
+`swm/*` registrations and the import of `envs/ale`. Every other file is the upstream one, except for the patches below.
+
+The four patches of the paper's runs, kept in `patches/` (apply with `patch -p1` in the stable-worldmodel root). None
+changes a number:
+
+| Patch | File | Applied here | Change |
+|---|---|---|---|
+| `pldm_logger_fix.patch` | `scripts/train/pldm.py` | yes | `logger.info(...)` -> `logging.getLogger(__name__).info(...)` (the name `logger` is rebound to the wandb logger later in the function: UnboundLocalError); checkpoint every epoch (`epoch_interval=1`, upstream 5) so that epoch 10 of a 10-epoch run is saved as `weights_epoch_10.pt` |
+| `gcrl_interpolate_fix.patch` | `stable_worldmodel/wm/gcrl/gcrl.py` | yes | `interpolate_pos_encoding=False` default (transformers 4.50's Dinov2Model has no such argument and always interpolates) |
+| `eval_ff_api_fix.patch` | `scripts/plan/eval_ff.py` | no (file not vendored) | API fix of the planning evaluation script; no paper number uses it |
+| `gcbc_ckpt_path_fix.patch` | `scripts/train/gcbc.py` | no (file not vendored) | checkpoint path of the GCBC training script; no paper number uses it |
+
+The paper's training stack is "stable-worldmodel @ 6f1e499 + 4 patched files" (the four above).

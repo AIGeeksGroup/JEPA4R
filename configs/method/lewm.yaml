@@ -1,0 +1,11 @@
+# LeWM [maes2026lewm] on the paired images, trained by us with the same recipe as JEPA4R.
+_base_: _jepa_wm
+name: lewm
+display: LeWM
+obs: image
+encoder: vit_tiny14
+per_env:                      # the OGBench Cube 1-4 world models train in the Cube workflow, with seed 0
+  "cube_single": &cube_workflow {train: {seed: 0}}
+  "cube_double": *cube_workflow
+  "cube_triple": *cube_workflow
+  "cube_quadruple": *cube_workflow

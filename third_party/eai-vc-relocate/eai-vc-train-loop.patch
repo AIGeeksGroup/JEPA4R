@@ -1,0 +1,35 @@
+--- a/cortexbench/mujoco_vc/visual_imitation/train_loop.py
++++ b/cortexbench/mujoco_vc/visual_imitation/train_loop.py
+@@ -153,6 +153,7 @@
+     highest_tr_score, highest_score = -np.inf, -np.inf
+     highest_tr_success, highest_success = 0.0, 0.0
+     for epoch in tqdm(range(config["epochs"])):
++        is_new_best_eval = False
+         # move the policy to correct device
+         policy.model.to(config["device"])
+         policy.model.train()
+@@ -188,6 +189,7 @@
+                 base_seed=config["seed"],
+                 num_cpu=config["num_cpu"],
+             )
++            previous_highest_score = highest_score
+             (
+                 mean_score,
+                 success_percentage,
+@@ -200,6 +202,7 @@
+                 highest_score=highest_score,
+                 highest_success=highest_success,
+             )
++            is_new_best_eval = mean_score >= previous_highest_score
+             epoch_log = {}
+             epoch_log["eval/epoch"] = epoch
+             epoch_log["eval/score_mean"] = mean_score
+@@ -254,7 +257,7 @@
+             print(tabulate(sorted(epoch_log.items())))
+ 
+         # save policy and logging
+-        if (epoch % config["save_frequency"] == 0 and epoch > 0) or (
++        if is_new_best_eval or (epoch % config["save_frequency"] == 0 and epoch > 0) or (
+             epoch == config["epochs"] - 1
+         ):
+             # pickle.dump(agent.policy, open('./iterations/policy_%i.pickle' % epoch, 'wb'))

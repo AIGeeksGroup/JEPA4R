@@ -1,0 +1,8 @@
+# VISReg [wu2026visreg]: the authors' released weights, frozen and evaluated by us.
+name: visreg
+display: VISReg
+kind: pretrained
+obs: image
+encoder: vit_b16
+weights: visreg/visreg-vit-b-inet1k.pth   # under JEPA4R_CHECKPOINTS: the authors' ViT-B/16 (ImageNet-1K, 400 epochs),
+                                          # shared by them on request, not public (368,495,235 bytes)

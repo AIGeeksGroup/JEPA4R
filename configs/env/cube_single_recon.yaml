@@ -1,0 +1,38 @@
+# OGBench Cube-Single data of the latent-space reconstruction (Sec. 4.4, Sec. 5.4, Tab. 3, Tab. 4a): the UR5e collection
+# with stable-worldmodel's plan-oracle expert, and the JEPA4R world model trained on it (released on HF as
+# AIGeeksGroup/JEPA4R, revision ogbench-cube-recon, jepa4r/world_model). Tab. 1's Cube-Single uses other data (the Cube
+# workflow's mixture) and other world models: configs/env/cube_single.yaml.
+_base_: _ogbench
+name: cube_single_recon
+display: Cube-Single (reconstruction data)
+env_id: swm/OGBCube-v0        # stable-worldmodel's OGBench cube, env_type single
+pointcloud:
+  crop_box: [[0.10, -0.50, -0.02], [0.75, 0.50, 0.60]]
+policy: null                  # no policy head on the reconstruction data (Tab. 3 / Tab. 4a decode the world model)
+policy_data: null
+wm_data:
+  recipe: plan_oracle         # stable-worldmodel ExpertPolicy(policy_type='plan_oracle')
+  num_episodes: 10000
+  episode_len: 200
+  mixture: null
+  collector: paired           # jepa4r/stages/collect_wm_data.py (collect_paired), in shards
+  env_id: swm/OGBCubePCD-v0
+  world: {num_envs: 10, max_episode_steps: 200, image_shape: [224, 224]}
+  pcd:                        # PointCloudWrapper arguments
+    num_points: 1200
+    cameras: [front_pixels]
+    foreground_only: true
+    crop_box: [[0.10, -0.50, -0.02], [0.75, 0.50, 0.60]]
+    voxel_size: 0.005
+    cube_fraction: 0.25
+    keep_rgb: false
+  options: null
+  seed: 3072
+  sets:                       # 20 shards of 500 episodes; test: 1,000 episodes in 10 shards at seed 2,000,000
+    - {name: cube_single_expert, num_episodes: 10000, shards: 20}
+    - {name: cube_single_expert_test, num_episodes: 1000, shards: 10, seed: 2000000}
+  files: {pointcloud: cube_single_expert_pcd.h5}   # 3D only (the paper run kept only the point clouds; the paired
+                                                   # collector also writes the 2D file of the same rollouts)
+  split: random_clips
+  max_parallel: 8             # shards run at once (no effect on the data)
+  threads: 2

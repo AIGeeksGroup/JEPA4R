@@ -1,0 +1,78 @@
+{
+  "1": {
+    "source_config": "public_ogbench_play_v0",
+    "files": {
+      "train": {
+        "name": "cube-single-play-v0.npz",
+        "url": "https://rail.eecs.berkeley.edu/datasets/ogbench/cube-single-play-v0.npz",
+        "bytes": 256728298,
+        "episodes": 1000,
+        "raw_rows": 1001000
+      },
+      "val": {
+        "name": "cube-single-play-v0-val.npz",
+        "url": "https://rail.eecs.berkeley.edu/datasets/ogbench/cube-single-play-v0-val.npz",
+        "bytes": 25687020,
+        "episodes": 100,
+        "raw_rows": 100100
+      }
+    }
+  },
+  "2": {
+    "source_config": "public_ogbench_play_v0",
+    "files": {
+      "train": {
+        "name": "cube-double-play-v0.npz",
+        "url": "https://rail.eecs.berkeley.edu/datasets/ogbench/cube-double-play-v0.npz",
+        "bytes": 297435656,
+        "episodes": 1000,
+        "raw_rows": 1001000
+      },
+      "val": {
+        "name": "cube-double-play-v0-val.npz",
+        "url": "https://rail.eecs.berkeley.edu/datasets/ogbench/cube-double-play-v0-val.npz",
+        "bytes": 29726524,
+        "episodes": 100,
+        "raw_rows": 100100
+      }
+    }
+  },
+  "3": {
+    "source_config": "public_ogbench_play_v0",
+    "files": {
+      "train": {
+        "name": "cube-triple-play-v0.npz",
+        "url": "https://rail.eecs.berkeley.edu/datasets/ogbench/cube-triple-play-v0.npz",
+        "bytes": 1003544255,
+        "episodes": 3000,
+        "raw_rows": 3003000
+      },
+      "val": {
+        "name": "cube-triple-play-v0-val.npz",
+        "url": "https://rail.eecs.berkeley.edu/datasets/ogbench/cube-triple-play-v0-val.npz",
+        "bytes": 100613267,
+        "episodes": 300,
+        "raw_rows": 300300
+      }
+    }
+  },
+  "4": {
+    "source_config": "public_ogbench_play_v0",
+    "files": {
+      "train": {
+        "name": "cube-quadruple-play-v0.npz",
+        "url": "https://rail.eecs.berkeley.edu/datasets/ogbench/cube-quadruple-play-v0.npz",
+        "bytes": 1861419607,
+        "episodes": 5000,
+        "raw_rows": 5005000
+      },
+      "val": {
+        "name": "cube-quadruple-play-v0-val.npz",
+        "url": "https://rail.eecs.berkeley.edu/datasets/ogbench/cube-quadruple-play-v0-val.npz",
+        "bytes": 185890898,
+        "episodes": 500,
+        "raw_rows": 500500
+      }
+    }
+  }
+}

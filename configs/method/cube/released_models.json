@@ -1,0 +1,67 @@
+{
+  "schema": "cube_released_models_v1",
+  "models": {
+    "visreg": {
+      "filename": "visreg-vit-b-inet1k.pth",
+      "bytes": 368495235,
+      "url": null,
+      "family": "visreg_vitb768",
+      "latent_dim": 768,
+      "native_size": 224,
+      "feature": "last_normalized_CLS",
+      "inference_precision": "fp32",
+      "architecture": "vit_base_patch16_224",
+      "timm_version": "1.0.29"
+    },
+    "vjepa": {
+      "filename": "vjepa2_1_vitl_dist_vitG_384.pt",
+      "bytes": 5151198524,
+      "url": "https://dl.fbaipublicfiles.com/vjepa2/vjepa2_1_vitl_dist_vitG_384.pt",
+      "family": "vjepa21_vitl1024",
+      "latent_dim": 1024,
+      "native_size": 384,
+      "feature": "last_normalized_image_patch_mean",
+      "inference_precision": "fp16",
+      "source_commit": "204698b45b3712590f06245fbfba32d3be539812",
+      "state_dict_key": "ema_encoder",
+      "encoder_module": "app.vjepa_2_1.models.vision_transformer",
+      "encoder_constructor": "vit_large",
+      "constructor_kwargs": {
+        "patch_size": 16,
+        "img_size": [
+          384,
+          384
+        ],
+        "num_frames": 64,
+        "tubelet_size": 2,
+        "use_sdpa": true,
+        "use_rope": true,
+        "img_temporal_dim_size": 1,
+        "interpolate_rope": true
+      },
+      "source_files": [
+        "hubconf.py",
+        "src/hub/backbones.py",
+        "app/vjepa_2_1/models/vision_transformer.py",
+        "app/vjepa_2_1/models/utils/modules.py",
+        "app/vjepa_2_1/models/utils/patch_embed.py",
+        "app/vjepa_2_1/models/utils/pos_embs.py",
+        "app/vjepa_2_1/models/utils/masks_dist.py",
+        "src/models/vision_transformer.py",
+        "src/models/predictor.py",
+        "src/models/ac_predictor.py",
+        "src/models/utils/modules.py",
+        "src/models/utils/patch_embed.py",
+        "src/models/utils/pos_embs.py",
+        "src/utils/tensors.py",
+        "src/utils/distributed.py",
+        "src/utils/logging.py",
+        "src/masks/utils.py",
+        "README.md",
+        "LICENSE",
+        "APACHE-LICENSE",
+        "requirements.txt"
+      ]
+    }
+  }
+}

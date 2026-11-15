@@ -1,0 +1,28 @@
+# MetaWorld button-press-topdown on the RM75-B digital twin (Sec. 5.6 "Robot Setup": the twin carries either end
+# effector, and for each one JEPA4R's world model and policy heads are trained only on twin data, with the same recipe
+# as in simulation): CortexBench's button-press-topdown with the RealMan RM75-B + Inspire EG2-4C2 in place of the Sawyer
+# (jepa4r/envs/twins/metaworld_rm75, jepa4r/policy/bc/run_bc_proxy.py). Task, camera, collection plan, point clouds and
+# imitation protocol are mw_button's; robot, collection env, CortexBench env and demos are the twin's. The paper reports
+# no number for it.
+_base_: mw_button
+suite: metaworld_rm75         # CortexBench on the twin: run_bc_proxy.py with the twin's own demos
+name: rm75b_mw_button
+display: Button (RM75-B twin)
+env_id: rm75-button-press-topdown-v2-goal-observable   # CortexBench task id (demos, evaluation)
+robot:
+  name: rm75b
+  model: realman_rm75b/rm75b.xml   # in jepa4r/envs/twins/descriptions/
+  end_effector: eg2_4c2       # paper: Inspire EG2-4C2 gripper
+wm_data:
+  env_id: swm/MWButtonPressRM75-v0
+  pcd:
+    multisample: false        # single-sample render, the one the twin's data were collected with
+  # policy: mw_button's ButtonThreePartPolicy, unchanged on the twin
+  sets:                       # 10,000 episodes in 40 shards; test 150 at world seed 2,000,000
+    - {name: mw_button_rm75, num_episodes: 10000, shards: 40}
+    - {name: mw_button_rm75_test, num_episodes: 150, world_seed: 2000000}
+  files: {pointcloud: mw_button_rm75_pcd.h5, image: mw_button_rm75.h5}
+policy_data:
+  source: demos               # jepa4r/data/demos/make_rm75_demos.py: 25 demos of metaworld's scripted expert on the
+                              # twin
+  demos_per_task: 25
