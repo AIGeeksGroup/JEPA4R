@@ -1,0 +1,6 @@
+# Merged first into every composed config (jepa4r/config.py).
+# Storage roots come from environment variables, not from configs:
+#   JEPA4R_DATA (./data)  JEPA4R_OUTPUTS (./outputs)  JEPA4R_CHECKPOINTS (./checkpoints)
+seed: 0
+tag: default        # run variant; ablations use other tags (experiments/tab4_ablations.yaml)
+device: cuda

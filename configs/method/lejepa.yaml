@@ -1,0 +1,21 @@
+# LeJEPA [balestriero2025lejepa]: trained by us on the paired images for 10 epochs with its own recipe
+# (supp. sec:supp-baselines).
+name: lejepa
+display: LeJEPA
+kind: lejepa
+impl: jepa4r.baselines.lejepa
+obs: image
+encoder: vit_tiny14
+train:
+  epochs: 10
+  recipe:                     # LeJEPA's own hyper-parameters (official minimal recipe), the defaults of
+                              # jepa4r/baselines/lejepa.py
+    views: 4
+    batch_size: 256
+    lr: 2.0e-3
+    lamb: 0.02                # SIGReg weight lambda
+    proj_dim: 16
+    workers: 8                # loader only
+    # Cube 1-4 train in the Cube workflow with the same script (jepa4r/baselines/lejepa.py) and defaults;
+    # fixed in the script: AdamW weight decay 5e-2, one epoch of linear warm-up then cosine to 1e-3, projector
+    # 512 -> 2048 -> 2048 -> 16 with BatchNorm, SIGReg 17 knots / 256 directions, bf16, images 224, torch seed 0

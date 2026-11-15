@@ -1,0 +1,29 @@
+_base_: _ogbench
+name: puzzle_4x5
+display: Puzzle 4x5
+env_id: puzzle-4x5-v0         # OGBench board
+pointcloud:
+  crop_box: [[0.10, -0.50, -0.02], [0.75, 0.50, 0.60]]
+policy: dqc
+wm_data:
+  recipe: ogbench_noisy       # Puzzle follows OGBench's noisy recipe and official scale
+  num_episodes: 3000
+  episode_len: 1001
+  mixture: null
+  collector: ogb              # jepa4r/stages/collect_wm_data.py (collect_ogb)
+  env_id: swm/OGBenchPuzzle4x5-v0
+  world: {num_envs: 1, max_episode_steps: 1001, image_shape: [224, 224]}
+  env_kwargs: {}
+  pcd: {_target_: jepa4r.envs.ogbench.ogb_pcd.PuzzlePointCloudWrapper}
+  policy: {_target_: jepa4r.envs.ogbench.ogb_puzzle_env.PuzzleNoisyPolicy}
+  health_check: false
+  sets:                       # episode i at seed seed_base + i, shard s collects i = s, s + K, ...
+    - {name: puzzle_4x5_noisy3000, num_episodes: 3000, shards: 8, seed_base: 1000000}
+    - {name: puzzle_4x5_noisy_test, num_episodes: 20, shards: 2, seed_base: 2000000}
+  files: {pointcloud: puzzle_4x5_noisy3000_pcd.h5, image: puzzle_4x5_noisy3000.h5}
+  split: random_clips
+  max_parallel: 10            # both sets' shards at once (no effect on the data)
+  threads: 1                  # OMP_NUM_THREADS per shard
+policy_data:
+  source: official_play       # OGBench's official play data (supp. sec:supp-policy)
+  dataset: puzzle-4x5-play-v0   # + its -val split

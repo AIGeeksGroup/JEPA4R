@@ -1,0 +1,11 @@
+# Tab. 4a: VGGT [wang2025vggt] backbone; set generator, affine map, data and both stages unchanged.
+_base_: _base
+name: vggt
+display: VGGT
+backbone:
+  name: vggt
+  impl: jepa4r.decoder.backbones.vggt
+  decoder_class: VGGTDecoder
+  weights: vggt/model.pt      # under JEPA4R_CHECKPOINTS: facebook/VGGT-1B model.pt
+                              # (5,026,874,952 bytes); the released run config: HF revision ogbench-cube-recon,
+                              # decoder/ur5e_1cam_vggt_*/config.json

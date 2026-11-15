@@ -1,0 +1,14 @@
+{
+  "task": "relocate-v0",
+  "num_points": 1200,
+  "size": 256,
+  "camera": "vil_camera",
+  "voxel_size": 0.005,
+  "obj_fraction": 0.25,
+  "crop_box": [[-0.6, -0.8, -0.25], [0.6, 0.6, 1.1]],
+  "foreground_only": true,
+  "relocate_target_as_object": true,
+  "separate_object_instances": true,
+  "green_object_cap": 300,
+  "empty_robot_background_fill": true
+}

@@ -1,0 +1,125 @@
+"""Success rates from the raw per-episode evaluation events (Cube: cube_summary; BC: bc_summary, the best of the 20
+evaluations per seed, averaged over seeds); a missing or duplicated event raises. No training or rollout here."""
+
+from numbers import Integral
+
+import numpy as np
+
+BC_EPOCHS = tuple(range(5, 100, 5)) + (99,)
+# Optional event labels: if given, one summary must not mix different values of them.
+GROUP_FIELDS = (
+    "environment",
+    "env",
+    "method",
+    "model",
+    "split",
+    "eval_split",
+    "evaluation_split",
+    "initialization",
+    "route",
+    "role",
+    "evaluation_role",
+)
+
+
+def _integer(value, name, minimum=0):
+    if not isinstance(value, Integral) or isinstance(value, bool) or value < minimum:
+        raise ValueError(name + " must be an integer >= " + str(minimum))
+    return int(value)
+
+
+def _boolean(value, name):
+    if not isinstance(value, (bool, np.bool_)):
+        raise ValueError(name + " must be boolean")
+    return bool(value)
+
+
+def _identity(value, name):
+    if isinstance(value, bool) or not isinstance(value, (str, Integral)) or value == "":
+        raise ValueError(name + " must be a nonempty string or integer")
+    return value
+
+
+def _same_group(events, fields):
+    for field in fields:
+        present = [field in event for event in events]
+        if any(present) and (not all(present) or any(event[field] != events[0][field] for event in events)):
+            raise ValueError("mixed or incomplete group identity: " + field)
+
+
+def cube_summary(events, *, tasks=(1, 2, 3, 4, 5), episodes_per_task=50):
+    events = list(events)
+    budget = _integer(episodes_per_task, "episodes_per_task", 1)
+    if not tasks or len(set(tasks)) != len(tasks):
+        raise ValueError("expected tasks must be unique")
+    _same_group(events, GROUP_FIELDS + ("checkpoint", "update", "training_seed"))
+    counts = {task: [0, 0] for task in tasks}
+    seen = set()
+    for event in events:
+        task = _integer(event["task"], "task", 1)
+        episode = _identity(event["episode_id"], "episode_id")
+        if task not in counts or (task, episode) in seen:
+            raise ValueError("unexpected task or duplicate episode")
+        seen.add((task, episode))
+        counts[task][0] += _boolean(event["success"], "success")
+        counts[task][1] += 1
+    if any(n != budget for _, n in counts.values()):
+        raise ValueError("missing task or incorrect episode denominator")
+    rows = [dict(task=t, successes=s, episodes=n, success_percent=100.0 * s / n) for t, (s, n) in counts.items()]
+    successes, episodes = sum(x["successes"] for x in rows), sum(x["episodes"] for x in rows)
+    return dict(tasks=rows, successes=successes, episodes=episodes, success_percent=100.0 * successes / episodes)
+
+
+def _round(event):
+    successes, episodes = _integer(event["successes"], "successes"), _integer(event["episodes"], "episodes", 1)
+    if successes > episodes:
+        raise ValueError("successes exceed denominator")
+    return successes, episodes
+
+
+def bc_summary(rounds, *, seeds=(100, 200, 300), epochs=BC_EPOCHS, episodes_per_round=25):
+    rounds = list(rounds)
+    _same_group(rounds, GROUP_FIELDS)
+    if not seeds or len(set(seeds)) != len(seeds) or not epochs or len(set(epochs)) != len(epochs):
+        raise ValueError("expected seeds and epochs must be nonempty and unique")
+    budget = _integer(episodes_per_round, "episodes_per_round", 1)
+    rows = {seed: {} for seed in seeds}
+    for event in rounds:
+        seed, epoch = _integer(event["seed"], "seed"), _integer(event["epoch"], "epoch")
+        if seed not in rows or epoch not in epochs or epoch in rows[seed]:
+            raise ValueError("unexpected or duplicate seed/epoch")
+        successes, episodes = _round(event)
+        if episodes != budget:
+            raise ValueError("incorrect BC denominator")
+        rows[seed][epoch] = (successes, episodes)
+    if any(set(row) != set(epochs) for row in rows.values()):
+        raise ValueError("missing BC seed or evaluation round")
+    result = []
+    for seed in seeds:
+        ordered = [
+            dict(
+                epoch=e,
+                successes=rows[seed][e][0],
+                episodes=rows[seed][e][1],
+                success_percent=100.0 * rows[seed][e][0] / rows[seed][e][1],
+            )
+            for e in epochs
+        ]
+        best = max(ordered, key=lambda r: r["success_percent"])
+        result.append(
+            dict(
+                seed=seed,
+                best_percent=best["success_percent"],
+                best_epoch=best["epoch"],
+                final_percent=ordered[-1]["success_percent"],
+                final_epoch=ordered[-1]["epoch"],
+                rounds=ordered,
+            )
+        )
+    best_values, final_values = [r["best_percent"] for r in result], [r["final_percent"] for r in result]
+    return dict(
+        seeds=result,
+        best_mean_percent=float(np.mean(best_values)),
+        best_sample_std_pp=float(np.std(best_values, ddof=1)) if len(seeds) > 1 else None,
+        final_mean_percent=float(np.mean(final_values)),
+    )

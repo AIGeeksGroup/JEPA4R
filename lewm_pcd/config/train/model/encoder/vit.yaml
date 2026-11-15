@@ -1,7 +1,0 @@
-# 官方 LeWM 的 ViT-tiny（config/train/model/lewm.yaml 里的 encoder 块原样搬来），作为可插拔 encoder 用于像素观测
-_target_: encoders.ViTCLS   # same vit_hf ViT, returns the CLS token (generic encoder contract)
-size: tiny
-patch_size: 14
-image_size: ${img_size}
-pretrained: false
-use_mask_token: false

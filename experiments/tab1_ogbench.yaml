@@ -1,0 +1,16 @@
+# Tab. 1 (tab:ogbench_il) and Sec. 5.3 "OGBench" (incl. Cube-Quadruple: 0.0 for every encoder).
+# The same numbers are plotted in Fig. 1b (fig_og_highlight.pdf) and Fig. 4 (fig3_success_all.pdf).
+name: tab1_ogbench
+expected: [paper/expected/tab1_ogbench.yaml]
+
+envs: &envs [cube_single, cube_double, cube_triple, cube_quadruple, scene, puzzle_3x3, puzzle_4x4, puzzle_4x5]
+
+jobs:
+  - stage: collect_wm_data
+    grid: {env: *envs}
+  - stage: prepare_policy_data
+    grid: {env: *envs}
+  - stage: train_wm                 # encoders trained by us, one per task
+    grid: {env: *envs, method: [pldm, lejepa, lewm, jepa4r]}
+  - stage: train_policy             # VISReg and V-JEPA 2.1 use the authors' released weights
+    grid: {env: *envs, method: [pldm, lejepa, visreg, vjepa21, lewm, jepa4r]}

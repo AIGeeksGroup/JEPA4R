@@ -1,0 +1,9 @@
+# Impala CNN: PLDM's encoder on OGBench Cube (supp. sec:supp-baselines).
+name: impala
+arch: impala
+impl: jepa4r.models.encoders.impala
+hparams:                      # as in PLDM's recipe (jepa4r/baselines/cube/pldm, third_party/pldm)
+  input_channels: 3           # ImpalaEncoder(input_channels=3, final_ln=True); stacks (16, 32, 32) x 2 blocks: the
+  final_ln: true              # class defaults of the PLDM authors' impala.py
+  input_size: [3, 65, 65]     # backbone.input_dim; images 65 x 65
+  out_dim: 512                # output_dim; Linear(2592, 512)

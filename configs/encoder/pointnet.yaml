@@ -1,0 +1,11 @@
+# JEPA4R default encoder (Sec. 4.2): the PointNet variant of DexArt [bao2023dexart], widened to
+# match the 5.50M ViT-tiny. Shared per-point MLP 6 -> 1,080 -> 4,320 (GELU), order-invariant
+# max-pool, linear head -> 192.  ~5.51M parameters (checked by experiments/params.yaml).
+name: pointnet
+arch: pointnet
+impl: jepa4r.models.encoders.pointnet
+in_dim: 6
+hidden: [1080, 4320]
+activation: gelu
+pool: max
+out_dim: 192

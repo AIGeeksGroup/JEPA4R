@@ -1,0 +1,358 @@
+{
+  "schema": "paper_cube_collection_sources_v1",
+  "files": {
+    "code/collection/scripts/data/collect_cube_pcd.py": {
+      "repository_path": "jepa4r/data/cube/collection/vendor/fixed/collect_cube_pcd.py"
+    },
+    "code/collection/scripts/data/collection_protocol.py": {
+      "repository_path": "jepa4r/data/cube/collection/vendor/fixed/collection_protocol.py"
+    },
+    "code/collection/scripts/data/double_collection.py": {
+      "repository_path": "jepa4r/data/cube/collection/vendor/fixed/double_collection.py"
+    },
+    "code/collection/scripts/data/triple_collection.py": {
+      "repository_path": "jepa4r/data/cube/collection/vendor/fixed/triple_collection.py"
+    },
+    "code/collection/scripts/data/quadruple_collection.py": {
+      "repository_path": "jepa4r/data/cube/collection/vendor/fixed/quadruple_collection.py"
+    },
+    "code/collection/scripts/data/config/launcher/local.yaml": {
+      "repository_path": "configs/env/cube/collection/launcher/local.yaml"
+    },
+    "code/collection/envs/pcd_wrapper.py": {
+      "repository_path": "jepa4r/data/pointcloud.py"
+    },
+    "code/collection/envs/cube_pcd_env.py": {
+      "repository_path": "jepa4r/data/cube/collection/vendor/pcd/cube_pcd_env.py"
+    },
+    "code/collection/envs/expert_policy.py": {
+      "repository_path": "jepa4r/envs/ogbench/expert_policy.py"
+    },
+    "external/native_pcd_frame.py": {
+      "repository_path": "jepa4r/data/cube/collection/vendor/pcd/native_pcd_frame.py"
+    },
+    "external/pcd_geometry.py": {
+      "repository_path": "jepa4r/data/cube/collection/vendor/pcd/pcd_geometry.py"
+    },
+    "third_party/ogbench/ogbench/relabel_utils.py": {
+      "repository_path": "third_party/ogbench/ogbench/relabel_utils.py"
+    },
+    "third_party/ogbench/ogbench/utils.py": {
+      "repository_path": "third_party/ogbench/ogbench/utils.py"
+    },
+    "third_party/ogbench/ogbench/__init__.py": {
+      "repository_path": "third_party/ogbench/ogbench/__init__.py"
+    },
+    "third_party/ogbench/ogbench/locomaze/ant.py": {
+      "repository_path": "third_party/ogbench/ogbench/locomaze/ant.py"
+    },
+    "third_party/ogbench/ogbench/locomaze/humanoid.py": {
+      "repository_path": "third_party/ogbench/ogbench/locomaze/humanoid.py"
+    },
+    "third_party/ogbench/ogbench/locomaze/maze.py": {
+      "repository_path": "third_party/ogbench/ogbench/locomaze/maze.py"
+    },
+    "third_party/ogbench/ogbench/locomaze/point.py": {
+      "repository_path": "third_party/ogbench/ogbench/locomaze/point.py"
+    },
+    "third_party/ogbench/ogbench/locomaze/__init__.py": {
+      "repository_path": "third_party/ogbench/ogbench/locomaze/__init__.py"
+    },
+    "third_party/ogbench/ogbench/manipspace/mjcf_utils.py": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/mjcf_utils.py"
+    },
+    "third_party/ogbench/ogbench/manipspace/viewer_utils.py": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/viewer_utils.py"
+    },
+    "third_party/ogbench/ogbench/manipspace/__init__.py": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/__init__.py"
+    },
+    "third_party/ogbench/ogbench/online_locomotion/ant.py": {
+      "repository_path": "third_party/ogbench/ogbench/online_locomotion/ant.py"
+    },
+    "third_party/ogbench/ogbench/online_locomotion/ant_ball.py": {
+      "repository_path": "third_party/ogbench/ogbench/online_locomotion/ant_ball.py"
+    },
+    "third_party/ogbench/ogbench/online_locomotion/humanoid.py": {
+      "repository_path": "third_party/ogbench/ogbench/online_locomotion/humanoid.py"
+    },
+    "third_party/ogbench/ogbench/online_locomotion/wrappers.py": {
+      "repository_path": "third_party/ogbench/ogbench/online_locomotion/wrappers.py"
+    },
+    "third_party/ogbench/ogbench/online_locomotion/__init__.py": {
+      "repository_path": "third_party/ogbench/ogbench/online_locomotion/__init__.py"
+    },
+    "third_party/ogbench/ogbench/powderworld/behaviors.py": {
+      "repository_path": "third_party/ogbench/ogbench/powderworld/behaviors.py"
+    },
+    "third_party/ogbench/ogbench/powderworld/powderworld_env.py": {
+      "repository_path": "third_party/ogbench/ogbench/powderworld/powderworld_env.py"
+    },
+    "third_party/ogbench/ogbench/powderworld/sim.py": {
+      "repository_path": "third_party/ogbench/ogbench/powderworld/sim.py"
+    },
+    "third_party/ogbench/ogbench/powderworld/__init__.py": {
+      "repository_path": "third_party/ogbench/ogbench/powderworld/__init__.py"
+    },
+    "third_party/ogbench/ogbench/manipspace/controllers/diff_ik.py": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/controllers/diff_ik.py"
+    },
+    "third_party/ogbench/ogbench/manipspace/controllers/__init__.py": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/controllers/__init__.py"
+    },
+    "third_party/ogbench/ogbench/manipspace/envs/cube_env.py": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/envs/cube_env.py"
+    },
+    "third_party/ogbench/ogbench/manipspace/envs/env.py": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/envs/env.py"
+    },
+    "third_party/ogbench/ogbench/manipspace/envs/manipspace_env.py": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/envs/manipspace_env.py"
+    },
+    "third_party/ogbench/ogbench/manipspace/envs/puzzle_env.py": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/envs/puzzle_env.py"
+    },
+    "third_party/ogbench/ogbench/manipspace/envs/scene_env.py": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/envs/scene_env.py"
+    },
+    "third_party/ogbench/ogbench/manipspace/envs/__init__.py": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/envs/__init__.py"
+    },
+    "third_party/ogbench/ogbench/manipspace/lie/se3.py": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/lie/se3.py"
+    },
+    "third_party/ogbench/ogbench/manipspace/lie/so3.py": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/lie/so3.py"
+    },
+    "third_party/ogbench/ogbench/manipspace/lie/utils.py": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/lie/utils.py"
+    },
+    "third_party/ogbench/ogbench/manipspace/lie/__init__.py": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/lie/__init__.py"
+    },
+    "third_party/ogbench/ogbench/manipspace/oracles/__init__.py": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/oracles/__init__.py"
+    },
+    "third_party/ogbench/ogbench/manipspace/oracles/markov/button_markov.py": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/oracles/markov/button_markov.py"
+    },
+    "third_party/ogbench/ogbench/manipspace/oracles/markov/cube_markov.py": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/oracles/markov/cube_markov.py"
+    },
+    "third_party/ogbench/ogbench/manipspace/oracles/markov/drawer_markov.py": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/oracles/markov/drawer_markov.py"
+    },
+    "third_party/ogbench/ogbench/manipspace/oracles/markov/markov_oracle.py": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/oracles/markov/markov_oracle.py"
+    },
+    "third_party/ogbench/ogbench/manipspace/oracles/markov/window_markov.py": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/oracles/markov/window_markov.py"
+    },
+    "third_party/ogbench/ogbench/manipspace/oracles/markov/__init__.py": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/oracles/markov/__init__.py"
+    },
+    "third_party/ogbench/ogbench/manipspace/oracles/plan/button_plan.py": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/oracles/plan/button_plan.py"
+    },
+    "third_party/ogbench/ogbench/manipspace/oracles/plan/cube_plan.py": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/oracles/plan/cube_plan.py"
+    },
+    "third_party/ogbench/ogbench/manipspace/oracles/plan/drawer_plan.py": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/oracles/plan/drawer_plan.py"
+    },
+    "third_party/ogbench/ogbench/manipspace/oracles/plan/plan_oracle.py": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/oracles/plan/plan_oracle.py"
+    },
+    "third_party/ogbench/ogbench/manipspace/oracles/plan/window_plan.py": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/oracles/plan/window_plan.py"
+    },
+    "third_party/ogbench/ogbench/manipspace/oracles/plan/__init__.py": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/oracles/plan/__init__.py"
+    },
+    "third_party/ogbench/ogbench/manipspace/descriptions/cube_inner.xml": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/descriptions/cube_inner.xml"
+    },
+    "third_party/ogbench/ogbench/manipspace/descriptions/cube_outer.xml": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/descriptions/cube_outer.xml"
+    },
+    "third_party/ogbench/ogbench/manipspace/descriptions/floor_wall.xml": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/descriptions/floor_wall.xml"
+    },
+    "third_party/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/2f85.xml": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/2f85.xml"
+    },
+    "third_party/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/assets/base.stl": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/assets/base.stl"
+    },
+    "third_party/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/assets/base_mount.stl": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/assets/base_mount.stl"
+    },
+    "third_party/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/assets/coupler.stl": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/assets/coupler.stl"
+    },
+    "third_party/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/assets/driver.stl": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/assets/driver.stl"
+    },
+    "third_party/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/assets/follower.stl": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/assets/follower.stl"
+    },
+    "third_party/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/assets/pad.stl": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/assets/pad.stl"
+    },
+    "third_party/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/assets/silicone_pad.stl": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/assets/silicone_pad.stl"
+    },
+    "third_party/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/assets/spring_link.stl": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/descriptions/robotiq_2f85/assets/spring_link.stl"
+    },
+    "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/base_0.obj": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/base_0.obj"
+    },
+    "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/base_1.obj": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/base_1.obj"
+    },
+    "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/forearm_0.obj": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/forearm_0.obj"
+    },
+    "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/forearm_1.obj": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/forearm_1.obj"
+    },
+    "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/forearm_2.obj": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/forearm_2.obj"
+    },
+    "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/forearm_3.obj": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/forearm_3.obj"
+    },
+    "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/shoulder_0.obj": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/shoulder_0.obj"
+    },
+    "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/shoulder_1.obj": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/shoulder_1.obj"
+    },
+    "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/shoulder_2.obj": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/shoulder_2.obj"
+    },
+    "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/upperarm_0.obj": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/upperarm_0.obj"
+    },
+    "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/upperarm_1.obj": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/upperarm_1.obj"
+    },
+    "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/upperarm_2.obj": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/upperarm_2.obj"
+    },
+    "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/upperarm_3.obj": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/upperarm_3.obj"
+    },
+    "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist1_0.obj": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist1_0.obj"
+    },
+    "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist1_1.obj": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist1_1.obj"
+    },
+    "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist1_2.obj": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist1_2.obj"
+    },
+    "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist2_0.obj": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist2_0.obj"
+    },
+    "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist2_1.obj": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist2_1.obj"
+    },
+    "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist2_2.obj": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist2_2.obj"
+    },
+    "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist3.obj": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist3.obj"
+    },
+    "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/ur5e.xml": {
+      "repository_path": "third_party/ogbench/ogbench/manipspace/descriptions/universal_robots_ur5e/ur5e.xml"
+    },
+    "collection_adapters/quad_h600.py": {
+      "repository_path": "jepa4r/data/cube/collection/vendor/fixed/quad_h600.py"
+    },
+    "collection_adapters/camera_pullback.py": {
+      "repository_path": "jepa4r/data/cube/collection/vendor/fixed/camera_pullback.py"
+    },
+    "code/collection/envs/__init__.py": {
+      "repository_path": "jepa4r/data/cube/collection/vendor/pcd/envs_init.py"
+    },
+    "code/collection/scripts/data/collect_cube_pix.py": {
+      "repository_path": "jepa4r/data/cube/collection/vendor/fixed/writers.py"
+    },
+    "code/collection/scripts/data/config/paper_cube.yaml": {
+      "repository_path": "configs/env/cube/collection/paper_cube.yaml"
+    }
+  },
+  "reused_swm_files": [
+    "third_party/stable-worldmodel/LICENSE",
+    "third_party/stable-worldmodel/pyproject.toml",
+    "third_party/stable-worldmodel/stable_worldmodel/__init__.py",
+    "third_party/stable-worldmodel/stable_worldmodel/buffer.py",
+    "third_party/stable-worldmodel/stable_worldmodel/cli.py",
+    "third_party/stable-worldmodel/stable_worldmodel/data/__init__.py",
+    "third_party/stable-worldmodel/stable_worldmodel/data/buffer.py",
+    "third_party/stable-worldmodel/stable_worldmodel/data/dataset.py",
+    "third_party/stable-worldmodel/stable_worldmodel/data/format.py",
+    "third_party/stable-worldmodel/stable_worldmodel/data/formats/__init__.py",
+    "third_party/stable-worldmodel/stable_worldmodel/data/formats/folder.py",
+    "third_party/stable-worldmodel/stable_worldmodel/data/formats/hdf5.py",
+    "third_party/stable-worldmodel/stable_worldmodel/data/formats/lance.py",
+    "third_party/stable-worldmodel/stable_worldmodel/data/formats/lance_video.py",
+    "third_party/stable-worldmodel/stable_worldmodel/data/formats/lerobot.py",
+    "third_party/stable-worldmodel/stable_worldmodel/data/formats/utils.py",
+    "third_party/stable-worldmodel/stable_worldmodel/data/formats/video.py",
+    "third_party/stable-worldmodel/stable_worldmodel/data/normalization.py",
+    "third_party/stable-worldmodel/stable_worldmodel/data/utils.py",
+    "third_party/stable-worldmodel/stable_worldmodel/envs/__init__.py",
+    "third_party/stable-worldmodel/stable_worldmodel/envs/ogbench/__init__.py",
+    "third_party/stable-worldmodel/stable_worldmodel/envs/ogbench/cube_env.py",
+    "third_party/stable-worldmodel/stable_worldmodel/envs/ogbench/expert_policy.py",
+    "third_party/stable-worldmodel/stable_worldmodel/envs/ogbench/maze_env.py",
+    "third_party/stable-worldmodel/stable_worldmodel/envs/ogbench/scene_env.py",
+    "third_party/stable-worldmodel/stable_worldmodel/envs/utils.py",
+    "third_party/stable-worldmodel/stable_worldmodel/planning/__init__.py",
+    "third_party/stable-worldmodel/stable_worldmodel/planning/evaluator.py",
+    "third_party/stable-worldmodel/stable_worldmodel/planning/objective.py",
+    "third_party/stable-worldmodel/stable_worldmodel/planning/solver/__init__.py",
+    "third_party/stable-worldmodel/stable_worldmodel/planning/solver/callbacks/__init__.py",
+    "third_party/stable-worldmodel/stable_worldmodel/planning/solver/callbacks/cem.py",
+    "third_party/stable-worldmodel/stable_worldmodel/planning/solver/callbacks/common.py",
+    "third_party/stable-worldmodel/stable_worldmodel/planning/solver/callbacks/gd.py",
+    "third_party/stable-worldmodel/stable_worldmodel/planning/solver/categorical_cem.py",
+    "third_party/stable-worldmodel/stable_worldmodel/planning/solver/cem.py",
+    "third_party/stable-worldmodel/stable_worldmodel/planning/solver/gd.py",
+    "third_party/stable-worldmodel/stable_worldmodel/planning/solver/icem.py",
+    "third_party/stable-worldmodel/stable_worldmodel/planning/solver/lagrangian.py",
+    "third_party/stable-worldmodel/stable_worldmodel/planning/solver/mppi.py",
+    "third_party/stable-worldmodel/stable_worldmodel/planning/solver/pgd.py",
+    "third_party/stable-worldmodel/stable_worldmodel/planning/solver/predictive_sampling.py",
+    "third_party/stable-worldmodel/stable_worldmodel/planning/solver/solver.py",
+    "third_party/stable-worldmodel/stable_worldmodel/planning/solver/utils.py",
+    "third_party/stable-worldmodel/stable_worldmodel/plot/__init__.py",
+    "third_party/stable-worldmodel/stable_worldmodel/plot/video_utils.py",
+    "third_party/stable-worldmodel/stable_worldmodel/policy.py",
+    "third_party/stable-worldmodel/stable_worldmodel/protocols.py",
+    "third_party/stable-worldmodel/stable_worldmodel/spaces.py",
+    "third_party/stable-worldmodel/stable_worldmodel/utils.py",
+    "third_party/stable-worldmodel/stable_worldmodel/wm/__init__.py",
+    "third_party/stable-worldmodel/stable_worldmodel/wm/gcrl/__init__.py",
+    "third_party/stable-worldmodel/stable_worldmodel/wm/gcrl/gcrl.py",
+    "third_party/stable-worldmodel/stable_worldmodel/wm/gcrl/module.py",
+    "third_party/stable-worldmodel/stable_worldmodel/wm/lewm/__init__.py",
+    "third_party/stable-worldmodel/stable_worldmodel/wm/lewm/lewm.py",
+    "third_party/stable-worldmodel/stable_worldmodel/wm/loss.py",
+    "third_party/stable-worldmodel/stable_worldmodel/wm/pldm/__init__.py",
+    "third_party/stable-worldmodel/stable_worldmodel/wm/pldm/module.py",
+    "third_party/stable-worldmodel/stable_worldmodel/wm/pldm/pldm.py",
+    "third_party/stable-worldmodel/stable_worldmodel/wm/prejepa/__init__.py",
+    "third_party/stable-worldmodel/stable_worldmodel/wm/prejepa/prejepa.py",
+    "third_party/stable-worldmodel/stable_worldmodel/wm/utils.py",
+    "third_party/stable-worldmodel/stable_worldmodel/world/__init__.py",
+    "third_party/stable-worldmodel/stable_worldmodel/world/env_pool.py",
+    "third_party/stable-worldmodel/stable_worldmodel/world/world.py",
+    "third_party/stable-worldmodel/stable_worldmodel/wrapper/__init__.py",
+    "third_party/stable-worldmodel/stable_worldmodel/wrapper/default.py",
+    "third_party/stable-worldmodel/stable_worldmodel/wrapper/visual.py"
+  ]
+}

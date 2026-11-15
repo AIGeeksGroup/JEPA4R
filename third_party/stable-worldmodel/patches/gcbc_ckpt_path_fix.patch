@@ -1,0 +1,20 @@
+--- a/scripts/train/gcbc.py
++++ b/scripts/train/gcbc.py
+@@ -323,7 +323,7 @@
+     save_ckpt_callback = SaveCkptCallback(
+         run_name=cfg.output_model_name,
+         cfg=cfg.model,
+-        epoch_interval=3,
++        epoch_interval=1,  # patched: save every epoch (per-epoch evaluation); upstream literal was 3
+     )
+ 
+     trainer = pl.Trainer(
+@@ -338,7 +338,7 @@
+         trainer=trainer,
+         module=gcbc_policy,
+         data=data,
+-        ckpt_path=f'{cache_dir}/{cfg.output_model_name}_weights.ckpt',
++        ckpt_path=f'{cache_dir}/{cfg.output_model_name}_weights.ckpt' if os.path.exists(f'{cache_dir}/{cfg.output_model_name}_weights.ckpt') else None,  # patched: a first run has no checkpoint yet (gciql.py/gcivl.py already guard this)
+     )
+     manager()
+ 

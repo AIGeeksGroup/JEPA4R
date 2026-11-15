@@ -1,0 +1,12 @@
+# OGBench manipulation [park2025ogbench]: Cube (1-4 cubes), Scene, Puzzle.
+_base_: _base
+suite: ogbench
+camera:
+  name: front_pixels          # the camera behind OGBench's pixel observations
+pointcloud:
+  sampler: {name: stratified, object_fraction: 0.25}   # jepa4r/data/pointcloud.py
+  affine: {center: [0.425, 0.0, 0.2], scale: 4.0}      # model input (xyz - center) * scale ++ rgb / 255
+                                                       # (jepa4r/data/clips.py)
+eval:                         # supp. sec:supp-policy: 50 episodes on each of the five official tasks
+  num_tasks: 5
+  episodes_per_task: 50
