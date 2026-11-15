@@ -141,9 +141,10 @@ def load_decoder_checkpoint(path):
 
 
 def decoder_kwargs(cfg, train="frozen", init_from=None):
-    """Constructor arguments of the backbone decoders (the reconstruction runs' decoder/page4d.yaml and
-    exp/{frozen,lora}.yaml) from cfg.decoder; the target frame = cfg.env.pointcloud.affine. ``train``: 'frozen' (stage
-    A) or 'lora' (stage B, the new parts starting from the stage-A weights ``init_from``)."""
+    """Constructor arguments of the backbone decoders (the ``decoder`` part of a stage's run config,
+    jepa4r.decoder.train.recon_config) from cfg.decoder (configs/decoder/*.yaml); the target frame =
+    cfg.env.pointcloud.affine. ``train``: 'frozen' (stage A) or 'lora' (stage B, the new parts starting from the
+    stage-A weights ``init_from``)."""
     d, sg, head, loss = cfg.decoder, cfg.decoder.set_generator, cfg.decoder.head, cfg.decoder.loss
     grid = math.isqrt(int(sg.num_queries))
     assert grid * grid == int(sg.num_queries), "num_queries must be a square grid"
