@@ -8,7 +8,7 @@ Code implementation for the paper:
 >
 > \*Equal contribution. †Project lead. ‡Corresponding author.
 >
-> #### [Paper]() | [Website](https://aigeeksgroup.github.io/JEPA4R/) | [Models](https://huggingface.co/AIGeeksGroup/JEPA4R)
+> #### [Paper](https://arxiv.org/abs/2611.19771) | [Website](https://aigeeksgroup.github.io/JEPA4R/) | [Models](https://huggingface.co/AIGeeksGroup/JEPA4R)
 
 ## ✏️ Citation
 
